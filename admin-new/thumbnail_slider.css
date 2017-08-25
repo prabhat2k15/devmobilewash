@@ -1,0 +1,158 @@
+
+
+/** page structure **/
+#w {
+  display: block;
+  max-width: 1200px;
+  min-width: 300px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.carousel-wrap{width:100%; height:auto;  padding:30px 10px; margin:0;}
+
+/** posts slider widget **/
+.crsl-items {
+  display: block;
+  padding:0px;
+  width:96% !important;
+  margin:0 auto;
+}
+
+.crsl-item {
+  background: #fff;
+  padding:0px; margin:0;
+}
+
+.crsl-item .thumbnail {
+  display: block;
+  position: relative;
+  margin-bottom: 10px;
+  cursor: pointer; border:none !important;
+}
+.crsl-item .thumbnail img { 
+  display: block; /* fix 1px image space http://stackoverflow.com/q/5804256/477958 */
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+}
+.crsl-item .thumbnail:hover img {
+  opacity: 0.4;
+}
+
+.crsl-item h3 {
+  font-family: "Open Sans",sans-serif;
+  font-size: 1.95em;
+  line-height: 1.25em;
+  margin-bottom: 12px;
+}
+.crsl-item h3 a {
+  text-decoration: none;
+  color: #333;
+}
+.crsl-item h3 a:hover {
+  text-decoration: underline;
+}
+
+.crsl-item .postdate {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 6px;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+  font-size: 1.2em;
+  font-weight: bold;
+  background: #4e90da;
+}
+
+.crsl-item p {
+  font-size: 1.2em;
+  line-height: 1.55em;
+  margin-bottom: 5px;
+}
+
+.crsl-item p.readmore a {
+  display: block;
+  float: right;
+  color: #4e90da;
+  padding: 3px 5px;
+  text-decoration: none;
+  font-weight: bold;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+.crsl-item p.readmore a:hover {
+  background: #4b6caa;
+  color: #fff;
+}
+
+
+/** posts slider nav **/
+.slidernav {
+  display: block;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.slidernav a {
+  display: inline-block;
+  padding: 5px 8px;
+  margin-right: 8px;
+  font-size: 1.4em;
+  color: #666;
+  text-decoration: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+ 
+}
+.slidernav a:active {
+  -webkit-box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+  -moz-box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}
+
+#navbtns { width:100%; }  
+.previous {
+  background-color: #000;
+  float: left;
+  height: 110px;
+  margin-left: -20px;
+  position: absolute;
+  width: 46px;
+  z-index: 99;
+}
+.nexttext {
+  background-color: #000;
+  height: 110px;
+  margin-right: 0;
+  position: absolute;
+  right: 0;
+  width: 70px;
+  z-index: 99;
+}
+
+.carousel-title{font-family:"Open Sans",sans-serif; font-size:18px; font-weight:600; line-height:18px; color:#67686d; text-align:left; text-transform:uppercase; padding-left:8px;}
+.carousel-subtitle{font-family:"Open Sans",sans-serif; font-size:15px; font-weight:600; line-height:18px; color:#67686d; text-align:left; text-transform:uppercase; padding-left:8px;}
+.carousaltext{font-family:"Open Sans",sans-serif; font-size:11px; font-weight:normal; color:#67686d; line-height:14px; text-align:justify; padding:8px;}
+.carousalprice{font-family:"Open Sans",sans-serif; font-size:14px; font-weight:normal; color:#aac618; line-height:14px; text-align:justify; padding:12px 8px; width:130px; overflow:hidden; float:left;}
+.carousallike{ width:90px; position:relative; float:right; padding:12px 8px;}
+.carousal-readmore{width:100%; height:55px; background:#f5f4e1; font-family:"Open Sans",sans-serif; font-size:18px; font-weight:500; text-align:center; color:#222;}
+.carousal-readmore a{width:100%; height:55px; background:#f5f4e1; display:block; font-family:"Open Sans",sans-serif; font-size:18px; font-weight:500; text-align:center; color:#222; line-height:55px; text-decoration:none;}
+.carousal-readmore a:hover{width:100%; height:55px; background:#c62514; display:block; font-family:"Open Sans",sans-serif; font-size:18px; font-weight:500; text-align:center; color:#fff; line-height:55px; text-decoration:none;}
+
+.glyphicon-heart-empty{color:#222 !important; margin:0 5px;}
+.glyphicon-heart-empty:hover{color:#C00 !important; margin:0 5px;}
+
+.glyphicon-plus-sign{color:#222 !important; margin:0 5px;}
+.glyphicon-plus-sign:hover{color:#C00 !important; margin:0 5px;}
+
+/** media queries **/
+@media screen and (max-width: 660px) {
+  h1 { font-size: 2.4em; line-height: 1.2em; }
+  
+  .crsl-item h3 { font-size: 1.65em; }
+}

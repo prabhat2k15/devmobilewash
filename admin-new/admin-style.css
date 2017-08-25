@@ -1,0 +1,298 @@
+body{
+margin: 0;
+padding: 0;
+background: #cfcfcf;
+ font-family: 'Lato', sans-serif;
+}
+
+.clear{
+clear: both;
+}
+
+#container{
+padding-bottom: 50px;
+}
+
+.wrapper{
+
+}
+
+/* ------------------ Admin Login styles ----------------- */
+
+.admin-login{
+text-align: center;
+}
+
+.admin-login .login-wrap{
+width: 400px;
+margin: 0 auto;
+margin-top: 40px;
+}
+
+.admin-login img{
+width: 100%;
+}
+
+.admin-login form{
+text-align: left;
+}
+
+.admin-login form input[type="text"], .admin-login form input[type="email"], .admin-login form input[type="password"]{
+display: block;
+    padding: 15px;
+    border: 0;
+    border-radius: 2px;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+.admin-login form input[type="submit"]{
+display: block;
+    padding: 15px;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 400;
+    background: #223043;
+    text-transform: uppercase;
+    width: 100%;
+    margin: 0 auto;
+    border: 0;
+    cursor: pointer;
+     -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+}
+
+.admin-login form input[type="submit"]:hover{
+background: #121a24;
+}
+
+.admin-login form p{
+margin: 20px 0;
+}
+
+.admin-login #content a{
+color: #000;
+text-decoration: none;
+font-size: 14px;
+}
+
+.admin-login #content a:hover{
+text-decoration: underline;
+}
+
+/* ------------------ Admin panel styles ----------------- */
+
+.admin-panel #navigation{
+position: fixed;
+width: 280px;
+height: 100%;
+background: #223043;
+top: 0;
+left: 0;
+}
+
+.admin-panel #navigation img.logo{
+    width: 100%;
+    padding: 25px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.admin-panel #navigation ul{
+list-style: none;
+margin: 0;
+padding: 0;
+}
+
+.admin-panel #navigation ul li{
+display: block;
+}
+
+.admin-panel #navigation ul li a{
+display: block;
+color: #fff;
+text-decoration: none;
+padding: 12px 25px;
+}
+
+.admin-panel #navigation ul li a:hover, .admin-panel #navigation ul li a.active{
+background: #121a24;
+}
+
+.admin-panel #main-col{
+    padding-left: 300px;
+}
+
+.admin-panel #main-col h1{
+    margin-bottom: 0px;
+    margin-top: 30px;
+}
+
+.admin-panel #main-col p.subheading{
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.admin-panel #main-col .items-table-wrap{
+    background: #eeeeee;
+    border: 1px solid #999;
+    border-radius: 5px;
+    width: 49%;
+    padding: 1px;
+    position: relative;
+    float: left;
+}
+
+.admin-panel #main-col .items-table-wrap table{
+width: 100%;
+border-collapse: collapse;
+}
+
+.admin-panel #main-col .items-table-wrap table th{
+text-align: left;
+background: #e0e0e0;
+color: #076ee1;
+padding: 15px 10px;
+}
+
+.admin-panel #main-col .items-table-wrap table tr:hover{
+background: #dee5ed;
+}
+
+.admin-panel #main-col .items-table-wrap table td{
+padding: 15px 10px;
+}
+
+.admin-panel #main-col .items-table-wrap table a{
+color: #076ee1;
+text-decoration: none;
+}
+
+.admin-panel #main-col .items-table-wrap table a:hover{
+text-decoration: underline;
+}
+
+.admin-panel #main-col .items-table-wrap table .sub-indicate{
+    position: absolute;
+    right: -13px;
+    margin-top: 4px;
+}
+
+.admin-panel #main-col .item-details{
+ background: #eeeeee;
+    border: 1px solid #999;
+    border-radius: 5px;
+       width: 47%;
+    position: relative;
+    float: left;
+    margin-left: 15px;
+        padding: 20px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.admin-panel #main-col .item-details h2{
+margin: 0;
+   font-size: 28px;
+}
+
+.admin-panel #main-col .item-details .subheading{
+margin-top: 10px;
+font-size: 18px;
+margin-bottom: 30px;
+}
+
+.admin-panel #main-col .item-details form{
+
+}
+
+.admin-panel #main-col .item-details form .col{
+width: 48%;
+float: left;
+}
+
+.admin-panel #main-col .item-details form .col-last{
+float: right;
+}
+
+.admin-panel #main-col .item-details form p{
+font-weight: 700;
+margin-bottom: 10px;
+}
+
+.admin-panel #main-col .item-details form input[type="text"], .admin-panel #main-col .item-details form input[type="email"], .admin-panel #main-col .item-details form input[type="password"], .admin-panel #main-col .item-details form input[type="tel"]{
+display: block;
+padding: 8px;
+width: 100%;
+-moz-box-sizing: border-box;
+-webkit-box-sizing: border-box;
+box-sizing: border-box;
+}
+
+.admin-panel #main-col .item-details form select{
+padding: 8px;
+}
+
+.admin-panel #main-col input[type="button"]{
+display: inline-block;
+    padding: 12px 45px;
+    background: #076ee1;
+    text-align: center;
+    border: 0;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.admin-panel #main-col input[type="button"]:hover{
+background-color: #0751A5;
+}
+
+/* ----------- Admin index page styles --------------- */
+
+.admin-home .stat-row{
+padding: 15px 20px 20px 20px;
+box-sizing: border-box;
+background: #262626;
+}
+
+.admin-home .stat-row.alt{
+background: #363636;
+}
+
+.admin-home .stat-row .single-stat{
+float: left;
+margin-right: 40px;
+}
+
+.admin-home .stat-row .single-stat img{
+float: left;
+    margin-right: 15px;
+    margin-top: 4px;
+}
+
+.admin-home .stat-row .single-stat .single-stat-content{
+float: left;
+}
+
+.admin-home .stat-row .single-stat .count{
+/* font-weight: bold; */
+    color: #999;
+    font-size: 42px;
+    margin: 0;
+}
+
+.admin-home .stat-row .single-stat .status{
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+}

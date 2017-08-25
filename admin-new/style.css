@@ -1,0 +1,165 @@
+/*
+http://www.freshdesignweb.com/beautiful-registration-form-with-html5-and-css3.html
+*/
+.admin-panel #main-col .items-table-wrap {
+    background: #e0e0e0 none repeat scroll 0 0 !important;
+    border: 1px solid #D4D0CE !important;
+   
+}
+.column {
+    float: left;
+    width: 33%;
+}
+body {
+    color: #333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857;
+}
+h1, .h1 {
+    font-size: 36px !important;
+}
+.admin-panel #main-col h1 {
+    margin-bottom: 0;
+    margin-top: 30px;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    color: inherit;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
+}
+.admin-panel #main-col p.subheading {
+    font-size: 20px;
+    margin-bottom: 30px;
+    margin-top: 10px;
+}
+.admin-panel #main-col .items-table-wrap {
+    width: 98% !important;
+}
+#two-column {
+    padding: 30px 0 0 58px;
+    width: 92% !important;
+}
+#two-column{
+    width: 550px;
+}
+#two-column #left{
+    width: 300px;
+    float: left;
+}
+#two-column #right{
+    width: 285px;
+    float: right;
+}
+#two-column p{
+    margin-bottom: 12px;
+}
+#two-column input[type="text"],input[type="email"],input[type="password"],input[type="tel"],input[type="date"]{
+    border: 1px solid #b2b9bf;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    padding: 13px;
+    width: 285px;
+}
+#two-column #right input[type="text"],input[type="email"],input[type="date"],input[type="tel"],input[type="password"], #two-column #left input[type="text"],input[type="email"],input[type="password"],input[type="date"],input[type="tel"]{
+    width:280px;
+}
+#two-column textarea {
+    position: relative;
+    padding: 5px;
+    border:1px solid #000;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    width: 540px;
+}
+#two-column input[type="submit"]{
+    padding:8px 18px;
+    background:#222;
+    color:#fff;
+    border: 1px solid #fff;
+    float:right;
+    font-size: 14px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+#two-column input[type="text"]:focus, #two-column textarea:focus{
+    background: #eee;
+}
+#two-column input[type="submit"]:hover{
+    background:#fff;
+    color:#222;
+    border: 1px solid #222;
+}
+
+
+
+.form{
+	background: #f1f1f1 none repeat scroll 0 0;
+    margin: 0 auto;
+    padding-left: 161px;
+    padding-top: 20px;
+    width: 742px;
+    border-radius: 30px;
+}
+.form fieldset{border:0px; padding:0px; margin:0px;}
+.form p.contact { font-size: 12px; margin:0px 0px 16px 0px;line-height: 14px; font-family:Arial, Helvetica;}
+
+.form input[type="text"],input[type="email"], input[type="date"], input[type="password"] ,input[type="tel"] { width: 285px; }
+.form input[type="email"],input[type="tel"], input[type="date"],  input[type="password"] { width: 285px; }
+.form input[type="password"],input[type="tel"] { width: 250px; }
+.form input.birthday{width:60px;}
+.form input.birthyear{width:120px;}
+.form label { color: #000; font-weight:bold;font-size: 12px;font-family:Arial, Helvetica; }
+.form label.month {width: 135px;}
+.form input, textarea { background-color: rgba(255, 255, 255, 0.4); }
+.form input:focus, textarea:focus { border: 1px solid #ff5400; background-color: rgba(255, 255, 255, 1); }
+.form .select-style {
+    
+    background-position: right center;
+    background-repeat: no-repeat;
+    border: 0 solid #fff;
+    color: #555;
+    font-size: inherit;
+    margin: -10px 0 15px;
+    overflow: hidden;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.select-style {
+    background-position: right center;
+    background-repeat: no-repeat;
+    border: 1px solid #b2b9bf;
+    color: #555;
+    font-size: inherit;
+    overflow: hidden;
+    padding: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 285px;
+}
+.form .gender {
+  width:500px;
+  }
+.form input.buttom{ background: #4b8df9; display: inline-block; padding: 5px 10px 6px; color: #fbf7f7; text-decoration: none; font-weight: bold; line-height: 1; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; -moz-box-shadow: 0 1px 3px #999; -webkit-box-shadow: 0 1px 3px #999; box-shadow: 0 1px 3px #999; text-shadow: 0 -1px 1px #222; border: none; position: relative; cursor: pointer; font-size: 14px; font-family:Verdana, Geneva, sans-serif;}
+.form input.buttom:hover	{ background-color: #2a78f6; }
+
+.image-upload-btn
+{
+    border-radius: 5px; color: rgb(255, 255, 255); display: block; padding: 12px; text-align: center; text-decoration: none; background: rgb(48, 159, 254) url("https://www.mobilewash.com/images/camera-icon.png") no-repeat scroll 32px 9px; width: 250px;
+}
+#licence_show
+{
+     display: none; position: absolute; transform: rotate(-46deg); font-size: 20px; bottom: 17%; left: 6%; color: rgb(241, 105, 53); opacity: 1;
+}
+
+.column > p {
+    font-family: "Lato",sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
