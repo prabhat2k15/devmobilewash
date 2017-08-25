@@ -3571,4 +3571,93 @@ die();
 	}
 
 
+    public function actionnonreturncustomercheck(){
+  if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+	$clientlist = Customers::model()->findAll();
+
+	if(count($clientlist)){
+	    foreach($clientlist as $client){
+	       // echo $client['id']."<br>";
+	        $wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$client->id, 'status' => 4),array('order'=>'id DESC'));
+	         if(count($wash_check)){
+	             //echo $client['id']." ".$wash_check->id." ";
+	              $current_time = strtotime(date('Y-m-d H:i:s'));
+
+	              $create_time = strtotime($wash_check->order_for);
+$min_diff = 0;
+if($current_time > $create_time){
+$min_diff = round(($current_time - $create_time) / 60,2);
+}
+
+//echo $min_diff;
+//echo "<br>";
+//more than 30 days
+if($min_diff >= 43200){
+
+						 Customers::model()->updateByPk($client->id, array("is_non_returning" => 1));
+
+
+}
+else{
+    Customers::model()->updateByPk($client->id, array("is_non_returning" => 0));
+}
+	         }
+
+
+
+	    }
+	}
+
+
+
+}
+
+
+	    public function actiongetnonreturncustomers() {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$response = "nothing found";
+		$result = "false";
+         $nonreturncust_arr = [];
+$all_customers = Customers::model()->findAllByAttributes(array('is_non_returning' => 1),array('order'=>'id ASC'));
+
+			if(count($all_customers)){
+
+				$response = "nonreturning customers";
+				$result = "true";
+                foreach($all_customers as $ind=>$customer){
+                     $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer->id, 'status' => 4),array('order'=>'id DESC'));
+                    $nonreturncust_arr[$ind]['id'] = $customer->id;
+                    $nonreturncust_arr[$ind]['name'] = $customer->customername;
+                    $nonreturncust_arr[$ind]['email'] = $customer->email;
+                    $nonreturncust_arr[$ind]['phone'] = $customer->contact_number;
+                    $nonreturncust_arr[$ind]['total_wash'] = $customer->total_wash;
+                    if(count($last_wash)) $nonreturncust_arr[$ind]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
+                    else $nonreturncust_arr[$ind]['last_order'] = "N/A";
+                }
+
+			}
+
+
+
+       $json = array(
+			'result'=> $result,
+			'response'=> $response,
+			'allcustomers' => $nonreturncust_arr
+		);
+
+		echo json_encode($json);
+		die();
+
+}
+
+
 }

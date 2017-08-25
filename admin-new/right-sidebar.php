@@ -230,7 +230,7 @@
                             </ul>
                         </li>
                         
-                        <li class="nav-item  <?php if($url == 'manage-pre-clients.php' || $newurl_page[0] == 'manage-customers.php' || $url == 'trash-pre-clients.php' || $url == 'client_dashboard.php' || $newurl_page[0] == 'pre-clients-details.php' || $url == 'manage-customers.php' || $newurl_page[0] == 'edit-customer.php' || $url == 'feedbacks.php' || $url == 'customer-notifications.php' || $newurl_page[0] == 'manage-pre-clients.php') { $open_client = 'open'; echo 'active open'; } ?>" style="display: <?php echo $client_module_show; ?>;">
+                        <li class="nav-item  <?php if($url == 'manage-pre-clients.php' || $newurl_page[0] == 'manage-customers.php' || $url == 'non-return-customers.php' || $newurl_page[0] == 'non-return-customers.php' || $url == 'trash-pre-clients.php' || $url == 'client_dashboard.php' || $newurl_page[0] == 'pre-clients-details.php' || $url == 'manage-customers.php' || $newurl_page[0] == 'edit-customer.php' || $url == 'feedbacks.php' || $url == 'customer-notifications.php' || $newurl_page[0] == 'manage-pre-clients.php') { $open_client = 'open'; echo 'active open'; } ?>" style="display: <?php echo $client_module_show; ?>;">
                             <a href="client_dashboard.php" class="nav-link nav-toggle">
                                 <i class="icon-layers"></i>
                                 <span class="title">Client</span>
@@ -245,6 +245,11 @@
                                 <li class="nav-item  <?php if($url == 'manage-customers.php' || $newurl_page[0] == 'manage-customers.php' || $newurl_page[0] == 'edit-customer.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="manage-customers.php" class="nav-link ">
                                         <span class="title">Manage Customers</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item  <?php if($url == 'non-return-customers.php' || $newurl_page[0] == 'non-return-customers.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="non-return-customers.php" class="nav-link ">
+                                        <span class="title">Non Returning Customers</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php if($url == 'feedbacks.php') { $open_agent = 'open'; echo 'active open'; } ?>">

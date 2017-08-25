@@ -505,10 +505,10 @@ margin: 0;
    <div class="col">
 <?php if($kartdata->is_scheduled): ?>        
 <h4>Schedule Date</h4>
-        <p><?php echo date('F d-Y', strtotime($kartdata->schedule_date)); ?></p>
+        <p><?php echo date('M d, Y', strtotime($kartdata->schedule_date)); ?></p>
 <?php else: ?>
 <h4>Order Date</h4>
-        <p><?php echo date('F d-Y', strtotime($kartdata->order_date)); ?></p>
+        <p><?php echo date('M d, Y', strtotime($kartdata->order_date)); ?></p>
 <?php endif; ?>
    </div>
    <div class="col collast">

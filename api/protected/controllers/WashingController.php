@@ -2152,7 +2152,7 @@ else $customername = $cust_name[0];
                     $car_ids = $wrequest_id_check->car_list;
                     $car_ids_arr = explode(",",$car_ids);
 
-                    Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 1, "is_nextwash_reminder_push_sent" => 0));
+                    Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 1, "is_nextwash_reminder_push_sent" => 0, "is_non_returning" => 0));
 
                     /* ----------- 5th wash check ----------- */
                     /*
