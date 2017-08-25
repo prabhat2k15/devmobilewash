@@ -1,0 +1,433 @@
+<?php
+class TwilioController extends Controller
+{
+    protected $pccountSid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+    protected $authToken = '149336e1b81b2165e953aaec187971e6';
+    protected $from = '+13108703052 ';
+    protected $callbackurl = 'http://www.mobilewash.com/api/complete_call.php?fromnumber=+';
+    protected $apiurl = 'https://api.twilio.com';
+    protected $appSid = 'APfd976a6070947f3d1368191eba84ed70';
+
+    public function actionmakeacall()
+    {
+        
+        $call_id = Yii::app()->request->getParam('tonumber');
+        $fromnumber = Yii::app()->request->getParam('fromnumber');
+        $url = $this->callbackurl.$fromnumber;
+        $newurl = preg_replace( '/\s+/', '', $url ); 
+        $result  = 'false';
+        $json    = array();
+
+		   
+        if (!empty($call_id) && !empty($fromnumber)) {
+
+			$validatephone_to = strlen($call_id);
+			$validatephone_from = strlen($fromnumber);
+
+	       if($validatephone_to >=10 || $validatephone_to >= 10){
+            
+            $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+            
+            
+            /* Number you wish to call */
+            $to = $call_id;
+            
+            /* Instantiate a new Twilio Rest Client */
+            $http = new Services_Twilio_TinyHttp($this->apiurl, array(
+                'curlopts' => array(
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_SSL_VERIFYHOST => 2
+                )
+            ));
+            
+            $client = new Services_Twilio($this->pccountSid, $this->authToken, date('Y-m-d'), $http);
+            
+            
+            /* make Twilio REST request to initiate outgoing call */
+            $call = $client->account->calls->create($this->from, $to, $newurl);
+
+			//exit;
+            $capability = new Services_Twilio_Capability($this->pccountSid, $this->authToken);
+            $capability->allowClientOutgoing($this->appSid);
+            $token = $capability->generateToken();
+
+			if($token !=""){
+            $data = array(
+                'token' => $token
+            );
+			}else{
+
+				$data = array(
+                'result' => 'false',
+                'response' => 'phone numbers are wrong, Please check.'
+                
+            );
+
+
+			}
+
+
+			}else{
+
+				$data = array(
+                'result' => 'false',
+                'response' => 'Wrong phone number(s). Please add country code with phone number using + sign'
+                
+            );
+
+			}
+            
+          } else {
+            $data = array(
+                'result' => 'false',
+                'response' => 'to and from phone number missing'
+                
+            );
+            
+        }
+        
+		echo json_encode($data);
+		spl_autoload_register(array(
+                'YiiBase',
+                'autoload'
+            ));
+        exit;
+        
+    }
+    
+    public function actionGenerateToken()
+    {
+        
+        //$call_id = Yii::app()->request->getParam('phonenumber');
+        $json    = array();
+        
+            include 'Services/Twilio/Capability.php';
+            $accountSid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+            $authToken  = '149336e1b81b2165e953aaec187971e6';
+
+            // put your Twilio Application Sid here
+            $appSid     = 'APfd976a6070947f3d1368191eba84ed70';
+
+            $capability = new Services_Twilio_Capability($accountSid, $authToken);
+            $capability->allowClientOutgoing($appSid);
+            $capability->allowClientIncoming('jenny');
+            $token = $capability->generateToken();
+            echo "<pre>";
+            print_r($token);
+            echo "<pre>";
+            
+            
+        
+        
+    }
+
+public function actionDeleteMessage()
+	{
+		$id = Yii::app()->request->getParam('id');
+		$model=new Messges;
+		$delmessage = Messges::model()->deleteAll('id=:id', array(':id'=>$id));
+		if($delmessage){
+					    $result= 'true';
+						$response= 'agents deleted';
+					}
+					$json= array(
+			'result'=> $result,
+			'response'=> $response,
+		);
+					echo json_encode($json);
+         die();
+	}
+
+
+public function actionsendsms()
+    {
+		   
+		   $to_num = Yii::app()->request->getParam('tonumber');
+		   $message = Yii::app()->request->getParam('message');
+		   $media = Yii::app()->request->getParam('media');
+           $to_num = urlencode($to_num);
+		  // $message = urlencode($message);
+		   
+		   $result  = 'false';
+			$json    = array();
+           
+            $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+			
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+           
+            /* Instantiate a new Twilio Rest Client */
+
+			$account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423'; 
+			$auth_token = '149336e1b81b2165e953aaec187971e6'; 
+			$client = new Services_Twilio($account_sid, $auth_token);
+			
+			if(!empty($media)){
+			$sendmessage = $client->account->messages->create(array( 
+			    'To' =>  $to_num, 
+				'From' => '+13103128070',
+				'Body' => $message, 
+				'MediaUrl' => $media,
+			));
+			}else{
+			$sendmessage = $client->account->messages->create(array( 
+			    'To' =>  $to_num, 
+				'From' => '+13103128070',
+				'Body' => $message,
+			));	
+			}
+           
+			
+
+			
+           if($sendmessage !=""){
+            $data = array(
+                'sid' => $sendmessage->sid,
+				'status'=>$sendmessage->status,
+            );
+			}else{
+
+				$data = array(
+                'result' => 'false',
+                'response' => 'phone numbers are wrong, Please check.'
+                
+            );
+
+
+			}
+
+        echo json_encode($data);
+		spl_autoload_register(array(
+                'YiiBase',
+                'autoload'
+            ));
+        exit;
+        
+    }
+    
+public function actionReportChange()
+    {
+		$id = Yii::app()->request->getParam('id');
+		$messagedata= array(
+					'report'=> 'sent',
+				);
+				
+		$model=new Messges;
+		$update_message = Messges::model()->updateAll($messagedata,'id=:id',array(':id'=>$id));
+			$result = 'true';
+            $response = 'updated successfully';
+            $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+			echo json_encode($json);
+			die();
+		
+		
+	}
+
+public function actiongetmessges()
+	{
+		 $message =  Yii::app()->db->createCommand("SELECT * FROM messages ORDER BY id DESC")->queryAll();
+        $messagedetails = array();
+        foreach($message as $messages)
+        {
+            
+             $json = array();
+             $json['to'] =  $messages['to'];
+             $json['phone'] =  $messages['phone'];
+             $json['message'] =  $messages['message'];
+             $json['media'] =  $messages['media'];
+             $json['id'] =  $messages['id'];
+             $json['report'] =  $messages['report'];
+             $messagedetails[] = $json;
+        }
+        $messagereturn['messages'] = $messagedetails;
+        echo json_encode($messagereturn, JSON_PRETTY_PRINT);
+
+         exit;
+	}
+
+public function actionMessges()
+    {
+		$to = Yii::app()->request->getParam('to');
+		$phone = Yii::app()->request->getParam('phone');
+		$message = Yii::app()->request->getParam('message');
+		$media = Yii::app()->request->getParam('media');
+		$messagedata= array(
+					'to'=> $to,
+					'phone'=> $phone,
+					'message'=> $message,
+					'media'=> $media,
+				);
+				
+		$model=new Messges;
+		
+		$model->attributes= $messagedata;
+		if($model->save(false)){
+			$messagedataid = Yii::app()->db->getLastInsertID();
+			$result= 'true';
+			$response= 'Message successfully store';
+			$json= array(
+						'result'=> $result,
+						'response'=> $response,
+						'messagedataid'=> $messagedataid,
+					);
+					echo json_encode($json);
+					die();
+		}else{
+			$result= 'false';
+			$response= 'Not store';
+			$json= array(
+						'result'=> $result,
+						'response'=> $response,
+					);
+					echo json_encode($json);
+					die();
+		}
+		
+	}	
+
+
+public function actionEditMessges()
+    {
+		$to = Yii::app()->request->getParam('to');
+		$phone = Yii::app()->request->getParam('phone');
+		$message = Yii::app()->request->getParam('message');
+		$media = Yii::app()->request->getParam('media');
+		$id = Yii::app()->request->getParam('id');
+		$messagedata= array(
+					'to'=> $to,
+					'phone'=> $phone,
+					'message'=> $message,
+					'media'=> $media,
+				);
+				
+		$model=new Messges;
+		$update_message = Messges::model()->updateAll($messagedata,'id=:id',array(':id'=>$id));
+			$result = 'true';
+            $response = 'update successfully';
+            $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+			echo json_encode($json);
+			die();
+		
+		
+	}
+
+public function actiongetsinglemessage()
+	{
+		$id = Yii::app()->request->getParam('id');
+		$message =  Yii::app()->db->createCommand("SELECT * FROM messages WHERE id='$id' ")->queryAll();
+		
+        $to = $message[0]['to'];
+        $phone = $message[0]['phone'];
+        $messages = $message[0]['message'];
+        $media = $message[0]['media'];
+        $json = array(
+                'to'=> $to,
+                'phone'=> $phone,
+                'message'=> $messages,
+                'media'=> $media
+            );
+             echo json_encode($json);
+             exit;
+	}
+
+ public function actiongetreplysms()
+    {
+            $number = Yii::app()->request->getParam('number');
+            $result  = 'false';
+            $json    = array();
+            $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+           
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423'; 
+            $auth_token = '149336e1b81b2165e953aaec187971e6'; 
+            $client = new Services_Twilio($account_sid, $auth_token);
+           $data = array();
+            foreach ($client->account->sms_messages as $sms) {
+                if($sms->direction == 'inbound' && $sms->status == 'received' && $sms->to == $number){
+                    $json = array();
+                     $json['to'] =  $sms->to;
+                     $json['from'] =  $sms->from;
+                     $json['message'] =  $sms->body;
+                     $json['date'] =  $sms->date_sent;
+                     $data[] = $json;
+                    
+                }
+                $messagedata['messages'] = $data;
+    
+}
+           spl_autoload_register(array(
+                'YiiBase',
+                'autoload'
+            ));
+            echo json_encode($messagedata, JSON_PRETTY_PRINT);
+        exit;
+        
+    }
+
+
+public function actiongetreplynumber()
+    {       
+            $result  = 'false';
+            $json    = array();
+           
+            $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+           
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423'; 
+            $auth_token = '149336e1b81b2165e953aaec187971e6'; 
+            $client = new Services_Twilio($account_sid, $auth_token);
+            $phone = array();
+            $i = 0;
+            foreach ($client->account->incoming_phone_numbers as $number) {
+                $i++;
+                $phone[$i] = $number->phone_number;
+}
+        spl_autoload_register(array(
+                'YiiBase',
+                'autoload'
+            ));
+            $json= array(
+            'result'=> $result,
+            'response'=> $response,
+            'phone'=> $phone,
+        );
+                    echo json_encode($json);
+        
+        exit;
+        
+    }
+
+
+}
