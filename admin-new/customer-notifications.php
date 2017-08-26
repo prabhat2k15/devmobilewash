@@ -7,10 +7,19 @@
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+         <link href="assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
+        <style>
+        .schedule_field{
+            display: none;
+        }
+        </style>
 <?php include('right-sidebar.php') ?>
 <?php
 $response = '';
@@ -58,15 +67,32 @@ $result_code = $jsondata->result;
                                                     <textarea class="form-control" name="notify_msg" rows="3" required></textarea>
                                                 </div>
                                             </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-3">Schedule Notification</label>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" id="schedule_notify" name="schedule_notify" value="1" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group schedule_field">
+                                                <label class="control-label col-md-3">Schedule Date</label>
+                                                <div class="col-md-3">
+                                                    <input type="text" name="notify_schedule_date" id="notify_schedule_date" class="form-control date-picker" value="<?php echo date('Y-m-d'); ?>" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group schedule_field">
+                                                <label class="control-label col-md-3">Schedule Time</label>
+                                                <div class="col-md-3">
+                                                    <input type="text" name="notify_schedule_time" id="notify_schedule_time" class="form-control timepicker timepicker-default" value="" />
+                                                </div>
+                                            </div>
 
-        
                                             <div class="form-group">
                                             <div class="col-md-3">&nbsp;</div>
                                             <input type="hidden" name="hidden" value="hidden">
                                             <div class="col-md-3" style="display: <?php echo $add_company; ?>">
-                                                <input type="submit" name="notify-form-submit" value="Send Notification" class="btn blue" />
+                                                <input type="submit" id="notify-form-submit" name="notify-form-submit" value="Send Notification" class="btn blue" />
                                             </div>
-                                            
+
                                         </div>
                                         </div>
                                     </form>
@@ -82,10 +108,30 @@ $result_code = $jsondata->result;
             <!-- END CONTENT -->
             <?php include('footer.php') ?>
             <!-- BEGIN PAGE LEVEL PLUGINS -->
+            <script>
+            $(function(){
+               $("#schedule_notify").change(function() {
+                    if(this.checked) {
+                       $(".schedule_field").show();
+                       $("#notify-form-submit").val('Schedule Notification');
+                    }
+                    else{
+                      $(".schedule_field").hide();
+                      $("#notify-form-submit").val('Send Notification');
+                    }
+                });
+            });
+            </script>
         <script src="assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
+        <script src="assets/global/plugins/moment.min.js" type="text/javascript"></script>
+        <script src="assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+        <script src="assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
+        <script src="assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+        <script src="assets/global/plugins/clockface/js/clockface.js" type="text/javascript"></script>
+        <script src="assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
         <script src="assets/global/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
