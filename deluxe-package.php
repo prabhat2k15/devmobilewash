@@ -5,91 +5,105 @@
 <style>
 
 body{
-  
+
     font-family: 'Lato', sans-serif;
 margin: 0;
 padding: 0;
-color: white;
-display: flex;
-    flex-direction: column;
-    background: black;
+    background: #fff;
 }
 
-ul{
-margin: 0;
-padding: 0;
-margin: 0 20px;
+.deluxe-pop{
+    position: relative;
 }
 
-ul li{
-margin-bottom: 11px;
+.deluxe-pop .popular-ribbon, .premium-pop .popular-ribbon {
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
-.header{
-background: #1b1b1b;
+.deluxe-pop .heading {
+    padding: 15px 20px;
+    min-height: 95px;
+    /* padding: 20px; */
+}
+
+.deluxe-pop .heading img {
+        float: none;
     text-align: center;
+    margin: 0;
+    display: block;
+    margin: 0 auto;
+}
+
+.deluxe-pop .heading h3 {
+    display: block !important;
+     margin: 0;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: 400;
+    font-size: 34px;
+
+}
+
+.deluxe-pop .pack-desc {
+    color: #fff;
+    background: #4d8eff;
     padding: 20px;
-    padding-top: 40px;
+    margin-bottom: 0;
+    font-size: 18px;
+    margin-top: 0;
+}
+
+.deluxe-pop .popup-content {
+    padding: 5px 20px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.deluxe-pop .popup-content ul {
+    list-style: none;
     margin: 0;
-    box-sizing: border-box;
+    padding: 0;
+    margin: 10px 0 20px 0;
 }
 
-.header img{
-width: 46px;
-}
-
-.header h1{
-font-weight: 700;
-    margin: 0;
-    margin-top: 5px;
-    font-size: 30px;
-}
-
-.header p{
-    margin: 0;
-    font-size: 20px;
-}
-
-.content{
-padding: 20px;
-box-sizing: border-box;
-color: #fff;
-flex: 1;
-}
-
-.footer-text{
-
-color: #9e9e9e;
-margin-top: 10px;
-font-size: 18px;
-font-weight: 700;
-font-style: italic;
-
+.deluxe-pop .popup-content ul li {
+    display: block;
+    background: url(images/tick-blue.png) no-repeat 0 4px;
+    padding-left: 30px;
+    font-size: 18px;
+    margin-bottom: 12px;
+    font-weight: 400;
 }
 
 </style>
 </head>
 <body>
-<div class="header">
-<img src="images/hd-deluxe-icon.png" />
-<h1>Deluxe Wash</h1>
-<h3 style="color: red; font-size: 20px; font-weight: 400;">Best Deal</h3>
+<div class="deluxe-pop">
+<img src="images/best-deal-ribbon.png" class="popular-ribbon">
+         <div class="heading">
+<img src="images/deluxe-icon-large.png" alt="" width="111">
+<h3 style="display: inline-block;">Deluxe Wash</h3>
 </div>
-<div class="content">
-<ul>
-<li>Complete exterior hand wash</li>
+<p class="pack-desc">Our Deluxe Package is the best and most affordable mobile car wash in the industry, brought directly to your doorstep in minutes.</p>
+         <div class="popup-content">
 
-<li>Wipe down all door jambs & trunk seals</li>
+            <ul>
+             <li>Complete exterior hand wash</li>
 
-<li>Vacuum seats, carpets, & floor mats</li>
+<li>Wipe down all door jambs &amp; trunk seals</li>
 
-<li>Clean windows inside & out</li>
+<li>Vacuum seats, carpets, &amp; floor mats</li>
 
-<li>Wipe down of dashboard, center console & door panels</li>
+<li>Clean windows inside &amp; out</li>
 
-<li>Rim cleaning & tire dressing</li>
-</ul>
-</div>
-<div class="footer-text"><p style="text-align: center; margin-bottom: 20px;">We are the insured alternative!</p></div>
+<li>Wipe down of dashboard, center console &amp; door panels</li>
+
+<li>Rim cleaning &amp; tire dressing</li>
+            </ul>
+
+         </div>
+         </div>
 </body>
 </html>

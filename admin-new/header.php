@@ -467,7 +467,22 @@ setInterval("displaytime()", 1000)
 
 .page-sidebar-closed .page-sidebar .sidebar-search{
     margin-top: 22px;
-} 
+}
+
+.page-header.navbar{
+    height: 48px;
+}
+
+.page-header.navbar .page-logo{
+    width: 235px;
+    height: 45px;
+}
+
+.page-header.navbar .page-logo img{
+      width: 200px;
+    margin-top: 4px !important;
+}
+
         </style>
          </head>
     <!-- END HEAD -->
@@ -485,7 +500,7 @@ setInterval("displaytime()", 1000)
                 <!-- BEGIN LOGO -->
                 <div class="page-logo">
                     <a href="http://www.devmobilewash.com/admin-new/">
-                        <img src="assets/layouts/layout5/img/mwash-logo.png" style="width: 65%;" alt="logo" class="logo-default" /> </a>
+                        <img src="images/logo-white2.png" alt="logo" class="logo-default" /> </a>
                     <div class="menu-toggler sidebar-toggler"> </div>
                 </div>
                 <!-- END LOGO -->

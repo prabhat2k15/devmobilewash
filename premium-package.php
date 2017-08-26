@@ -5,107 +5,114 @@
 <style>
 
 body{
-  
+
     font-family: 'Lato', sans-serif;
 margin: 0;
 padding: 0;
-color: white;
-background: black;
-display: flex;
-    flex-direction: column;
+    background: #fff;
 }
 
-ul{
-margin: 0;
-padding: 0;
-margin: 0 20px;
+.premium-pop{
+    position: relative;
 }
 
-ul li{
-margin-bottom: 11px;
+.premium-pop .popular-ribbon{
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
-ul li.premium-item{
-color: white;
+.premium-pop .heading {
+    padding: 15px 20px;
+    min-height: 95px;
+    /* padding: 20px; */
 }
 
-.header{
-background: #1b1b1b;
+.premium-pop .heading img {
+        float: none;
     text-align: center;
+    margin: 0;
+    display: block;
+    margin: 0 auto;
+}
+
+.premium-pop .heading h3 {
+    display: block !important;
+     margin: 0;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: 400;
+    font-size: 34px;
+
+}
+
+.premium-pop .pack-desc {
+    color: #fff;
+    background: #4d8eff;
     padding: 20px;
-    padding-top: 40px;
+    margin-bottom: 0;
+    font-size: 18px;
+    margin-top: 0;
+}
+
+.premium-pop .popup-content {
+    padding: 5px 20px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.premium-pop .popup-content ul {
+    list-style: none;
     margin: 0;
-    box-sizing: border-box;
+    padding: 0;
+    margin: 10px 0 20px 0;
 }
 
-.header img{
-width: 46px;
-}
-
-.header h1{
-font-weight: 700;
-    margin: 0;
-    margin-top: 5px;
-    font-size: 30px;
-}
-
-.header p{
-    margin: 0;
-    font-size: 20px;
-}
-
-.content{
-padding: 20px;
-box-sizing: border-box;
-color: white;
-flex: 1;
-}
-
-.footer-text{
-
-color: #9e9e9e;
-margin-top: 10px;
-font-size: 18px;
-font-weight: 700;
-padding-top: 20px;
-font-style: italic;
-
+.premium-pop .popup-content ul li {
+    display: block;
+    background: url(images/tick-blue.png) no-repeat 0 4px;
+    padding-left: 30px;
+    font-size: 18px;
+    margin-bottom: 12px;
+    font-weight: 400;
 }
 
 </style>
 </head>
 <body>
-<div class="header">
-<img src="images/hd-premium-icon.png" />
-<h1>Premium Detail</h1>
-<h3 style="color: red; font-size: 20px; font-weight: 400;">Most Popular</h3>
+<div class="premium-pop">
+<img src="images/popular-ribbon.png" class="popular-ribbon">
+         <div class="heading">
+<img src="images/premium-icon-large.png" alt="" width="111">
+<h3 style="display: inline-block;">Premium Detail</h3>
 </div>
-<div class="content">
-<ul>
-<li>Complete exterior hand wash</li>
+<p class="pack-desc">Our Premium Detail Package goes above and beyond to satisfy your highest level of expectations and also the most affordable in the industry brought directly to your doorstep in minutes.</p>
+         <div class="popup-content">
 
-<li>Wipe down all door jambs & trunk seals</li>
+            <ul>
+              <li>Complete exterior hand wash</li>
 
-<li>Vacuum seats, carpets, & floor mats</li>
+<li>Wipe down all door jambs &amp; trunk seals</li>
 
-<li>Clean windows inside & out</li>
+<li>Vacuum seats, carpets, &amp; floor mats</li>
 
-<li>Rim cleaning & tire dressing</li>
+<li>Clean windows inside &amp; out</li>
 
-<li class="premium-item">Thorough wipe down of interior, including dashboard, door panels, center console, pillars & trim pieces</li>
+<li>Rim cleaning &amp; tire dressing</li>
 
-<li class="premium-item">Dressing of all exterior plastics</li>
+<li style="color: #076fe1;">Thorough wipe down of interior, including dashboard, door panels, center console, pillars &amp; trim pieces</li>
 
-<li class="premium-item">Light stain removal</li>
+<li style="color: #076fe1;">Dressing of all exterior plastics</li>
 
-<li class="premium-item">Leather cleaning & conditioning</li>
+<li style="color: #076fe1;">Light stain removal of interior (excluding carpet)</li>
 
-<li class="premium-item">Full exterior hand wax (Liquid form)</li>
+<li style="color: #076fe1;">Leather cleaning &amp; conditioning</li>
 
+<li style="color: #076fe1;">Full exterior hand wax (Liquid form)</li>
 
-</ul>
-<div class="footer-text"><p style="text-align: center; margin-bottom: 20px;">We are the insured alternative!</p></div>
-</div>
+            </ul>
 
+         </div>
+         </div>
 </body>
 </html>
