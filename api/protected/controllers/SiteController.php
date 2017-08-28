@@ -3660,4 +3660,65 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 }
 
 
+public function actionwashfraudcheck() {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$all_washes = Yii::app()->db->createCommand()
+                ->select('*')
+                ->from('washing_requests')
+                ->where("status >= 0 AND status <=3 AND is_flagged = 0", array())
+                ->queryAll();
+
+			if(count($all_washes)){
+
+                foreach($all_washes as $ind=>$wash){
+                 $is_flagged = 0;
+                   $kartapiresult = $this->washingkart($wash['id'], API_KEY);
+$kartdata = json_decode($kartapiresult);
+
+$cust_detail = Customers::model()->findByPk($wash['customer_id']);
+
+/* ------- higher price check --------- */
+
+ if($kartdata->net_price > 120){
+   $is_flagged = 1;
+ }
+
+ /* ------- higher tip check --------- */
+
+ if($kartdata->tip_amount >= 20){
+   $is_flagged = 1;
+ }
+
+  /* ------- strange email check --------- */
+
+$cust_name_arr = explode(" ", $cust_detail->customername);
+$good_email = 0;
+foreach($cust_name_arr as $custnamechunk){
+    $strpos = stripos($cust_detail->email, $custnamechunk);
+
+    if ($strpos !== false) {
+       $good_email = 1;
+       break;
+    }
+}
+
+if(!$good_email) $is_flagged = 1;
+
+
+ if($is_flagged){
+     echo $wash['id']." ".$is_flagged."<br>";
+ }
+                }
+
+			}
+
+
+}
+
+
 }

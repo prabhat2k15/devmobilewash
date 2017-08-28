@@ -1436,7 +1436,7 @@ if($savedroplogdata->result == 'true'):?>
 
  <div class="form-group">
                                                              <label class="control-label">Washer Push Notification</label>
-                                                           <textarea name="washer_push_msg" id="washer_push_msg" style="width: 313px; height: 100px;" class="form-control" required></textarea>
+                                                           <textarea name="washer_push_msg" id="washer_push_msg" style="width: 313px; height: 100px;" class="form-control"></textarea>
                                                         </div>
 
 
