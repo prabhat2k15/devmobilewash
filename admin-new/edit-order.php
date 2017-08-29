@@ -754,6 +754,9 @@ display: none;
 <?php endif; ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="client-receipt-send">Client Receipt</div>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="agent-receipt-send">Detailer Receipt</div>
+<?php if($getorder->is_flagged == 1): ?>
+<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="pass-fraud">Pass Fraud</div>
+<?php endif; ?>
 <div style="clear: both;"></div>
 
 <div style="clear: both;"></div>
@@ -1419,6 +1422,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerpush'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> sent washer push notification at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'passfraud'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> released order from fraud at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
@@ -2602,6 +2608,34 @@ return false;
 
 });
 
+
+$(".pass-fraud").click(function(){
+var c = confirm('Are you sure you want to release the order from fraud?');
+if(c){
+var th = $(this);
+$(this).html('Processing, please wait...');
+$(this).removeClass('pass-fraud');
+$(".err-text").hide();
+$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/passfraud", { wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+}
+else{
+$(".err-text").html(data.response);
+$(".err-text").show();
+$(th).html('Pass Fraud');
+$(th).addClass('pass-fraud');
+
+}
+
+});
+}
+
+return false;
+
+});
+
 $(".client-receipt-send").click(function(){
 var c = confirm('Are you sure you want to resend client receipt?');
 if(c){
@@ -3181,7 +3215,11 @@ if(data.result == 'true'){
       }
       
       if(log.action == 'washerpush'){
-          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" sent washer push notification at "+log.formatted_action_date+"</p>";  
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" sent washer push notification at "+log.formatted_action_date+"</p>";
+      }
+
+      if(log.action == 'passfraud'){
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" released order from fraud at "+log.formatted_action_date+"</p>";
       }
    });
    

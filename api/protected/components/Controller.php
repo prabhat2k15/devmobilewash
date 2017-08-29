@@ -482,6 +482,7 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
 			'washer_cancel_fee' => number_format($wash_id_check->washer_cancel_fee, 2),
 			'status' => $wash_id_check->status,
 			'transaction_id' => $wash_id_check->transaction_id,
+            'is_flagged' => $wash_id_check->is_flagged,
             'card_no' => $card_no,
             'card_exp_mo' => $card_exp_mo,
             'card_exp_yr' => $card_exp_yr,

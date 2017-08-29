@@ -288,7 +288,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 <?php endif; ?>
                     </td>
 <td><?php 
-if($order->payment_status == 'Declined') echo"<span class='label label-sm label-pending'>".$order->payment_status."</span>";
+if(($order->payment_status == 'Declined') || ($order->payment_status == 'Check Fraud')) echo"<span class='label label-sm label-pending'>".$order->payment_status."</span>";
 else echo $order->payment_status; ?></td>
  <td><?php echo $order->transaction_id; ?></td>
                     <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>

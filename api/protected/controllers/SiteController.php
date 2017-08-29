@@ -2869,6 +2869,8 @@ $payment_status = 'Released';
  }
 }
 
+if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
+
  if($min_diff >= 0){
     $resched_date = '';
     $resched_time = '';
@@ -3709,9 +3711,59 @@ foreach($cust_name_arr as $custnamechunk){
 
 if(!$good_email) $is_flagged = 1;
 
+/* ------- credit card name check --------- */
+
+    $good_card = 0;
+  if($cust_detail->client_position == 'real') $Bresult = Yii::app()->braintree->getCustomerById_real($cust_detail->braintree_id);
+else $Bresult = Yii::app()->braintree->getCustomerById($cust_detail->braintree_id);
+
+if(count($Bresult->paymentMethods)){
+
+                  foreach($Bresult->paymentMethods as $index=>$paymethod){
+                     $payment_methods[$index]['title'] = get_class($paymethod);
+                     if($paymethod->isDefault()){
+                     $cust_name_arr = explode(" ", $cust_detail->customername);
+
+                     foreach($cust_name_arr as $custnamechunk){
+                        $strpos = stripos($paymethod->cardholderName, $custnamechunk);
+
+                        if ($strpos !== false) {
+                            $good_card = 1;
+                            break;
+                        }
+                    }
+
+                    }
+
+                  }
+                }
+                else{
+                  $good_card = 1;
+                }
+
+
+if(!$good_card) $is_flagged = 1;
+
+/* ------- last order date and address check --------- */
+
+  $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$wash['customer_id'], 'status' => 4),array('order'=>'id DESC'));
+  if(count($last_wash)) {
+    $current_time = strtotime(date('Y-m-d H:i:s'));
+	$create_time = strtotime($last_wash->order_for);
+    $min_diff = 0;
+    if($current_time > $create_time){
+        $min_diff = round(($current_time - $create_time) / 60,2);
+    }
+
+    if($min_diff < 10080) $is_flagged = 1;
+
+    if($wash['address'] != $last_wash->address) $is_flagged = 1;
+  }
+
 
  if($is_flagged){
-     echo $wash['id']." ".$is_flagged."<br>";
+     //echo $wash['id']." ".$is_flagged."<br>";
+     Washingrequests::model()->updateByPk($wash['id'], array("is_flagged" => 1));
  }
                 }
 
@@ -3719,6 +3771,63 @@ if(!$good_email) $is_flagged = 1;
 
 
 }
+
+
+public function actionpassfraud(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+
+           $result  = 'false';
+$response = 'Enter wash request id';
+
+$admin_username = '';
+$admin_username  = Yii::app()->request->getParam('admin_username');
+
+            $json    = array();
+
+if((isset($wash_request_id) && !empty($wash_request_id))){
+
+    $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+
+			if(!count($wrequest_id_check)){
+                $result= 'false';
+                $response= 'Invalid wash request id';
+            }
+            else{
+                $result = 'true';
+$response = 'wash request unflagged';
+
+                  Washingrequests::model()->updateByPk($wash_request_id, array("is_flagged" => 2));
+				 $washeractionlogdata = array(
+
+                        'wash_request_id'=> $wash_request_id,
+
+                        'admin_username' => $admin_username,
+                        'action'=> 'passfraud',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
+            }
+
+
+
+}
+
+
+$json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+    }
 
 
 }
