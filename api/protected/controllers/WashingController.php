@@ -284,6 +284,10 @@ die();
 
         $waterspotremove_vehicles = '';
         if(Yii::app()->request->getParam('waterspotremove_vehicles')) $waterspotremove_vehicles = Yii::app()->request->getParam('waterspotremove_vehicles');
+
+        $fifth_wash_vehicles = '';
+        if(Yii::app()->request->getParam('fifth_wash_vehicles')) $fifth_wash_vehicles = Yii::app()->request->getParam('fifth_wash_vehicles');
+
         $surge_price_vehicles = '';
 
         $json = array();
@@ -402,8 +406,10 @@ $coupondata= array(
 
 /* ---------- insert addons / others -------------- */
 
+$fifth_disc = 0;
+         if($fifth_wash_vehicles) $fifth_disc = 5;
 
-                        Washingrequests::model()->updateByPk($washrequestid, array('pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position));
+                        Washingrequests::model()->updateByPk($washrequestid, array('pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position));
 
 $car_arr = explode(",",$car_ids);
 $car_packs = explode(",",$package_ids);
@@ -809,6 +815,9 @@ $sendmessage = $client->account->messages->create(array(
         $waterspotremove_vehicles = '';
         if(Yii::app()->request->getParam('waterspotremove_vehicles')) $waterspotremove_vehicles = Yii::app()->request->getParam('waterspotremove_vehicles');
 
+         $fifth_wash_vehicles = '';
+        if(Yii::app()->request->getParam('fifth_wash_vehicles')) $fifth_wash_vehicles = Yii::app()->request->getParam('fifth_wash_vehicles');
+
         $surge_price_vehicles = '';
 
         $json = array();
@@ -920,12 +929,16 @@ $sendmessage = $client->account->messages->create(array(
                     $response = $washrequestid;
 
                     /* ---------- insert addons / others -------------- */
+                    $fifth_disc = 0;
+                    if($fifth_wash_vehicles) $fifth_disc = 5;
                     Washingrequests::model()->updateByPk($washrequestid, array('pet_hair_vehicles' => $pet_hair_vehicles,
                                                                         'lifted_vehicles' => $lifted_vehicles,
                                                                         'exthandwax_vehicles' => $exthandwax_vehicles,
                                                                         'extplasticdressing_vehicles' => $extplasticdressing_vehicles,
                                                                         'extclaybar_vehicles' => $extclaybar_vehicles,
-                                                                        'waterspotremove_vehicles' => $waterspotremove_vehicles));
+                                                                        'waterspotremove_vehicles' => $waterspotremove_vehicles,
+                                                                        'fifth_wash_vehicles' => $fifth_wash_vehicles,
+                                                                        'fifth_wash_discount' => $fifth_disc));
                     $car_arr = explode(",", $car_ids);
                     $car_packs = explode(",", $package_ids);
                     $wash_details = Washingrequests::model()->findByPk($washrequestid);
