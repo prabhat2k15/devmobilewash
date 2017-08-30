@@ -331,7 +331,7 @@ $coupon_usage = CustomerDiscounts::model()->findByAttributes(array("promo_code"=
 
              	if(!count($coupon_check)){
                    	$result= 'false';
-		$response= "Coupon code doesn't exists";
+		$response= "Coupon code doesn't exist";
                 }
 
  else if($coupon_check->coupon_status != 'enabled'){

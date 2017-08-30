@@ -1078,6 +1078,7 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
         $push_notify = '';
         $push_notify = Yii::app()->request->getParam('push_notify');
        $phone_dup_check = Yii::app()->request->getParam('phone_dup_check');
+       $online_status = Yii::app()->request->getParam('online_status');
 
        if($phone_dup_check == 'true'){
            $customers_phone_exists = Customers::model()->findByAttributes(array("contact_number"=>$contact_number));
@@ -1161,6 +1162,10 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
                     $braintree_id = $model->braintree_id;
                 }
 
+                 if(empty($online_status)){
+                    $online_status = $model->online_status;
+                }
+
 if(empty($fifth_wash_points)){
 $fifth_wash_points = $model->fifth_wash_points;
                 }
@@ -1202,6 +1207,7 @@ if(empty($how_hear_mw)){
                     'email_alerts'=> $email_alerts,
                     'push_notifications'=> $push_notify,
 					'password' => $password,
+                    'online_status' => $online_status,
 'updated_date' => date("Y-m-d H:i:s")
 				);
 				if(empty($response)){$response = 'Profile updated';}

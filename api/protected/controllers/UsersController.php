@@ -483,7 +483,7 @@ die();
 
                     /* Comment for online status change */
 
-						$update_status = Customers::model()->updateAll($online_status,'id=:id',array(':id'=>$model->id));
+						//$update_status = Customers::model()->updateAll($online_status,'id=:id',array(':id'=>$model->id));
 
 
 
