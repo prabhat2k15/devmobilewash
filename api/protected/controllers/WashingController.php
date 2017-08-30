@@ -1816,142 +1816,8 @@ else $customername = $cust_name[0];
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
-					$all_cars = explode("|", $wrequest_id_check->scheduled_cars_info);
-					foreach($all_cars as $ind=>$vehicle)
-                    {
-						$car_details = explode(",", $vehicle);
-                        $mobile_receipt .= $car_details[0]." ".$car_details[1]."\r\n".$car_details[2]." $".$car_details[4]."\r\nHandling $1.00\r\n";
-						$message .="<tr>
-						<td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
-						<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
-						<tr>
-						<td><p style='font-size: 20px; margin: 0; font-weight: bold;'>".$car_details[0]." ".$car_details[1]."</p></td>
-						<td style='text-align: right;'>
-						<p style='font-size: 20px; margin: 0; font-weight: bold;'>+$".$car_details[4]."</p>
-						</td>
-						</tr>
-						<tr>
-						<td><p style='font-size: 18px; margin: 0;'>".$car_details[2]." Package</p></td>
-						<td style='text-align: right;'></td>
-						</tr>
-						<tr>
-						<td><p style='font-size: 18px; margin: 0;'>Handling Fee</p></td>
-						<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$1.00</p></td>
-						</tr>";
 
-                        if($car_details[12])
-                        {
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($car_details[12], 2)."</p></td>
-							</tr>";
-                            $mobile_receipt .= "Wax $".number_format($car_details[12], 2)."\r\n";
-						}
 
-                        if($car_details[13])
-                        {
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Dressing of all Exterior Plastics</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($car_details[13], 2)."</p></td>
-							</tr>";
-                            $mobile_receipt .= "Dressing $".number_format($car_details[13], 2)."\r\n";
-                        }
-
-                        if($car_details[14])
-                        {
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($car_details[14], 2)."</p></td>
-							</tr>";
-                            $mobile_receipt .= "Clay $".number_format($car_details[14], 2)."\r\n";
-						}
-
-                        if($car_details[15])
-                        {
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Water Spot Removal</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($car_details[15], 2)."</p></td>
-							</tr>";
-                            $mobile_receipt .= "Spot $".number_format($car_details[15], 2)."\r\n";
-						}
-
-						if($car_details[5])
-                        {
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Extra Cleaning Fee</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($car_details[5], 2)."</p></td>
-							</tr>";
-                            $mobile_receipt .= "Hair $".number_format($car_details[5], 2)."\r\n";
-						}
-
-						if($car_details[6])
-                        {
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Lifted Vehicle Fee</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($car_details[6], 2)."</p></td>
-							</tr>";
-                            $mobile_receipt .= "Lifted $".number_format($car_details[6], 2)."\r\n";
-						}
-
-						if($car_details[8])
-                        {
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$1.00</p></td>
-							</tr>";
-                            $mobile_receipt .= "Bundle -$1.00\r\n";
-						}
-
-						if($car_details[10])
-                        {
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Fifth Wash Discount</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$5.00</p></td>
-							</tr>";
-                            $mobile_receipt .= "5th -$".number_format($car_details[10], 2)."\r\n";
-						}
-
-						$message .= "</table></td></tr>";
-                        $mobile_receipt .= "------\r\n";
-					}
-
-                    if($wrequest_id_check->tip_amount)
-                    {
-						$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
-						<td style='padding-bottom: 15px;'>
-						<p style='font-size: 18px; margin: 0;'>Tip</p>
-						</td>
-						<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>+$".number_format($wrequest_id_check->tip_amount, 2)."</p></td>
-						</tr></table>";
-                        $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
-					}
-
-					if($wrequest_id_check->coupon_discount)
-                    {
-						$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
-						<td style='padding-bottom: 15px;'>
-						<p style='font-size: 18px; margin: 0;'>Coupon Discount</p>
-						</td>
-						<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>-$".number_format($wrequest_id_check->coupon_discount, 2)."</p></td>
-						</tr></table>";
-                        $mobile_receipt .= "Coupon -$".number_format($coupon_amount, 2)."\r\n";
-					}
                     $message .= "</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
@@ -1966,7 +1832,7 @@ else $customername = $cust_name[0];
 					//Vargas::Obj()->SendMail($customers_id_check->email,"billing@Mobilewash.com",$message,$subject, 'mail-receipt');
 					$to = Vargas::Obj()->getAdminToEmail();
 					$from = Vargas::Obj()->getAdminFromEmail();
-					Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
+					//Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
 
                     $this->layout = "xmlLayout";
                     spl_autoload_unregister(array('YiiBase', 'autoload'));
@@ -2216,6 +2082,16 @@ else $customername = $cust_name[0];
                     {
                         Washingrequests::model()->updateAll(array('tip_amount' => $tip_amount), 'id=:id', array(':id'=>$wash_request_id));
                     }
+
+                $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+                        $washeractionlogdata= array(
+                            'agent_id'=> $wrequest_id_check->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_det->real_washer_id,
+                            'action'=> 'appcompletejob',
+                            'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 }
 
                 /* --- notification call --- */
@@ -2235,6 +2111,15 @@ else $customername = $cust_name[0];
                     $washrequestmodel->wash_begin = date("Y-m-d H:i:s");
                     $resUpdate = $washrequestmodel->save(false);
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("washer_on_way_push_sent" => 1));
+
+                    $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+                        $washeractionlogdata= array(
+                            'agent_id'=> $wrequest_id_check->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_det->real_washer_id,
+                            'action'=> 'washerstartjob',
+                            'action_date'=> date('Y-m-d H:i:s'));
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 }
 
                 if(($status == WASHREQUEST_STATUS_AGENTARRIVED) && (!$wrequest_id_check->meet_washer_push_sent))
@@ -2245,6 +2130,14 @@ else $customername = $cust_name[0];
                     //$notify_msg = "Please meet your washer outside";
                     $alert_type = "soft";
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("meet_washer_push_sent" => 1));
+                    $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+                        $washeractionlogdata= array(
+                            'agent_id'=> $wrequest_id_check->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_det->real_washer_id,
+                            'action'=> 'washerarrivejob',
+                            'action_date'=> date('Y-m-d H:i:s'));
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 }
 
                 if(($status == WASHREQUEST_STATUS_AGENTARRIVED_CONFIRMED_BYCLIENT) && (!$wrequest_id_check->inspect_begin_push_sent))
@@ -2255,6 +2148,14 @@ else $customername = $cust_name[0];
                     //$notify_msg = "Agent begins car inspection process.";
                     $alert_type = "strong";
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("inspect_begin_push_sent" => 1));
+                    $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+                        $washeractionlogdata= array(
+                            'agent_id'=> $wrequest_id_check->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_det->real_washer_id,
+                            'action'=> 'washerprocessjob',
+                            'action_date'=> date('Y-m-d H:i:s'));
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 }
 
                 if(($status == WASHREQUEST_STATUS_COMPLETEWASH) && (!$wrequest_id_check->wash_complete_push_sent))

@@ -1426,6 +1426,30 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'passfraud'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> released order from fraud at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'startjob'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> started job at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'arrivejob'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> arrived at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'processjob'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> processed order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'completejob'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> completed order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washerstartjob'): ?>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> started job at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washerarrivejob'): ?>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> arrived at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washerprocessjob'): ?>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> started processing at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'appcompletejob'): ?>
+                                                          <p style="margin-bottom: 10px;">Order completed at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
                                                         </div>
@@ -2853,7 +2877,7 @@ var th = $(this);
 $(this).html('Processing, please wait...');
 $(this).removeClass('order-status-update');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/updatewashadmin", { status: order_status, admin_command: 'save-status', wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/updatewashadmin", { status: order_status, admin_command: 'save-status', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
@@ -3147,7 +3171,7 @@ if(data.result == 'true'){
           contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" assigned #"+log.agent_company_id+" at "+log.formatted_action_date+"</p>";  
         } 
         else{
-            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" assigned "+log.formatted_action_date+"</p>"; 
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" assigned "+log.formatted_action_date+"</p>";
         }
      } 
       if(log.action == 'dropjob'){
@@ -3221,6 +3245,39 @@ if(data.result == 'true'){
       if(log.action == 'passfraud'){
           contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" released order from fraud at "+log.formatted_action_date+"</p>";
       }
+
+      if(log.action == 'startjob'){
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" started job at "+log.formatted_action_date+"</p>";
+      }
+
+      if(log.action == 'arrivejob'){
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" arrived at "+log.formatted_action_date+"</p>";
+      }
+
+      if(log.action == 'processjob'){
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" processed order at "+log.formatted_action_date+"</p>";
+      }
+
+      if(log.action == 'completejob'){
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" completed order at "+log.formatted_action_date+"</p>";
+      }
+
+      if(log.action == 'washerstartjob'){
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" started job at "+log.formatted_action_date+"</p>";
+      }
+
+      if(log.action == 'washerarrivejob'){
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" arrived at "+log.formatted_action_date+"</p>";
+      }
+
+      if(log.action == 'washerprocessjob'){
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" started processing at "+log.formatted_action_date+"</p>";
+      }
+
+      if(log.action == 'appcompletejob'){
+            contents += "<p style='margin-bottom: 10px;'>Order completed at "+log.formatted_action_date+"</p>";
+      }
+
    });
    
    $(".activity-logs").html(contents);

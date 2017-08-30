@@ -85,6 +85,10 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     background-color: #FF8C00 !important;
 }
 
+.label-enroute {
+    background-color: #00BCD4 !important;
+}
+
 .label-cancel {
     background-color: #999 !important;
 }
@@ -278,7 +282,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 <?php elseif(!$order->status): ?>
 <span class="label label-sm label-pending">Pending</span>
 <?php elseif($order->status == 1): ?>
-<span class="label label-sm label-process">En Route</span>
+<span class="label label-sm label-enroute">En Route</span>
 <?php elseif($order->status == 2): ?>
 <span class="label label-sm label-process">Arrived</span>
 <?php elseif($order->status == 3): ?>

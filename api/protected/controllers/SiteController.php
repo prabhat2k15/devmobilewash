@@ -2334,6 +2334,23 @@ if($admin_command == 'save-note'){
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 }
 
+	if($admin_command == 'save-status'){
+	    $actionname = '';
+        if($status == 1) $actionname = 'startjob';
+        if($status == 2) $actionname = 'arrivejob';
+        if($status == 3) $actionname = 'processjob';
+        if($status == 4) $actionname = 'completejob';
+       $washeractionlogdata = array(
+
+                        'wash_request_id'=> $wash_request_id,
+
+                        'admin_username' => $admin_username,
+                        'action'=> $actionname,
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+    }
+
                 Washingrequests::model()->updateByPk($wash_request_id, array("reschedule_date" => $reschedule_date, "reschedule_time" => $reschedule_time, "status" => $status, "agent_id" => $agent_id, "notes" => $notes, 'order_for' => $order_for_date));
 
 
