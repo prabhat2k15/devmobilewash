@@ -601,11 +601,11 @@ $message .="<tr>
 if(($ind == 0) && ($kartdata->coupon_discount > 0)){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Coupon Discount (".$coupon_code.")</p>
+<p style='font-size: 18px; margin: 0;'>Promo Discount (".$coupon_code.")</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$".number_format($coupon_amount, 2)."</p></td>
 </tr>";
-$mobile_receipt .= "Coupon: ".$coupon_code." -$".number_format($coupon_amount, 2)."\r\n";
+$mobile_receipt .= "Promo: ".$coupon_code." -$".number_format($coupon_amount, 2)."\r\n";
 }
 
 
@@ -993,6 +993,83 @@ $sendmessage = $client->account->messages->create(array(
     }
 
 
+    public function actioncustomereditscheduleorder()
+    {
+        if(Yii::app()->request->getParam('key') != API_KEY)
+        {
+            echo "Invalid api key";
+            die();
+        }
+
+
+
+        $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+        $status = Yii::app()->request->getParam('status');
+        $address = Yii::app()->request->getParam('address');
+        $address_type = Yii::app()->request->getParam('address_type');
+        $latitude = Yii::app()->request->getParam('latitude');
+        $longitude = Yii::app()->request->getParam('longitude');
+        $schedule_date = Yii::app()->request->getParam('schedule_date');
+         $schedule_time = Yii::app()->request->getParam('schedule_time');
+
+        $json = array();
+
+        $result = 'false';
+        $response = "Pass the required parameters";
+
+         if((isset($wash_request_id) && !empty($wash_request_id))){
+
+            $wash_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+
+            if(!count($wash_id_check)){
+                $result= 'false';
+                $response= 'Invalid wash request id';
+            }
+            else{
+
+            if(!is_numeric($status)){
+               $status =  $wash_id_check->status;
+            }
+
+            if(!$address){
+               $address =  $wash_id_check->address;
+            }
+
+            if(!$address_type){
+               $address_type =  $wash_id_check->address_type;
+            }
+
+            if(!$latitude){
+               $latitude =  $wash_id_check->latitude;
+            }
+
+            if(!$longitude){
+               $longitude =  $wash_id_check->longitude;
+            }
+
+            if(!$schedule_date){
+               $schedule_date =  $wash_id_check->schedule_date;
+            }
+
+            if(!$schedule_time){
+               $schedule_time =  $wash_id_check->schedule_time;
+            }
+
+            $order_for_date = date("Y-m-d H:i:s", strtotime($schedule_date." ".$schedule_time));
+
+                Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'order_for' => $order_for_date));
+
+                $result= 'true';
+                $response= 'order updated';
+            }
+
+        }
+
+        $json = array('result'=> $result, 'response'=> $response);
+        echo json_encode($json); die();
+    }
+
+
     /*
 	** Returns Pending Washing Requests.
 	** Post Required: none
@@ -1072,54 +1149,7 @@ else $customername = $cust_name[0];
 
             }
 
-            /* ---- nearest agent call ----
 
-            $handle = curl_init("https://www.mobilewash.com/api/index.php?r=customers/estimatetime");
-            $data = array('customer_id' => $last_cust_id, 'latitude' => $last_cust_lat, 'longitude' => $last_cust_lng, "key" => API_KEY);
-            curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-            $agent_result = curl_exec($handle);
-            curl_close($handle);
-            $jsondata = json_decode($agent_result);
-//var_dump($jsondata);
-//$nearest_agent_details = $jsondata->result;
-*/
-            /* ---- nearest agent call end ---- */
-   /*
-            if($jsondata->result == 'true'){
-
-              --- notification call ---
-
-
-                $agent_details = Agents::model()->findByAttributes(array('id'=>$jsondata->agent_id));
-                $notify_token = '';
-                $notify_msg = '';
-                $notify_token = $agent_details->device_token;
-                $device_type = 'ios';
-                $device_type = strtolower($agent_details->mobile_type);
-
-$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '9' ")->queryAll();
-$notify_msg = $pushmsg[0]['message'];
-
-                //$notify_msg = "You have a wash request.";
-
-                $notify_msg = urlencode($notify_msg);
-
-                $notifyurl = "https://www.mobilewash.com/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg;
-                $ch = curl_init();
-                curl_setopt($ch,CURLOPT_URL,$notifyurl);
-                curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
-                if($notify_msg) $notifyresult = curl_exec($ch);
-                curl_close($ch);
-
-                //var_dump($notifyresult);
-
-
-                /* --- notification call end ---
-            }
- */
         }
 
         $json = array(
@@ -4432,7 +4462,7 @@ $message .="<tr>
 if(($ind == 0) && ($kartdata->coupon_discount > 0)){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Coupon (".$wash_id_check->coupon_code.")</p>
+<p style='font-size: 18px; margin: 0;'>Promo (".$wash_id_check->coupon_code.")</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$".number_format($kartdata->coupon_discount, 2)."</p></td>
 </tr>";
@@ -4822,7 +4852,7 @@ if($kartdata->coupon_discount > 0){
     $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
    if((count($kartdata->vehicles) > 1)){
     $com_message .= "<tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Coupon Discount</p></td>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Promo Discount</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
 <p style='font-size: 18px; margin: 0;'>-$".number_format($kartdata->coupon_discount - .80, 2)."</p>
 </td>
@@ -4830,7 +4860,7 @@ if($kartdata->coupon_discount > 0){
    }
    else{
      $com_message .= "<tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Coupon Discount</p></td>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Promo Discount</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
 <p style='font-size: 18px; margin: 0;'>-$".number_format($kartdata->coupon_discount, 2)."</p>
 </td>
@@ -4979,7 +5009,7 @@ $com_message .= "<tr>
 if(($ind == 0) && ($kartdata->coupon_discount > 0)){
 $com_message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Coupon (".$wash_id_check->coupon_code.")</p>
+<p style='font-size: 18px; margin: 0;'>Promo (".$wash_id_check->coupon_code.")</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$".$kartdata->coupon_discount."</p></td>
 </tr>";
@@ -5909,6 +5939,8 @@ die();
 
             else{
 
+            Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => 0));
+
              if($wrequest_id_check->agent_id && $wrequest_id_check->agent_id > 0){
                   $agentmodel = Agents::model()->findByPk($wrequest_id_check->agent_id);
                     $agentmodel->available_for_new_order = 1;
@@ -5935,10 +5967,10 @@ $nearagentsdetails = json_decode($output);
 
 
 if($nearagentsdetails->result == 'false'){
-     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
+     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 1, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
 }
 else{
-  Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 1, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
+  Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
 }
 
 
@@ -7417,7 +7449,7 @@ $message .= "<tr>
 if(($ind == 0) && ($kartdata->coupon_discount > 0)){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Coupon (".$order_exists->coupon_code.")</p>
+<p style='font-size: 18px; margin: 0;'>Promo (".$order_exists->coupon_code.")</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
 </tr>";
@@ -7776,7 +7808,7 @@ $message .= "<tr>
 if(($ind == 0) && ($kartdata->coupon_discount > 0)){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Coupon (".$order_exists->coupon_code.")</p>
+<p style='font-size: 18px; margin: 0;'>Promo (".$order_exists->coupon_code.")</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
 </tr>";

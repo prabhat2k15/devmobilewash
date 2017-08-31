@@ -2542,7 +2542,7 @@ if($wash_details->tip_amount > 0){
 if($wash_details->coupon_discount > 0){
 							$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
 							<td style='padding-bottom: 15px;'>
-							<p style='font-size: 18px; margin: 0;'>Coupon Discount (".$wash_details->coupon_code.")</p>
+							<p style='font-size: 18px; margin: 0;'>Promo Discount (".$wash_details->coupon_code.")</p>
 							</td>
 							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>-$".($wash_details->vip_coupon_code != '' ? '0' : number_format($wash_details->coupon_discount, 2))."</p></td>
 							</tr></table>";
@@ -3946,7 +3946,7 @@ $message .="<tr>
 if(($ind == 0) && ($kartdata->coupon_discount > 0)){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Coupon (".$wash_id_check->coupon_code.")</p>
+<p style='font-size: 18px; margin: 0;'>Promo (".$wash_id_check->coupon_code.")</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$".number_format($kartdata->coupon_discount, 2)."</p></td>
 </tr>";

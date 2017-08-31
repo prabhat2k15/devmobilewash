@@ -37,7 +37,7 @@ $usage_limit = Yii::app()->request->getParam('usage_limit');
 
              	if(count($coupon_check) > 0){
                    	$result= 'false';
-		$response= 'Coupon already exists';
+		$response= 'Promo already exists';
                 }
 
                 else{
@@ -59,7 +59,7 @@ $usage_limit = Yii::app()->request->getParam('usage_limit');
                     }
 
                     	$result= 'true';
-		$response= 'Coupon added successfully';
+		$response= 'Promo added successfully';
                 }
 
 		}
@@ -97,7 +97,7 @@ $usage_limit = Yii::app()->request->getParam('usage_limit');
 
              	if(!count($coupon_check)){
                    	$result= 'false';
-		$response= "Coupon doesn't exists";
+		$response= "Promo doesn't exist";
                 }
 
                 else{
@@ -150,7 +150,7 @@ if(!$premium_amount){
 				  $resUpdate = Yii::app()->db->createCommand()->update('coupon_codes', $coupondata,"id='".$coupon_id."'");
 
                     	$result= 'true';
-		$response= 'Coupon updated successfully';
+		$response= 'Promo updated successfully';
                 }
 
 		}
@@ -180,7 +180,7 @@ die();
 
              	if(!count($coupon_check)){
                    	$result= 'false';
-		$response= "Coupon doesn't exists";
+		$response= "Promo doesn't exist";
                 }
 
                 else{
@@ -199,7 +199,7 @@ die();
 
 
                     	$result= 'true';
-		$response= 'coupon details';
+		$response= 'promo details';
                 }
 
 		}
@@ -231,7 +231,7 @@ die();
 
              	if(!count($coupon_check)){
                    	$result= 'false';
-		$response= "Coupon doesn't exists";
+		$response= "Promo doesn't exist";
                 }
 
                 else{
@@ -251,7 +251,7 @@ die();
 
 
                     	$result= 'true';
-		$response= 'coupon details';
+		$response= 'promo details';
                 }
 
 		}
@@ -331,22 +331,22 @@ $coupon_usage = CustomerDiscounts::model()->findByAttributes(array("promo_code"=
 
              	if(!count($coupon_check)){
                    	$result= 'false';
-		$response= "Coupon code doesn't exist";
+		$response= "Promo code doesn't exist";
                 }
 
  else if($coupon_check->coupon_status != 'enabled'){
                    	$result= 'false';
-		           $response= "Sorry, this coupon is not available this time.";
+		           $response= "Sorry, this promo is not available this time.";
                 }
 
   else if(strtotime($coupon_check->expire_date) > 0 && (strtotime($coupon_check->expire_date) < strtotime(date("Y-m-d")))){
                    	$result= 'false';
-		            $response= "Coupon code expired";
+		            $response= "Promo code expired";
                 }
 
  else if(($coupon_check->usage_limit == 'single') && (count($coupon_usage) >= 1)){
                    	$result= 'false';
-		            $response= "Sorry, you already used this coupon once.";
+		            $response= "Sorry, you already used this promo once.";
                 }
 
 
@@ -448,7 +448,7 @@ die();
 }
 
 		$result= 'false';
-		$response= 'Please enter coupon code';
+		$response= 'Please enter promo code';
         $coupon_code = Yii::app()->request->getParam('code');
  $cust_id = Yii::app()->request->getParam('customer_id');
 $order_cars = Yii::app()->request->getParam('order_cars');
@@ -462,22 +462,22 @@ $coupon_usage = CustomerDiscounts::model()->findAllByAttributes(array("promo_cod
 
              	if(!count($coupon_check)){
                    	$result= 'false';
-		$response= "Coupon code doesn't exists";
+		$response= "promo code doesn't exist";
                 }
 
  else if($coupon_check->coupon_status != 'enabled'){
                    	$result= 'false';
-		            $response= "Sorry, this coupon is not available this time.";
+		            $response= "Sorry, this promo is not available this time.";
                 }
 
                  else if(strtotime($coupon_check->expire_date) > 0 && (strtotime($coupon_check->expire_date) < strtotime(date("Y-m-d")))){
                    	$result= 'false';
-		            $response= "Coupon code expired";
+		            $response= "Promo code expired";
                 }
 
  else if(($coupon_check->usage_limit == 'single') && (count($coupon_usage) >= 1)){
                    	$result= 'false';
-		            $response= "Sorry, you already used this coupon once.";
+		            $response= "Sorry, you already used this promo once.";
                 }
 
                 else{
@@ -541,7 +541,7 @@ die();
 }
 
 		$result= 'false';
-		$response= 'Please enter coupon code';
+		$response= 'Please enter promo code';
         $coupon_code = Yii::app()->request->getParam('code');
  $cust_id = Yii::app()->request->getParam('customer_id');
  $deluxe_wash_count = Yii::app()->request->getParam('deluxe_wash_count');
@@ -563,12 +563,12 @@ $total_wash_avail = $deluxe_wash_avail + $premium_wash_avail;
 
              	if(!count($coupon_check)){
                    	$result= 'false';
-		            $response= "Coupon code doesn't exists";
+		            $response= "Promo code doesn't exists";
                 }
 
                 else if($coupon_check->customer_id && ($coupon_check->customer_id != $cust_id)){
                    	$result= 'false';
-		            $response= "Sorry, this coupon is not available";
+		            $response= "Sorry, this promo is not available";
                 }
 
                 else if(($deluxe_wash_used > $coupon_check->deluxe_wash_limit) && ($premium_wash_used > $coupon_check->premium_wash_limit)){
@@ -578,18 +578,18 @@ $total_wash_avail = $deluxe_wash_avail + $premium_wash_avail;
 
                 else if(($deluxe_wash_used > $coupon_check->deluxe_wash_limit)){
                    	$result= 'false';
-		            $response= "Sorry, you don't have anymore complimentary Deluxe washes available. If you want to continue using this coupon, you have to remove Deluxe cars from your order.";
+		            $response= "Sorry, you don't have anymore complimentary Deluxe washes available. If you want to continue using this promo, you have to remove Deluxe cars from your order.";
                 }
 
                 else if(($premium_wash_used > $coupon_check->premium_wash_limit)){
                    	$result= 'false';
-		            $response= "Sorry, you don't have anymore complimentary Premium washes available. If you want to continue using this coupon, you have to remove Premium cars from your order.";
+		            $response= "Sorry, you don't have anymore complimentary Premium washes available. If you want to continue using this promo, you have to remove Premium cars from your order.";
                 }
 
                 else{
 
                  $result = 'true';
-                 $response = 'coupon applied successfully';
+                 $response = 'promo applied successfully';
 
                 }
 
@@ -614,7 +614,7 @@ die();
 }
 
 		$result= 'false';
-		$response= 'Enter coupon code';
+		$response= 'Enter promo code';
 
 		$coupon_code = Yii::app()->request->getParam('coupon_code');
 		$customer_id = Yii::app()->request->getParam('customer_id');
@@ -629,7 +629,7 @@ $deluxe_wash_count = Yii::app()->request->getParam('deluxe_wash_count');
 
              	if(!count($coupon_check)){
                    	$result= 'false';
-		$response= "Coupon doesn't exists";
+		$response= "Promo doesn't exist";
                 }
 
                 else{
@@ -664,7 +664,7 @@ if(!$premium_wash_count){
 				  $resUpdate = Yii::app()->db->createCommand()->update('vip_coupon_codes', $coupondata,"fullcode='".$coupon_code."'");
 
                     	$result= 'true';
-		$response= 'Coupon updated successfully';
+		$response= 'Promo updated successfully';
                 }
 
 		}
@@ -695,7 +695,7 @@ die();
 
              	if(!count($coupon_check)){
                    	$result= 'false';
-		$response= "Coupon doesn't exists";
+		$response= "Promo doesn't exists";
                 }
 
                 else{
@@ -725,7 +725,7 @@ $dealer_details = Yii::app()->db->createCommand()
 
 
                     	$result= 'true';
-		$response= 'coupon details';
+		$response= 'promo details';
                 }
 
 		}
