@@ -187,7 +187,8 @@ else if(count($customers_phone_exists)>0){
 					$cust_name = explode(" ", trim($customername));
 					if(count($cust_name > 1)) $customername2 = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
 					else $customername2 = $cust_name[0];
-
+                    $cust_firstname = '';
+                    $cust_firstname = $cust_name[0];
 					$json= array(
 						'result'=> $result,
 						'response'=> $response,
@@ -212,30 +213,23 @@ if($customers_details->customername && $customers_details->customername != 'N/A'
 else $subject = 'Welcome to Mobile Wash!';
 					//$message = "Hello ".$customername2.",<br/><br/>Welcome to Mobile wash!";
 
-                    if($customers_details->customername && $customers_details->customername != 'N/A') $message = "<h1>Hello ".$customername2."!</h1>";
-else $message = "<h1>Hello!</h1>";
+                    if($customers_details->customername && $customers_details->customername != 'N/A') $message = "<h1 style='margin-top: 10px;'>Hello ".$cust_firstname.",</h1>";
+else $message = "<h1 style='margin-top: 10px;'>Hello!</h1>";
 
-					$message .= "<p style='color: #333;'>Thank you for signing up with <b style='color: #000;'>Mobile Wash.</b></p>
-					<p style='color: #333;'>Please click the link below to confirm your email address and activate your account.</p>";
+					$message .= "<p style='color: #333;'>Thank you for downloading MobileWash. We realize that there are many choices when it comes to washing and detailing your vehicle. We hope that the convenience of our service exceeds your expectations and brings a smile to your face.</p><p style='color: #333;'>We look forward to serving you soon.</p>";
 
-					/* if($action) $message .= "<p style='color: blue;'>https://www.mobilewash.com/email_confirm.php?code=".$encriptpassword."&action=".$action."</p>";
+					//if($action) $message .= "<a style='background: #076ee1 none repeat scroll 0 0; border: 0 none; border-radius: 5px; color: #fff; cursor: pointer; display: block; font-size: 18px; font-weight: 700;  padding: 12px 0; text-align: center; text-decoration: none; text-transform: uppercase;  width: 283px;' href='".ROOT_URL."/email_confirm.php?code=".$encriptpassword."&action=".$action."'> ACTIVATE MY ACCOUNT </a>";
 
-					else $message .= "<p style='color: blue;'>https://www.mobilewash.com/email_confirm.php?code=".$encriptpassword."</p>"; */
+					//else $message .= "<a style='background: #076ee1 none repeat scroll 0 0; border: 0 none; border-radius: 5px; color: #fff; cursor: pointer; display: block; font-size: 18px; font-weight: 700;  padding: 12px 0; text-align: center; text-decoration: none; text-transform: uppercase;  width: 283px;' href='".ROOT_URL."/email_confirm.php?code=".$encriptpassword."'> ACTIVATE MY ACCOUNT </a>";
 
-					if($action) $message .= "<a style='background: #076ee1 none repeat scroll 0 0; border: 0 none; border-radius: 5px; color: #fff; cursor: pointer; display: block; font-size: 18px; font-weight: 700;  padding: 12px 0; text-align: center; text-decoration: none; text-transform: uppercase;  width: 283px;' href='".ROOT_URL."/email_confirm.php?code=".$encriptpassword."&action=".$action."'> ACTIVATE MY ACCOUNT </a>";
 
-					else $message .= "<a style='background: #076ee1 none repeat scroll 0 0; border: 0 none; border-radius: 5px; color: #fff; cursor: pointer; display: block; font-size: 18px; font-weight: 700;  padding: 12px 0; text-align: center; text-decoration: none; text-transform: uppercase;  width: 283px;' href='".ROOT_URL."/email_confirm.php?code=".$encriptpassword."'> ACTIVATE MY ACCOUNT </a>";
-
-					$message .= "<p style='margin-bottom: 0;'><a href='".ROOT_URL."/coming-soon/' style='display: inline-block; margin-right: 15px;'><img src='".ROOT_URL."/images/app-store-btn-large.png' alt='' width='135' /></a><a style='display: inline-block; margin-right: 15px;' href='".ROOT_URL."/coming-soon/'><img src='".ROOT_URL."/images/gplay-btn-large.png' alt='' width='135' /></a></p>";
-
-					$message .= "<p style='color: #333;'>We hope you enjoy the experience.</p>
-					<p style='height: 0px;'>&nbsp;</p>
+					$message .= "<p style='height: 0px;'>&nbsp;</p>
 					<p style='color: #333;'><b>Kind Regards,</b></p>
-					<p style='color: #333;'><b>The Mobile Wash Team</b></p>
+					<p style='color: #333;'><b>The MobileWash Team</b></p>
 					<p style='color: blue;'>www.mobilewash.com</p>
 					<p style='color: blue;'>support@mobilewash.com</p>";
 
-					Vargas::Obj()->SendMail($email,$from,$message,$subject);
+					Vargas::Obj()->SendMail($email,$from,$message,$subject, 'mail-custregister');
 				}else{
 					$result= 'false';
 					$response= 'Internal error';

@@ -1704,6 +1704,7 @@ else $customername = $cust_name[0];
                     if($notify_msg) $notifyresult = curl_exec($ch);
                     curl_close($ch);
 
+
                     $washeractionlogdata = array(
                         'agent_id'=> $agent_id,
                         'wash_request_id'=> $wash_request_id,
@@ -1712,6 +1713,7 @@ else $customername = $cust_name[0];
                         'action_date'=> date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
                 }
 
                 if(Yii::app()->request->getParam('washer_drop_job') == 1)
@@ -2087,7 +2089,7 @@ else $customername = $cust_name[0];
                         $washeractionlogdata= array(
                             'agent_id'=> $wrequest_id_check->agent_id,
                             'wash_request_id'=> $wash_request_id,
-                            'agent_company_id'=> $agent_det->real_washer_id,
+
                             'action'=> 'appcompletejob',
                             'action_date'=> date('Y-m-d H:i:s'));
 
@@ -2112,9 +2114,9 @@ else $customername = $cust_name[0];
                     $resUpdate = $washrequestmodel->save(false);
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("washer_on_way_push_sent" => 1));
 
-                    $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+                    $agent_det = Agents::model()->findByAttributes(array("id"=>$agent_id));
                         $washeractionlogdata= array(
-                            'agent_id'=> $wrequest_id_check->agent_id,
+                            'agent_id'=> $agent_id,
                             'wash_request_id'=> $wash_request_id,
                             'agent_company_id'=> $agent_det->real_washer_id,
                             'action'=> 'washerstartjob',
@@ -2571,6 +2573,7 @@ foreach( $clientdevices as $ctdevice){
                 'result'=> $result,
                 'response'=> $response,
                 'buzz_status'=> $buzz_status,
+                'is_scheduled' => $wrequest_id_check->is_scheduled,
 'wash_start_since' => $mins,
 'feedback_5mins_passed' => $feedback_5mins_passed,
                 'agent_details' => $agent_details,
@@ -5879,6 +5882,74 @@ if(!count($is_cust_has_order)){
 
         }
         $json= array(
+            'result'=> $result,
+            'response'=> $response
+        );
+        echo json_encode($json);
+    }
+
+    public function actionwasherenroutecancel(){
+          if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+        $status = Yii::app()->request->getParam('status');
+        $result= 'false';
+        $response= 'Pass the required parameters';
+        $json= array();
+        if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($status) && !empty($status))){
+             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+
+            if(!count($wrequest_id_check)){
+                $result= 'false';
+                $response= 'Invalid wash request id';
+            }
+
+            else{
+
+             if($wrequest_id_check->agent_id && $wrequest_id_check->agent_id > 0){
+                  $agentmodel = Agents::model()->findByPk($wrequest_id_check->agent_id);
+                    $agentmodel->available_for_new_order = 1;
+                    $agentmodel->save(false);
+             }
+
+             if($wrequest_id_check->transaction_id) {
+                 if($wrequest_id_check->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($wrequest_id_check->transaction_id);
+                 else $voidresult = Yii::app()->braintree->void($wrequest_id_check->transaction_id);
+             }
+
+             /* ------- get nearest agents --------- */
+
+$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
+$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
+curl_setopt($handle, CURLOPT_POST, true);
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+$output = curl_exec($handle);
+curl_close($handle);
+$nearagentsdetails = json_decode($output);
+
+            /* ------- get nearest agents end --------- */
+
+
+if($nearagentsdetails->result == 'false'){
+     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
+}
+else{
+  Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 1, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
+}
+
+
+$result = 'true';
+$response = 'wash reset';
+
+
+            }
+        }
+
+         $json= array(
             'result'=> $result,
             'response'=> $response
         );
