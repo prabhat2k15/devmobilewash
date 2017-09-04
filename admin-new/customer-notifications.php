@@ -25,7 +25,22 @@
 $response = '';
 $result_code = '';
 if(isset($_POST['notify-form-submit'])){
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=users/adminnotify");
+
+if((isset($_POST['schedule_notify'])) && ($_POST['schedule_notify'] == 1)){
+
+ $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/adminaddschedulenotify");
+		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>'customer', 'schedule_date' => $_POST['notify_schedule_date'], 'schedule_time' => $_POST['notify_schedule_time'], 'receiver_ids' => '', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+curl_setopt($handle, CURLOPT_POST, true);
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle);
+curl_close($handle);
+$jsondata = json_decode($result);
+$response = $jsondata->response;
+$result_code = $jsondata->result;
+}
+else{
+ $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=users/adminnotify");
 		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>'clients', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -35,6 +50,8 @@ curl_close($handle);
 $jsondata = json_decode($result);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
+}
+
 
 }
 ?>
@@ -46,7 +63,11 @@ $result_code = $jsondata->result;
                      <div class="caption">
                         <span class="caption-subject font-dark bold uppercase" style="font-size: 18px !important;">Customer Push Notifications</span>
                         <?php if(isset($_POST['notify-form-submit']) && $result_code == 'true'): ?>
+        <?php if($response == 'schedule notification added'): ?>
+        <p class="success" style="background: #33A232; color: #fff; padding: 10px; box-sizing: border-box;"><i class="icon-check" style="margin-right: 10px; vertical-align: middle;"></i>Notification scheduled successfully</p>
+        <?php else: ?>
         <p class="success" style="background: #33A232; color: #fff; padding: 10px; box-sizing: border-box;"><i class="icon-check" style="margin-right: 10px; vertical-align: middle;"></i>Notification sent successfully</p>
+        <?php endif; ?>
         <?php endif; ?>
         <?php if(isset($_POST['notify-form-submit']) && $result_code == 'false'): ?>
 <p class="error" style="background: rgb(228, 58, 58);color: #fff;padding: 10px;box-sizing: border-box;"><i class="icon-close" style="margin-right: 10px; vertical-align: middle;"></i>Error in sending notification. Please try again</p>

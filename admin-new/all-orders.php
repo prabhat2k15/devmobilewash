@@ -155,25 +155,25 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 
  @-webkit-keyframes glowing2 {
   0% { background-color: #fff; }
-  50% { background-color: #fb3535;  }
+  50% { background-color: #FF69B4;  }
   100% { background-color: #fff; }
 }
 
 @-moz-keyframes glowing2 {
  0% { background-color: #fff; }
-  50% { background-color: #fb3535;  }
+  50% { background-color: #FF69B4;  }
   100% { background-color: #fff; }
 }
 
 @-o-keyframes glowing2 {
  0% { background-color: #fff; }
-  50% { background-color: #fb3535;  }
+  50% { background-color: #FF69B4;  }
   100% { background-color: #fff; }
 }
 
 @keyframes glowing2 {
   0% { background-color: #fff; }
-  50% { background-color: #fb3535;  }
+  50% { background-color: #FF69B4;  }
   100% { background-color: #fff; }
 }
 
@@ -608,8 +608,8 @@ $.each(data.wash_requests, function( index, value ) {
       }
       
       
-if(value.payment_status == 'Declined'){
-         upcomingwashes.push("<span class='label label-sm label-pending'>"+value.payment_status+"</span>"); 
+if((value.payment_status == 'Declined') || (value.payment_status == 'Check Fraud')){
+         upcomingwashes.push("<span class='label label-sm label-pending'>"+value.payment_status+"</span>");
       }
       else upcomingwashes.push(value.payment_status);
 

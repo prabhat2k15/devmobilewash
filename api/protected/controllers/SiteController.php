@@ -3847,4 +3847,45 @@ $json= array(
     }
 
 
+    public function actionadminaddschedulenotify(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$msg = Yii::app()->request->getParam('msg');
+		$receiver_type = Yii::app()->request->getParam('receiver_type');
+        $receiver_ids = Yii::app()->request->getParam('receiver_ids');
+        $schedule_date = Yii::app()->request->getParam('schedule_date');
+        $schedule_time = Yii::app()->request->getParam('schedule_time');
+
+		if((isset($msg) && !empty($msg)) && (isset($receiver_type) && !empty($receiver_type)) && (isset($schedule_date) && !empty($schedule_date)) && (isset($schedule_time) && !empty($schedule_time))){
+
+            $data = array(
+                        'notification_type'=> $receiver_type,
+                        'receiver_ids' => $receiver_ids,
+                        'notification_msg' => $msg,
+                        'schedule_date' => date('Y-m-d H:i:s', strtotime($schedule_date." ".$schedule_time)),
+                        'created_date' => date('Y-m-d H:i:s'),
+                        'status'=> 0);
+
+                    Yii::app()->db->createCommand()->insert('scheduled_notifications', $data);
+
+        	$json = array(
+				'result'=> 'true',
+				'response'=> 'schedule notification added'
+			);
+
+		}else{
+			$json = array(
+				'result'=> 'false',
+				'response'=> 'Pass the required parameters'
+			);
+		}
+		echo json_encode($json);
+		die();
+	}
+
+
 }
