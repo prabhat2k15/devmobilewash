@@ -3065,7 +3065,7 @@ if (!in_array($vehicle_id, $fifth_vehicles_arr)) array_push($fifth_vehicles_arr,
 $fifth_vehicles_new = implode(",", $fifth_vehicles_arr);
 $fifth_vehicles_new = trim($fifth_vehicles_new,",");
 
-Washingrequests::model()->updateByPk($wash_request_id, array('fifth_wash_discount' => 5, 'fifth_wash_vehicles' => $fifth_vehicles_new));
+if($wash_request_exists->coupon_discount <= 0) Washingrequests::model()->updateByPk($wash_request_id, array('fifth_wash_discount' => 5, 'fifth_wash_vehicles' => $fifth_vehicles_new));
 
                     }
 
@@ -3209,7 +3209,7 @@ $total_car_price += $cardata->extclaybar_addon;
 $total_car_price += $cardata->waterspotremove_addon;
 
 
-if($cust_exists->fifth_wash_points == 4 && (!$fifth_fee_check)) {
+if(($cust_exists->fifth_wash_points == 4) && (!$fifth_fee_check) && ($wash_request_exists->coupon_discount <= 0)) {
 $fifth_fee = 5;
 $total_car_price -= $fifth_fee;
 $fifth_fee_check = 1;

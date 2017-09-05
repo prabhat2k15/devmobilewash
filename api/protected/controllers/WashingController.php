@@ -875,9 +875,14 @@ $sendmessage = $client->account->messages->create(array(
                     break;
                 }
             }
-
+            $wash_id_check = Washingrequests::model()->findByAttributes(array("id" => $order_id));
             $customers_id_check = Customers::model()->findByAttributes(array("id" => $customer_id));
-            if(!count($customers_id_check))
+
+             if(!count($wash_id_check))
+            {
+                $response = 'Invalid wash id';
+            }
+            else if(!count($customers_id_check))
             {
                 $response = 'Invalid customer';
             }
@@ -931,6 +936,10 @@ $sendmessage = $client->account->messages->create(array(
                     /* ---------- insert addons / others -------------- */
                     $fifth_disc = 0;
                     if($fifth_wash_vehicles) $fifth_disc = 5;
+                    if($wash_id_check->coupon_discount > 0){
+                        $fifth_wash_vehicles = '';
+                        $fifth_disc = 0;
+                    }
                     Washingrequests::model()->updateByPk($washrequestid, array('pet_hair_vehicles' => $pet_hair_vehicles,
                                                                         'lifted_vehicles' => $lifted_vehicles,
                                                                         'exthandwax_vehicles' => $exthandwax_vehicles,
