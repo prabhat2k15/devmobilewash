@@ -277,7 +277,7 @@ if($_POST['fifth_discs'][$ind] != 0) $fifthwash_vehicles .=  $car_id.",";
 }
 
 
-$data = array("wash_request_id" => $_GET['id'], "car_ids" => $car_ids, "car_packs" => $car_packs, "pet_hair_vehicles" => $pet_hair_vehicles, "lifted_vehicles" => $lifted_vehicles, "exthandwax_vehicles" => $exthandwax_vehicles, "extplasticdressing_vehicles" => $extplasticdressing_vehicles, "extclaybar_vehicles" => $extclaybar_vehicles, "waterspotremove_vehicles" => $waterspotremove_vehicles, "fifthwash_vehicles" => $fifthwash_vehicles, "tip_amount" => $_POST['ctip'], "full_address" => $full_address, "address_type" => $address_type, "lat" => $lat, "lng" => $long, "admin_command" => "update-order", "admin_username" => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("wash_request_id" => $_GET['id'], "car_ids" => $car_ids, "car_packs" => $car_packs, "pet_hair_vehicles" => $pet_hair_vehicles, "lifted_vehicles" => $lifted_vehicles, "exthandwax_vehicles" => $exthandwax_vehicles, "extplasticdressing_vehicles" => $extplasticdressing_vehicles, "extclaybar_vehicles" => $extclaybar_vehicles, "waterspotremove_vehicles" => $waterspotremove_vehicles, "fifthwash_vehicles" => $fifthwash_vehicles, "tip_amount" => $_POST['ctip'], "full_address" => $full_address, "address_type" => $address_type, "lat" => $lat, "lng" => $long, "admin_command" => "update-order", 'promo_code' => $_POST['promo_code'], "admin_username" => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
 //print_r($data);
   $handle_data = curl_init($root_url."/api/index.php?r=site/updatewashadmin");
@@ -511,7 +511,15 @@ width: 100%;
 
 .bx-wrapper .bx-pager{
 padding-top: 0;
-bottom: -5px;
+bottom: -25px;
+}
+
+.bx-wrapper .bx-pager.bx-default-pager a:hover, .bx-wrapper .bx-pager.bx-default-pager a.active {
+    background: #111;
+}
+
+.bxslider{
+    margin-top: 20px;
 }
 
 .popup-overlay{
@@ -847,6 +855,14 @@ display: none;
                                                         <div class="form-group">
  <label class="control-label">Washer Penalty Fee</label>
                                                      <input type="text" name="washer_penalty_fee" id="washer_penalty_fee" style="width: 300px;" class="form-control" value="<?php echo $getorder->washer_penalty_fee; ?>" readonly />
+
+                                                        </div>
+                                                     </div>
+<div style="clear: both;"></div>
+ <div class="col-md-6">
+                                                        <div class="form-group">
+ <label class="control-label">Promo Code</label>
+                                                     <input type="text" name="promo_code" id="promo_code" style="width: 300px;" class="form-control" value="<?php echo $getorder->coupon_code; ?>" />
 
                                                         </div>
                                                      </div>
@@ -1474,7 +1490,15 @@ if($savedroplogdata->result == 'true'):?>
                                                              <p style="margin-top: 20px;"><input type="button" class="send_washer_push" value="Send" /></p>
                                                              <p class="status-text">Push sent</p>
                                                        </div>
-
+                                                       <div class="form-group">
+                                                       <?php if(count($getorder->vehicles) > 0): ?>
+                                                       <ul class="bxslider">
+                                                       <?php foreach($getorder->vehicles as $veh): ?>
+                                                       <?php if($veh->vehicle_inspect_image) echo "<li><img title='".$veh->brand_name." ".$veh->model_name."' src='".$veh->vehicle_inspect_image."' /></li>"; ?>
+                                                        <?php endforeach; ?>
+                                                        </ul>
+                                                        <?php endif; ?>
+                                                    </div>
                                                             </div>
                                                              <div style="clear: both;"></div>
                                                                <input type="submit" id="edit-order-submit" value="Submit" name="edit-order-submit" style="color: rgb(255, 255, 255); margin-top: 20px; background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 6px 7px 7px 6px; border-radius: 3px;" />
@@ -2469,7 +2493,12 @@ return false;
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
         <script src="assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
-
+   <script src="js/jquery.bxslider.min.js"></script>
+   <script>
+$(function(){
+  $('.bxslider').bxSlider();
+});
+</script>
 
 <script>
 var order_status = "<?php echo $getorder->status; ?>";

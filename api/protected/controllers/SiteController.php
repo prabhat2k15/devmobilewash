@@ -2235,16 +2235,44 @@ $full_address  = Yii::app()->request->getParam('full_address');
 $lat  = Yii::app()->request->getParam('lat');
 $lng  = Yii::app()->request->getParam('lng');
 $address_type = Yii::app()->request->getParam('address_type');
+$promo_code = '';
+$promo_code  = Yii::app()->request->getParam('promo_code');
+$coupon_amount = 0;
             $json    = array();
 
 if((isset($wash_request_id) && !empty($wash_request_id))){
 
     $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+    if($promo_code) {
+      $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$promo_code));
+$coupon_usage = CustomerDiscounts::model()->findByAttributes(array("promo_code"=>$promo_code, "customer_id" => $wrequest_id_check->customer_id));
+    }
+
+
 
 			if(!count($wrequest_id_check)){
                 $result= 'false';
                 $response= 'Invalid wash request id';
             }
+               	else if(($promo_code) && (!count($coupon_check))){
+                   	$result= 'false';
+		$response= "Promo code doesn't exist";
+                }
+
+ else if(($promo_code) && ($coupon_check->coupon_status != 'enabled')){
+                   	$result= 'false';
+		           $response= "Sorry, this promo is not available this time.";
+                }
+
+  else if(($promo_code) && (strtotime($coupon_check->expire_date) > 0 && (strtotime($coupon_check->expire_date) < strtotime(date("Y-m-d"))))){
+                   	$result= 'false';
+		            $response= "Promo code expired";
+                }
+
+ else if(($promo_code) && (($coupon_check->usage_limit == 'single') && (count($coupon_usage) >= 1))){
+                   	$result= 'false';
+		            $response= "Sorry, you already used this promo once.";
+                }
             else{
                 $result = 'true';
 $response = 'wash request updated';
@@ -2384,7 +2412,18 @@ $message = str_replace("[ORDER_ID]","#".$wash_request_id, $message);
 }
 
 if($admin_command == 'update-order'){
-    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng));
+    if($promo_code){
+       if (strpos($car_packs, 'Premium') !== false) {
+        $coupon_amount = number_format($coupon_check->premium_amount, 2);
+       }
+       else{
+        $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
+       }
+
+       $fifthwash_vehicles = '';
+    }
+
+    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_amount' => $coupon_amount));
 
      $washeractionlogdata = array(
 
