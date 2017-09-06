@@ -1731,17 +1731,33 @@ else $customername = $cust_name[0];
                     $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
                     $cust_details = Customers::model()->findByAttributes(array('id' => $washrequestmodel->customer_id));
 
-                    $alert_type = "strong";
-                    $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '23' ")->queryAll();
-                    $notify_msg = urlencode($pushmsg[0]['message']);
 
-                    $notifyurl = ROOT_URL."/push-notifications/" . strtolower($cust_details->mobile_type) . "/?device_token=" . $cust_details->device_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                    $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '23' ")->queryAll();
+                    $message = $pushmsg[0]['message'];
+
+                     $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$washrequestmodel->customer_id."' ")->queryAll();
+
+            if(count($clientdevices))
+            {
+                foreach($clientdevices as $ctdevice)
+                {
+                    //$message =  "You have a new scheduled wash request.";
+                    //echo $agentdetails['mobile_type'];
+                    $device_type = strtolower($ctdevice['device_type']);
+                    $notify_token = $ctdevice['device_token'];
+                    $alert_type = "strong";
+                    $notify_msg = urlencode($message);
+
+                    $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
                     $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, $notifyurl);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch,CURLOPT_URL,$notifyurl);
+                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
                     if($notify_msg) $notifyresult = curl_exec($ch);
                     curl_close($ch);
+                }
+            }
 
 
                     $washeractionlogdata = array(

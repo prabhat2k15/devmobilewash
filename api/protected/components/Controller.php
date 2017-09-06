@@ -410,7 +410,7 @@ if($first_wash_discount && $bundle_discount) $bundle_discount -= 1;
 				}
 
 
-				if($coupon_discount){
+				if($coupon_discount > 0){
 					//$agent_total -= count($total_cars) * .8;
 					if(count($total_cars) > 1) $company_total -= $coupon_discount-.8;
 					else $company_total -= $coupon_discount;

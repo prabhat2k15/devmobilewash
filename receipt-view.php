@@ -471,7 +471,7 @@ margin: 0;
 <table class="discount-details">
 <?php if($kartdata->coupon_discount > 0): ?>
 <tr>
-<td><p>Promo Discount</p></td>
+<td><p>Promo Discount (<?php echo $kartdata->coupon_code; ?>)</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
 <p class="price">-$<?php echo number_format($kartdata->coupon_discount, 2); ?></p>
 </td>
