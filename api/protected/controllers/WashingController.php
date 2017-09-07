@@ -290,6 +290,8 @@ die();
 
         $surge_price_vehicles = '';
 
+        $customer_total_wash = 0;
+
         $json = array();
         $car_id_check = true;
         $washplan_id_check = true;
@@ -346,6 +348,10 @@ else $response= "Sorry you may not order at this time. You have a pending order 
             }
 
             else{
+
+            $totalwash_arr = Washingrequests::model()->findAllByAttributes(array("status"=>4, "customer_id" => $customer_id));
+
+$customer_total_wash = count($totalwash_arr);
 
              foreach($car_ids_array as $car){
 
@@ -693,6 +699,7 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
                        $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
                     }
 
+                    $mobile_receipt .= "Washes: ".$customer_total_wash."\r\n";
 
 					$message .= "<p style='text-align: center; font-size: 18px; padding: 10px; border: 1px solid #016fd0; border-radius: 8px; line-height: 22px; font-size: 16px; margin-top: 25px;'>We may kindly ask for a 20 minute grace period due to unforeseen traffic delays.<br>Appointment times may be rescheduled due to overwhelming demand.</p><p style='text-align: center; font-size: 18px;'>Log in to <a href='".ROOT_URL."' style='color: #016fd0'>MobileWash.com</a> to view your scheduled order options</p>";
 					$message .= "<p style='text-align: center; font-size: 16px; margin-bottom: 0; line-height: 22px;'>$10 cancellation fee will apply for canceling within 30 minutes of your <br>scheduled wash time</p>";
