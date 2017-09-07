@@ -287,7 +287,9 @@ curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
 $add_jsondata = json_decode($result);
-
+  if($add_jsondata->result == 'false'){
+      $ordererror = $add_jsondata->response;
+  }
 //print_r($add_jsondata);
 //exit;
 
