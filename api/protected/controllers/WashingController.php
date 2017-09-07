@@ -577,7 +577,7 @@ $message .= "<tr>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->pet_hair_fee."</p></td>
 </tr>";
-$mobile_receipt .= "Hair $".$vehicle->pet_hair_fee."\r\n";
+$mobile_receipt .= "Extra Cleaning $".$vehicle->pet_hair_fee."\r\n";
 }
 if($vehicle->lifted_vehicle_fee > 0){
 $message .= "<tr>

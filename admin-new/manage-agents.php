@@ -268,6 +268,7 @@ $('#late_drivers').click(function(){
                                                 <th> City </th>
 <th> Insurance Exp. Date </th>
                                                 <th> Rating </th>
+                                                <th> CARE Rating </th>
 <th> Washes </th>
  <th> BT Submerchant ID </th>
                                                 <th> Status </th>
@@ -313,7 +314,8 @@ $('#late_drivers').click(function(){
                                                    <td> <?php echo $washer->city; ?> </td>
  <td> <?php if(strtotime($washer->insurance_exp_date) > 0) echo date('m-d-Y', strtotime($washer->insurance_exp_date)); ?> </td>
 
-<td> <?php echo $washer->rating; ?> </td>                                                
+<td> <?php echo $washer->rating; ?> </td>
+<td> <?php echo $washer->care_rating; ?>% </td>
 <td> <?php echo $washer->total_wash; ?> </td>
 <td> <?php echo $washer->bt_submerchant_id; ?> </td>
                                               <td> <?php echo $washer->status; ?> </td>

@@ -2790,9 +2790,30 @@ $washers_exists = Agents::model()->findAll(array('condition' => "washer_position
                 foreach($washers_exists as $ind=> $washer){
 
 $totalwash = 0;
-
+$total_returning_customers = 0;
+$cust_served_ids = array();
+$care_rating = 0;
 $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '$washer->id'")->queryAll();
 $totalwash = count($totalwash_arr);
+
+if(count($totalwash_arr)){
+  foreach($totalwash_arr as $agentwash){
+     $cust_served_ids[] = $agentwash['customer_id'];
+  }
+}
+
+$cust_served_ids = array_unique($cust_served_ids);
+
+  if(count($cust_served_ids) > 0){
+      foreach($cust_served_ids as $cid){
+         $cust_check = Customers::model()->findByAttributes(array("id"=>$cid));
+     if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning)){
+         $total_returning_customers++;
+     }
+      }
+  }
+
+ if(count($cust_served_ids) > 0) $care_rating = ($total_returning_customers/count($cust_served_ids)) * 100;
 
                     $all_washers[$ind]['id'] = $washer->id;
 $all_washers[$ind]['real_washer_id'] = $washer->real_washer_id;
@@ -2804,6 +2825,7 @@ $all_washers[$ind]['real_washer_id'] = $washer->real_washer_id;
                     $all_washers[$ind]['state'] = $washer->state;
                     $all_washers[$ind]['zipcode'] = $washer->zipcode;
 $all_washers[$ind]['rating'] = $washer->rating;
+$all_washers[$ind]['care_rating'] = round($care_rating, 2);
 $all_washers[$ind]['total_wash'] = $totalwash;
 $all_washers[$ind]['bt_submerchant_id'] = $washer->bt_submerchant_id;
 $all_washers[$ind]['status'] = $washer->status;
