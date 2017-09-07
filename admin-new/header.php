@@ -483,6 +483,10 @@ setInterval("displaytime()", 1000)
     margin-top: 4px !important;
 }
 
+.page-sidebar-closed .add-bug-btn{
+    display: none !important;
+}
+
         </style>
          </head>
     <!-- END HEAD -->
