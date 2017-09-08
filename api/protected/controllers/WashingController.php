@@ -832,6 +832,7 @@ $sendmessage = $client->account->messages->create(array(
         $washplan_id_check = true;
         $result = 'false';
         $response = "Pass the required parameters";
+        $coupon_amount = 0;
 
         if(!$package_ids){
           $json = array('result'=> $result, 'response'=> 'no packages');
@@ -860,6 +861,7 @@ $sendmessage = $client->account->messages->create(array(
 
         if((isset($order_id) && intval($order_id) != 0) && (isset($customer_id) && !empty($customer_id)) && (isset($car_ids) && !empty($car_ids)) && (isset($package_ids) && !empty($package_ids)) && (isset($estimate_time) && !empty($estimate_time)))
         {
+
 
             $car_ids_array = explode(",", $car_ids);
             foreach($car_ids_array as $cid)
@@ -911,6 +913,7 @@ $sendmessage = $client->account->messages->create(array(
             }
             else
             {
+
                 foreach($car_ids_array as $car)
                 {
                     $carresetdata = array('status' => 0,
@@ -943,10 +946,22 @@ $sendmessage = $client->account->messages->create(array(
                     /* ---------- insert addons / others -------------- */
                     $fifth_disc = 0;
                     if($fifth_wash_vehicles) $fifth_disc = 5;
-                    if($wash_id_check->coupon_discount > 0){
+
+                    if($wash_id_check->coupon_code){
+                        $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$wash_id_check->coupon_code));
+                        if(count($coupon_check)){
+                        if (strpos($package_ids, 'Premium') !== false) {
+                            $coupon_amount = number_format($coupon_check->premium_amount, 2);
+                        }
+                        else{
+                            $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
+                        }
+                        }
+
                         $fifth_wash_vehicles = '';
                         $fifth_disc = 0;
                     }
+
                     Washingrequests::model()->updateByPk($washrequestid, array('pet_hair_vehicles' => $pet_hair_vehicles,
                                                                         'lifted_vehicles' => $lifted_vehicles,
                                                                         'exthandwax_vehicles' => $exthandwax_vehicles,
@@ -954,7 +969,9 @@ $sendmessage = $client->account->messages->create(array(
                                                                         'extclaybar_vehicles' => $extclaybar_vehicles,
                                                                         'waterspotremove_vehicles' => $waterspotremove_vehicles,
                                                                         'fifth_wash_vehicles' => $fifth_wash_vehicles,
-                                                                        'fifth_wash_discount' => $fifth_disc));
+                                                                        'fifth_wash_discount' => $fifth_disc,
+                                                                        'coupon_discount' => $coupon_amount
+                                                                        ));
                     $car_arr = explode(",", $car_ids);
                     $car_packs = explode(",", $package_ids);
                     $wash_details = Washingrequests::model()->findByPk($washrequestid);

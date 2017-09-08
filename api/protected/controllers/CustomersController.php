@@ -1952,7 +1952,21 @@ $vehicle_source_id = 0;
                                     array_push($packs_arr, $new_pack_name);
                                     $new_packs = implode(",", $packs_arr);
                                     $new_cars = implode(",", $cars_arr);
-                                    Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $new_packs, 'car_list' => $new_cars));
+
+                                    $coupon_amount = 0;
+                                    if($wash_request_exists->coupon_code) {
+                                        $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$wash_request_exists->coupon_code));
+                                        if(count($coupon_check)){
+                                            if (strpos($new_packs, 'Premium') !== false) {
+                                                $coupon_amount = number_format($coupon_check->premium_amount, 2);
+                                            }
+                                            else{
+                                                $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
+                                            }
+                                        }
+                                    }
+
+                                    Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $new_packs, 'car_list' => $new_cars, 'coupon_discount' => $coupon_amount));
 
                                       $cust_vehicle_data = Vehicle::model()->findByPk($qrVehicles['id']);
 
@@ -2372,7 +2386,8 @@ if(Yii::app()->request->getParam('new_pack_name')) $new_pack_name = Yii::app()->
         $new_vehicle_confirm = Yii::app()->request->getParam('new_vehicle_confirm');
         $draft_vehicle_id = Yii::app()->request->getParam('draft_vehicle_id');
             $damage_pic = "hi";
-file_put_contents("setvehiclestatus.log",$wash_request_id."+".$vehicle_id."+".$status."+".$eco_friendly."+".$damage_points."\n",FILE_APPEND);        if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($vehicle_id) && !empty($vehicle_id)) && (isset($status))) {
+//file_put_contents("setvehiclestatus.log",$wash_request_id."+".$vehicle_id."+".$status."+".$eco_friendly."+".$damage_points."\n",FILE_APPEND);
+if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($vehicle_id) && !empty($vehicle_id)) && (isset($status))) {
 			$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
             if(!count($wash_request_exists)){
                	$result= 'false';
@@ -2586,8 +2601,20 @@ Vehicle::model()->updateByPk($vehicle_id, array('surge_addon' => 0));
                     $carkey = array_search($vehicle_id, $cars_arr);
                     $old_packs_arr[$carkey] = $new_pack_name;
                     $updated_packs = implode(",", $old_packs_arr);
+                    $coupon_amount = 0;
+                    if($wash_request_exists->coupon_code) {
+                        $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$wash_request_exists->coupon_code));
+                        if(count($coupon_check)){
+                            if (strpos($updated_packs, 'Premium') !== false) {
+                                $coupon_amount = number_format($coupon_check->premium_amount, 2);
+                            }
+                            else{
+                                $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
+                            }
+                        }
+                    }
 
-                    Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $updated_packs, 'surge_price_vehicles' => $surge_addon_new));
+                    Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $updated_packs, 'surge_price_vehicles' => $surge_addon_new, 'coupon_discount' => $coupon_amount));
 
                 }
 
@@ -2617,7 +2644,21 @@ Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle
                     $packs_arr = array_values($packs_arr);
                     $new_packs = implode(",", $packs_arr);
                     $new_cars = implode(",", $cars_arr);
-                    Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $new_packs, 'car_list' => $new_cars));
+
+                     $coupon_amount = 0;
+                    if($wash_request_exists->coupon_code) {
+                        $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$wash_request_exists->coupon_code));
+                        if(count($coupon_check)){
+                            if (strpos($new_packs, 'Premium') !== false) {
+                                $coupon_amount = number_format($coupon_check->premium_amount, 2);
+                            }
+                            else{
+                                $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
+                            }
+                        }
+                    }
+
+                    Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $new_packs, 'car_list' => $new_cars, 'coupon_discount' => $coupon_amount));
 
                     if($cust_vehicle_data->pet_hair){
 $pet_hair_vehicles_arr = explode(",", $wash_request_exists->pet_hair_vehicles);
@@ -2817,25 +2858,6 @@ $notify_msg = $pushmsg[0]['message'];
 
                 /* --------- add new vehicle command current wash --------------- */
 
-                /* ------------ remove car from kart and db if customer declined new car ------------- */
-                /*
-                if($new_vehicle_confirm == 3){
-
-                    $packs = $wash_request_exists->package_list;
-                    $cars_arr = explode(",", $cars);
-                    $packs_arr = explode(",", $packs);
-                    $carkey = array_search($vehicle_id, $cars_arr);
-                    unset($cars_arr[$carkey]);
-                    unset($packs_arr[$carkey]);
-                    $cars_arr = array_values($cars_arr);
-                    $packs_arr = array_values($packs_arr);
-                    $new_packs = implode(",", $packs_arr);
-                    $new_cars = implode(",", $cars_arr);
-                    Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $new_packs, 'car_list' => $new_cars));
-
-                }
-                */
-                /* ------------ remove car from kart and db if customer declined new car end ------------- */
 
                    // $data= array('status' => $status, 'eco_friendly' => $eco_friendly, 'damage_points' => $damage_points);
                     $uploadOk = 0;
