@@ -1,6 +1,6 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+//error_reporting(E_ALL);
+//ini_set('display_errors', 'On');
 class SiteController extends Controller
 {
 	/**
@@ -3926,24 +3926,5 @@ die();
 		echo json_encode($json);
 		die();
 	}
-
-    public function actiontestapi(){
-        $washpricehistorymodel = new WashPricingHistory;
-                        $washpricehistorymodel->wash_request_id = 1122;
-                        $washpricehistorymodel->vehicle_id = 22;
-                        $washpricehistorymodel->package = 'deluxe';
-                        $washpricehistorymodel->vehicle_price = 22;
-                        $washpricehistorymodel->pet_hair = 0;
-                        $washpricehistorymodel->lifted_vehicle = 0;
-                        $washpricehistorymodel->exthandwax_addon = 0;
-                        $washpricehistorymodel->extplasticdressing_addon = 0;
-                        $washpricehistorymodel->extclaybar_addon = 0;
-                        $washpricehistorymodel->waterspotremove_addon = 0;
-                        $washpricehistorymodel->safe_handling = 0;
-                        $washpricehistorymodel->bundle_disc = 1;
-                        $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
-                        $washpricehistorymodel->save(false);
-    }
-
 
 }
