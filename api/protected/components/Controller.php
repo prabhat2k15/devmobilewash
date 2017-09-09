@@ -93,45 +93,69 @@ return;
 				foreach($total_cars as $carindex=>$car){
 
 					$vehicle_details = Vehicle::model()->findByAttributes(array("id"=>$car));
+                    $vehicle_wash_pricing = WashPricingHistory::model()->findByAttributes(array("vehicle_id"=>$car, "wash_request_id" => $wash_request_id));
 
 					$vehicle_inspect_details = Washinginspections::model()->findByAttributes(array("wash_request_id"=>$wash_request_id, "vehicle_id"=>$car));
 					$inspect_img = '';
 					if(count($vehicle_inspect_details) > 0){
 						$inspect_img = $vehicle_inspect_details->damage_pic;
 					}
-					$washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
-                    if(count($washing_plan_deluxe)) {
-                      $delx_price = $washing_plan_deluxe->price;
 
+                    if(count($vehicle_wash_pricing)){
+                        $delx_price = $vehicle_wash_pricing->vehicle_price;
+                        $prem_price = $vehicle_wash_pricing->vehicle_price;
                     }
-                    else {
-                      $delx_price = "24.99";
+                    else{
+                        $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
+                        if(count($washing_plan_deluxe)) {
+                        $delx_price = $washing_plan_deluxe->price;
+
+                         }
+                        else {
+                        $delx_price = "24.99";
+                        }
+
+                        $washing_plan_prem = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Premium"));
+                        if(count($washing_plan_prem)) {
+                        $prem_price = $washing_plan_prem->price;
+
+                        }
+                        else {
+                        $prem_price = "59.99";
+                        }
                     }
 
-                    $washing_plan_prem = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Premium"));
-                    if(count($washing_plan_prem)) {
-                       $prem_price = $washing_plan_prem->price;
 
-                    }
-                    else {
-                      $prem_price = "59.99";
-                    }
 
 					if($total_packs[$carindex] == 'Deluxe') {
                        $total += $delx_price;
                        $veh_price = $delx_price;
                        $agent_total += $veh_price * .80;
                        $company_total += $veh_price * .20;
-                       $safe_handle_fee = $washing_plan_deluxe->handling_fee;
+                       if(count($vehicle_wash_pricing)){
+                        $safe_handle_fee = $vehicle_wash_pricing->safe_handling;
+                        $company_total += $vehicle_wash_pricing->safe_handling;
+                       }
+                       else{
+                        $safe_handle_fee = $washing_plan_deluxe->handling_fee;
                        $company_total += $washing_plan_deluxe->handling_fee;
+                       }
+
 					}
 					if($total_packs[$carindex] == 'Premium') {
                        $total += $prem_price;
                        $veh_price = $prem_price;
                        $agent_total += number_format($veh_price * .75, 2);
                        $company_total += number_format($veh_price * .25, 2);
-                       $safe_handle_fee = $washing_plan_prem->handling_fee;
+                       if(count($vehicle_wash_pricing)){
+                          $safe_handle_fee = $vehicle_wash_pricing->safe_handling;
+                        $company_total += $vehicle_wash_pricing->safe_handling;
+                       }
+                       else{
+                         $safe_handle_fee = $washing_plan_prem->handling_fee;
 						$company_total += $washing_plan_prem->handling_fee;
+                       }
+
 					}
 
 					//safe handling fee
@@ -150,7 +174,19 @@ return;
                     $bundle_disc = 0;
                     $agent_bundle_disc = 0;
 					if (in_array($car, $pet_hair_arr)){
-						$total += 10;
+					    if(count($vehicle_wash_pricing)){
+                         	$total += $vehicle_wash_pricing->pet_hair;
+						$total_pet_lift_fee += $vehicle_wash_pricing->pet_hair;
+
+
+							$agent_total += $vehicle_wash_pricing->pet_hair * .80;
+							$company_total += $vehicle_wash_pricing->pet_hair * .20;
+
+
+						$pet_hair = $vehicle_wash_pricing->pet_hair;
+					    }
+                        else{
+                          	$total += 10;
 						$total_pet_lift_fee += 10;
 
 
@@ -159,72 +195,123 @@ return;
 
 
 						$pet_hair = 10;
+                        }
+
 					}
 
 					if (in_array($car, $lifted_vehicles_arr)){
-						$total += 10;
+					    if(count($vehicle_wash_pricing)){
+					        $total += $vehicle_wash_pricing->lifted_vehicle;
+						$total_pet_lift_fee += $vehicle_wash_pricing->lifted_vehicle;
+
+						$agent_total += $vehicle_wash_pricing->lifted_vehicle * .80;
+						$company_total += $vehicle_wash_pricing->lifted_vehicle * .20;
+
+						$lift_vehicle = $vehicle_wash_pricing->lifted_vehicle;
+					    }
+                        else{
+                          $total += 10;
 						$total_pet_lift_fee += 10;
 
 						$agent_total += 10 * .80;
 						$company_total += 10 * .20;
 
 						$lift_vehicle = 10;
+                        }
+
 					}
 
                     if (in_array($car, $exthandwax_vehicles_arr)){
-						$total += 12;
-						//total_pet_lift_fee += 5;
+                    if(count($vehicle_wash_pricing)){
+                       $total += $vehicle_wash_pricing->exthandwax_addon;
 
+						$agent_total += $vehicle_wash_pricing->exthandwax_addon * .80;
+						$company_total += $vehicle_wash_pricing->exthandwax_addon * .20;
+
+						$exthandwax_vehicle = $vehicle_wash_pricing->exthandwax_addon;
+                    }
+                    else{
+                     $total += 12;
 
 						$agent_total += 12 * .80;
 						$company_total += 12 * .20;
 
 						$exthandwax_vehicle = 12;
+                    }
+
 					}
 
                     if (in_array($car, $extplasticdressing_vehicles_arr)){
-						$total += 8;
-						//total_pet_lift_fee += 5;
+                    if(count($vehicle_wash_pricing)){
+                      $total += $vehicle_wash_pricing->extplasticdressing_addon;
 
+						$agent_total += $vehicle_wash_pricing->extplasticdressing_addon * .80;
+						$company_total += $vehicle_wash_pricing->extplasticdressing_addon * .20;
+
+						$extplasticdressing_vehicle = $vehicle_wash_pricing->extplasticdressing_addon;
+                    }
+                    else{
+                      $total += 8;
 
 						$agent_total += 8 * .80;
 						$company_total += 8 * .20;
 
 						$extplasticdressing_vehicle = 8;
+                    }
+
 					}
 
 
 if (in_array($car, $extclaybar_vehicles_arr)){
 
-    $clay_price = 40;
+if(count($vehicle_wash_pricing)){
+    $clay_price = $vehicle_wash_pricing->extclaybar_addon;
+
+						$total += $clay_price;
+
+						$agent_total += $clay_price * .80;
+						$company_total += $clay_price * .20;
+
+						$extclaybar_vehicle = $clay_price;
+}
+else{
+  $clay_price = 40;
     if($vehicle_details->vehicle_type == 'S') $clay_price = 40;
 if($vehicle_details->vehicle_type == 'M') $clay_price = 42.50;
 if($vehicle_details->vehicle_type == 'L') $clay_price = 45;
 if($vehicle_details->vehicle_type == 'E') $clay_price = 45;
 
 						$total += $clay_price;
-						//total_pet_lift_fee += 5;
-
-
 
 						$agent_total += $clay_price * .80;
 						$company_total += $clay_price * .20;
 
-
 						$extclaybar_vehicle = $clay_price;
+}
+
 					}
 
 
 if (in_array($car, $waterspotremove_vehicles_arr)){
-						$total += 30;
-						//total_pet_lift_fee += 5;
+    if(count($vehicle_wash_pricing)){
+     $total += $vehicle_wash_pricing->waterspotremove_addon;
 
+						$agent_total += $vehicle_wash_pricing->waterspotremove_addon * .80;
+						$company_total += $vehicle_wash_pricing->waterspotremove_addon * .20;
+
+
+						$waterspotremove_vehicle = $vehicle_wash_pricing->waterspotremove_addon;
+    }
+    else{
+       $total += 30;
 
 						$agent_total += 30 * .80;
 						$company_total += 30 * .20;
 
 
 						$waterspotremove_vehicle = 30;
+    }
+
 					}
 
 					if (in_array($car, $surge_vehicles_arr)){
@@ -280,9 +367,13 @@ $first_wash_discount = $first_disc;
 
 				/* ------------ first wash discount end ------- */
 
-if((!$fifth_wash_disc) && (!$first_wash_discount) && (count($total_cars) > 1)) $bundle_disc = 1;
+if((!$fifth_wash_disc) && (!$first_wash_discount) && (count($total_cars) > 1)) {
+  if(count($vehicle_wash_pricing)) $bundle_disc = $vehicle_wash_pricing->bundle_disc;
+  else $bundle_disc = 1;
+}
 if(count($total_cars) > 1) {
-    $agent_bundle_disc = 1*.8;
+    if(count($vehicle_wash_pricing)) $agent_bundle_disc = $vehicle_wash_pricing->bundle_disc*.8;
+    else $agent_bundle_disc = 1*.8;
     $agent_total -= $agent_bundle_disc;
 }
 

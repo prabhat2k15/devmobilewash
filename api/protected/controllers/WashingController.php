@@ -2114,36 +2114,40 @@ else $customername = $cust_name[0];
 
                     Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 1, "is_nextwash_reminder_push_sent" => 0, "is_non_returning" => 0));
 
-                    /* ----------- 5th wash check ----------- */
-                    /*
-                    $get_fifth_wash = 0;
-                    $cust_details = Customers::model()->findByAttributes(array('id'=>$wrequest_id_check->customer_id));
-                    $current_points = $cust_details->fifth_wash_points;
-                    //echo $current_points;
-                    $new_points = $current_points + count($car_ids_arr);
-                     //echo $new_points;
-                    if($new_points >= 5){
-                       $get_fifth_wash = 1;
-                       $new_points -= 5;
-                    }
-                    */
-                    /* ----------- 5th wash check end ----------- */
+                     foreach($kartdetails->vehicles as $car){
 
-                    foreach($car_ids_arr as $car)
-                    {
+                     /* --------- car pricing save --------- */
+                     $washpricehistorymodel = new WashPricingHistory;
+                        $washpricehistorymodel->wash_request_id = $wash_request_id;
+                        $washpricehistorymodel->vehicle_id = $car->id;
+                        $washpricehistorymodel->package = $car->vehicle_washing_package;
+                        $washpricehistorymodel->vehicle_price = $car->vehicle_washing_price;
+                        $washpricehistorymodel->pet_hair = $car->pet_hair_fee;
+                        $washpricehistorymodel->lifted_vehicle = $car->lifted_vehicle_fee;
+                        $washpricehistorymodel->exthandwax_addon = $car->exthandwax_vehicle_fee;
+                        $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
+                        $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
+                        $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
+                        $washpricehistorymodel->bundle_disc = $car->bundle_discount;
+                        $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
+                        $washpricehistorymodel->save(false);
+
+                        /* --------- car pricing save end --------- */
+
                         /* --------- Inspection details save --------- */
-                        $cardetail = Vehicle::model()->findByPk($car);
+                        $cardetail = Vehicle::model()->findByPk($car->id);
 
                         $washinginspectmodel = new Washinginspections;
                         $washinginspectmodel->wash_request_id = $wash_request_id;
-                        $washinginspectmodel->vehicle_id = $car;
+                        $washinginspectmodel->vehicle_id = $car->id;
                         $washinginspectmodel->damage_pic = $cardetail->damage_pic;
                         $washinginspectmodel->save(false);
                         /* --------- Inspection details save end --------- */
 
                         $carresetdata= array('status' => 0, 'eco_friendly' => 0, 'damage_points'=> '','damage_pic'=>'', 'upgrade_pack'=> 0, 'edit_vehicle'=> 0, 'remove_vehicle_from_kart'=> 0, 'new_vehicle_confirm'=> 0, 'new_pack_name'=> '', 'pet_hair' => 0, 'lifted_vehicle' => 0, 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'surge_addon' => 0);
                         $vehiclemodel = new Vehicle;
-                        $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
+                        $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car->id));
                     }
 
                     $cust_id = $wrequest_id_check->customer_id;
