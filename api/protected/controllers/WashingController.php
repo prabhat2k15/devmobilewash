@@ -474,6 +474,13 @@ $kartdata = json_decode($kartapiresult);
 
 /* ------- kart details end ----------- */
 
+/* ----------- update pricing details -------------- */
+
+ $cust_details = Customers::model()->findByAttributes(array('id'=>$customer_id));
+Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kartdata->total_price, 'net_price' => $kartdata->net_price, 'company_total' => $kartdata->company_total, 'agent_total' => $kartdata->agent_total, 'bundle_discount' => $kartdata->bundle_discount, 'first_wash_discount' => $kartdata->first_wash_discount, 'coupon_discount' => $kartdata->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points));
+
+/* ----------- update pricing details end -------------- */
+
  /* --------- car pricing save --------- */
 foreach($kartdata->vehicles as $ind=>$vehicle){
 
@@ -986,9 +993,18 @@ $sendmessage = $client->account->messages->create(array(
                                                                         ));
                     $car_arr = explode(",", $car_ids);
                     $car_packs = explode(",", $package_ids);
+                    WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$washrequestid.'"');
+
                     $wash_details = Washingrequests::model()->findByPk($washrequestid);
-                    foreach($car_arr as $ind=>$carid)
+                    $kartapiresult = $this->washingkart($washrequestid, API_KEY);
+                    $kartdata = json_decode($kartapiresult);
+                    if($wash_details->net_price != $kartdata->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$washrequestid);
+                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$washrequestid.'"');
+
+                    foreach($kartdata->vehicles as $ind=>$car)
                     {
+                       $veh_detail = Vehicle::model()->findByPk($car->id);
+
                         $pet_fee = 0;
                         $lift_fee = 0;
                         $exthandwax_fee = 0;
@@ -997,36 +1013,63 @@ $sendmessage = $client->account->messages->create(array(
                         $waterspotremove_fee = 0;
                         $surge_fee = 0;
 
+
                         $pet_hair_vehicles_arr = explode(",", $pet_hair_vehicles);
-                        if (in_array($carid, $pet_hair_vehicles_arr)) $pet_fee = 5;
+                        if (in_array($car->id, $pet_hair_vehicles_arr)) $pet_fee = 10;
 
                         $lifted_vehicles_arr = explode(",", $lifted_vehicles);
-                        if (in_array($carid, $lifted_vehicles_arr)) $lift_fee = 5;
+                        if (in_array($car->id, $lifted_vehicles_arr)) $lift_fee = 10;
 
                         $exthandwax_addon_arr = explode(",", $exthandwax_vehicles);
-                        if (in_array($carid, $exthandwax_addon_arr)) $exthandwax_fee = 12;
+                        if (in_array($car->id, $exthandwax_addon_arr)) $exthandwax_fee = 12;
 
                         $extplasticdressing_addon_arr = explode(",", $extplasticdressing_vehicles);
-                        if (in_array($carid, $extplasticdressing_addon_arr)) $extplasticdressing_fee = 8;
+                        if (in_array($car->id, $extplasticdressing_addon_arr)) $extplasticdressing_fee = 8;
 
                         $extclaybar_addon_arr = explode(",", $extclaybar_vehicles);
-                        if (in_array($carid, $extclaybar_addon_arr)) $extclaybar_fee = 35;
+                        if (in_array($car->id, $extclaybar_addon_arr)) $extclaybar_fee = 35;
 
                         $waterspotremove_addon_arr = explode(",", $waterspotremove_vehicles);
-                        if (in_array($carid, $waterspotremove_addon_arr)) $waterspotremove_fee = 30;
+                        if (in_array($car->id, $waterspotremove_addon_arr)) $waterspotremove_fee = 30;
 
-                        if(((date('D', strtotime($wash_details->order_for)) == 'Tue') || (date('D', strtotime($wash_details->order_for)) == 'Wed')) && ($car_packs[$ind] == 'Deluxe') && ($wash_details->customer_id == 257))
-                        {
-                           $surge_fee = 5;
-                           $surge_price_vehicles .= $carid.",";
-                        }
 
-                        Vehicle::model()->updateByPk($carid, array('pet_hair' => $pet_fee, 'lifted_vehicle' => $lift_fee, 'exthandwax_addon' => $exthandwax_fee, 'extplasticdressing_addon' => $extplasticdressing_fee, 'extclaybar_addon' => $extclaybar_fee, 'waterspotremove_addon' => $waterspotremove_fee, 'surge_addon' => $surge_fee));
-                    }
+
+                        Vehicle::model()->updateByPk($car->id, array('pet_hair' => $pet_fee, 'lifted_vehicle' => $lift_fee, 'exthandwax_addon' => $exthandwax_fee, 'extplasticdressing_addon' => $extplasticdressing_fee, 'extclaybar_addon' => $extclaybar_fee, 'waterspotremove_addon' => $waterspotremove_fee, 'surge_addon' => $surge_fee));
+
+                          if($wash_details->net_price != $kartdata->net_price){
+                          /* --------- car pricing save --------- */
+
+                     $washpricehistorymodel = new WashPricingHistory;
+                        $washpricehistorymodel->wash_request_id = $washrequestid;
+                        $washpricehistorymodel->vehicle_id = $car->id;
+                        $washpricehistorymodel->package = $car->vehicle_washing_package;
+                        $washpricehistorymodel->vehicle_price = $car->vehicle_washing_price;
+                        $washpricehistorymodel->pet_hair = $car->pet_hair_fee;
+                        $washpricehistorymodel->lifted_vehicle = $car->lifted_vehicle_fee;
+                        $washpricehistorymodel->exthandwax_addon = $car->exthandwax_vehicle_fee;
+                        $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
+                        $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
+                        $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
+                        $washpricehistorymodel->bundle_disc = $car->bundle_discount;
+                        $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
+                        $washpricehistorymodel->save(false);
+
+                      /* --------- car pricing save end --------- */
+                      }
+
+                }
 
                     $surge_price_vehicles = rtrim($surge_price_vehicles, ',');
                     Washingrequests::model()->updateByPk($washrequestid, array('surge_price_vehicles' => $surge_price_vehicles));
                     /* ---------- insert addons end -------------- */
+
+                    /* ----------- update pricing details -------------- */
+
+ $cust_details = Customers::model()->findByAttributes(array('id'=>$wash_details->customer_id));
+Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kartdata->total_price, 'net_price' => $kartdata->net_price, 'company_total' => $kartdata->company_total, 'agent_total' => $kartdata->agent_total, 'bundle_discount' => $kartdata->bundle_discount, 'first_wash_discount' => $kartdata->first_wash_discount, 'coupon_discount' => $kartdata->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points));
+
+/* ----------- update pricing details end -------------- */
                     $result = 'true';
                     $response = $washrequestid;
                 }
@@ -1714,7 +1757,7 @@ else $customername = $cust_name[0];
                         //echo "agtwashtotalscheduletime ".$agtwashtotalscheduletime."<br>";
                         //echo "agtwashbasescheduletime ".$agtwashbasescheduletime."<br>";
 
-                        if ((!$status) && $agent_id && !$admin_permit)
+                        if ((!$status) && ($agent_id) && (!$admin_permit) && (!Yii::app()->request->getParam('washer_drop_job')))
                         {
                             if(strtotime($currentwashbasescheduletime) >= strtotime($agtwashbasescheduletime))
                             {
@@ -2093,13 +2136,15 @@ else $customername = $cust_name[0];
                     $washrequestmodel->complete_order = date("Y-m-d H:i:s");
                     $resUpdate = $washrequestmodel->save(false);
 
-                    WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
-
-					/* ----------- update pricing details -------------- */
+                     WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
 
                     $kartapiresult = $this->washingkart($wash_request_id, API_KEY);
                     $kartdetails = json_decode($kartapiresult);
 
+                    if($wrequest_id_check->net_price != $kartdetails->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
+                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$wash_request_id.'"');
+
+                    /* ----------- update pricing details -------------- */
 					$washrequestmodel->total_price = $kartdetails->total_price;
 					$washrequestmodel->net_price = $kartdetails->net_price;
 					$washrequestmodel->company_total = $kartdetails->company_total;
@@ -2124,7 +2169,7 @@ else $customername = $cust_name[0];
                     Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 1, "is_nextwash_reminder_push_sent" => 0, "is_non_returning" => 0));
 
                      foreach($kartdetails->vehicles as $car){
-
+                     if($wrequest_id_check->net_price != $kartdetails->net_price){
                      /* --------- car pricing save --------- */
 
                      $washpricehistorymodel = new WashPricingHistory;
@@ -2143,8 +2188,8 @@ else $customername = $cust_name[0];
                         $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
                         $washpricehistorymodel->save(false);
 
-
                       /* --------- car pricing save end --------- */
+                      }
 
                         /* --------- Inspection details save --------- */
                         $cardetail = Vehicle::model()->findByPk($car->id);

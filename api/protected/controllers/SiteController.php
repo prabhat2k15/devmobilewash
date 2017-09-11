@@ -2448,6 +2448,46 @@ if($admin_command == 'update-order'){
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                     }
 
+                    WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
+
+                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY);
+                    $kartdetails = json_decode($kartapiresult);
+
+                    if($wrequest_id_check->net_price != $kartdetails->net_price) {
+                        WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
+                        /* ----------- update pricing details -------------- */
+
+                        $cust_details = Customers::model()->findByAttributes(array('id'=>$wrequest_id_check->customer_id));
+                        Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total, 'bundle_discount' => $kartdetails->bundle_discount, 'first_wash_discount' => $kartdetails->first_wash_discount, 'coupon_discount' => $kartdetails->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points));
+
+                        /* ----------- update pricing details end -------------- */
+                    }
+                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$wash_request_id.'"');
+
+                     foreach($kartdetails->vehicles as $car){
+                        if($wrequest_id_check->net_price != $kartdetails->net_price){
+                            /* --------- car pricing save --------- */
+
+                            $washpricehistorymodel = new WashPricingHistory;
+                            $washpricehistorymodel->wash_request_id = $wash_request_id;
+                            $washpricehistorymodel->vehicle_id = $car->id;
+                            $washpricehistorymodel->package = $car->vehicle_washing_package;
+                            $washpricehistorymodel->vehicle_price = $car->vehicle_washing_price;
+                            $washpricehistorymodel->pet_hair = $car->pet_hair_fee;
+                            $washpricehistorymodel->lifted_vehicle = $car->lifted_vehicle_fee;
+                            $washpricehistorymodel->exthandwax_addon = $car->exthandwax_vehicle_fee;
+                            $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
+                            $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
+                            $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                            $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
+                            $washpricehistorymodel->bundle_disc = $car->bundle_discount;
+                            $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
+                            $washpricehistorymodel->save(false);
+
+                            /* --------- car pricing save end --------- */
+                        }
+                    }
+
 }
 
 if($status == WASHREQUEST_STATUS_COMPLETEWASH){
@@ -2457,21 +2497,20 @@ $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
       $washrequestmodel->complete_order = date("Y-m-d H:i:s");
                     $resUpdate = $washrequestmodel->save(false);
 
-					/* ----------- update pricing details -------------- */
+                    WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
 
-					$handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-					$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
-					curl_setopt($handle, CURLOPT_POST, true);
-					curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-					curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-					$kartresult = curl_exec($handle);
-					curl_close($handle);
-					$kartdetails = json_decode($kartresult);
 
-					$cust_details = Customers::model()->findByAttributes(array('id'=>$wrequest_id_check->customer_id));
 
-					Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total, 'bundle_discount' => $kartdetails->bundle_discount, 'first_wash_discount' => $kartdetails->first_wash_discount, 'coupon_discount' => $kartdetails->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points, 'fifth_wash_discount' => 0, 'fifth_wash_vehicles' => '', 'per_car_wash_points' => ''));
+					 $kartapiresult = $this->washingkart($wash_request_id, API_KEY);
+                    $kartdetails = json_decode($kartapiresult);
 
+                    if($wrequest_id_check->net_price != $kartdetails->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
+                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$wash_request_id.'"');
+
+                    /* ----------- update pricing details -------------- */
+
+      			    $cust_details = Customers::model()->findByAttributes(array('id'=>$wrequest_id_check->customer_id));
+                    Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total, 'bundle_discount' => $kartdetails->bundle_discount, 'first_wash_discount' => $kartdetails->first_wash_discount, 'coupon_discount' => $kartdetails->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points, 'fifth_wash_discount' => 0, 'fifth_wash_vehicles' => '', 'per_car_wash_points' => ''));
 
 					/* ----------- update pricing details end -------------- */
 
@@ -2499,17 +2538,39 @@ if(count($all_washes)){
 
 
 
-                    foreach($car_ids_arr as $car){
+                    foreach($kartdetails->vehicles as $car){
  $cust_detail = Customers::model()->findByPk($wrequest_id_check->customer_id);
  $wash_detail = Washingrequests::model()->findByPk($wash_request_id);
 
+   if($wrequest_id_check->net_price != $kartdetails->net_price){
+                     /* --------- car pricing save --------- */
+
+                     $washpricehistorymodel = new WashPricingHistory;
+                        $washpricehistorymodel->wash_request_id = $wash_request_id;
+                        $washpricehistorymodel->vehicle_id = $car->id;
+                        $washpricehistorymodel->package = $car->vehicle_washing_package;
+                        $washpricehistorymodel->vehicle_price = $car->vehicle_washing_price;
+                        $washpricehistorymodel->pet_hair = $car->pet_hair_fee;
+                        $washpricehistorymodel->lifted_vehicle = $car->lifted_vehicle_fee;
+                        $washpricehistorymodel->exthandwax_addon = $car->exthandwax_vehicle_fee;
+                        $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
+                        $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
+                        $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
+                        $washpricehistorymodel->bundle_disc = $car->bundle_discount;
+                        $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
+                        $washpricehistorymodel->save(false);
+
+                      /* --------- car pricing save end --------- */
+                      }
+
                     /* --------- Inspection details save --------- */
 
-                     $cardetail = Vehicle::model()->findByPk($car);
+                     $cardetail = Vehicle::model()->findByPk($car->id);
 
                     $washinginspectmodel = new Washinginspections;
                     $washinginspectmodel->wash_request_id = $wash_request_id;
-                    $washinginspectmodel->vehicle_id = $car;
+                    $washinginspectmodel->vehicle_id = $car->id;
                     $washinginspectmodel->damage_pic = $cardetail->damage_pic;
                     $washinginspectmodel->save(false);
 
@@ -2517,7 +2578,7 @@ if(count($all_washes)){
 
                         $carresetdata= array('status' => 0, 'eco_friendly' => 0, 'damage_points'=> '','damage_pic'=>'', 'upgrade_pack'=> 0, 'edit_vehicle'=> 0, 'remove_vehicle_from_kart'=> 0, 'new_vehicle_confirm'=> 0, 'new_pack_name'=> '', 'pet_hair' => 0, 'lifted_vehicle' => 0, 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0);
                         $vehiclemodel = new Vehicle;
-                        $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
+                        $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car->id));
 
                 /* ------ 5th wash check ------- */
                     $current_points = $cust_detail->fifth_wash_points;
@@ -2540,7 +2601,7 @@ Customers::model()->updateByPk($wash_detail->customer_id, array('fifth_wash_poin
 $fifth_vehicles_old = '';
 $fifth_vehicles_old = $wash_detail->fifth_wash_vehicles;
 $fifth_vehicles_arr = explode(",", $fifth_vehicles_old);
-if (!in_array($car, $fifth_vehicles_arr)) array_push($fifth_vehicles_arr, $car);
+if (!in_array($car->id, $fifth_vehicles_arr)) array_push($fifth_vehicles_arr, $car->id);
 $fifth_vehicles_new = implode(",", $fifth_vehicles_arr);
 $fifth_vehicles_new = trim($fifth_vehicles_new,",");
 

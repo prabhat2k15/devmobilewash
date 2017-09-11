@@ -93,7 +93,7 @@ return;
 				foreach($total_cars as $carindex=>$car){
 
 					$vehicle_details = Vehicle::model()->findByAttributes(array("id"=>$car));
-                    $vehicle_wash_pricing = WashPricingHistory::model()->findByAttributes(array("vehicle_id"=>$car, "wash_request_id" => $wash_request_id));
+                    $vehicle_wash_pricing = WashPricingHistory::model()->findByAttributes(array("vehicle_id"=>$car, "wash_request_id" => $wash_request_id, "status" => 0));
 
 					$vehicle_inspect_details = Washinginspections::model()->findByAttributes(array("wash_request_id"=>$wash_request_id, "vehicle_id"=>$car));
 					$inspect_img = '';
@@ -372,8 +372,8 @@ if((!$fifth_wash_disc) && (!$first_wash_discount) && (count($total_cars) > 1)) {
   else $bundle_disc = 1;
 }
 if(count($total_cars) > 1) {
-    if(count($vehicle_wash_pricing)) $agent_bundle_disc = $vehicle_wash_pricing->bundle_disc*.8;
-    else $agent_bundle_disc = 1*.8;
+    //if(count($vehicle_wash_pricing)) $agent_bundle_disc = $vehicle_wash_pricing->bundle_disc*.8;
+    $agent_bundle_disc = 1*.8;
     $agent_total -= $agent_bundle_disc;
 }
 
