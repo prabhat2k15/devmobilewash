@@ -7318,7 +7318,7 @@ else $cancelresult = Yii::app()->braintree->sale($request_data);
                          if($cust_exists->client_position == 'real') $cancelsettle = Yii::app()->braintree->submitforsettlement_real($cancelresult['transaction_id']);
 else $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['transaction_id']);
                         $result = 'true';
-                        $response = 'order canceled';
+                        $response = 'Order canceled';
                         $cancel_price =  $fee;
                          Washingrequests::model()->updateByPk($id, array('status'=>5, 'cancel_fee' => $fee));
 
@@ -7674,7 +7674,7 @@ else $cancelvoid = Yii::app()->braintree->void($cancelresult['transaction_id']);
                else{
 
                   $result = 'true';
-                        $response = 'order canceled';
+                        $response = 'Order canceled';
                         $cancel_price = 0;
                          Washingrequests::model()->updateByPk($id, array('status'=>5, 'cancel_fee' => 0));
 
@@ -8007,7 +8007,7 @@ $sendmessage = $client->account->messages->create(array(
                 'Body' => $message,
             ));
 
-            if($result == 'true' && $response == 'order canceled' && $order_exists->agent_id){
+            if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
                 'From' => '+13103128070',
@@ -8020,7 +8020,7 @@ $sendmessage = $client->account->messages->create(array(
 
 
 }
-  if($result == 'true' && $response == 'order canceled' && $order_exists->agent_id){
+  if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
 
   $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$order_exists->agent_id."' ")->queryAll();
 

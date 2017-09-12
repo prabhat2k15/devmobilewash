@@ -4045,4 +4045,99 @@ die();
 
     }
 
+     public function actioncreatesingleorderpricinghistory(){
+
+        if(Yii::app()->request->getParam('key') != API_KEY){
+            echo "Invalid api key";
+            die();
+        }
+
+        $result= 'false';
+        $response = 'pass wash id';
+        $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+        $wash_check = Washingrequests::model()->findByPk($wash_request_id);
+
+        if(count($wash_check)){
+                 $washingpricecheck = WashPricingHistory::model()->findByAttributes(array('wash_request_id'=>$wash_request_id));
+
+                 if(!count($washingpricecheck)){
+                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY);
+                    $kartdata = json_decode($kartapiresult);
+
+                    foreach($kartdata->vehicles as $ind=>$car)
+                    {
+                        /* --------- car pricing save --------- */
+
+                        $washpricehistorymodel = new WashPricingHistory;
+                        $washpricehistorymodel->wash_request_id = $wash_request_id;
+                        $washpricehistorymodel->vehicle_id = $car->id;
+                        $washpricehistorymodel->package = $car->vehicle_washing_package;
+                        $washpricehistorymodel->vehicle_price = $car->vehicle_washing_price;
+                        $washpricehistorymodel->pet_hair = $car->pet_hair_fee;
+                        $washpricehistorymodel->lifted_vehicle = $car->lifted_vehicle_fee;
+                        $washpricehistorymodel->exthandwax_addon = $car->exthandwax_vehicle_fee;
+                        $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
+                        $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
+                        $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
+                        $washpricehistorymodel->bundle_disc = $car->bundle_discount;
+                        $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
+                        $washpricehistorymodel->save(false);
+
+                        /* --------- car pricing save end --------- */
+
+
+                }
+
+                 $result= 'true';
+        $response = '#'.$wash_request_id.' wash price created';
+            }
+            else{
+              $response = '#'.$wash_request_id.' wash price already exists';
+            }
+
+        }
+        else{
+          $response = '#'.$wash_request_id.' wash not exists';
+        }
+       $json = array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+		die();
+
+    }
+
+    		public function actionallwashes()
+	{
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+			$result= 'false';
+			$response= 'pass required parameters';
+
+			  $all_washes =  Yii::app()->db->createCommand()
+						->select('id')
+						->from('washing_requests')
+						->queryAll();
+
+if(count($all_washes) > 0){
+    $result= 'true';
+			$response= 'all washes';
+
+}
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+			'all_washes' => $all_washes
+		);
+		echo json_encode($json);
+	}
+
 }
