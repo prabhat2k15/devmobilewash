@@ -3988,4 +3988,61 @@ die();
 		die();
 	}
 
+    public function actioncreateallorderswashpricinghistory(){
+
+        if(Yii::app()->request->getParam('key') != API_KEY){
+            echo "Invalid api key";
+            die();
+        }
+        $result= 'false';
+        $response = 'no washes found';
+        $all_washes = Washingrequests::model()->findAll();
+
+        if(count($all_washes)){
+            foreach($all_washes as $wash){
+                 $washingpricecheck = WashPricingHistory::model()->findByAttributes(array('wash_request_id'=>$wash->id));
+
+                 if(!count($washingpricecheck)){
+                    $kartapiresult = $this->washingkart($wash->id, API_KEY);
+                    $kartdata = json_decode($kartapiresult);
+
+                    foreach($kartdata->vehicles as $ind=>$car)
+                    {
+                        /* --------- car pricing save --------- */
+
+                        $washpricehistorymodel = new WashPricingHistory;
+                        $washpricehistorymodel->wash_request_id = $wash->id;
+                        $washpricehistorymodel->vehicle_id = $car->id;
+                        $washpricehistorymodel->package = $car->vehicle_washing_package;
+                        $washpricehistorymodel->vehicle_price = $car->vehicle_washing_price;
+                        $washpricehistorymodel->pet_hair = $car->pet_hair_fee;
+                        $washpricehistorymodel->lifted_vehicle = $car->lifted_vehicle_fee;
+                        $washpricehistorymodel->exthandwax_addon = $car->exthandwax_vehicle_fee;
+                        $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
+                        $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
+                        $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
+                        $washpricehistorymodel->bundle_disc = $car->bundle_discount;
+                        $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
+                        $washpricehistorymodel->save(false);
+
+                        /* --------- car pricing save end --------- */
+
+
+                }
+            }
+            }
+
+            $result= 'true';
+        $response = 'washes found';
+        }
+       $json = array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+		die();
+
+    }
+
 }

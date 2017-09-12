@@ -3556,8 +3556,14 @@ die();
                           if($customers->client_position == 'real') $result = Yii::app()->braintree->createClientToken_real($customers->braintree_id);
 else $result = Yii::app()->braintree->createClientToken($customers->braintree_id);
                       } else {
-                          if($customers->client_position == 'real') $result = Yii::app()->braintree->createCustomer_real(array('firstName' => $customers->customername, 'company' => '-', 'email' => $customers->email));
-else $result = Yii::app()->braintree->createCustomer(array('firstName' => $customers->customername, 'company' => '-', 'email' => $customers->email));
+                          if($customers->client_position == 'real') {
+                            if (!filter_var($customers->email, FILTER_VALIDATE_EMAIL)) $result = Yii::app()->braintree->createCustomer_real(array('firstName' => $customers->customername, 'company' => '-'));
+                            else $result = Yii::app()->braintree->createCustomer_real(array('firstName' => $customers->customername, 'company' => '-', 'email' => $customers->email));
+                          }
+                          else {
+                            if (!filter_var($customers->email, FILTER_VALIDATE_EMAIL)) $result = Yii::app()->braintree->createCustomer(array('firstName' => $customers->customername, 'company' => '-'));
+                            else $result = Yii::app()->braintree->createCustomer(array('firstName' => $customers->customername, 'company' => '-', 'email' => $customers->email));
+                          }
                           if($result['success']!=0){
                               $customer_id = $result['customer_id'];
                               $customers->braintree_id = $customer_id;
