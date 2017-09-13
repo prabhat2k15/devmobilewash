@@ -2023,7 +2023,7 @@ else $customername = $cust_name[0];
 						$notify_msg = urlencode($message);
 
 						$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-						file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+						//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
 						$ch = curl_init();
 						curl_setopt($ch,CURLOPT_URL,$notifyurl);
 						curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
@@ -2032,6 +2032,9 @@ else $customername = $cust_name[0];
 						curl_close($ch);
 					}
                     /* --- notification call end --- */
+
+                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("washer_on_way_push_sent" => 1, "wash_begin" => date("Y-m-d H:i:s")));
+
 				}
             }
         }
@@ -2249,9 +2252,9 @@ else $customername = $cust_name[0];
 					$notify_msg = $pushmsg[0]['message'];
 
                     $alert_type = "strong";
-                    $washrequestmodel->wash_begin = date("Y-m-d H:i:s");
-                    $resUpdate = $washrequestmodel->save(false);
-                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array("washer_on_way_push_sent" => 1));
+                    //$washrequestmodel->wash_begin = date("Y-m-d H:i:s");
+                    //$resUpdate = $washrequestmodel->save(false);
+                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array("washer_on_way_push_sent" => 1, "wash_begin" => date("Y-m-d H:i:s")));
 
                     $agent_det = Agents::model()->findByAttributes(array("id"=>$agent_id));
                         $washeractionlogdata= array(
