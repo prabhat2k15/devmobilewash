@@ -1,4 +1,17 @@
-<?php 
+<?php
+include('header.php');
+if (isset($_COOKIE['mw_admin_auth'])) {
+$device_token = $_COOKIE["mw_admin_auth"];
+}
+$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+curl_setopt($handle_data, CURLOPT_POST, true);
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
+curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
+$result_permission = curl_exec($handle_data);
+curl_close($handle_data);
+$jsondata_permission = json_decode($result_permission);
+
 if(isset($_POST['submit'])){
      $data = array('platform'=> $_POST['platform'], 'status'=> $_POST['status'], 'description'=> $_POST['description'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
           
@@ -14,13 +27,17 @@ if(isset($_POST['submit'])){
             $bugentry_response = $jsondata->response;
             $bugentry_result_code = $jsondata->result;
 }
-include('header.php') ?>
+?>
 <?php
     if($company_module_permission == 'no' || $checked_site_settings == ''){
         ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
     }
 ?>
+<?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
 <?php include('right-sidebar.php') ?>
+<?php else: ?>
+<?php include('navigation-employee.php') ?>
+<?php endif; ?>
 <style>
     #description{
     width: 350px; 

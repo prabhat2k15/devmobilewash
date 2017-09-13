@@ -733,7 +733,7 @@ display: none;
 															<?php endif; ?>
 <?php endif; ?>
 <?php if((!$getorder->transaction_id) || (($transaction_details->transaction_details->status != 'authorized') && ($transaction_details->transaction_details->status != 'submitted_for_settlement') && ($transaction_details->transaction_details->status != 'settling') && ($transaction_details->transaction_details->status != 'settled'))): ?>
-<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="process-payment">Process Payment</div>
+<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e42400; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="process-payment">Process Payment</div>
 <?php else: ?>
 
 <?php if(($transaction_details->transaction_details->escrow_status == 'hold_pending' || $transaction_details->transaction_details->escrow_status == 'held') && $transaction_details->transaction_details->status == 'settled'): ?>

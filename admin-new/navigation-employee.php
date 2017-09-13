@@ -29,7 +29,26 @@
                                 <span class="arrow <?php echo $open_dashboard; ?>"></span>
                             </a>
                         </li>-->
-                        <li style="margin-top: 35px;" class="nav-item  <?php if($url == 'all-orders.php' || $newurl_page[0] == 'all-orders.php' || $url == 'manage-orders.php' || $url == 'phone-orders.php' || $url == 'schedule-orders.php' || $newurl_page[0] == 'schedule-orders.php' || $url == 'reply-message.php' || $url == 'command-center.php' || $url == 'index.php' || $url == 'db-backup.php' || $url == 'manage-user.php' || $url == 'company_dashboard.php' || $newurl_page[0] == 'edit-order.php' || $newurl_page[0] == 'add-user.php' || $url == 'vehicles-packages.php' || $url == 'manage-promotions.php' || $newurl[1] == 'add-coupon.php' || $url == 'opening-hours.php' || $url == 'site-settings.php' || $url == 'messagess.php' || $newurl_page[0] == 'edit-message.php' || $newurl[1] == 'add-message.php' || $url == 'notifications.php' || $url == 'cms.php' || $newurl_page[0] == 'edit-cms.php' || $newurl_page[0] == 'manage-orders.php' || $newurl_page[0] == 'cms.php' || $newurl_page[0] == 'manage-user.php' || $newurl_page[0] == 'manage-promotions.php' || $newurl_page[0] == 'messagess.php' || $url == 'reminder-client.php' || $url == 'reminder-washer.php' || $newurl_page[0] == 'reminder-washer.php' || $newurl_page[0] == 'reminder-client.php'  || $newurl_page[0] == 'order_calendar.php') { $open_company = 'open'; echo 'active open'; } ?>" style="display: <?php echo $company_module_show; ?>">
+                        <li class="sidebar-search-wrapper">
+                            <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                            <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                            <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                            <form class="sidebar-search  " action="search.php" method="GET">
+                                <a href="javascript:;" class="remove">
+                                    <i class="icon-close"></i>
+                                </a>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="q" placeholder="Search...">
+                                    <span class="input-group-btn">
+                                        <a href="javascript:;" class="btn submit">
+                                            <i class="icon-magnifier"></i>
+                                        </a>
+                                    </span>
+                                </div>
+                            </form>
+                            <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                        </li>
+                        <li class="nav-item  <?php if($url == 'all-orders.php' || $newurl_page[0] == 'all-orders.php' || $url == 'manage-orders.php' || $url == 'phone-orders.php' || $url == 'schedule-orders.php' || $newurl_page[0] == 'schedule-orders.php' || $url == 'reply-message.php' || $url == 'command-center.php' || $url == 'index.php' || $url == 'db-backup.php' || $url == 'manage-user.php' || $url == 'company_dashboard.php' || $newurl_page[0] == 'edit-order.php' || $newurl_page[0] == 'add-user.php' || $url == 'vehicles-packages.php' || $url == 'manage-promotions.php' || $newurl[1] == 'add-coupon.php' || $url == 'opening-hours.php' || $url == 'site-settings.php' || $url == 'messagess.php' || $newurl_page[0] == 'edit-message.php' || $newurl[1] == 'add-message.php' || $url == 'notifications.php' || $url == 'cms.php' || $newurl_page[0] == 'edit-cms.php' || $newurl_page[0] == 'manage-orders.php' || $newurl_page[0] == 'cms.php' || $newurl_page[0] == 'manage-user.php' || $newurl_page[0] == 'manage-promotions.php' || $newurl_page[0] == 'messagess.php' || $url == 'reminder-client.php' || $url == 'reminder-washer.php' || $newurl_page[0] == 'reminder-washer.php' || $newurl_page[0] == 'reminder-client.php'  || $newurl_page[0] == 'order_calendar.php') { $open_company = 'open'; echo 'active open'; } ?>" style="display: <?php echo $company_module_show; ?>">
                             <a href="index.php" class="nav-link nav-toggle">
                                 <i class="icon-layers"></i>
                                 <span class="title">Company</span>
@@ -115,6 +134,8 @@
                     </ul>
                     <!-- END SIDEBAR MENU -->
                     <!-- END SIDEBAR MENU -->
+                    <a class="add-bug-btn" href="add-new-bug.php" style="display: block;margin: 0 auto;color: #fff;text-align: center;padding: 10px;margin: 20px 45px;box-sizing: border-box;border-radius: 50px;text-decoration: none;border: 2px solid #b4bcc8;">Report Bug</a>
+
                 </div>
                 <!-- END SIDEBAR -->
             </div>

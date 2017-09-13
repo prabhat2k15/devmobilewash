@@ -155,25 +155,25 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 
  @-webkit-keyframes glowing2 {
   0% { background-color: #fff; }
-  50% { background-color: #FF69B4;  }
+  50% { background-color: #FFA500;  }
   100% { background-color: #fff; }
 }
 
 @-moz-keyframes glowing2 {
  0% { background-color: #fff; }
-  50% { background-color: #FF69B4;  }
+  50% { background-color: #FFA500;  }
   100% { background-color: #fff; }
 }
 
 @-o-keyframes glowing2 {
  0% { background-color: #fff; }
-  50% { background-color: #FF69B4;  }
+  50% { background-color: #FFA500;  }
   100% { background-color: #fff; }
 }
 
 @keyframes glowing2 {
   0% { background-color: #fff; }
-  50% { background-color: #FF69B4;  }
+  50% { background-color: #FFA500;  }
   100% { background-color: #fff; }
 }
 

@@ -8613,19 +8613,9 @@ die();
                             else $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
                     }
                     else {
-                        $to_time = strtotime("now");
-                       $from_time = strtotime($wash_id_check->wash_begin);
-                       $mins = round(abs($to_time - $from_time) / 60,2);
-                       if($mins > 5){
-                          $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'serviceFeeAmount' => "5.00", 'amount' => $amount,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => true]];
-                            if(($wash_position == 'demo') || ($wash_position == '')) $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
-                            else $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
-                       }
-                       else{
                          $request_data = ['amount' => $amount,'paymentMethodToken' => $token,'options' => ['submitForSettlement' => true]];
                     if(($wash_position == 'demo') || ($wash_position == '')) $payresult = Yii::app()->braintree->sale($request_data);
                     else $payresult = Yii::app()->braintree->sale_real($request_data);
-                       }
 
                     }
                     //print_r($Bresult);
@@ -8644,13 +8634,7 @@ die();
 
                       if(($wash_id_check->status > 1) && ($wash_id_check->status <= 3)) $data= array('status' => 5, 'cancel_fee' => $amount, 'washer_cancel_fee' => 5);
                       else {
-                           $to_time = strtotime("now");
-                       $from_time = strtotime(($wash_id_check->wash_begin));
-                       $mins = round(abs($to_time - $from_time) / 60,2);
-                       if($mins > 5){
-                         $data= array('status' => 5, 'cancel_fee' => $amount, 'washer_cancel_fee' => 5);
-                       }
-                       else $data= array('status' => 5, 'cancel_fee' => $amount);
+                       $data= array('status' => 5, 'cancel_fee' => $amount);
                       }
                 $washrequestmodel = new Washingrequests;
                 $washrequestmodel->attributes= $data;
