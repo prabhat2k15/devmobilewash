@@ -764,9 +764,7 @@ display: none;
 <?php endif; ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="client-receipt-send">Client Receipt</div>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="agent-receipt-send">Detailer Receipt</div>
-<?php if($getorder->is_flagged == 1): ?>
-<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="pass-fraud">Pass Fraud</div>
-<?php endif; ?>
+
 <div style="clear: both;"></div>
 
 <div style="clear: both;"></div>
@@ -1193,6 +1191,10 @@ else{
                                                              <div style="clear: both;"></div>
 
     <h3 class="sec-heading" style="margin-top: 25px;">Payment Methods</h3>
+    <?php if($getorder->is_flagged == 1): ?>
+<div style="float: left;font-size: 18px; margin-top: 3px; cursor: pointer; background: #9C27B0; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="pass-fraud">Pass Fraud</div>
+<div style="clear: both;"></div>
+<?php endif; ?>
      <?php
  if($getorder->customer_id) {
 

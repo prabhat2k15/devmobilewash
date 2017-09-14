@@ -269,7 +269,7 @@ die();
 							$model->save(false);
 					}
 					$result= 'true';
-					$response= 'Successfully login';
+					$response= 'Successfully logged in';
 
 $online_status = array('status' => 'online');
 
@@ -373,7 +373,7 @@ die();
 			$model->attributes= $data;
 			if($model->save(false)){
 				$result= 'true';
-				$response= 'Successfully logout';
+				$response= 'Successfully logged out';
 				$json= array(
 					'result'=> $result,
 					'response'=> $response

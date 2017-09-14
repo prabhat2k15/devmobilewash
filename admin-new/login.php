@@ -20,7 +20,7 @@ if(isset($_POST['admin-login-submit'])){
 	$username = $jsondata->username;
 	$uid = $jsondata->uid;
 
-	if($response == "Successfully login" && $result_code == "true"){
+	if($result_code == "true"){
 		if($_POST['rememberme']){
 		setcookie( "mw_admin_auth", $device_token, time() + (86400 * 30), "/" ) ;
 		setcookie( "mw_username", $username, time() + (86400 * 30), "/" ) ;

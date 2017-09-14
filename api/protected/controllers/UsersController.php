@@ -51,7 +51,7 @@ $model= Users::model()->findByAttributes(array('id'=>$user_id->id));
 							$model->attributes= $data;
 							$model->save(false);
 					$result= 'true';
-					$response= 'Successfully login';
+					$response= 'Successfully logged in';
 					$json= array(
 						'result'=> $result,
 						'response'=> $response,
@@ -366,7 +366,7 @@ die();
 			$model->attributes= $data;
 			if($model->save(false)){
 				$result= 'true';
-				$response= 'Successfully logout';
+				$response= 'Successfully logged out';
 				$json= array(
 					'result'=> $result,
 					'response'=> $response
@@ -473,7 +473,7 @@ die();
 
                     }
                     $result= 'true';
-                    $response= 'Successfully login';
+                    $response= 'Successfully logged in';
                     $json= array(
                         'result'=> $result,
                         'response'=> $response,

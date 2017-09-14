@@ -269,7 +269,7 @@ $jsondata = json_decode($result);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
 
-if($response == "Successfully logout" && $result_code == "true"){
+if($result_code == "true"){
 unset($_COOKIE['mw_username']);
 setcookie("mw_admin_auth", "", time() - 3600);
 setcookie("mw_username", "", time() - 3600);

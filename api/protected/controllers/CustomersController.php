@@ -392,7 +392,7 @@ die();
 					}
 					}
 					$result= 'true';
-					$response= 'Successfully login';
+					$response= 'Successfully logged in';
 					 if($mobile_type != 'WEB') {
 $online_status= array('online_status' => 'online');
 
@@ -608,7 +608,7 @@ else $customername = $cust_name[0];
 
 				$json= array(
 					'result'=> 'true',
-                    'response'=> 'Successfully login',
+                    'response'=> 'Successfully logged in',
 					'user_type'=> 'customer',
 					'customerid' => $customers_id->id,
 					'email' => $customers_id->email,
@@ -761,7 +761,7 @@ die();
 			$model->attributes= $data;
 			if($model->save(false)){
 				$result= 'true';
-				$response= 'Successfully logout';
+				$response= 'Successfully logged out';
 				$json= array(
 					'result'=> $result,
 					'response'=> $response
