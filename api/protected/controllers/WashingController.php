@@ -5976,6 +5976,36 @@ if(!count($is_cust_has_order)){
             }
 
             else{
+                if(($wrequest_id_check->status > 1) && ($wrequest_id_check->status <= 3)){
+
+             $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
+
+                $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '27' ")->queryAll();
+					$message = $pushmsg[0]['message'];
+
+                    if(count($clientdevices))
+                    {
+                        foreach($clientdevices as $ctdevice)
+                        {
+                            //$message =  "You have a new scheduled wash request.";
+                            //echo $agentdetails['mobile_type'];
+                            $device_type = strtolower($ctdevice['device_type']);
+                            $notify_token = $ctdevice['device_token'];
+                            $alert_type = "default";
+                            $notify_msg = urlencode($message);
+
+                            $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+                            //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                            $ch = curl_init();
+                            curl_setopt($ch,CURLOPT_URL,$notifyurl);
+                            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+                            if($notify_msg) $notifyresult = curl_exec($ch);
+                            curl_close($ch);
+                        }
+                    }
+            }
+
 
  $car_ids = $wrequest_id_check->car_list;
                     $car_ids_arr = explode(",",$car_ids);
@@ -6013,6 +6043,8 @@ if(!count($is_cust_has_order)){
 if(!count($is_cust_has_order)){
    Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 0));
 }
+
+
 
             }
 
