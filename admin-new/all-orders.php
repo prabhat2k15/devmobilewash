@@ -70,7 +70,7 @@ if(!$jsondata->pending_wash_count) $pending_order_count = "no orders";
 if($jsondata->pending_wash_count == 1) $pending_order_count = "1 order";
 if($jsondata->pending_wash_count > 1) $pending_order_count = $jsondata->pending_wash_count." orders"; 
 $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_order_count." pending.";
-
+ $cust_avg_order_frequency = $jsondata->cust_avg_order_frequency;
 ?>
 <style>
 .label-complete {
@@ -252,6 +252,9 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 												<th> Customer Name </th>
 
 												<th> Customer Phone </th>
+                                                <?php if($_GET['customer_id']): ?>
+                                                 <th> Avg. Order<br>Frequency </th>
+                                                 <?php endif; ?>
 												<!--th> Agent ID </th-->
 												<th> Agent Name </th>
 												<!--th> Agent Email </th-->
@@ -297,6 +300,9 @@ else echo $order->payment_status; ?></td>
  <td><?php echo $order->transaction_id; ?></td>
                     <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                     <td><?php echo $order->customer_phoneno; ?></td>
+                    <?php if($_GET['customer_id']): ?>
+                    <td><?php echo $cust_avg_order_frequency; ?> days</td>
+                    <?php endif; ?>
 <!--td><?php /*
 if(count($order->agent_details)) echo $order->agent_details->agent_id;
 else echo "N/A"; */

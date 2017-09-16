@@ -2900,9 +2900,16 @@ die();
 $pendingorderscount = 0;
 $cust_query = '';
 $agent_query = '';
+ $avg_order_frequency = 0;
+ $total_days_diff = 0;
+ $completed_orders = 0;
 
 if($customer_id > 0) $cust_query = "w.customer_id=".$customer_id." AND ";
 if($agent_id > 0) $agent_query = "w.agent_id=".$agent_id." AND ";
+
+if($customer_id > 0){
+    $cust_check = Customers::model()->findByPk($customer_id);
+}
 
 		//if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
 //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
@@ -2918,9 +2925,10 @@ else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reque
   }
 
    //print_r($qrRequests);
+
         if(count($qrRequests)>0){
 
-            foreach($qrRequests as $wrequest)
+            foreach($qrRequests as $ind=> $wrequest)
             {
 
 
@@ -2949,6 +2957,22 @@ $min_diff = round(($from_time - $to_time) / 60,2);
 }
 
 if($wrequest['status'] == 0) $pendingorderscount++;
+
+if(($customer_id > 0) && ($wrequest['status'] == 4)){
+//echo $wrequest['id']." ".$wrequest['order_for']." "."<br>";
+    //echo $qrRequests[$ind+1]['id']." ".$qrRequests[$ind+1]['order_for']." "."<br>";
+    if(isset($qrRequests[$ind+1])){
+        $order1_date = date("Y-m-d", strtotime($wrequest['order_for']));
+      $order2_date = date("Y-m-d", strtotime($qrRequests[$ind+1]['order_for']));
+      //echo $order1_date." ".$order2_date."<br>";
+  $day_diff = date_diff(new DateTime($order1_date), new DateTime($order2_date));
+     //echo $day_diff->format("%a")."<br>";
+     //echo "working<br>";
+$total_days_diff += $day_diff->format("%a");
+}
+
+ $completed_orders++;
+}
 
                 $cust_details = Customers::model()->findByAttributes(array("id"=>$wrequest['customer_id']));
                 $agent_details = Agents::model()->findByAttributes(array("id"=>$wrequest['agent_id']));
@@ -3020,6 +3044,7 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 					'checklist'=>$wrequest['checklist'],
                     'reschedule_time'=>$resched_time,
 					'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
+                    'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
 					'transaction_id'=>$wrequest['transaction_id'],
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
@@ -3056,6 +3081,7 @@ if($min_diff < 0){
 					'checklist'=>$wrequest['checklist'],
                     'reschedule_time'=>$wrequest['reschedule_time'],
 					'created_date'=>$wrequest['created_date'],
+                    'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
 					'transaction_id'=>$wrequest['transaction_id'],
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
@@ -3105,6 +3131,11 @@ if($min_diff < 0){
 
             }
 
+            //echo "total: ".$total_days_diff."<br>";
+            //echo "total orders done: ".$completed_orders."<br>";
+            //echo "average order frequency: ".round($total_days_diff/($completed_orders-1))."<br>";
+             $avg_order_frequency = round($total_days_diff/($completed_orders-1));
+
    usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
         usort($pendingwashrequests_nonupcoming, array('SiteController','sortById'));
 
@@ -3123,7 +3154,8 @@ if($min_diff < 0){
             'result'=> $result,
             'response'=> $response,
             'wash_requests' => $pendingwashrequests,
-            'pending_wash_count' => $pendingorderscount
+            'pending_wash_count' => $pendingorderscount,
+            'cust_avg_order_frequency' => $avg_order_frequency
             //'upcoming' => $pendingwashrequests_upcoming,
             //'nonupcoming' => $pendingwashrequests_nonupcoming,
         );
