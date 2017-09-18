@@ -84,6 +84,8 @@ return;
                 $extplasticdressing_vehicles_arr = explode(",",$wash_id_check->extplasticdressing_vehicles);
                 $extclaybar_vehicles_arr = explode(",",$wash_id_check->extclaybar_vehicles);
                 $waterspotremove_vehicles_arr = explode(",",$wash_id_check->waterspotremove_vehicles);
+                $upholstery_vehicles_arr = explode(",",$wash_id_check->upholstery_vehicles);
+                $floormat_vehicles_arr = explode(",",$wash_id_check->floormat_vehicles);
                 $surge_vehicles_arr = explode(",",$wash_id_check->surge_price_vehicles);
 				$fifth_vehicles_arr = explode(",",$wash_id_check->fifth_wash_vehicles);
 
@@ -102,10 +104,19 @@ return;
 					}
 
                     if(count($vehicle_wash_pricing)){
+                        $expr_price = $vehicle_wash_pricing->vehicle_price;
                         $delx_price = $vehicle_wash_pricing->vehicle_price;
                         $prem_price = $vehicle_wash_pricing->vehicle_price;
                     }
                     else{
+                        $washing_plan_express = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Express"));
+                        if(count($washing_plan_express)) {
+                        $expr_price = $washing_plan_express->price;
+                         }
+                        else {
+                        $expr_price = "19.99";
+                        }
+
                         $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
                         if(count($washing_plan_deluxe)) {
                         $delx_price = $washing_plan_deluxe->price;
@@ -125,9 +136,23 @@ return;
                         }
                     }
 
+                    if($total_packs[$carindex] == 'Express') {
+                       $total += $expr_price;
+                       $veh_price = $expr_price;
+                       $agent_total += $veh_price * .80;
+                       $company_total += $veh_price * .20;
+                       if(count($vehicle_wash_pricing)){
+                        $safe_handle_fee = $vehicle_wash_pricing->safe_handling;
+                        $company_total += $vehicle_wash_pricing->safe_handling;
+                       }
+                       else{
+                        $safe_handle_fee = $washing_plan_express->handling_fee;
+                       $company_total += $washing_plan_express->handling_fee;
+                       }
 
+					}
 
-					if($total_packs[$carindex] == 'Deluxe') {
+                    if($total_packs[$carindex] == 'Deluxe') {
                        $total += $delx_price;
                        $veh_price = $delx_price;
                        $agent_total += $veh_price * .80;
@@ -314,6 +339,58 @@ if (in_array($car, $waterspotremove_vehicles_arr)){
 
 					}
 
+
+                    if (in_array($car, $upholstery_vehicles_arr)){
+    if(count($vehicle_wash_pricing)){
+     $total += $vehicle_wash_pricing->upholstery_addon;
+
+						$agent_total += $vehicle_wash_pricing->upholstery_addon * .80;
+						$company_total += $vehicle_wash_pricing->upholstery_addon * .20;
+
+
+						$upholstery_vehicle = $vehicle_wash_pricing->upholstery_addon;
+    }
+    else{
+       $total += 20;
+
+						$agent_total += 20 * .80;
+						$company_total += 20 * .20;
+
+
+						$upholstery_vehicle = 20;
+    }
+
+					}
+
+                    if (in_array($car, $floormat_vehicles_arr)){
+
+if(count($vehicle_wash_pricing)){
+    $floormat_price = $vehicle_wash_pricing->floormat_addon;
+
+						$total += $floormat_price;
+
+						$agent_total += $floormat_price * .80;
+						$company_total += $floormat_price * .20;
+
+						$floormat_vehicle = $floormat_price;
+}
+else{
+  $floormat_price = 10;
+    if($vehicle_details->vehicle_type == 'S') $floormat_price = 10;
+if($vehicle_details->vehicle_type == 'M') $floormat_price = 12.50;
+if($vehicle_details->vehicle_type == 'L') $floormat_price = 15;
+if($vehicle_details->vehicle_type == 'E') $floormat_price = 15;
+
+						$total += $floormat_price;
+
+						$agent_total += $floormat_price * .80;
+						$company_total += $floormat_price * .20;
+
+						$floormat_vehicle = $floormat_price;
+}
+
+					}
+
 					if (in_array($car, $surge_vehicles_arr)){
 						$total += 5;
 						//total_pet_lift_fee += 5;
@@ -407,6 +484,10 @@ if((count($total_cars) > 1) && ($carindex==0) && ($wash_id_check->coupon_discoun
 'extclaybar_vehicle_fee_agent' => number_format($extclaybar_vehicle * .8, 2),
 'waterspotremove_vehicle_fee' => number_format($waterspotremove_vehicle, 2),
 'waterspotremove_vehicle_fee_agent' => number_format($waterspotremove_vehicle * .8, 2),
+'upholstery_vehicle_fee' => number_format($upholstery_vehicle, 2),
+'upholstery_vehicle_fee_agent' => number_format($upholstery_vehicle * .8, 2),
+'floormat_vehicle_fee' => number_format($floormat_vehicle, 2),
+'floormat_vehicle_fee_agent' => number_format($floormat_vehicle * .8, 2),
 'surge_vehicle_fee' => number_format($surge_vehicle, 2),
 'surge_vehicle_fee_agent' => number_format($surge_vehicle * .8, 2),
 'bundle_discount' => number_format($bundle_disc, 2),

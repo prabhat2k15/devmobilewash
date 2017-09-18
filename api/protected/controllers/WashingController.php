@@ -292,6 +292,12 @@ die();
         $waterspotremove_vehicles = '';
         if(Yii::app()->request->getParam('waterspotremove_vehicles')) $waterspotremove_vehicles = Yii::app()->request->getParam('waterspotremove_vehicles');
 
+        $upholstery_vehicles = '';
+        if(Yii::app()->request->getParam('upholstery_vehicles')) $upholstery_vehicles = Yii::app()->request->getParam('upholstery_vehicles');
+
+        $floormat_vehicles = '';
+        if(Yii::app()->request->getParam('floormat_vehicles')) $floormat_vehicles = Yii::app()->request->getParam('floormat_vehicles');
+
         $fifth_wash_vehicles = '';
         if(Yii::app()->request->getParam('fifth_wash_vehicles')) $fifth_wash_vehicles = Yii::app()->request->getParam('fifth_wash_vehicles');
 
@@ -422,7 +428,7 @@ $coupondata= array(
 $fifth_disc = 0;
          if($fifth_wash_vehicles) $fifth_disc = 5;
 
-                        Washingrequests::model()->updateByPk($washrequestid, array('pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position));
+                        Washingrequests::model()->updateByPk($washrequestid, array('pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position));
 
 $car_arr = explode(",",$car_ids);
 $car_packs = explode(",",$package_ids);
@@ -434,6 +440,8 @@ $exthandwax_fee = 0;
 $extplasticdressing_fee = 0;
 $extclaybar_fee = 0;
 $waterspotremove_fee = 0;
+$upholstery_fee = 0;
+$floormat_fee = 0;
 $surge_fee = 0;
 
 $pet_hair_vehicles_arr = explode(",", $pet_hair_vehicles);
@@ -454,9 +462,15 @@ if (in_array($carid, $extclaybar_addon_arr)) $extclaybar_fee = 35;
 $waterspotremove_addon_arr = explode(",", $waterspotremove_vehicles);
 if (in_array($carid, $waterspotremove_addon_arr)) $waterspotremove_fee = 30;
 
+$upholstery_addon_arr = explode(",", $upholstery_vehicles);
+if (in_array($carid, $upholstery_addon_arr)) $upholstery_fee = 20;
+
+$floormat_addon_arr = explode(",", $floormat_vehicles);
+if (in_array($carid, $floormat_addon_arr)) $floormat_fee = 10;
 
 
-Vehicle::model()->updateByPk($carid, array('pet_hair' => $pet_fee, 'lifted_vehicle' => $lift_fee, 'exthandwax_addon' => $exthandwax_fee, 'extplasticdressing_addon' => $extplasticdressing_fee, 'extclaybar_addon' => $extclaybar_fee, 'waterspotremove_addon' => $waterspotremove_fee, 'surge_addon' => $surge_fee));
+
+Vehicle::model()->updateByPk($carid, array('pet_hair' => $pet_fee, 'lifted_vehicle' => $lift_fee, 'exthandwax_addon' => $exthandwax_fee, 'extplasticdressing_addon' => $extplasticdressing_fee, 'extclaybar_addon' => $extclaybar_fee, 'waterspotremove_addon' => $waterspotremove_fee, 'surge_addon' => $surge_fee, 'upholstery_addon' => $upholstery_fee, 'floormat_addon' => $floormat_fee));
 }
 
 $surge_price_vehicles = rtrim($surge_price_vehicles, ',');
@@ -504,6 +518,8 @@ foreach($kartdata->vehicles as $ind=>$vehicle){
                         $washpricehistorymodel->extplasticdressing_addon = $vehicle->extplasticdressing_vehicle_fee;
                         $washpricehistorymodel->extclaybar_addon = $vehicle->extclaybar_vehicle_fee;
                         $washpricehistorymodel->waterspotremove_addon = $vehicle->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->upholstery_addon = $vehicle->upholstery_vehicle_fee;
+                        $washpricehistorymodel->floormat_addon = $vehicle->floormat_vehicle_fee;
                         $washpricehistorymodel->safe_handling = $vehicle->safe_handling_fee;
                         $washpricehistorymodel->bundle_disc = $vehicle->bundle_discount;
                         $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
@@ -546,6 +562,16 @@ $mobile_receipt .= "Lifted $".$vehicle->lifted_vehicle_fee."\r\n";
 if($vehicle->extplasticdressing_vehicle_fee > 0){
 
 $mobile_receipt .= "Dressing $".$vehicle->extplasticdressing_vehicle_fee."\r\n";
+}
+
+if($vehicle->upholstery_vehicle_fee > 0){
+
+$mobile_receipt .= "Upholstery $".$vehicle->upholstery_vehicle_fee."\r\n";
+}
+
+if($vehicle->floormat_vehicle_fee > 0){
+
+$mobile_receipt .= "Floormat $".$vehicle->floormat_vehicle_fee."\r\n";
 }
 
 if(($ind == 0) && ($kartdata->coupon_discount > 0)){
@@ -737,6 +763,26 @@ $message .= "<tr>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extplasticdressing_vehicle_fee."</p></td>
 </tr>";
 $mobile_receipt .= "Dressing $".$vehicle->extplasticdressing_vehicle_fee."\r\n";
+}
+
+if($vehicle->upholstery_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->upholstery_vehicle_fee."</p></td>
+</tr>";
+$mobile_receipt .= "Upholstery $".$vehicle->upholstery_vehicle_fee."\r\n";
+}
+
+if($vehicle->floormat_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->floormat_vehicle_fee."</p></td>
+</tr>";
+$mobile_receipt .= "Floormat $".$vehicle->floormat_vehicle_fee."\r\n";
 }
 
 $message .="<tr>
@@ -962,6 +1008,12 @@ $sendmessage = $client->account->messages->create(array(
         $waterspotremove_vehicles = '';
         if(Yii::app()->request->getParam('waterspotremove_vehicles')) $waterspotremove_vehicles = Yii::app()->request->getParam('waterspotremove_vehicles');
 
+         $upholstery_vehicles = '';
+        if(Yii::app()->request->getParam('upholstery_vehicles')) $upholstery_vehicles = Yii::app()->request->getParam('upholstery_vehicles');
+
+         $floormat_vehicles = '';
+        if(Yii::app()->request->getParam('floormat_vehicles')) $floormat_vehicles = Yii::app()->request->getParam('floormat_vehicles');
+
          $fifth_wash_vehicles = '';
         if(Yii::app()->request->getParam('fifth_wash_vehicles')) $fifth_wash_vehicles = Yii::app()->request->getParam('fifth_wash_vehicles');
 
@@ -1108,6 +1160,8 @@ $sendmessage = $client->account->messages->create(array(
                                                                         'extplasticdressing_vehicles' => $extplasticdressing_vehicles,
                                                                         'extclaybar_vehicles' => $extclaybar_vehicles,
                                                                         'waterspotremove_vehicles' => $waterspotremove_vehicles,
+                                                                        'upholstery_vehicles' => $upholstery_vehicles,
+                                                                        'floormat_vehicles' => $floormat_vehicles,
                                                                         'fifth_wash_vehicles' => $fifth_wash_vehicles,
                                                                         'fifth_wash_discount' => $fifth_disc,
                                                                         'coupon_discount' => $coupon_amount
@@ -1132,6 +1186,8 @@ $sendmessage = $client->account->messages->create(array(
                         $extplasticdressing_fee = 0;
                         $extclaybar_fee = 0;
                         $waterspotremove_fee = 0;
+                         $upholstery_fee = 0;
+                        $floormat_fee = 0;
                         $surge_fee = 0;
 
 
@@ -1153,9 +1209,15 @@ $sendmessage = $client->account->messages->create(array(
                         $waterspotremove_addon_arr = explode(",", $waterspotremove_vehicles);
                         if (in_array($car->id, $waterspotremove_addon_arr)) $waterspotremove_fee = 30;
 
+                        $upholstery_addon_arr = explode(",", $upholstery_vehicles);
+                        if (in_array($car->id, $upholstery_addon_arr)) $upholstery_fee = 20;
+
+                        $floormat_addon_arr = explode(",", $floormat_vehicles);
+                        if (in_array($car->id, $floormat_addon_arr)) $floormat_fee = 10;
 
 
-                        Vehicle::model()->updateByPk($car->id, array('pet_hair' => $pet_fee, 'lifted_vehicle' => $lift_fee, 'exthandwax_addon' => $exthandwax_fee, 'extplasticdressing_addon' => $extplasticdressing_fee, 'extclaybar_addon' => $extclaybar_fee, 'waterspotremove_addon' => $waterspotremove_fee, 'surge_addon' => $surge_fee));
+
+                        Vehicle::model()->updateByPk($car->id, array('pet_hair' => $pet_fee, 'lifted_vehicle' => $lift_fee, 'exthandwax_addon' => $exthandwax_fee, 'extplasticdressing_addon' => $extplasticdressing_fee, 'extclaybar_addon' => $extclaybar_fee, 'waterspotremove_addon' => $waterspotremove_fee, 'upholstery_addon' => $upholstery_fee, 'floormat_addon' => $floormat_fee,'surge_addon' => $surge_fee));
 
                           if($wash_details->net_price != $kartdata->net_price){
                           /* --------- car pricing save --------- */
@@ -1171,6 +1233,8 @@ $sendmessage = $client->account->messages->create(array(
                         $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
                         $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
                         $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->upholstery_addon = $car->upholstery_vehicle_fee;
+                        $washpricehistorymodel->floormat_addon = $car->floormat_vehicle_fee;
                         $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
                         $washpricehistorymodel->bundle_disc = $car->bundle_discount;
                         $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
@@ -9472,14 +9536,30 @@ $vehicle_type = '';
         $vehicle_type = Yii::app()->request->getParam('vehicle_type');
 
 if($package && $vehicle_type){
+if($package == 'Express') $expaddons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = '".$package."' AND vehicle_type = '".$vehicle_type."'")->queryAll();
 if($package == 'Deluxe') $deladdons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = '".$package."' AND vehicle_type = '".$vehicle_type."'")->queryAll();
 if($package == 'Premium') $premaddons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = '".$package."' AND vehicle_type = '".$vehicle_type."'")->queryAll();
 }
 else{
- $deladdons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = 'Deluxe'")->queryAll();
+$expaddons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = 'Express'")->queryAll();
+$deladdons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = 'Deluxe'")->queryAll();
 $premaddons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = 'Premium'")->queryAll();
 }
 
+
+if(count($expaddons)){
+
+foreach($expaddons as $expaddon){
+$par_send = '';
+if($expaddon['title'] == 'Exterior Hand Wax') $par_send = 'exthandwax_vehicles';
+if($expaddon['title'] == 'Exterior Dressing') $par_send = 'extplasticdressing_vehicles';
+if($expaddon['title'] == 'Clay Bar') $par_send = 'extclaybar_vehicles';
+if($expaddon['title'] == 'Water Spot') $par_send = 'waterspotremove_vehicles';
+
+$addons['express'][] = array('id' => $expaddon['id'], 'title' => $expaddon['title'], 'fulltitle' => $expaddon['fulltitle'], 'desc' => $expaddon['description'], 'par_send' => $par_send, 'package' => $expaddon['package'], 'washtime' => $expaddon['wash_time'], 'price' => $expaddon['price'], 'vehicle_type' => $expaddon['vehicle_type']);
+}
+
+}
 
 if(count($deladdons)){
 
@@ -9491,6 +9571,8 @@ if($deladdon['title'] == 'Clay Bar') $par_send = 'extclaybar_vehicles';
 if($deladdon['title'] == 'Water Spot') $par_send = 'waterspotremove_vehicles';
 if($deladdon['title'] == 'Pet Hair') $par_send = 'pet_hair_vehicles';
 if($deladdon['title'] == 'Lifted Truck') $par_send = 'lifted_vehicles';
+if($deladdon['title'] == 'Upholstery Conditioning') $par_send = 'upholstery_vehicles';
+if($deladdon['title'] == 'Floor Mat Cleaning') $par_send = 'floormat_vehicles';
 
 $addons['deluxe'][] = array('id' => $deladdon['id'], 'title' => $deladdon['title'], 'fulltitle' => $deladdon['fulltitle'], 'desc' => $deladdon['description'], 'par_send' => $par_send, 'package' => $deladdon['package'], 'washtime' => $deladdon['wash_time'], 'price' => $deladdon['price'], 'vehicle_type' => $deladdon['vehicle_type']);
 }
