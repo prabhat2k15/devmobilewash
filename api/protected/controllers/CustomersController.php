@@ -2243,7 +2243,11 @@ die();
 			if(count($vehicle_exists)>0){
 			    $result = 'true';
                 	$response= 'Vehicle details';
-                     $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_exists->vehicle_type, "title"=>"Deluxe"));
+                     $washing_plan_express = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_exists->vehicle_type, "title"=>"Express"));
+                    if(count($washing_plan_express)) $expr_price = $washing_plan_express->price;
+                    else $expr_price = "19.99";
+
+                    $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_exists->vehicle_type, "title"=>"Deluxe"));
                     if(count($washing_plan_deluxe)) $delx_price = $washing_plan_deluxe->price;
                     else $delx_price = "24.99";
 
@@ -2262,6 +2266,7 @@ die();
                             'vehicle_status'=>$vehicle_exists->status,
                             'eco_friendly'=>$vehicle_exists->eco_friendly,
                             'damage_points'=>$vehicle_exists->damage_points,
+                            'express_price' => $expr_price,
                             'deluxe_price' => $delx_price,
                             'premium_price' => $prem_price
 						);
@@ -3218,6 +3223,7 @@ $first_fee = 0;
 
 
 
+if($pack_arr[$ind] == 'Express') $car_price_agent = number_format($wash_price * .80, 2);
 if($pack_arr[$ind] == 'Deluxe') $car_price_agent = number_format($wash_price * .80, 2);
 if($pack_arr[$ind] == 'Premium') $car_price_agent = number_format($wash_price * .75, 2);
 
@@ -4953,6 +4959,11 @@ $wash_price = 0;
                     if($vehicle_exists->package_price) $wash_price = $vehicle_exists->package_price;
                     else $wash_price = $washing_plan_det->price;
 
+if($vehicle_exists->wash_package == 'Express'){
+   $wash_price += $surgeprice[0]['express'];
+   $wash_price = (string) $wash_price;
+}
+
 if($vehicle_exists->wash_package == 'Deluxe'){
    $wash_price += $surgeprice[0]['deluxe'];
    $wash_price = (string) $wash_price;
@@ -4988,6 +4999,7 @@ if($fifth_points > 5) $fifth_points = 1;
 
 
 
+if($vehicle_exists->wash_package == 'Express') $car_price_agent = number_format($wash_price * .80, 2);
 if($vehicle_exists->wash_package == 'Deluxe') $car_price_agent = number_format($wash_price * .80, 2);
 if($vehicle_exists->wash_package == 'Premium') $car_price_agent = number_format($wash_price * .75, 2);
 

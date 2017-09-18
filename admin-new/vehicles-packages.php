@@ -142,6 +142,16 @@ $jsondata_permission = json_decode($result_permission);
                                                     <th>Inspection Image</th>
                                                     </tr>
                                                     <tr>
+                                                    <td><b>Express</b></td>
+                                                    <td class='e-duration'></td>
+                                                    <td class='e-time'></td>
+                                                    <td class='e-price'></td>
+                                                    <td class='e-fee'></td>
+                                                    <td class='e-desc'></td>
+                                                    <td class='e-type'></td>
+                                                    <td class='inspect-img' style="vertical-align: middle;" rowspan="3"></td>
+                                                    </tr>
+                                                    <tr>
                                                     <td><b>Deluxe</b></td>
                                                     <td class='d-duration'></td>
                                                     <td class='d-time'></td>
@@ -149,7 +159,6 @@ $jsondata_permission = json_decode($result_permission);
                                                     <td class='d-fee'></td>
                                                     <td class='d-desc'></td>
                                                     <td class='d-type'></td>
-                                                    <td class='inspect-img' rowspan="2"></td>
                                                     </tr>
                                                     <tr>
                                                     <td><b>Premium</b></td>
@@ -197,6 +206,16 @@ $jsondata_permission = json_decode($result_permission);
                                                     <th>Inspection Image</th>
                                                     </tr>
                                                     <tr>
+                                                    <td><b>Express</b></td>
+                                                    <td class='e-duration'></td>
+                                                    <td class='e-time'></td>
+                                                    <td class='e-price'></td>
+                                                    <td class='e-fee'></td>
+                                                    <td class='e-desc'></td>
+                                                    <td class='e-type'></td>
+                                                    <td class='inspect-img' style="vertical-align: middle;" rowspan="3"></td>
+                                                    </tr>
+                                                    <tr>
                                                     <td><b>Deluxe</b></td>
                                                     <td class='d-duration'></td>
                                                     <td class='d-time'></td>
@@ -204,7 +223,6 @@ $jsondata_permission = json_decode($result_permission);
                                                     <td class='d-fee'></td>
                                                     <td class='d-desc'></td>
                                                     <td class='d-type'></td>
-                                                    <td class='inspect-img' rowspan="2"></td>
                                                     </tr>
                                                     <tr>
                                                     <td><b>Premium</b></td>
@@ -312,6 +330,27 @@ $.getJSON("../api/index.php?r=washing/plans",  {vehicle_make: make_name, vehicle
 $(".reg-loading").hide();
     if(data.result == 'true'){
 $("#regular-packlist").show();
+
+$("#regular-packlist .e-duration").html('');
+$("#regular-packlist .e-duration").html(data.plans.express[0]['duration']);
+$("#regular-packlist .e-time").html('');
+$("#regular-packlist .e-time").html(data.plans.express[0]['wash_time']);
+$("#regular-packlist .e-price").html('');
+$("#regular-packlist .e-price").html("$"+data.plans.express[0]['price']);
+$("#regular-packlist .e-fee").html('');
+$("#regular-packlist .e-fee").html("$"+data.plans.express[0]['handling_fee']);
+$("#regular-packlist .e-type").html('');
+$("#regular-packlist .e-type").html(data.plans.express[0]['vehicle_type']);
+$("#regular-packlist .e-desc").html('');
+desc = '';
+$( data.plans.express[0]['description'] ).each(function(ind, val) {
+desc += val+"; ";
+});
+$("#regular-packlist .e-desc").html(desc);
+
+$("#regular-packlist .inspect-img").html('');
+$("#regular-packlist .inspect-img").html("<img src='/admin-new/images/regular-inspect-img/"+veh_cat+".png' title='"+veh_cat+"' style='width: 250px;' />");
+
 $("#regular-packlist .d-duration").html('');
 $("#regular-packlist .d-duration").html(data.plans.deluxe[0]['duration']);
 $("#regular-packlist .d-time").html('');
@@ -330,7 +369,7 @@ desc += val+"; ";
 $("#regular-packlist .d-desc").html(desc);
 
 $("#regular-packlist .inspect-img").html('');
-$("#regular-packlist .inspect-img").html("<img src='/admin/images/regular-inspect-img/"+veh_cat+".png' title='"+veh_cat+"' style='width: 250px;' />");
+$("#regular-packlist .inspect-img").html("<img src='/admin-new/images/regular-inspect-img/"+veh_cat+".png' title='"+veh_cat+"' style='width: 250px;' />");
 
 $("#regular-packlist .p-duration").html('');
 $("#regular-packlist .p-duration").html(data.plans.premium[0]['duration']);
@@ -445,6 +484,27 @@ $(".classic-loading").hide();
     if(data.result == 'true'){
 
 $("#classic-packlist").show();
+
+$("#classic-packlist .e-duration").html('');
+$("#classic-packlist .e-duration").html(data.plans.express[0]['duration']);
+$("#classic-packlist .e-time").html('');
+$("#classic-packlist .e-time").html(data.plans.express[0]['wash_time']);
+$("#classic-packlist .e-price").html('');
+$("#classic-packlist .e-price").html("$"+data.plans.express[0]['price']);
+$("#classic-packlist .e-fee").html('');
+$("#classic-packlist .e-fee").html("$"+data.plans.express[0]['handling_fee']);
+$("#classic-packlist .e-type").html('');
+$("#classic-packlist .e-type").html(data.plans.express[0]['vehicle_type']);
+$("#classic-packlist .e-desc").html('');
+desc = '';
+$( data.plans.express[0]['description'] ).each(function(ind, val) {
+desc += val+"; ";
+});
+$("#classic-packlist .e-desc").html(desc);
+
+$("#classic-packlist .inspect-img").html('');
+$("#classic-packlist .inspect-img").html("<img src='/admin-new/images/classic-inspect-img/"+veh_cat+".png' title='"+veh_cat+"' style='width: 250px;' />");
+
 $("#classic-packlist .d-duration").html('');
 $("#classic-packlist .d-duration").html(data.plans.deluxe[0]['duration']);
 $("#classic-packlist .d-time").html('');
@@ -463,7 +523,7 @@ desc += val+"; ";
 $("#classic-packlist .d-desc").html(desc);
 
 $("#classic-packlist .inspect-img").html('');
-$("#classic-packlist .inspect-img").html("<img src='/admin/images/classic-inspect-img/"+veh_cat+".png' title='"+veh_cat+"' style='width: 250px;' />");
+$("#classic-packlist .inspect-img").html("<img src='/admin-new/images/classic-inspect-img/"+veh_cat+".png' title='"+veh_cat+"' style='width: 250px;' />");
 
 $("#classic-packlist .p-duration").html('');
 $("#classic-packlist .p-duration").html(data.plans.premium[0]['duration']);

@@ -40,6 +40,7 @@ die();
 		$customer_id = Yii::app()->request->getParam('customer_id');
         $json = array();
         $plans = array();
+        $express_plan = array();
         $deluxe_plan = array();
         $premium_plan = array();
         $vehicle_type = '';
@@ -96,6 +97,11 @@ $vehicle_type = $vehicle_exists[0]['type'];
                     $planDetails['description'] = preg_split('/\r\n|[\r\n]/', $planDetails['description']);
                     unset($planDetails['id']);
 
+                    if($planDetails['title'] == "Express") {
+                         //$planDetails['price'] += $surgeprice[0]['deluxe'];
+                         //$planDetails['price'] = (string) $planDetails['price'];
+                        $express_plan[] = $planDetails;
+                    }
                     if($planDetails['title'] == "Deluxe") {
                          //$planDetails['price'] += $surgeprice[0]['deluxe'];
                          //$planDetails['price'] = (string) $planDetails['price'];
@@ -109,6 +115,7 @@ $vehicle_type = $vehicle_exists[0]['type'];
                      //$plans[] = $planDetails;
                 }
 
+                $plans['express'] = $express_plan;
                 $plans['deluxe'] = $deluxe_plan;
                 $plans['premium'] = $premium_plan;
 
@@ -481,6 +488,8 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
 
 /* ----------- update pricing details end -------------- */
 
+  $mobile_receipt = '';
+
  /* --------- car pricing save --------- */
 foreach($kartdata->vehicles as $ind=>$vehicle){
 
@@ -500,8 +509,120 @@ foreach($kartdata->vehicles as $ind=>$vehicle){
                         $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
                         $washpricehistorymodel->save(false);
 
+
 }
    /* --------- car pricing save end --------- */
+
+  if(!$is_scheduled){
+      $wash_details = Washingrequests::model()->findByPk($washrequestid);
+     foreach($kartdata->vehicles as $ind=>$vehicle){
+           $mobile_receipt .= $vehicle->brand_name." ".$vehicle->model_name."\r\n".$vehicle->vehicle_washing_package." $".$vehicle->vehicle_washing_price."\r\nHandling $1.00\r\n";
+
+     if($vehicle->surge_vehicle_fee > 0){
+$mobile_receipt .= "Surge $".$vehicle->surge_vehicle_fee."\r\n";
+}
+if($vehicle->extclaybar_vehicle_fee > 0){
+
+$mobile_receipt .= "Clay $".$vehicle->extclaybar_vehicle_fee."\r\n";
+}
+if($vehicle->waterspotremove_vehicle_fee > 0){
+
+$mobile_receipt .= "Spot $".$vehicle->waterspotremove_vehicle_fee."\r\n";
+}
+if($vehicle->exthandwax_vehicle_fee > 0){
+
+$mobile_receipt .= "Wax $".$vehicle->exthandwax_vehicle_fee."\r\n";
+}
+
+if($vehicle->pet_hair_fee > 0){
+
+$mobile_receipt .= "Extra Cleaning $".$vehicle->pet_hair_fee."\r\n";
+}
+if($vehicle->lifted_vehicle_fee > 0){
+
+$mobile_receipt .= "Lifted $".$vehicle->lifted_vehicle_fee."\r\n";
+}
+
+if($vehicle->extplasticdressing_vehicle_fee > 0){
+
+$mobile_receipt .= "Dressing $".$vehicle->extplasticdressing_vehicle_fee."\r\n";
+}
+
+if(($ind == 0) && ($kartdata->coupon_discount > 0)){
+
+$mobile_receipt .= "Promo: ".$coupon_code." -$".number_format($coupon_amount, 2)."\r\n";
+}
+
+
+if($vehicle->fifth_wash_discount > 0){
+
+$mobile_receipt .= "5th -$".number_format($vehicle->fifth_wash_discount, 2)."\r\n";
+}
+
+if(($vehicle->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)){
+
+$mobile_receipt .= "Bundle -$1.00\r\n";
+}
+
+if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)){
+
+$mobile_receipt .= "Bundle -$1.00\r\n";
+}
+ $mobile_receipt .= "------\r\n";
+}
+
+if($tip_amount){
+
+$mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
+						}
+
+
+                     $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
+
+                    $mobile_receipt .= "Washes: ".$customer_total_wash."\r\n";
+
+                    $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = "WASH NOW ATTEMPT #000".$washrequestid."- ".date('M d', strtotime($wash_details->created_date))." @ ".date('h:i A', strtotime($wash_details->created_date))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\n------\r\n".$mobile_receipt;
+
+
+  $sendmessage = $client->account->messages->create(array(
+                'To' =>  '9098023158',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+
+
+$sendmessage = $client->account->messages->create(array(
+                'To' =>  '8183313631',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+$sendmessage = $client->account->messages->create(array(
+                'To' =>  '3109999334',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+            spl_autoload_register(array('YiiBase','autoload'));
+
+
+  }
 
  /* ---------- add schedule info -------------- */
 
@@ -1636,7 +1757,14 @@ else $customername = $cust_name[0];
 					curl_close($handle);
 					$jsondata = json_decode($plan_result);
 
-					if($plans[$ind] == 'Deluxe')
+                    if($plans[$ind] == 'Express')
+                    {
+						//echo $jsondata->plans->deluxe[0]->wash_time."<br>";
+						$expprice = intval($jsondata->plans->express[0]->wash_time);
+						$washtime += $expprice;
+					}
+
+                    if($plans[$ind] == 'Deluxe')
                     {
 						//echo $jsondata->plans->deluxe[0]->wash_time."<br>";
 						$delprice = intval($jsondata->plans->deluxe[0]->wash_time);
@@ -1707,7 +1835,14 @@ else $customername = $cust_name[0];
     						curl_close($handle);
     						$jsondata = json_decode($plan_result);
 
-    						if($plans[$ind] == 'Deluxe')
+                            if($plans[$ind] == 'Express')
+                            {
+    							//echo $jsondata->plans->deluxe[0]->wash_time."<br>";
+    							$expprice = intval($jsondata->plans->express[0]->wash_time);
+    							$washtime += $expprice;
+    						}
+
+                            if($plans[$ind] == 'Deluxe')
                             {
     							//echo $jsondata->plans->deluxe[0]->wash_time."<br>";
     							$delprice = intval($jsondata->plans->deluxe[0]->wash_time);
@@ -4069,7 +4204,11 @@ die();
 
                      $vehicle_details = Vehicle::model()->findByAttributes(array("id"=>$car));
 
-                      $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
+                     $washing_plan_express = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Express"));
+                    if(count($washing_plan_express)) $expr_price = $washing_plan_express->price;
+                    else $expr_price = "19.99";
+
+                     $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
                     if(count($washing_plan_deluxe)) $delx_price = $washing_plan_deluxe->price;
                     else $delx_price = "24.99";
 
@@ -4077,7 +4216,13 @@ die();
                     if(count($washing_plan_prem)) $prem_price = $washing_plan_prem->price;
                     else $prem_price = "59.99";
 
-                   if($total_packs[$carindex] == 'Deluxe') {
+                  if($total_packs[$carindex] == 'Express') {
+                       $total += $expr_price;
+                       $veh_price = $expr_price;
+                       $safe_handle_fee = $washing_plan_express->handling_fee;
+                   }
+
+                  if($total_packs[$carindex] == 'Deluxe') {
                        $total += $delx_price;
                        $veh_price = $delx_price;
                        $safe_handle_fee = $washing_plan_deluxe->handling_fee;
@@ -7159,7 +7304,12 @@ $order_details['is_admin_washpoint_processed'] = $order_det->is_admin_washpoint_
 					if(count($vehicle_inspect_details) > 0){
 						$inspect_img = $vehicle_inspect_details->damage_pic;
 					}
-					$washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
+
+                    $washing_plan_express = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Express"));
+                    if(count($washing_plan_express)) $expr_price = $washing_plan_express->price;
+                    else $expr_price = "19.99";
+
+                    $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
                     if(count($washing_plan_deluxe)) $delx_price = $washing_plan_deluxe->price;
                     else $delx_price = "24.99";
 
@@ -7167,7 +7317,15 @@ $order_details['is_admin_washpoint_processed'] = $order_det->is_admin_washpoint_
                     if(count($washing_plan_prem)) $prem_price = $washing_plan_prem->price;
                     else $prem_price = "59.99";
 
-					if($total_packs[$carindex] == 'Deluxe') {
+                    if($total_packs[$carindex] == 'Express') {
+                       $total += $expr_price;
+                       $veh_price = $expr_price;
+                       $agent_total += $veh_price * .8;
+                       $company_total += $veh_price * .2;
+                       $safe_handle_fee = $washing_plan_express->handling_fee;
+                       $company_total += $washing_plan_express->handling_fee;
+					}
+                    if($total_packs[$carindex] == 'Deluxe') {
                        $total += $delx_price;
                        $veh_price = $delx_price;
                        $agent_total += $veh_price * .8;
@@ -8676,7 +8834,14 @@ if(($min_diff < 0) && ($min_diff <= -1440)){
 						$plan_result = curl_exec($handle);
 						curl_close($handle);
 						$jsondata = json_decode($plan_result);
-						if($plans[$ind] == 'Deluxe'){
+
+                        if($plans[$ind] == 'Express'){
+							//echo $jsondata->plans->deluxe[0]->wash_time."<br>";
+							$expprice = intval($jsondata->plans->express[0]->wash_time);
+							$washtime += $expprice;
+						}
+
+                        if($plans[$ind] == 'Deluxe'){
 							//echo $jsondata->plans->deluxe[0]->wash_time."<br>";
 							$delprice = intval($jsondata->plans->deluxe[0]->wash_time);
 							$washtime += $delprice;

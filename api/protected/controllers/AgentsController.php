@@ -4982,6 +4982,12 @@ else $cust_shortname = $cust_name[0];
             $plan_result = curl_exec($handle);
             curl_close($handle);
             $jsondata = json_decode($plan_result);
+            if($plans[$ind] == 'Express'){
+              //echo $jsondata->plans->deluxe[0]->wash_time."<br>";
+            $expprice = intval($jsondata->plans->express[0]->wash_time);
+             $washtime += $expprice;
+            }
+
             if($plans[$ind] == 'Deluxe'){
               //echo $jsondata->plans->deluxe[0]->wash_time."<br>";
             $delprice = intval($jsondata->plans->deluxe[0]->wash_time);
