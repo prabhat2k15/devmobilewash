@@ -764,7 +764,7 @@ display: none;
 <?php endif; ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="client-receipt-send">Client Receipt</div>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="agent-receipt-send">Detailer Receipt</div>
-
+<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="company-receipt-send">Company Receipt</div>
 <div style="clear: both;"></div>
 
 <div style="clear: both;"></div>
@@ -2755,6 +2755,11 @@ $(th).addClass('agent-receipt-send');
 }
 
 return false;
+
+});
+
+$(".company-receipt-send").click(function(){
+ window.open("<?php echo $root_url; ?>/company-receipt-view.php?orderid=<?php echo $getorder->id; ?>",'_blank');
 
 });
 
