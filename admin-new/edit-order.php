@@ -2759,7 +2759,7 @@ return false;
 });
 
 $(".company-receipt-send").click(function(){
- window.open("<?php echo $root_url; ?>/company-receipt-view.php?orderid=<?php echo $getorder->id; ?>",'_blank');
+ window.open("<?php echo $root_url; ?>/company-full-receipt.php?orderid=<?php echo $getorder->id; ?>",'_blank');
 
 });
 

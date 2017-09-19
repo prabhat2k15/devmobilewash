@@ -5293,7 +5293,7 @@ else $customername = $cust_name[0];
 $com_message .= "<p style='margin: 0; margin-top: 10px; font-size: 18px; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 10px 0;'><strong>Client Receipt:</strong> ".$customername."</p>";
 
  if($kartdata->status == 5){
-if($kartdata->cancel_fee . 0){
+if($kartdata->cancel_fee > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr><td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
