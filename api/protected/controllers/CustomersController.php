@@ -1828,6 +1828,10 @@ $extclaybar_addon = 0;
 if(Yii::app()->request->getParam('extclaybar_addon')) $extclaybar_addon = Yii::app()->request->getParam('extclaybar_addon');
 $waterspotremove_addon = 0;
 if(Yii::app()->request->getParam('waterspotremove_addon')) $waterspotremove_addon = Yii::app()->request->getParam('waterspotremove_addon');
+$upholstery_addon = 0;
+if(Yii::app()->request->getParam('upholstery_addon')) $upholstery_addon = Yii::app()->request->getParam('upholstery_addon');
+$floormat_addon = 0;
+if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()->request->getParam('floormat_addon');
 
 			$vehicle = array();
 			if((isset($customer_id) && !empty($customer_id)) &&
@@ -1913,7 +1917,9 @@ $vehicle_source_id = 0;
 'exthandwax_addon' => $exthandwax_addon,
 'extplasticdressing_addon' => $extplasticdressing_addon,
 'extclaybar_addon' => $extclaybar_addon,
-'waterspotremove_addon' => $waterspotremove_addon
+'waterspotremove_addon' => $waterspotremove_addon,
+'upholstery_addon' => $upholstery_addon,
+'floormat_addon' => $floormat_addon
 
                                         ));
 							}catch(Exception $e){
@@ -2035,6 +2041,26 @@ if (!in_array($qrVehicles['id'], $waterspotremove_addon_arr)) array_push($waters
 $waterspotremove_addon_new = implode(",", $waterspotremove_addon_arr);
 $waterspotremove_addon_new = trim($waterspotremove_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('waterspotremove_vehicles' => $waterspotremove_addon_new));
+}
+
+if($cust_vehicle_data->upholstery_addon){
+$upholstery_addon_old = '';
+$upholstery_addon_old = $wash_request_exists->upholstery_vehicles;
+$upholstery_addon_arr = explode(",", $upholstery_addon_old);
+if (!in_array($qrVehicles['id'], $upholstery_addon_arr)) array_push($upholstery_addon_arr, $qrVehicles['id']);
+$upholstery_addon_new = implode(",", $upholstery_addon_arr);
+$upholstery_addon_new = trim($upholstery_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('upholstery_vehicles' => $upholstery_addon_new));
+}
+
+if($cust_vehicle_data->floormat_addon){
+$floormat_addon_old = '';
+$floormat_addon_old = $wash_request_exists->floormat_vehicles;
+$floormat_addon_arr = explode(",", $floormat_addon_old);
+if (!in_array($qrVehicles['id'], $floormat_addon_arr)) array_push($floormat_addon_arr, $qrVehicles['id']);
+$floormat_addon_new = implode(",", $floormat_addon_arr);
+$floormat_addon_new = trim($floormat_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
 }
                                 }
 
@@ -2382,6 +2408,10 @@ $extclaybar_addon = 0;
 if(Yii::app()->request->getParam('extclaybar_addon')) $extclaybar_addon = Yii::app()->request->getParam('extclaybar_addon');
 $waterspotremove_addon = 0;
 if(Yii::app()->request->getParam('waterspotremove_addon')) $waterspotremove_addon = Yii::app()->request->getParam('waterspotremove_addon');
+$upholstery_addon = 0;
+if(Yii::app()->request->getParam('upholstery_addon')) $upholstery_addon = Yii::app()->request->getParam('upholstery_addon');
+$floormat_addon = 0;
+if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()->request->getParam('floormat_addon');
         $damage_points = Yii::app()->request->getParam('damage_points');
         $upgrade_pack = Yii::app()->request->getParam('upgrade_pack');
 $new_pack_name = '';
@@ -2413,7 +2443,7 @@ if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($vehicle_id) 
                 /* ------------ upgrade pack ------------- */
 
  if($upgrade_pack == 1){
-Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => $pet_hair, 'lifted_vehicle' => $lifted_vehicle, 'new_pack_name' => $new_pack_name, 'exthandwax_addon' => $exthandwax_addon, 'extplasticdressing_addon' => $extplasticdressing_addon, 'extclaybar_addon' => $extclaybar_addon, 'waterspotremove_addon' => $waterspotremove_addon));
+Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => $pet_hair, 'lifted_vehicle' => $lifted_vehicle, 'new_pack_name' => $new_pack_name, 'exthandwax_addon' => $exthandwax_addon, 'extplasticdressing_addon' => $extplasticdressing_addon, 'extclaybar_addon' => $extclaybar_addon, 'waterspotremove_addon' => $waterspotremove_addon, 'upholstery_addon' => $upholstery_addon, 'floormat_addon' => $floormat_addon));
 
 if(!$pet_hair){
 $pet_hair_vehicles_arr = explode(",", $wash_request_exists->pet_hair_vehicles);
@@ -2484,6 +2514,28 @@ array_values($waterspotremove_addon_arr);
 $waterspotremove_addon_new = implode(",", $waterspotremove_addon_arr);
 $waterspotremove_addon_new = trim($waterspotremove_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('waterspotremove_vehicles' => $waterspotremove_addon_new));
+}
+
+if(!$upholstery_addon){
+$upholstery_addon_arr = explode(",", $wash_request_exists->upholstery_vehicles);
+if(($key = array_search($vehicle_id, $upholstery_addon_arr)) !== false) {
+    unset($upholstery_addon_arr[$key]);
+array_values($upholstery_addon_arr);
+}
+$upholstery_addon_new = implode(",", $upholstery_addon_arr);
+$upholstery_addon_new = trim($upholstery_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('upholstery_vehicles' => $upholstery_addon_new));
+}
+
+if(!$floormat_addon){
+$floormat_addon_arr = explode(",", $wash_request_exists->floormat_vehicles);
+if(($key = array_search($vehicle_id, $floormat_addon_arr)) !== false) {
+    unset($floormat_addon_arr[$key]);
+array_values($floormat_addon_arr);
+}
+$floormat_addon_new = implode(",", $floormat_addon_arr);
+$floormat_addon_new = trim($floormat_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
 }
 
 
@@ -2587,6 +2639,26 @@ $waterspotremove_addon_new = trim($waterspotremove_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('waterspotremove_vehicles' => $waterspotremove_addon_new));
 }
 
+if($cust_vehicle_data->upholstery_addon){
+$upholstery_addon_old = '';
+$upholstery_addon_old = $wash_request_exists->upholstery_vehicles;
+$upholstery_addon_arr = explode(",", $upholstery_addon_old);
+if (!in_array($vehicle_id, $upholstery_addon_arr)) array_push($upholstery_addon_arr, $vehicle_id);
+$upholstery_addon_new = implode(",", $upholstery_addon_arr);
+$upholstery_addon_new = trim($upholstery_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('upholstery_vehicles' => $upholstery_addon_new));
+}
+
+if($cust_vehicle_data->floormat_addon){
+$floormat_addon_old = '';
+$floormat_addon_old = $wash_request_exists->floormat_vehicles;
+$floormat_addon_arr = explode(",", $floormat_addon_old);
+if (!in_array($vehicle_id, $floormat_addon_arr)) array_push($floormat_addon_arr, $vehicle_id);
+$floormat_addon_new = implode(",", $floormat_addon_arr);
+$floormat_addon_new = trim($floormat_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
+}
+
                     if($new_pack_name == 'Premium'){
                        $surge_addon_arr = explode(",", $wash_request_exists->surge_price_vehicles);
 if(($key = array_search($vehicle_id, $surge_addon_arr)) !== false) {
@@ -2625,7 +2697,7 @@ Vehicle::model()->updateByPk($vehicle_id, array('surge_addon' => 0));
 
 if($upgrade_pack == 3){
 
-Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0));
+Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
 
 
 
@@ -2734,6 +2806,28 @@ array_values($waterspotremove_addon_arr);
 $waterspotremove_addon_new = implode(",", $waterspotremove_addon_arr);
 $waterspotremove_addon_new = trim($waterspotremove_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('waterspotremove_vehicles' => $waterspotremove_addon_new));
+}
+
+if($cust_vehicle_data->upholstery_addon){
+$upholstery_addon_arr = explode(",", $wash_request_exists->upholstery_vehicles);
+if(($key = array_search($vehicle_id, $upholstery_addon_arr)) !== false) {
+    unset($upholstery_addon_arr[$key]);
+array_values($upholstery_addon_arr);
+}
+$upholstery_addon_new = implode(",", $upholstery_addon_arr);
+$upholstery_addon_new = trim($upholstery_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('upholstery_vehicles' => $upholstery_addon_new));
+}
+
+if($cust_vehicle_data->floormat_addon){
+$floormat_addon_arr = explode(",", $wash_request_exists->floormat_vehicles);
+if(($key = array_search($vehicle_id, $floormat_addon_arr)) !== false) {
+    unset($floormat_addon_arr[$key]);
+array_values($floormat_addon_arr);
+}
+$floormat_addon_new = implode(",", $floormat_addon_arr);
+$floormat_addon_new = trim($floormat_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
 }
                 }
 
@@ -3030,6 +3124,28 @@ Washingrequests::model()->updateByPk($wash_request_id, array('waterspotremove_ve
 
 }
 
+if($cust_vehicle_data->upholstery_addon){
+$upholstery_addon_old = '';
+$upholstery_addon_old = $wash_request_exists->upholstery_vehicles;
+$upholstery_addon_arr = explode(",", $upholstery_addon_old);
+if (!in_array($vehicle_id, $upholstery_addon_arr)) array_push($upholstery_addon_arr, $vehicle_id);
+$upholstery_addon_new = implode(",", $upholstery_addon_arr);
+$upholstery_addon_new = trim($upholstery_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('upholstery_vehicles' => $upholstery_addon_new));
+
+}
+
+if($cust_vehicle_data->floormat_addon){
+$floormat_addon_old = '';
+$floormat_addon_old = $wash_request_exists->floormat_vehicles;
+$floormat_addon_arr = explode(",", $floormat_addon_old);
+if (!in_array($vehicle_id, $floormat_addon_arr)) array_push($floormat_addon_arr, $vehicle_id);
+$floormat_addon_new = implode(",", $floormat_addon_arr);
+$floormat_addon_new = trim($floormat_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
+
+}
+
 
 /* -------- pet hair / lift / addons check end --------- */
 
@@ -3043,7 +3159,7 @@ $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_m
                  }
 
                   if($status == 6){
-Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0));
+Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
 
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '7' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
@@ -3235,6 +3351,8 @@ $total_car_price += $cardata->exthandwax_addon;
 $total_car_price += $cardata->extplasticdressing_addon;
 $total_car_price += $cardata->extclaybar_addon;
 $total_car_price += $cardata->waterspotremove_addon;
+$total_car_price += $cardata->upholstery_addon;
+$total_car_price += $cardata->floormat_addon;
 
 
 if(($cust_exists->fifth_wash_points == 4) && (!$fifth_fee_check) && ($wash_request_exists->coupon_discount <= 0)) {
@@ -3266,6 +3384,8 @@ $total_car_price_agent += $cardata->exthandwax_addon*.80;
 $total_car_price_agent += $cardata->extplasticdressing_addon*.80;
 $total_car_price_agent += $cardata->extclaybar_addon*.80;
 $total_car_price_agent += $cardata->waterspotremove_addon*.80;
+$total_car_price_agent += $cardata->upholstery_addon*.80;
+$total_car_price_agent += $cardata->floormat_addon*.80;
 
 
 if(count($car_arr) > 1) {
@@ -3280,6 +3400,8 @@ if($cardata->exthandwax_addon > 0) $wash_time += 10;
 if($cardata->extplasticdressing_addon > 0) $wash_time += 5;
 if($cardata->extclaybar_addon > 0) $wash_time += 15;
 if($cardata->waterspotremove_addon > 0) $wash_time += 10;
+if($cardata->upholstery_addon > 0) $wash_time += 10;
+if($cardata->floormat_addon > 0) $wash_time += 10;
 
 $hours = floor($wash_time / 60);
 					$minutes = ($wash_time % 60);
@@ -3300,7 +3422,7 @@ $hours = floor($wash_time / 60);
 
 
                     $new_vehicle_confirm = $wash_request_exists->new_vehicle_confirm;
-                   $vehicles[] = array("id"=> $carid, "make"=>$cardata->brand_name, "model"=>$cardata->model_name, "license_no"=>$cardata->vehicle_no, "vehicle_type"=>$cardata->vehicle_type, "vehicle_category"=>$cardata->vehicle_category, "vehicle_build"=>$cardata->vehicle_build, "vehicle_image"=>$cardata->vehicle_image, "handling_fee"=>'1.00', "status"=>$cardata->status, "eco_friendly"=>$cardata->eco_friendly, "damage_points"=>$cardata->damage_points,"damage_pic"=>$cardata->damage_pic, "pet_hair"=>$cardata->pet_hair, "pet_hair_agent"=> number_format(round($cardata->pet_hair * .80, 2), 2), "lifted_vehicle"=>$cardata->lifted_vehicle, "lifted_vehicle_agent"=>number_format(round($cardata->lifted_vehicle * .80, 2), 2), "exthandwax_addon"=>$cardata->exthandwax_addon, "exthandwax_addon_agent"=>number_format(round($cardata->exthandwax_addon*.80, 2), 2),"extplasticdressing_addon"=>$cardata->extplasticdressing_addon, "extplasticdressing_addon_agent"=>number_format(round($cardata->extplasticdressing_addon*.80, 2), 2), "extclaybar_addon"=>$cardata->extclaybar_addon, "extclaybar_addon_agent"=>number_format(round($cardata->extclaybar_addon*.80, 2), 2), "waterspotremove_addon"=>$cardata->waterspotremove_addon, "waterspotremove_addon_agent"=>number_format(round($cardata->waterspotremove_addon*.80, 2), 2), "bundle_discount" => number_format($bundle_fee, 2), "bundle_discount_agent" => number_format($bundle_fee_agent, 2), "fifth_wash_discount" => number_format($fifth_fee, 2), "first_wash_discount" => number_format($first_fee, 2), "upgrade_pack"=> $cardata->upgrade_pack, "new_pack_name"=> $cardata->new_pack_name, "edit_vehicle"=> $cardata->edit_vehicle, "remove_vehicle_from_kart"=> $cardata->remove_vehicle_from_kart, "payment_type"=>$pack_arr[$ind], "price"=>$wash_price, "total_price"=>number_format($total_car_price, 2), "price_agent"=>$car_price_agent, "total_price_agent"=>number_format($total_car_price_agent, 2), "wash_time"=> $wash_time, "wash_time_str" => $washtime_str);
+                   $vehicles[] = array("id"=> $carid, "make"=>$cardata->brand_name, "model"=>$cardata->model_name, "license_no"=>$cardata->vehicle_no, "vehicle_type"=>$cardata->vehicle_type, "vehicle_category"=>$cardata->vehicle_category, "vehicle_build"=>$cardata->vehicle_build, "vehicle_image"=>$cardata->vehicle_image, "handling_fee"=>'1.00', "status"=>$cardata->status, "eco_friendly"=>$cardata->eco_friendly, "damage_points"=>$cardata->damage_points,"damage_pic"=>$cardata->damage_pic, "pet_hair"=>$cardata->pet_hair, "pet_hair_agent"=> number_format(round($cardata->pet_hair * .80, 2), 2), "lifted_vehicle"=>$cardata->lifted_vehicle, "lifted_vehicle_agent"=>number_format(round($cardata->lifted_vehicle * .80, 2), 2), "exthandwax_addon"=>$cardata->exthandwax_addon, "exthandwax_addon_agent"=>number_format(round($cardata->exthandwax_addon*.80, 2), 2),"extplasticdressing_addon"=>$cardata->extplasticdressing_addon, "extplasticdressing_addon_agent"=>number_format(round($cardata->extplasticdressing_addon*.80, 2), 2), "extclaybar_addon"=>$cardata->extclaybar_addon, "extclaybar_addon_agent"=>number_format(round($cardata->extclaybar_addon*.80, 2), 2), "waterspotremove_addon"=>$cardata->waterspotremove_addon, "waterspotremove_addon_agent"=>number_format(round($cardata->waterspotremove_addon*.80, 2), 2), "upholstery_addon"=>$cardata->upholstery_addon, "upholstery_addon_agent"=>number_format(round($cardata->upholstery_addon*.80, 2), 2), "floormat_addon"=>$cardata->floormat_addon, "floormat_addon_agent"=>number_format(round($cardata->floormat_addon*.80, 2), 2), "bundle_discount" => number_format($bundle_fee, 2), "bundle_discount_agent" => number_format($bundle_fee_agent, 2), "fifth_wash_discount" => number_format($fifth_fee, 2), "first_wash_discount" => number_format($first_fee, 2), "upgrade_pack"=> $cardata->upgrade_pack, "new_pack_name"=> $cardata->new_pack_name, "edit_vehicle"=> $cardata->edit_vehicle, "remove_vehicle_from_kart"=> $cardata->remove_vehicle_from_kart, "payment_type"=>$pack_arr[$ind], "price"=>$wash_price, "total_price"=>number_format($total_car_price, 2), "price_agent"=>$car_price_agent, "total_price_agent"=>number_format($total_car_price_agent, 2), "wash_time"=> $wash_time, "wash_time_str" => $washtime_str);
                 }
               $result = true;
               $response = "Vehicles";
@@ -4810,6 +4932,10 @@ $extclaybar_addon = 0;
 if(Yii::app()->request->getParam('extclaybar_addon')) $extclaybar_addon = Yii::app()->request->getParam('extclaybar_addon');
 $waterspotremove_addon = 0;
 if(Yii::app()->request->getParam('waterspotremove_addon')) $waterspotremove_addon = Yii::app()->request->getParam('waterspotremove_addon');
+$upholstery_addon = 0;
+if(Yii::app()->request->getParam('upholstery_addon')) $upholstery_addon = Yii::app()->request->getParam('upholstery_addon');
+$floormat_addon = 0;
+if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()->request->getParam('floormat_addon');
 
 			if(Yii::app()->request->getParam('vehicle_type')) $vehicle_type = Yii::app()->request->getParam('vehicle_type');
 			$vehicle = array();
@@ -4868,6 +4994,8 @@ if(count( $washplan_id_exists)){
 'extplasticdressing_addon' => $extplasticdressing_addon,
 'extclaybar_addon' => $extclaybar_addon,
 'waterspotremove_addon' => $waterspotremove_addon,
+'upholstery_addon' => $upholstery_addon,
+'floormat_addon' => $floormat_addon
                                         ));
 							}catch(Exception $e){
                             //echo $e;
@@ -4898,7 +5026,9 @@ if(count( $washplan_id_exists)){
 'exthandwax_addon' => $exthandwax_addon,
 'extplasticdressing_addon' => $extplasticdressing_addon,
 'extclaybar_addon' => $extclaybar_addon,
-'waterspotremove_addon' => $waterspotremove_addon
+'waterspotremove_addon' => $waterspotremove_addon,
+'upholstery_addon' => $upholstery_addon,
+'floormat_addon' => $floormat_addon
                                                     );
 
 							}
@@ -5011,7 +5141,8 @@ $total_car_price += $vehicle_exists->exthandwax_addon;
 $total_car_price += $vehicle_exists->extplasticdressing_addon;
 $total_car_price += $vehicle_exists->extclaybar_addon;
 $total_car_price += $vehicle_exists->waterspotremove_addon;
-
+$total_car_price += $vehicle_exists->upholstery_addon;
+$total_car_price += $vehicle_exists->floormat_addon;
 
 
 if($fifth_points == 4) {
@@ -5037,6 +5168,8 @@ $total_car_price_agent += $vehicle_exists->exthandwax_addon*.80;
 $total_car_price_agent += $vehicle_exists->extplasticdressing_addon*.80;
 $total_car_price_agent += $vehicle_exists->extclaybar_addon*.80;
 $total_car_price_agent += $vehicle_exists->waterspotremove_addon*.80;
+$total_car_price_agent += $vehicle_exists->upholstery_addon*.80;
+$total_car_price_agent += $vehicle_exists->floormat_addon*.80;
 
 
 if($total_cars > 0) {
@@ -5051,6 +5184,8 @@ if($vehicle_exists->exthandwax_addon > 0) $wash_time += 10;
 if($vehicle_exists->extplasticdressing_addon > 0) $wash_time += 5;
 if($vehicle_exists->extclaybar_addon > 0) $wash_time += 15;
 if($vehicle_exists->waterspotremove_addon > 0) $wash_time += 10;
+if($vehicle_exists->upholstery_addon > 0) $wash_time += 10;
+if($vehicle_exists->floormat_addon > 0) $wash_time += 10;
 
 $hours = floor($wash_time / 60);
 					$minutes = ($wash_time % 60);
@@ -5090,6 +5225,8 @@ $hours = floor($wash_time / 60);
 'extplasticdressing_addon' => number_format($vehicle_exists->extplasticdressing_addon, 2),
 'extclaybar_addon' => number_format($vehicle_exists->extclaybar_addon, 2),
 'waterspotremove_addon' => number_format($vehicle_exists->waterspotremove_addon, 2),
+'upholstery_addon' => number_format($vehicle_exists->upholstery_addon, 2),
+'floormat_addon' => number_format($vehicle_exists->floormat_addon, 2),
 "handling_fee"=>'1.00',
 "bundle_discount" => number_format($bundle_fee, 2),
 "bundle_discount_agent" => number_format($bundle_fee_agent, 2),

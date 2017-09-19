@@ -2227,6 +2227,8 @@ $exthandwax_vehicles = Yii::app()->request->getParam('exthandwax_vehicles');
 $extplasticdressing_vehicles = Yii::app()->request->getParam('extplasticdressing_vehicles');
 $extclaybar_vehicles = Yii::app()->request->getParam('extclaybar_vehicles');
 $waterspotremove_vehicles  = Yii::app()->request->getParam('waterspotremove_vehicles');
+$upholstery_vehicles  = Yii::app()->request->getParam('upholstery_vehicles');
+$floormat_vehicles  = Yii::app()->request->getParam('floormat_vehicles');
 $fifthwash_vehicles  = Yii::app()->request->getParam('fifthwash_vehicles');
 $tip_amount = 0;
 $tip_amount  = Yii::app()->request->getParam('tip_amount');
@@ -2424,7 +2426,7 @@ if($admin_command == 'update-order'){
        $fifthwash_vehicles = '';
     }
 
-    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
+    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
 
      $washeractionlogdata = array(
 
@@ -2479,6 +2481,8 @@ if($admin_command == 'update-order'){
                             $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
                             $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
                             $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                            $washpricehistorymodel->upholstery_addon = $car->upholstery_vehicle_fee;
+                            $washpricehistorymodel->floormat_addon = $car->floormat_vehicle_fee;
                             $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
                             $washpricehistorymodel->bundle_disc = $car->bundle_discount;
                             $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
@@ -2556,6 +2560,8 @@ if(count($all_washes)){
                         $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
                         $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
                         $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->upholstery_addon = $car->upholstery_vehicle_fee;
+                        $washpricehistorymodel->floormat_addon = $car->floormat_vehicle_fee;
                         $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
                         $washpricehistorymodel->bundle_disc = $car->bundle_discount;
                         $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
@@ -2576,7 +2582,7 @@ if(count($all_washes)){
 
                    /* --------- Inspection details save end --------- */
 
-                        $carresetdata= array('status' => 0, 'eco_friendly' => 0, 'damage_points'=> '','damage_pic'=>'', 'upgrade_pack'=> 0, 'edit_vehicle'=> 0, 'remove_vehicle_from_kart'=> 0, 'new_vehicle_confirm'=> 0, 'new_pack_name'=> '', 'pet_hair' => 0, 'lifted_vehicle' => 0, 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0);
+                        $carresetdata= array('status' => 0, 'eco_friendly' => 0, 'damage_points'=> '','damage_pic'=>'', 'upgrade_pack'=> 0, 'edit_vehicle'=> 0, 'remove_vehicle_from_kart'=> 0, 'new_vehicle_confirm'=> 0, 'new_pack_name'=> '', 'pet_hair' => 0, 'lifted_vehicle' => 0, 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0);
                         $vehiclemodel = new Vehicle;
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car->id));
 
@@ -4053,6 +4059,8 @@ die();
                         $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
                         $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
                         $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->upholstery_addon = $car->upholstery_vehicle_fee;
+                        $washpricehistorymodel->floormat_addon = $car->floormat_vehicle_fee;
                         $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
                         $washpricehistorymodel->bundle_disc = $car->bundle_discount;
                         $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
@@ -4111,6 +4119,8 @@ die();
                         $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
                         $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
                         $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->upholstery_addon = $car->upholstery_vehicle_fee;
+                        $washpricehistorymodel->floormat_addon = $car->floormat_vehicle_fee;
                         $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
                         $washpricehistorymodel->bundle_disc = $car->bundle_discount;
                         $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");

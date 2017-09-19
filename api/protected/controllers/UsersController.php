@@ -3903,6 +3903,23 @@ $message .= "<tr>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->waterspotremove_vehicle_fee."</p></td>
 </tr>";
 }
+if($vehicle->upholstery_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->upholstery_vehicle_fee."</p></td>
+</tr>";
+}
+if($vehicle->floormat_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->floormat_vehicle_fee."</p></td>
+</tr>";
+}
+
 if($vehicle->exthandwax_vehicle_fee > 0){
 $message .= "<tr>
 <td>
@@ -4172,12 +4189,30 @@ $message_agent .= "<tr>
 </tr>";
 }
 
+if($vehicle->upholstery_vehicle_fee_agent > 0){
+$message_agent .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->upholstery_vehicle_fee_agent."</p></td>
+</tr>";
+}
+
 if($vehicle->exthandwax_vehicle_fee_agent > 0){
 $message_agent .= "<tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->exthandwax_vehicle_fee_agent."</p></td>
+</tr>";
+}
+
+if($vehicle->floormat_vehicle_fee_agent > 0){
+$message_agent .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->floormat_vehicle_fee_agent."</p></td>
 </tr>";
 }
 

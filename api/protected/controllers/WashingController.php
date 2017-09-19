@@ -304,6 +304,8 @@ die();
         $surge_price_vehicles = '';
 
         $customer_total_wash = 0;
+        $wash_now_fee = 0;
+         if(Yii::app()->request->getParam('wash_now_fee')) $wash_now_fee = Yii::app()->request->getParam('wash_now_fee');
 
         $json = array();
         $car_id_check = true;
@@ -428,7 +430,7 @@ $coupondata= array(
 $fifth_disc = 0;
          if($fifth_wash_vehicles) $fifth_disc = 5;
 
-                        Washingrequests::model()->updateByPk($washrequestid, array('pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position));
+                        Washingrequests::model()->updateByPk($washrequestid, array('pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee));
 
 $car_arr = explode(",",$car_ids);
 $car_packs = explode(",",$package_ids);
@@ -1860,6 +1862,12 @@ else $customername = $cust_name[0];
 
                     $waterspotremove_vehicles_arr = explode(",", $model_NewRqst->waterspotremove_vehicles);
                     if (in_array($car, $waterspotremove_vehicles_arr)) $washtime += 10;
+
+                    $upholstery_vehicles_arr = explode(",", $model_NewRqst->upholstery_vehicles);
+                    if (in_array($car, $upholstery_vehicles_arr)) $washtime += 10;
+
+                    $floormat_vehicles_arr = explode(",", $model_NewRqst->floormat_vehicles);
+                    if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
                     /* --- addons time end ----- */
 				}
 
@@ -1938,6 +1946,12 @@ else $customername = $cust_name[0];
 
                             $waterspotremove_vehicles_arr = explode(",", $agtwash->waterspotremove_vehicles);
                             if (in_array($car, $waterspotremove_vehicles_arr)) $washtime += 10;
+
+                            $upholstery_vehicles_arr = explode(",", $model_NewRqst->upholstery_vehicles);
+                    if (in_array($car, $upholstery_vehicles_arr)) $washtime += 10;
+
+                    $floormat_vehicles_arr = explode(",", $model_NewRqst->floormat_vehicles);
+                    if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
                             /* --- addons time end ----- */
     					}
 
@@ -2385,6 +2399,8 @@ else $customername = $cust_name[0];
                         $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
                         $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
                         $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
+                        $washpricehistorymodel->upholstery_addon = $car->upholstery_vehicle_fee;
+                        $washpricehistorymodel->floormat_addon = $car->floormat_vehicle_fee;
                         $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
                         $washpricehistorymodel->bundle_disc = $car->bundle_discount;
                         $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
@@ -2403,7 +2419,7 @@ else $customername = $cust_name[0];
                         $washinginspectmodel->save(false);
                         /* --------- Inspection details save end --------- */
 
-                        $carresetdata= array('status' => 0, 'eco_friendly' => 0, 'damage_points'=> '','damage_pic'=>'', 'upgrade_pack'=> 0, 'edit_vehicle'=> 0, 'remove_vehicle_from_kart'=> 0, 'new_vehicle_confirm'=> 0, 'new_pack_name'=> '', 'pet_hair' => 0, 'lifted_vehicle' => 0, 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'surge_addon' => 0);
+                        $carresetdata= array('status' => 0, 'eco_friendly' => 0, 'damage_points'=> '','damage_pic'=>'', 'upgrade_pack'=> 0, 'edit_vehicle'=> 0, 'remove_vehicle_from_kart'=> 0, 'new_vehicle_confirm'=> 0, 'new_pack_name'=> '', 'pet_hair' => 0, 'lifted_vehicle' => 0, 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0, 'surge_addon' => 0);
                         $vehiclemodel = new Vehicle;
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car->id));
                     }
@@ -4740,12 +4756,29 @@ $message .= "<tr>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->waterspotremove_vehicle_fee."</p></td>
 </tr>";
 }
+if($vehicle->upholstery_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->upholstery_vehicle_fee."</p></td>
+</tr>";
+}
 if($vehicle->exthandwax_vehicle_fee > 0){
 $message .= "<tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->exthandwax_vehicle_fee."</p></td>
+</tr>";
+}
+
+if($vehicle->floormat_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->floormat_vehicle_fee."</p></td>
 </tr>";
 }
 
@@ -4932,12 +4965,30 @@ $message_agent .= "<tr>
 </tr>";
 }
 
+if($vehicle->upholstery_vehicle_fee_agent > 0){
+$message_agent .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->upholstery_vehicle_fee_agent."</p></td>
+</tr>";
+}
+
 if($vehicle->exthandwax_vehicle_fee_agent > 0){
 $message_agent .= "<tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->exthandwax_vehicle_fee_agent."</p></td>
+</tr>";
+}
+
+ if($vehicle->floormat_vehicle_fee_agent > 0){
+$message_agent .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->floormat_vehicle_fee_agent."</p></td>
 </tr>";
 }
 
@@ -5075,6 +5126,7 @@ $com_message .= "<tr>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($vehicle->extclaybar_vehicle_fee*.20, 2)."</p></td>
 </tr>";
 }
+
 if($vehicle->waterspotremove_vehicle_fee > 0){
 $com_message .= "<tr>
 <td>
@@ -5083,12 +5135,31 @@ $com_message .= "<tr>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($vehicle->waterspotremove_vehicle_fee*.20, 2)."</p></td>
 </tr>";
 }
+
+if($vehicle->upholstery_vehicle_fee > 0){
+$com_message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($vehicle->upholstery_vehicle_fee*.20, 2)."</p></td>
+</tr>";
+}
+
 if($vehicle->exthandwax_vehicle_fee > 0){
 $com_message .= "<tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($vehicle->exthandwax_vehicle_fee*.20, 2)."</p></td>
+</tr>";
+}
+
+if($vehicle->floormat_vehicle_fee > 0){
+$com_message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($vehicle->floormat_vehicle_fee*.20, 2)."</p></td>
 </tr>";
 }
 
@@ -5287,12 +5358,30 @@ $com_message .= "<tr>
 </tr>";
 }
 
+if($vehicle->upholstery_vehicle_fee > 0){
+$com_message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->upholstery_vehicle_fee."</p></td>
+</tr>";
+}
+
 if($vehicle->exthandwax_vehicle_fee > 0){
 $com_message .= "<tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->exthandwax_vehicle_fee."</p></td>
+</tr>";
+}
+
+if($vehicle->floormat_vehicle_fee > 0){
+$com_message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->floormat_vehicle_fee."</p></td>
 </tr>";
 }
 
@@ -5488,12 +5577,29 @@ $com_message .= "<tr>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->waterspotremove_vehicle_fee_agent."</p></td>
 </tr>";
 }
+if($vehicle->upholstery_vehicle_fee_agent > 0){
+$com_message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->upholstery_vehicle_fee_agent."</p></td>
+</tr>";
+}
 if($vehicle->exthandwax_vehicle_fee_agent > 0){
 $com_message .= "<tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->exthandwax_vehicle_fee_agent."</p></td>
+</tr>";
+}
+
+if($vehicle->floormat_vehicle_fee_agent > 0){
+$com_message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->floormat_vehicle_fee_agent."</p></td>
 </tr>";
 }
 
@@ -7751,6 +7857,17 @@ $message .= "<tr>
 </tr>";
 
 }
+
+if($vehicle->upholstery_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
+</tr>";
+
+}
+
 if($vehicle->exthandwax_vehicle_fee > 0){
 $message .= "<tr>
 <td>
@@ -7769,10 +7886,23 @@ $message .= "<tr>
 </tr>";
 
 }
+
+if($vehicle->floormat_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
+</tr>";
+
+}
+
 $message .="<tr>
 <td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
 </tr>";
+
+
 if($vehicle->pet_hair_fee > 0){
 $message .= "<tr>
 <td>
@@ -8109,6 +8239,15 @@ $message .= "<tr>
 </tr>";
 
 }
+if($vehicle->upholstery_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
+</tr>";
+
+}
 if($vehicle->exthandwax_vehicle_fee > 0){
 $message .= "<tr>
 <td>
@@ -8127,6 +8266,17 @@ $message .= "<tr>
 </tr>";
 
 }
+
+if($vehicle->floormat_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
+</tr>";
+
+}
+
 $message .="<tr>
 <td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
@@ -8938,6 +9088,12 @@ if (in_array($car, $extclaybar_vehicles_arr)) $washtime += 15;
 
 $waterspotremove_vehicles_arr = explode(",", $schedwash['waterspotremove_vehicles']);
 if (in_array($car, $waterspotremove_vehicles_arr)) $washtime += 10;
+
+$upholstery_vehicles_arr = explode(",", $schedwash['upholstery_vehicles']);
+if (in_array($car, $upholstery_vehicles_arr)) $washtime += 10;
+
+$floormat_vehicles_arr = explode(",", $schedwash['floormat_vehicles']);
+if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 
                    /* --- addons time end ----- */
 
