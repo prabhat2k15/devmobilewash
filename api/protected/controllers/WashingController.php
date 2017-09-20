@@ -609,6 +609,7 @@ $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
 
                     $mobile_receipt .= "Washes: ".$customer_total_wash."\r\n";
 
+                    if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
             spl_autoload_unregister(array(
                 'YiiBase',
@@ -648,7 +649,7 @@ $sendmessage = $client->account->messages->create(array(
             ));
 
             spl_autoload_register(array('YiiBase','autoload'));
-
+           }
 
   }
 
@@ -713,7 +714,7 @@ $mobile_receipt .= "Surge $".$vehicle->surge_vehicle_fee."\r\n";
 if($vehicle->extclaybar_vehicle_fee > 0){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extclaybar_vehicle_fee."</p></td>
 </tr>";
@@ -897,7 +898,7 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
 					$from = Vargas::Obj()->getAdminFromEmail();
 					Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
 
-
+                   if(APP_ENV == 'real'){
 
                     $this->layout = "xmlLayout";
             spl_autoload_unregister(array(
@@ -938,7 +939,7 @@ $sendmessage = $client->account->messages->create(array(
             ));
 
             spl_autoload_register(array('YiiBase','autoload'));
-
+            }
 
 
 
@@ -2093,7 +2094,11 @@ else $customername = $cust_name[0];
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                         Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0));
                     }
+                // INCREMENT 'total_schedule_rejected' counter on each rejection
+                 $washrequestmodel->total_schedule_rejected = $washrequestmodel->total_schedule_rejected + 1;
+                    $washrequestmodel->save(false);
 
+                    if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
                     spl_autoload_unregister(array(
                         'YiiBase',
@@ -2101,10 +2106,6 @@ else $customername = $cust_name[0];
                     ));
 
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
-
-                    // INCREMENT 'total_schedule_rejected' counter on each rejection
-                    $washrequestmodel->total_schedule_rejected = $washrequestmodel->total_schedule_rejected + 1;
-                    $washrequestmodel->save(false);
 
                     require('Services/Twilio.php');
                     require('Services/Twilio/Capability.php');
@@ -2133,6 +2134,7 @@ else $customername = $cust_name[0];
                     ));
 
                     spl_autoload_register(array('YiiBase','autoload'));
+                    }
                 }
 
                 Washingrequests::model()->updateByPk($wash_request_id, array("address" => $address, "latitude" => $lat, "longitude" => $long, "address_type" => $address_type, "estimate_time" => $eta, "car_list" => $car_ids, "package_list" => $package_list, "is_scheduled" => $is_scheduled, "schedule_date" => $schedule_date, "schedule_time" => $schedule_time, "reschedule_date" => $reschedule_date, "reschedule_time" => $reschedule_time, 'order_for' => $order_for_date, "status" => $status, "agent_id" => $agent_id, "checklist" => $checklist, "notes" => $notes, "scheduled_cars_info" => $scheduled_cars_info, "schedule_total" => $schedule_total, "schedule_company_total" => $schedule_company_total, "schedule_agent_total" => $schedule_agent_total, "tip_amount" => $tip_amount, "washer_penalty_fee" => $washer_penalty_fee));
@@ -2183,6 +2185,7 @@ else $customername = $cust_name[0];
 					$from = Vargas::Obj()->getAdminFromEmail();
 					//Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
 
+                    if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
                     spl_autoload_unregister(array('YiiBase', 'autoload'));
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -2215,6 +2218,7 @@ else $customername = $cust_name[0];
                     ));
 
                     spl_autoload_register(array('YiiBase','autoload'));
+                    }
 				}
 
 				if(($is_scheduled) && ($agent_id) && ($status == 1))
@@ -4666,16 +4670,6 @@ echo "Invalid api key";
 
                     /* ------- kart details ----------- */
 
-/*$handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
-curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-$kartresult = curl_exec($handle);
-curl_close($handle);
-$kartdata = json_decode($kartresult);
-//var_dump($jsondata);*/
-
 	$kartapiresult = $this->washingkart($wash_request_id, API_KEY);
 $kartdata = json_decode($kartapiresult);
 
@@ -4743,7 +4737,7 @@ $message .= "<tr>
 if($vehicle->extclaybar_vehicle_fee > 0){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extclaybar_vehicle_fee."</p></td>
 </tr>";
@@ -4859,18 +4853,19 @@ $message .= "</table>
 }
 $message .= "</table>";
 
-/*if($kartdata->coupon_discount > 0){
+
+if($kartdata->wash_now_fee > 0){
 $message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
 $message .= "<tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Coupon Discount</p></td>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>-$".number_format($kartdata->coupon_discount, 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->wash_now_fee, 2)."</p>
 </td>
 </tr>";
-$message .= "</table>";
-}*/
 
+$message .= "</table>";
+}
 
 if($kartdata->tip_amount > 0){
 $message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
@@ -4951,7 +4946,7 @@ $message_agent .= "<tr>
 if($vehicle->extclaybar_vehicle_fee_agent > 0){
 $message_agent .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extclaybar_vehicle_fee_agent."</p></td>
 </tr>";
@@ -5035,6 +5030,19 @@ $message_agent .= "</table>
 
 }
 $message_agent .= "</table>";
+
+if($kartdata->wash_now_fee > 0){
+$message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$message_agent .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.80, 2), 2)."</p>
+</td>
+</tr>";
+
+$message_agent .= "</table>";
+}
 
 if($kartdata->tip_amount > 0){
 $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
@@ -5121,7 +5129,7 @@ $com_message .= "<tr>
 if($vehicle->extclaybar_vehicle_fee > 0){
 $com_message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($vehicle->extclaybar_vehicle_fee*.20, 2)."</p></td>
 </tr>";
@@ -5262,6 +5270,19 @@ $com_message .= "</table>";
 }
 
 
+if($kartdata->wash_now_fee > 0){
+$com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$com_message .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.20, 2), 2)."</p>
+</td>
+</tr>";
+
+$com_message .= "</table>";
+}
+
 if($kartdata->tip_amount > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
@@ -5344,7 +5365,7 @@ $com_message .= "<tr>
 if($vehicle->extclaybar_vehicle_fee > 0){
 $com_message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extclaybar_vehicle_fee."</p></td>
 </tr>";
@@ -5460,20 +5481,20 @@ $com_message .= "</table>
 
 }
 $com_message .= "</table>";
-/*if($kartdata->coupon_discount > 0){
+
+
+if($kartdata->wash_now_fee > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
 $com_message .= "<tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Coupon Discount</p></td>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>-$".number_format($kartdata->coupon_discount, 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->wash_now_fee, 2)."</p>
 </td>
 </tr>";
 
 $com_message .= "</table>";
-}*/
-
-
+}
 
 if($kartdata->tip_amount > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
@@ -5497,12 +5518,6 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 }
 
 $wash_feedbacks = Washingfeedbacks::model()->findByAttributes(array("wash_request_id" => $wash_request_id));
-
-/*
-$com_message .= "<p style='font-size: 20px; margin-bottom: 0;'><strong>Client Rated Washer:</strong> ".$wash_feedbacks->customer_ratings." Stars</p>";
-$com_message .= "<p style='font-size: 20px; margin-bottom: 0; margin-top: 0;'><strong>Client Feedback:</strong></p>";
-$com_message .= "<p style='font-size: 20px; margin-top: 0;'>".$wash_feedbacks->customer_comments."</p>";
-*/
 
  $agent_details = Agents::model()->findByAttributes(array("id"=>$agent_id_check->id));
 
@@ -5564,7 +5579,7 @@ $com_message .= "<tr>
 if($vehicle->extclaybar_vehicle_fee_agent > 0){
 $com_message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extclaybar_vehicle_fee_agent."</p></td>
 </tr>";
@@ -5648,6 +5663,19 @@ $com_message .= "</table>
 }
 $com_message .= "</table>";
 
+if($kartdata->wash_now_fee > 0){
+$com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$com_message .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.80, 2), 2)."</p>
+</td>
+</tr>";
+
+$com_message .= "</table>";
+}
+
 if($kartdata->tip_amount > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
@@ -5669,12 +5697,6 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 </tr>
 </table>";
 }
-
-/*
-$com_message .= "<p style='font-size: 20px; margin-bottom: 0;'><strong>Washer Rated Client:</strong> ".$wash_feedbacks->agent_ratings." Stars</p>";
-$com_message .= "<p style='font-size: 20px; margin-bottom: 0; margin-top: 0;'><strong>Washer Feedback:</strong></p>";
-$com_message .= "<p style='font-size: 20px; margin-top: 0;'>".$wash_feedbacks->agent_comments."</p>";
-*/
 
 $to = Vargas::Obj()->getAdminToEmail();
 $from = Vargas::Obj()->getAdminFromEmail();
@@ -7771,7 +7793,7 @@ if($car_details[13]){
 if($car_details[14]){
 							$message .= "<tr>
 							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 							</td>
 							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
 							</tr>";
@@ -7842,7 +7864,7 @@ $message .="<tr>
 if($vehicle->extclaybar_vehicle_fee > 0){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
 </tr>";
@@ -7998,6 +8020,7 @@ $to = Vargas::Obj()->getAdminToEmail();
 	Vargas::Obj()->SendMail($cust_exists->email,"billing@devmobilewash.com",$message,$subject, 'mail-receipt');
 Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt');
 
+  if(APP_ENV == 'real'){
 
  $this->layout = "xmlLayout";
             spl_autoload_unregister(array(
@@ -8034,7 +8057,7 @@ $sendmessage = $client->account->messages->create(array(
             ));
 
             spl_autoload_register(array('YiiBase','autoload'));
-
+           }
 
 
 break;
@@ -8151,7 +8174,7 @@ if($car_details[13]){
 if($car_details[14]){
 							$message .= "<tr>
 							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 							</td>
 							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
 							</tr>";
@@ -8224,7 +8247,7 @@ $message .="<tr>
 if($vehicle->extclaybar_vehicle_fee > 0){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
 </tr>";
@@ -8378,6 +8401,7 @@ $to = Vargas::Obj()->getAdminToEmail();
 	Vargas::Obj()->SendMail($cust_exists->email,"billing@devmobilewash.com",$message,$subject, 'mail-receipt');
 Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt');
 
+if(APP_ENV == 'real'){
 
 $this->layout = "xmlLayout";
             spl_autoload_unregister(array(
@@ -8420,11 +8444,10 @@ $sendmessage = $client->account->messages->create(array(
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
-
             }
 
             spl_autoload_register(array('YiiBase','autoload'));
-
+           }
 
 }
   if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){

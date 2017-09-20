@@ -74,6 +74,9 @@ border-bottom: 1px solid #6D6D6D;
 border-bottom: 0;
 }
 
+.content .discount-details{
+  border-bottom: 1px solid #6D6D6D;
+}
 
 .content .discount-details tr{
 background: #171717;
@@ -81,7 +84,7 @@ background: #171717;
 }
 
 .content .discount-details td{
-border-bottom: 1px solid #6D6D6D;
+/*border-bottom: 1px solid #6D6D6D; */
 }
 
 .content .total{
@@ -168,7 +171,7 @@ font-size: 24px !important;
 <td>
 <table class="inline-table">
 <tr>
-<td><p style="font-size: 20px;"><?php echo $vehicle->brand_name." ".$vehicle->model_name; ?></p>
+<td><p style="font-size: 20px;"><?php echo $vehicle->brand_name." ".$vehicle->model_name; ?></p></td>
 <td class="rightalign">
 <p class="price">+$<?php echo $vehicle->vehicle_washing_price_agent; ?></p>
 </td>
@@ -188,7 +191,7 @@ font-size: 24px !important;
 <?php if($vehicle->extclaybar_vehicle_fee > 0): ?>
 <tr>
 <td>
-<p style="color: #ccc;">Full Exterior Clay Bar</p>
+<p style="color: #ccc;">Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td class="rightalign"><p>+$<?php $extclaybar_fee = $vehicle->extclaybar_vehicle_fee*.8; echo number_format(round($extclaybar_fee, 2), 2); ?></p></td>
 </tr>
@@ -201,12 +204,28 @@ font-size: 24px !important;
 <td class="rightalign"><p>+$<?php $waterspotremove_fee = $vehicle->waterspotremove_vehicle_fee*.8; echo number_format(round($waterspotremove_fee, 2), 2); ?></p></td>
 </tr>
 <?php endif; ?>
+<?php if($vehicle->upholstery_vehicle_fee > 0): ?>
+<tr>
+<td>
+<p style="color: #ccc;">Upholstery Conditioning</p>
+</td>
+<td class="rightalign"><p>+$<?php $upholstery_fee = $vehicle->upholstery_vehicle_fee*.8; echo number_format(round($upholstery_fee, 2), 2); ?></p></td>
+</tr>
+<?php endif; ?>
 <?php if($vehicle->exthandwax_vehicle_fee > 0): ?>
 <tr>
 <td>
 <p style="color: #ccc;">Full Exterior Hand Wax (Liquid form)</p>
 </td>
 <td class="rightalign"><p>+$<?php $exthandwax_fee = $vehicle->exthandwax_vehicle_fee*.8; echo number_format(round($exthandwax_fee, 2), 2); ?></p></td>
+</tr>
+<?php endif; ?>
+<?php if($vehicle->floormat_vehicle_fee > 0): ?>
+<tr>
+<td>
+<p style="color: #ccc;">Floor Mat Cleaning</p>
+</td>
+<td class="rightalign"><p>+$<?php $floormat_fee = $vehicle->floormat_vehicle_fee*.8; echo number_format(round($floormat_fee, 2), 2); ?></p></td>
 </tr>
 <?php endif; ?>
 <?php if($vehicle->pet_hair_fee > 0): ?>
@@ -257,6 +276,18 @@ font-size: 24px !important;
 <?php endforeach; ?>
 
 </table>
+<?php if($kartdata->wash_now_fee > 0): ?>
+<table class="discount-details">
+
+<tr>
+<td><p>Wash Now Fee</p></td>
+<td class="rightalign" style="vertical-align: top; min-width: 90px;">
+<p class="price">+$<?php echo number_format(round($kartdata->wash_now_fee*.80, 2), 2); ?></p>
+</td>
+</tr>
+
+</table>
+<?php endif; ?>
 <?php if($kartdata->tip_amount > 0): ?>
 <table class="discount-details">
 

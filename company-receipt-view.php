@@ -79,13 +79,17 @@ border-bottom: 0;
 }
 
 
+.content .discount-details{
+ border-bottom: 1px solid #6D6D6D;
+}
+
 .content .discount-details tr{
 background: #171717;
 
 }
 
 .content .discount-details td{
-border-bottom: 1px solid #6D6D6D;
+/*border-bottom: 1px solid #6D6D6D;*/
 }
 
 .content .total{
@@ -236,7 +240,7 @@ margin: 0;
 <?php if($vehicle->extclaybar_vehicle_fee > 0): ?>
 <tr>
 <td>
-<p style="color: #ccc;">Full Exterior Clay Bar</p>
+<p style="color: #ccc;">Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td class="rightalign"><p>-</p></td>
 </tr>
@@ -245,6 +249,14 @@ margin: 0;
 <tr>
 <td>
 <p style="color: #ccc;">Water Spot Removal</p>
+</td>
+<td class="rightalign"><p>-</p></td>
+</tr>
+<?php endif; ?>
+<?php if($vehicle->upholstery_vehicle_fee > 0): ?>
+<tr>
+<td>
+<p style="color: #ccc;">Upholstery Conditioning</p>
 </td>
 <td class="rightalign"><p>-</p></td>
 </tr>
@@ -261,6 +273,14 @@ margin: 0;
 <tr>
 <td>
 <p style="color: #ccc;">Dressing of all Exterior Plastics</p>
+</td>
+<td class="rightalign"><p>-</p></td>
+</tr>
+<?php endif; ?>
+<?php if($vehicle->floormat_vehicle_fee > 0): ?>
+<tr>
+<td>
+<p style="color: #ccc;">Floor Mat Cleaning</p>
 </td>
 <td class="rightalign"><p>-</p></td>
 </tr>
@@ -310,26 +330,27 @@ margin: 0;
 
 <?php endforeach; ?>
 </table>
-<?php if($kartdata->coupon_discount): ?>
-<table class="discount-details">
 <?php if($kartdata->coupon_discount > 0): ?>
+<table class="discount-details">
 <tr>
 <td><p>Promo Discount</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
 <p class="price">-</p>
 </td>
 </tr>
+</table>
 <?php endif; ?>
 <?php if($kartdata->tip_amount > 0): ?>
+<table class="discount-details">
 <tr>
 <td><p>Tip</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
 <p class="price">-</p>
 </td>
 </tr>
-<?php endif; ?>
 </table>
 <?php endif; ?>
+
 <table class="discount-details">
 <tr>
 <td><p style="font-size: 20px;">Cancel Fee</p></td>
@@ -379,7 +400,7 @@ else echo number_format($vehicle->vehicle_washing_price*.20, 2);
 <?php if($vehicle->extclaybar_vehicle_fee > 0): ?>
 <tr>
 <td>
-<p style="color: #ccc;">Full Exterior Clay Bar</p>
+<p style="color: #ccc;">Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td class="rightalign"><p>+$<?php 
 echo number_format($vehicle->extclaybar_vehicle_fee*.20, 2); ?></p></td>
@@ -401,12 +422,28 @@ echo number_format($vehicle->extclaybar_vehicle_fee*.20, 2); ?></p></td>
 <td class="rightalign"><p>+$<?php echo number_format($vehicle->exthandwax_vehicle_fee *.20, 2); ?></p></td>
 </tr>
 <?php endif; ?>
+<?php if($vehicle->upholstery_vehicle_fee > 0): ?>
+<tr>
+<td>
+<p style="color: #ccc;">Upholstery Conditioning</p>
+</td>
+<td class="rightalign"><p>+$<?php echo number_format($vehicle->upholstery_vehicle_fee *.20, 2); ?></p></td>
+</tr>
+<?php endif; ?>
 <?php if($vehicle->extplasticdressing_vehicle_fee > 0): ?>
 <tr>
 <td>
 <p style="color: #ccc;">Dressing of all Exterior Plastics</p>
 </td>
 <td class="rightalign"><p>+$<?php echo number_format($vehicle->extplasticdressing_vehicle_fee*.20, 2); ?></p></td>
+</tr>
+<?php endif; ?>
+<?php if($vehicle->floormat_vehicle_fee > 0): ?>
+<tr>
+<td>
+<p style="color: #ccc;">Floor Mat Cleaning</p>
+</td>
+<td class="rightalign"><p>+$<?php echo number_format($vehicle->floormat_vehicle_fee *.20, 2); ?></p></td>
 </tr>
 <?php endif; ?>
 <tr>
@@ -456,9 +493,31 @@ else echo number_format($vehicle->fifth_wash_discount, 2); ?></p></td>
 
 <?php endforeach; ?>
 </table>
-<?php if($kartdata->coupon_discount): ?>
+
+<?php if($kartdata->wash_now_fee > 0): ?>
 <table class="discount-details">
+<tr>
+<td><p>Wash Now Fee</p></td>
+<td class="rightalign" style="vertical-align: top; min-width: 90px;">
+<p class="price">+$<?php echo number_format($kartdata->wash_now_fee*.20, 2); ?></p>
+</td>
+</tr>
+</table>
+<?php endif; ?>
+
+<?php if($kartdata->tip_amount > 0): ?>
+<table class="discount-details">
+<tr>
+<td><p>Tip</p></td>
+<td class="rightalign" style="vertical-align: top; min-width: 90px;">
+<p class="price">+$<?php echo number_format($kartdata->tip_amount*.20, 2); ?></p>
+</td>
+</tr>
+</table>
+<?php endif; ?>
+
 <?php if($kartdata->coupon_discount > 0): ?>
+<table class="discount-details">
 <tr>
 <td><p>Promo Discount</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
@@ -466,16 +525,6 @@ else echo number_format($vehicle->fifth_wash_discount, 2); ?></p></td>
 else echo number_format($kartdata->coupon_discount, 2); ?></p>
 </td>
 </tr>
-<?php endif; ?>
-<?php if($kartdata->tip_amount > 0): ?>
-<tr>
-<td><p>Tip</p></td>
-<td class="rightalign" style="vertical-align: top; min-width: 90px;">
-<p class="price">+$<?php echo number_format($kartdata->tip_amount*.20, 2); ?></p>
-</td>
-</tr>
-<?php endif; ?>
-
 </table>
 <?php endif; ?>
 

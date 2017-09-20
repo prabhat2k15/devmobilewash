@@ -2476,7 +2476,7 @@ if($car_details[13]){
 if($car_details[14]){
 							$message .= "<tr>
 							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 							</td>
 							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($car_details[14], 2)."</p></td>
 							</tr>";
@@ -2693,7 +2693,7 @@ if($car_details[13]){
 if($car_details[14]){
 							$message .= "<tr>
 							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 							</td>
 							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($car_details[14]*.8, 2)."</p></td>
 							</tr>";
@@ -3890,7 +3890,7 @@ $message .="<tr>
 if($vehicle->extclaybar_vehicle_fee > 0){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extclaybar_vehicle_fee."</p></td>
 </tr>";
@@ -4016,6 +4016,19 @@ $message .= "<tr>
 $message .= "</table>";
 }*/
 
+
+if($kartdata->wash_now_fee > 0){
+$message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$message .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->wash_now_fee, 2)."</p>
+</td>
+</tr>";
+
+$message .= "</table>";
+}
 
 if($kartdata->tip_amount > 0){
 $message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
@@ -4175,7 +4188,7 @@ $message_agent .="<tr>
 if($vehicle->extclaybar_vehicle_fee_agent > 0){
 $message_agent .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extclaybar_vehicle_fee_agent."</p></td>
 </tr>";
@@ -4260,6 +4273,19 @@ $message_agent .= "</table>
 
 }
 $message_agent .= "</table>";
+
+if($kartdata->wash_now_fee > 0){
+$message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$message_agent .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.80, 2), 2)."</p>
+</td>
+</tr>";
+
+$message_agent .= "</table>";
+}
 
 if($kartdata->tip_amount > 0){
 $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";

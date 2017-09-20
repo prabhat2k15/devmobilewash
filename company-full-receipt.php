@@ -116,7 +116,7 @@ else{ ?>
 if($vehicle->extclaybar_vehicle_fee > 0){  ?>
 <tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$<?php echo number_format($vehicle->extclaybar_vehicle_fee*.20, 2); ?></p></td>
 </tr>
@@ -234,7 +234,28 @@ if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles
 
 <?php } ?>
 </table>
-<?php if($kartdata->coupon_discount > 0){  ?>
+<?php
+if($kartdata->wash_now_fee > 0){ ?>
+<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
+<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_now_fee*.20, 2), 2); ?></p>
+</td>
+</tr>
+</table>
+<?php }
+if($kartdata->tip_amount > 0){ ?>
+<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
+<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Tip</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->tip_amount*.20, 2), 2); ?></p>
+</td>
+</tr>
+</table>
+<?php }
+if($kartdata->coupon_discount > 0){  ?>
     <table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
    <?php if((count($kartdata->vehicles) > 1)){ ?>
     <tr>
@@ -253,17 +274,6 @@ if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles
 </tr>
   <?php } ?>
   </table>
-<?php }
-
-if($kartdata->tip_amount > 0){ ?>
-<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
-<tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Tip</p></td>
-<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->tip_amount*.20, 2), 2); ?></p>
-</td>
-</tr>
-</table>
 <?php } ?>
 
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
@@ -328,7 +338,7 @@ else{ ?>
 if($vehicle->extclaybar_vehicle_fee > 0){ ?>
 <tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$<?php echo $vehicle->extclaybar_vehicle_fee; ?></p></td>
 </tr>
@@ -444,7 +454,18 @@ if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles
 <?php } ?>
 </table>
 
-<?php if($kartdata->tip_amount > 0){ ?>
+<?php if($kartdata->wash_now_fee > 0){ ?>
+<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
+
+<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format($kartdata->wash_now_fee, 2); ?></p>
+</td>
+</tr>
+</table>
+<?php }
+if($kartdata->tip_amount > 0){ ?>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
 
 <tr>
@@ -518,7 +539,7 @@ else{ ?>
 if($vehicle->extclaybar_vehicle_fee_agent > 0){ ?>
 <tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar</p>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$<?php echo $vehicle->extclaybar_vehicle_fee_agent; ?></p></td>
 </tr>
@@ -601,7 +622,19 @@ if($vehicle->extplasticdressing_vehicle_fee_agent > 0){ ?>
 <?php } ?>
 </table>
 
-<?php if($kartdata->tip_amount > 0){ ?>
+<?php if($kartdata->wash_now_fee > 0){ ?>
+<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
+
+<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_now_fee*.80, 2), 2); ?></p>
+</td>
+</tr>
+
+</table>
+<?php }
+if($kartdata->tip_amount > 0){ ?>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
 
 <tr>

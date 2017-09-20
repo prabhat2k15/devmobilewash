@@ -503,7 +503,7 @@ if((count($total_cars) > 1) && ($carindex==0) && ($wash_id_check->coupon_discoun
 
 /* ---- tip ---- */
 
-if($wash_id_check->tip_amount) {
+if($wash_id_check->tip_amount > 0) {
 $tip_amount = $wash_id_check->tip_amount;
 $total =  $total + $tip_amount;
  $company_total =  $company_total + ($tip_amount * .20);
@@ -511,6 +511,17 @@ $total =  $total + $tip_amount;
 }
 
 /* ----- tip end ---- */
+
+/* ---- wash now fee ---- */
+
+if($wash_id_check->wash_now_fee > 0) {
+$wash_now_fee = $wash_id_check->wash_now_fee;
+$total =  $total + $wash_now_fee;
+ $company_total =  $company_total + ($wash_now_fee * .20);
+ $agent_total =  $agent_total + ($wash_now_fee * .80);
+}
+
+/* ----- wash now fee end ---- */
 
 				/* ------------ bundle discount ------- */
 
@@ -663,6 +674,7 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
             'washer_late_cancel' => $wash_id_check->washer_late_cancel,
             'washer_payment_status' => $wash_id_check->washer_payment_status,
             'total_schedule_rejected' => $wash_id_check->total_schedule_rejected,
+            'wash_now_fee' => $wash_id_check->wash_now_fee,
             'vehicles' => $vehicles
         );
 

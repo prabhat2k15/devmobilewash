@@ -577,11 +577,6 @@ margin-top: 20px;
 }
 
 
-.extclaybar, .waterspotremove{
-    display: none;
-}
-
-
 .sec-heading {
     margin-top: 0;
     margin-bottom: 25px;
@@ -1037,10 +1032,10 @@ if($vehdata->vehicle->vehicle_type == 'E') $clay_bar_price = 45;
 <p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="extplasticdressing <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extplasticdressing" value="8" <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "checked"; ?>> $8 Dressing of all Exterior Plastics</p>
 <input type="hidden" name="extplasticdressings[]" id="extplasticdressings" value="<?php echo $veh->extplasticdressing_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: block;'; ?>" class="extclaybar <?php if($veh->extclaybar_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extclaybar" value="<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else{ echo $clay_bar_price;} ?>" <?php if($veh->extclaybar_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else{ echo $clay_bar_price;} ?> Full Exterior Clay Bar</p>
+<p style="margin-top: 20px;" class="extclaybar <?php if($veh->extclaybar_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extclaybar" value="<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else{ echo $clay_bar_price;} ?>" <?php if($veh->extclaybar_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else{ echo $clay_bar_price;} ?> Full Exterior Clay Bar</p>
 <input type="hidden" name="extclaybars[]" id="extclaybars" value="<?php echo $veh->extclaybar_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: block;'; ?>" class="waterspotremove <?php if($veh->waterspotremove_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="waterspotremove" value="30" <?php if($veh->waterspotremove_vehicle_fee > 0) echo "checked"; ?>> $30 Water Spot Removal</p>
+<p style="margin-top: 20px;" class="waterspotremove <?php if($veh->waterspotremove_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="waterspotremove" value="30" <?php if($veh->waterspotremove_vehicle_fee > 0) echo "checked"; ?>> $30 Water Spot Removal</p>
 <input type="hidden" name="waterspotremoves[]" id="waterspotremoves" value="<?php echo $veh->waterspotremove_vehicle_fee; ?>" />
 
 <p class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Pet Hair Fee</p>
@@ -1149,10 +1144,10 @@ if($vehdata->vehicle->vehicle_type == 'E') $clay_bar_price = 45;
 <p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="extplasticdressing <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extplasticdressing" value="8" <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "checked"; ?>> $8 Dressing of all Exterior Plastics</p>
 <input type="hidden" id="extplasticdressings" name="extplasticdressings[]" value="<?php echo $veh->extplasticdressing_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: block;'; ?>" class="extclaybar <?php if($veh->extclaybar_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extclaybar" value="<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else {echo $clay_bar_price;} ?>" <?php if($veh->extclaybar_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else {echo $clay_bar_price;} ?> Full Exterior Clay Bar</p>
+<p style="margin-top: 20px;" class="extclaybar <?php if($veh->extclaybar_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extclaybar" value="<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else {echo $clay_bar_price;} ?>" <?php if($veh->extclaybar_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else {echo $clay_bar_price;} ?> Full Exterior Clay Bar</p>
 <input type="hidden" id="extclaybars" name="extclaybars[]" value="<?php echo $veh->extclaybar_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: block;'; ?>" class="waterspotremove <?php if($veh->waterspotremove_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="waterspotremove" value="30" <?php if($veh->waterspotremove_vehicle_fee > 0) echo "checked"; ?>> $30 Water Spot Removal</p>
+<p style="margin-top: 20px;" class="waterspotremove <?php if($veh->waterspotremove_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="waterspotremove" value="30" <?php if($veh->waterspotremove_vehicle_fee > 0) echo "checked"; ?>> $30 Water Spot Removal</p>
 <input type="hidden" id="waterspotremoves" name="waterspotremoves[]" value="<?php echo $veh->waterspotremove_vehicle_fee; ?>" />
 
 <p class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Pet Hair Fee</p>
@@ -2178,15 +2173,7 @@ wash_points++;
 
 $( "#phone-order-form" ).on( "change", ".regular-pack, .classic-pack", function() {
    if($(this).val() == 'Deluxe'){
-$(this).parent().find('.extclaybar input[type=checkbox]').prop( "checked", false );
-	$(this).parent().find('.extclaybar span').removeClass( "checked");
-$(this).parent().find('#extclaybars').val(0);
-$(this).parent().find('.waterspotremove input[type=checkbox]').prop( "checked", false );
-	$(this).parent().find('.waterspotremove span').removeClass( "checked");
-$(this).parent().find('#waterspotremoves').val(0);
 
-$(this).parent().find('.extclaybar, .waterspotremove').removeClass('addon-checked');
-$(this).parent().find('.extclaybar, .waterspotremove').hide();
 $(this).parent().find('.exthandwax, .extplasticdressing').show();
 first_dis = $(this).parent().find('#first_discs').val();
 fifth_dis = $(this).parent().find('#fifth_discs').val();
@@ -2214,7 +2201,6 @@ $(this).parent().find('#extplasticdressings').val(0);
 
 $(this).parent().find('.exthandwax, .extplasticdressing').removeClass('addon-checked');
 $(this).parent().find('.exthandwax, .extplasticdressing').hide();
-$(this).parent().find('.extclaybar, .waterspotremove').show();
 
 first_dis = $(this).parent().find('#first_discs').val();
 fifth_dis = $(this).parent().find('#fifth_discs').val();
