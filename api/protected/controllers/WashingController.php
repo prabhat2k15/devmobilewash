@@ -1595,19 +1595,33 @@ else $customername = $cust_name[0];
         $tip_amount = Yii::app()->request->getParam('tip_amount');
         $washer_penalty_fee = Yii::app()->request->getParam('washer_penalty_fee');
         $admin_permit = Yii::app()->request->getParam('admin_permit');
-
+        $washer_ondemand_job_accept = 0;
+        if(Yii::app()->request->getParam('washer_ondemand_job_accept')) $washer_ondemand_job_accept = Yii::app()->request->getParam('washer_ondemand_job_accept');
         $result = 'false';
         $response = 'Pass the required parameters';
         $json = array();
 
         $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
         $order_for_date = '';
+
         if(count($agent_detail) && $agent_detail->block_washer)
         {
             $json = array('result'=> 'false',
                         'response'=> 'Account error. Please contact MobileWash.');
 
             echo json_encode($json);die();
+        }
+
+         if($washer_ondemand_job_accept == 1)
+        {
+            $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+            if($wrequest_id_check->status != 0){
+               $json = array('result'=> 'false',
+                        'response'=> 'Request is already canceled by customer');
+
+            echo json_encode($json);die();
+            }
+
         }
 
         if((isset($wash_request_id) && !empty($buzz_status)))
