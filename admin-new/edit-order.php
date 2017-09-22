@@ -995,6 +995,7 @@ if($vehdata->vehicle->vehicle_type == 'E') $clay_bar_price = 45;
 <input type="hidden" name="car_types[]" value="<?php echo $veh->vehicle_cat; ?>" />
 <label class='control-label'>Package</label>
 <select name="car_packs[]" class="form-control regular-pack" style="width: 300px;">
+<option value="Express" <?php if($veh->vehicle_washing_package == 'Express') echo "selected"; ?>>EXPRESS WASH</option>
 <option value="Deluxe" <?php if($veh->vehicle_washing_package == 'Deluxe') echo "selected"; ?>>DELUXE WASH</option>
 <option value="Premium" <?php if($veh->vehicle_washing_package == 'Premium') echo "selected"; ?>>PREMIUM DETAIL</option>
 </select>
@@ -1011,9 +1012,9 @@ if($vehdata->vehicle->vehicle_type == 'E') $clay_bar_price = 45;
 <p class="points-holder"><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img class="last" src="../images/blue-bubble2.png" /></p>
 <?php endif; ?>
 
-<!--<label class='control-label'>Price</label>
-<input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="$<?php echo $veh_detail[4]; ?>" />
-<input type="hidden" name="car_prices[]" value="<?php echo $veh_detail[4]; ?>" />-->
+<label class='control-label'>Price</label>
+<input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="$<?php echo $veh->vehicle_washing_price; ?>" />
+<!--<input type="hidden" name="car_prices[]" value="<?php echo $veh_detail[4]; ?>" />-->
 
 <!--<label class='control-label'>Handling Fee</label>
 <input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="$<?php echo number_format($veh_detail[7], 2); ?>" />-->
@@ -1038,10 +1039,10 @@ if($vehdata->vehicle->vehicle_type == 'E') $clay_bar_price = 45;
 <p style="margin-top: 20px;" class="waterspotremove <?php if($veh->waterspotremove_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="waterspotremove" value="30" <?php if($veh->waterspotremove_vehicle_fee > 0) echo "checked"; ?>> $30 Water Spot Removal</p>
 <input type="hidden" name="waterspotremoves[]" id="waterspotremoves" value="<?php echo $veh->waterspotremove_vehicle_fee; ?>" />
 
-<p class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Pet Hair Fee</p>
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Pet Hair Fee</p>
 <input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo $veh->pet_hair_fee; ?>" />
 
-<p class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
 <input type="hidden" name="truck_fees[]" id="truck_fees" value="<?php echo $veh->lifted_vehicle_fee; ?>" />
 
 
@@ -1105,6 +1106,7 @@ if($vehdata->vehicle->vehicle_type == 'E') $clay_bar_price = 45;
 
 <label class='control-label'>Package</label>
 <select name="car_packs[]" class="form-control regular-pack" style="width: 300px;">
+<option value="Express" <?php if($veh->vehicle_washing_package == 'Express') echo "selected"; ?>>EXPRESS WASH</option>
 <option value="Deluxe" <?php if($veh->vehicle_washing_package == 'Deluxe') echo "selected"; ?>>DELUXE WASH</option>
 <option value="Premium" <?php if($veh->vehicle_washing_package == 'Premium') echo "selected"; ?>>PREMIUM DETAIL</option>
 </select>
@@ -1122,9 +1124,9 @@ if($vehdata->vehicle->vehicle_type == 'E') $clay_bar_price = 45;
 <?php endif; ?>
 
 
-<!--<label class='control-label'>Price</label>
-<input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="$<?php echo $veh_detail[4]; ?>" />
-<input type="hidden" name="car_prices[]" value="<?php echo $veh_detail[4]; ?>" />-->
+<label class='control-label'>Price</label>
+<input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="$<?php echo $veh->vehicle_washing_price; ?>" />
+<!--<input type="hidden" name="car_prices[]" value="<?php echo $veh_detail[4]; ?>" />-->
 
 <!--<label class='control-label'>Handling Fee</label>
 <input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="$<?php echo number_format($veh_detail[7], 2); ?>" />-->
@@ -1150,10 +1152,10 @@ if($vehdata->vehicle->vehicle_type == 'E') $clay_bar_price = 45;
 <p style="margin-top: 20px;" class="waterspotremove <?php if($veh->waterspotremove_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="waterspotremove" value="30" <?php if($veh->waterspotremove_vehicle_fee > 0) echo "checked"; ?>> $30 Water Spot Removal</p>
 <input type="hidden" id="waterspotremoves" name="waterspotremoves[]" value="<?php echo $veh->waterspotremove_vehicle_fee; ?>" />
 
-<p class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Pet Hair Fee</p>
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Pet Hair Fee</p>
 <input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo $veh->pet_hair_fee; ?>" />
 
-<p class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
 <input type="hidden" id="truck_fees" name="truck_fees[]" value="<?php echo $veh->lifted_vehicle_fee; ?>" />
 
 
@@ -1984,7 +1986,7 @@ first_time_wash = 0;
     content += regular_makes;
     content += "</select><label class='control-label'>Model</label><select name='car_models[]' class='form-control regular-model' style='width: 300px;'>";
     content += regular_models;
-    content += "</select><label class='control-label'>Package</label><select name='car_packs[]' class='form-control regular-pack' style='width: 300px;'><option value='Deluxe'>DELUXE WASH</option><option value='Premium'>PREMIUM DETAIL</option></select><input type='hidden' id='car_type' name='car_types[]' value='regular'><input type='hidden' id='handle_fee' name='handle_fees[]' value='1'><p style='margin-top: 20px;' class='exthandwax'><input type='checkbox' id='exthandwax' value='12' /> $12 Full Exterior Hand Wax (Liquid form)</p><p style='margin-top: 20px;' class='extplasticdressing'><input type='checkbox' id='extplasticdressing' value='8' /> $8 Dressing of all Exterior Plastics</p><p style='margin-top: 20px;' class='extclaybar'><input type='checkbox' id='extclaybar' value='40' /> $40 Full Exterior Clay Bar</p><p style='margin-top: 20px;' class='waterspotremove'><input type='checkbox' id='waterspotremove' value='30' /> $30 Water Spot Removal</p><p class='pet_fee_el' style='margin-top: 20px;'><input type='checkbox' id='pet_fee' value='10' /> $10 Pet Hair Fee</p><p class='lifted_truck_el' style='margin-top: 20px;'><input type='checkbox' id='lifted_truck_fee' value='10' /> $10 Lifted Truck Fee</p><input type='hidden' name='pet_fees[]' id='pet_fees' value='0' /><input type='hidden' name='truck_fees[]' id='truck_fees' value='0' /><input type='hidden' id='exthandwaxes' name='exthandwaxes[]' value='0'><input type='hidden' id='extplasticdressings' name='extplasticdressings[]' value='0'><input type='hidden' id='extclaybars' name='extclaybars[]' value='0'><input type='hidden' id='waterspotremoves' name='waterspotremoves[]' value='0'><input type='hidden' name='car_ids[]' id='car_id' value='0' />";
+    content += "</select><label class='control-label'>Package</label><select name='car_packs[]' class='form-control regular-pack' style='width: 300px;'><option value='Express'>EXPRESS WASH</option><option value='Deluxe'>DELUXE WASH</option><option value='Premium'>PREMIUM DETAIL</option></select><input type='hidden' id='car_type' name='car_types[]' value='regular'><input type='hidden' id='handle_fee' name='handle_fees[]' value='1'><p style='margin-top: 20px;' class='exthandwax'><input type='checkbox' id='exthandwax' value='12' /> $12 Full Exterior Hand Wax (Liquid form)</p><p style='margin-top: 20px;' class='extplasticdressing'><input type='checkbox' id='extplasticdressing' value='8' /> $8 Dressing of all Exterior Plastics</p><p style='margin-top: 20px;' class='extclaybar'><input type='checkbox' id='extclaybar' value='40' /> $40 Full Exterior Clay Bar</p><p style='margin-top: 20px;' class='waterspotremove'><input type='checkbox' id='waterspotremove' value='30' /> $30 Water Spot Removal</p><p class='pet_fee_el' style='margin-top: 20px;'><input type='checkbox' id='pet_fee' value='10' /> $10 Pet Hair Fee</p><p class='lifted_truck_el' style='margin-top: 20px;'><input type='checkbox' id='lifted_truck_fee' value='10' /> $10 Lifted Truck Fee</p><input type='hidden' name='pet_fees[]' id='pet_fees' value='0' /><input type='hidden' name='truck_fees[]' id='truck_fees' value='0' /><input type='hidden' id='exthandwaxes' name='exthandwaxes[]' value='0'><input type='hidden' id='extplasticdressings' name='extplasticdressings[]' value='0'><input type='hidden' id='extclaybars' name='extclaybars[]' value='0'><input type='hidden' id='waterspotremoves' name='waterspotremoves[]' value='0'><input type='hidden' name='car_ids[]' id='car_id' value='0' />";
  if(first_time_wash == 1){
         content += "<div class='first-disc-wrap'><p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' /></div>";
     }
@@ -2028,7 +2030,7 @@ wash_points++;
     content += classic_makes;
     content += "</select><label class='control-label'>Model</label><select name='car_models[]' class='form-control classic-model' style='width: 300px;'>";
     content += classic_models;
-    content += "</select><label class='control-label'>Package</label><select name='car_packs[]' class='form-control classic-pack' style='width: 300px;'><option value='Deluxe'>DELUXE WASH</option><option value='Premium'>PREMIUM DETAIL</option></select><input type='hidden' id='car_type' name='car_types[]' value='classic'><input type='hidden' id='handle_fee' name='handle_fees[]' value='1'><p style='margin-top: 20px;' class='exthandwax'><input type='checkbox' id='exthandwax' value='12' /> $12 Full Exterior Hand Wax (Liquid form)</p><p style='margin-top: 20px;' class='extplasticdressing'><input type='checkbox' id='extplasticdressing' value='8' /> $8 Dressing of all Exterior Plastics</p><p style='margin-top: 20px;' class='extclaybar'><input type='checkbox' id='extclaybar' value='40' /> $40 Full Exterior Clay Bar</p><p style='margin-top: 20px;' class='waterspotremove'><input type='checkbox' id='waterspotremove' value='30' /> $30 Water Spot Removal</p><p style='margin-top: 20px;' class='pet_fee_el'><input type='checkbox' id='pet_fee' value='10' /> $10 Pet Hair Fee</p><p class='lifted_truck_el' style='margin-top: 20px;'><input type='checkbox' id='lifted_truck_fee' value='10' /> $10 Lifted Truck Fee</p><input type='hidden' name='pet_fees[]' id='pet_fees' value='0' /><input type='hidden' name='truck_fees[]' id='truck_fees' value='0' /><input type='hidden' id='exthandwaxes' name='exthandwaxes[]' value='0'><input type='hidden' id='extplasticdressings' name='extplasticdressings[]' value='0'><input type='hidden' id='extclaybars' name='extclaybars[]' value='0'><input type='hidden' id='waterspotremoves' name='waterspotremoves[]' value='0'><input type='hidden' name='car_ids[]' id='car_id' value='0' />";
+    content += "</select><label class='control-label'>Package</label><select name='car_packs[]' class='form-control classic-pack' style='width: 300px;'><option value='Express'>EXPRESS WASH</option><option value='Deluxe'>DELUXE WASH</option><option value='Premium'>PREMIUM DETAIL</option></select><input type='hidden' id='car_type' name='car_types[]' value='classic'><input type='hidden' id='handle_fee' name='handle_fees[]' value='1'><p style='margin-top: 20px;' class='exthandwax'><input type='checkbox' id='exthandwax' value='12' /> $12 Full Exterior Hand Wax (Liquid form)</p><p style='margin-top: 20px;' class='extplasticdressing'><input type='checkbox' id='extplasticdressing' value='8' /> $8 Dressing of all Exterior Plastics</p><p style='margin-top: 20px;' class='extclaybar'><input type='checkbox' id='extclaybar' value='40' /> $40 Full Exterior Clay Bar</p><p style='margin-top: 20px;' class='waterspotremove'><input type='checkbox' id='waterspotremove' value='30' /> $30 Water Spot Removal</p><p style='margin-top: 20px;' class='pet_fee_el'><input type='checkbox' id='pet_fee' value='10' /> $10 Pet Hair Fee</p><p class='lifted_truck_el' style='margin-top: 20px;'><input type='checkbox' id='lifted_truck_fee' value='10' /> $10 Lifted Truck Fee</p><input type='hidden' name='pet_fees[]' id='pet_fees' value='0' /><input type='hidden' name='truck_fees[]' id='truck_fees' value='0' /><input type='hidden' id='exthandwaxes' name='exthandwaxes[]' value='0'><input type='hidden' id='extplasticdressings' name='extplasticdressings[]' value='0'><input type='hidden' id='extclaybars' name='extclaybars[]' value='0'><input type='hidden' id='waterspotremoves' name='waterspotremoves[]' value='0'><input type='hidden' name='car_ids[]' id='car_id' value='0' />";
  if(first_time_wash == 1){
      content += "<div class='first-disc-wrap'><p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' /></div>";
     }
@@ -2082,13 +2084,13 @@ wash_points++;
 console.log('regular '+wash_points);
  if ( first_time_wash == 1 ) {
           //console.log($('.classic-vehicles-wrap').children('.classic-car-box').length);
-            if($(this).find('.regular-pack').val() == 'Deluxe') $(this).find('.first-disc-wrap').html("<p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' />");
+            if($(this).find('.regular-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.first-disc-wrap').html("<p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' />");
             if($(this).find('.regular-pack').val() == 'Premium') $(this).find('.first-disc-wrap').html("<p>$10 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='10' />");
            first_time_wash = 0;
        }
 
            if(wash_points >= 5){
-             if($(this).find('.regular-pack').val() == 'Deluxe') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
+             if($(this).find('.regular-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
             if($(this).find('.regular-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$10 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='10' />");
              wash_points = 0;
            }
@@ -2101,12 +2103,12 @@ wash_points++;
 console.log('classic '+wash_points);
   if ( first_time_wash == 1 ) {
           //console.log($('.classic-vehicles-wrap').children('.classic-car-box').length);
-            if($(this).find('.classic-pack').val() == 'Deluxe') $(this).find('.first-disc-wrap').html("<p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' />");
+            if($(this).find('.classic-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.first-disc-wrap').html("<p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' />");
             if($(this).find('.classic-pack').val() == 'Premium') $(this).find('.first-disc-wrap').html("<p>$10 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='10' />");
            first_time_wash = 0;
        }
            if(wash_points >= 5){
-             if($(this).find('.classic-pack').val() == 'Deluxe') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
+             if($(this).find('.classic-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
             if($(this).find('.classic-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$10 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='10' />");
              wash_points = 0;
            }
@@ -2135,12 +2137,12 @@ wash_points++;
 console.log('regular '+wash_points);
  if ( first_time_wash == 1 ) {
           //console.log($('.classic-vehicles-wrap').children('.classic-car-box').length);
-            if($(this).find('.regular-pack').val() == 'Deluxe') $(this).find('.first-disc-wrap').html("<p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' />");
+            if($(this).find('.regular-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.first-disc-wrap').html("<p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' />");
             if($(this).find('.regular-pack').val() == 'Premium') $(this).find('.first-disc-wrap').html("<p>$10 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='10' />");
            first_time_wash = 0;
        }
            if(wash_points >= 5){
-             if($(this).find('.regular-pack').val() == 'Deluxe') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
+             if($(this).find('.regular-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
             if($(this).find('.regular-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$10 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='10' />");
              wash_points = 0;
            }
@@ -2154,12 +2156,12 @@ wash_points++;
 //console.log('classic '+wash_points);
   if ( first_time_wash == 1 ) {
           //console.log($('.classic-vehicles-wrap').children('.classic-car-box').length);
-            if($(this).find('.classic-pack').val() == 'Deluxe') $(this).find('.first-disc-wrap').html("<p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' />");
+            if($(this).find('.classic-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.first-disc-wrap').html("<p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' />");
             if($(this).find('.classic-pack').val() == 'Premium') $(this).find('.first-disc-wrap').html("<p>$10 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='10' />");
            first_time_wash = 0;
        }
            if(wash_points >= 5){
-             if($(this).find('.classic-pack').val() == 'Deluxe') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
+             if($(this).find('.classic-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
             if($(this).find('.classic-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$10 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='10' />");
              wash_points = 0;
            }
@@ -2172,7 +2174,16 @@ wash_points++;
 });
 
 $( "#phone-order-form" ).on( "change", ".regular-pack, .classic-pack", function() {
-   if($(this).val() == 'Deluxe'){
+ if($(this).val() == 'Express'){
+   $(this).parent().find('.pet_fee_el input[type=checkbox]').prop( "checked", false );
+$(this).parent().find('.pet_fee_el span').removeClass( "checked");
+$(this).parent().find('#pet_fees').val(0);
+$(this).parent().find('.lifted_truck_el input[type=checkbox]').prop( "checked", false );
+	$(this).parent().find('.lifted_truck_el span').removeClass( "checked");
+$(this).parent().find('#truck_fees').val(0);
+
+$(this).parent().find('.pet_fee_el, .lifted_truck_el').removeClass('addon-checked');
+$(this).parent().find('.pet_fee_el, .lifted_truck_el').hide();
 
 $(this).parent().find('.exthandwax, .extplasticdressing').show();
 first_dis = $(this).parent().find('#first_discs').val();
@@ -2188,6 +2199,27 @@ if(fifth_dis != '0') {
 $(this).parent().find('#fifth_discs').val('5');
 $(this).parent().find('#fifth_discs').prev().html('$5 Fifth Wash Discount');
 }
+
+ }
+
+ if($(this).val() == 'Deluxe'){
+
+$(this).parent().find('.exthandwax, .extplasticdressing').show();
+first_dis = $(this).parent().find('#first_discs').val();
+fifth_dis = $(this).parent().find('#fifth_discs').val();
+
+//console.log(first_dis);
+if(first_dis != '0') {
+$(this).parent().find('#first_discs').val('5');
+$(this).parent().find('#first_discs').prev().html('$5 First Wash Discount');
+}
+
+if(fifth_dis != '0') {
+$(this).parent().find('#fifth_discs').val('5');
+$(this).parent().find('#fifth_discs').prev().html('$5 Fifth Wash Discount');
+}
+
+$(this).parent().find('.pet_fee_el, .lifted_truck_el').show();
 
 }
 
@@ -2215,6 +2247,8 @@ if(fifth_dis != '0') {
 $(this).parent().find('#fifth_discs').val('10');
 $(this).parent().find('#fifth_discs').prev().html('$10 Fifth Wash Discount');
 }
+
+$(this).parent().find('.pet_fee_el, .lifted_truck_el').show();
 
 }
    return false;

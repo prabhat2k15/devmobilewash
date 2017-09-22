@@ -651,6 +651,50 @@ $sendmessage = $client->account->messages->create(array(
             spl_autoload_register(array('YiiBase','autoload'));
            }
 
+              /* ------- get nearest agents --------- */
+
+$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
+$data = array('wash_request_id' => $washrequestid, "key" => API_KEY, 'ignore_offline' => 1);
+curl_setopt($handle, CURLOPT_POST, true);
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+$output = curl_exec($handle);
+curl_close($handle);
+$nearagentsdetails = json_decode($output);
+
+            /* ------- get nearest agents end --------- */
+
+            if($nearagentsdetails->result == 'true'){
+                 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
+							$message = $pushmsg[0]['message'];
+foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
+
+     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ")->queryAll();
+
+							foreach($agentdevices as $agdevice){
+								//$message =  "You have a new scheduled wash request.";
+								//echo $agentdetails['mobile_type'];
+								$device_type = strtolower($agdevice['device_type']);
+								$notify_token = $agdevice['device_token'];
+								$alert_type = "default";
+								$notify_msg = urlencode($message);
+
+								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+								$ch = curl_init();
+								curl_setopt($ch,CURLOPT_URL,$notifyurl);
+								curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+								if($notify_msg) $notifyresult = curl_exec($ch);
+								curl_close($ch);
+							}
+
+}
+
+
+
+            }
+
   }
 
  /* ---------- add schedule info -------------- */
@@ -2631,14 +2675,14 @@ die();
 
                       /* ------- get nearest agents --------- */
 
-$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
+/*$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
 $data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $output = curl_exec($handle);
 curl_close($handle);
-$nearagentsdetails = json_decode($output);
+$nearagentsdetails = json_decode($output);*/
 
             /* ------- get nearest agents end --------- */
 
@@ -2653,7 +2697,7 @@ $nearagentsdetails = json_decode($output);
                 $response= 'Invalid wash request id';
             }
 
- else if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled) && ($nearagentsdetails->result == 'false')){
+/* else if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled) && ($nearagentsdetails->result == 'false')){
 
 
 $wash_time = strtotime($wrequest_id_check->created_date);
@@ -2675,7 +2719,7 @@ if($wrequest_id_check->transaction_id){
 
 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
 
-						/* --- notification call --- */
+
 
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '22' ")->queryAll();
 						$message = $pushmsg[0]['message'];
@@ -2697,7 +2741,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
-/* --- notification call end --- */
+
 
 }
 else{
@@ -2722,7 +2766,6 @@ else{
 
 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
 
-						/* --- notification call --- */
 
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '22' ")->queryAll();
 						$message = $pushmsg[0]['message'];
@@ -2744,13 +2787,12 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
-/* --- notification call end --- */
 
-            }
+            } */
 
 
             else{
-                if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
+                /* if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
                  $wash_time = strtotime($wrequest_id_check->created_date);
 $now_time = time();
 $time_diff = round(abs($now_time - $wash_time) / 60,2);
@@ -2770,7 +2812,6 @@ if($time_diff >= 10){
 
 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
 
-						/* --- notification call --- */
 
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '22' ")->queryAll();
 						$message = $pushmsg[0]['message'];
@@ -2792,7 +2833,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
-/* --- notification call end --- */
+
   $json= array(
                 'result'=> $result,
                 'response'=> $response
@@ -2801,7 +2842,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
         die();
 
 }
-}
+} */
 
                 $wrequest_obj = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id, 'customer_id'=> $customer_id));
 

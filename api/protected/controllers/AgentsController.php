@@ -1839,6 +1839,8 @@ die();
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $cust_lat = Yii::app()->request->getParam('cust_lat');
         $cust_lng = Yii::app()->request->getParam('cust_lng');
+        $ignore_offline = 0;
+        $ignore_offline = Yii::app()->request->getParam('ignore_offline');
           $result= 'false';
 	        $response= 'Pass the required parameters';
               $distance_array = array();
@@ -1910,8 +1912,8 @@ die();
 
                     /* ------- check if agent is available for new order -------- */
 
-                   $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND available_for_new_order = 1 AND block_washer=0")->queryAll();
-
+                   if($ignore_offline == 1) $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND block_washer=0")->queryAll();
+                   else $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND available_for_new_order = 1 AND block_washer=0")->queryAll();
                  /* ------- check if agent is available for new order end -------- */
 
 
@@ -2581,6 +2583,7 @@ die();
        $phone = Yii::app()->request->getParam('phone');
 $password = Yii::app()->request->getParam('password');
        $city = Yii::app()->request->getParam('city');
+       $state = Yii::app()->request->getParam('state');
      $register_token = Yii::app()->request->getParam('register_token');
 $van_lease = '';
 $van_lease = Yii::app()->request->getParam('van_lease');
@@ -2590,7 +2593,7 @@ $phone_verified = Yii::app()->request->getParam('phone_verified');
        $result = 'false';
        $response = 'All fields are required';
 
-       	if((isset($first_name) && !empty($first_name)) && (isset($last_name) && !empty($last_name)) && (isset($email) && !empty($email)) && (isset($phone) && !empty($phone)) && (isset($password) && !empty($password)) && (isset($city) && !empty($city))){
+       	if((isset($first_name) && !empty($first_name)) && (isset($last_name) && !empty($last_name)) && (isset($email) && !empty($email)) && (isset($phone) && !empty($phone)) && (isset($password) && !empty($password)) && (isset($city) && !empty($city)) && (isset($state) && !empty($state))){
 
             $agents_email_exists = PreRegWashers::model()->findByAttributes(array("email"=>$email));
  $agents_phone_exists = PreRegWashers::model()->findByAttributes(array("phone"=>$phone));
@@ -2612,6 +2615,7 @@ $phone_verified = Yii::app()->request->getParam('phone_verified');
 				'email'=> $email,
                 'phone'=> $phone,
                 'city' => $city,
+                'state' => $state,
 'password' => md5($password),
               
 'van_lease' => $van_lease,
@@ -2647,6 +2651,7 @@ $message2 = "<p>Name: ".$first_name." ".$last_name."</p>";
 $message2 .= "<p>Email: ".$email."</p>";
 $message2 .= "<p>Phone: ".$phone."</p>";
 $message2 .= "<p>City: ".$city."</p>";
+$message2 .= "<p>State: ".$state."</p>";
 $message2 .= "<p>Interested in leasing MobileWash van: ".$van_lease."</p>";
 
 $to = Vargas::Obj()->getAdminToEmail();

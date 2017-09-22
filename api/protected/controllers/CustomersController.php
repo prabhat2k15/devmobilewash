@@ -8355,14 +8355,14 @@ public function actioncustomerupfrontpayment()
 
              /* ------- get nearest agents --------- */
 
-$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
+/*$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
 $data = array('cust_lat' => $latitude, 'cust_lng' => $longitude, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $output = curl_exec($handle);
 curl_close($handle);
-$nearagentsdetails = json_decode($output);
+$nearagentsdetails = json_decode($output);*/
 
 
             /* ------- get nearest agents end --------- */
@@ -8397,12 +8397,12 @@ else if( ($customer_check->hours_opt_check == 1) && ($hours_op_check->open_all_d
 
         }
 
-            else if((!$is_scheduled) && ($nearagentsdetails->result == 'false')){
+            /*else if((!$is_scheduled) && ($nearagentsdetails->result == 'false')){
 
 $result= 'false';
                 $response= 'no washers found';
 
-             }
+             }*/
 
 
 
