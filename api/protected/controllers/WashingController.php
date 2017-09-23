@@ -651,50 +651,6 @@ $sendmessage = $client->account->messages->create(array(
             spl_autoload_register(array('YiiBase','autoload'));
            }
 
-              /* ------- get nearest agents --------- */
-
-$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-$data = array('wash_request_id' => $washrequestid, "key" => API_KEY, 'ignore_offline' => 1);
-curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-$output = curl_exec($handle);
-curl_close($handle);
-$nearagentsdetails = json_decode($output);
-
-            /* ------- get nearest agents end --------- */
-
-            if($nearagentsdetails->result == 'true'){
-                 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
-							$message = $pushmsg[0]['message'];
-foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
-
-     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ")->queryAll();
-
-							foreach($agentdevices as $agdevice){
-								//$message =  "You have a new scheduled wash request.";
-								//echo $agentdetails['mobile_type'];
-								$device_type = strtolower($agdevice['device_type']);
-								$notify_token = $agdevice['device_token'];
-								$alert_type = "default";
-								$notify_msg = urlencode($message);
-
-								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-								$ch = curl_init();
-								curl_setopt($ch,CURLOPT_URL,$notifyurl);
-								curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
-								if($notify_msg) $notifyresult = curl_exec($ch);
-								curl_close($ch);
-							}
-
-}
-
-
-
-            }
-
   }
 
  /* ---------- add schedule info -------------- */
@@ -6350,6 +6306,10 @@ die();
 if(!count($is_cust_has_order)){
    Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 0));
 }
+
+  if($wrequest_id_check->coupon_code){
+     CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
+  }
             }
 
              else if(($wrequest_id_check->status > 1) && ($wrequest_id_check->status <= 3) && $status == 5){
@@ -6365,6 +6325,10 @@ if(!count($is_cust_has_order)){
 if(!count($is_cust_has_order)){
    Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 0));
 }
+
+if($wrequest_id_check->coupon_code){
+     CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
+  }
             }
 
             else{
@@ -6435,6 +6399,10 @@ if(!count($is_cust_has_order)){
 if(!count($is_cust_has_order)){
    Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 0));
 }
+
+if($wrequest_id_check->coupon_code){
+     CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
+  }
 
 
 
@@ -7807,100 +7775,7 @@ $sched_time = $order_exists->schedule_time;
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
-                    if($order_exists->scheduled_cars_info){
-                    $all_cars = explode("|", $order_exists->scheduled_cars_info);
-					foreach($all_cars as $ind=>$vehicle){
-						$car_details = explode(",", $vehicle);
-						$message .="<tr>
-						<td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
-						<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
-						<tr>
-						<td><p style='font-size: 20px; margin: 0; font-weight: bold;'>".$car_details[0]." ".$car_details[1]."</p></td>
-						<td style='text-align: right;'>
-						<p style='font-size: 20px; margin: 0; font-weight: bold;'>+$0</p>
-						</td>
-						</tr>
-						<tr>
-						<td><p style='font-size: 18px; margin: 0;'>".$car_details[2]." Package</p></td>
-						<td style='text-align: right;'></td>
-						</tr>
-						<tr>
-						<td><p style='font-size: 18px; margin: 0;'>Handling Fee</p></td>
-						<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-						</tr>
-						";
-if($car_details[12]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-if($car_details[13]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Dressing of all Exterior Plastics</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-if($car_details[14]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-if($car_details[15]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Water Spot Removal</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-						if($car_details[5]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Extra Cleaning Fee</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-						if($car_details[6]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Lifted Vehicle Fee</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
 
-						if($car_details[8]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-
-
-						if($car_details[10]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Fifth Wash Discount</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-
-						$message .= "</table></td></tr>";
-					}
-                    }
-                    else{
                          foreach($kartdata->vehicles as $ind=>$vehicle){
 
 $message .="<tr>
@@ -8046,7 +7921,7 @@ $message .= "</table>
 </tr>";
 
 }
-                    }
+
 
 /*if($coupon_amount){
 							$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
@@ -8188,101 +8063,6 @@ $sched_time = $order_exists->schedule_time;
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
-                    if($order_exists->scheduled_cars_info){
-                    $all_cars = explode("|", $order_exists->scheduled_cars_info);
-					foreach($all_cars as $ind=>$vehicle){
-						$car_details = explode(",", $vehicle);
-						$message .="<tr>
-						<td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
-						<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
-						<tr>
-						<td><p style='font-size: 20px; margin: 0; font-weight: bold;'>".$car_details[0]." ".$car_details[1]."</p></td>
-						<td style='text-align: right;'>
-						<p style='font-size: 20px; margin: 0; font-weight: bold;'>+$0</p>
-						</td>
-						</tr>
-						<tr>
-						<td><p style='font-size: 18px; margin: 0;'>".$car_details[2]." Package</p></td>
-						<td style='text-align: right;'></td>
-						</tr>
-						<tr>
-						<td><p style='font-size: 18px; margin: 0;'>Handling Fee</p></td>
-						<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-						</tr>
-						";
-if($car_details[12]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-if($car_details[13]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Dressing of all Exterior Plastics</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-if($car_details[14]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-if($car_details[15]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Water Spot Removal</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-						if($car_details[5]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Extra Cleaning Fee</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-						if($car_details[6]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Lifted Vehicle Fee</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-
-						if($car_details[8]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-
-
-
-						if($car_details[10]){
-							$message .= "<tr>
-							<td>
-							<p style='font-size: 18px; margin: 0;'>Fifth Wash Discount</p>
-							</td>
-							<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr>";
-						}
-
-						$message .= "</table></td></tr>";
-					}
-                    }
-                    else{
 
                                             foreach($kartdata->vehicles as $ind=>$vehicle){
 
@@ -8426,7 +8206,7 @@ $message .= "</table>
 
 }
 
-                    }
+
 
 /*if($coupon_amount){
 							$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
@@ -8542,6 +8322,10 @@ $sendmessage = $client->account->messages->create(array(
                         'action_date'=> date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+            }
+
+            if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->coupon_code)){
+                CustomerDiscounts::model()->deleteAll("wash_request_id=".$order_exists->id." AND customer_id=".$order_exists->customer_id." AND promo_code='".$order_exists->coupon_code."'");
             }
 
 			}
@@ -10046,6 +9830,69 @@ die();
 			            Customers::model()->updateAll(array('online_status' => 'offline', 'device_token' => ''),'id=:id',array(':id'=>$wash->customer_id));
                         Agents::model()->updateAll(array('device_token' => '', 'status'=> 'offline', 'available_for_new_order'=> 0),'id=:id',array(':id'=>$wash->agent_id));
                     }
+            }
+
+         }
+
+   }
+
+
+      public function actionondemandwashalert() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $allwashes = Washingrequests::model()->findAllByAttributes(array('is_scheduled' => 0, 'status' => 0, 'ondemand_create_push_sent' => 0));
+
+
+        if(count($allwashes)){
+            $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
+            foreach($allwashes as $wash){
+
+            /* ------- get nearest agents --------- */
+
+            $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
+            $data = array('wash_request_id' => $wash->id, "key" => API_KEY, 'ignore_offline' => 1);
+            curl_setopt($handle, CURLOPT_POST, true);
+            curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+            $output = curl_exec($handle);
+            curl_close($handle);
+            $nearagentsdetails = json_decode($output);
+
+            /* ------- get nearest agents end --------- */
+
+            if($nearagentsdetails->result == 'true'){
+
+			    $message = $pushmsg[0]['message'];
+                    foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
+
+                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ")->queryAll();
+
+						foreach($agentdevices as $agdevice){
+
+						    $device_type = strtolower($agdevice['device_type']);
+							$notify_token = $agdevice['device_token'];
+							$alert_type = "default";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+
+                    }
+
+            Washingrequests::model()->updateByPk($wash->id, array("ondemand_create_push_sent" => 1));
+            }
+
             }
 
          }
