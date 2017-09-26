@@ -2876,7 +2876,7 @@ $eta = $geojsondata->rows[0]->elements[0]->duration->value;
 
 if($eta <= 60){
 if(!$wrequest_id_check->washer_one_min_arrive_push_sent){
-    /* --- notification call ---
+    /* --- notification call --- */
 
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '16' ")->queryAll();
 $message = $pushmsg[0]['message'];
@@ -6475,6 +6475,32 @@ if($nearagentsdetails->result == 'false'){
 }
 else{
   Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
+ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
+
+            $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '29' ")->queryAll();
+							$message = $pushmsg[0]['message'];
+
+            if(count($clientdevices))
+            {
+                foreach($clientdevices as $ctdevice)
+                {
+                    //$message =  "You have a new scheduled wash request.";
+                    //echo $agentdetails['mobile_type'];
+                    $device_type = strtolower($ctdevice['device_type']);
+                    $notify_token = $ctdevice['device_token'];
+                    $alert_type = "default";
+                    $notify_msg = urlencode($message);
+
+                    $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                    $ch = curl_init();
+                    curl_setopt($ch,CURLOPT_URL,$notifyurl);
+                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+                    if($notify_msg) $notifyresult = curl_exec($ch);
+                    curl_close($ch);
+                }
+            }
 }
 
 
@@ -9896,6 +9922,69 @@ die();
             }
 
          }
+
+   }
+
+
+   public function actioncurrentwashondemandalert() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+	$wash_request_id  = Yii::app()->request->getParam('wash_request_id');
+
+    $wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
+
+        if(count($wash_id_check) && (!$wash_id_check->ondemand_create_push_sent)){
+            $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
+
+            /* ------- get nearest agents --------- */
+
+            $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
+            $data = array('wash_request_id' => $wash_request_id, "key" => API_KEY, 'ignore_offline' => 1);
+            curl_setopt($handle, CURLOPT_POST, true);
+            curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+            $output = curl_exec($handle);
+            curl_close($handle);
+            $nearagentsdetails = json_decode($output);
+
+            /* ------- get nearest agents end --------- */
+
+            if($nearagentsdetails->result == 'true'){
+
+			    $message = $pushmsg[0]['message'];
+                    foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
+
+                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ")->queryAll();
+
+						foreach($agentdevices as $agdevice){
+
+						    $device_type = strtolower($agdevice['device_type']);
+							$notify_token = $agdevice['device_token'];
+							$alert_type = "default";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+
+                    }
+
+            Washingrequests::model()->updateByPk($wash_request_id, array("ondemand_create_push_sent" => 1));
+            }
+
+
+       }
+
 
    }
 
