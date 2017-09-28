@@ -77,7 +77,11 @@ $url = 'http://www.devmobilewash.com/api/index.php?r=agents/searchagents';
             $('#example1, #example2, #example3').dataTable( {
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-"aaSorting": []
+"aaSorting": [],
+"columnDefs": [ {
+"targets": 0,
+"orderable": false
+} ]
 } );
 
         });
@@ -100,6 +104,14 @@ $url = 'http://www.devmobilewash.com/api/index.php?r=agents/searchagents';
     background-color: #FF0202 !important;
 }
 
+.action-col{
+    min-width: 105px !important;
+    max-width: 100% !important;
+}
+
+.cust-sms-pop{
+    display: none;
+}
 
 </style>
 
@@ -130,14 +142,14 @@ $url = 'http://www.devmobilewash.com/api/index.php?r=agents/searchagents';
                                 </div>
                                 <?php if(count($allcustomers->allcustomers) > 0): ?>
                                 <div class="portlet-body">
-                                    <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Customers</h4>
+                                    <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Customers</h3>
                                     <?php if(($allcustomers->total_customers > 20) && (count($allcustomers->allcustomers) < $allcustomers->total_customers)): ?>
                                     <p style="text-align: right;"><a style="display: block; background: #000; color: #fff; padding: 7px; text-align: center; width: 120px; margin-left: auto;" href="/admin-new/search.php?q=<?php echo $_GET['q']; ?>&search_type=customer&limit=none">View All</a></p>
                                     <?php endif; ?>
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                         <thead>
                                              <tr>
-                                                <th style="display: <?php echo $edit; ?>"> Actions </th>
+                                                <th class="action-col"> Actions </th>
 <th> ID </th>
 <th> User Type </th>
    <th> Customer Name </th>
@@ -165,7 +177,7 @@ $address = 'N/A';
 
                                         ?>
                                             <tr class="odd gradeX">
-                                                <td style="display: <?php echo $edit; ?>"> <a href="edit-customer.php?customerID=<?php echo $customer->id; ?>">Edit</a></td>
+                                                <td class="action-col"> <a href="edit-customer.php?customerID=<?php echo $customer->id; ?>">Edit</a> - <a href="#" data-id="<?php echo $customer->id; ?>" class='cust-pass-sms-trig'>Send Login</a></td>
  <td> <?php echo $customer->id; ?> </td>
 <td> <?php echo $customer->user_type; ?> </td>
  <td> <a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $customer->id; ?>"><?php echo $customer->name; ?></a> </td>
@@ -201,7 +213,7 @@ else echo $customer->total_wash;
                                 
 <?php if(count($allagents->all_washers) > 0): ?>
                                 <div class="portlet-body">
-                                    <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Washers</h4>
+                                    <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Washers</h3>
                                     <?php if(($allagents->total_washers > 20) && (count($allagents->all_washers) < $allagents->total_washers)): ?>
                                     <p style="text-align: right;"><a style="display: block; background: #000; color: #fff; padding: 7px; text-align: center; width: 120px; margin-left: auto;" href="/admin-new/search.php?q=<?php echo $_GET['q']; ?>&search_type=agent&limit=none">View All</a></p>
                                     <?php endif; ?>
@@ -283,7 +295,7 @@ else echo $customer->total_wash;
                                 
                                 <?php if(count($allorders->wash_requests)): ?>
                                  <div class="portlet-body">
-                                    <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Orders</h4>
+                                    <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Orders</h3>
                                     <?php if(($allorders->total_wash_requests > 20) && (count($allorders->wash_requests) < $allorders->total_wash_requests)): ?>
                                     <p style="text-align: right;"><a style="display: block; background: #000; color: #fff; padding: 7px; text-align: center; width: 120px; margin-left: auto;" href="/admin-new/search.php?q=<?php echo $_GET['q']; ?>&search_type=order&limit=none">View All</a></p>
                                     <?php endif; ?>
@@ -417,8 +429,75 @@ echo "</ol>";
             </div>
             <!-- END CONTENT -->
             <?php include('footer.php') ?>
+            <div class="cust-sms-pop" style="width: 100%; height: 100%; background: rgba(0,0,0,.8); position: fixed; top: 0; left: 0; z-index: 99999;">
+            <div class="pop-content" style="position: absolute; width: 400px; margin-left: -200px; left: 50%; top: 200px; background: #fff; color: #000; padding: 20px; box-sizing: border-box;">
+                    <h2 style="font-weight: bold; font-size: 22px; margin-top: 0;">SMS Preview</h2>
+                    <div class="sms-content"><p>Greetings from MobileWash<br>Your login is: nazmur.r@gmail.com<br>Your new password is: oddwood12</p></div>
+                    <p style="font-weight: bold; text-align: right;" class="action-btns"><a href="#" style="margin-right: 10px;" class="send-cust-pass-sms">Send</a> <a href="#" class="pop-close">Cancel</a></p>
+                </div>
+            </div>
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
+        <script>
+        $(function(){
+            var cust_email = '';
+            var cust_pass = '';
+            var cust_id = '';
+           $(".cust-pass-sms-trig").click(function(){
+              $(".cust-sms-pop").fadeIn();
+              $(".cust-sms-pop .action-btns").show();
+              $(".cust-sms-pop .sms-content").html('Loading...');
+               cust_id = $(this).data('id');
+              $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/adminpreviewcustpasssms", { customer_id: cust_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+    cust_email = data.customer_email;
+    cust_pass = data.customer_password;
+$(".cust-sms-pop .sms-content").html(data.response);
+}
+else{
+    $(".cust-sms-pop .sms-content").html(data.response);
+cust_email = '';
+            cust_pass = '';
+            cust_id = '';
+}
+
+});
+              return false;
+           });
+
+           $(".cust-sms-pop .pop-close").click(function(){
+              $(".cust-sms-pop").fadeOut();
+              return false;
+           });
+
+           $(".send-cust-pass-sms").click(function(){
+             var th = $(this);
+              $(this).html('Sending...');
+
+              $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/adminsmscustpass", { customer_id: cust_id, customer_email: cust_email, customer_password: cust_pass, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+     $(".cust-sms-pop .sms-content").html(data.response);
+   $(th).html('Send');
+   cust_email = '';
+            cust_pass = '';
+            cust_id = '';
+            $(".cust-sms-pop .action-btns").hide();
+            setTimeout(function(){
+ $(".cust-sms-pop").fadeOut();
+}, 2000);
+}
+else{
+    $(".cust-sms-pop .sms-content").html(data.response);
+  $(th).html('Send');
+}
+
+});
+              return false;
+           });
+        });
+        </script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <style>
 

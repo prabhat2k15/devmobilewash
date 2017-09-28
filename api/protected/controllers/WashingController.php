@@ -3531,7 +3531,7 @@ if($min_diff >= 1){
 
                             if($num_rejects_per_agents[$last_agent_id] >= 2)
                             {
-                                Washingrequests::model()->updateByPk($wash_request_id, array('is_two_loops_reject' => 1, 'create_wash_push_sent' => 0)); //make wash available for schedule
+                               // Washingrequests::model()->updateByPk($wash_request_id, array('is_two_loops_reject' => 1, 'create_wash_push_sent' => 0)); //make wash available for schedule
                             }
                         }
                         else
@@ -3567,7 +3567,7 @@ if($min_diff >= 1){
 
                             if($everyone_rejects)
                             {
-                               Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => '', 'order_temp_assigned' => 0, 'all_reject_ids' => $saved_reject_ids, 'create_wash_push_sent' => 0 ));
+                              // Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => '', 'order_temp_assigned' => 0, 'all_reject_ids' => $saved_reject_ids, 'create_wash_push_sent' => 0 ));
                             }
 
                             /* ------- check if all available agents rejects order two times -------- */
@@ -3595,7 +3595,7 @@ if($min_diff >= 1){
 
                             if($two_loops_rejects)
                             {
-                                Washingrequests::model()->updateByPk($wash_request_id, array('is_two_loops_reject' => 1, 'create_wash_push_sent' => 0)); //make wash available for schedule
+                               // Washingrequests::model()->updateByPk($wash_request_id, array('is_two_loops_reject' => 1, 'create_wash_push_sent' => 0)); //make wash available for schedule
                             }
                         }
                     }
@@ -4113,8 +4113,8 @@ Washingrequests::model()->updateByPk($agent_has_order->id, array("create_wash_pu
                       }
 
 
-					  if($prequest['order_temp_assigned'] == 0 AND (!$order_rejects)){
-
+					  //if($prequest['order_temp_assigned'] == 0 AND (!$order_rejects)){
+                       if($prequest['order_temp_assigned'] == 0){
 						  /* ------- check if agent is nearest -------- */
 
 							$handle = curl_init(ROOT_URL."/api/index.php?r=agents/isagentnearest");

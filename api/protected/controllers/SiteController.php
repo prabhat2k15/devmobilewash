@@ -51,7 +51,7 @@ class SiteController extends Controller
 	/**
 	 * Displays the contact page
 	 */
-	public function actionContact()
+	/*public function actionContact()
 	{
 
 if(Yii::app()->request->getParam('key') != API_KEY){
@@ -77,7 +77,7 @@ die();
 			}
 		}
 		$this->render('contact',array('model'=>$model));
-	}
+	} */
 
 	/**
 	 * Displays the login page
@@ -4178,6 +4178,131 @@ if(count($all_washes) > 0){
 			'result'=> $result,
 			'response'=> $response,
 			'all_washes' => $all_washes
+		);
+		echo json_encode($json);
+	}
+
+    		public function actionadminsmscustpass()
+	{
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+	$result= 'false';
+	$response= 'pass required parameters';
+
+$customer_id = Yii::app()->request->getParam('customer_id');
+$customer_email = Yii::app()->request->getParam('customer_email');
+$customer_password = Yii::app()->request->getParam('customer_password');
+ $cust_check = Customers::model()->findByPk($customer_id);
+
+        if(!count($cust_check)){
+          $result= 'false';
+			$response= "Customer not found";
+        }
+
+        else if(!$cust_check->contact_number){
+          $result= 'false';
+			$response= "Customer phone doesn't exist";
+        }
+
+        else{
+
+   Customers::model()->updateByPk($customer_id, array("password" => md5($customer_password)));
+
+     $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = "Greetings from MobileWash\r\nYour login is: ".$customer_email."\r\nYour new password is: ".$customer_password;
+
+
+  $sendmessage = $client->account->messages->create(array(
+                'To' =>  $cust_check->contact_number,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+spl_autoload_register(array('YiiBase','autoload'));
+  $result= 'true';
+			$response= "SMS sent";
+
+        }
+
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+		echo json_encode($json);
+	}
+
+
+    		public function actionadminpreviewcustpasssms()
+	{
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+	$result= 'false';
+	$response= 'pass required parameters';
+
+$customer_id = Yii::app()->request->getParam('customer_id');
+        $cust_check = Customers::model()->findByPk($customer_id);
+
+        if(!count($cust_check)){
+          $result= 'false';
+			$response= "Customer not found";
+        }
+
+        else{
+
+
+           			  $word_list =  Yii::app()->db->createCommand()
+						->select('*')
+						->from('word_list')
+						->queryAll();
+
+if(count($word_list) > 0){
+   $all_words = explode(" ", $word_list[0]['words']);
+$rand_key = array_rand($all_words);
+$pass_phrase =  trim($all_words[$rand_key]);
+$digits = 2;
+$pass_digits = rand(pow(10, $digits-1), pow(10, $digits)-1);
+$final_pass = $pass_phrase.$pass_digits;
+
+
+            $response = "Greetings from MobileWash<br>Your login is: ".$cust_check->email."<br>Your new password is: ".$final_pass;
+  $result= 'true';
+}
+else{
+    $result= 'false';
+			$response= "Error";
+}
+        }
+
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+            'customer_email' => $cust_check->email,
+            'customer_password' => $final_pass
 		);
 		echo json_encode($json);
 	}
