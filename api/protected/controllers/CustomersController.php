@@ -5479,7 +5479,8 @@ die();
                 'rating'=> $rating,
 'how_hear_mw'=> $customerdetail['how_hear_mw'],
                 'image'=> $image,
-                'hours_opt_check' => $customerdetail['hours_opt_check']
+                'hours_opt_check' => $customerdetail['hours_opt_check'],
+                'block_client' => $customerdetail['block_client']
             );
              echo json_encode($json);
              exit;
@@ -5513,6 +5514,7 @@ die();
         $image = Yii::app()->request->getParam('image');
 $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
 $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
+$block_client = Yii::app()->request->getParam('block_client');
 
 
 
@@ -5546,7 +5548,7 @@ else{
          $online_status = $customers_exists->online_status;
      }
 
-     $data = array('customername'=> $customername,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check);
+     $data = array('customername'=> $customername,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client);
         //$data = array_filter($data);
 
         if($account_status == 0 || $account_status == 1)

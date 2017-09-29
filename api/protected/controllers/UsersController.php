@@ -450,7 +450,7 @@ die();
                     'response'=> $response
                 );
              }
-             else if($agent->block_washer){
+             else if(($agent->block_washer) || ($customer->block_client)){
                 $result= "false";
                 $response = "Account error. Please contact MobileWash.";
                 $json = array(

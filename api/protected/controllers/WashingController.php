@@ -352,10 +352,9 @@ else $pendingwashcheck =  Washingrequests::model()->findAll(array("condition"=>"
                 $response= 'Invalid washing plan '.$wid ;
             }
 
-             else if(!$washplan_id_check){
-                $response= 'Invalid washing plan '.$wid ;
+             else if($customers_id_check->block_client){
+                $response= "Account error. Please contact MobileWash." ;
             }
-
 
              else if(count($pendingwashcheck)){
 if($pendingwashcheck[0]->is_scheduled == 1) $response= "Sorry you may not order at this time. You have a pending scheduled order in progress." ;
@@ -2748,8 +2747,9 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 
 
             else{
-                /* if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
-                 $wash_time = strtotime($wrequest_id_check->created_date);
+                if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
+                 if(strtotime($wrequest_id_check->wash_begin) > 0) $wash_time = strtotime($wrequest_id_check->wash_begin);
+                 else $wash_time = strtotime($wrequest_id_check->created_date);
 $now_time = time();
 $time_diff = round(abs($now_time - $wash_time) / 60,2);
 
@@ -2798,7 +2798,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
         die();
 
 }
-} */
+}
 
                 $wrequest_obj = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id, 'customer_id'=> $customer_id));
 
