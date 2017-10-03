@@ -1552,7 +1552,7 @@ $total_pages = 0;
 	            }
                 else{
 
-			$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE agent_id='".$agent_id."' AND ((status='4' OR status='5' OR status='6') AND no_washer_cancel = 0) order by created_date desc")->queryAll();
+			$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE agent_id='".$agent_id."' AND ((status='4' OR status='5' OR status='6')) order by created_date desc")->queryAll();
               $total_entries = $all_wash_requests_count[0]['count'];
 
 if($total_entries) {
@@ -1564,7 +1564,7 @@ $total_pages = ceil($total_entries / $limit);
              $all_wash_requests = Yii::app()->db->createCommand()
 			->select('*')
 			->from('washing_requests')
-			->where("agent_id='".$agent_id."' AND ((status='4' OR status='5' OR status='6') AND no_washer_cancel = 0)", array())
+			->where("agent_id='".$agent_id."' AND ((status='4' OR status='5' OR status='6'))", array())
 ->limit($limit)
 ->offset(($page-1) * $limit)
             ->order(array('created_date desc'))

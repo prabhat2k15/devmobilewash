@@ -3960,13 +3960,32 @@ $pendingwashcount = 0;
 
 if($agents_id_check->washer_position == 'real') $pendingschedrequests =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position = 'real' AND agent_id = 0 AND is_scheduled = 1 AND status = 0"));
 else $pendingschedrequests =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position != 'real' AND agent_id = 0 AND is_scheduled = 1 AND status = 0"));
-
+//print_r($pendingschedrequests);
 foreach($pendingschedrequests as $pdrequest){
+    $cust_id_check = Customers::model()->findByAttributes(array("id"=>$pdrequest->customer_id));
+    $sched_date = '';
+					$sched_time = '';
+					if($pdrequest->reschedule_time){
+						$sched_date = $pdrequest->reschedule_date;
+						$sched_time = $pdrequest->reschedule_time;
+					}
+					else{
+						$sched_date = $pdrequest->schedule_date;
+						$sched_time = $pdrequest->schedule_time;
+					}
+
+					$scheduledatetime = $sched_date." ".$sched_time;
+               $to_time = strtotime(date('Y-m-d g:i A'));
+$from_time = strtotime($scheduledatetime);
+$min_diff = 0;
+
+$min_diff = round(($from_time - $to_time) / 60,2);
+
 $declinedids = explode(",",$pdrequest->agent_reject_ids);
 
 if($agent_id){
 if (!in_array(-$agent_id, $declinedids)) {
-$pendingwashcount++;
+if(($min_diff > 0) && ($agents_id_check->hours_opt_check == $cust_id_check->hours_opt_check)) $pendingwashcount++;
 }
 }
 }
