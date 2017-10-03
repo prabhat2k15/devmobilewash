@@ -2065,7 +2065,7 @@ die();
       if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))){
            $customer_check = Customers::model()->findByPk($customer_id);
            $wash_check = Washingrequests::model()->findByPk($wash_request_id);
-
+           $admin_username  = Yii::app()->request->getParam('admin_username');
 
            if(!count($customer_check)){
                     $response = "Invalid customer id";
@@ -2084,30 +2084,22 @@ die();
                         $response = "Payment successful";
                         $result = "true";
 
+                        if($wash_check->transaction_id){
+                            if($customer_check->client_position == 'real') Yii::app()->braintree->void_real($wash_check->transaction_id);
+                            else Yii::app()->braintree->void($wash_check->transaction_id);
+                        }
 
-                        Washingrequests::model()->updateByPk($wash_request_id, array('transaction_id' => 'N/A', 'payment_type' => 'free', 'status' => 4, 'washer_payment_status' => 1, 'is_admin_washpoint_processed' => 1));
+                        Washingrequests::model()->updateByPk($wash_request_id, array('transaction_id' => 'N/A', 'payment_type' => 'free', 'washer_payment_status' => 1));
 
-                        $curr_wash_points =  $customer_check->fifth_wash_points;
-            $order_cars = explode("|", $wash_check->scheduled_cars_info);
-            $total_cars = count($order_cars);
+                         $washeractionlogdata = array(
 
-            for($i = 1; $i <= $total_cars; $i++){
-               $curr_wash_points++;
-               if($curr_wash_points >= 5) $curr_wash_points = 0;
-            }
+                        'wash_request_id'=> $wash_request_id,
 
-if($curr_wash_points == 0) $curr_wash_points = 'zero';
+                        'admin_username' => $admin_username,
+                        'action'=> 'freewash',
+                        'action_date'=> date('Y-m-d H:i:s'));
 
-            $handle = curl_init(ROOT_URL."/api/index.php?r=customers/profileupdate");
-curl_setopt($handle, CURLOPT_POST, true);
-if($customer_check->is_first_wash == 0) $data = array('customerid' => $customer_id, 'fifth_wash_points' => $curr_wash_points, 'is_first_wash' => 1, "key" => API_KEY);
-else $data = array('customerid' => $customer_id, 'fifth_wash_points' => $curr_wash_points, "key" => API_KEY);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-curl_exec($handle);
-curl_close($handle);
-//$jsondata = json_decode($result);
-
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
            }
 
       }

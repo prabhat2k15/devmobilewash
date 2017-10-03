@@ -295,8 +295,12 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 <?php endif; ?>
                     </td>
 <td><?php 
-if(($order->payment_status == 'Declined') || ($order->payment_status == 'Check Fraud')) echo"<span class='label label-sm label-pending'>".$order->payment_status."</span>";
-else echo $order->payment_status; ?></td>
+if(($order->payment_status == 'Declined') || ($order->payment_status == 'Check Fraud')) echo"<span class='label label-sm label-pending'>".$order->payment_status."</span><br><br>";
+else echo $order->payment_status; ?>
+<?php if($order->payment_type == 'free'): ?>
+<span class="label label-sm label-complete">Free Wash</span>
+<?php endif; ?>
+</td>
  <td><?php echo $order->transaction_id; ?></td>
                     <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                     <td><?php echo $order->customer_phoneno; ?></td>
@@ -613,11 +617,15 @@ $.each(data.wash_requests, function( index, value ) {
          upcomingwashes.push("<span class='label label-sm label-complete'>Completed</span>"); 
       }
       
-      
+       var payment_status_str = '';
 if((value.payment_status == 'Declined') || (value.payment_status == 'Check Fraud')){
-         upcomingwashes.push("<span class='label label-sm label-pending'>"+value.payment_status+"</span>");
+payment_status_str += "<span class='label label-sm label-pending'>"+value.payment_status+"</span><br><br>";
+
       }
-      else upcomingwashes.push(value.payment_status);
+      else payment_status_str += value.payment_status;
+
+      if(value.payment_type == 'free') payment_status_str += "<span class='label label-sm label-complete'>Free Wash</span>";
+     upcomingwashes.push(payment_status_str);
 
 upcomingwashes.push(value.transaction_id);
 upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?customer_id="+value.customer_id+"'>"+value.customer_name+"</a>");

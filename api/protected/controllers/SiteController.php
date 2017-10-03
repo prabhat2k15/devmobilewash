@@ -3196,6 +3196,7 @@ die();
 $pendingorderscount = 0;
 $cust_query = '';
 $agent_query = '';
+$cust_veh_query = '';
 
 $query = Yii::app()->request->getParam('query');
 		$limit = Yii::app()->request->getParam('limit');
@@ -3207,6 +3208,7 @@ $query = Yii::app()->request->getParam('query');
       }
 
  $cust_query = "(c.customername LIKE '%$query%' OR c.email LIKE '%$query%' OR c.contact_number LIKE '%$query%') OR ";
+ $cust_veh_query = "(cv.brand_name LIKE '%$query%' OR cv.model_name LIKE '%$query%') OR ";
 $agent_query = "(a.first_name LIKE '%$query%' OR a.last_name LIKE '%$query%' OR a.email LIKE '%$query%' OR a.phone_number LIKE '%$query%') ";
 
 		//if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
@@ -3214,8 +3216,8 @@ $agent_query = "(a.first_name LIKE '%$query%' OR a.last_name LIKE '%$query%' OR 
 
 
 if($query){
-    $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN agents a ON w.agent_id = a.id WHERE ".$cust_query.$agent_query."ORDER BY w.id DESC".$limit_str)->queryAll();
- $total_rows = Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN agents a ON w.agent_id = a.id WHERE ".$cust_query.$agent_query."ORDER BY w.id DESC")->queryAll();
+    $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN customer_vehicals cv ON FIND_IN_SET(w.car_list, cv.id) != 0 LEFT JOIN agents a ON w.agent_id = a.id WHERE ".$cust_query.$cust_veh_query.$agent_query."ORDER BY w.id DESC".$limit_str)->queryAll();
+ $total_rows = Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN customer_vehicals cv ON FIND_IN_SET(w.car_list, cv.id) != 0 LEFT JOIN agents a ON w.agent_id = a.id WHERE ".$cust_query.$cust_veh_query.$agent_query."ORDER BY w.id DESC")->queryAll();
  $total_count = $total_rows[0]['countid'];
 
 }

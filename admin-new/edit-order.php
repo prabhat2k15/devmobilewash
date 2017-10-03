@@ -718,8 +718,10 @@ display: none;
 <?php else: ?>
 <div class="process-payment-trigger" style="float: right; font-size: 18px; margin-top: 3px; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">In Process</div>
 <?php endif; ?>
-<?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
-<!--<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="process-free-wash">Free Wash</div>-->
+<?php if(($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin')): ?>
+<?php if(($getorder->status == 4)): ?>
+<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="process-free-wash">Free Wash</div>
+<?php endif; ?>
 <?php if(!$getorder->washer_payment_status): ?>
 														<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="stop-washer-pay">Stop Washer Payment</div>
 															<?php endif; ?>
@@ -1466,6 +1468,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'appcompletejob'): ?>
                                                           <p style="margin-bottom: 10px;">Order completed at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'freewash'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> gives free wash at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
@@ -2581,7 +2586,7 @@ var th = $(this);
 $(this).html('Processing, please wait...');
 $(this).removeClass('process-free-wash');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/adminschedulewashprocesspaymentfree", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/adminschedulewashprocesspaymentfree", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
@@ -3334,6 +3339,10 @@ if(data.result == 'true'){
 
       if(log.action == 'appcompletejob'){
             contents += "<p style='margin-bottom: 10px;'>Order completed at "+log.formatted_action_date+"</p>";
+      }
+
+       if(log.action == 'freewash'){
+            contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" gives free wash at "+log.formatted_action_date+"</p>";
       }
 
    });
