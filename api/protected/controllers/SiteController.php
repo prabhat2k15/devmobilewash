@@ -2514,7 +2514,7 @@ $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
                     /* ----------- update pricing details -------------- */
 
       			    $cust_details = Customers::model()->findByAttributes(array('id'=>$wrequest_id_check->customer_id));
-                    Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total, 'bundle_discount' => $kartdetails->bundle_discount, 'first_wash_discount' => $kartdetails->first_wash_discount, 'coupon_discount' => $kartdetails->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points, 'fifth_wash_discount' => 0, 'fifth_wash_vehicles' => '', 'per_car_wash_points' => ''));
+                    Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total, 'bundle_discount' => $kartdetails->bundle_discount, 'first_wash_discount' => $kartdetails->first_wash_discount, 'coupon_discount' => $kartdetails->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points, 'fifth_wash_discount' => 0, 'fifth_wash_vehicles' => '', 'per_car_wash_points' => '', "washer_late_cancel" => 0, "no_washer_cancel" => 0));
 
 					/* ----------- update pricing details end -------------- */
 
@@ -4308,5 +4308,61 @@ else{
 		);
 		echo json_encode($json);
 	}
+
+    public function actionadminuncancel(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+
+           $result  = 'false';
+$response = 'Enter wash request id';
+
+$admin_username = '';
+$admin_username  = Yii::app()->request->getParam('admin_username');
+
+            $json    = array();
+
+if((isset($wash_request_id) && !empty($wash_request_id))){
+
+    $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+
+			if(!count($wrequest_id_check)){
+                $result= 'false';
+                $response= 'Invalid wash request id';
+            }
+            else{
+                $result = 'true';
+$response = 'wash request uncanceled';
+
+                  Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "washer_late_cancel" => 0, "no_washer_cancel" => 0));
+				 $washeractionlogdata = array(
+
+                        'wash_request_id'=> $wash_request_id,
+
+                        'admin_username' => $admin_username,
+                        'action'=> 'uncancel',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
+            }
+
+
+
+}
+
+
+$json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+    }
 
 }

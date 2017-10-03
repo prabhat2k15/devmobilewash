@@ -719,6 +719,9 @@ display: none;
 <div class="process-payment-trigger" style="float: right; font-size: 18px; margin-top: 3px; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">In Process</div>
 <?php endif; ?>
 <?php if(($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin')): ?>
+<?php if(($getorder->status == 5) || ($getorder->status == 6)): ?>
+<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="wash-uncancel">Un-Cancel</div>
+<?php endif; ?>
 <?php if(($getorder->status == 4)): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="process-free-wash">Free Wash</div>
 <?php endif; ?>
@@ -1471,6 +1474,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'freewash'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> gives free wash at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'uncancel'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> un-canceled wash at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
@@ -2718,6 +2724,33 @@ return false;
 
 });
 
+$(".wash-uncancel").click(function(){
+var c = confirm('Are you sure you want to un-cancel this wash?');
+if(c){
+var th = $(this);
+$(this).html('Processing, please wait...');
+$(this).removeClass('wash-uncancel');
+$(".err-text").hide();
+$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminuncancel", { wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+}
+else{
+$(".err-text").html(data.response);
+$(".err-text").show();
+$(th).html('Un-Cancel');
+$(th).addClass('wash-uncancel');
+
+}
+
+});
+}
+
+return false;
+
+});
+
 $(".client-receipt-send").click(function(){
 var c = confirm('Are you sure you want to resend client receipt?');
 if(c){
@@ -3343,6 +3376,10 @@ if(data.result == 'true'){
 
        if(log.action == 'freewash'){
             contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" gives free wash at "+log.formatted_action_date+"</p>";
+      }
+
+       if(log.action == 'uncancel'){
+            contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" un-canceled order at "+log.formatted_action_date+"</p>";
       }
 
    });

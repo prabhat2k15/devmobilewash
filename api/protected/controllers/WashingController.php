@@ -2458,6 +2458,7 @@ else $customername = $cust_name[0];
                     {
                         Washingrequests::model()->updateAll(array('tip_amount' => $tip_amount), 'id=:id', array(':id'=>$wash_request_id));
                     }
+                    Washingrequests::model()->updateAll(array("washer_late_cancel" => 0, "no_washer_cancel" => 0), 'id=:id', array(':id'=>$wash_request_id));
 
                 $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
                         $washeractionlogdata= array(
