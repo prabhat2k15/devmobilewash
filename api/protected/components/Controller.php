@@ -198,6 +198,8 @@ return;
 					$fifth_wash_disc = 0;
                     $bundle_disc = 0;
                     $agent_bundle_disc = 0;
+                    $upholstery_vehicle = 0;
+                    $floormat_vehicle = 0;
 					if (in_array($car, $pet_hair_arr)){
 					    if(count($vehicle_wash_pricing)){
                          	$total += $vehicle_wash_pricing->pet_hair;

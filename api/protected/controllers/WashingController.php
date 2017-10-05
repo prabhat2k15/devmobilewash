@@ -3938,6 +3938,7 @@ die();
         $result= 'false';
         $response= 'Pass the required parameters';
         $is_scheduled_wash_120 = 0;
+        $scheduled_wash_120_id = 0;
 $pendingwashcount = 0;
 		$agentdetails = Agents::model()->findByAttributes(array("id"=>$agent_id));
 
@@ -4013,6 +4014,7 @@ $min_diff = round(($from_time - $to_time) / 60,2);
 if(!$is_scheduled_wash_120){
     if($min_diff <= 120 && $min_diff >= 0){
        $is_scheduled_wash_120 = 1;
+       $scheduled_wash_120_id = $schedwash->id;
        break;
     }
 }
@@ -4245,7 +4247,8 @@ Washingrequests::model()->updateByPk($prequest['id'], array("create_wash_push_se
             'new_request_details' => $pendingwashrequests,
 			'washer_status'=>$agentdetails['status'],
 'total_pending_schedule_washes'=>$pendingwashcount,
-'is_scheduled_wash_120' => $is_scheduled_wash_120
+'is_scheduled_wash_120' => $is_scheduled_wash_120,
+'scheduled_wash_120_id' => $scheduled_wash_120_id
         );
 
         echo json_encode($json); die();
