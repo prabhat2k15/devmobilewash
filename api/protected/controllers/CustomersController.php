@@ -3224,7 +3224,7 @@ Washingrequests::model()->updateByPk($wash_request_id, array('first_wash_discoun
                  /* ----------- 1st wash check end ----------- */
 
 /* ------ 5th wash check ------- */
-
+  /*
                     $current_points = $cust_details->fifth_wash_points;
 if($current_points == 5){
 $new_points = 1;
@@ -3233,9 +3233,6 @@ else{
                     $new_points = $current_points + 1;
 }
 
-
-//$custmodel = new Customers;
-//$custmodel->updateAll(array('fifth_wash_points'=> $new_points, 'id=:id', array(':id'=>$wash_request_exists->customer_id)));
 
 Customers::model()->updateByPk($wash_request_exists->customer_id, array('fifth_wash_points' => $new_points));
 
@@ -3252,11 +3249,11 @@ $fifth_vehicles_new = trim($fifth_vehicles_new,",");
 if($wash_request_exists->coupon_discount <= 0) Washingrequests::model()->updateByPk($wash_request_id, array('fifth_wash_discount' => 5, 'fifth_wash_vehicles' => $fifth_vehicles_new));
 
                     }
-
+*/
 /* ------ 5th wash check end ------- */
 
 /* ---- per car wash points ------ */
-
+/*
 $per_car_points_old = '';
 $per_car_points_old = $wash_request_exists->per_car_wash_points;
 $per_car_points_arr = explode(",", $per_car_points_old);
@@ -3265,7 +3262,7 @@ $per_car_points_new = implode(",", $per_car_points_arr);
 $per_car_points_new = trim($per_car_points_new,",");
 
 Washingrequests::model()->updateByPk($wash_request_id, array('per_car_wash_points' => $per_car_points_new));
-
+  */
 /* ---- per car wash points end ------ */
 
                  }

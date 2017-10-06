@@ -2402,6 +2402,49 @@ else $customername = $cust_name[0];
                     Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 1, "is_nextwash_reminder_push_sent" => 0, "is_non_returning" => 0));
 
                      foreach($kartdetails->vehicles as $car){
+
+                     $cust_details = Customers::model()->findByAttributes(array('id'=>$washrequestmodel->customer_id));
+                     $wash_detail = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+                     /* ------ 5th wash check ------- */
+
+                    $current_points = $cust_details->fifth_wash_points;
+                    if($current_points == 5){
+                        $new_points = 1;
+                    }
+                    else{
+                        $new_points = $current_points + 1;
+                    }
+
+                    Customers::model()->updateByPk($wrequest_id_check->customer_id, array('fifth_wash_points' => $new_points));
+
+                    if($new_points == 5){
+
+                        $fifth_vehicles_old = '';
+                        $fifth_vehicles_old = $wash_detail->fifth_wash_vehicles;
+                        $fifth_vehicles_arr = explode(",", $fifth_vehicles_old);
+                        if (!in_array($car->id, $fifth_vehicles_arr)) array_push($fifth_vehicles_arr, $car->id);
+                        $fifth_vehicles_new = implode(",", $fifth_vehicles_arr);
+                        $fifth_vehicles_new = trim($fifth_vehicles_new,",");
+
+                        if($wrequest_id_check->coupon_discount <= 0) Washingrequests::model()->updateByPk($wash_request_id, array('fifth_wash_discount' => 5, 'fifth_wash_vehicles' => $fifth_vehicles_new));
+
+                    }
+
+                    /* ------ 5th wash check end ------- */
+
+                    /* ---- per car wash points ------ */
+
+                        $per_car_points_old = '';
+                        $per_car_points_old = $wash_detail->per_car_wash_points;
+                        $per_car_points_arr = explode(",", $per_car_points_old);
+                        array_push($per_car_points_arr, $new_points);
+$per_car_points_new = implode(",", $per_car_points_arr);
+$per_car_points_new = trim($per_car_points_new,",");
+
+Washingrequests::model()->updateByPk($wash_request_id, array('per_car_wash_points' => $per_car_points_new, 'customer_wash_points' => $new_points));
+
+/* ---- per car wash points end ------ */
+
                      if($wrequest_id_check->net_price != $kartdetails->net_price){
                      /* --------- car pricing save --------- */
 
@@ -2524,7 +2567,7 @@ else $customername = $cust_name[0];
 
                     //$notify_msg = "Agent begins car inspection process.";
                     $alert_type = "strong";
-                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array("inspect_begin_push_sent" => 1));
+                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array("inspect_begin_push_sent" => 1, 'fifth_wash_vehicles' => '', 'fifth_wash_discount' => 0));
                     $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
                         $washeractionlogdata= array(
                             'agent_id'=> $wrequest_id_check->agent_id,
