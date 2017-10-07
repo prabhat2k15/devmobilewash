@@ -8031,7 +8031,7 @@ die();
 
             $data = array(
                 'result' => 'true',
-                'response' => 'send 4 digit code.'
+                'response' => 'Send 4 digit code.'
             );
 
             }else{

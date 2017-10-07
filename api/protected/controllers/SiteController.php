@@ -4365,4 +4365,205 @@ $json= array(
 
     }
 
+     public function actioncccustomerpushnotify() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+	$customer_id  = Yii::app()->request->getParam('customer_id');
+    $message  = Yii::app()->request->getParam('message');
+    $cust_id_check = Customers::model()->findByPk($customer_id);
+      $result = 'false';
+      $response = 'Error in sending notification';
+        if(count($cust_id_check)){
+
+                        $customerdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$customer_id."' ")->queryAll();
+
+						foreach($customerdevices as $ctdevice){
+
+						    $device_type = strtolower($ctdevice['device_type']);
+							$notify_token = $ctdevice['device_token'];
+							$alert_type = "default";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+
+
+                    $result = 'true';
+                    $response = 'Notification sent';
+
+       }
+
+       $json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+   }
+
+
+        public function actioncccagentpushnotify() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+	$agent_id  = Yii::app()->request->getParam('agent_id');
+    $message  = Yii::app()->request->getParam('message');
+    $agent_id_check = Agents::model()->findByPk($agent_id);
+      $result = 'false';
+      $response = 'Error in sending notification';
+        if(count($agent_id_check)){
+
+                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ")->queryAll();
+
+						foreach($agentdevices as $agdevice){
+
+						    $device_type = strtolower($agdevice['device_type']);
+							$notify_token = $agdevice['device_token'];
+							$alert_type = "default";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+
+
+                    $result = 'true';
+                    $response = 'Notification sent';
+
+       }
+
+       $json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+   }
+
+        public function actioncccustomersendsms() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+	$customer_id  = Yii::app()->request->getParam('customer_id');
+    $message  = Yii::app()->request->getParam('message');
+    $cust_id_check = Customers::model()->findByPk($customer_id);
+      $result = 'false';
+      $response = 'Error in sending SMS';
+        if(count($cust_id_check)){
+
+                    $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+  $sendmessage = $client->account->messages->create(array(
+                'To' =>  $cust_id_check->contact_number,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+            spl_autoload_register(array('YiiBase','autoload'));
+
+
+                    $result = 'true';
+                    $response = 'SMS sent';
+
+       }
+
+       $json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+   }
+
+   public function actionccagentsendsms() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+	$agent_id  = Yii::app()->request->getParam('agent_id');
+    $message  = Yii::app()->request->getParam('message');
+    $agent_id_check = Agents::model()->findByPk($agent_id);
+      $result = 'false';
+      $response = 'Error in sending SMS';
+        if(count($agent_id_check)){
+
+                    $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+  $sendmessage = $client->account->messages->create(array(
+                'To' =>  $agent_id_check->phone_number,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+            spl_autoload_register(array('YiiBase','autoload'));
+
+
+                    $result = 'true';
+                    $response = 'SMS sent';
+
+       }
+
+       $json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+   }
+
 }

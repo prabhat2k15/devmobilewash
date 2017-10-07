@@ -832,6 +832,7 @@ $.each( agentdata.online, function( index, agent ){
     content += "<p>Phone Number: "+agent['phone_number']+"</p>";
      content += "<p>Rating: "+agent['rating']+"</p>";
     content += "<p>Total Washes: "+agent['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-agent-notify' data-id='"+agent['id']+"'>Send Notification</a><a href='#' class='send-agent-sms' data-id='"+agent['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(agent['id'], agentname, agent['latitude'], agent['longitude'], 'images/online-agent-pin.png', 'onlineagents', content);
 
 });
@@ -846,6 +847,7 @@ $.each( agentdata.offline, function( index, agent ){
     content += "<p>Phone Number: "+agent['phone_number']+"</p>";
      content += "<p>Rating: "+agent['rating']+"</p>";
     content += "<p>Total Washes: "+agent['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-agent-notify' data-id='"+agent['id']+"'>Send Notification</a><a href='#' class='send-agent-sms' data-id='"+agent['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(agent['id'], agentname, agent['latitude'], agent['longitude'], 'images/offline-agent-pin.png', 'offlineagents', content);
 
 });
@@ -860,6 +862,7 @@ $.each( agentdata.busyAgents, function( index, agent ){
     content += "<p>Phone Number: "+agent['phone_number']+"</p>";
      content += "<p>Rating: "+agent['rating']+"</p>";
     content += "<p>Total Washes: "+agent['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-agent-notify' data-id='"+agent['id']+"'>Send Notification</a><a href='#' class='send-agent-sms' data-id='"+agent['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(agent['id'], agentname, agent['latitude'], agent['longitude'], 'images/busy-agent-pin.png', 'busyagents', content);
 
 });
@@ -881,6 +884,7 @@ $.each( clientdata.online_clients, function( index, client ){
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/online-client-pin.png', 'onlineclients', content);
 
 });
@@ -977,6 +981,7 @@ $.each( agentdata.online, function( index, agent ){
     content += "<p>Phone Number: "+agent['phone_number']+"</p>";
      content += "<p>Rating: "+agent['rating']+"</p>";
     content += "<p>Total Washes: "+agent['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-agent-notify' data-id='"+agent['id']+"'>Send Notification</a><a href='#' class='send-agent-sms' data-id='"+agent['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(agent['id'], agentname, agent['latitude'], agent['longitude'], 'images/online-agent-pin.png', 'onlineagents', content);
 
  }
@@ -1009,6 +1014,7 @@ $.each( agentdata.offline, function( index, agent ){
     content += "<p>Phone Number: "+agent['phone_number']+"</p>";
      content += "<p>Rating: "+agent['rating']+"</p>";
     content += "<p>Total Washes: "+agent['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-agent-notify' data-id='"+agent['id']+"'>Send Notification</a><a href='#' class='send-agent-sms' data-id='"+agent['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(agent['id'], agentname, agent['latitude'], agent['longitude'], 'images/offline-agent-pin.png', 'offlineagents', content);
  }
  else{
@@ -1040,6 +1046,7 @@ $.each( agentdata.busyAgents, function( index, agent ){
     content += "<p>Phone Number: "+agent['phone_number']+"</p>";
      content += "<p>Rating: "+agent['rating']+"</p>";
     content += "<p>Total Washes: "+agent['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-agent-notify' data-id='"+agent['id']+"'>Send Notification</a><a href='#' class='send-agent-sms' data-id='"+agent['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(agent['id'], agentname, agent['latitude'], agent['longitude'], 'images/busy-agent-pin.png', 'busyagents', content);
   }
   else{
@@ -1087,6 +1094,7 @@ $.each( clientdata.online_clients, function( index, client ){
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/online-client-pin.png', 'onlineclients', content);
 
    }
@@ -1641,6 +1649,70 @@ return false;
 
 return false;
 
+});
+
+$('body').on('click', '.send-client-notify', function(){
+    var cust_id = $(this).data('id');
+  var notifymsg = window.prompt("Enter notification message", "");
+
+  if (notifymsg != null) {
+      $("#container .note-message").fadeIn();
+$("#container .note-message").html('Sending...');
+
+    $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/cccustomerpushnotify", { customer_id: cust_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+       $("#container .note-message").html(data.response);
+setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
+    });
+  }
+return false;
+});
+
+$('body').on('click', '.send-agent-notify', function(){
+    var agent_id = $(this).data('id');
+  var notifymsg = window.prompt("Enter notification message", "");
+
+  if (notifymsg != null) {
+      $("#container .note-message").fadeIn();
+$("#container .note-message").html('Sending...');
+
+    $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/cccagentpushnotify", { agent_id: agent_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+       $("#container .note-message").html(data.response);
+setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
+    });
+  }
+return false;
+});
+
+$('body').on('click', '.send-client-sms', function(){
+    var cust_id = $(this).data('id');
+  var notifymsg = window.prompt("Enter SMS", "");
+
+  if (notifymsg != null) {
+      $("#container .note-message").fadeIn();
+$("#container .note-message").html('Sending...');
+
+    $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/cccustomersendsms", { customer_id: cust_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+       $("#container .note-message").html(data.response);
+setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
+    });
+  }
+return false;
+});
+
+$('body').on('click', '.send-agent-sms', function(){
+    var agent_id = $(this).data('id');
+  var notifymsg = window.prompt("Enter SMS", "");
+
+  if (notifymsg != null) {
+      $("#container .note-message").fadeIn();
+$("#container .note-message").html('Sending...');
+
+    $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/ccagentsendsms", { agent_id: agent_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+       $("#container .note-message").html(data.response);
+setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
+    });
+  }
+return false;
 });
 
 });
