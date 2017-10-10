@@ -3061,7 +3061,7 @@ $cust_vehicle_model->lifted_vehicle = $lifted_vehicle;
                     $alert_type = "default";
                  //   echo "hi roahn".$device_type."_".$notify_token;die;
                  if(count($vehicle_details)){
-                 if($status == 2){
+                 if(($status == 2) && (!$upgrade_pack) && (!$new_vehicle_confirm) && (!$remove_vehicle_from_kart)){
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '4' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
 
@@ -4722,8 +4722,13 @@ die();
         $onlineclients = array();
 		foreach($online_clients as $client){
 
-
+             $cust_last_wash_date = "";
 			$customer_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("customer_id" => $client ->id));
+            $cust_last_wash = Washingrequests::model()->findByAttributes(array("customer_id" => $client ->id, "status" => 4), array('order'=>'id DESC'));
+            if(count($cust_last_wash)){
+               $cust_last_wash_date = date('M d, Y h:i A', strtotime($cust_last_wash->order_for));
+            }
+            else $cust_last_wash_date = "N/A";
 
                     $total_rate = count($customer_feedbacks);
                     if($total_rate){
@@ -4752,6 +4757,7 @@ $jsononlineclient['id'] =  $client->id;
                   $jsononlineclient['latitude'] =  $client_loc->latitude;
                   $jsononlineclient['longitude'] =  $client_loc->longitude;
 				  $jsononlineclient['rating'] = $client ->rating;
+                  $jsononlineclient['last_wash'] = $cust_last_wash_date;
 				 $onlineclients[$key] =  $jsononlineclient;
 
 		}

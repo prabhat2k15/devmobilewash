@@ -884,6 +884,7 @@ $.each( clientdata.online_clients, function( index, client ){
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    content += "<p>Last Wash: "+client['last_wash']+"</p>";
     content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/online-client-pin.png', 'onlineclients', content);
 
@@ -907,6 +908,7 @@ var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
     content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     if(diffMins >= 3 ){
        addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/order-pin-animated.gif', 'pendingorders', content, client['wash_request_id']);
 
@@ -929,6 +931,7 @@ $.each( clientdata.schedule_orders, function( index, client ){
     content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
     content += "<p>Schedule DateTime: "+client['schedule_date']+" "+client['schedule_time']+"</p>";
+    content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
 
    addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/processing-order-pin.png', 'schedorders', content, client['wash_request_id']);
 
@@ -945,6 +948,8 @@ $.each( clientdata.processing_orders, function( index, client ){
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
+
     addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/processing-order-pin.png', 'processorders', content, client['wash_request_id']);
 
 });
@@ -1094,6 +1099,7 @@ $.each( clientdata.online_clients, function( index, client ){
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    content += "<p>Last Wash: "+client['last_wash']+"</p>";
     content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/online-client-pin.png', 'onlineclients', content);
 
@@ -1151,6 +1157,8 @@ if(diffMins == 3 ){
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
+
     if(diffMins == 3 ){
        addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/order-pin-animated.gif', 'pendingorders', content, client['wash_request_id']);
     }
@@ -1196,6 +1204,7 @@ $.each( clientdata.schedule_orders, function( index, client ){
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
     content += "<p>Schedule DateTime: "+client['schedule_date']+" "+client['schedule_time']+"</p>";
+    content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
 
     addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/processing-order-pin.png', 'schedorders', content, client['wash_request_id']);
   }
@@ -1229,6 +1238,7 @@ $.each( clientdata.processing_orders, function( index, client ){
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/processing-order-pin.png', 'processorders', content, client['wash_request_id']);
   }
   else{

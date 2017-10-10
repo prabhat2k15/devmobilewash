@@ -6378,6 +6378,25 @@ if(!count($is_cust_has_order)){
   if($wrequest_id_check->coupon_code){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
+
+  if($status == 5){
+        $washeractionlogdata = array(
+            'wash_request_id'=> $wash_request_id,
+            'action'=> 'cancelorderclient',
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+  }
+
+   if($status == 6){
+       $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+        $washeractionlogdata = array(
+            'wash_request_id'=> $wash_request_id,
+            'action'=> 'cancelorderwasher',
+            'agent_id'=> $wrequest_id_check->agent_id,
+            'agent_company_id'=> $agent_detail->real_washer_id,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+  }
             }
 
              else if(($wrequest_id_check->status > 1) && ($wrequest_id_check->status <= 3) && $status == 5){
@@ -6397,6 +6416,26 @@ if(!count($is_cust_has_order)){
 if($wrequest_id_check->coupon_code){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
+
+  if($status == 5){
+        $washeractionlogdata = array(
+            'wash_request_id'=> $wash_request_id,
+            'action'=> 'cancelorderclient',
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+  }
+
+   if($status == 6){
+       $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+        $washeractionlogdata = array(
+            'wash_request_id'=> $wash_request_id,
+            'action'=> 'cancelorderwasher',
+            'agent_id'=> $wrequest_id_check->agent_id,
+            'agent_company_id'=> $agent_detail->real_washer_id,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+  }
+
             }
 
             else{
@@ -6472,7 +6511,24 @@ if($wrequest_id_check->coupon_code){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
 
+  if($status == 5){
+        $washeractionlogdata = array(
+            'wash_request_id'=> $wash_request_id,
+            'action'=> 'cancelorderclient',
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+  }
 
+   if($status == 6){
+       $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+        $washeractionlogdata = array(
+            'wash_request_id'=> $wash_request_id,
+            'action'=> 'cancelorderwasher',
+            'agent_id'=> $wrequest_id_check->agent_id,
+            'agent_company_id'=> $agent_detail->real_washer_id,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+  }
 
             }
 
@@ -6510,6 +6566,15 @@ die();
             }
 
             else{
+
+             $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+        $washeractionlogdata = array(
+            'wash_request_id'=> $wash_request_id,
+            'action'=> 'washerenroutecancel',
+            'agent_id'=> $wrequest_id_check->agent_id,
+            'agent_company_id'=> $agent_detail->real_washer_id,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
             Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => 0));
 
@@ -6574,7 +6639,6 @@ else{
 
 $result = 'true';
 $response = 'wash reset';
-
 
             }
         }
@@ -8418,6 +8482,15 @@ $sendmessage = $client->account->messages->create(array(
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
             }
 
+            if(($result == 'true') && (!$admin_username)){
+                 $washeractionlogdata = array(
+                        'wash_request_id'=> $order_exists->id,
+                        'action'=> 'cancelorderclient',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+            }
+
             if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->coupon_code)){
                 CustomerDiscounts::model()->deleteAll("wash_request_id=".$order_exists->id." AND customer_id=".$order_exists->customer_id." AND promo_code='".$order_exists->coupon_code."'");
             }
@@ -10027,12 +10100,15 @@ die();
                     foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
 
                         $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ")->queryAll();
-
+                        $current_mile = round($nearagentdis, 2);
+                        if($current_mile < 1) $current_mile = 1;
+                        $message = str_replace("[MILE]",$current_mile." miles", $message);
 						foreach($agentdevices as $agdevice){
 
 						    $device_type = strtolower($agdevice['device_type']);
 							$notify_token = $agdevice['device_token'];
 							$alert_type = "default";
+
 							$notify_msg = urlencode($message);
 
 							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
