@@ -647,6 +647,12 @@ $sendmessage = $client->account->messages->create(array(
                 'Body' => $message,
             ));
 
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  '3103442534',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
             spl_autoload_register(array('YiiBase','autoload'));
            }
 
@@ -933,6 +939,12 @@ $sendmessage = $client->account->messages->create(array(
 
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '3109999334',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  '3103442534',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
@@ -1596,6 +1608,9 @@ else $customername = $cust_name[0];
         $admin_permit = Yii::app()->request->getParam('admin_permit');
         $washer_ondemand_job_accept = 0;
         if(Yii::app()->request->getParam('washer_ondemand_job_accept')) $washer_ondemand_job_accept = Yii::app()->request->getParam('washer_ondemand_job_accept');
+        $washer_arrive_hit = 0;
+        if(Yii::app()->request->getParam('washer_arrive_hit')) $washer_arrive_hit = Yii::app()->request->getParam('washer_arrive_hit');
+
         $result = 'false';
         $response = 'Pass the required parameters';
         $json = array();
@@ -1615,6 +1630,18 @@ else $customername = $cust_name[0];
         {
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
             if($wrequest_id_check->status != 0){
+               $json = array('result'=> 'false',
+                        'response'=> 'Request is already canceled by customer');
+
+            echo json_encode($json);die();
+            }
+
+        }
+
+         if($washer_arrive_hit == 1)
+        {
+            $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+            if($wrequest_id_check->status == 5){
                $json = array('result'=> 'false',
                         'response'=> 'Request is already canceled by customer');
 
@@ -2265,7 +2292,16 @@ else $customername = $cust_name[0];
 
                      Washingrequests::model()->updateByPk($wrequest_id_check->id, array("washer_on_way_push_sent" => 1, "wash_begin" => date("Y-m-d H:i:s")));
 
-				}
+                    $agent_det = Agents::model()->findByAttributes(array("id"=>$agent_id));
+                        $washeractionlogdata= array(
+                            'agent_id'=> $agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_det->real_washer_id,
+                            'action'=> 'washerstartjob',
+                            'action_date'=> date('Y-m-d H:i:s'));
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
+                }
             }
         }
         elseif((isset($agent_id) && !empty($agent_id)) && (isset($wash_request_id) && !empty($wash_request_id)) && (isset($status) && !empty($status)))

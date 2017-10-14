@@ -580,8 +580,9 @@ dt_table.fnClearTable();
 $.each(data.wash_requests, function( index, value ) {
     var upcomingwashes = [];
     upcomingwashes["DT_RowId"] = "order-"+value.id;
-     if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow"; 
-     if((value.min_diff < 0) && (value.status == 1)) upcomingwashes["DT_RowClass"] = "flashrownotarrive"; 
+     //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
+     if((value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
+     if((value.min_diff < 0) && (value.status == 1)) upcomingwashes["DT_RowClass"] = "flashrownotarrive";
       upcomingwashes.push("<a href='edit-order.php?id="+value.id+"' class='appt-edit-order' data-id='"+value.id+"' style='margin-right: 7px;'>Edit</a>");
       upcomingwashes.push(value.id);
        if(value.is_scheduled == 1){

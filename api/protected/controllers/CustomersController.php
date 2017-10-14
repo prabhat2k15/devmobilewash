@@ -2870,6 +2870,37 @@ Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles'
 }
 
 WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id." AND vehicle_id=".$vehicle_id);
+
+$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ")->queryAll();
+
+$vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, 'customer_id'=>$wash_request_exists->customer_id));
+
+				/* --- notification call --- */
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '30' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+                        $message = str_replace("[BRAND_NAME]",$vehicle_details->brand_name, $message);
+                        $message = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $message);
+
+						foreach( $clientdevices as $ctdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($ctdevice['device_type']);
+							$notify_token = $ctdevice['device_token'];
+								$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+                /* --- notification call end --- */
+
                 }
 
                 /* ------------ remove car from kart end ------------- */

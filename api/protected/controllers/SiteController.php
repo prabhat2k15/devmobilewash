@@ -2892,6 +2892,7 @@ die();
         $result= 'true';
         $response= 'all wash requests';
         $pendingwashrequests = array();
+        $pendingwashrequests_flashing = array();
         $pendingwashrequests_upcoming = array();
         $pendingwashrequests_nonupcoming = array();
         $last_cust_id = '';
@@ -3019,7 +3020,51 @@ $payment_status = 'Released';
 
 if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 
- if($min_diff >= 0){
+ if(($min_diff < 0) && ($wrequest['status'] == 0)){
+    $resched_date = '';
+    $resched_time = '';
+    if(strtotime($wrequest['reschedule_date']) > 0){
+       $resched_date = date('Y-m-d',strtotime($wrequest['reschedule_date']));
+    $resched_time = date('h:i A',strtotime($wrequest['reschedule_time']));
+    }
+   $pendingwashrequests_flashing[] = array('id'=>$wrequest['id'],
+                    'customer_id'=>$wrequest['customer_id'],
+                    'customer_name'=>$cust_details->customername,
+                    'customer_email'=>$cust_details->email,
+                    'customer_phoneno'=>$cust_details->contact_number,
+                     'agent_details'=> $agent_info,
+                    'car_list'=>$wrequest['car_list'],
+                    'package_list'=>$wrequest['package_list'],
+                    'vehicles' => $vehicles,
+                    'address'=>$wrequest['address'],
+                    'address_type'=>$wrequest['address_type'],
+                    'latitude'=>$wrequest['latitude'],
+                    'longitude'=>$wrequest['longitude'],
+                    'payment_type'=>$wrequest['payment_type'],
+                    'nonce'=>$wrequest['nonce'],
+                    'estimate_time'=>$wrequest['estimate_time'],
+                    'status'=>$wrequest['status'],
+                    'is_scheduled'=>$wrequest['is_scheduled'],
+                    'schedule_date'=>date('Y-m-d',strtotime($wrequest['schedule_date'])),
+                    'schedule_time'=>date('h:i A', strtotime($wrequest['schedule_time'])),
+					'reschedule_date'=>$resched_date,
+					'checklist'=>$wrequest['checklist'],
+                    'reschedule_time'=>$resched_time,
+					'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
+                    'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
+					'transaction_id'=>$wrequest['transaction_id'],
+                    'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
+                    'schedule_total'=>$wrequest['schedule_total'],
+                    'schedule_company_total'=>$wrequest['schedule_company_total'],
+                    'schedule_agent_total'=>$wrequest['schedule_agent_total'],
+					'wash_request_position'=>$wrequest['wash_request_position'],
+'payment_status' => $payment_status,
+'min_diff' => $min_diff
+                );
+
+}
+
+if($min_diff >= 0){
     $resched_date = '';
     $resched_time = '';
     if(strtotime($wrequest['reschedule_date']) > 0){
@@ -3062,7 +3107,7 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
                 );
 
 }
-if($min_diff < 0){
+if(($min_diff < 0) && ($wrequest['status'] > 0)){
      $pendingwashrequests_nonupcoming[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
                     'customer_name'=>$cust_details->customername,
@@ -3140,12 +3185,13 @@ if($min_diff < 0){
             //echo "total: ".$total_days_diff."<br>";
             //echo "total orders done: ".$completed_orders."<br>";
             //echo "average order frequency: ".round($total_days_diff/($completed_orders-1))."<br>";
-             $avg_order_frequency = round($total_days_diff/($completed_orders-1));
+             if($completed_orders > 1) $avg_order_frequency = round($total_days_diff/($completed_orders-1));
 
-   usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
+usort($pendingwashrequests_flashing, array('SiteController','sortById'));
+usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
         usort($pendingwashrequests_nonupcoming, array('SiteController','sortById'));
 
-       $pendingwashrequests = array_merge($pendingwashrequests_upcoming,$pendingwashrequests_nonupcoming);
+       $pendingwashrequests = array_merge($pendingwashrequests_flashing,$pendingwashrequests_upcoming,$pendingwashrequests_nonupcoming);
 
 
         }

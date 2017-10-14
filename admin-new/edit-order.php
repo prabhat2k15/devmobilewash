@@ -1535,6 +1535,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'washerenroutecancel'): ?>
                                                           <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> canceled order enroute at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+
                                                           <?php endforeach; ?>
                                                           </div>
                                                         </div>
