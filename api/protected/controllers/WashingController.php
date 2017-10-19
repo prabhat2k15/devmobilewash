@@ -7076,7 +7076,7 @@ die();
 
         $count = $total_order[0]['countid'];
 
-        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")->queryAll();
+        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")->queryAll();
 
 		/* END */
 		if(!empty($customers_order)){
@@ -7144,7 +7144,8 @@ die();
 						"start"		=>	date('Y-m-d',strtotime($created_date)),
 						"title"		=>	$order_of_status,
 						"color" 	=>	$color,
-						"address_type" 	=>	$address_type
+						"address_type" 	=>	$address_type,
+                        "car_list" 	=>	$orderbycustomer['car_list']
 					);
 				}
 			}
@@ -7172,7 +7173,11 @@ die();
 					if($value['title'] == 'Declined'){
 					$data[$value['start']]['declined'][]  = $value['title'];
 				}
-			}
+
+                if(($value['title'] == 'Pending') || ($value['title'] == 'Processing') || ($value['title'] == 'Complete')) $data[$value['start']]['total_cars'][]  = count(explode(",", $value['car_list']));
+
+            }
+            //print_r($data);
 			$dt =array();
 			foreach($data as $key=>$val){
 				$dt[$key]['complete']['color']= '';
@@ -7182,6 +7187,7 @@ die();
 					$dt[$key]['declined']['color']='';
 				$dt[$key]['home']['count']='';
 				$dt[$key]['work']['count']='';
+                $dt[$key]['total_cars']['count']='';
 				//print_r($val);
 				if(count($val['complete'])>0){
 					$dt[$key]['complete']['count']= count($val['complete']);
@@ -7208,6 +7214,13 @@ die();
 				}
 				if(count($val['work'])>0){
 					$dt[$key]['work']['count']= count($val['work']);
+				}
+                if(count($val['total_cars'])>0){
+                    $dt[$key]['total_cars']['count'] = 0;
+                    foreach($val['total_cars'] as $carcount){
+                      $dt[$key]['total_cars']['count'] += $carcount;
+                    }
+
 				}
 			}
 			 /* print_r($dt);die; */

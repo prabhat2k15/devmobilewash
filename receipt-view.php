@@ -83,7 +83,7 @@ border-bottom: 0;
 }
 
 .content .discount-details tr{
-background: #171717;
+/* background: #171717; */
 
 }
 
@@ -190,6 +190,26 @@ text-transform: uppercase;
 margin: 0;
 }
 
+.content .order-date{
+    margin: 0;
+    font-weight: 500;
+    text-align: center;
+    font-size: 28px;
+    border-bottom: 1px solid #6D6D6D;
+    padding: 20px 0;
+}
+
+.content .car-details{
+    border-bottom: 1px solid #6D6D6D;
+}
+
+@media screen and (max-width: 320px) {
+  .content .order-date{
+      font-size: 24px;
+  }
+
+}
+
 </style>
 </head>
 <body>
@@ -197,6 +217,11 @@ margin: 0;
 <h1>Order # 000<?php echo $order_id; ?></h1>
 </div>
 <div class="content">
+<?php if($kartdata->is_scheduled): ?>
+<h2 class="order-date"><?php echo date('M d, Y', strtotime($kartdata->schedule_date)); ?> @ <?php echo $kartdata->schedule_time; ?></h2>
+<?php else: ?>
+<h2 class="order-date"><?php echo date('M d, Y', strtotime($kartdata->order_date)); ?> @ <?php echo date('h:i A', strtotime($kartdata->order_date)); ?></h2>
+<?php endif; ?>
 <?php if($kartdata->status == 5 || $kartdata->status == 6): ?>
 <?php if($kartdata->status == 5): ?>
 <h2 style="padding: 0 20px; margin-bottom: 0;">This order is canceled</h2>
@@ -369,10 +394,10 @@ margin: 0;
 </td>
 </tr>
 </table>
-<table class="total">
+<table class="discount-details">
 <tr>
-<td><p style="font-size: 20px;">Total Price:</p></td>
-<td class="rightalign"><p class="total-price">$<?php if($kartdata->cancel_fee > 0) {echo number_format($kartdata->cancel_fee, 2);} else{echo '0.00';} ?></p></td>
+<td><p style="font-size: 20px;">Total Price</p></td>
+<td class="rightalign"><p class="price">$<?php if($kartdata->cancel_fee > 0) {echo number_format($kartdata->cancel_fee, 2);} else{echo '0.00';} ?></p></td>
 </tr>
 </table>
 <?php else: ?>
@@ -540,10 +565,10 @@ margin: 0;
 <?php endif; ?>
 
 
-<table class="total">
+<table class="discount-details">
 <tr>
-<td><p style="font-size: 20px;">Total Price:</p></td>
-<td class="rightalign"><p class="total-price">$<?php echo $kartdata->net_price; ?></p></td>
+<td><p style="font-size: 20px;">Total Price</p></td>
+<td class="rightalign"><p class="price">$<?php echo $kartdata->net_price; ?></p></td>
 </tr>
 </table>
 <div class="addi-details">
@@ -553,25 +578,6 @@ margin: 0;
  <div class="clear"></div>
 </p>
 <?php endif; ?>
-   <div class="col">
-<?php if($kartdata->is_scheduled): ?>        
-<h4>Schedule Date</h4>
-        <p><?php echo date('M d, Y', strtotime($kartdata->schedule_date)); ?></p>
-<?php else: ?>
-<h4>Order Date</h4>
-        <p><?php echo date('M d, Y', strtotime($kartdata->order_date)); ?></p>
-<?php endif; ?>
-   </div>
-   <div class="col collast">
-<?php if($kartdata->is_scheduled): ?>   
-        <h4>Schedule Time</h4>
-        <p><?php echo $kartdata->schedule_time; ?></p>
-<?php else: ?>
-  <h4>Order Time</h4>
-        <p><?php echo date('h:i A', strtotime($kartdata->order_date)); ?></p>
-<?php endif; ?>
-   </div>
-   <div class="clear"></div>
 </div>
 <?php endif; ?>
 </div>

@@ -52,6 +52,17 @@ $jsondata_permission = json_decode($result_permission);
 ?>
 <link href='assets/global/css/full-cal/fullcalendar.css' rel='stylesheet' />
 <link href='assets/global/css/full-cal/fullcalendar.print.css' rel='stylesheet' media='print' />
+<style>
+.total-cars-div{
+        bottom: 26px;
+    height: 28px;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+}
+
+</style>
 <script src='assets/global/scripts/full-cal/moment.min.js'></script>
 <script src='assets/global/scripts/full-cal/fullcalendar.min.js'></script>
 <script>
@@ -136,7 +147,7 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 							$('.cal-overlay').css('display','none');
 						}
 						else{
-							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,titledec,colordec;
+							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,titledec,colordec,titletotalcars,colortotalcars;
 							$.each( doc.order, function(index, value ) {
 							    
 								var _viewAll = ['1'];
@@ -146,6 +157,7 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 								var processing = Object.keys(value.processing).length;
 								var declined = Object.keys(value.declined).length;
 								var canceled = Object.keys(value.canceled).length;
+                                var total_cars = Object.keys(value.total_cars).length;
 								var home_ord = Object.keys(value.home).length;
 								var work_ord = Object.keys(value.work).length;
 
@@ -194,6 +206,8 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 										color  : colordec
 									});
 								}
+
+
 								//if(view_all >= 1){
 									title3 = 'View All';
 									color3 = '#035954';
@@ -203,6 +217,17 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 										color: color3
 									});
 								//}
+                                 if(total_cars >= 1  ){
+								   /*	titletotalcars = value.total_cars.count+' Cars';
+									colortotalcars = "#000000";
+										events.push({
+										title:titletotalcars,
+										start:index,
+										color  : colortotalcars
+									});*/
+                                    //home = value.home.count;
+									$('.hidd-total_cars').append('<input class="total_cars" data-date="'+index+'" type="hidden" value="'+value.total_cars.count+'">');
+								}
 								if(home_ord >= 1){
 									home = value.home.count;
 									$('.hidd-home-work').append('<input class="home" data-date="'+index+'" type="hidden" value="'+value.home.count+'">')
@@ -284,7 +309,18 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 
 				//$('.fc-left').append(_html);
 
-				$('.hidd-home-work input.home').each(function(){
+                $('.hidd-total_cars input.total_cars').each(function(index, val){
+                    //console.log('working');
+					total_cars_count = $(this).val();
+					total_cars_day = $(this).data('date');
+                    //console.log(total_cars_day);
+					if(total_cars_count.length < 1) total_cars_count = 0;
+					$('.fc-day-grid .fc-bg tbody tr td[data-date="'+total_cars_day+'"]').append('<div class="total-cars-div">0 Cars</div>');
+					$('td[data-date="'+total_cars_day+'"] .total-cars-div').text(total_cars_count+" Cars");
+
+				});
+                $('.hidd-home-work input.home').each(function(){
+
 					home_count = $(this).val();
 					home_day = $(this).data('date');
 					if(home_count.length < 1) home_count = 0;
@@ -423,6 +459,7 @@ function refreshCal(){
 			</div>
 		</div>
 		<div class="clearfix"></div>
+        <div class="hidd-total_cars"></div>
 		<div class="hidd-home-work"></div>
 	</div>
 	<!-- END CONTENT BODY -->

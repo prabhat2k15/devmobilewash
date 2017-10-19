@@ -4926,6 +4926,7 @@ die();
     $response = "Pass the required parameters";
     $result = "false";
     $allwashes = array();
+    $washstarttimes = array();
 
     if((isset($agent_id) && !empty($agent_id))){
 
@@ -4937,11 +4938,11 @@ die();
             $result = "false";
         }
         else{
-            $allschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id' => $agent_id, 'is_scheduled' => 1, 'status' => 0),array('order' => 'id desc')); 
+            $allschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id' => $agent_id, 'is_scheduled' => 1, 'status' => 0),array('order' => 'id desc'));
              $has_workinprogress_wash = Washingrequests::model()->findAll(array("condition"=>"status > 0 AND status <= 3 AND agent_id=".$agent_id), array('order' => 'created_date desc'));
             if(count($allschedwashes)){
                 
-                foreach($allschedwashes as $schedwash){
+                foreach($allschedwashes as $key=>$schedwash){
 $sched_date = '';
 $sched_time = '';
 if($schedwash->reschedule_time){
@@ -5029,6 +5030,8 @@ if($min_diff < 0){
 $min_diff = 0;
 }
 
+$washstarttimes[$key] = $min_diff;
+
                        $allwashes[] = array('id'=>$schedwash->id,
 'customer_id'=>$schedwash->customer_id,
 'customer_name'=>$cust_detail->customername,
@@ -5052,7 +5055,8 @@ $min_diff = 0;
                 }
                 if(count($allwashes) >0){
                     $response = "all scheduled washes";
-            $result = "true"; 
+            $result = "true";
+            array_multisort($washstarttimes, SORT_ASC, $allwashes);
                 }
                 else{
                     $response = "no scheduled washes found";
