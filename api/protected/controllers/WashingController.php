@@ -9823,6 +9823,7 @@ if($premaddon['title'] == 'Clay Bar') $par_send = 'extclaybar_vehicles';
 if($premaddon['title'] == 'Water Spot') $par_send = 'waterspotremove_vehicles';
 if($premaddon['title'] == 'Pet Hair') $par_send = 'pet_hair_vehicles';
 if($premaddon['title'] == 'Lifted Truck') $par_send = 'lifted_vehicles';
+if($premaddon['title'] == 'Floor Mat Cleaning') $par_send = 'floormat_vehicles';
 
 $addons['premium'][] = array('id' => $premaddon['id'], 'title' => $premaddon['title'], 'fulltitle' => $premaddon['fulltitle'], 'desc' => $premaddon['description'], 'par_send' => $par_send, 'package' => $premaddon['package'], 'washtime' => $premaddon['wash_time'], 'price' => $premaddon['price'], 'vehicle_type' => $premaddon['vehicle_type']);
 }
@@ -10024,6 +10025,7 @@ die();
             $cust_feedback_result = curl_exec($handle);
             curl_close($handle);
 
+
              $handle = curl_init(ROOT_URL."/api/index.php?r=customers/customerpayment");
             $data = array('customer_id' => $wash->customer_id, 'agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
@@ -10032,6 +10034,7 @@ die();
             $cust_pay_result = curl_exec($handle);
             curl_close($handle);
             //$kartdetails = json_decode($kartresult);
+
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=washing/agentfeedback");
             $data = array('agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, 'comments' => '', 'ratings' => '5.00', 'feedback_source' => 'cron', "key" => API_KEY);
@@ -10149,9 +10152,10 @@ die();
                     foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
 
                         $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ")->queryAll();
-                        $current_mile = round($nearagentdis, 2);
+                        $current_mile = round($nearagentdis);
                         if($current_mile < 1) $current_mile = 1;
-                        $message = str_replace("[MILE]",$current_mile." miles", $message);
+                        if($current_mile <= 1) $message = str_replace("[MILE]",$current_mile." mile", $message);
+                        else $message = str_replace("[MILE]",$current_mile." miles", $message);
 						foreach($agentdevices as $agdevice){
 
 						    $device_type = strtolower($agdevice['device_type']);

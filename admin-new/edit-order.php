@@ -1535,6 +1535,12 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'washerenroutecancel'): ?>
                                                           <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> canceled order enroute at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                           <?php if($log->action == 'adminstopwasherpayment'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> stopped washer payment at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                           <?php if($log->action == 'adminenablewasherpayment'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> enabled washer payment at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
 
                                                           <?php endforeach; ?>
                                                           </div>
@@ -3149,7 +3155,7 @@ $.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/updatewashadmin", { ag
 if(data.result == 'true'){
     $(th).addClass('washer_update');
 $(th).val('Save Washer');
-updateactivitylogs();
+window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3275,7 +3281,7 @@ var th = $(this);
 $(this).html('Processing...');
 $(this).removeClass('stop-washer-pay');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminupdatewasherpaystatus", { status: 2, wash_request_id: "<?php echo $_GET['id']; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminupdatewasherpaystatus", { status: 2, wash_request_id: "<?php echo $_GET['id']; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $_GET['id']; ?>";
@@ -3303,7 +3309,7 @@ var th = $(this);
 $(this).html('Processing...');
 $(this).removeClass('enable-washer-pay');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminupdatewasherpaystatus", { status: 'ZERO', wash_request_id: "<?php echo $_GET['id']; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminupdatewasherpaystatus", { status: 'ZERO', wash_request_id: "<?php echo $_GET['id']; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $_GET['id']; ?>";
@@ -3597,6 +3603,14 @@ if(data.result == 'true'){
 
       if(log.action == 'washerenroutecancel'){
             contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" canceled order enroute at "+log.formatted_action_date+"</p>";
+      }
+
+       if(log.action == 'adminstopwasherpayment'){
+            contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" stopped washer payment at "+log.formatted_action_date+"</p>";
+      }
+
+       if(log.action == 'adminenablewasherpayment'){
+            contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" enabled washer payment at "+log.formatted_action_date+"</p>";
       }
 
    });

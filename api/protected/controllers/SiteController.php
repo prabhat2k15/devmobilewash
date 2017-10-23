@@ -2098,6 +2098,8 @@ die();
 
       $wash_request_id = Yii::app()->request->getParam('wash_request_id');
 $status = Yii::app()->request->getParam('status');
+$admin_username = '';
+$admin_username  = Yii::app()->request->getParam('admin_username');
 
       $response = "Pass the required parameters";
       $result = "false";
@@ -2119,8 +2121,29 @@ $status = Yii::app()->request->getParam('status');
 
                         if($status == 'ZERO') $status = 0;
 
-
                         Washingrequests::model()->updateByPk($wash_request_id, array('washer_payment_status' => $status));
+
+                         if($status == 2){
+                           $washeractionlogdata = array(
+
+                        'wash_request_id'=> $wash_request_id,
+
+                        'admin_username' => $admin_username,
+                        'action'=> 'adminstopwasherpayment',
+                        'action_date'=> date('Y-m-d H:i:s'));
+                         }
+
+                          if(!$status){
+                           $washeractionlogdata = array(
+
+                        'wash_request_id'=> $wash_request_id,
+
+                        'admin_username' => $admin_username,
+                        'action'=> 'adminenablewasherpayment',
+                        'action_date'=> date('Y-m-d H:i:s'));
+                         }
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
            }
 
@@ -2340,7 +2363,8 @@ $response = 'wash request updated';
 }
 
 	if($admin_command == 'save-washer'){
-			 Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id));
+	    $customer_check = Customers::model()->findByPk($wrequest_id_check->customer_id);
+
 			 $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
 			  $washeractionlogdata = array(
                         'agent_id'=> $agent_id,
@@ -2350,7 +2374,14 @@ $response = 'wash request updated';
                         'action'=> 'savejob',
                         'action_date'=> date('Y-m-d H:i:s'));
 
-                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+              Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+              if($wrequest_id_check->transaction_id && ($wrequest_id_check->agent_id != $agent_id)){
+                if($customer_check->client_position == 'real') $voidresult = Yii::app()->braintree->void_real($wrequest_id_check->transaction_id);
+                else $voidresult = Yii::app()->braintree->void($wrequest_id_check->transaction_id);
+              }
+
+        if($wrequest_id_check->agent_id != $agent_id) Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'transaction_id' => '', 'washer_payment_status' => 0));
+
 }
 
 if($admin_command == 'save-note'){

@@ -194,7 +194,7 @@ margin: 0;
     margin: 0;
     font-weight: 500;
     text-align: center;
-    font-size: 28px;
+    font-size: 20px;
     border-bottom: 1px solid #6D6D6D;
     padding: 20px 0;
 }
@@ -205,7 +205,7 @@ margin: 0;
 
 @media screen and (max-width: 320px) {
   .content .order-date{
-      font-size: 24px;
+      font-size: 20px;
   }
 
 }

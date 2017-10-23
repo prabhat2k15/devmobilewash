@@ -20,6 +20,7 @@ padding: 0;
     position: absolute;
     right: 0;
     top: 0;
+    width: 90px;
 }
 
 .deluxe-pop .heading {
@@ -81,7 +82,7 @@ padding: 0;
 </head>
 <body>
 <div class="deluxe-pop">
-<img src="images/best-deal-ribbon.png" class="popular-ribbon">
+<img src="images/quickest-ribbon.png" class="popular-ribbon">
          <div class="heading">
 <img src="images/express-icon-large.png" alt="" width="111">
 <h3 style="display: inline-block;">Express Wash</h3>

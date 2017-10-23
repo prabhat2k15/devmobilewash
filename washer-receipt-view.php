@@ -139,6 +139,22 @@ font-size: 18px;
 font-size: 24px !important;
 }
 
+.content .order-date{
+    margin: 0;
+    font-weight: 500;
+    text-align: center;
+    font-size: 20px;
+    border-bottom: 1px solid #6D6D6D;
+    padding: 20px 0;
+}
+
+@media screen and (max-width: 320px) {
+  .content .order-date{
+      font-size: 20px;
+  }
+
+}
+
 </style>
 </head>
 <body>
@@ -146,6 +162,11 @@ font-size: 24px !important;
 <h1>Order # 000<?php echo $order_id; ?></h1>
 </div>
 <div class="content">
+<?php if($kartdata->is_scheduled): ?>
+<h2 class="order-date"><?php echo date('M d, Y', strtotime($kartdata->schedule_date)); ?> @ <?php echo $kartdata->schedule_time; ?></h2>
+<?php else: ?>
+<h2 class="order-date"><?php echo date('M d, Y', strtotime($kartdata->order_date)); ?> @ <?php echo date('h:i A', strtotime($kartdata->order_date)); ?></h2>
+<?php endif; ?>
 <?php if($kartdata->status == 5): ?>
 <h2 style="padding: 0 20px;">This order is canceled by client</h2>
 <table class="discount-details">
