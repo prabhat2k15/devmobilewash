@@ -733,12 +733,13 @@ display: none;
 <?php if(($getorder->status == 4)): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="process-free-wash">Free Wash</div>
 <?php endif; ?>
+<?php /*
 <?php if(!$getorder->washer_payment_status): ?>
 														<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="stop-washer-pay">Stop Washer Payment</div>
 															<?php endif; ?>
 																<?php if($getorder->washer_payment_status == 2): ?>
 														<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="enable-washer-pay">Enable Washer Payment</div>
-															<?php endif; ?>
+															<?php endif; ?> */ ?>
 <?php endif; ?>
 <?php if((!$getorder->transaction_id) || (($transaction_details->transaction_details->status != 'authorized') && ($transaction_details->transaction_details->status != 'submitted_for_settlement') && ($transaction_details->transaction_details->status != 'settling') && ($transaction_details->transaction_details->status != 'settled'))): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e42400; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="process-payment">Process Payment</div>
@@ -3150,7 +3151,7 @@ var agent_id = $("#phone-order-form #detailer").val();
 $(this).val('Saving...');
 $(this).removeClass('washer_update');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/updatewashadmin", { agent_id: agent_id, admin_command: 'save-washer', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminchangewasher", { agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
     $(th).addClass('washer_update');
