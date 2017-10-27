@@ -1610,6 +1610,10 @@ else $customername = $cust_name[0];
         if(Yii::app()->request->getParam('washer_ondemand_job_accept')) $washer_ondemand_job_accept = Yii::app()->request->getParam('washer_ondemand_job_accept');
         $washer_arrive_hit = 0;
         if(Yii::app()->request->getParam('washer_arrive_hit')) $washer_arrive_hit = Yii::app()->request->getParam('washer_arrive_hit');
+        $washer_arrive_hit = 0;
+        if(Yii::app()->request->getParam('washer_arrive_hit')) $washer_arrive_hit = Yii::app()->request->getParam('washer_arrive_hit');
+        $meet_washer_outside = '';
+        if(Yii::app()->request->getParam('meet_washer_outside')) $meet_washer_outside = Yii::app()->request->getParam('meet_washer_outside');
 
         $result = 'false';
         $response = 'Pass the required parameters';
@@ -1617,6 +1621,9 @@ else $customername = $cust_name[0];
 
         $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
         $order_for_date = '';
+
+        if($meet_washer_outside) Washingrequests::model()->updateByPk($wash_request_id, array("meet_washer_outside" => $meet_washer_outside));
+
 
         if(count($agent_detail) && $agent_detail->block_washer)
         {
@@ -1677,8 +1684,7 @@ else $customername = $cust_name[0];
             $device_type = strtolower($cust_details->mobile_type);
             $alert_type = "default";
 
-            $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$cust_id."' ")->queryAll();
-
+            $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$cust_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '10' ")->queryAll();
 							$message = $pushmsg[0]['message'];
 
@@ -2068,7 +2074,7 @@ else $customername = $cust_name[0];
                     $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '23' ")->queryAll();
                     $message = $pushmsg[0]['message'];
 
-                     $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$washrequestmodel->customer_id."' ")->queryAll();
+                     $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$washrequestmodel->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             if(count($clientdevices))
             {
@@ -2264,7 +2270,7 @@ else $customername = $cust_name[0];
 				if(($is_scheduled) && ($agent_id) && ($status == 1))
                 {
 					$cust_detail = Customers::model()->findByPk($wrequest_id_check->customer_id);
-					$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
+                    $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 					/* --- notification call --- */
 					$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '17' ")->queryAll();
@@ -2514,6 +2520,7 @@ else $customername = $cust_name[0];
                         $washinginspectmodel->wash_request_id = $wash_request_id;
                         $washinginspectmodel->vehicle_id = $car->id;
                         $washinginspectmodel->damage_pic = $cardetail->damage_pic;
+                        $washinginspectmodel->eco_friendly = $cardetail->eco_friendly;
                         $washinginspectmodel->save(false);
                         /* --------- Inspection details save end --------- */
 
@@ -2578,6 +2585,28 @@ else $customername = $cust_name[0];
                             'action'=> 'washerstartjob',
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
+                     $this->layout = "xmlLayout";
+                        spl_autoload_unregister(array(
+                        'YiiBase',
+                        'autoload'
+                    ));
+                    //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+                    require('Services/Twilio.php');
+                    require('Services/Twilio/Capability.php');
+
+                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $client = new Services_Twilio($account_sid, $auth_token);
+
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  $cust_details->contact_number,
+                        'From' => '+13103128070',
+                        'Body' => $notify_msg,
+                    ));
+
+                    spl_autoload_register(array('YiiBase','autoload'));
                 }
 
                 if(($status == WASHREQUEST_STATUS_AGENTARRIVED) && (!$wrequest_id_check->meet_washer_push_sent))
@@ -2596,6 +2625,28 @@ else $customername = $cust_name[0];
                             'action'=> 'washerarrivejob',
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
+                    $this->layout = "xmlLayout";
+                        spl_autoload_unregister(array(
+                        'YiiBase',
+                        'autoload'
+                    ));
+                    //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+                    require('Services/Twilio.php');
+                    require('Services/Twilio/Capability.php');
+
+                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $client = new Services_Twilio($account_sid, $auth_token);
+
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  $cust_details->contact_number,
+                        'From' => '+13103128070',
+                        'Body' => $notify_msg,
+                    ));
+
+                    spl_autoload_register(array('YiiBase','autoload'));
                 }
 
                 if(($status == WASHREQUEST_STATUS_AGENTARRIVED_CONFIRMED_BYCLIENT) && (!$wrequest_id_check->inspect_begin_push_sent))
@@ -2848,8 +2899,7 @@ if($time_diff >= 10){
 
  Washingrequests::model()->updateByPk($wash_request_id, array( 'status' => 5, 'no_washer_cancel' => 1));
 
-$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
-
+$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '22' ")->queryAll();
 						$message = $pushmsg[0]['message'];
@@ -2963,7 +3013,7 @@ if(!$wrequest_id_check->washer_one_min_arrive_push_sent){
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '16' ")->queryAll();
 $message = $pushmsg[0]['message'];
 
-$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
+$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 foreach( $clientdevices as $ctdevice){
                             //$message =  "Washer arriving within 1 minute";
@@ -3028,6 +3078,7 @@ foreach( $clientdevices as $ctdevice){
                 'response'=> $response,
                 'buzz_status'=> $buzz_status,
                 'is_scheduled' => $wrequest_id_check->is_scheduled,
+                 'meet_washer_outside' => $wrequest_id_check->meet_washer_outside,
 'wash_start_since' => $mins,
 'feedback_5mins_passed' => $feedback_5mins_passed,
                 'agent_details' => $agent_details,
@@ -6477,7 +6528,7 @@ if($wrequest_id_check->coupon_code){
             else{
                 if(($wrequest_id_check->status > 1) && ($wrequest_id_check->status <= 3)){
 
-             $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
+             $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
                 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '27' ")->queryAll();
 					$message = $pushmsg[0]['message'];
@@ -6644,7 +6695,7 @@ if($nearagentsdetails->result == 'false'){
 }
 else{
   Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
- $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
+ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '29' ")->queryAll();
 							$message = $pushmsg[0]['message'];
@@ -8494,7 +8545,7 @@ $sendmessage = $client->account->messages->create(array(
 }
   if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
 
-  $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$order_exists->agent_id."' ")->queryAll();
+  $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$order_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '20' ")->queryAll();
 							$message = $pushmsg[0]['message'];
@@ -9303,8 +9354,7 @@ die();
 
 						if($get_notify){
 
-							$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' AND device_token != '' ")->queryAll();
-
+                            $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' AND device_token != '' ORDER BY last_used DESC LIMIT 1")->queryAll();
 //echo $schedwash->id." - ".$agent->id."<br>";
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
@@ -9347,9 +9397,7 @@ $notify_token = '';
 
                        $agentdet = Agents::model()->findByPk($schedwash->agent_id);
 
-
-							$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$schedwash->agent_id."' ")->queryAll();
-
+                            $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$schedwash->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '18' ")->queryAll();
 							$message = $pushmsg[0]['message'];
@@ -9394,8 +9442,7 @@ $notify_token = '';
 
 						if($get_notify){
 
-							$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' ")->queryAll();
-
+                            $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '18' ")->queryAll();
 							$message = $pushmsg[0]['message'];
@@ -9443,8 +9490,7 @@ echo "#".$schedwash->id." ".$min_diff."<br>";
 if($min_diff <= 60 && $min_diff >= 10){
 
                if($schedwash->agent_id){
-                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$schedwash->agent_id."' ")->queryAll();
-
+                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$schedwash->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
                 //$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
                 //$message = $pushmsg[0]['message'];
 
@@ -9524,8 +9570,7 @@ $min_diff = round(($from_time - $to_time) / 60,2);
 if($min_diff < 10){
 
                if($schedwash->agent_id){
-                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$schedwash->agent_id."' ")->queryAll();
-
+                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$schedwash->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
                 //$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
                 //$message = $pushmsg[0]['message'];
 
@@ -9550,7 +9595,8 @@ else if(($min_diff <= 0) && (!$schedwash->network_error_push_sent)) {
                  else $voidresult = Yii::app()->braintree->void($schedwash->transaction_id);
                }
 */
-   $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ")->queryAll();
+
+   $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '19' ")->queryAll();
 							$message = $pushmsg[0]['message'];
@@ -9606,7 +9652,7 @@ Washingrequests::model()->updateByPk($schedwash->id, array("network_error_push_s
                  //else $voidresult = Yii::app()->braintree->void($schedwash->transaction_id);
                }
 
-   $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ")->queryAll();
+   $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '19' ")->queryAll();
 							$message = $pushmsg[0]['message'];
@@ -10088,8 +10134,7 @@ die();
 			    $message = $pushmsg[0]['message'];
                     foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
 
-                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ")->queryAll();
-
+                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 						foreach($agentdevices as $agdevice){
 
 						    $device_type = strtolower($agdevice['device_type']);
@@ -10151,8 +10196,9 @@ die();
 			    $message = $pushmsg[0]['message'];
                     foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
 
-                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ")->queryAll();
-                        $current_mile = round($nearagentdis);
+                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+                     $current_mile = round($nearagentdis);
                         if($current_mile < 1) $current_mile = 1;
                         if($current_mile <= 1) $message = str_replace("[MILE]",$current_mile." mile", $message);
                         else $message = str_replace("[MILE]",$current_mile." miles", $message);

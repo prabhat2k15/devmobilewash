@@ -2568,8 +2568,7 @@ $floormat_addon_new = trim($floormat_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
 }
 
-
-$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ")->queryAll();
+ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 						/* --- notification call --- */
 
@@ -2871,7 +2870,7 @@ Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles'
 
 WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id." AND vehicle_id=".$vehicle_id);
 
-$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ")->queryAll();
+$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, 'customer_id'=>$wash_request_exists->customer_id));
 
@@ -3034,7 +3033,7 @@ $notify_msg = $pushmsg[0]['message'];
                     $uploadOk = 0;
 		            $cust_vehicle_model = Vehicle::model()->findByPk($vehicle_id);
                     $cust_vehicle_model->status = $status;
-                    $cust_vehicle_model->eco_friendly = $eco_friendly;
+                    if($status == 2) $cust_vehicle_model->eco_friendly = $eco_friendly;
 if(!Yii::app()->request->getParam('pet_hair')) $pet_hair = $cust_vehicle_model->pet_hair;
 $cust_vehicle_model->pet_hair = $pet_hair;
 if(!Yii::app()->request->getParam('lifted_vehicle')) $lifted_vehicle = $cust_vehicle_model->lifted_vehicle;
@@ -9014,12 +9013,12 @@ if((isset($customer_id) && !empty($customer_id)) && (isset($device_id) && !empty
 $device_exists =  Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE device_id = '$device_id'")->queryAll();
 
         if(count($device_exists)>0){
-Yii::app()->db->createCommand("UPDATE customer_devices SET customer_id='$customer_id', device_token='$device_token', device_name='$device_name', os_details='$os_details', device_type='$device_type' WHERE device_id = '$device_id'")->execute();
+Yii::app()->db->createCommand("UPDATE customer_devices SET customer_id='$customer_id', device_token='$device_token', device_name='$device_name', os_details='$os_details', device_type='$device_type', last_used='".date("Y-m-d H:i:s")."' WHERE device_id = '$device_id'")->execute();
 $result= 'true';
 $response= 'device updated';
 }
 else{
-$data = array('customer_id'=> $customer_id, 'device_name'=> $device_name, 'device_id'=> $device_id, 'device_token'=> $device_token, 'os_details'=> $os_details, 'device_type'=> $device_type, 'device_add_date'=> date("Y-m-d H:i:s"));
+$data = array('customer_id'=> $customer_id, 'device_name'=> $device_name, 'device_id'=> $device_id, 'device_token'=> $device_token, 'os_details'=> $os_details, 'device_type'=> $device_type, 'device_add_date'=> date("Y-m-d H:i:s"), 'last_used'=> date("Y-m-d H:i:s"));
 
                     Yii::app()->db->createCommand()->insert('customer_devices', $data);
 $result= 'true';

@@ -5158,12 +5158,12 @@ if((isset($agent_id) && !empty($agent_id)) && (isset($device_id) && !empty($devi
 $device_exists =  Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE device_id = '$device_id'")->queryAll();
 
         if(count($device_exists)>0){
-Yii::app()->db->createCommand("UPDATE agent_devices SET agent_id='$agent_id', device_token='$device_token', device_name='$device_name', os_details='$os_details', device_type='$device_type' WHERE device_id = '$device_id'")->execute();
+Yii::app()->db->createCommand("UPDATE agent_devices SET agent_id='$agent_id', device_token='$device_token', device_name='$device_name', os_details='$os_details', device_type='$device_type', last_used='".date("Y-m-d H:i:s")."' WHERE device_id = '$device_id'")->execute();
 $result= 'true';
 $response= 'device updated';
 }
 else{
-$data = array('agent_id'=> $agent_id, 'device_name'=> $device_name, 'device_id'=> $device_id, 'device_token'=> $device_token, 'os_details'=> $os_details, 'device_type'=> $device_type, 'device_add_date'=> date("Y-m-d H:i:s"));
+$data = array('agent_id'=> $agent_id, 'device_name'=> $device_name, 'device_id'=> $device_id, 'device_token'=> $device_token, 'os_details'=> $os_details, 'device_type'=> $device_type, 'device_add_date'=> date("Y-m-d H:i:s"), 'last_used'=> date("Y-m-d H:i:s"));
 
                     Yii::app()->db->createCommand()->insert('agent_devices', $data);
 $result= 'true';

@@ -178,6 +178,68 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 }
 
 
+ @-webkit-keyframes glowing3 {
+  0% { background-color: #fff; }
+  50% { background-color: #FF1493;  }
+  100% { background-color: #fff; }
+}
+
+@-moz-keyframes glowing3 {
+ 0% { background-color: #fff; }
+  50% { background-color: #FF1493;  }
+  100% { background-color: #fff; }
+}
+
+@-o-keyframes glowing3 {
+ 0% { background-color: #fff; }
+  50% { background-color: #FF1493;  }
+  100% { background-color: #fff; }
+}
+
+@keyframes glowing3 {
+  0% { background-color: #fff; }
+  50% { background-color: #FF1493;  }
+  100% { background-color: #fff; }
+}
+
+
+ @-webkit-keyframes glowing4 {
+  0% { background-color: #fff; }
+  20% { background-color: red;  }
+  40% { background-color: #fff; }
+  60% { background-color: #FF1493;  }
+  80% { background-color: #fff; }
+  100% { background-color: red; }
+}
+
+@-moz-keyframes glowing4 {
+  0% { background-color: #fff; }
+  20% { background-color: red;  }
+  40% { background-color: #fff; }
+  60% { background-color: #FF1493;  }
+  80% { background-color: #fff; }
+  100% { background-color: red; }
+}
+
+@-o-keyframes glowing4 {
+ 0% { background-color: #fff; }
+  20% { background-color: red;  }
+  40% { background-color: #fff; }
+  60% { background-color: #FF1493;  }
+  80% { background-color: #fff; }
+  100% { background-color: red; }
+}
+
+@keyframes glowing4 {
+  0% { background-color: #fff; }
+  20% { background-color: red;  }
+  40% { background-color: #fff; }
+  60% { background-color: #FF1493;  }
+  80% { background-color: #fff; }
+  100% { background-color: red; }
+}
+
+
   .flashrow{
    -webkit-animation: glowing 1500ms infinite;
         -moz-animation: glowing 1500ms infinite;
@@ -198,6 +260,30 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 }
 
 .flashrownotarrive td{
+    border: 0 !important;
+
+}
+
+  .flashrowdeclined{
+   -webkit-animation: glowing3 1500ms infinite;
+        -moz-animation: glowing3 1500ms infinite;
+        -o-animation: glowing3 1500ms infinite;
+        animation: glowing3 1500ms infinite;
+}
+
+.flashrowdeclined td{
+    border: 0 !important;
+
+}
+
+  .flashrowdeclinednotarrive{
+   -webkit-animation: glowing4 1500ms infinite;
+        -moz-animation: glowing4 1500ms infinite;
+        -o-animation: glowing4 1500ms infinite;
+        animation: glowing4 1500ms infinite;
+}
+
+.flashrowdeclinednotarrive td{
     border: 0 !important;
 
 }
@@ -583,6 +669,9 @@ $.each(data.wash_requests, function( index, value ) {
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
      if((value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
      if((value.min_diff < 0) && (value.status == 1)) upcomingwashes["DT_RowClass"] = "flashrownotarrive";
+     if(value.payment_status == 'Declined') upcomingwashes["DT_RowClass"] = "flashrowdeclined";
+     if((value.min_diff <= 30) && (value.status == 0) && (value.payment_status == 'Declined')) upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
+
       upcomingwashes.push("<a href='edit-order.php?id="+value.id+"' class='appt-edit-order' data-id='"+value.id+"' style='margin-right: 7px;'>Edit</a>");
       upcomingwashes.push(value.id);
        if(value.is_scheduled == 1){

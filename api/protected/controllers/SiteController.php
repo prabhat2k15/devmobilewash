@@ -2397,8 +2397,7 @@ if($admin_command == 'save-note'){
 
 if(($admin_command == 'save-reschedule') && ($wrequest_id_check->is_scheduled == 1) && ($wrequest_id_check->agent_id) && ($reschedule_time) && ((strtotime($reschedule_date) != strtotime($wrequest_id_check->schedule_date)) || (strtotime($reschedule_time) != strtotime($wrequest_id_check->schedule_time)))){
 
-  $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wrequest_id_check->agent_id."' ")->queryAll();
-
+  $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wrequest_id_check->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 						/* --- notification call --- */
 
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '18' ")->queryAll();
@@ -3515,7 +3514,8 @@ $min_diff = round(($current_time - $create_time) / 60,2);
 //echo "<br>";
 if($min_diff >= 30){
 
-	        	$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = ".$client['id'])->queryAll();
+                 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$client['id']."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
 $cust_details = Customers::model()->findByAttributes(array("id"=>$client['id']));
 if(($cust_details->customername) && ($cust_details->customername != 'N/A')){
   $custname_arr = explode(" ",$cust_details->customername);
@@ -3586,7 +3586,8 @@ $min_diff = round(($current_time - $create_time) / 60,2);
 //echo "<br>";
 if($min_diff >= 14400){
 
-	        	$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = ".$client['id'])->queryAll();
+                 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$client['id']."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
 $cust_details = Customers::model()->findByAttributes(array("id"=>$client['id']));
 if(($cust_details->customername) && ($cust_details->customername != 'N/A')){
   $custname_arr = explode(" ",$cust_details->customername);
@@ -3735,12 +3736,11 @@ die();
 			     
 			     if(!count($agent_check)){
 			       	$result= 'false';
-		$response= 'No washer found';  
+		$response= 'No washer found';
 			     }
 			     else{
-			          $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ")->queryAll();
-
-            if(count($agentdevices))
+                      $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+         if(count($agentdevices))
             {
                 foreach($agentdevices as $agdevice)
                 {
@@ -4437,7 +4437,7 @@ die();
       $response = 'Error in sending notification';
         if(count($cust_id_check)){
 
-                        $customerdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$customer_id."' ")->queryAll();
+                         $customerdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 						foreach($customerdevices as $ctdevice){
 
@@ -4486,9 +4486,8 @@ die();
       $response = 'Error in sending notification';
         if(count($agent_id_check)){
 
-                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ")->queryAll();
-
-						foreach($agentdevices as $agdevice){
+                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                        foreach($agentdevices as $agdevice){
 
 						    $device_type = strtolower($agdevice['device_type']);
 							$notify_token = $agdevice['device_token'];
@@ -4652,6 +4651,16 @@ die();
 
             }
 
+            else if(!$agent_id){
+                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => $agent_id));
+                    $json= array(
+				        'result'=> 'true',
+				        'response'=> 'Washer updated'
+		    	    );
+		            echo json_encode($json);
+                    die();
+            }
+
             else if(!count($agent_check)){
                 $result= 'false';
                 $response= 'Invalid agent id';
@@ -4706,7 +4715,7 @@ die();
                 }
                 else{
 
-                    if($wrequest_id_check->transaction_id && ($wrequest_id_check->agent_id != $agent_id)){
+                    if($wrequest_id_check->transaction_id && ($wrequest_id_check->agent_id != $agent_id) && ($wrequest_id_check->status == 4)){
                         if($customer_check->client_position == 'real') $voidresult = Yii::app()->braintree->void_real($wrequest_id_check->transaction_id);
                         else $voidresult = Yii::app()->braintree->void($wrequest_id_check->transaction_id);
 
@@ -4748,7 +4757,7 @@ die();
                         }
                     }
 
-                    if((!$wrequest_id_check->transaction_id) && ($wrequest_id_check->agent_id != $agent_id)){
+                    if((!$wrequest_id_check->transaction_id) && ($wrequest_id_check->agent_id != $agent_id) && ($wrequest_id_check->status == 4)){
                         if($customer_check->client_position == 'real'){
                             $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wrequest_id_check->id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => $kartdetails->net_price,'paymentMethodToken' => $token];
                             $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);

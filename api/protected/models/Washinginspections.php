@@ -26,8 +26,8 @@ class Washinginspections extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('wash_request_id, vehicle_id, damage_pic', 'required'),
-			array('id, wash_request_id, vehicle_id, damage_pic', 'safe', 'on'=>'search'),
+			array('wash_request_id, vehicle_id, damage_pic, eco_friendly', 'required'),
+			array('id, wash_request_id, vehicle_id, damage_pic, eco_friendly', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -51,7 +51,8 @@ class Washinginspections extends CActiveRecord
 			'id' => 'ID',
 			'wash_request_id' => 'Wash Request Id',
 			'vehicle_id' => 'vehicle id',
-			'damage_pic' => 'Damage Pic'
+			'damage_pic' => 'Damage Pic',
+            'eco_friendly' => 'Eco Friendly'
 		);
 	}
 
@@ -65,6 +66,7 @@ class Washinginspections extends CActiveRecord
 		$criteria->compare('wash_request_id',$this->wash_request_id,true);
 		$criteria->compare('vehicle_id',$this->vehicle_id,true);
 		$criteria->compare('damage_pic',$this->damage_pic,true);
+        $criteria->compare('eco_friendly',$this->eco_friendly,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

@@ -6,7 +6,7 @@ if(isset($_POST['email-verify-client-submit'])){
 $email = $_POST['email'];
 $error = '';
 $data = array("emailid"=>$email, 'customer_id' => $_GET['customer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("https://www.mobilewash.com/api/index.php?r=customers/resendverifyemail");
+$handle = curl_init("http://devmobilewash.com/api/index.php?r=customers/resendverifyemail");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -22,7 +22,7 @@ if(isset($_POST['email-verify-washer-submit'])){
 $email = $_POST['email'];
 $error = '';
 $data = array("emailid"=>$email, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("https://www.mobilewash.com/api/index.php?r=agents/resendverifyemail");
+$handle = curl_init("http://devmobilewash.com/api/index.php?r=agents/resendverifyemail");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -35,7 +35,7 @@ $result_code = $jsondata->result;
 }
 
 if(isset($_GET['customer_id'])){
-  $handle = curl_init("https://www.mobilewash.com/api/index.php?r=customers/profiledetails");
+  $handle = curl_init("http://devmobilewash.com/api/index.php?r=customers/profiledetails");
 $data = array('customerid' => $_GET['customer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -50,7 +50,7 @@ $profiledetail_result_code = $profiledetail->result;
 }
 
 if(isset($_GET['washer_id'])){
-  $handle = curl_init("https://www.mobilewash.com/api/index.php?r=agents/profiledetails");
+  $handle = curl_init("http://devmobilewash.com/api/index.php?r=agents/profiledetails");
 $data = array('agent_id' => $_GET['washer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -85,9 +85,9 @@ if(isset($_GET['washer_email_confirm']) && $_GET['washer_email_confirm'] == 'err
   <title>Email Verification - MobileWash.com</title>
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://www.mobilewash.com/style.css" />
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" type="text/css" href="css/responsive.css" />
+  <link rel="stylesheet" type="text/css" href="https://www.mobilewash.com/css/responsive.css" />
 </head>
 
 <body class="login client-login">
@@ -97,7 +97,7 @@ if(isset($_GET['washer_email_confirm']) && $_GET['washer_email_confirm'] == 'err
     <div id="header">
         <div class="wrapper">
             <div class="login-wrap">
-                <p style="margin: 0;"><a href="index.php"><img src="images/logo-new-white.png" style="width: 100%; max-width: 400px;" alt="" /></a></p>
+                <p style="margin: 0;"><a href="index.php"><img src="https://www.mobilewash.com/images/logo-new-white.png" style="width: 100%; max-width: 400px;" alt="" /></a></p>
                 <p class="bordered-text"><span>EMAIL VERIFICATION</span></p>
                  <?php if($result_code == "false"): ?>
              <p class="error" style="background: #DC0000; color: #fff; padding: 12px;">
