@@ -288,6 +288,36 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 
 }
 
+
+.spec-orders{
+  width: 600px;
+    height: auto;
+    max-height: 100px;
+    position: fixed;
+    background: rgba(234, 0, 85, 0.84);
+    z-index: 999;
+    top: 65px;
+    left: 50%;
+    margin-left: -300px;
+    color: #fff;
+    padding: 20px;
+    padding-top: 0;
+    box-sizing: border-box;
+    overflow: auto;
+    display: none;
+}
+
+.spec-orders p{
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.spec-orders p a{
+   margin-left: 10px;
+    color: #fff;
+    text-decoration: underline;
+}
+
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -295,7 +325,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                 <div class="page-content">
                     <!-- BEGIN PAGE HEADER-->
 
-
+                     <div class="spec-orders"></div>
 
                     <!-- END PAGE HEADER-->
                     <!-- BEGIN DASHBOARD STATS 1-->
@@ -646,7 +676,7 @@ $.each(data.wash_ids, function( index, value ) {
 function ajaxorderlist(){
     var alldata;
     var upcomingwashes = [];
-    
+    var processordeclined_washes = "";
 //console.log(params);
   $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/getallwashrequestsnew", params, function( data ) {
     
@@ -665,6 +695,9 @@ dt_table.fnClearTable();
 
 $.each(data.wash_requests, function( index, value ) {
     var upcomingwashes = [];
+    if(value.payment_status == 'Declined'){
+      processordeclined_washes += "<p>#"+value.id+" Processor declined order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+    }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
      if((value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
@@ -704,7 +737,7 @@ $.each(data.wash_requests, function( index, value ) {
       }
       
       else if(value.status == 4){
-         upcomingwashes.push("<span class='label label-sm label-complete'>Completed</span>"); 
+         upcomingwashes.push("<span class='label label-sm label-complete'>Completed</span>");
       }
       
        var payment_status_str = '';
@@ -721,7 +754,7 @@ upcomingwashes.push(value.transaction_id);
 upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?customer_id="+value.customer_id+"'>"+value.customer_name+"</a>");
 upcomingwashes.push(value.customer_phoneno);
 if(value.agent_details.agent_name) upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?agent_id="+value.agent_details.agent_id+"'>"+value.agent_details.agent_name+"</a>");
-else upcomingwashes.push("N/A"); 
+else upcomingwashes.push("N/A");
 if(value.agent_details.agent_phoneno) upcomingwashes.push(value.agent_details.agent_phoneno);
 else upcomingwashes.push("N/A"); 
 upcomingwashes.push(value.address+" ("+value.address_type+")");
@@ -759,8 +792,19 @@ dt_table.fnAddData(upcomingwashes);
  if(alldata.length > 0) dt_table.fnAddData(alldata);
  //dt_table.fnDraw();
 }
+
+console.log(processordeclined_washes);
+if(processordeclined_washes != ''){
+    $(".spec-orders").html(processordeclined_washes);
+   $(".spec-orders").show();
+}
+else{
+  $(".spec-orders").html("");
+   $(".spec-orders").hide();
+}
 });
 //console.log('working');
+
 }
 
 //pendingflashingorder();

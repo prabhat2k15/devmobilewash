@@ -374,6 +374,36 @@ $customer_total_wash = count($totalwash_arr);
                  $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
              }
 
+              $encode_address = urlencode($address);
+
+    /* --- Geocode lat long --- */
+
+    $geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$encode_address."&sensor=true&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+    $ch = curl_init();
+
+	curl_setopt($ch,CURLOPT_URL,$geourl);
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+//	curl_setopt($ch,CURLOPT_HEADER, false);
+
+$georesult = curl_exec($ch);
+curl_close($ch);
+$geojsondata = json_decode($georesult);
+//var_dump($geojsondata);
+if($geojsondata->status == 'ZERO_RESULTS'){
+  $json = array(
+            'result'=> 'false',
+            'response'=> 'Invalid address',
+
+        );
+
+        echo json_encode($json); die();
+}
+else{
+$latitude = $geojsondata->results[0]->geometry->location->lat;
+$longitude = $geojsondata->results[0]->geometry->location->lng;
+
+}
+
 
 
                 $date = date("Y-m-d H:i:s");
