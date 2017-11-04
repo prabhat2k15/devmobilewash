@@ -2743,6 +2743,32 @@ Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle
 
                 /* ------------ upgrade pack end ------------- */
 
+                /* ------ edit vehicle ---------- */
+
+                 if($edit_vehicle == 2){
+
+                    $draft_vehicle_exists = CustomerDraftVehicle::model()->findByAttributes(array("id"=>$draft_vehicle_id));
+                  if($draft_vehicle_exists->vehicle_build == 'classic'){
+$vehicle_check = Yii::app()->db->createCommand()
+                ->select('*')
+                ->from('all_classic_vehicles')
+                ->where("make='".$draft_vehicle_exists->brand_name."' AND model='".$draft_vehicle_exists->model_name."'", array())
+                ->queryAll();
+}
+else{
+$vehicle_check = Yii::app()->db->createCommand()
+                ->select('*')
+                ->from('all_vehicles')
+                ->where("make='".$draft_vehicle_exists->brand_name."' AND model='".$draft_vehicle_exists->model_name."'", array())
+                ->queryAll();
+}
+
+                    WashPricingHistory::model()->updateAll(array('vehicle_price' => $draft_vehicle_exists->package_price, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id="'.$wash_request_id.'" AND vehicle_id="'.$vehicle_id.'"');
+                   Vehicle::model()->updateByPk($vehicle_id, array("vehicle_source_id" => $vehicle_check[0]['id'], "brand_name" => $draft_vehicle_exists->brand_name, "model_name" => $draft_vehicle_exists->model_name, "vehicle_type" => $draft_vehicle_exists->vehicle_type, "vehicle_category" => $draft_vehicle_exists->vehicle_category, "vehicle_build" => $draft_vehicle_exists->vehicle_build));
+                 }
+
+                 /* ------ edit vehicle end ---------- */
+
                   /* ------------ remove car from kart ------------- */
 
                 if($remove_vehicle_from_kart == 2){

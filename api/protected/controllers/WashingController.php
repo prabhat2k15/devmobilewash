@@ -2673,7 +2673,7 @@ else $customername = $cust_name[0];
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  $cust_details->contact_number,
                         'From' => '+13103128070',
-                        'Body' => $notify_msg,
+                        'Body' => "Your washer is outside. Please open your app.",
                     ));
 
                     spl_autoload_register(array('YiiBase','autoload'));
@@ -7992,7 +7992,7 @@ if($from_time > $to_time){
 $min_diff = round(($from_time - $to_time) / 60,2);
 }
 //echo $min_diff."<br>";
-if(($min_diff <= 30) && (!Yii::app()->request->getParam('free_cancel'))){
+if(($min_diff <= 30) && (!Yii::app()->request->getParam('free_cancel')) && ($order_exists->agent_id)){
 
                $braintree_id = '';
                  $braintree_id =  $cust_exists->braintree_id;
@@ -8610,6 +8610,31 @@ $sendmessage = $client->account->messages->create(array(
                         'action_date'=> date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
+                      $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$order_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '31' ")->queryAll();
+							$message = $pushmsg[0]['message'];
+
+							foreach($clientdevices as $ctdevice){
+								//$message =  "You have a new scheduled wash request.";
+								//echo $agentdetails['mobile_type'];
+								$device_type = strtolower($ctdevice['device_type']);
+								$notify_token = $ctdevice['device_token'];
+								$alert_type = "schedule";
+								$notify_msg = urlencode($message);
+
+								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+								$ch = curl_init();
+								curl_setopt($ch,CURLOPT_URL,$notifyurl);
+								curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+								if($notify_msg) $notifyresult = curl_exec($ch);
+								curl_close($ch);
+							}
+
+
             }
 
             if(($result == 'true') && (!$admin_username)){
