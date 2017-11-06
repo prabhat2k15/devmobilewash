@@ -8042,7 +8042,7 @@ if($from_time > $to_time){
 $min_diff = round(($from_time - $to_time) / 60,2);
 }
 //echo $min_diff."<br>";
-if(($min_diff <= 30) && (!Yii::app()->request->getParam('free_cancel')) && ($order_exists->agent_id)){
+if(($min_diff <= 60) && (!Yii::app()->request->getParam('free_cancel')) && ($order_exists->agent_id)){
 
                $braintree_id = '';
                  $braintree_id =  $cust_exists->braintree_id;
@@ -8055,10 +8055,19 @@ else $Bresult = Yii::app()->braintree->getCustomerById($braintree_id);
                   $response = 'payment methods';
                   foreach($Bresult->paymentMethods as $index=>$paymethod){
 
-                  $request_data = ['amount' => $fee,'paymentMethodToken' => $paymethod->token, 'customer' => ['firstName' =>$cust_exists->customername,],'billing' => ['firstName' => $cust_exists->customername]];
+                  if(($order_exists->status > 1) && ($order_exists->status <= 3)){
+                            $request_data = ['merchantAccountId' => $agent_det->bt_submerchant_id, 'serviceFeeAmount' => "5.00", 'amount' => $fee,'paymentMethodToken' => $paymethod->token];
+                            if($cust_exists->client_position == 'real') $cancelresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
+                            else $cancelresult = Yii::app()->braintree->transactToSubMerchant($request_data);
+                }
+		else{
+			$request_data = ['amount' => $fee,'paymentMethodToken' => $paymethod->token, 'customer' => ['firstName' =>$cust_exists->customername,],'billing' => ['firstName' => $cust_exists->customername]];
 
-                     if($cust_exists->client_position == 'real') $cancelresult = Yii::app()->braintree->sale_real($request_data);
-else $cancelresult = Yii::app()->braintree->sale($request_data);
+			if($cust_exists->client_position == 'real') $cancelresult = Yii::app()->braintree->sale_real($request_data);
+			else $cancelresult = Yii::app()->braintree->sale($request_data);	
+		}
+			
+		  
 
                      if(($cancelresult['success'] == 1)) {
                          if($cust_exists->client_position == 'real') $cancelsettle = Yii::app()->braintree->submitforsettlement_real($cancelresult['transaction_id']);
@@ -8066,7 +8075,8 @@ else $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['t
                         $result = 'true';
                         $response = 'Order canceled';
                         $cancel_price =  $fee;
-                         Washingrequests::model()->updateByPk($id, array('status'=>5, 'cancel_fee' => $fee));
+                         if(($order_exists->status > 1) && ($order_exists->status <= 3)) Washingrequests::model()->updateByPk($id, array('status'=>5, 'cancel_fee' => $fee, 'washer_cancel_fee' => $fee-5));
+			 else Washingrequests::model()->updateByPk($id, array('status'=>5, 'cancel_fee' => $fee));
 
                                     if($order_exists->transaction_id) {
                  if($order_exists->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($order_exists->transaction_id);

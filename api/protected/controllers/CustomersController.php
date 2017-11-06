@@ -8883,7 +8883,7 @@ die();
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
                     }
 
-                      if(($wash_id_check->status > 1) && ($wash_id_check->status <= 3)) $data= array('status' => 5, 'cancel_fee' => $amount, 'washer_cancel_fee' => 5);
+                      if(($wash_id_check->status > 1) && ($wash_id_check->status <= 3)) $data= array('status' => 5, 'cancel_fee' => $amount, 'washer_cancel_fee' => $amount-5);
                       else {
                        $data= array('status' => 5, 'cancel_fee' => $amount);
                       }
