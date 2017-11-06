@@ -2211,6 +2211,38 @@ else $customername = $cust_name[0];
 
                     spl_autoload_register(array('YiiBase','autoload'));
                     }
+
+                $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $wrequest_id_check->agent_id));
+                $total_rate = count($agent_feedbacks);
+                if($total_rate){
+                    $rate = 0;
+                    foreach($agent_feedbacks as $ind=>$agent_feedback){
+                        if($ind <= 9) $rate += 5;
+                        else $rate += $agent_feedback->customer_ratings;
+                    }
+
+                    $agent_rate =  $rate/$total_rate;
+                    $agent_rate = number_format($agent_rate, 2);
+
+                }
+                else{
+                    $agent_rate = 5.00;
+
+                }
+
+                $agent_id_check = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+                $washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$wrequest_id_check->agent_id." AND action= 'dropjob'")->queryAll();
+                $washer_total_dropjobs = $washerdropjobs[0]['count'];
+
+                $agent_rate -= ($washer_total_dropjobs * $agent_id_check->rating_control);
+
+                $agent_rate = number_format($agent_rate, 2);
+
+                $agentmodel = new Agents;
+                if($agent_rate < 3.5) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1), 'id=:id', array(':id'=>$wrequest_id_check->agent_id));
+                else $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$wrequest_id_check->agent_id));
+
+
                 }
 
                 Washingrequests::model()->updateByPk($wash_request_id, array("address" => $address, "latitude" => $lat, "longitude" => $long, "address_type" => $address_type, "estimate_time" => $eta, "car_list" => $car_ids, "package_list" => $package_list, "is_scheduled" => $is_scheduled, "schedule_date" => $schedule_date, "schedule_time" => $schedule_time, "reschedule_date" => $reschedule_date, "reschedule_time" => $reschedule_time, 'order_for' => $order_for_date, "status" => $status, "agent_id" => $agent_id, "checklist" => $checklist, "notes" => $notes, "scheduled_cars_info" => $scheduled_cars_info, "schedule_total" => $schedule_total, "schedule_company_total" => $schedule_company_total, "schedule_agent_total" => $schedule_agent_total, "tip_amount" => $tip_amount, "washer_penalty_fee" => $washer_penalty_fee));
@@ -2673,7 +2705,7 @@ else $customername = $cust_name[0];
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  $cust_details->contact_number,
                         'From' => '+13103128070',
-                        'Body' => "Your washer is outside. Please open your app.",
+                        'Body' => "Your washer is outside. Please open your app. Washer will wait up to 20 minutes.",
                     ));
 
                     spl_autoload_register(array('YiiBase','autoload'));
@@ -3212,8 +3244,17 @@ if($tip_amount == 'zero') $tip_amount = 0;
 
                 }
 
+                $agent_id_check = Agents::model()->findByAttributes(array("id"=>$washrequest_id_check->agent_id));
+                $washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$washrequest_id_check->agent_id." AND action= 'dropjob'")->queryAll();
+                $washer_total_dropjobs = $washerdropjobs[0]['count'];
+
+                $agent_rate -= ($washer_total_dropjobs * $agent_id_check->rating_control);
+
+                $agent_rate = number_format($agent_rate, 2);
+
                 $agentmodel = new Agents;
-                $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
+                if($agent_rate < 3.5) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
+                else $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
 
                 /* ------------ calculate agent average feedback end ---------------- */
 
@@ -3250,7 +3291,13 @@ if($tip_amount == 'zero') $tip_amount = 0;
                     $agent_rate = 5.00;
                 }
 
+                $agent_id_check = Agents::model()->findByAttributes(array("id"=>$washrequest_id_check->agent_id));
+                $washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$washrequest_id_check->agent_id." AND action= 'dropjob'")->queryAll();
+                $washer_total_dropjobs = $washerdropjobs[0]['count'];
 
+                $agent_rate -= ($washer_total_dropjobs * $agent_id_check->rating_control);
+
+                $agent_rate = number_format($agent_rate, 2);
 
                 $agentmodel = new Agents;
                 $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
@@ -6370,6 +6417,9 @@ die();
                     else{
                     $agent_rate = 0;
                     }
+
+                   $agent_rate = $agent_id_check->rating;
+
 				$json= array(
 					'result'=> 'true',
 					'response'=> 'Agent details',

@@ -301,6 +301,9 @@ $online_status = array('status' => 'online');
                     else{
                     $agent_rate = 0;
                     }
+
+                    $agent_rate = $agents_id->rating;
+
                     $agentname = $agents_id->first_name." ".$agents_id->last_name;
 					$json= array(
 						'result'=> $result,
@@ -1041,6 +1044,8 @@ die();
                     $agent_rate = 0;
                     }
 
+                    $agent_rate = $agent_id_check->rating;
+
 if($agent_id_check->bt_submerchant_id){
 if($agent_id_check->washer_position == 'real') $bt_result = Yii::app()->braintree->getsubmerchantbyid_real($agent_id_check->bt_submerchant_id);
 else $bt_result = Yii::app()->braintree->getsubmerchantbyid($agent_id_check->bt_submerchant_id);
@@ -1100,7 +1105,8 @@ if($bt_result->fundingDetails->routingNumber) $routing_no = $bt_result->fundingD
 'notes' => $agent_id_check->notes,
 'available_for_new_order' => $agent_id_check->available_for_new_order,
 'block_washer' => $agent_id_check->block_washer,
-'hours_opt_check' => $agent_id_check->hours_opt_check
+'hours_opt_check' => $agent_id_check->hours_opt_check,
+'rating_control' => $agent_id_check->rating_control
 
 				);
 			}else{
@@ -1181,6 +1187,8 @@ $admin_edit = '';
 $admin_edit = Yii::app()->request->getParam('admin_edit');
 $hours_opt_check = '';
 $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
+$rating_control = 0;
+$rating_control = Yii::app()->request->getParam('rating_control');
 
    if($phone_dup_check == 'true'){
            $agent_phone_exists = Agents::model()->findByAttributes(array("phone_number"=>$phone_number));
@@ -1349,6 +1357,10 @@ $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
                     $block_washer = $model->block_washer;
                 }
 
+                if(!is_numeric($rating_control)){
+                    $rating_control = $model->rating_control;
+                }
+
                  if($account_status == ''){
                     $account_status = $model->account_status;
                 }
@@ -1441,6 +1453,7 @@ $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
 'rating' => $rating,
 'notes' => $notes,
 'hours_opt_check' => $hours_opt_check,
+'rating_control' => $rating_control,
 					'updated_date'=> date('Y-m-d h:i:s')
 				);
 
@@ -1999,6 +2012,8 @@ die();
                     $agent_rate = 0;
                     }
 
+
+
 			 $key = 'agent_'.$onlineagents ->id;
 			 $json = array();
  $json['id'] =  $onlineagents ->id;
@@ -2186,6 +2201,8 @@ $totalwash = count($totalwash_arr);
                     else{
                     $agent_rate = 0;
                     }
+
+                    $agent_rate = $onlineagents['rating'];
 
                     if(!empty($cancelwash))
                     {
