@@ -3246,11 +3246,13 @@ Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles'
 
 /* -------- pet hair / lift / addons check end --------- */
 
+if(!$new_vehicle_confirm){
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '6' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
 
 $notify_msg = str_replace("[BRAND_NAME]",$vehicle_details->brand_name, $notify_msg);
 $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_msg);
+		 }
 
                   //$notify_msg = $vehicle_details->brand_name." ".$vehicle_details->model_name." car wash is in progress.";
                  }
@@ -3258,11 +3260,13 @@ $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_m
                   if($status == 6){
 Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
 
+if(!$new_vehicle_confirm){
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '7' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
 
 $notify_msg = str_replace("[BRAND_NAME]",$vehicle_details->brand_name, $notify_msg);
 $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_msg);
+}
 
                   //$notify_msg = $vehicle_details->brand_name." ".$vehicle_details->model_name." car wash complete.";
 
@@ -5166,6 +5170,8 @@ die();
 
 		$vehicle_id = Yii::app()->request->getParam('vehicle_id');
 $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+$action = '';
+$action = Yii::app()->request->getParam('action');
 
 		$vehicle = array();
 		if((isset($vehicle_id) && !empty($vehicle_id)))
@@ -5244,11 +5250,19 @@ $total_car_price += $vehicle_exists->waterspotremove_addon;
 $total_car_price += $vehicle_exists->upholstery_addon;
 $total_car_price += $vehicle_exists->floormat_addon;
 
-
-if($fifth_points == 4) {
-$fifth_fee = 5;
-$total_car_price -= $fifth_fee;
+if($action == 'edit_vehicle'){
+	if($fifth_points == 5) {
+		$fifth_fee = 5;
+		$total_car_price -= $fifth_fee;
+	}	
 }
+else{
+	if($fifth_points == 4) {
+		$fifth_fee = 5;
+		$total_car_price -= $fifth_fee;
+	}	
+}
+
 
 /*if(!$cust_exists->is_first_wash && (!$total_cars)) {
 if($vehicle_exists->wash_package == 'Premium') $first_fee = 10;
@@ -5256,10 +5270,19 @@ else $first_fee = 5;
 $total_car_price -= $first_fee;
 }*/
 
-if($total_cars > 0 && (!$fifth_fee) && ($wash_request_exists->coupon_discount <= 0)) {
-$bundle_fee = 1;
-$total_car_price -= $bundle_fee;
+if($action == 'edit_vehicle'){
+	if($total_cars > 1 && (!$fifth_fee) && ($wash_request_exists->coupon_discount <= 0)) {
+		$bundle_fee = 1;
+		$total_car_price -= $bundle_fee;
+	}	
 }
+else{
+	if($total_cars > 0 && (!$fifth_fee) && ($wash_request_exists->coupon_discount <= 0)) {
+		$bundle_fee = 1;
+		$total_car_price -= $bundle_fee;
+	}	
+}
+
 
 $total_car_price_agent += $car_price_agent;
 $total_car_price_agent += $vehicle_exists->pet_hair * .80;
@@ -5272,10 +5295,19 @@ $total_car_price_agent += $vehicle_exists->upholstery_addon*.80;
 $total_car_price_agent += $vehicle_exists->floormat_addon*.80;
 
 
-if($total_cars > 0) {
-$bundle_fee_agent = number_format(.80, 2);
-$total_car_price_agent -= $bundle_fee_agent;
+if($action == 'edit_vehicle'){
+	if($total_cars > 1) {
+		$bundle_fee_agent = number_format(.80, 2);
+		$total_car_price_agent -= $bundle_fee_agent;
+	}	
 }
+else{
+	if($total_cars > 0) {
+		$bundle_fee_agent = number_format(.80, 2);
+		$total_car_price_agent -= $bundle_fee_agent;
+	}	
+}
+
 
 $wash_time = $washing_plan_det->wash_time;
 if($vehicle_exists->pet_hair > 0) $wash_time += 5;
