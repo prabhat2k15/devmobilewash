@@ -1027,6 +1027,8 @@ die();
 		if((isset($agent_id) && !empty($agent_id))){
 			$agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
 			if(count($agent_id_check)>0){
+			  
+$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 
                     $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $agent_id_check->id));
@@ -1106,7 +1108,8 @@ if($bt_result->fundingDetails->routingNumber) $routing_no = $bt_result->fundingD
 'available_for_new_order' => $agent_id_check->available_for_new_order,
 'block_washer' => $agent_id_check->block_washer,
 'hours_opt_check' => $agent_id_check->hours_opt_check,
-'rating_control' => $agent_id_check->rating_control
+'rating_control' => $agent_id_check->rating_control,
+'last_used_device' => $agentdevices
 
 				);
 			}else{

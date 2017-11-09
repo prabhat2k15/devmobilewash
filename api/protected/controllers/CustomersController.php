@@ -254,6 +254,94 @@ else $message = "<h1 style='margin-top: 10px;'>Hello!</h1>";
 		}
 		echo json_encode($json); die();
 	}
+	
+	
+	public function actionphoneregister(){
+
+	if(Yii::app()->request->getParam('key') != API_KEY){
+		echo "Invalid api key";
+		die();
+	}
+
+		$phone_number = Yii::app()->request->getParam('phone_number');
+		$client_position = Yii::app()->request->getParam('client_position');
+		
+
+		$json = array();
+		$customerid = '';
+		if((isset($phone_number) && !empty($phone_number)) ){
+		$customers_phone_exists = Customers::model()->findByAttributes(array("contact_number"=>$phone_number));
+			
+
+		if(count($customers_phone_exists)>0){
+					$result = 'false';
+					$response = 'Phone number already exists.';
+					$customerid = $customers_phone_exists->id;
+					$json= array(
+						'result'=> $result,
+						'response'=> $response,
+						'customerid'=> $customerid
+					);
+		}
+		else{
+
+				
+				$customerdata= array(
+					
+					'contact_number'=> $phone_number,
+					'client_position'=> $client_position,
+					'account_status' => 0,
+'created_date' => date("Y-m-d H:i:s"),
+'updated_date' => date("Y-m-d H:i:s")
+				);
+
+				$customerdata= array_filter($customerdata);
+				$model=new Customers;
+				$model->attributes= $customerdata;
+
+				if($model->save(false)){
+					$customerid = Yii::app()->db->getLastInsertID();
+
+					
+					
+					$result= 'true';
+					$response= 'Customer successfully registered';
+
+	
+					$json= array(
+						'result'=> $result,
+						'response'=> $response,
+						'user_type'=>'customer',
+						'customerid'=> $customerid,
+						'contact_number' => $phone_number,
+						'client_position'=> $client_position,
+					);
+
+					
+				}else{
+					$result= 'false';
+					$response= 'Internal error';
+					$json= array(
+						'result'=> $result,
+						'response'=> $response,
+						'customerid'=> $customerid
+					);
+				}
+			}
+
+
+
+		}else{
+			$result= 'false';
+			$response= 'Pass the required parameters';
+			$json= array(
+				'result'=> $result,
+				'response'=> $response,
+				'customerid'=> $customerid
+			);
+		}
+		echo json_encode($json); die();
+	}
 
 public function actioncustomeremailcheck(){
 
@@ -1360,6 +1448,8 @@ die();
 		if((isset($customerid) && !empty($customerid))){
 			$customers_id = Customers::model()->findByAttributes(array("id"=>$customerid));
 			if(count($customers_id)>0){
+				
+				$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$customerid."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
               $location_details = Yii::app()->db->createCommand()
 						->select('*')
@@ -1420,6 +1510,7 @@ die();
 					'client_position'=> $customers_id->client_position,
                     'customer_locations'=> $locations,
                     'customer_vehicles'=> $vehicles,
+		    'last_used_device' => $clientdevices,
                    'is_schedule_popup_shown'=> $customers_id->is_schedule_popup_shown
 
 				);

@@ -904,7 +904,11 @@ display: none;
                                                      </div>
  <?php endif; ?>
 
-
+  <h3 class="sec-heading" style="margin-top: 25px;">Device Info</h3>
+  
+  <p><strong>Customer:</strong> <?php if(count($custdetails->last_used_device)) {echo $custdetails->last_used_device[0]->device_name." / ".$custdetails->last_used_device[0]->device_type." ".$custdetails->last_used_device[0]->os_details;} else{echo "N/A";} ?></p>
+  <p><strong>Washer:</strong> <?php if(count($agentdetails->last_used_device)) {echo $agentdetails->last_used_device[0]->device_name." / ".$agentdetails->last_used_device[0]->device_type." ".$agentdetails->last_used_device[0]->os_details;} else{echo "N/A";} ?></p>
+  
  <h3 class="sec-heading" style="margin-top: 25px;">Location Info</h3>
 
                                                      <?php if(count($custdetails->customer_locations)): ?>
@@ -960,7 +964,7 @@ endforeach; ?>
                                                      </div>
                                                       <div style="clear: both;"></div>
   </div>
-
+  
 
                                                      <?php
 

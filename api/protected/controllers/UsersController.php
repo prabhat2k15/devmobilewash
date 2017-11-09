@@ -1,4 +1,8 @@
 <?php
+
+//error_reporting(E_ALL);
+//ini_set('display_errors', 'On');
+
 class UsersController extends Controller{
 	public function actionIndex(){
 		$this->render('index');
@@ -4330,6 +4334,633 @@ $com_message .= "<p style='font-size: 20px; margin-top: 0;'>".$wash_feedbacks->a
 
         echo json_encode($json); die();
 
+    }
+    
+    
+    public function actionAppPhoneLogin() {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $phone = Yii::app()->request->getParam('phone');
+	$send_verify_code = '';
+	$send_verify_code = Yii::app()->request->getParam('send_verify_code');
+        $user_type = "";
+        $model = false;
+
+        if((isset($phone) && !empty($phone))){
+                $customer =  Customers::model()->findByAttributes(array('contact_number'=>$phone));
+		$agent   =   Agents::model()->findByAttributes(array('phone_number'=>$phone));
+
+                $customer_login_status =  Yii::app()->db->createCommand("SELECT * FROM `customers` WHERE `contact_number` = '$phone'")->queryAll();
+                $agent_login_status =  Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE `phone_number` = '$phone'")->queryAll();
+
+                
+            if(count($customer)){ $model = $customer; $user_type ="customer"; }
+            else if(count($agent)){ $model = $agent; $user_type ="agent"; }
+
+             if($agent_login_status[0]['status']=='online')
+             {
+                 $result= "false";
+                $response = "There is no permission for log in with same account on 2 devices";
+                $json = array(
+                    'result'=> $result,
+                    'response'=> $response
+                );
+             }
+             else if(($agent->block_washer) || ($customer->block_client)){
+                $result= "false";
+                $response = "Account error. Please contact MobileWash.";
+                $json = array(
+                    'result'=> $result,
+                    'response'=> $response
+                );
+             }
+             else
+             {
+            if($model){
+
+                   
+                    if($user_type == 'customer'){
+			
+                    $online_status = array('online_status' => 'online');
+
+                    /* Comment for online status change */
+
+						//$update_status = Customers::model()->updateAll($online_status,'id=:id',array(':id'=>$model->id));
+						
+	if($send_verify_code != 'false'){
+		
+	$digits = 4;
+            $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
+           $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
+            $json    = array();
+
+            $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = "Here is your MobileWash verification code ".$randum_number;
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  $phone,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+	    
+	     spl_autoload_register(array('YiiBase','autoload'));
+	}
+
+	$result = 'true';
+        $response = 'Send 4 digit code.';
+		
+
+                $latestwash = Washingrequests::model()->findByAttributes(array('customer_id'=>$model->id), array('order'=>'created_date DESC'));
+		$allschedwashes = Washingrequests::model()->findAllByAttributes(array('customer_id' => $model->id, 'is_scheduled' => 1), array('condition'=>'status = 0 OR status = 1 OR status = 2'));
+
+                      $upcoming_schedule_wash_details = array();
+                     if(count($allschedwashes)){
+
+                         foreach($allschedwashes as $schedwash){
+$sched_date = '';
+$sched_time = '';
+if($schedwash->reschedule_time){
+$sched_date = $schedwash->reschedule_date;
+$sched_time = $schedwash->reschedule_time;
+}
+else{
+$sched_date = $schedwash->schedule_date;
+$sched_time = $schedwash->schedule_time;
+}
+
+if($schedwash->reschedule_time) $scheduledatetime = $schedwash->reschedule_date." ".$schedwash->reschedule_time;
+else $scheduledatetime = $schedwash->schedule_date." ".$schedwash->schedule_time;
+               $to_time = strtotime(date('Y-m-d g:i A'));
+$from_time = strtotime($scheduledatetime);
+$min_diff = -1;
+if($from_time >= $to_time){
+$min_diff = round(($from_time - $to_time) / 60,2);
+}
+
+if($min_diff <= 60 && $min_diff >= 0){
+     $ag_det = Agents::model()->findByPk($schedwash->agent_id);
+   $upcoming_schedule_wash_details['id'] = $schedwash->id;
+   $upcoming_schedule_wash_details['schedule_date'] = $sched_date;
+   $upcoming_schedule_wash_details['schedule_time'] = $sched_time;
+   $upcoming_schedule_wash_details['status'] = $schedwash->status;
+   $upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
+   $upcoming_schedule_wash_details['agent_id'] = $schedwash->agent_id;
+   if(count($ag_det)){
+    $upcoming_schedule_wash_details['agent_name'] = $ag_det->first_name." ".$ag_det->last_name;
+    $upcoming_schedule_wash_details['agent_rating'] = $ag_det->rating;
+    $upcoming_schedule_wash_details['agent_phone'] = $ag_det->phone_number;
+   }
+   break;
+}
+                         }
+                     }
+                        $location_details = Yii::app()->db->createCommand()
+                            ->select('*')
+                            ->from('customer_locations')
+                            ->where("customer_id='".$model->id."'", array())
+                            ->queryAll();
+
+                        $locations = array();
+
+                        if(count($location_details)>0){
+                            foreach($location_details as $sloc){
+                                $locations[]= array(
+                                    'location_title'=> $sloc['location_title'],
+                                    'location_address'=> $sloc['location_address'],
+                                    'actual_longitude'=> $sloc['actual_longitude'],
+                                    'actual_latitude'=> $sloc['actual_latitude'],
+                                    'is_editable'=> $sloc['is_editable']
+                                );
+                            }
+                        }
+
+$customername = '';
+$cust_name = explode(" ", trim($model->customername));
+if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+else $customername = $cust_name[0];
+
+if($latestwash->id){
+$json= array(
+                            'result'=> $result,
+                            'response'=> $response,
+                            'user_type'=>$user_type,
+                            'customerid' => $model->id,
+                            'email' => $model->email,
+                            'customername' => $customername,
+                            'image' => $model->image,
+                            'contact_number' => $model->contact_number,
+                            'locations' => $locations,
+                            'total_washes' => $model->total_wash,
+'fifth_wash_points' => $model->fifth_wash_points,
+                            'email_alerts'=> $model->email_alerts,
+                            'push_notifications'=> $model->push_notifications,
+'phone_verified'=> $model->phone_verified,
+                            'wash_id'=>$latestwash->id,
+                            'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
+                             );
+}
+else{
+  $json= array(
+                            'result'=> $result,
+                            'response'=> $response,
+                            'user_type'=>$user_type,
+                            'customerid' => $model->id,
+                            'email' => $model->email,
+                            'customername' => $customername,
+                            'image' => $model->image,
+                            'contact_number' => $model->contact_number,
+                            'locations' => $locations,
+'fifth_wash_points' => $model->fifth_wash_points,
+                            'total_washes' => $model->total_wash,
+                            'email_alerts'=> $model->email_alerts,
+                            'push_notifications'=> $model->push_notifications,
+'phone_verified'=> $model->phone_verified,
+'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
+
+                        );
+}
+
+                    }else{
+
+                      
+                   if($send_verify_code != 'false'){
+		      
+		      $digits = 4;
+            $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
+           $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
+            $json    = array();
+
+            $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = "Here is your MobileWash verification code ".$randum_number;
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  $phone,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+	    
+	     spl_autoload_register(array('YiiBase','autoload'));
+	}
+
+	$result = 'true';
+        $response = 'Send 4 digit code.';
+		      
+$totalcompletedwashes = Washingrequests::model()->countByAttributes(array("agent_id"=>$model->id, "status" => 4));
+
+if($model->status == 'online'){
+	
+                    /* ------------- check if agent available for new order -------------*/
+
+                     $isagentbusy = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE agent_id='".$model->id."' AND (status >= 1 AND status <= 3)")->queryAll();
+                    ;
+                    if(!count($isagentbusy)){
+                       Agents::model()->updateAll(array('available_for_new_order' => 1),'id=:id',array(':id'=>$model->id));
+                    }
+
+                    /* ------------- check if agent available for new order end -------------*/
+}
+
+                    $latestwash = Washingrequests::model()->findByAttributes(array('agent_id'=>$model->id), array('order'=>'created_date DESC'));
+                       $allschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id' => $model->id, 'is_scheduled' => 1), array('condition'=>'status = 0 OR status = 1 OR status = 2'));
+
+                      $upcoming_schedule_wash_details = array();
+                      $is_scheduled_wash_120 = 0;
+$min_diff = -1;
+                     if(count($allschedwashes)){
+
+                         foreach($allschedwashes as $schedwash){
+$sched_date = '';
+$sched_time = '';
+if($schedwash->reschedule_time){
+$sched_date = $schedwash->reschedule_date;
+$sched_time = $schedwash->reschedule_time;
+}
+else{
+$sched_date = $schedwash->schedule_date;
+$sched_time = $schedwash->schedule_time;
+}
+
+if($schedwash->reschedule_time) $scheduledatetime = $schedwash->reschedule_date." ".$schedwash->reschedule_time;
+else $scheduledatetime = $schedwash->schedule_date." ".$schedwash->schedule_time;
+
+               $to_time = strtotime(date('Y-m-d g:i A'));
+$from_time = strtotime($scheduledatetime);
+$min_diff = -1;
+if($from_time >= $to_time){
+$min_diff = round(($from_time - $to_time) / 60,2);
+}
+
+if(!$is_scheduled_wash_120){
+    if($min_diff <= 120 && $min_diff >= 0){
+       $is_scheduled_wash_120 = 1;
+    }
+}
+
+if($min_diff <= 60 && $min_diff >= 0){
+     $ct_det = Customers::model()->findByPk($schedwash->customer_id);
+   $upcoming_schedule_wash_details['id'] = $schedwash->id;
+   $upcoming_schedule_wash_details['schedule_date'] = $sched_date;
+   $upcoming_schedule_wash_details['schedule_time'] = $sched_time;
+   $upcoming_schedule_wash_details['status'] = $schedwash->status;
+   $upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
+   $upcoming_schedule_wash_details['agent_id'] = $schedwash->agent_id;
+   if(count($ct_det)){
+    $upcoming_schedule_wash_details['customer_name'] = $ct_det->customername;
+    $upcoming_schedule_wash_details['customer_rating'] = $ct_det->rating;
+    $upcoming_schedule_wash_details['customer_phone'] = $ct_det->contact_number;
+   }
+   break;
+}
+                         }
+                     }
+                        $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" =>$model->id));
+
+                        $total_rate = count($agent_feedbacks);
+                        if($total_rate){
+                            $rate = 0;
+                            foreach($agent_feedbacks as $agent_feedback){
+                                $rate += $agent_feedback->agent_ratings;
+                            }
+
+                            $agent_rate =  round($rate/$total_rate);
+                        }
+                        else{
+                            $agent_rate = 0;
+                        }
+
+$agentlname = '';
+if(trim($model->last_name)) $agentlname = strtoupper(substr($model->last_name, 0, 1)).".";
+else $agentlname = $model->last_name;
+
+                        if($latestwash->id){
+                        $json= array(
+                            'result'=> $result,
+                            'response'=> $response,
+                            'user_type'=>$user_type,
+                            'agentid' => $model->id,
+                            'email' => $model->email,
+                            'first_name' => $model->first_name,
+                            'last_name' => $agentlname,
+                            'image' => $model->image,
+                            'contact_number' => $model->phone_number,
+                            'street_address' => $model->street_address,
+                            'suite_apt' => $model->suite_apt,
+                            'city' => $model->city,
+                            'state' => $model->state,
+                            'zipcode' => $model->zipcode,
+                            'driver_license' => $model->driver_license,
+                            'proof_insurance' => $model->proof_insurance,
+                            'legally_eligible' => $model->legally_eligible,
+                            'own_vehicle' => $model->own_vehicle,
+                            'waterless_wash_product' => $model->waterless_wash_product,
+                            'operate_area' => $model->operate_area,
+                            'work_schedule' => $model->work_schedule,
+                            'operating_as' => $model->operating_as,
+                            'company_name' => $model->company_name,
+                            'wash_experience' => $model->wash_experience,
+                            'account_status' => $model->account_status,
+                            'created_date' => $model->created_date,
+                            'total_washes' => $totalcompletedwashes,
+                            'rating' => number_format($model->rating, 2),
+                            'wash_id'=>$latestwash->id,
+                            'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details,
+                            'is_scheduled_wash_120' => $is_scheduled_wash_120,
+'time_left_to_start' => $min_diff
+                        );
+                        }
+                        else{
+                        $json= array(
+                            'result'=> $result,
+                            'response'=> $response,
+                            'user_type'=>$user_type,
+                            'agentid' => $model->id,
+                            'email' => $model->email,
+                            'first_name' => $model->first_name,
+                            'last_name' => $model->last_name,
+                            'image' => $model->image,
+                            'contact_number' => $model->phone_number,
+                            'street_address' => $model->street_address,
+                            'suite_apt' => $model->suite_apt,
+                            'city' => $model->city,
+                            'state' => $model->state,
+                            'zipcode' => $model->zipcode,
+                            'driver_license' => $model->driver_license,
+                            'proof_insurance' => $model->proof_insurance,
+                            'legally_eligible' => $model->legally_eligible,
+                            'own_vehicle' => $model->own_vehicle,
+                            'waterless_wash_product' => $model->waterless_wash_product,
+                            'operate_area' => $model->operate_area,
+                            'work_schedule' => $model->work_schedule,
+                            'operating_as' => $model->operating_as,
+                            'company_name' => $model->company_name,
+                            'wash_experience' => $model->wash_experience,
+                            'account_status' => $model->account_status,
+                            'created_date' => $model->created_date,
+                            'total_washes' => $totalcompletedwashes,
+                            'rating' => number_format($model->rating, 2),
+                            'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details,
+                            'is_scheduled_wash_120' => $is_scheduled_wash_120,
+'time_left_to_start' => $min_diff
+
+                        );
+                        }
+
+                    }
+
+                
+                
+            } else {
+			$customerdata= array(
+					
+				'contact_number'=> $phone,
+				'client_position'=> APP_ENV,
+				'account_status' => 0,
+				'created_date' => date("Y-m-d H:i:s"),
+				'updated_date' => date("Y-m-d H:i:s")
+			);
+
+				$customerdata= array_filter($customerdata);
+				$model=new Customers;
+				$model->attributes= $customerdata;
+
+				if($model->save(false)){
+					$customerid = Yii::app()->db->getLastInsertID();
+
+					
+					
+					      $digits = 4;
+            $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
+           $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = '$customerid' ")->execute();
+            $json    = array();
+
+            $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = "Here is your MobileWash verification code ".$randum_number;
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  $phone,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+	    
+	     spl_autoload_register(array('YiiBase','autoload'));
+
+	$result = 'true';
+        $response = 'Send 4 digit code.';
+	
+	 $latestwash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customerid), array('order'=>'created_date DESC'));
+		$allschedwashes = Washingrequests::model()->findAllByAttributes(array('customer_id' => $customerid, 'is_scheduled' => 1), array('condition'=>'status = 0 OR status = 1 OR status = 2'));
+
+                      $upcoming_schedule_wash_details = array();
+                     if(count($allschedwashes)){
+
+                         foreach($allschedwashes as $schedwash){
+$sched_date = '';
+$sched_time = '';
+if($schedwash->reschedule_time){
+$sched_date = $schedwash->reschedule_date;
+$sched_time = $schedwash->reschedule_time;
+}
+else{
+$sched_date = $schedwash->schedule_date;
+$sched_time = $schedwash->schedule_time;
+}
+
+if($schedwash->reschedule_time) $scheduledatetime = $schedwash->reschedule_date." ".$schedwash->reschedule_time;
+else $scheduledatetime = $schedwash->schedule_date." ".$schedwash->schedule_time;
+               $to_time = strtotime(date('Y-m-d g:i A'));
+$from_time = strtotime($scheduledatetime);
+$min_diff = -1;
+if($from_time >= $to_time){
+$min_diff = round(($from_time - $to_time) / 60,2);
+}
+
+if($min_diff <= 60 && $min_diff >= 0){
+     $ag_det = Agents::model()->findByPk($schedwash->agent_id);
+   $upcoming_schedule_wash_details['id'] = $schedwash->id;
+   $upcoming_schedule_wash_details['schedule_date'] = $sched_date;
+   $upcoming_schedule_wash_details['schedule_time'] = $sched_time;
+   $upcoming_schedule_wash_details['status'] = $schedwash->status;
+   $upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
+   $upcoming_schedule_wash_details['agent_id'] = $schedwash->agent_id;
+   if(count($ag_det)){
+    $upcoming_schedule_wash_details['agent_name'] = $ag_det->first_name." ".$ag_det->last_name;
+    $upcoming_schedule_wash_details['agent_rating'] = $ag_det->rating;
+    $upcoming_schedule_wash_details['agent_phone'] = $ag_det->phone_number;
+   }
+   break;
+}
+                         }
+                     }
+                        $location_details = Yii::app()->db->createCommand()
+                            ->select('*')
+                            ->from('customer_locations')
+                            ->where("customer_id='".$customerid."'", array())
+                            ->queryAll();
+
+                        $locations = array();
+
+                        if(count($location_details)>0){
+                            foreach($location_details as $sloc){
+                                $locations[]= array(
+                                    'location_title'=> $sloc['location_title'],
+                                    'location_address'=> $sloc['location_address'],
+                                    'actual_longitude'=> $sloc['actual_longitude'],
+                                    'actual_latitude'=> $sloc['actual_latitude'],
+                                    'is_editable'=> $sloc['is_editable']
+                                );
+                            }
+                        }
+
+$customername = '';
+
+
+if($latestwash->id){
+$json= array(
+                        'result'=> $result,
+                        'response'=> $response,
+                        'user_type'=>'customer',
+			'user_status' => 'new',
+                        'customerid' => $customerid,
+			'client_position'=> APP_ENV,
+                        'email' => '',
+                        'customername' => $customername,
+                        'image' => '',
+                        'contact_number' => $phone,
+                        'locations' => $locations,
+                        'total_washes' => 0,
+			'fifth_wash_points' => 0,
+                        'email_alerts'=> 0,
+                        'push_notifications'=> 0,
+			'phone_verified'=> 0,
+                        'wash_id'=>$latestwash->id,
+                        'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
+                );
+}
+else{
+  $json= array(
+                            'result'=> $result,
+                            'response'=> $response,
+                            'user_type'=>'customer',
+			    'user_status' => 'new',
+                            'customerid' => $customerid,
+			    'client_position'=> APP_ENV,
+                            'email' => '',
+                            'customername' => $customername,
+                            'image' => '',
+                            'contact_number' => $phone,
+                            'locations' => $locations,
+				'fifth_wash_points' => 0,
+                            'total_washes' => 0,
+                            'email_alerts'=> 0,
+                            'push_notifications'=> 0,
+				'phone_verified'=> 0,
+				'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
+
+                        );
+}
+
+	
+					
+				}
+            }
+        }
+        }
+        else{
+            $json = array(
+                'result'=> 'false',
+                'response'=> 'Pass the required parameters'
+            );
+        }
+
+        echo json_encode($json);
+        die();
+
+    }
+    
+    
+    public function actionConfirmPhone(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $userid = Yii::app()->request->getParam('id');
+        $sortcode = Yii::app()->request->getParam('verify_code');
+	$user_type = Yii::app()->request->getParam('user_type');
+        if($user_type == 'customer') $model=new Customers;
+	else $model=new Agents;
+        if($user_type == 'customer') $matchcode = Customers::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$userid));
+	else $matchcode = Agents::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$userid));
+	
+        if(!empty($matchcode)){
+            if($user_type == 'customer') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1' WHERE id = '$userid' AND phone_verify_code = '$sortcode' ")->execute();
+	    else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1' WHERE id = '$userid' AND phone_verify_code = '$sortcode' ")->execute();
+            
+	    $data = array(
+                'result' => 'true',
+                'response' => 'Congratulations, Your phone is verified.'
+
+            );
+            echo json_encode($data);
+            exit;
+
+        }
+        else{
+            $data = array(
+                'result' => 'false',
+                'response' => 'Incorrect verification code'
+
+            );
+            echo json_encode($data);
+            exit;
+        }
     }
 
 
