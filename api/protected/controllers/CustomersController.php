@@ -1197,20 +1197,8 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
 					$image = $model->image;
 				}
 
-				if(isset($email) && !empty($email) ){
-					$email_Exist= Customers::model()->findByAttributes(array('email'=>$email));
-					if(isset($email_Exist->id) &&($email_Exist->id == $id)){
-						$email_Exist = array();
-					}
-					if(count($email_Exist)>0){
-						$email_details= Customers::model()->findByAttributes(array('id'=> $id));
-						if(count($email_details)>0){
-								$email = $email_details->email;
-						}
-						//$result= 'true';
-						$response= 'Email already exists';
-					}
-				}else{
+				if(empty($email) ){
+					
 					 $email = $model->email;
 				}
 
@@ -3348,10 +3336,10 @@ $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_m
                   //$notify_msg = $vehicle_details->brand_name." ".$vehicle_details->model_name." car wash is in progress.";
                  }
 
-                  if($status == 6){
+                  if(($status == 6)){
 Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
 
-if(!$new_vehicle_confirm){
+if((!$upgrade_pack) && (!$new_vehicle_confirm) && (!$remove_vehicle_from_kart) && (!$edit_vehicle)){
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '7' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
 
