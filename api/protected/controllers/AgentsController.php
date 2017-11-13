@@ -2849,6 +2849,7 @@ $all_washers[$ind]['real_washer_id'] = $washer->real_washer_id;
                     $all_washers[$ind]['city'] = $washer->city;
                     $all_washers[$ind]['state'] = $washer->state;
                     $all_washers[$ind]['zipcode'] = $washer->zipcode;
+		    $all_washers[$ind]['phone_verify_code'] = $washer->phone_verify_code;
 $all_washers[$ind]['rating'] = $washer->rating;
 $all_washers[$ind]['care_rating'] = round($care_rating, 2);
 $all_washers[$ind]['total_wash'] = $totalwash;

@@ -4381,6 +4381,7 @@ die();
         $model = false;
 
         if((isset($phone) && !empty($phone))){
+		$phone = preg_replace('/\D/', '', $phone);
                 $customer =  Customers::model()->findByAttributes(array('contact_number'=>$phone));
 		$agent   =   Agents::model()->findByAttributes(array('phone_number'=>$phone));
 

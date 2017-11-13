@@ -4829,5 +4829,29 @@ $json= array(
 
 
     }
+    
+    
+    /*public function actiongetallcustphones() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+
+	$allcusts = Customers::model()->findAll();
+
+						foreach($allcusts as $cust){
+							$newphone = '';
+							$newphone = preg_replace('/\D/', '', $cust->contact_number);
+
+							echo $cust->id." ".$cust->contact_number." ".$newphone."<br>";
+							
+							Customers::model()->updateByPk($cust->id, array("contact_number" => $newphone));
+						}
+
+
+
+   }*/
 
 }
