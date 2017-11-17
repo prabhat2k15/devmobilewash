@@ -4445,7 +4445,7 @@ die();
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
-            $message = "Here is your MobileWash verification code ".$randum_number;
+            $message = $randum_number." is your MobileWash verification code";
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  $phone,
                 'From' => '+13103128070',
@@ -4595,7 +4595,7 @@ else{
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
-            $message = "Here is your MobileWash verification code ".$randum_number;
+            $message = $randum_number." is your MobileWash verification code";
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  $phone,
                 'From' => '+13103128070',
@@ -4812,7 +4812,7 @@ else $agentlname = $model->last_name;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
-            $message = "Here is your MobileWash verification code ".$randum_number;
+            $message = $randum_number." is your MobileWash verification code";
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  $phone,
                 'From' => '+13103128070',

@@ -1146,6 +1146,7 @@ die();
 		$last_name = Yii::app()->request->getParam('last_name');
         $email = Yii::app()->request->getParam('email');
 		$phone_number = Yii::app()->request->getParam('phone_number');
+		$phone_number = preg_replace('/\D/', '', $phone_number);
         $date_of_birth = Yii::app()->request->getParam('date_of_birth');
 		$new_password = Yii::app()->request->getParam('new_password');
 		$confirm_password = Yii::app()->request->getParam('confirm_password');

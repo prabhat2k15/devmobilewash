@@ -1549,6 +1549,12 @@ if($savedroplogdata->result == 'true'):?>
                                                            <?php if($log->action == 'adminenablewasherpayment'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> enabled washer payment at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'washeraddcar'): ?>
+                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> added <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washerchangepack'): ?>
+                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> changed package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
 
                                                           <?php endforeach; ?>
                                                           </div>
@@ -3620,6 +3626,15 @@ if(data.result == 'true'){
        if(log.action == 'adminenablewasherpayment'){
             contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" enabled washer payment at "+log.formatted_action_date+"</p>";
       }
+      
+       if(log.action == 'washeraddcar'){
+            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" added "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+      
+       if(log.action == 'washerchangepack'){
+            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" changed package/addons "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+      
 
    });
    

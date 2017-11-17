@@ -4853,5 +4853,113 @@ die();
 
 
    }*/
+    
+    		public function actionmanagepayments()
+	{
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+			$result= 'false';
+			$response= 'nothing found';
+			$all_washes_arr = array();
+
+			  $all_washes =  Yii::app()->db->createCommand()
+						->select('*')
+						->from('washing_requests')
+						->where('order_for BETWEEN NOW() - INTERVAL 30 DAY AND NOW()')
+						->queryAll();
+
+if(count($all_washes) > 0){
+    $result= 'true';
+			$response= 'all washes';
+			
+			foreach($all_washes as $ind => $wash){
+				$kartapiresult = $this->washingkart($wash['id'], API_KEY);
+				$kartdata = json_decode($kartapiresult);
+				$all_washes_arr[$ind]['id'] = $wash['id'];
+				$all_washes_arr[$ind]['transaction_id'] = $wash['transaction_id'];
+				$all_washes_arr[$ind]['order_total'] = $kartdata->net_price;
+				$all_washes_arr[$ind]['agent_total'] = $kartdata->agent_total;
+				$all_washes_arr[$ind]['company_total'] = $kartdata->company_total;
+				
+				if($wash['agent_id']){
+					$agent_detail = Agents::model()->findByPk($wash['agent_id']);
+					$all_washes_arr[$ind]['real_washer_id'] = $agent_detail->real_washer_id;
+					$all_washes_arr[$ind]['washer_merchant_id'] = $agent_detail->bt_submerchant_id;
+				}
+				else{
+					$all_washes_arr[$ind]['real_washer_id'] = "";
+					$all_washes_arr[$ind]['washer_merchant_id'] = "";	
+				}
+			}
+
+}
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+			'all_washes' => $all_washes_arr
+		);
+		echo json_encode($json);
+	}
+	
+	
+	    		public function actiongettopmostwashers()
+	{
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$from  = Yii::app()->request->getParam('from');
+$to  = Yii::app()->request->getParam('to');
+
+			$result= 'false';
+			$response= 'nothing found';
+			$washer_ids = array();
+			$topwashers_arr = array();
+			$topwashers_det_arr = array();
+			$all_washes =  Yii::app()->db->createCommand()
+						->select('agent_id')
+						->from('washing_requests')
+						->where("(order_for >= '".$from." 00:00:00' AND order_for <= '".$to." 23:59:00') AND status = 4 AND agent_id != 0")
+						->queryAll();
+
+if(count($all_washes) > 0){
+    $result= 'true';
+			$response= 'topmost washers';
+			
+
+foreach($all_washes as $wash){
+$washer_ids[] = $wash['agent_id'];	
+}
+
+$topwashers_arr = array_count_values($washer_ids);
+arsort($topwashers_arr);
+$i = 0;
+foreach($topwashers_arr as $key=>$washer){
+	$agent_det = Agents::model()->findByPk($key);
+	$topwashers_det_arr[$i]['id'] = $key;
+	$topwashers_det_arr[$i]['company_id'] = $agent_det->real_washer_id;
+	$topwashers_det_arr[$i]['name'] = $agent_det->first_name." ".$agent_det->last_name;
+	$topwashers_det_arr[$i]['total_washes'] = $washer;
+$i++;	
+}
+
+}
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+			'top_washers' => $topwashers_det_arr
+		);
+		echo json_encode($json);
+	}
 
 }

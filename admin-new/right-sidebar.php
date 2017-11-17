@@ -270,7 +270,7 @@
                             </ul>
                         </li>
                         
-                        <li class="nav-item  <?php if($url == 'manage-pre-washers.php' || $newurl_page[0] == 'manage-pre-washers.php' || $url == 'add-new-washer.php' || $url == 'washer-notifications.php' || $newurl_page[0] == 'add-new-washer.php' || $newurl_page[0] == 'manage-agents.php' || $url == 'trash-pre-washers.php' || $url == 'washer_dashboard.php' || $newurl_page[0] == 'pre-washer-details.php' || $url == 'manage-agents.php' || $newurl_page[0] == 'edit-agent.php' || $url == 'act-washer-details.php' || $newurl_page[0] == 'act-washer-details.php' || $url == 'active-washers.php' || $newurl_page[0] == 'active-washers.php' || $newurl[1] == 'add-agent.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $washer_module_show; ?>;">
+                        <li class="nav-item  <?php if($url == 'manage-pre-washers.php' || $newurl_page[0] == 'manage-pre-washers.php' || $url == 'add-new-washer.php' || $url == 'washer-notifications.php' || $url == 'top-washers.php' || $newurl_page[0] == 'add-new-washer.php' || $newurl_page[0] == 'manage-agents.php' || $url == 'trash-pre-washers.php' || $url == 'washer_dashboard.php' || $newurl_page[0] == 'pre-washer-details.php' || $url == 'manage-agents.php' || $newurl_page[0] == 'edit-agent.php' || $url == 'act-washer-details.php' || $newurl_page[0] == 'act-washer-details.php' || $url == 'active-washers.php' || $newurl_page[0] == 'active-washers.php' || $newurl[1] == 'add-agent.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $washer_module_show; ?>;">
                             <a href="washer_dashboard.php">
                                 <i class="icon-layers"></i>
                                 <span class="title">Washer</span>
@@ -296,6 +296,11 @@
                                 <li class="nav-item  <?php if($url == 'washer-notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="washer-notifications.php" class="nav-link ">
                                         <span class="title">Washer Push Notifications</span>
+                                    </a>
+                                </li>
+				<li class="nav-item  <?php if($url == 'top-washers.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="top-washers.php" class="nav-link ">
+                                        <span class="title">Top Washers</span>
                                     </a>
                                 </li>
                             </ul>

@@ -2170,6 +2170,17 @@ $washpricehistorymodel = new WashPricingHistory;
                         $washpricehistorymodel->bundle_disc = 0;
                         $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
                         $washpricehistorymodel->save(false);
+			
+			$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+			
+			    $logdata = array(
+            'wash_request_id'=> $wash_request_id,
+	    'agent_id'=> $wash_request_exists->agent_id,
+	    'agent_company_id'=> $agent_detail->real_washer_id,
+            'action'=> 'washeraddcar',
+	    'addi_detail' => $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name." ".$new_pack_name,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 
                                 }
 
@@ -2679,6 +2690,8 @@ Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles'
                 if($upgrade_pack == 2){
 
                 $cust_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
+		$log_addon_detail = "Add-ons: ";
+		$log_detail = "";
 
 /* -------- pet hair / lift / addons check --------- */
 
@@ -2691,6 +2704,7 @@ if (!in_array($vehicle_id, $pet_hair_vehicles_arr)) array_push($pet_hair_vehicle
 $pet_hair_vehicles_new = implode(",", $pet_hair_vehicles_arr);
 $pet_hair_vehicles_new = trim($pet_hair_vehicles_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('pet_hair_vehicles' => $pet_hair_vehicles_new));
+$log_addon_detail .= "Extra cleaning, ";
 }
 
 if($cust_vehicle_data->lifted_vehicle){
@@ -2701,6 +2715,7 @@ if (!in_array($vehicle_id, $lifted_vehicles_arr)) array_push($lifted_vehicles_ar
 $lifted_vehicles_new = implode(",", $lifted_vehicles_arr);
 $lifted_vehicles_new = trim($lifted_vehicles_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('lifted_vehicles' => $lifted_vehicles_new));
+$log_addon_detail .= "Lifted, ";
 }
 
 if($cust_vehicle_data->exthandwax_addon){
@@ -2711,6 +2726,7 @@ if (!in_array($vehicle_id, $exthandwax_addon_arr)) array_push($exthandwax_addon_
 $exthandwax_addon_new = implode(",", $exthandwax_addon_arr);
 $exthandwax_addon_new = trim($exthandwax_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('exthandwax_vehicles' => $exthandwax_addon_new));
+$log_addon_detail .= "Wax, ";
 
 }
 
@@ -2723,6 +2739,7 @@ if (!in_array($vehicle_id, $extplasticdressing_addon_arr)) array_push($extplasti
 $extplasticdressing_addon_new = implode(",", $extplasticdressing_addon_arr);
 $extplasticdressing_addon_new = trim($extplasticdressing_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('extplasticdressing_vehicles' => $extplasticdressing_addon_new));
+$log_addon_detail .= "Dressing, ";
 }
 
 
@@ -2734,6 +2751,7 @@ if (!in_array($vehicle_id, $extclaybar_addon_arr)) array_push($extclaybar_addon_
 $extclaybar_addon_new = implode(",", $extclaybar_addon_arr);
 $extclaybar_addon_new = trim($extclaybar_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('extclaybar_vehicles' => $extclaybar_addon_new));
+$log_addon_detail .= "Clay bar, ";
 }
 
 if($cust_vehicle_data->waterspotremove_addon){
@@ -2744,6 +2762,7 @@ if (!in_array($vehicle_id, $waterspotremove_addon_arr)) array_push($waterspotrem
 $waterspotremove_addon_new = implode(",", $waterspotremove_addon_arr);
 $waterspotremove_addon_new = trim($waterspotremove_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('waterspotremove_vehicles' => $waterspotremove_addon_new));
+$log_addon_detail .= "Water spot, ";
 }
 
 if($cust_vehicle_data->upholstery_addon){
@@ -2754,6 +2773,7 @@ if (!in_array($vehicle_id, $upholstery_addon_arr)) array_push($upholstery_addon_
 $upholstery_addon_new = implode(",", $upholstery_addon_arr);
 $upholstery_addon_new = trim($upholstery_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('upholstery_vehicles' => $upholstery_addon_new));
+$log_addon_detail .= "Upholstery, ";
 }
 
 if($cust_vehicle_data->floormat_addon){
@@ -2764,7 +2784,10 @@ if (!in_array($vehicle_id, $floormat_addon_arr)) array_push($floormat_addon_arr,
 $floormat_addon_new = implode(",", $floormat_addon_arr);
 $floormat_addon_new = trim($floormat_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
+$log_addon_detail .= "Floormat, ";
 }
+
+$log_addon_detail = rtrim($log_addon_detail,', ');
 
                     if($new_pack_name == 'Premium'){
                        $surge_addon_arr = explode(",", $wash_request_exists->surge_price_vehicles);
@@ -2810,19 +2833,111 @@ else{
  if($new_pack_name == 'Premium') $newprice = 59.99;
 }
 WashPricingHistory::model()->updateAll(array('vehicle_price' => $newprice, 'package' => $new_pack_name, 'pet_hair'=>$cust_vehicle_data->pet_hair, 'lifted_vehicle'=>$cust_vehicle_data->lifted_vehicle, 'exthandwax_addon'=>$cust_vehicle_data->exthandwax_addon, 'extplasticdressing_addon'=>$cust_vehicle_data->extplasticdressing_addon, 'extclaybar_addon'=>$cust_vehicle_data->extclaybar_addon, 'waterspotremove_addon'=>$cust_vehicle_data->waterspotremove_addon, 'upholstery_addon'=>$cust_vehicle_data->upholstery_addon, 'floormat_addon'=>$cust_vehicle_data->floormat_addon, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id="'.$wash_request_id.'" AND vehicle_id="'.$vehicle_id.'"');
+
+$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+
+$log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name." ".$new_pack_name." ".$log_addon_detail;
+			
+			    $logdata = array(
+            'wash_request_id'=> $wash_request_id,
+	    'agent_id'=> $wash_request_exists->agent_id,
+	    'agent_company_id'=> $agent_detail->real_washer_id,
+            'action'=> 'washerchangepack',
+	    'addi_detail' => $log_detail,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+	
+	$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+						/* --- notification call --- */
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '35' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+
+						foreach( $agentdevices as $agdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($agdevice['device_type']);
+							$notify_token = $agdevice['device_token'];
+								$alert_type = "strong";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+/* --- notification call end --- */
 }
 
 if($upgrade_pack == 3){
 
 Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
 
+$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
+						/* --- notification call --- */
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '36' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+
+						foreach( $agentdevices as $agdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($agdevice['device_type']);
+							$notify_token = $agdevice['device_token'];
+								$alert_type = "strong";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+/* --- notification call end --- */
 
 }
 
                 /* ------------ upgrade pack end ------------- */
 
                 /* ------ edit vehicle ---------- */
+		
+		if($edit_vehicle == 1){
+			
+			$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+			/* --- notification call --- */
+
+			$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '32' ")->queryAll();
+			$message = $pushmsg[0]['message'];
+
+			foreach( $clientdevices as $ctdevice){
+
+				$device_type = strtolower($ctdevice['device_type']);
+				$notify_token = $ctdevice['device_token'];
+				$alert_type = "strong";
+				$notify_msg = urlencode($message);
+
+				$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+				//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+				$ch = curl_init();
+				curl_setopt($ch,CURLOPT_URL,$notifyurl);
+				curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+				if($notify_msg) $notifyresult = curl_exec($ch);
+				curl_close($ch);
+			}
+			/* --- notification call end --- */	
+			
+		}
 
                  if($edit_vehicle == 2){
 
@@ -2843,8 +2958,61 @@ $vehicle_check = Yii::app()->db->createCommand()
 }
 
                     WashPricingHistory::model()->updateAll(array('vehicle_price' => $draft_vehicle_exists->package_price, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id="'.$wash_request_id.'" AND vehicle_id="'.$vehicle_id.'"');
-                   Vehicle::model()->updateByPk($vehicle_id, array("vehicle_source_id" => $vehicle_check[0]['id'], "brand_name" => $draft_vehicle_exists->brand_name, "model_name" => $draft_vehicle_exists->model_name, "vehicle_type" => $draft_vehicle_exists->vehicle_type, "vehicle_category" => $draft_vehicle_exists->vehicle_category, "vehicle_build" => $draft_vehicle_exists->vehicle_build));
-                 }
+                   Vehicle::model()->updateByPk($vehicle_id, array("vehicle_source_id" => $vehicle_check[0]['id'], "brand_name" => $draft_vehicle_exists->brand_name, "model_name" => $draft_vehicle_exists->model_name, "vehicle_type" => $draft_vehicle_exists->vehicle_type, "vehicle_category" => $draft_vehicle_exists->vehicle_category, "vehicle_build" => $draft_vehicle_exists->vehicle_build, "vehicle_image" => $draft_vehicle_exists->vehicle_image));
+                 
+		 $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+			/* --- notification call --- */
+
+			$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '33' ")->queryAll();
+			$message = $pushmsg[0]['message'];
+
+			foreach( $agentdevices as $agdevice){
+
+				$device_type = strtolower($agdevice['device_type']);
+				$notify_token = $agdevice['device_token'];
+				$alert_type = "strong";
+				$notify_msg = urlencode($message);
+
+				$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+				//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+				$ch = curl_init();
+				curl_setopt($ch,CURLOPT_URL,$notifyurl);
+				curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+				if($notify_msg) $notifyresult = curl_exec($ch);
+				curl_close($ch);
+			}
+			/* --- notification call end --- */
+			
+		 }
+		 
+		 if($edit_vehicle == 3){
+			$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+			/* --- notification call --- */
+
+			$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '34' ")->queryAll();
+			$message = $pushmsg[0]['message'];
+
+			foreach( $agentdevices as $agdevice){
+
+				$device_type = strtolower($agdevice['device_type']);
+				$notify_token = $agdevice['device_token'];
+				$alert_type = "strong";
+				$notify_msg = urlencode($message);
+
+				$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+				//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+				$ch = curl_init();
+				curl_setopt($ch,CURLOPT_URL,$notifyurl);
+				curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+				if($notify_msg) $notifyresult = curl_exec($ch);
+				curl_close($ch);
+			}
+			/* --- notification call end --- */
+		 }
 
                  /* ------ edit vehicle end ---------- */
 
@@ -3025,32 +3193,35 @@ $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, '
                    if($new_vehicle_confirm == 1){
 
                      /* --- notification call --- */
+		     
+		        $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '1' ")->queryAll();
 
-                 $cust_id = $wash_request_exists->customer_id;
-                 $cust_details = Customers::model()->findByAttributes(array('id'=>$cust_id));
-                 $notify_msg = '';
-                 $notify_token = $cust_details->device_token;
-                 $device_type = strtolower($cust_details->mobile_type);
+			$notify_msg = $pushmsg[0]['message'];
+			$notify_msg = urlencode($notify_msg);
+		     
+			$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-                    $alert_type = "default";
+			if(count($clientdevices))
+			{
+				foreach($clientdevices as $ctdevice)
+				{
 
-$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '1' ")->queryAll();
+					$device_type = strtolower($ctdevice['device_type']);
+					$notify_token = $ctdevice['device_token'];
+					$alert_type = "strong";
+					
 
-                     $notify_msg = $pushmsg[0]['message'];
-                     $notify_msg = urlencode($notify_msg);
+					$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+					//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+					$ch = curl_init();
+					curl_setopt($ch,CURLOPT_URL,$notifyurl);
+					curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
-                 $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-                   // echo $notifyurl;die;
-                  $ch = curl_init();
-                curl_setopt($ch,CURLOPT_URL,$notifyurl);
-	            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+					if($notify_msg) $notifyresult = curl_exec($ch);
+					curl_close($ch);
+				}
+			}
 
-                if($notify_msg){
-                    $notifyresult = curl_exec($ch);
-                    //print_r($notifyresult);die;
-                }
-
-                curl_close($ch);
 
                   /* --- notification end --- */
 
@@ -3059,70 +3230,73 @@ $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id =
                   if($new_vehicle_confirm == 2){
 
                      /* --- notification call --- */
+		     
+		        $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '2' ")->queryAll();
 
-                 $agent_id = $wash_request_exists->agent_id;
-                 $agent_details = Agents::model()->findByAttributes(array('id'=>$agent_id));
-                 $notify_msg = '';
-                 $notify_token = $agent_details->device_token;
-                 $device_type = strtolower($agent_details->mobile_type);
+			$notify_msg = $pushmsg[0]['message'];
+			$notify_msg = urlencode($notify_msg);
+		     
+			$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-                    $alert_type = "default";
+			if(count($agentdevices))
+			{
+				foreach($agentdevices as $agdevice)
+				{
 
-$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '2' ")->queryAll();
-$notify_msg = $pushmsg[0]['message'];
+					$device_type = strtolower($agdevice['device_type']);
+					$notify_token = $agdevice['device_token'];
+					$alert_type = "strong";
+					
 
-                     //$notify_msg = "Client has accepted to add new car";
-                     $notify_msg = urlencode($notify_msg);
+					$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+					//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+					$ch = curl_init();
+					curl_setopt($ch,CURLOPT_URL,$notifyurl);
+					curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
-                 $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-                   // echo $notifyurl;die;
-                  $ch = curl_init();
-                curl_setopt($ch,CURLOPT_URL,$notifyurl);
-	            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+					if($notify_msg) $notifyresult = curl_exec($ch);
+					curl_close($ch);
+				}
+			}
 
-                if($notify_msg){
-                    $notifyresult = curl_exec($ch);
-                    //print_r($notifyresult);die;
-                }
-
-                curl_close($ch);
 
                   /* --- notification end --- */
-
 
 
                   }
 
                     if($new_vehicle_confirm == 3){
 
-                     /* --- notification call --- */
+                  /* --- notification call --- */
+		     
+		        $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '3' ")->queryAll();
 
-                 $agent_id = $wash_request_exists->agent_id;
-                 $agent_details = Agents::model()->findByAttributes(array('id'=>$agent_id));
-                 $notify_msg = '';
-                 $notify_token = $agent_details->device_token;
-                 $device_type = strtolower($agent_details->mobile_type);
+			$notify_msg = $pushmsg[0]['message'];
+			$notify_msg = urlencode($notify_msg);
+		     
+			$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-                    $alert_type = "default";
+			if(count($agentdevices))
+			{
+				foreach($agentdevices as $agdevice)
+				{
 
-$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '3' ")->queryAll();
-$notify_msg = $pushmsg[0]['message'];
+					$device_type = strtolower($agdevice['device_type']);
+					$notify_token = $agdevice['device_token'];
+					$alert_type = "strong";
+					
 
-                     //$notify_msg = "Client has declined to add new car";
-                     $notify_msg = urlencode($notify_msg);
+					$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+					//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+					$ch = curl_init();
+					curl_setopt($ch,CURLOPT_URL,$notifyurl);
+					curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
-                 $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-                   // echo $notifyurl;die;
-                  $ch = curl_init();
-                curl_setopt($ch,CURLOPT_URL,$notifyurl);
-	            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+					if($notify_msg) $notifyresult = curl_exec($ch);
+					curl_close($ch);
+				}
+			}
 
-                if($notify_msg){
-                    $notifyresult = curl_exec($ch);
-                    //print_r($notifyresult);die;
-                }
-
-                curl_close($ch);
 
                   /* --- notification end --- */
 
@@ -3185,15 +3359,25 @@ $cust_vehicle_model->lifted_vehicle = $lifted_vehicle;
                         $result= 'false';
                         $response= 'Status is not changed';
                     }
-                   /* --- notification call --- */
 
-                 $cust_id = $wash_request_exists->customer_id;
-                 $cust_details = Customers::model()->findByAttributes(array('id'=>$cust_id));
+		   		     
+			$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+			if(count($clientdevices))
+			{
+				foreach($clientdevices as $ctdevice)
+				{
+
+					$device_type = strtolower($ctdevice['device_type']);
+					$notify_token = $ctdevice['device_token'];
+					$alert_type = "strong";
+					
+				}
+			}
+
+                
                  $notify_msg = '';
-                 $notify_token = $cust_details->device_token;
-                 $device_type = strtolower($cust_details->mobile_type);
-                 $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, 'customer_id'=>$cust_id));
-                    $alert_type = "default";
+                 $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, 'customer_id'=>$wash_request_exists->customer_id));
                  //   echo "hi roahn".$device_type."_".$notify_token;die;
                  if(count($vehicle_details)){
                  if(($status == 2) && (!$upgrade_pack) && (!$new_vehicle_confirm) && (!$remove_vehicle_from_kart)){
@@ -3205,6 +3389,7 @@ $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_m
 
                   //$notify_msg = "Inspection complete for ".$vehicle_details->brand_name." ".$vehicle_details->model_name.", please confirm.";
                  }
+
 
 if($status == 3){
 //Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0));
@@ -3219,10 +3404,20 @@ $notify_msg = str_replace("[BRAND_NAME]",$vehicle_details->brand_name, $notify_m
 $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_msg);
 
                      //$notify_msg = "Begin ".$vehicle_details->brand_name." ".$vehicle_details->model_name." car wash.";
-                     $agent_details = Agents::model()->findByAttributes(array('id'=>$wash_request_exists->agent_id));
-                     $notify_token = $agent_details->device_token;
-                     $device_type = strtolower($agent_details->mobile_type);
-                     $alert_type = "strong";
+		     
+		     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+			if(count($agentdevices))
+			{
+				foreach($agentdevices as $agdevice)
+				{
+
+					$device_type = strtolower($agdevice['device_type']);
+					$notify_token = $agdevice['device_token'];
+					$alert_type = "strong";
+					
+				}
+			}
                  }
 
                  if($status == 5){
@@ -5727,7 +5922,7 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
 $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
 $block_client = Yii::app()->request->getParam('block_client');
 
-
+$contact_number = preg_replace('/\D/', '', $contact_number);
 
  $customers_exists = Customers::model()->findByAttributes(array("id"=>$id));
 $customers_email_exists = Customers::model()->findByAttributes(array("email"=>$email));
@@ -5737,10 +5932,10 @@ if(!count($customers_exists)){
 $result = 'false';
                 $response = 'Invalid customer';
 }
-else if(count($customers_email_exists) && $customers_email_exists->id != $id){
+/*else if(count($customers_email_exists) && $customers_email_exists->id != $id){
 $result = 'false';
                 $response = 'Email already exists';
-}
+}*/
 else if(count($customers_phone_exists) && $customers_phone_exists->id != $id){
 $result = 'false';
                 $response = 'Phone already exists';

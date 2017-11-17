@@ -1644,6 +1644,8 @@ else $customername = $cust_name[0];
         if(Yii::app()->request->getParam('washer_arrive_hit')) $washer_arrive_hit = Yii::app()->request->getParam('washer_arrive_hit');
         $meet_washer_outside = '';
         if(Yii::app()->request->getParam('meet_washer_outside')) $meet_washer_outside = Yii::app()->request->getParam('meet_washer_outside');
+	$meet_washer_outside_washend = '';
+        if(Yii::app()->request->getParam('meet_washer_outside_washend')) $meet_washer_outside_washend = Yii::app()->request->getParam('meet_washer_outside_washend');
 
         $result = 'false';
         $response = 'Pass the required parameters';
@@ -1653,7 +1655,13 @@ else $customername = $cust_name[0];
         $order_for_date = '';
 
         if($meet_washer_outside) Washingrequests::model()->updateByPk($wash_request_id, array("meet_washer_outside" => $meet_washer_outside));
+	if($meet_washer_outside_washend) {
+		Washingrequests::model()->updateByPk($wash_request_id, array("meet_washer_outside_washend" => $meet_washer_outside_washend));
+		$json = array('result'=> 'true',
+                        'response'=> 'status updated');
 
+            echo json_encode($json);die();
+	}
 
         if(count($agent_detail) && $agent_detail->block_washer)
         {
@@ -2737,6 +2745,28 @@ else $customername = $cust_name[0];
                     //$notify_msg = "All car washes complete. Thank you.";
                     $alert_type = "soft";
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("wash_complete_push_sent" => 1));
+		    
+		    $this->layout = "xmlLayout";
+                        spl_autoload_unregister(array(
+                        'YiiBase',
+                        'autoload'
+                    ));
+                    //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+                    require('Services/Twilio.php');
+                    require('Services/Twilio/Capability.php');
+
+                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $client = new Services_Twilio($account_sid, $auth_token);
+
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  $cust_details->contact_number,
+                        'From' => '+13103128070',
+                        'Body' => "Wash complete. Please open your app and meet your washer outside to ensure satisfaction. Your washer will wait up to 10 minutes.",
+                    ));
+
+                    spl_autoload_register(array('YiiBase','autoload'));
                 }
 
                 if($notify_msg)
@@ -3141,6 +3171,7 @@ foreach( $clientdevices as $ctdevice){
                 'buzz_status'=> $buzz_status,
                 'is_scheduled' => $wrequest_id_check->is_scheduled,
                  'meet_washer_outside' => $wrequest_id_check->meet_washer_outside,
+		 'meet_washer_outside_washend' => $wrequest_id_check->meet_washer_outside_washend,
 'wash_start_since' => $mins,
 'feedback_5mins_passed' => $feedback_5mins_passed,
                 'agent_details' => $agent_details,
@@ -8092,6 +8123,20 @@ $from = Vargas::Obj()->getAdminFromEmail();
 					//echo $from;
 					$sched_date = '';
 $sched_time = '';
+
+if(!$order_exists->is_scheduled){
+
+if(strtotime($order_exists->order_for) == strtotime(date('Y-m-d'))){
+						$sched_date = 'Today';
+					}
+					else{
+						$sched_date = date('M d', strtotime($order_exists->order_for));
+					}
+$sched_time = date('g:i A', strtotime($order_exists->order_for));
+   
+}
+else{
+    
 					if($order_exists->reschedule_time){
 if(strtotime($order_exists->reschedule_date) == strtotime(date('Y-m-d'))){
 						$sched_date = 'Today';
@@ -8111,13 +8156,15 @@ if(strtotime($order_exists->schedule_date) == strtotime(date('Y-m-d'))){
 					}
 $sched_time = $order_exists->schedule_time;
 }
+}
 					$message = '';
 					$subject = 'Cancel Order Receipt - #0000'.$id;
 					//$message = "Hello ".$customername.",<br/><br/>Welcome to Mobile wash!";
 					$message = "<div class='block-content' style='background: #fff; text-align: left;'>
-					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>This order has been canceled</h2>
-					<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Scheduled order for ".$sched_date." @ ".$sched_time."</p>
-					<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$order_exists->address."</p>";
+					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>This order has been canceled</h2>";
+					if(!$order_exists->is_scheduled) $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>On-demand order for ".$sched_date." @ ".$sched_time."</p>";
+					else $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Scheduled order for ".$sched_date." @ ".$sched_time."</p>";
+					$message .= "<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$order_exists->address."</p>";
 					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
 					<tr><td><strong>Client Name:</strong> ".$cust_exists->customername."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
 					</table>";
@@ -8380,6 +8427,20 @@ $from = Vargas::Obj()->getAdminFromEmail();
 					//echo $from;
 					$sched_date = '';
 $sched_time = '';
+
+if(!$order_exists->is_scheduled){
+
+if(strtotime($order_exists->order_for) == strtotime(date('Y-m-d'))){
+						$sched_date = 'Today';
+					}
+					else{
+						$sched_date = date('M d', strtotime($order_exists->order_for));
+					}
+$sched_time = date('g:i A', strtotime($order_exists->order_for));
+   
+}
+else{
+    
 					if($order_exists->reschedule_time){
 if(strtotime($order_exists->reschedule_date) == strtotime(date('Y-m-d'))){
 						$sched_date = 'Today';
@@ -8399,13 +8460,15 @@ if(strtotime($order_exists->schedule_date) == strtotime(date('Y-m-d'))){
 					}
 $sched_time = $order_exists->schedule_time;
 }
+}
 					$message = '';
 					$subject = 'Cancel Order Receipt - #0000'.$id;
 					//$message = "Hello ".$customername.",<br/><br/>Welcome to Mobile wash!";
 					$message = "<div class='block-content' style='background: #fff; text-align: left;'>
-					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>This order has been canceled</h2>
-					<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Scheduled order for ".$sched_date." @ ".$sched_time."</p>
-					<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$order_exists->address."</p>";
+					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>This order has been canceled</h2>";
+					if(!$order_exists->is_scheduled) $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>On-demand order for ".$sched_date." @ ".$sched_time."</p>";
+					else $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Scheduled order for ".$sched_date." @ ".$sched_time."</p>";
+					$message .= "<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$order_exists->address."</p>";
 					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
 					<tr><td><strong>Client Name:</strong> ".$cust_exists->customername."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
 					</table>";

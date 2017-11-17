@@ -308,8 +308,8 @@ $('#late_drivers').click(function(){
 												</td>
                                               <td> <?php echo $washer->id; ?> </td>
  <td> <?php echo $washer->real_washer_id; ?> </td>
-                                                <td> <?php echo $washer->first_name; ?> </td>
-                                                <td> <?php echo $washer->last_name; ?> </td>
+                                                <td> <a href="/admin-new/all-orders.php?agent_id=<?php echo $washer->id; ?>" target="_blank"><?php echo $washer->first_name; ?></a> </td>
+                                                <td> <a href="/admin-new/all-orders.php?agent_id=<?php echo $washer->id; ?>" target="_blank"><?php echo $washer->last_name; ?></a> </td>
                                                  <td> <?php echo $washer->email; ?> </td>
                                                  <td> <?php echo $washer->phone_number; ?> </td>
                                                  <td> <?php echo $washer->phone_verify_code; ?> </td>

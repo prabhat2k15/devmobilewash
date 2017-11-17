@@ -327,7 +327,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                                                 <input type="email" class="form-control" name="email" value="<?php echo $email; ?>" required/> </div>
                                                             <div class="form-group">
                                                                 <label class="control-label">Phone Number<span style="color: red;">*</span></label>
-                                                                <input readonly class="form-control" name="contact_number" type="text" title="Phone number with 7-9 and remaing 9 digit with 0-9" value="<?php echo $contact_number; ?>" required /> </div>
+                                                                <input class="form-control" name="contact_number" type="text" title="Phone number with 7-9 and remaing 9 digit with 0-9" value="<?php echo $contact_number; ?>" required /> </div>
                                                             <div class="form-group">
                                                                 <label class="control-label">Email Alerts<span style="color: red;">*</span></label>
                                                                  <select name="email_alerts" class="form-control">
