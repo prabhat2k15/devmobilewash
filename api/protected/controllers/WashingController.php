@@ -3172,6 +3172,7 @@ foreach( $clientdevices as $ctdevice){
                 'is_scheduled' => $wrequest_id_check->is_scheduled,
                  'meet_washer_outside' => $wrequest_id_check->meet_washer_outside,
 		 'meet_washer_outside_washend' => $wrequest_id_check->meet_washer_outside_washend,
+		 'time_pass_since_washend' => $feedback_time_check,
 'wash_start_since' => $mins,
 'feedback_5mins_passed' => $feedback_5mins_passed,
                 'agent_details' => $agent_details,

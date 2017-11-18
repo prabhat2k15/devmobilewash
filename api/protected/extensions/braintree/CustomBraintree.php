@@ -1213,10 +1213,11 @@ if(!$all_errors_mob) $all_errors_mob = $result->message;
     }
 
 
- public function submitforsettlement($transaction_id)
+ public function submitforsettlement($transaction_id, $amount = 0)
     {
 
-        $result =  Braintree_Transaction::submitForSettlement($transaction_id);
+        if($amount > 0) $result =  Braintree_Transaction::submitForSettlement($transaction_id, $amount);
+        else $result =  Braintree_Transaction::submitForSettlement($transaction_id);
 
         if ($result->success) {
             return (array(
@@ -1224,15 +1225,25 @@ if(!$all_errors_mob) $all_errors_mob = $result->message;
 
             ));
         } else {
+            
+                        foreach($result->errors->deepAll() AS $error) {
+  $all_errors .= $error->message . "<br>";
+$all_errors_mob .= $error->message . "\r\n";
+}
+
+if(!$all_errors) $all_errors = $result->message;
+if(!$all_errors_mob) $all_errors_mob = $result->message;
+
             return (array(
                 'success' => 0,
-                'errors' => $result->errors->deepAll(),
+                  'message' => $all_errors,
+ 'message_mob' => $all_errors_mob
 
             ));
         }
     }
 
- public function submitforsettlement_real($transaction_id)
+ public function submitforsettlement_real($transaction_id, $amount = 0)
     {
 
 Braintree_Configuration::environment('production');
@@ -1240,7 +1251,8 @@ Braintree_Configuration::environment('production');
         Braintree_Configuration::publicKey('7gg5kfvkx8w5fcx8');
         Braintree_Configuration::privateKey('579e6af0c752079c2f9596c838191327');
 
-        $result =  Braintree_Transaction::submitForSettlement($transaction_id);
+        if($amount > 0) $result =  Braintree_Transaction::submitForSettlement($transaction_id, $amount);
+        else $result =  Braintree_Transaction::submitForSettlement($transaction_id);
 
         if ($result->success) {
             return (array(
@@ -1248,9 +1260,19 @@ Braintree_Configuration::environment('production');
 
             ));
         } else {
+            
+            foreach($result->errors->deepAll() AS $error) {
+  $all_errors .= $error->message . "<br>";
+$all_errors_mob .= $error->message . "\r\n";
+}
+
+if(!$all_errors) $all_errors = $result->message;
+if(!$all_errors_mob) $all_errors_mob = $result->message;
+
             return (array(
                 'success' => 0,
-                'errors' => $result->errors->deepAll(),
+                 'message' => $all_errors,
+ 'message_mob' => $all_errors_mob
 
             ));
         }

@@ -679,6 +679,7 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
             'washer_payment_status' => $wash_id_check->washer_payment_status,
             'total_schedule_rejected' => $wash_id_check->total_schedule_rejected,
             'wash_now_fee' => $wash_id_check->wash_now_fee,
+	    'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
             'vehicles' => $vehicles
         );
 

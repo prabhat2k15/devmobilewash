@@ -2317,6 +2317,78 @@ else {
 }
 
 
+public function actionsubmitforsettlement(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+ $customer_id = Yii::app()->request->getParam('customer_id');
+      $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+      $transaction_id = Yii::app()->request->getParam('transaction_id');
+      $amount = 0;
+      $amount = Yii::app()->request->getParam('amount');
+      $admin_username = '';
+$admin_username  = Yii::app()->request->getParam('admin_username');
+       $response = "Pass the required parameters";
+      $result = "false";
+
+       if((isset($transaction_id) && !empty($transaction_id)) && (isset($wash_request_id) && !empty($wash_request_id)) && (isset($customer_id) && !empty($customer_id))){
+
+$customer_check = Customers::model()->findByPk($customer_id);
+           $wash_check = Washingrequests::model()->findByPk($wash_request_id);
+
+           if(!count($customer_check)){
+                    $response = "Invalid customer id";
+                    $result = "false";
+           }
+
+           else if(!count($wash_check)){
+                    $response = "Invalid wash request id";
+                    $result = "false";
+           }
+
+          else{
+          if($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->submitforsettlement_real($transaction_id, $amount);
+else $payresult = Yii::app()->braintree->submitforsettlement($transaction_id, $amount);
+
+          if($payresult['success'] == 1) {
+                        //print_r($result);die;
+                        $response = "submit for settlement successful";
+                        $result = "true";
+ Washingrequests::model()->updateByPk($wash_request_id, array('admin_submit_for_settle' => 1, 'washer_payment_status' => 1));
+ 
+  $washeractionlogdata = array(
+                        
+                        'wash_request_id'=> $wash_request_id,
+                        
+                        'admin_username' => $admin_username,
+                        'action'=> 'adminsubmitforsettlement',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
+}
+else {
+                        $result = "false";
+                        $response = $payresult['message'];
+                    }
+}
+
+       }
+
+      $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+
+        echo json_encode($json);
+        die();
+
+}
+
+
 public function actiongettransactionbyid(){
 
 if(Yii::app()->request->getParam('key') != API_KEY){

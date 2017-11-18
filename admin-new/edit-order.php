@@ -390,7 +390,7 @@ curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
 $transaction_details = json_decode($result);
-//print_r($transaction_details);
+print_r($transaction_details);
  }
 
 ?>
@@ -726,6 +726,7 @@ display: none;
 <?php else: ?>
 <div class="process-payment-trigger" style="float: right; font-size: 18px; margin-top: 3px; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">In Process</div>
 <?php endif; ?>
+<?php if(!$getorder->admin_submit_for_settle): ?>
 <?php if(($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin')): ?>
 <?php if(($getorder->status == 5) || ($getorder->status == 6)): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="wash-uncancel">Un-Cancel</div>
@@ -741,11 +742,14 @@ display: none;
 														<div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="enable-washer-pay">Enable Washer Payment</div>
 															<?php endif; ?> */ ?>
 <?php endif; ?>
-<?php if((!$getorder->transaction_id) || (($transaction_details->transaction_details->status != 'authorized') && ($transaction_details->transaction_details->status != 'submitted_for_settlement') && ($transaction_details->transaction_details->status != 'settling') && ($transaction_details->transaction_details->status != 'settled'))): ?>
+<?php endif; ?>
+
+<?php if((!$getorder->transaction_id) || (($transaction_details->transaction_details->status != 'authorized') && ($transaction_details->transaction_details->status != 'submitted_for_settlement') && ($transaction_details->transaction_details->status != 'settling') && ($transaction_details->transaction_details->status != 'settled') && (!$getorder->admin_submit_for_settle))): ?>
+
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e42400; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="process-payment">Process Payment</div>
 <?php else: ?>
 
-<?php if(($transaction_details->transaction_details->escrow_status == 'hold_pending' || $transaction_details->transaction_details->escrow_status == 'held') && $transaction_details->transaction_details->status == 'settled'): ?>
+<?php if(($transaction_details->transaction_details->escrow_status == 'hold_pending' || $transaction_details->transaction_details->escrow_status == 'held') && $transaction_details->transaction_details->status == 'settled' && (!$getorder->admin_submit_for_settle)): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="release-payment">Release Payment</div>
 <?php endif; ?>
 
@@ -756,15 +760,15 @@ display: none;
 <div style="float: right; font-size: 18px; margin-top: 3px; background: #05b500; color: #fff; padding: 8px 35px; margin-right: 20px;">Payment Complete</div>
 <?php endif; ?>
 <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
-<?php if($transaction_details->transaction_details->status == 'submitted_for_settlement' || $transaction_details->transaction_details->status == 'authorized'): ?>
+<?php if(($transaction_details->transaction_details->status == 'submitted_for_settlement' || $transaction_details->transaction_details->status == 'authorized') && (!$getorder->admin_submit_for_settle)): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="void-payment">Void Payment</div>
 <?php endif; ?>
-<?php if($transaction_details->transaction_details->status == 'settling' || $transaction_details->transaction_details->status == 'settled'): ?>
+<?php if(($transaction_details->transaction_details->status == 'settling' || $transaction_details->transaction_details->status == 'settled') && (!$getorder->admin_submit_for_settle)): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="refund-payment">Refund Payment</div>
  <?php endif; ?>
 <?php endif; ?>
 <?php endif; ?>
-<?php if($getorder->status != 5 && $getorder->status != 6): ?>
+<?php if($getorder->status != 5 && $getorder->status != 6 && (!$getorder->admin_submit_for_settle)): ?>
  <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
 
 <div style="float: right; font-size: 18px; margin-top: 3px; background: #e47e00; cursor: pointer; color: #fff; padding: 8px 35px; margin-right: 20px;" class="<?php if($getorder->status ==0) {echo "cancel-order";} else {echo "cancel-order-ondemand";}; ?>">Cancel Order</div>
@@ -1404,9 +1408,11 @@ $first_card_type = ''; ?>
                                                              <input type="hidden" name="detailer" id="detailer" value="<?php if($agentdetails->id) {echo $agentdetails->id;}else{echo "0";} ?>" />
 
                                                         </div>
+                                                         <?php if(!$getorder->admin_submit_for_settle): ?>
                                                          <div class="form-group">
                                                              <p style="margin-top: 20px;"><input type="button" class="washer_update" value="Save Washer" /></p>
                                                        </div>
+                                                         <?php endif; ?>
                                                         <div class="form-group">
                                                           <label class="control-label">Washer Payment Status: </label>
                                                                <?php if($getorder->washer_payment_status == 1){
@@ -1555,7 +1561,10 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'washerchangepack'): ?>
                                                           <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> changed package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
-
+                                                          <?php if($log->action == 'adminsubmitforsettlement'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> submitted payment for settlement at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          
                                                           <?php endforeach; ?>
                                                           </div>
                                                         </div>
@@ -1580,18 +1589,28 @@ if($savedroplogdata->result == 'true'):?>
                                                              <p style="margin-top: 20px;"><input type="button" class="send_washer_push" value="Send" /></p>
                                                              <p class="status-text">Push sent</p>
                                                        </div>
-                                                       <div class="form-group">
-                                                       <?php if(count($getorder->vehicles) > 0): ?>
+                                                        <?php if(count($getorder->vehicles) > 0 && ($getorder->status > 0)): ?>
+                                                       <div class="form-group" style="display: block; clear: both; margin-bottom: 60px;">
+                                                      
                                                        <ul class="bxslider">
                                                        <?php foreach($getorder->vehicles as $veh): ?>
                                                        <?php if($veh->vehicle_inspect_image) echo "<li><img title='".$veh->brand_name." ".$veh->model_name."' src='".$veh->vehicle_inspect_image."' /></li>"; ?>
                                                         <?php endforeach; ?>
-                                                        </ul>
-                                                        <?php endif; ?>
+                                                       </ul>
                                                     </div>
+                                                       <?php endif; ?>
+                                                       <?php if(($getorder->transaction_id) && ($transaction_details->transaction_details->status == 'authorized') && (!$getorder->washer_payment_status)) :?>
+                                                       <div class="form-group">
+                                                        <label class="control-label" style="display: block; padding-top: 15px; margin-top: 0; font-weight: bold; margin-bottom: 15px;">Submit for Settlement</label>
+                                                        <input type="text" style="width: 85px;" value="<?php echo $getorder->net_price; ?>" id="submit_for_settle_amount" /> USD
+                                                        <p style="margin-top: 20px;"><input type="button" class="submit_settle_btn" value="Submit for Settlement" /></p>
+                                                       </div>
+                                                       <?php endif; ?>
                                                             </div>
                                                              <div style="clear: both;"></div>
+                                                               <?php if(!$getorder->admin_submit_for_settle): ?>
                                                                <input type="submit" id="edit-order-submit" value="Submit" name="edit-order-submit" style="color: rgb(255, 255, 255); margin-top: 20px; background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 6px 7px 7px 6px; border-radius: 3px;" />
+                                                            <?php endif; ?>    
                                                     </form>
 
                                                             <div class="clear" style="height: 10px;">&nbsp;</div>
@@ -2922,6 +2941,35 @@ return false;
 });
 
 
+$(".submit_settle_btn").click(function(){
+var c = confirm('Are you sure you want to submit payment for settlement?');
+if(c){
+var th = $(this);
+var amount = $("#submit_for_settle_amount").val();
+$(this).val('Processing, please wait...');
+$(this).removeClass('submit_settle_btn');
+$(".err-text").hide();
+$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/submitforsettlement", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", transaction_id: "<?php echo $getorder->transaction_id; ?>", amount: amount, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+}
+else{
+$(".err-text").html(data.response);
+$(".err-text").show();
+$(th).val('Submit for Settlement');
+$(th).addClass('submit_settle_btn');
+
+}
+
+});
+}
+
+return false;
+
+});
+
+
 $(".pass-fraud").click(function(){
 var c = confirm('Are you sure you want to release the order from fraud?');
 if(c){
@@ -3633,6 +3681,10 @@ if(data.result == 'true'){
       
        if(log.action == 'washerchangepack'){
             contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" changed package/addons "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+      
+      if(log.action == 'adminsubmitforsettlement'){
+            contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" submitted payment for settlement at "+log.formatted_action_date+"</p>";
       }
       
 
