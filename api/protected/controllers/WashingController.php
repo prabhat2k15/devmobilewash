@@ -6509,6 +6509,8 @@ die();
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $status = Yii::app()->request->getParam('status');
+	$check_wash_status_before_cancel = 0;
+	if(Yii::app()->request->getParam('check_wash_status_before_cancel')) $check_wash_status_before_cancel = Yii::app()->request->getParam('check_wash_status_before_cancel');
         $result= 'false';
         $response= 'Pass the required parameters';
         $json= array();
@@ -6525,6 +6527,11 @@ die();
             else if(($status != 5) && ($status != 6)){
                 $result= 'false';
                 $response= 'Invalid status code';
+            }
+	    
+	    else if(($check_wash_status_before_cancel == 1) && ($wrequest_id_check->status == 1)) {
+                $result= 'false';
+                $response= 'wash already started';
             }
 
              else if(($wrequest_id_check->status == 1) && ($status == 5)){

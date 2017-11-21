@@ -1143,6 +1143,8 @@ die();
 		$json = array();
 		$id = Yii::app()->request->getParam('customerid');
 		$customername = Yii::app()->request->getParam('customername');
+		$first_name = Yii::app()->request->getParam('first_name');
+		$last_name = Yii::app()->request->getParam('last_name');
 		$email = Yii::app()->request->getParam('emailid');
 		$image = Yii::app()->request->getParam('image');
 		$password = Yii::app()->request->getParam('password');
@@ -1204,6 +1206,14 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
 
 				if(empty($customername) ){
 					 $customername = $model->customername;
+				}
+				
+				if(empty($first_name) ){
+					 $first_name = $model->first_name;
+				}
+				
+				if(empty($last_name) ){
+					 $last_name = $model->last_name;
 				}
 
 				if(!empty($new_password)){
@@ -1269,6 +1279,8 @@ if(empty($how_hear_mw)){
 				$data = array(
 					'result'=> $result,
 					'response'=> $response,
+					'first_name'=>$first_name,
+					'last_name'=>$last_name,
 					'customername'=>$customername,
 					'email'=>$email,
 					'image'=> $image,
@@ -1320,6 +1332,8 @@ Customers::model()->updateByPk($id, array('braintree_id' => $braintree_id, 'fift
 						'result'=> $result,
 						'response'=> $response,
 						'customerid'=>$id,
+						'first_name'=>$first_name,
+						'last_name'=>$last_name,
 						'customername'=>$customername,
 						'email'=>$email,
 						'image'=> $image,
@@ -1485,6 +1499,8 @@ die();
 					'response'=> 'Customer details',
 					'customerid' => $customers_id->id,
 					'email' => $customers_id->email,
+					'first_name' => $customers_id->first_name,
+					'last_name' => $customers_id->last_name,
 					'customername' => $customers_id->customername,
 					'image' => $customers_id->image,
 					'contact_number' => $customers_id->contact_number,

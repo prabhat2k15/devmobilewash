@@ -1665,6 +1665,7 @@ $wash_requests[$index]['customer_id'] = $customerdata->id;
         $washfeedbacks =  Washingfeedbacks::model()->findByAttributes(array("agent_id"=>$agent_id, "wash_request_id"=>$wrequest['id']));
         if($washfeedbacks->customer_ratings) $wash_requests[$index]['rating'] = number_format($washfeedbacks->customer_ratings, 2);
         else $wash_requests[$index]['rating'] = $washfeedbacks->customer_ratings;
+	if(!count($washfeedbacks)) $wash_requests[$index]['rating'] = 5.00;
         $wash_requests[$index]['status'] = $wrequest['status'];
 $wash_requests[$index]['cancel_fee'] = $wrequest['cancel_fee'];
 $wash_requests[$index]['washer_cancel_fee'] = $wrequest['washer_cancel_fee'];

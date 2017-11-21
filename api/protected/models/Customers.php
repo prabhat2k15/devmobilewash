@@ -18,7 +18,7 @@ class Customers extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('email, customername, password, image, device_token, mobile_type, time_zone, contact_number, email_alerts, push_notifications, total_wash, login_type, account_status, online_status, created_date, updated_date, client_position, how_hear_mw, form_tracker', 'required'),
+			array('email, first_name, last_name, customername, password, image, device_token, mobile_type, time_zone, contact_number, email_alerts, push_notifications, total_wash, login_type, account_status, online_status, created_date, updated_date, client_position, how_hear_mw, form_tracker', 'required'),
 			array('account_status', 'numerical', 'integerOnly'=>true),
 			array('email', 'length', 'max'=>100),
 			array('customername', 'length', 'max'=>150),
@@ -29,7 +29,7 @@ class Customers extends CActiveRecord
 			array('token, created_date, updated_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, email, customername, password, image, device_token, mobile_type, contact_number, email_alerts, push_notifications, total_wash, account_status, online_status, created_date, updated_date, client_position, how_hear_mw, form_tracker, is_schedule_popup_shown', 'safe', 'on'=>'search'),
+			array('id, email, first_name, last_name, customername, password, image, device_token, mobile_type, contact_number, email_alerts, push_notifications, total_wash, account_status, online_status, created_date, updated_date, client_position, how_hear_mw, form_tracker, is_schedule_popup_shown', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -52,6 +52,8 @@ class Customers extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'email' => 'Email',
+			'first_name' => 'First Name',
+			'last_name' => 'Last Name',
 			'customername' => 'Username',
 			'password' => 'Password',
 			'image' => 'Image',
@@ -92,6 +94,8 @@ class Customers extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('email',$this->email,true);
+		$criteria->compare('first_name',$this->first_name,true);
+		$criteria->compare('last_name',$this->last_name,true);
 		$criteria->compare('customername',$this->customername,true);
 		$criteria->compare('password',$this->password,true);
 		$criteria->compare('image',$this->image,true);
