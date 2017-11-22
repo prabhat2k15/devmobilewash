@@ -1035,10 +1035,22 @@ die();
 
 			 $encriptpassword = md5($customer_id);
 
-			 $customername2 = '';
+					
+					if(($customers_email_exists->first_name != '') && ($customers_email_exists->last_name != '')){
+						$customername2 = '';
+						$cust_name = explode(" ", trim($customers_email_exists->last_name));
+						$customername2 = $customers_email_exists->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+					}
+					else{
+						$customername2 = '';
 					$cust_name = explode(" ", trim($customers_email_exists->customername));
 					if(count($cust_name > 1)) $customername2 = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-					else $customername2 = $cust_name[0];
+					else $customername2 = $cust_name[0];	
+					}
+					
+					$customername2 = strtolower($customername2);
+$customername2 = ucwords($customername2);
 
 					$from = Vargas::Obj()->getAdminFromEmail();
 					//echo $from;
@@ -1275,6 +1287,22 @@ if(empty($how_hear_mw)){
                 if(Yii::app()->request->getParam('image_url')){
                  $image = Yii::app()->request->getParam('image_url');
                 }
+		
+		if(($first_name != '') && ($last_name != '')){
+	$customershortname = '';
+	$cust_name = explode(" ", trim($last_name));
+	$customershortname = $first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+}
+else{
+	$customershortname = '';
+	$cust_name = explode(" ", trim($customername));
+	if(count($cust_name > 1)) $customershortname = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+	else $customershortname = $cust_name[0];	
+}
+
+$customershortname = strtolower($customershortname);
+$customershortname = ucwords($customershortname);
 
 				$data = array(
 					'result'=> $result,
@@ -1282,6 +1310,7 @@ if(empty($how_hear_mw)){
 					'first_name'=>$first_name,
 					'last_name'=>$last_name,
 					'customername'=>$customername,
+					
 					'email'=>$email,
 					'image'=> $image,
                     'contact_number'=> $contact_number,
@@ -1335,6 +1364,7 @@ Customers::model()->updateByPk($id, array('braintree_id' => $braintree_id, 'fift
 						'first_name'=>$first_name,
 						'last_name'=>$last_name,
 						'customername'=>$customername,
+						'customer_short_name'=>$customershortname,
 						'email'=>$email,
 						'image'=> $image,
 						'password' => $password,

@@ -3000,10 +3000,23 @@ $total_days_diff += $day_diff->format("%a");
                     $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind]);
 				}
 
-				$customername = '';
+				
+				if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+						$customername = '';
+						$cust_name = explode(" ", trim($cust_details->last_name));
+						$customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+					}
+					else{
+						$customername = '';
 				$cust_name = explode(" ", trim($cust_details->customername));
 				if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
 				else $customername = $cust_name[0];
+					}
+					
+					$customername = strtolower($customername);
+$customername = ucwords($customername);
+
 								$agent_info = array();
 				if(count($agent_details)){
 					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
@@ -3322,10 +3335,23 @@ if($wrequest['status'] == 0) $pendingorderscount++;
                     $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind]);
 				}
 
-				$customername = '';
+				
+				if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+						$customername = '';
+						$cust_name = explode(" ", trim($cust_details->last_name));
+						$customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+					}
+					else{
+						$customername = '';
 				$cust_name = explode(" ", trim($cust_details->customername));
 				if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
 				else $customername = $cust_name[0];
+					}
+					
+					$customername = strtolower($customername);
+$customername = ucwords($customername);
+					
 								$agent_info = array();
 				if(count($agent_details)){
 					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);

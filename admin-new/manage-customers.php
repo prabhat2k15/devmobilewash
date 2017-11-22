@@ -195,7 +195,7 @@ cursor: pointer !important;
                                         <div class="col-md-12 col-sm-12">
 <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
 
-										<button class="btn blue all-clients-logout" style="float: left;">Logout All Clients</button>
+										<?php /*<button class="btn blue all-clients-logout" style="float: left; display: none;">Logout All Clients</button>*/ ?>
 <div style="clear: both;"></div>
 <?php endif; ?>
 

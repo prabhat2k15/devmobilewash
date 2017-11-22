@@ -1660,7 +1660,25 @@ $kartdata = json_decode($kartapiresult);
         $wash_requests[$index]['total'] =$total;
         $customerdata =  Customers::model()->findByAttributes(array("id"=>$wrequest['customer_id']));
         $customername = $customerdata->customername;
+	
+	if(($customerdata->first_name != '') && ($customerdata->last_name != '')){
+	$customershortname = '';
+	$cust_name = explode(" ", trim($customerdata->last_name));
+	$customershortname = $customerdata->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+}
+else{
+	$customershortname = '';
+	$cust_name = explode(" ", trim($customerdata->customername));
+	if(count($cust_name > 1)) $customershortname = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+	else $customershortname = $cust_name[0];	
+}
+
+$customershortname = strtolower($customershortname);
+$customershortname = ucwords($customershortname);
+	
         $wash_requests[$index]['customer_name'] = $customername;
+	$wash_requests[$index]['customer_short_name'] = $customershortname;
 $wash_requests[$index]['customer_id'] = $customerdata->id;
         $washfeedbacks =  Washingfeedbacks::model()->findByAttributes(array("agent_id"=>$agent_id, "wash_request_id"=>$wrequest['id']));
         if($washfeedbacks->customer_ratings) $wash_requests[$index]['rating'] = number_format($washfeedbacks->customer_ratings, 2);
@@ -4990,10 +5008,22 @@ if(($min_diff < 0) && ($min_diff <= -1440)){
 
 
 $cust_detail = Customers::model()->findByPk($schedwash->customer_id);
-$cust_shortname = '';
-$cust_name = explode(" ", trim($cust_detail->customername));
-if(count($cust_name > 1)) $cust_shortname = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-else $cust_shortname = $cust_name[0];
+
+if(($cust_detail->first_name != '') && ($cust_detail->last_name != '')){
+  $cust_shortname = '';
+  $cust_name = explode(" ", trim($cust_detail->last_name));
+  $cust_shortname = $cust_detail->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+}
+else{
+  $cust_shortname = '';
+  $cust_name = explode(" ", trim($cust_detail->customername));
+  if(count($cust_name > 1)) $cust_shortname = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+  else $cust_shortname = $cust_name[0];
+}
+
+$cust_shortname = strtolower($cust_shortname);
+$cust_shortname = ucwords($cust_shortname);
 
  $washtime = 0;
                      $washtime_str = '';

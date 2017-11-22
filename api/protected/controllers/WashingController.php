@@ -1433,10 +1433,22 @@ die();
 
                 $cust_details = Customers::model()->findByAttributes(array("id"=>$wrequest['customer_id']));
 
-$customername = '';
-$cust_name = explode(" ", trim($cust_details->customername));
-if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-else $customername = $cust_name[0];
+if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+	$customername = '';
+	$cust_name = explode(" ", trim($cust_details->last_name));
+	$customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+	
+						
+}
+else{
+	$customername = '';
+	$cust_name = explode(" ", trim($cust_details->customername));
+	if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+	else $customername = $cust_name[0];
+}
+
+$customername = strtolower($customername);
+$customername = ucwords($customername);
 
                 $pendingwashrequests[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
@@ -1578,10 +1590,22 @@ die();
 
         }
 
-$customername = '';
-$cust_name = explode(" ", trim($cust_id_check->customername));
-if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-else $customername = $cust_name[0];
+
+if(($cust_id_check->first_name != '') && ($cust_id_check->last_name != '')){
+	$customername = '';
+	$cust_name = explode(" ", trim($cust_id_check->last_name));
+	$customername = $cust_id_check->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+}
+else{
+	$customername = '';
+	$cust_name = explode(" ", trim($cust_id_check->customername));
+	if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+	else $customername = $cust_name[0];
+}
+
+$customername = strtolower($customername);
+$customername = ucwords($customername);
 
         $json= array(
             'result'=> $result,
@@ -4317,10 +4341,24 @@ Washingrequests::model()->updateByPk($agent_has_order->id, array("create_wash_pu
 
 					$cust_details = Customers::model()->findByAttributes(array("id"=>$agent_has_order->customer_id));
 
-					$customername = '';
-					$cust_name = explode(" ", trim($cust_details->customername));
-					if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-					else $customername = $cust_name[0];
+					if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+						$customername = '';
+						$cust_name = explode(" ", trim($cust_details->last_name));
+						$customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+						
+					}
+					else{
+						$customername = '';
+						$cust_name = explode(" ", trim($cust_details->customername));
+						if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+						else $customername = $cust_name[0];
+						
+					}
+					
+					$customername = strtolower($customername);
+$customername = ucwords($customername);
+					
 
 					$pendingwashrequests[] = array('id'=>$agent_has_order->id,
 						'customer_id'=>$agent_has_order->customer_id,
@@ -4440,10 +4478,24 @@ Washingrequests::model()->updateByPk($prequest['id'], array("create_wash_push_se
 
 				  $cust_details = Customers::model()->findByAttributes(array("id"=>$prequest['customer_id']));
 
-					$customername = '';
-					$cust_name = explode(" ", trim($cust_details->customername));
-					if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-					else $customername = $cust_name[0];
+					
+					if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+						$customername = '';
+						$cust_name = explode(" ", trim($cust_details->last_name));
+						$customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+						
+					}
+					else{
+						$customername = '';
+						$cust_name = explode(" ", trim($cust_details->customername));
+						if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+						else $customername = $cust_name[0];
+						
+					}
+					
+					$customername = strtolower($customername);
+$customername = ucwords($customername);
 
 					$pendingwashrequests[] = array('id'=>$prequest['id'],
 						'customer_id'=>$prequest['customer_id'],
@@ -5581,10 +5633,24 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 
  $cust_details = Customers::model()->findByAttributes(array("id"=>$customer_id_check->id));
 
-$customername = '';
-$cust_name = explode(" ", trim($cust_details->customername));
-if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-else $customername = $cust_name[0];
+
+if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+	$customername = '';
+	$cust_name = explode(" ", trim($cust_details->last_name));
+	$customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+	
+						
+}
+else{
+	$customername = '';
+	$cust_name = explode(" ", trim($cust_details->customername));
+	if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+	else $customername = $cust_name[0];
+	
+}
+
+$customername = strtolower($customername);
+$customername = ucwords($customername);
 
 $com_message .= "<p style='margin: 0; margin-top: 10px; font-size: 18px; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 10px 0;'><strong>Client Receipt:</strong> ".$customername."</p>";
 
@@ -8916,10 +8982,25 @@ $min_diff = round(($from_time - $to_time) / 60,2);
                     $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind]);
 				}
 
-				$customername = '';
-				$cust_name = explode(" ", trim($cust_details->customername));
-				if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-				else $customername = $cust_name[0];
+				
+				if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+					$customername = '';
+					$cust_name = explode(" ", trim($cust_details->last_name));
+					$customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+					
+						
+				}
+				else{
+					$customername = '';
+					$cust_name = explode(" ", trim($cust_details->customername));
+					if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+					else $customername = $cust_name[0];
+					
+				}
+				
+				$customername = strtolower($customername);
+$customername = ucwords($customername);
+
 								$agent_info = array();
 				if(count($agent_details)){
 					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
@@ -9173,10 +9254,25 @@ $min_diff = round(($from_time - $to_time) / 60,2);
                     $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind]);
 				}
 
-				$customername = '';
-				$cust_name = explode(" ", trim($cust_details->customername));
-				if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-				else $customername = $cust_name[0];
+				
+				if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+						$customername = '';
+						$cust_name = explode(" ", trim($cust_details->last_name));
+						$customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+						
+					}
+					else{
+						$customername = '';
+						$cust_name = explode(" ", trim($cust_details->customername));
+						if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+						else $customername = $cust_name[0];
+						
+					}
+					
+					$customername = strtolower($customername);
+$customername = ucwords($customername);
+
 								$agent_info = array();
 				if(count($agent_details)){
 					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);

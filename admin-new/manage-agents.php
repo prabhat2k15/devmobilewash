@@ -240,7 +240,7 @@ $('#late_drivers').click(function(){
                                     </div>
                                     <div class="caption font-dark" style="padding: 10px 0px 0px 20px; padding-top: 3px; display: <?php echo $add_washer; ?>">
                                         <span class="caption-subject bold uppercase"><a href="add-agent.php"> Add New Agent</a></span>
-<button class="btn blue all-agents-logout" style="margin-left: 15px;">Logout All Agents</button>
+<?php /*<button class="btn blue all-agents-logout" style="margin-left: 15px;">Logout All Agents</button>*/ ?>
 <select name="washer-type" class="washer-type" style="margin-left: 15px; font-size: 16px; padding: 5px;"><option value="http://www.devmobilewash.com/admin-new/manage-agents.php?type=real">Real Washer</option><option <?php if($_GET['type'] == 'demo') echo 'selected'; ?> value="http://www.devmobilewash.com/admin-new/manage-agents.php?type=demo">Demo Washer<option></select>                                    
 </div>
                                     <div class="actions">

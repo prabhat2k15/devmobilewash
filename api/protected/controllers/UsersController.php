@@ -555,10 +555,22 @@ if($min_diff <= 60 && $min_diff >= 0){
                             }
                         }
 
-$customername = '';
+
+if(($model->first_name != '') && ($model->last_name != '')){
+						$customername = '';
+						$cust_name = explode(" ", trim($model->last_name));
+						$customername = $model->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+					}
+					else{
+						$customername = '';
 $cust_name = explode(" ", trim($model->customername));
 if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-else $customername = $cust_name[0];
+else $customername = $cust_name[0];	
+					}
+					
+					$customername = strtolower($customername);
+$customername = ucwords($customername);
 
 if($latestwash->id){
 $json= array(
@@ -4595,10 +4607,22 @@ if($min_diff <= 60 && $min_diff >= 0){
                             }
                         }
 
-$customername = '';
+
+if(($model->first_name != '') && ($model->last_name != '')){
+						$customername = '';
+						$cust_name = explode(" ", trim($model->last_name));
+						$customername = $model->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+						
+					}
+					else{
+						$customername = '';
 $cust_name = explode(" ", trim($model->customername));
 if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-else $customername = $cust_name[0];
+else $customername = $cust_name[0];	
+					}
+					
+					$customername = strtolower($customername);
+$customername = ucwords($customername);
 
 if($latestwash->id){
 $json= array(
