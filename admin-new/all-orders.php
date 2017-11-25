@@ -358,7 +358,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                         <thead>
                                             <tr>
-												<th style="min-width: 300px;"> Actions </th>
+												<th> Actions </th>
                                                 <th> ID </th>
                                                  <th> Order Type </th>
                                                 <th> Status </th>

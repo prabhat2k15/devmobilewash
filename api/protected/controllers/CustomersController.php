@@ -3426,7 +3426,7 @@ $cust_vehicle_model->lifted_vehicle = $lifted_vehicle;
                  $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, 'customer_id'=>$wash_request_exists->customer_id));
                  //   echo "hi roahn".$device_type."_".$notify_token;die;
                  if(count($vehicle_details)){
-                 if(($status == 2) && (!$upgrade_pack) && (!$new_vehicle_confirm) && (!$remove_vehicle_from_kart)){
+                 if(($status == 2) && (!$upgrade_pack) && (!$new_vehicle_confirm) && (!$edit_vehicle) && (!$remove_vehicle_from_kart)){
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '4' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
 
@@ -4868,7 +4868,11 @@ $wash_requests[$index]['cancel_fee'] =$wrequest['cancel_fee'];
         $agentdata =  Agents::model()->findByAttributes(array("id"=>$wrequest['agent_id']));
  $custdata =  Customers::model()->findByAttributes(array("id"=>$wrequest['customer_id']));
  $wash_requests[$index]['fifth_wash_points'] = $custdata->fifth_wash_points;
-        $agentname = $agentdata->first_name." ".$agentdata->last_name;
+        
+	$agent_last_name = explode(" ", trim($agentdata->last_name));
+	$agentname = $agentdata->first_name." ".strtoupper(substr($agent_last_name[0], 0, 1)).".";
+	$agentname = strtolower($agentname);
+	$agentname = ucwords($agentname);
         $wash_requests[$index]['agent_name'] = $agentname;
  $wash_requests[$index]['agent_id'] = $agentdata->id;
   $wash_requests[$index]['real_washer_id'] = $agentdata->real_washer_id;

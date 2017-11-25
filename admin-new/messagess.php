@@ -63,7 +63,10 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
 			//$message_data['media'] = $media;
 			$message_data = http_build_query($message_data);
 		   foreach($phone as $phonenumber){
-			   
+			$phonenumber = trim($phonenumber);
+			echo $phonenumber;
+			echo "<br>";
+			continue;
 		if(!empty($media)){
 		$url = 'http://www.devmobilewash.com/api/index.php?r=twilio/sendsms&tonumber='.$phonenumber;
 		}else{
@@ -94,7 +97,7 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
                 $result_code = $jsondata->result;
                 if($response == "updated successfully" && $result == "true"){
                ?>
-			   <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/messagess.php"</script>
+			   <!--<script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/messagess.php"</script>-->
 			   <?php
 				}
             
@@ -102,7 +105,7 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
 		
 		   }
 
-		   
+	die();	   
 	}
     $url = 'http://www.devmobilewash.com/api/index.php?r=twilio/getmessges';
        

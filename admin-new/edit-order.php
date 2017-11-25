@@ -390,7 +390,7 @@ curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
 $transaction_details = json_decode($result);
-print_r($transaction_details);
+//print_r($transaction_details);
  }
 
 ?>
@@ -683,7 +683,9 @@ display: none;
   }
 
 
-
+.red-border{
+    border: 2px solid red;
+}
 </style>
 <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
@@ -707,8 +709,8 @@ display: none;
                                             <div class="portlet-title tabbable-line">
 
 <div class="admin-edit-alert"></div>
-
-<div style="float: right; font-size: 18px; margin-top: 3px; background: #006fcf; color: #fff; padding: 5px 10px; margin-bottom: 10px; max-width: 300px;">
+<div style="float: right; font-size: 18px; background: #fff; padding: 10px; max-width: 300px;" <?php if(($getorder->transaction_id) && ($transaction_details->transaction_details->amount != $getorder->net_price) && (($transaction_details->transaction_details->status == 'submitted_for_settlement') || ($transaction_details->transaction_details->status == 'settling') || ($transaction_details->transaction_details->status == 'settled'))) echo "class='red-border'"; ?>>
+<div style="font-size: 18px; background: #006fcf; color: #fff; padding: 5px 10px;">
 
 <span style="font-weight: 500;font-size: 22px; display: block; float: right;"><?php if($getorder->status == 5 || $getorder->status == 6) {echo "$".number_format($getorder->cancel_fee, 2); }else{if($getorder->net_price > 0) {$net_total = $getorder->net_price - $getorder->company_discount; echo "$".$net_total;} else {echo "N/A";}} ?></span>
 <span style="display: block; float: right; margin-top: 4px; margin-right: 5px;">TOTAL PRICE:</span>
@@ -716,6 +718,10 @@ display: none;
 <span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right; margin-top: 10px;">Agent Total: <?php if($getorder->status == 5 || $getorder->status == 6) {echo "$".number_format($getorder->washer_cancel_fee, 2); } else{if($getorder->agent_total > 0) {echo "$".$getorder->agent_total;} else {echo "N/A";}} ?></span>
 <span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right;">Company Total: <?php if($getorder->status == 5 || $getorder->status == 6) {if($getorder->washer_cancel_fee > 0) {echo "$".number_format($getorder->cancel_fee / 2, 2);} else {echo "$".number_format($getorder->cancel_fee, 2);}} else{if($getorder->company_total > 0) {$net_company_total = $getorder->company_total - $getorder->company_discount; echo "$".number_format($net_company_total, 2);} else {echo "N/A";}} ?></span>
 <div style="clear: both;"></div>
+</div>
+<?php if(($getorder->transaction_id) && ($transaction_details->transaction_details->amount != $getorder->net_price) && (($transaction_details->transaction_details->status == 'submitted_for_settlement') || ($transaction_details->transaction_details->status == 'settling') || ($transaction_details->transaction_details->status == 'settled'))): ?>
+<p style="margin: 0; font-size: 16px; text-align: center; font-weight: bold; margin-top: 8px; color: red;">Braintree Custom Payment</p>
+<?php endif; ?>
 </div>
 <?php if($getorder->status == 4): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; background: #05b500; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">Order Complete</div>

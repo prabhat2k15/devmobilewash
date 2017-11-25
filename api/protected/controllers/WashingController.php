@@ -2181,13 +2181,30 @@ $customername = ucwords($customername);
                     $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
                     $cust_details = Customers::model()->findByAttributes(array('id' => $washrequestmodel->customer_id));
 
-                    $notifyurl = ROOT_URL."/push-notifications/" . strtolower($cust_details->mobile_type) . "/?device_token=" . $cust_details->device_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                        $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$washrequestmodel->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+            if(count($clientdevices))
+            {
+                foreach($clientdevices as $ctdevice)
+                {
+                    //$message =  "You have a new scheduled wash request.";
+                    //echo $agentdetails['mobile_type'];
+                    $device_type = strtolower($ctdevice['device_type']);
+                    $notify_token = $ctdevice['device_token'];
+                   
+                   
+
+                    $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
                     $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, $notifyurl);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch,CURLOPT_URL,$notifyurl);
+                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
                     if($notify_msg) $notifyresult = curl_exec($ch);
                     curl_close($ch);
+                }
+            }
+		 
 
                     if ($wrequest_id_check->agent_id > 0)
                     {
@@ -2661,6 +2678,21 @@ $customername = ucwords($customername);
                 $notify_token = $cust_details->device_token;
                 $device_type = strtolower($cust_details->mobile_type);
                 $alert_type = "default";
+		
+		    $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$cust_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+            if(count($clientdevices))
+            {
+                foreach($clientdevices as $ctdevice)
+                {
+                    //$message =  "You have a new scheduled wash request.";
+                    //echo $agentdetails['mobile_type'];
+                    $device_type = strtolower($ctdevice['device_type']);
+                    $notify_token = $ctdevice['device_token'];
+                    $alert_type = "default";
+                    
+                }
+            }
                 if(($status == WASHREQUEST_STATUS_ACCEPTED) && (!$wrequest_id_check->washer_on_way_push_sent))
                 {
 					$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '11' ")->queryAll();
@@ -2817,20 +2849,32 @@ $customername = ucwords($customername);
                     $agent_id = $wrequest_id_check->agent_id;
                     $agent_details = Agents::model()->findByAttributes(array('id'=>$agent_id));
                     $notify_token2 = '';
+		    
+		     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-                    $notify_token2 = $agent_details->device_token;
-                    $device_type2 = 'ios';
-                    $device_type2 = strtolower($agent_details->mobile_type);
-                    $notifyurl2 = ROOT_URL."/push-notifications/".$device_type2."/?device_token=".$notify_token2."&msg=".$notify_msg2;
+            if(count($agentdevices))
+            {
+                foreach($agentdevices as $agdevice)
+                {
+                    //$message =  "You have a new scheduled wash request.";
+                    //echo $agentdetails['mobile_type'];
+                    $device_type2 = strtolower($agdevice['device_type']);
+                    $notify_token2 = $agdevice['device_token'];
+                    $alert_type2 = "default";
+                    
+
+                    $notifyurl2 = ROOT_URL."/push-notifications/".$device_type2."/?device_token=".$notify_token2."&msg=".$notify_msg2."&alert_type=".$alert_type2;
+                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
                     $ch2 = curl_init();
                     curl_setopt($ch2,CURLOPT_URL,$notifyurl2);
                     curl_setopt($ch2,CURLOPT_RETURNTRANSFER,true);
 
-                    if($notify_msg2)
-                    {
-                        $notifyresult2 = curl_exec($ch2);
-                    }
+                    if($notify_msg2) $notifyresult2 = curl_exec($ch2);
                     curl_close($ch2);
+                }
+            }
+
+                    
                 }
                 /* --- notification call end --- */
             }
@@ -4303,23 +4347,35 @@ if(!$is_scheduled_wash_120){
 
 if(!$agent_has_order->create_wash_push_sent){
 			  /* --- notification call --- */
+			  
+			  $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '9' ")->queryAll();
+                    $message = $pushmsg[0]['message'];
 
-								$message =  "You have a new wash request.";
-								//echo $agentdetails['mobile_type'];
-								$device_type = strtolower($agentdetails['mobile_type']);
-								$notify_token = $agentdetails['device_token'];
-								$alert_type = "strong";
-								$notify_msg = urlencode($message);
+                     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agents_id_check->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-								file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-								$ch = curl_init();
-								curl_setopt($ch,CURLOPT_URL,$notifyurl);
-								curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+            if(count($agentdevices))
+            {
+                foreach($agentdevices as $agdevice)
+                {
+                    //$message =  "You have a new scheduled wash request.";
+                    //echo $agentdetails['mobile_type'];
+                    $device_type = strtolower($agdevice['device_type']);
+                    $notify_token = $agdevice['device_token'];
+                    $alert_type = "strong";
+                    $notify_msg = urlencode($message);
 
-								if($notify_msg) $notifyresult = curl_exec($ch);
-								curl_close($ch);
+                    $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                    $ch = curl_init();
+                    curl_setopt($ch,CURLOPT_URL,$notifyurl);
+                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
+                    if($notify_msg) $notifyresult = curl_exec($ch);
+                    curl_close($ch);
+                }
+            }
+
+								
 								/* --- notification call end --- */
 
 Washingrequests::model()->updateByPk($agent_has_order->id, array("create_wash_push_sent" => 1));
@@ -4440,24 +4496,36 @@ $customername = ucwords($customername);
 if(!$prequest['create_wash_push_sent']){
 
 				  /* --- notification call --- */
+				  
+				    $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '9' ")->queryAll();
+                    $message = $pushmsg[0]['message'];
+				  
+				     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agents_id_check->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-								$message =  "You have a new wash request.";
-								//echo $agentdetails['mobile_type'];
-								$device_type = strtolower($agentdetails['mobile_type']);
-								$notify_token = $agentdetails['device_token'];
-								$alert_type = "strong";
-								$notify_msg = urlencode($message);
+            if(count($agentdevices))
+            {
+                foreach($agentdevices as $agdevice)
+                {
+                    //$message =  "You have a new scheduled wash request.";
+                    //echo $agentdetails['mobile_type'];
+                    $device_type = strtolower($agdevice['device_type']);
+                    $notify_token = $agdevice['device_token'];
+                    $alert_type = "strong";
+                    $notify_msg = urlencode($message);
 
-								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-								file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-								$ch = curl_init();
-								curl_setopt($ch,CURLOPT_URL,$notifyurl);
-								curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+                    $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                    $ch = curl_init();
+                    curl_setopt($ch,CURLOPT_URL,$notifyurl);
+                    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
-								if($notify_msg) $notifyresult = curl_exec($ch);
-								curl_close($ch);
+                    if($notify_msg) $notifyresult = curl_exec($ch);
+                    curl_close($ch);
+                }
+            }
 
-								/* --- notification call end --- */
+						
+	/* --- notification call end --- */
 
 Washingrequests::model()->updateByPk($prequest['id'], array("create_wash_push_sent" => 1));
 }

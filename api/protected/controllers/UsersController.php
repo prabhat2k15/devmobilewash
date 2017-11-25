@@ -2435,11 +2435,12 @@ $customer_check = Customers::model()->findByPk($customer_id);
 else $payresult = Yii::app()->braintree->getTransactionById($transaction_id);
 
           if($payresult['success'] == 1) {
-                        //print_r($result);die;
+                        //print_r($payresult);die;
                         $response = "transaction_details";
                         $result = "true";
 $transaction_details['status'] = $payresult['status'];
 $transaction_details['escrow_status'] = $payresult['escrow_status'];
+$transaction_details['amount'] = $payresult['amount'];
 
 }
 else {
@@ -3805,6 +3806,11 @@ else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintre
 				else $transaction_check = Yii::app()->braintree->getTransactionById($wash->transaction_id);
 				
 				if($transaction_check['success'] == 1) {
+					if(($transaction_check['status'] == 'submitted_for_settlement') || ($transaction_check['status'] == 'settling') || ($transaction_check['status'] == 'settled')){
+						Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1));	
+					}
+					else{
+						
 					$kartapiresult = $this->washingkart($wash->id, API_KEY);
 					$kartdata = json_decode($kartapiresult);
 					if($kartdata->net_price != $transaction_check['amount']){
@@ -3845,7 +3851,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintre
 
 						}	
 					}
-					
+				}	
 				}
 
                            }
