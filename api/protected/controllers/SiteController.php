@@ -2997,7 +2997,36 @@ $total_days_diff += $day_diff->format("%a");
 				$vehicles = array();
 				foreach($cars as $ind=>$car){
                     $car_details = Vehicle::model()->findByAttributes(array("id"=>$car));
-                    $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind]);
+		    
+		    $veh_addons = '';
+		    
+		    $pet_hair_vehicles_arr = explode(",", $wrequest['pet_hair_vehicles']);
+if (in_array($car, $pet_hair_vehicles_arr)) $veh_addons .= 'Extra Cleaning, ';
+
+$lifted_vehicles_arr = explode(",", $wrequest['lifted_vehicles']);
+if (in_array($car, $lifted_vehicles_arr)) $veh_addons .= 'Lifted, ';
+
+$exthandwax_addon_arr = explode(",", $wrequest['exthandwax_vehicles']);
+if (in_array($car, $exthandwax_addon_arr)) $veh_addons .= 'Wax, ';
+
+$extplasticdressing_addon_arr = explode(",", $wrequest['extplasticdressing_vehicles']);
+if (in_array($car, $extplasticdressing_addon_arr)) $veh_addons .= 'Dressing, ';
+
+$extclaybar_addon_arr = explode(",", $wrequest['extclaybar_vehicles']);
+if (in_array($car, $extclaybar_addon_arr)) $veh_addons .= 'Clay, ';
+
+$waterspotremove_addon_arr = explode(",", $wrequest['waterspotremove_vehicles']);
+if (in_array($car, $waterspotremove_addon_arr)) $veh_addons .= 'Water Spot, ';
+
+$upholstery_addon_arr = explode(",", $wrequest['upholstery_vehicles']);
+if (in_array($car, $upholstery_addon_arr)) $veh_addons .= 'Upholstery, ';
+
+$floormat_addon_arr = explode(",", $wrequest['floormat_vehicles']);
+if (in_array($car, $floormat_addon_arr)) $veh_addons .= 'Floormat, ';
+
+$veh_addons = rtrim($veh_addons, ", ");
+
+                    $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind], 'addons' => $veh_addons);
 				}
 
 				
@@ -3080,6 +3109,7 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
 					'wash_request_position'=>$wrequest['wash_request_position'],
+					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff
                 );
@@ -3124,6 +3154,7 @@ if($min_diff >= 0){
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
 					'wash_request_position'=>$wrequest['wash_request_position'],
+					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff
                 );
@@ -3161,6 +3192,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
 					'wash_request_position'=>$wrequest['wash_request_position'],
+					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff
                 );
@@ -3197,6 +3229,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
 					'wash_request_position'=>$wrequest['wash_request_position'],
+					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff
                 );
@@ -4818,10 +4851,25 @@ die();
                 }
 
                 if(($wrequest_id_check->agent_id != $agent_id) && ($result != 'false')) {
-                    Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0));
+                    $old_agent_id = $wrequest_id_check->agent_id;
+		    Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0));
 
                     $result = 'true';
                     $response = "Washer updated successfully";
+		    
+		       if($old_agent_id){
+			$old_agent_detail = Agents::model()->findByPk($old_agent_id);
+			 $washeractionlogdata = array(
+                        'agent_id'=> $old_agent_id,
+                        'wash_request_id'=> $wash_request_id,
+                        'agent_company_id'=> $old_agent_detail->real_washer_id,
+                        'admin_username' => $admin_username,
+                        'action'=> 'admindropjob',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+		       }
+		      
 
 			        $washeractionlogdata = array(
                         'agent_id'=> $agent_id,

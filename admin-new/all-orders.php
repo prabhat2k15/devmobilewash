@@ -378,7 +378,8 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                                 <th style='min-width: 115px;'> Address </th>
                                                 <th> Schedule Datetime </th>
 <th> Starts </th>
-                                                <th>Vehicles </th>
+                                                <th> Vehicles </th>
+						<th> Total Price </th>
 												<!--th>Total Price </th-->
 												<!--th>Transaction ID </th-->
 												<th> Created Date </th>
@@ -467,7 +468,9 @@ else echo "-";
   if(count($order->vehicles)){
 echo "<ol style='padding-left: 15px;'>";
 foreach($order->vehicles as $car){
-echo "<li style='margin-bottom: 10px;'>".$car->make." ".$car->model." (".$car->pack.")</li>";
+echo "<li style='margin-bottom: 10px;'>".$car->make." ".$car->model." (".$car->pack.")";
+if($car->addons) echo " - Addons: ".$car->addons;
+echo "</li>";
 }
 echo "</ol>";
 }
@@ -478,6 +481,7 @@ echo "</ol>";
 else echo "N/A"; */
 ?></td-->
 <!--td><?php //echo $order->transaction_id; ?></td-->
+<td>$<?php echo $order->net_price; ?></td>
  <td><?php echo $order->created_date; ?></td>
 
 
@@ -779,11 +783,16 @@ if(value.vehicles.length){
    
 veh_string += "<ol style='padding-left: 15px;'>";
 $.each(value.vehicles, function( ind, val ) {
-veh_string += "<li style='margin-bottom: 10px;'>"+val.make+" "+val.model+" ("+val.pack+")</li>";
+veh_string += "<li style='margin-bottom: 10px;'>"+val.make+" "+val.model+" ("+val.pack+")";
+if (val.addons) {
+veh_string += " - Addons: "+val.addons;
+}
+veh_string += "</li>";
 });
 veh_string += "</ol>";
 }
 upcomingwashes.push(veh_string);
+upcomingwashes.push("$"+value.net_price);
 upcomingwashes.push(value.created_date);
 dt_table.fnAddData(upcomingwashes);
  //console.log(upcomingwashes);

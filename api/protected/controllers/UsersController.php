@@ -4482,7 +4482,17 @@ die();
             if(count($customer)){ $model = $customer; $user_type ="customer"; }
             else if(count($agent)){ $model = $agent; $user_type ="agent"; }
 
-             if($agent_login_status[0]['status']=='online')
+              if(($customer_login_status[0]['device_token']!='') && ($send_verify_code != 'false'))
+             {
+                 $result= "false";
+                $response = "There is no permission for log in with same account on 2 devices";
+                $json = array(
+                    'result'=> $result,
+                    'response'=> $response
+                );
+             }
+	     
+	     else if(($agent_login_status[0]['status']=='online') && ($send_verify_code != 'false'))
              {
                  $result= "false";
                 $response = "There is no permission for log in with same account on 2 devices";
@@ -5067,6 +5077,7 @@ die();
         $userid = Yii::app()->request->getParam('id');
         $sortcode = Yii::app()->request->getParam('verify_code');
 	$user_type = Yii::app()->request->getParam('user_type');
+	$device_token = Yii::app()->request->getParam('device_token');
         if($user_type == 'customer') $model=new Customers;
 	else $model=new Agents;
         if($user_type == 'customer') $matchcode = Customers::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$userid));

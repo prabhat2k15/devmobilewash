@@ -1465,6 +1465,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'dropjob'): ?>
                                                           <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'admindropjob'): ?>
+                                                          <p style="margin-bottom: 10px; color: red;"><?php echo $log->admin_username; ?> dropped washer #<?php echo $log->agent_company_id; ?> from the order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           <?php if($log->action == 'reschedule'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> re-scheduled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
@@ -2494,6 +2497,9 @@ $( "#phone-order-form" ).on( "click", ".exthandwax input[type=checkbox]", functi
 if($(this).is(":checked")) {
 $(this).parent().parent().find('#exthandwaxes').val($(this).val());
 $(this).parent().addClass('addon-checked');
+$(this).parent().parent().find('#extclaybars').val(0);
+$(this).parent().parent().find('.extclaybar').removeClass('addon-checked');
+$(this).parent().parent().find('.extclaybar input[type=checkbox]').prop( "checked", false );
 }
 else {
 $(this).parent().parent().find('#exthandwaxes').val(0);
@@ -2507,6 +2513,10 @@ if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#exthandwaxes').val($(this).val());
 $(this).parent().removeClass('addon-checked');
 $(this).parent().parent().parent().addClass('addon-checked');
+$(this).parent().parent().parent().parent().find('#extclaybars').val(0);
+$(this).parent().parent().parent().parent().find('.extclaybar').removeClass('addon-checked');
+$(this).parent().parent().parent().parent().find('.extclaybar span').removeClass('checked');
+$(this).parent().parent().parent().parent().find('.extclaybar input[type=checkbox]').prop( "checked", false );
 }
 else {
 $(this).parent().parent().parent().parent().find('#exthandwaxes').val(0);
@@ -2546,6 +2556,9 @@ $( "#phone-order-form" ).on( "click", ".extclaybar input[type=checkbox]", functi
 if($(this).is(":checked")) {
 $(this).parent().parent().find('#extclaybars').val($(this).val());
 $(this).parent().addClass('addon-checked');
+$(this).parent().parent().find('#exthandwaxes').val(0);
+$(this).parent().parent().find('.exthandwax').removeClass('addon-checked');
+$(this).parent().parent().find('.exthandwax input[type=checkbox]').prop( "checked", false );
 }
 else {
 $(this).parent().parent().find('#extclaybars').val(0);
@@ -2559,6 +2572,10 @@ if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#extclaybars').val($(this).val());
 $(this).parent().removeClass('addon-checked');
 $(this).parent().parent().parent().addClass('addon-checked');
+$(this).parent().parent().parent().parent().find('#exthandwaxes').val(0);
+$(this).parent().parent().parent().parent().find('.exthandwax').removeClass('addon-checked');
+$(this).parent().parent().parent().parent().find('.exthandwax span').removeClass('checked');
+$(this).parent().parent().parent().parent().find('.exthandwax input[type=checkbox]').prop( "checked", false );
 }
 else {
 $(this).parent().parent().parent().parent().find('#extclaybars').val(0);
@@ -3552,7 +3569,11 @@ if(data.result == 'true'){
       if(log.action == 'dropjob'){
           contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped "+log.formatted_action_date+"</p>"; 
       }
-         
+      
+      if(log.action == 'admindropjob'){
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" dropped washer #"+log.agent_company_id+" from the order at "+log.formatted_action_date+"</p>";
+      }
+               
           if(log.action == 'reschedule'){
           contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" re-scheduled order at "+log.formatted_action_date+"</p>";  
       } 
