@@ -1678,9 +1678,35 @@ $customername = ucwords($customername);
         $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
         $order_for_date = '';
 
-        if($meet_washer_outside) Washingrequests::model()->updateByPk($wash_request_id, array("meet_washer_outside" => $meet_washer_outside));
+        if($meet_washer_outside) {
+	Washingrequests::model()->updateByPk($wash_request_id, array("meet_washer_outside" => $meet_washer_outside));
+	
+                        $logdata= array(
+                            'agent_id'=> $agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_detail->real_washer_id,
+                            'action'=> 'meetwasherbeforeinspect',
+			    'addi_detail'=> $meet_washer_outside,
+                            'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+	}
+	
 	if($meet_washer_outside_washend) {
+		$wash_detail = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+		$agent_detail = Agents::model()->findByAttributes(array("id"=>$wash_detail->agent_id));
 		Washingrequests::model()->updateByPk($wash_request_id, array("meet_washer_outside_washend" => $meet_washer_outside_washend));
+		
+		 $logdata= array(
+                            'agent_id'=> $wash_detail->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_detail->real_washer_id,
+                            'action'=> 'meetwasherwashend',
+			    'addi_detail'=> $meet_washer_outside_washend,
+                            'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+			
 		$json = array('result'=> 'true',
                         'response'=> 'status updated');
 
@@ -5083,7 +5109,6 @@ $message .= "<table style='width: 100%; border-collapse: collapse; text-align: l
 					</table>";
 
                   if($kartdata->status == 5){
-if($kartdata->cancel_fee > 0){
 $message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>
 <tr><td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
@@ -5103,7 +5128,6 @@ $message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1
 </tr>
 </table>";
 
-}
 }
 else{
 $message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
@@ -5290,14 +5314,13 @@ $message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 1
                   <p style='text-align: center; font-family: arial; font-size: 20px; line-height: normal; margin: 0;'><strong>Order Number:</strong> #000".$wash_id_check->id."</p>";
 
                   if($kartdata->status == 5){
-if($kartdata->cancel_fee > 0){
 $message_agent .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>
 <tr><td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr>
 <td><p style='font-size: 20px; margin: 0;'>Cancel Fee</p>
 <td style='text-align: right;'>
-<p style='font-size: 20px; margin: 0;'>+$5</p>
+<p style='font-size: 20px; margin: 0;'>+$".number_format($kartdata->washer_cancel_fee, 2)."</p>
 </td>
 </tr>
 </table>
@@ -5306,11 +5329,11 @@ $message_agent .= "<table style='width: 100%; border-collapse: collapse; border-
 <table class='total' style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr>
 <td></td>
-<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$5</span></p></td>
+<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$".number_format($kartdata->washer_cancel_fee, 2)."</span></p></td>
 </tr>
 </table>";
 
-}
+
 }
 else{
 $message_agent .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
@@ -5469,14 +5492,14 @@ $com_message = "<div class='block-content' style='background: #fff; text-align: 
                   <p style='text-align: center; font-family: arial; font-size: 20px; line-height: normal; margin: 0;'><strong>Order Number:</strong> #000".$wash_id_check->id."</p>";
 
                   if($kartdata->status == 5){
-if($kartdata->cancel_fee > 0){
+			$company_cancel_fee = $kartdata->cancel_fee-$kartdata->washer_cancel_fee;
 $com_message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>
 <tr><td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr>
 <td><p style='font-size: 20px; margin: 0;'>Cancel Fee</p>
 <td style='text-align: right;'>
-<p style='font-size: 20px; margin: 0;'>+$5.00</p>
+<p style='font-size: 20px; margin: 0;'>+$".number_format($company_cancel_fee, 2)."</p>
 </td>
 </tr>
 </table>
@@ -5485,11 +5508,10 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; border-to
 <table class='total' style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr>
 <td></td>
-<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$5.00</span></p></td>
+<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$".number_format($company_cancel_fee, 2)."</span></p></td>
 </tr>
 </table>";
 
-}
 }
 else{
 $com_message .= "<p style='margin: 0; margin-top: 15px; font-size: 18px; border-top: 1px solid #000; padding: 10px 0;'><strong>MobileWash Receipt</strong></p>";
@@ -5723,7 +5745,6 @@ $customername = ucwords($customername);
 $com_message .= "<p style='margin: 0; margin-top: 10px; font-size: 18px; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 10px 0;'><strong>Client Receipt:</strong> ".$customername."</p>";
 
  if($kartdata->status == 5){
-if($kartdata->cancel_fee > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr><td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
@@ -5743,7 +5764,7 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 </tr>
 </table>";
 
-}
+
 }
 else{
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>";
@@ -5937,14 +5958,13 @@ else $agentlname = $agent_details->last_name;
 $com_message .= "<p style='margin: 0; margin-top: 10px; font-size: 18px; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 10px 0;'><strong>Agent Receipt:</strong> ".$agent_details->first_name." ".$agentlname."</p>";
 
  if($kartdata->status == 5){
-if($kartdata->cancel_fee > 0){
 $com_message .= "<table style='width: 100%; border-collapse: margin-top: 10px;'>
 <tr><td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr>
 <td><p style='font-size: 20px; margin: 0;'>Cancel Fee</p>
 <td style='text-align: right;'>
-<p style='font-size: 20px; margin: 0;'>+$5</p>
+<p style='font-size: 20px; margin: 0;'>+$".number_format($kartdata->washer_cancel_fee, 2)."</p>
 </td>
 </tr>
 </table>
@@ -5953,11 +5973,11 @@ $com_message .= "<table style='width: 100%; border-collapse: margin-top: 10px;'>
 <table class='total' style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr>
 <td></td>
-<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$5</span></p></td>
+<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$".number_format($kartdata->washer_cancel_fee, 2)."</span></p></td>
 </tr>
 </table>";
 
-}
+
 }
 else{
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>";
@@ -6672,7 +6692,8 @@ die();
                  $to_time = strtotime("now");
                 $from_time = strtotime($wrequest_id_check->wash_begin);
                 $mins = round(abs($to_time - $from_time) / 60,2);
-                if($mins > 5){
+                
+		if($mins >= 0){
                 $result= 'false';
                 $response= 'you cannot cancel wash until paying $10';
                 }
@@ -6871,6 +6892,36 @@ if($wrequest_id_check->coupon_code){
   }
 
             }
+	    
+	    if((APP_ENV == 'real') && ($result == 'true') && ($wrequest_id_check->agent_id)){
+		
+$agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
+$cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_check->customer_id));
+ $this->layout = "xmlLayout";
+            spl_autoload_unregister(array(
+                'YiiBase',
+                'autoload'
+            ));
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+            require('Services/Twilio.php');
+            require('Services/Twilio/Capability.php');
+
+            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+ $message = "Order #".$wrequest_id_check->id." has been canceled\r\nCustomer Name: ".$cust_detail->customername."\r\nPhone: ".$cust_detail->contact_number."\r\nAddress: ".$wrequest_id_check->address;
+
+           
+             $sendmessage = $client->account->messages->create(array(
+                'To' =>  $agent_detail->phone_number,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+            spl_autoload_register(array('YiiBase','autoload'));
+           }
 
 
         }
@@ -8487,6 +8538,8 @@ $to = Vargas::Obj()->getAdminToEmail();
 	Vargas::Obj()->SendMail($cust_exists->email,"billing@devmobilewash.com",$message,$subject, 'mail-receipt');
 Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt');
 
+Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_sent' => 1));
+
   if(APP_ENV == 'real'){
 
  $this->layout = "xmlLayout";
@@ -8522,6 +8575,14 @@ $sendmessage = $client->account->messages->create(array(
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+
+	       if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
+             $sendmessage = $client->account->messages->create(array(
+                'To' =>  $agent_det->phone_number,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+            }
 
             spl_autoload_register(array('YiiBase','autoload'));
            }
@@ -8788,6 +8849,8 @@ $to = Vargas::Obj()->getAdminToEmail();
 
 	Vargas::Obj()->SendMail($cust_exists->email,"billing@devmobilewash.com",$message,$subject, 'mail-receipt');
 Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt');
+
+Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_sent' => 1));
 
 if(APP_ENV == 'real'){
 
@@ -9738,6 +9801,56 @@ $notify_token = '';
                }
 
                /* --- send schedule wash create alert end ------- */
+	       
+	       
+	       /* --- send no washer before 1 hour alert ------- */
+	       
+	       if($schedwash->reschedule_time) $scheduledatetime = $schedwash->reschedule_date." ".$schedwash->reschedule_time;
+else $scheduledatetime = $schedwash->schedule_date." ".$schedwash->schedule_time;
+               $to_time = strtotime(date('Y-m-d g:i A'));
+$from_time = strtotime($scheduledatetime);
+
+$min_diff = -1;
+if($from_time >= $to_time){
+$min_diff = round(($from_time - $to_time) / 60,2);
+}
+
+               if((!$schedwash->is_schedule_no_washer_befor1hour_alert_sent) && (!$schedwash->agent_id) && ($min_diff <= 60)){
+
+                 		
+                   $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '37' ")->queryAll();
+							$message = $pushmsg[0]['message'];
+
+							foreach($clientdevices as $ctdevice){
+$device_type = '';
+$notify_token = '';
+								//$message =  "You have a new scheduled wash request.";
+								//echo $agentdetails['mobile_type'];
+								$device_type = strtolower($ctdevice['device_type']);
+								$notify_token = $ctdevice['device_token'];
+								$alert_type = "default";
+								$notify_msg = urlencode($message);
+//echo $device_type." ".$notify_token."<br><br>";
+
+								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+								$ch = curl_init();
+								curl_setopt($ch,CURLOPT_URL,$notifyurl);
+								curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+								if($notify_msg) $notifyresult = curl_exec($ch);
+								curl_close($ch);
+							}
+
+						
+					
+
+                    Washingrequests::model()->updateByPk($schedwash->id, array("is_schedule_no_washer_befor1hour_alert_sent" => 1));
+               }
+
+               /* --- send no washer before 1 hour alert end ------- */
 
                 /* --- send reschedule wash alert ------- */
 

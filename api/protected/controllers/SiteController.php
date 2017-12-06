@@ -2420,7 +2420,10 @@ $message = str_replace("[ORDER_ID]","#".$wash_request_id, $message);
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
-												/* --- notification call end --- */
+				/* --- notification call end --- */
+				
+				Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_create_schedulewash_push_sent" => 1));
+												
 }
 
 if($admin_command == 'update-order'){
@@ -3004,25 +3007,25 @@ $total_days_diff += $day_diff->format("%a");
 if (in_array($car, $pet_hair_vehicles_arr)) $veh_addons .= 'Extra Cleaning, ';
 
 $lifted_vehicles_arr = explode(",", $wrequest['lifted_vehicles']);
-if (in_array($car, $lifted_vehicles_arr)) $veh_addons .= 'Lifted, ';
+if (in_array($car, $lifted_vehicles_arr)) $veh_addons .= 'Lifted Truck, ';
 
 $exthandwax_addon_arr = explode(",", $wrequest['exthandwax_vehicles']);
-if (in_array($car, $exthandwax_addon_arr)) $veh_addons .= 'Wax, ';
+if (in_array($car, $exthandwax_addon_arr)) $veh_addons .= 'Liquid Hand Wax, ';
 
 $extplasticdressing_addon_arr = explode(",", $wrequest['extplasticdressing_vehicles']);
-if (in_array($car, $extplasticdressing_addon_arr)) $veh_addons .= 'Dressing, ';
+if (in_array($car, $extplasticdressing_addon_arr)) $veh_addons .= 'Exterior Plastic Dressing, ';
 
 $extclaybar_addon_arr = explode(",", $wrequest['extclaybar_vehicles']);
-if (in_array($car, $extclaybar_addon_arr)) $veh_addons .= 'Clay, ';
+if (in_array($car, $extclaybar_addon_arr)) $veh_addons .= 'Clay Bar & Paste Wax, ';
 
 $waterspotremove_addon_arr = explode(",", $wrequest['waterspotremove_vehicles']);
-if (in_array($car, $waterspotremove_addon_arr)) $veh_addons .= 'Water Spot, ';
+if (in_array($car, $waterspotremove_addon_arr)) $veh_addons .= 'Water Spot Removal, ';
 
 $upholstery_addon_arr = explode(",", $wrequest['upholstery_vehicles']);
-if (in_array($car, $upholstery_addon_arr)) $veh_addons .= 'Upholstery, ';
+if (in_array($car, $upholstery_addon_arr)) $veh_addons .= 'Upholstery Conditioning, ';
 
 $floormat_addon_arr = explode(",", $wrequest['floormat_vehicles']);
-if (in_array($car, $floormat_addon_arr)) $veh_addons .= 'Floormat, ';
+if (in_array($car, $floormat_addon_arr)) $veh_addons .= 'Floor Mat Cleaning, ';
 
 $veh_addons = rtrim($veh_addons, ", ");
 
@@ -3051,6 +3054,7 @@ $customername = ucwords($customername);
 					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
 				}
 $payment_status = '';
+$submerchant_id = '';
 
 if($wrequest['failed_transaction_id']){
   $payment_status = 'Declined';
@@ -3066,8 +3070,19 @@ else if($wrequest['escrow_status'] == 'release_pending' || $wrequest['escrow_sta
 $payment_status = 'Released';
 }
 
+
+/*if($cust_details->client_position == 'real') $payresult = Yii::app()->braintree->getTransactionById_real($wrequest['transaction_id']);
+else $payresult = Yii::app()->braintree->getTransactionById($wrequest['transaction_id']);
+if($payresult['success'] == 1) {
+$submerchant_id = $payresult['merchant_id'];	
+}*/
+
  }
 }
+
+
+
+
 
 if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 
@@ -3104,6 +3119,7 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 					'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
                     'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
 					'transaction_id'=>$wrequest['transaction_id'],
+					'submerchant_id' => $submerchant_id,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
@@ -3149,6 +3165,7 @@ if($min_diff >= 0){
 					'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
                     'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
 					'transaction_id'=>$wrequest['transaction_id'],
+					'submerchant_id' => $submerchant_id,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
@@ -3187,6 +3204,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 					'created_date'=>$wrequest['created_date'],
                     'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
 					'transaction_id'=>$wrequest['transaction_id'],
+					'submerchant_id' => $submerchant_id,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
@@ -5035,5 +5053,108 @@ $i++;
 		);
 		echo json_encode($json);
 	}
+	
+	
+	
+    public function actionupdatedevicestatus(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $user_type = Yii::app()->request->getParam('user_type');
+	$user_id = Yii::app()->request->getParam('user_id');
+	$device_token = Yii::app()->request->getParam('device_token');
+
+           $result  = 'false';
+$response = 'pass the required fields';
+
+
+if((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user_id)) && (isset($device_token) && !empty($device_token))){
+
+    $device_check = Yii::app()->db->createCommand("SELECT * FROM ".$user_type."_devices WHERE device_token = '$device_token' AND ".$user_type."_id = '$user_id'")->queryAll();
+
+			if(!count($device_check)){
+                $result= 'false';
+                $response= 'No device found';
+            }
+            else{
+                $result = 'true';
+$response = 'device updated';
+
+                 Yii::app()->db->createCommand("UPDATE ".$user_type."_devices SET device_status='online', last_used='".date("Y-m-d H:i:s")."' WHERE device_token = '$device_token' AND ".$user_type."_id = '$user_id'")->execute();
+
+            }
+
+
+
+}
+
+
+$json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+    }
+    
+    
+    public function actioncheckuseronlinedevices(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+    $customer_online_devices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE device_status = 'online'")->queryAll();
+    $agent_online_devices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE device_status = 'online'")->queryAll();
+
+	if(count($customer_online_devices)){
+		foreach($customer_online_devices as $custdevice){
+			$current_time = strtotime(date('Y-m-d H:i:s'));
+			$last_used_time = strtotime($custdevice['last_used']);
+			$min_diff = 0;
+			if($current_time > $last_used_time){
+				$min_diff = round(($current_time - $last_used_time) / 60,2);
+			}
+
+			if($min_diff > 1){
+				Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline' WHERE id = '".$custdevice['id']."'")->execute();
+	
+			}
+		}
+        
+	}
+	
+	if(count($agent_online_devices)){
+		foreach($agent_online_devices as $agdevice){
+			$current_time = strtotime(date('Y-m-d H:i:s'));
+			$last_used_time = strtotime($agdevice['last_used']);
+			$min_diff = 0;
+			if($current_time > $last_used_time){
+				$min_diff = round(($current_time - $last_used_time) / 60,2);
+			}
+
+			if($min_diff > 1){
+				Yii::app()->db->createCommand("UPDATE agent_devices SET device_status='offline' WHERE id = '".$agdevice['id']."'")->execute();
+	
+			}
+		}
+        
+	}
+            
+
+	$json= array(
+		'result'=> 'true',
+		'response'=> 'done'
+		);
+	echo json_encode($json);
+
+
+    }
+	
 
 }

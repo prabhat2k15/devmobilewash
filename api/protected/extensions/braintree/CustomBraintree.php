@@ -1430,7 +1430,8 @@ if(!$all_errors_mob) $all_errors_mob = $result->message;
 'exp_mo' => $transaction->creditCardDetails->expirationMonth,
 'exp_yr' => $transaction->creditCardDetails->expirationYear,
 'cardholder_name' => $transaction->creditCardDetails->cardholderName,
-'cardtype_img' => $transaction->creditCardDetails->imageUrl
+'cardtype_img' => $transaction->creditCardDetails->imageUrl,
+'merchant_id' => $transaction->merchantAccountId
 
             ));
         } catch (Exception $e) {
@@ -1466,7 +1467,8 @@ Braintree_Configuration::environment('production');
 'exp_mo' => $transaction->creditCardDetails->expirationMonth,
 'exp_yr' => $transaction->creditCardDetails->expirationYear,
 'cardholder_name' => $transaction->creditCardDetails->cardholderName,
-'cardtype_img' => $transaction->creditCardDetails->imageUrl
+'cardtype_img' => $transaction->creditCardDetails->imageUrl,
+'merchant_id' => $transaction->merchantAccountId
 
             ));
         } catch (Exception $e) {

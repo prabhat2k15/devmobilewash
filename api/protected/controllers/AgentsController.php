@@ -369,7 +369,9 @@ die();
 }
 
 		$agent_id = Yii::app()->request->getParam('agent_id');
+		$device_token = Yii::app()->request->getParam('device_token');
 		$model= Agents::model()->findByAttributes(array('id'=>$agent_id));
+		
 		$json= array();
 		if(count($model)>0){
 			$data= array('device_token' => '', 'status'=> 'offline', 'available_for_new_order'=> 0);
@@ -385,6 +387,8 @@ die();
 $criteria = new CDbCriteria;
 $criteria->addCondition( "order_temp_assigned=$agent_id") ; // $wall_ids = array ( 1, 2, 3, 4 );
 $criteria->addCondition('status=0');
+
+Yii::app()->db->createCommand("UPDATE agent_devices SET device_status='offline' WHERE agent_id = '$agent_id' AND device_token = '$device_token'")->execute();
 
  Washingrequests::model()->updateAll(array('order_temp_assigned' => 0),$criteria);
 			}
@@ -1401,6 +1405,8 @@ $rating_control = Yii::app()->request->getParam('rating_control');
  if($washer_position == ''){
                     $washer_position = $model->washer_position;
                 }
+		
+		if($washer_position == 'demo') $washer_position = '';
 
  if($real_washer_id == ''){
                     $real_washer_id = $model->real_washer_id;

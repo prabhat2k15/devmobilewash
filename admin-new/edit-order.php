@@ -718,6 +718,9 @@ display: none;
 <span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right; margin-top: 10px;">Agent Total: <?php if($getorder->status == 5 || $getorder->status == 6) {echo "$".number_format($getorder->washer_cancel_fee, 2); } else{if($getorder->agent_total > 0) {echo "$".$getorder->agent_total;} else {echo "N/A";}} ?></span>
 <span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right;">Company Total: <?php if($getorder->status == 5 || $getorder->status == 6) {if($getorder->washer_cancel_fee > 0) {echo "$".number_format($getorder->cancel_fee / 2, 2);} else {echo "$".number_format($getorder->cancel_fee, 2);}} else{if($getorder->company_total > 0) {$net_company_total = $getorder->company_total - $getorder->company_discount; echo "$".number_format($net_company_total, 2);} else {echo "N/A";}} ?></span>
 <div style="clear: both;"></div>
+<?php if($getorder->payment_type == 'free'): ?>
+<p style="margin: 5px 0; text-align: center;">(Free wash applied)</p>
+<?php endif; ?>
 </div>
 <?php if(($getorder->transaction_id) && ($transaction_details->transaction_details->amount != $getorder->net_price) && (($transaction_details->transaction_details->status == 'submitted_for_settlement') || ($transaction_details->transaction_details->status == 'settling') || ($transaction_details->transaction_details->status == 'settled'))): ?>
 <p style="margin: 0; font-size: 16px; text-align: center; font-weight: bold; margin-top: 8px; color: red;">Braintree Custom Payment</p>
@@ -1442,6 +1445,13 @@ $first_card_type = ''; ?>
 														} ?>
 														<?php echo $image2; ?>
 </div>
+                                                 <?php if($getorder->transaction_id): ?>
+                                                 <div class="form-group" style="display: block; margin-top: 20px;">
+                                                          <label class="control-label">Washer Braintree ID: </label>
+                                                          <p style="margin-bottom: 0;"><?php echo $transaction_details->transaction_details->merchant_id; ?></p>
+                                                              
+</div>
+                                                 <?php endif; ?>
 <?php
 $handle = curl_init($root_url."/api/index.php?r=site/getwashersavedroplog");
             curl_setopt($handle, CURLOPT_POST, true);
@@ -1572,6 +1582,15 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'adminsubmitforsettlement'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> submitted payment for settlement at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'meetwasherbeforeinspect'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer hit <?php if($log->addi_detail == 'yes') {echo "'Meet Washer Outside'";} if($log->addi_detail == 'no') {echo "'No Thanks'";}  ?> before inspection at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'meetwasherwashend'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer hit <?php if($log->addi_detail == 'yes') {echo "'Meet Washer Outside'";} if($log->addi_detail == 'no') {echo "'No Thanks'";}  ?> after wash at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washereditcar'): ?>
+                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> edited vehicle to <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
@@ -3714,6 +3733,32 @@ if(data.result == 'true'){
             contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" submitted payment for settlement at "+log.formatted_action_date+"</p>";
       }
       
+       if(log.action == 'meetwasherbeforeinspect'){
+        if (log.addi_detail == 'yes') {
+         contents += "<p style='margin-bottom: 10px;'>Customer hit 'Meet Washer Outside' before inspection at "+log.formatted_action_date+"</p>";
+        }
+        
+        if (log.addi_detail == 'no') {
+         contents += "<p style='margin-bottom: 10px;'>Customer hit 'No Thanks' before inspection at "+log.formatted_action_date+"</p>";
+        } 
+            
+      }
+      
+       if(log.action == 'meetwasherwashend'){
+        if (log.addi_detail == 'yes') {
+         contents += "<p style='margin-bottom: 10px;'>Customer hit 'Meet Washer Outside' after wash at "+log.formatted_action_date+"</p>";
+        }
+        
+        if (log.addi_detail == 'no') {
+         contents += "<p style='margin-bottom: 10px;'>Customer hit 'No Thanks' after wash at "+log.formatted_action_date+"</p>";
+        } 
+            
+      }
+      
+        if(log.action == 'washereditcar'){
+            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" edited vehicle to "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+            
 
    });
    

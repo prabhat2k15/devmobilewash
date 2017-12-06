@@ -842,6 +842,7 @@ die();
 }
 
 		$customers_id = Yii::app()->request->getParam('customer_id');
+		$device_token = Yii::app()->request->getParam('device_token');
 		$model= Customers::model()->findByAttributes(array('id'=>$customers_id));
 		$json= array();
 		if(count($model)>0){
@@ -858,6 +859,7 @@ die();
 			$online_status= array('online_status' => 'offline');
 
 			    $update_status = Customers::model()->updateAll($online_status,'id=:id',array(':id'=>$customers_id));
+			    Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline' WHERE customer_id = '$customers_id' AND device_token = '$device_token'")->execute();
 			}
 		}else{
 			$result= 'false';
@@ -3030,6 +3032,18 @@ $vehicle_check = Yii::app()->db->createCommand()
 				curl_close($ch);
 			}
 			/* --- notification call end --- */
+			
+			$log_detail = $draft_vehicle_exists->brand_name." ".$draft_vehicle_exists->model_name;
+			$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+			
+			    $logdata = array(
+            'wash_request_id'=> $wash_request_id,
+	    'agent_id'=> $wash_request_exists->agent_id,
+	    'agent_company_id'=> $agent_detail->real_washer_id,
+            'action'=> 'washereditcar',
+	    'addi_detail' => $log_detail,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 			
 		 }
 		 
@@ -9214,7 +9228,7 @@ die();
                     die();
                 }
 
-                    if(($wash_id_check->status > 1) && ($wash_id_check->status <= 3)){
+                    if(($wash_id_check->status >= 1) && ($wash_id_check->status <= 3)){
                             $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'serviceFeeAmount' => "5.00", 'amount' => $amount,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => true]];
                             if(($wash_position == 'demo') || ($wash_position == '')) $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
                             else $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
@@ -9239,7 +9253,7 @@ die();
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
                     }
 
-                      if(($wash_id_check->status > 1) && ($wash_id_check->status <= 3)) $data= array('status' => 5, 'cancel_fee' => $amount, 'washer_cancel_fee' => $amount-5);
+                      if(($wash_id_check->status >= 1) && ($wash_id_check->status <= 3)) $data= array('status' => 5, 'cancel_fee' => $amount, 'washer_cancel_fee' => $amount-5);
                       else {
                        $data= array('status' => 5, 'cancel_fee' => $amount);
                       }
@@ -9257,6 +9271,7 @@ die();
                         //$update_request = Washingrequests::model()->findByPk($washing_request_id);
                         //$update_request->transaction_id = $Bresult['transaction_id'];
                         //$update_request->save(false);
+			
 
                     } else {
                         $result = "false";

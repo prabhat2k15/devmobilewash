@@ -2052,6 +2052,19 @@ $washeractionlogdata = array(
            }
 
       }
+      else{
+	if((!isset($customer_id)) || empty($customer_id)){
+		$response = "No customer assigned for this order";
+	}
+	
+	if((!isset($wash_request_id)) || empty($wash_request_id)){
+		$response = "Order not found";
+	}
+	
+	if((!isset($agent_id)) || empty($agent_id)){
+		$response = "Please select a washer";
+	}
+      }
 
         $json = array(
                 'result'=> $result,
@@ -2441,6 +2454,7 @@ else $payresult = Yii::app()->braintree->getTransactionById($transaction_id);
 $transaction_details['status'] = $payresult['status'];
 $transaction_details['escrow_status'] = $payresult['escrow_status'];
 $transaction_details['amount'] = $payresult['amount'];
+$transaction_details['merchant_id'] = $payresult['merchant_id'];
 
 }
 else {
@@ -3821,12 +3835,12 @@ else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintre
 						if($voidresult['success'] == 1) {
 							if($customer_check->client_position == 'real'){
 
-								$request_data = ['merchantAccountId' => 'al_davi_instant_4pjkk25r', 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+								$request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
 								$payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
 							}
 							else{
 								
-								$request_data = ['merchantAccountId' => 'mobilewash_payment_inst_m59bj2b6', 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+								$request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
 								$payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
 							}
 
@@ -4475,14 +4489,14 @@ die();
                 $customer =  Customers::model()->findByAttributes(array('contact_number'=>$phone));
 		$agent   =   Agents::model()->findByAttributes(array('phone_number'=>$phone));
 
-                $customer_login_status =  Yii::app()->db->createCommand("SELECT * FROM `customers` WHERE `contact_number` = '$phone'")->queryAll();
-                $agent_login_status =  Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE `phone_number` = '$phone'")->queryAll();
+                if(count($customer)) $customer_login_status =  Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id='".$customer->id."' AND device_status = 'online'")->queryAll();
+                if(count($agent)) $agent_login_status =  Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id='".$agent->id."' AND device_status = 'online'")->queryAll();
 
                 
             if(count($customer)){ $model = $customer; $user_type ="customer"; }
             else if(count($agent)){ $model = $agent; $user_type ="agent"; }
 
-              if(($customer_login_status[0]['device_token']!='') && ($send_verify_code != 'false'))
+              if((count($customer_login_status)) && ($send_verify_code != 'false'))
              {
                  $result= "false";
                 $response = "There is no permission for log in with same account on 2 devices";
@@ -4492,7 +4506,7 @@ die();
                 );
              }
 	     
-	     else if(($agent_login_status[0]['status']=='online') && ($send_verify_code != 'false'))
+	     else if((count($agent_login_status)) && ($send_verify_code != 'false'))
              {
                  $result= "false";
                 $response = "There is no permission for log in with same account on 2 devices";
