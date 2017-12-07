@@ -2234,15 +2234,7 @@ $customername = ucwords($customername);
 
                     if ($wrequest_id_check->agent_id > 0)
                     {
-                        $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
-                        $washeractionlogdata= array(
-                            'agent_id'=> $wrequest_id_check->agent_id,
-                            'wash_request_id'=> $wash_request_id,
-                            'agent_company_id'=> $agent_det->real_washer_id,
-                            'action'=> 'dropjob',
-                            'action_date'=> date('Y-m-d H:i:s'));
-
-                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                        
                         Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0));
                     }
                 // INCREMENT 'total_schedule_rejected' counter on each rejection
@@ -3545,6 +3537,12 @@ die();
         $feedback_source = '';
 $feedback_source = Yii::app()->request->getParam('feedback_source');
 
+/*echo "agent id: ".$agent_id."<br>";
+echo "wash id: ".$wash_request_id."<br>";
+echo "comments: ".$comments."<br>";
+echo "rating: ".$ratings."<br>";
+echo "feedback source: ".$feedback_source."<br>";*/
+
         $json = array();
         $car_id_check = true;
         $washrequest_id_check = true;
@@ -3566,6 +3564,18 @@ $feedback_source = Yii::app()->request->getParam('feedback_source');
             }
 
             else{
+		
+		if(($feedback_source == 'dropjob') && ($agent_id)){
+                        $washeractionlogdata= array(
+                            'agent_id'=> $agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agents_id_check->real_washer_id,
+                            'action'=> 'dropjob',
+			    'addi_detail' => $comments,
+                            'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+}
 
                 if(!count($agent_feedback_check)){
 
@@ -3679,6 +3689,8 @@ $feedback_source = Yii::app()->request->getParam('feedback_source');
                 $total = number_format($total, 2, '.', '');
 
 //Washingrequests::model()->updateByPk($wash_request_id, array('is_feedback_sent' => 1));
+
+
             }
         }
 

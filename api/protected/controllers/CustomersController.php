@@ -1939,8 +1939,14 @@ if(Yii::app()->request->getParam('vehicle_category')) $vehicle_category = Yii::a
 			$vehicle_image = Yii::app()->request->getParam('vehicle_image');
             $new_pack_name = '';
             if(Yii::app()->request->getParam('new_pack_name')) $new_pack_name = Yii::app()->request->getParam('new_pack_name');
+	    $car_pack = '';
+            if(Yii::app()->request->getParam('car_pack')) $car_pack = Yii::app()->request->getParam('car_pack');
              $wash_request_id = '';
             if(Yii::app()->request->getParam('wash_request_id')) $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+	    $admin_username = '';
+            if(Yii::app()->request->getParam('admin_username')) $admin_username = Yii::app()->request->getParam('admin_username');
+	    $add_log = '';
+            if(Yii::app()->request->getParam('add_log')) $add_log = Yii::app()->request->getParam('add_log');
 			if(Yii::app()->request->getParam('vehicle_type')) $vehicle_type = Yii::app()->request->getParam('vehicle_type');
 
 $pet_hair = 0;
@@ -2069,7 +2075,22 @@ $vehicle_source_id = 0;
 													'vehicle_image'=>$image,
 													'vehicle_type'=>$vehicle_type, 'vehicle_category'=>$vehicle_category, 'vehicle_build'=>$vehicle_build);
 
-                            /* --------- add vehicle by agent in current wash ------------ */
+                            if($add_log == 'true'){
+				$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
+				$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+			
+			    $logdata = array(
+            'wash_request_id'=> $wash_request_id,
+	    'agent_id'=> $wash_request_exists->agent_id,
+	    'agent_company_id'=> $agent_detail->real_washer_id,
+            'action'=> 'adminaddcar',
+	    'addi_detail' => $brand_name." ".$model_name." ".$car_pack,
+	    'admin_username' => $admin_username,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+			    }
+			    
+			    /* --------- add vehicle by agent in current wash ------------ */
 
                           	if((isset($wash_request_id) && !empty($wash_request_id)) &&(isset($new_pack_name) && !empty($new_pack_name))){
 

@@ -241,7 +241,7 @@ foreach($_POST['car_makes'] as $ind=>$make){
 if($_POST['car_ids'][$ind] == 0){
 $handle = curl_init($root_url."/api/index.php?r=customers/addvehicle");
 curl_setopt($handle, CURLOPT_POST, true);
-$data = array('customer_id' => $getorder->customer_id, 'brand_name' => $make, 'model_name' => $_POST['car_models'][$ind], 'vehicle_image' => 'https://www.mobilewash.com/api/images/veh_img/no_pic.jpg', 'vehicle_build' => $_POST['car_types'][$ind], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('customer_id' => $getorder->customer_id, 'brand_name' => $make, 'model_name' => $_POST['car_models'][$ind], 'car_pack' => $_POST['car_packs'][$ind], 'vehicle_image' => 'https://www.mobilewash.com/api/images/veh_img/no_pic.jpg', 'vehicle_build' => $_POST['car_types'][$ind], 'add_log' => 'true', 'admin_username' => $jsondata_permission->user_name, 'wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
@@ -1473,7 +1473,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'dropjob'): ?>
-                                                          <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>. Reason: <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'admindropjob'): ?>
                                                           <p style="margin-bottom: 10px; color: red;"><?php echo $log->admin_username; ?> dropped washer #<?php echo $log->agent_company_id; ?> from the order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1591,6 +1591,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washereditcar'): ?>
                                                           <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> edited vehicle to <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'adminaddcar'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
@@ -3586,7 +3589,7 @@ if(data.result == 'true'){
         }
      } 
       if(log.action == 'dropjob'){
-          contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped "+log.formatted_action_date+"</p>"; 
+          contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped "+log.formatted_action_date+"</p>. Reason: "+log.addi_detail; 
       }
       
       if(log.action == 'admindropjob'){
@@ -3758,7 +3761,11 @@ if(data.result == 'true'){
         if(log.action == 'washereditcar'){
             contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" edited vehicle to "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
       }
-            
+      
+       if(log.action == 'adminaddcar'){
+            contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" added "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+                  
 
    });
    

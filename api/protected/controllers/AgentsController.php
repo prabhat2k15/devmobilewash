@@ -5250,7 +5250,8 @@ die();
 
         $id = Yii::app()->request->getParam('id');
 
-      $bt_result = Yii::app()->braintree->getsubmerchantbyid_real($id);
+      if(APP_ENV == 'real') $bt_result = Yii::app()->braintree->getsubmerchantbyid_real($id);
+      else $bt_result = Yii::app()->braintree->getsubmerchantbyid($id);
       print_r($bt_result);
 
 
@@ -5266,9 +5267,13 @@ echo "Invalid api key";
 die();
 }
 
+$id = Yii::app()->request->getParam('id');
+$bank_account_number = Yii::app()->request->getParam('bank_account_number');
+$routing_number = Yii::app()->request->getParam('routing_number');
+
  /* ----- braintree submerchant account creation ----------- */
 
-       $data = [
+      /* $data = [
     'funding' => [
       'descriptor' => 'Juan Ramon Lopez',
       'destination' => 'bank',
@@ -5277,9 +5282,18 @@ die();
       'accountNumber' => '6693982016',
       'routingNumber' => '122000247'
       ]
+  ];*/
+      
+      $data = [
+    'funding' => [ 
+      'destination' => 'bank',
+      'accountNumber' => $bank_account_number,
+      'routingNumber' => $routing_number
+      ]
   ];
 
-      $bt_result = Yii::app()->braintree->updateSubMerchant_real('juanramon_lopez_instant_5d4rbtgx', $data);
+      if(APP_ENV == 'real') $bt_result = Yii::app()->braintree->updateSubMerchant_real($id, $data);
+      else $bt_result = Yii::app()->braintree->updateSubMerchant($id, $data);
       print_r($bt_result);
 
 
