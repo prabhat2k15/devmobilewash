@@ -223,6 +223,8 @@ $jsondata = json_decode($result);
 
 }
 
+$old_car_list = explode(",", $getorder->car_list);
+
 if(count($_POST['car_makes'])){
 $car_ids = '';
 $car_packs = '';
@@ -238,6 +240,8 @@ $fifthwash_vehicles = '';
 
 foreach($_POST['car_makes'] as $ind=>$make){
     $car_id = 0;
+    $addi_detail = '';
+    $addon_detail = '';
 if($_POST['car_ids'][$ind] == 0){
 $handle = curl_init($root_url."/api/index.php?r=customers/addvehicle");
 curl_setopt($handle, CURLOPT_POST, true);
@@ -256,15 +260,66 @@ $car_id = $_POST['car_ids'][$ind];
 $car_ids .= $car_id.",";
 $car_packs .=  $_POST['car_packs'][$ind].",";
 
-if($_POST['pet_fees'][$ind] != 0) $pet_hair_vehicles .=  $car_id.",";
-if($_POST['truck_fees'][$ind] != 0) $lifted_vehicles .=  $car_id.",";
-if($_POST['exthandwaxes'][$ind] != 0) $exthandwax_vehicles .=  $car_id.",";
-if($_POST['extplasticdressings'][$ind] != 0) $extplasticdressing_vehicles .=  $car_id.",";
-if($_POST['extclaybars'][$ind] != 0) $extclaybar_vehicles .=  $car_id.",";
-if($_POST['waterspotremoves'][$ind] != 0) $waterspotremove_vehicles .=  $car_id.",";
-if($_POST['upholstery'][$ind] != 0) $upholstery_vehicles .=  $car_id.",";
-if($_POST['floormat'][$ind] != 0) $floormat_vehicles .=  $car_id.",";
-if($_POST['fifth_discs'][$ind] != 0) $fifthwash_vehicles .=  $car_id.",";
+if($_POST['pet_fees'][$ind] != 0) {
+    $pet_hair_vehicles .=  $car_id.",";
+    $addon_detail .= 'Extra Cleaning, ';
+}
+if($_POST['truck_fees'][$ind] != 0) {
+    $lifted_vehicles .=  $car_id.",";
+    $addon_detail .= 'Lifted, ';
+}
+if($_POST['exthandwaxes'][$ind] != 0) {
+    $exthandwax_vehicles .=  $car_id.",";
+    $addon_detail .= 'Wax, ';
+}
+if($_POST['extplasticdressings'][$ind] != 0) {
+    $extplasticdressing_vehicles .=  $car_id.",";
+    $addon_detail .= 'Dressing, ';
+}
+if($_POST['extclaybars'][$ind] != 0) {
+    $extclaybar_vehicles .=  $car_id.",";
+    $addon_detail .= 'Clay, ';
+}
+if($_POST['waterspotremoves'][$ind] != 0) {
+    $waterspotremove_vehicles .=  $car_id.",";
+    $addon_detail .= 'Water Spot, ';
+}
+if($_POST['upholstery'][$ind] != 0) {
+    $upholstery_vehicles .=  $car_id.",";
+    $addon_detail .= 'Upholstery, ';
+}
+if($_POST['floormat'][$ind] != 0) {
+    $floormat_vehicles .=  $car_id.",";
+    $addon_detail .= 'Floormat, ';
+}
+if($_POST['fifth_discs'][$ind] != 0) {
+    $fifthwash_vehicles .=  $car_id.",";
+}
+
+$addon_detail = rtrim($addon_detail, ", ");
+
+if(isset($_POST['is_package_changed'][$ind]) && ($_POST['is_package_changed'][$ind] == 1)){
+    $addi_detail = $make." ".$_POST['car_models'][$ind]." ".$_POST['car_packs'][$ind];
+   $handle = curl_init($root_url."/api/index.php?r=site/addcustomlog");
+curl_setopt($handle, CURLOPT_POST, true);
+$data = array('wash_request_id' => $getorder->id, 'admin_username' => $jsondata_permission->user_name, 'action' => 'adminchangepack', 'addi_detail' => $addi_detail, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle);
+curl_close($handle); 
+}
+
+if(isset($_POST['is_addons_changed'][$ind]) && ($_POST['is_addons_changed'][$ind] == 1)){
+    
+    $addi_detail = $make." ".$_POST['car_models'][$ind]." Addons: ".$addon_detail;
+   $handle = curl_init($root_url."/api/index.php?r=site/addcustomlog");
+curl_setopt($handle, CURLOPT_POST, true);
+$data = array('wash_request_id' => $getorder->id, 'admin_username' => $jsondata_permission->user_name, 'action' => 'adminchangeaddons', 'addi_detail' => $addi_detail, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle);
+curl_close($handle); 
+}
 
 }
 
@@ -279,6 +334,22 @@ if($_POST['fifth_discs'][$ind] != 0) $fifthwash_vehicles .=  $car_id.",";
  $upholstery_vehicles = rtrim($upholstery_vehicles, ',');
  $floormat_vehicles = rtrim($floormat_vehicles, ',');
  $fifthwash_vehicles = rtrim($fifthwash_vehicles, ',');
+ 
+ $new_car_list = explode(",", $car_ids);
+ 
+ foreach($getorder->vehicles as $vehicle){
+    if(($key = array_search($vehicle->id, $new_car_list)) === false) {
+    $addi_detail = $vehicle->brand_name." ".$vehicle->model_name;
+   $handle = curl_init($root_url."/api/index.php?r=site/addcustomlog");
+curl_setopt($handle, CURLOPT_POST, true);
+$data = array('wash_request_id' => $getorder->id, 'admin_username' => $jsondata_permission->user_name, 'action' => 'adminremovecar', 'addi_detail' => $addi_detail, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle);
+curl_close($handle); 
+    
+    }
+ }
 
 }
 
@@ -1115,6 +1186,8 @@ else{
     } ?>
 
 <input type="hidden" name="car_ids[]" value="<?php echo $veh->id; ?>" />
+<input type="hidden" name="is_package_changed[]" class="ispackagechanged" value="0" />
+<input type="hidden" name="is_addons_changed[]" class="isaddonschanged" value="0" />
 <p style='margin-top: 20px; text-align: right; margin-right: 15px; margin-bottom: 15px;'><a href='#' class='regular-car-remove'>Remove</a></p></div>
 <?php $point_index++; endforeach; ?>
 <?php endif; ?>
@@ -1249,6 +1322,8 @@ else{
     } ?>
 
 <input type="hidden" name="car_ids[]" value="<?php echo $veh->id; ?>" />
+<input type="hidden" name="is_package_changed[]" class="ispackagechanged" value="0" />
+<input type="hidden" name="is_addons_changed[]" class="isaddonschanged" value="0" />
 
 <p style='margin-top: 20px; text-align: right; margin-right: 15px; margin-bottom: 15px;'><a href='#' class='classic-car-remove'>Remove</a></p>
 
@@ -1594,6 +1669,18 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'adminaddcar'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'adminchangepack'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> changed package <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'adminchangeaddons'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> changed addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washerremovecar'): ?>
+                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> removed <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'adminremovecar'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> removed <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
@@ -2369,6 +2456,7 @@ wash_points++;
 });
 
 $( "#phone-order-form" ).on( "change", ".regular-pack, .classic-pack", function() {
+  $(this).parent().find('.ispackagechanged').val(1);  
  if($(this).val() == 'Express'){
    $(this).parent().find('.pet_fee_el input[type=checkbox]').prop( "checked", false );
 $(this).parent().find('.pet_fee_el span').removeClass( "checked");
@@ -2476,6 +2564,7 @@ $(this).parent().removeClass('addon-checked');
 });
 
 $( "#phone-order-form" ).on( "click", ".pet_fee_el #uniform-pet_fee input[type=checkbox]", function() {
+    $(this).parent().parent().parent().parent().find('.isaddonschanged').val(1);
 if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#pet_fees').val($(this).val());
 $(this).parent().removeClass('addon-checked');
@@ -2484,6 +2573,7 @@ $(this).parent().parent().parent().addClass('addon-checked');
 else {
 
 $(this).parent().parent().parent().parent().find('#pet_fees').val(0);
+
 $(this).parent().parent().parent().removeClass('addon-checked');
 }
 
@@ -2503,6 +2593,7 @@ $(this).parent().removeClass('addon-checked');
 
 
 $( "#phone-order-form" ).on( "click", ".lifted_truck_el #uniform-lifted_truck_fee input[type=checkbox]", function() {
+    $(this).parent().parent().parent().parent().find('.isaddonschanged').val(1);
 if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#truck_fees').val($(this).val());
 $(this).parent().removeClass('addon-checked');
@@ -2531,6 +2622,7 @@ $(this).parent().removeClass('addon-checked');
 });
 
 $( "#phone-order-form" ).on( "click", ".exthandwax #uniform-exthandwax input[type=checkbox]", function() {
+    $(this).parent().parent().parent().parent().find('.isaddonschanged').val(1);
 if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#exthandwaxes').val($(this).val());
 $(this).parent().removeClass('addon-checked');
@@ -2561,6 +2653,7 @@ $(this).parent().removeClass('addon-checked');
 
 
 $( "#phone-order-form" ).on( "click", ".extplasticdressing #uniform-extplasticdressing input[type=checkbox]", function() {
+    $(this).parent().parent().parent().parent().find('.isaddonschanged').val(1);
 if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#extplasticdressings').val($(this).val());
 $(this).parent().removeClass('addon-checked');
@@ -2590,6 +2683,7 @@ $(this).parent().removeClass('addon-checked');
 });
 
 $( "#phone-order-form" ).on( "click", ".extclaybar #uniform-extclaybar input[type=checkbox]", function() {
+    $(this).parent().parent().parent().parent().find('.isaddonschanged').val(1);
 if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#extclaybars').val($(this).val());
 $(this).parent().removeClass('addon-checked');
@@ -2621,6 +2715,7 @@ $(this).parent().removeClass('addon-checked');
 
 
 $( "#phone-order-form" ).on( "click", ".waterspotremove #uniform-waterspotremove input[type=checkbox]", function() {
+    $(this).parent().parent().parent().parent().find('.isaddonschanged').val(1);
 if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#waterspotremoves').val($(this).val());
 $(this).parent().removeClass('addon-checked');
@@ -2646,6 +2741,7 @@ $(this).parent().removeClass('addon-checked');
 });
 
 $( "#phone-order-form" ).on( "click", ".upholstery_el #uniform-upholstery_el input[type=checkbox]", function() {
+    $(this).parent().parent().parent().parent().find('.isaddonschanged').val(1);
 if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#upholstery').val($(this).val());
 $(this).parent().removeClass('addon-checked');
@@ -2672,6 +2768,7 @@ $(this).parent().removeClass('addon-checked');
 });
 
 $( "#phone-order-form" ).on( "click", ".floormat_el #uniform-floormat_el input[type=checkbox]", function() {
+    $(this).parent().parent().parent().parent().find('.isaddonschanged').val(1);
 if($(this).is(":checked")) {
 $(this).parent().parent().parent().parent().find('#floormat').val($(this).val());
 $(this).parent().removeClass('addon-checked');
@@ -3765,7 +3862,23 @@ if(data.result == 'true'){
        if(log.action == 'adminaddcar'){
             contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" added "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
       }
-                  
+      
+       if(log.action == 'adminchangepack'){
+            contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" changed package "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+      
+      if(log.action == 'adminchangeaddons'){
+            contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" changed addons "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+      
+       if(log.action == 'washerremovecar'){
+            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" removed "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+      
+       if(log.action == 'adminremovecar'){
+            contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" removed "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+                        
 
    });
    

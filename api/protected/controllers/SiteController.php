@@ -5155,6 +5155,41 @@ die();
 
 
     }
+    
+    
+        public function actionaddcustomlog(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$wash_request_id = Yii::app()->request->getParam('wash_request_id');
+$agent_id = Yii::app()->request->getParam('agent_id');
+$agent_company_id = Yii::app()->request->getParam('agent_company_id');
+$admin_username = Yii::app()->request->getParam('admin_username');
+$action = Yii::app()->request->getParam('action');
+$addi_detail = Yii::app()->request->getParam('addi_detail');
+
+  $logdata = array(
+
+                        'wash_request_id'=> $wash_request_id,
+                        'admin_username' => $admin_username,
+                        'action'=> $action,
+			'addi_detail'=> $addi_detail,
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+            
+
+	$json= array(
+		'result'=> 'true',
+		'response'=> 'done'
+		);
+	echo json_encode($json);
+
+
+    }
 	
 
 }

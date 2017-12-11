@@ -3100,8 +3100,21 @@ $vehicle_check = Yii::app()->db->createCommand()
                   /* ------------ remove car from kart ------------- */
 
                 if($remove_vehicle_from_kart == 2){
+			
+			$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+			 $cust_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
+			 $log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name;
+			
+			    $logdata = array(
+            'wash_request_id'=> $wash_request_id,
+	    'agent_id'=> $wash_request_exists->agent_id,
+	    'agent_company_id'=> $agent_detail->real_washer_id,
+            'action'=> 'washerremovecar',
+	    'addi_detail' => $log_detail,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 
-                     $cust_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
+                    
 
                     $packs = $wash_request_exists->package_list;
                     $cars_arr = explode(",", $cars);
