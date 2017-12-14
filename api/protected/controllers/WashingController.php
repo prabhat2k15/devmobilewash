@@ -1816,6 +1816,19 @@ $customername = ucwords($customername);
             }
             else
             {
+		
+		if(Yii::app()->request->getParam('savejob') == 1)
+                {
+                    
+                    if(($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id))
+                    {
+                        $result = 'false';
+                        $response = 'Sorry, this order is already taken by another washer';
+                        $json = array('result' => $result, 'response' => $response);
+                        echo json_encode($json);die();
+                    }
+                }
+		
                 $result = 'true';
                 $response = 'wash request updated';
 
@@ -2105,7 +2118,7 @@ $customername = ucwords($customername);
                         //echo "agtwashtotalscheduletime ".$agtwashtotalscheduletime."<br>";
                         //echo "agtwashbasescheduletime ".$agtwashbasescheduletime."<br>";
 
-                        if ((!$status) && ($agent_id) && (!$admin_permit) && (!Yii::app()->request->getParam('washer_drop_job')))
+                        if ((!$status) && ($agent_id) && (!$admin_permit) && (!Yii::app()->request->getParam('washer_drop_job')) && ($wrequest_id_check->agent_id != $agent_id))
                         {
                             if(strtotime($currentwashbasescheduletime) >= strtotime($agtwashbasescheduletime))
                             {
@@ -2139,7 +2152,7 @@ $customername = ucwords($customername);
 
                 if(Yii::app()->request->getParam('savejob') == 1)
                 {
-                    if($wrequest_id_check->agent_id != 0)
+                    if(($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id))
                     {
                         $result = 'false';
                         $response = 'Sorry, this order is already taken by another washer';
@@ -3065,7 +3078,6 @@ $now_time = time();
 $time_diff = round(abs($now_time - $wash_time) / 60,2);
 
 if($time_diff >= 10){
-
     $result= 'false';
                 $response= 'no washers available';
 
@@ -4333,7 +4345,8 @@ $declinedids = explode(",",$pdrequest->agent_reject_ids);
 
 if($agent_id){
 if (!in_array(-$agent_id, $declinedids)) {
-if(($min_diff > 0) && ($agents_id_check->hours_opt_check == $cust_id_check->hours_opt_check)) $pendingwashcount++;
+//if(($min_diff > 0) && ($agents_id_check->hours_opt_check == $cust_id_check->hours_opt_check)) $pendingwashcount++;
+if($min_diff > 0) $pendingwashcount++;
 }
 }
 }
@@ -9539,9 +9552,10 @@ die();
 
 		//$allschedwashes = Washingrequests::model()->findAll($criteria, array('order' => 'created_date asc'));
 
-if(!$agent_detail->hours_opt_check) $allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 0 AND w.wash_request_position = '".$washer_position."' AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->queryAll();
-else $allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '".$washer_position."' AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->queryAll();
+//if(!$agent_detail->hours_opt_check) $allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 0 AND w.wash_request_position = '".$washer_position."' AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->queryAll();
+//else $allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '".$washer_position."' AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->queryAll();
 
+$allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".$washer_position."' AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->queryAll();
 
 //print_r($allschedwashes);
 		if(count($allschedwashes)){
@@ -10705,6 +10719,51 @@ die();
 
 
    }
+   
+   
+      public function actioncurrentwashschedulealert() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+	$wash_request_id  = Yii::app()->request->getParam('wash_request_id');
+
+	$wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
+
+        if(count($wash_id_check) && (!$wash_id_check->is_create_schedulewash_push_sent)){
+		$allagents = Agents::model()->findAll(array("condition"=>"block_washer =  0"));
+		$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
+		$message = $pushmsg[0]['message'];
+		
+		foreach($allagents as $agent){
+			$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+			foreach($agentdevices as $agdevice){
+
+				$device_type = strtolower($agdevice['device_type']);
+				$notify_token = $agdevice['device_token'];
+				$alert_type = "schedule";
+
+				$notify_msg = urlencode($message);
+
+				$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+				$ch = curl_init();
+				curl_setopt($ch,CURLOPT_URL,$notifyurl);
+				curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+				if($notify_msg) $notifyresult = curl_exec($ch);
+				curl_close($ch);
+			}
+		}
+		
+	
+		Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 1));
+        }
+
+
+       }
 
 
 }

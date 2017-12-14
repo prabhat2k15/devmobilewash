@@ -2729,6 +2729,7 @@ die();
 		$response= 'Fill up required fields';
 
  $id = Yii::app()->request->getParam('id');
+ $express_price = Yii::app()->request->getParam('express_price');
         $deluxe_price = Yii::app()->request->getParam('deluxe_price');
 		$premium_price = Yii::app()->request->getParam('premium_price');
 
@@ -2746,6 +2747,10 @@ $item_check = Yii::app()->db->createCommand()->select('*')->from('surge_pricing'
                 }
 else{
 
+ if(!is_numeric($express_price)){
+$express_price = $item_check[0]['express'];
+}
+
  if(!is_numeric($deluxe_price)){
 $deluxe_price = $item_check[0]['deluxe'];
 }
@@ -2756,6 +2761,7 @@ $premium_price = $item_check[0]['premium'];
 
 
                    $data= array(
+					'express'=> $express_price,
 					'deluxe'=> $deluxe_price,
 					'premium'=> $premium_price
 				);
@@ -2801,6 +2807,100 @@ $all_prices = Yii::app()->db->createCommand()->select('*')->from('surge_pricing'
 			'result'=> $result,
 			'response'=> $response,
 			'surge_prices' => $all_prices
+		);
+		echo json_encode($json);
+	}
+	
+	
+	public function actionupdatezipprice(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$result= 'false';
+		$response= 'Fill up required fields';
+
+ $id = Yii::app()->request->getParam('id');
+  $zip = Yii::app()->request->getParam('zip');
+ $express_price = Yii::app()->request->getParam('express_price');
+        $deluxe_price = Yii::app()->request->getParam('deluxe_price');
+		$premium_price = Yii::app()->request->getParam('premium_price');
+
+
+
+		if((isset($id) && !empty($id)))
+
+			 {
+
+$item_check = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where('id='.$id)->queryAll();
+
+             	if(!count($item_check)){
+                   	$result= 'false';
+		$response= "Invalid id";
+                }
+else{
+
+ if(!is_numeric($express_price)){
+$express_price = $item_check[0]['express'];
+}
+
+ if(!is_numeric($deluxe_price)){
+$deluxe_price = $item_check[0]['deluxe'];
+}
+
+if(!is_numeric($premium_price)){
+$premium_price = $item_check[0]['premium'];
+}
+
+
+                   $data= array(
+					'zipcodes'=> $zip,
+					'express'=> $express_price,
+					'deluxe'=> $deluxe_price,
+					'premium'=> $premium_price
+				);
+
+
+				   $resUpdate = Yii::app()->db->createCommand()->update('zipcode_pricing', $data,"id='".$id."'");
+
+                    	$result= 'true';
+		$response= 'update successful';
+}
+}
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+		echo json_encode($json);
+	}
+	
+	
+	public function actiongetzipprices(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$result= 'false';
+		$response= 'nothing found';
+
+
+$all_prices = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->queryAll();
+
+ if(count($all_prices)){
+     	$result= 'true';
+		$response= 'zipcode prices';
+ }
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+			'zipcode_prices' => $all_prices
 		);
 		echo json_encode($json);
 	}
