@@ -406,14 +406,7 @@ $longitude = $geojsondata->results[0]->geometry->location->lng;
 
 
 
-                if((isset($is_scheduled) && !empty($is_scheduled))){
-			$order_date = date("Y-m-d H:i:s", strtotime($schedule_date." ".$schedule_time));	
-		}
-		else{
-			$order_date = date("Y-m-d H:i:s");	
-		}
-		
-		$date = date("Y-m-d H:i:s");
+                $date = date("Y-m-d H:i:s");
 
                 $washrequestdata= array(
                     'customer_id'=> $customer_id,
@@ -426,10 +419,9 @@ $longitude = $geojsondata->results[0]->geometry->location->lng;
                     'is_scheduled' => $is_scheduled,
                     'estimate_time'=> $estimate_time,
                     'created_date'=> $date,
-                    'order_for'=> $order_date,
+                    'order_for'=> $date,
 
                 );
-		
                 //$washrequestdata= array_filter($washrequestdata);
                 $model=new Washingrequests;
                 $model->attributes= $washrequestdata;
@@ -1195,10 +1187,10 @@ $sendmessage = $client->account->messages->create(array(
                         $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$wash_id_check->coupon_code));
                         if(count($coupon_check)){
                         if (strpos($package_ids, 'Premium') !== false) {
-                            $coupon_amount = number_format($coupon_check->premium_amount, 2, '.', '');
+                            $coupon_amount = number_format($coupon_check->premium_amount, 2);
                         }
                         else{
-                            $coupon_amount = number_format($coupon_check->deluxe_amount, 2, '.', '');
+                            $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
                         }
                         }
 
@@ -1382,85 +1374,9 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
 
             $order_for_date = date("Y-m-d H:i:s", strtotime($schedule_date." ".$schedule_time));
 
-                Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date));
+                Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'order_for' => $order_for_date));
 
-                WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
-
-                    $wash_details = Washingrequests::model()->findByPk($wash_request_id);
-                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY);
-                    $kartdata = json_decode($kartapiresult);
-                    if($wash_details->net_price != $kartdata->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
-                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$wash_request_id.'"');
-		    
-		    foreach($kartdata->vehicles as $ind=>$car)
-                    {
-                       $veh_detail = Vehicle::model()->findByPk($car->id);
-
-                        $pet_fee = 0;
-                        $lift_fee = 0;
-                        $exthandwax_fee = 0;
-                        $extplasticdressing_fee = 0;
-                        $extclaybar_fee = 0;
-                        $waterspotremove_fee = 0;
-                         $upholstery_fee = 0;
-                        $floormat_fee = 0;
-                        $surge_fee = 0;
-
-
-                        $pet_hair_vehicles_arr = explode(",", $pet_hair_vehicles);
-                        if (in_array($car->id, $pet_hair_vehicles_arr)) $pet_fee = 10;
-
-                        $lifted_vehicles_arr = explode(",", $lifted_vehicles);
-                        if (in_array($car->id, $lifted_vehicles_arr)) $lift_fee = 10;
-
-                        $exthandwax_addon_arr = explode(",", $exthandwax_vehicles);
-                        if (in_array($car->id, $exthandwax_addon_arr)) $exthandwax_fee = 12;
-
-                        $extplasticdressing_addon_arr = explode(",", $extplasticdressing_vehicles);
-                        if (in_array($car->id, $extplasticdressing_addon_arr)) $extplasticdressing_fee = 8;
-
-                        $extclaybar_addon_arr = explode(",", $extclaybar_vehicles);
-                        if (in_array($car->id, $extclaybar_addon_arr)) $extclaybar_fee = 35;
-
-                        $waterspotremove_addon_arr = explode(",", $waterspotremove_vehicles);
-                        if (in_array($car->id, $waterspotremove_addon_arr)) $waterspotremove_fee = 30;
-
-                        $upholstery_addon_arr = explode(",", $upholstery_vehicles);
-                        if (in_array($car->id, $upholstery_addon_arr)) $upholstery_fee = 20;
-
-                        $floormat_addon_arr = explode(",", $floormat_vehicles);
-                        if (in_array($car->id, $floormat_addon_arr)) $floormat_fee = 10;
-
-
-
-                        Vehicle::model()->updateByPk($car->id, array('pet_hair' => $pet_fee, 'lifted_vehicle' => $lift_fee, 'exthandwax_addon' => $exthandwax_fee, 'extplasticdressing_addon' => $extplasticdressing_fee, 'extclaybar_addon' => $extclaybar_fee, 'waterspotremove_addon' => $waterspotremove_fee, 'upholstery_addon' => $upholstery_fee, 'floormat_addon' => $floormat_fee,'surge_addon' => $surge_fee));
-
-                          if($wash_details->net_price != $kartdata->net_price){
-                          /* --------- car pricing save --------- */
-
-                     $washpricehistorymodel = new WashPricingHistory;
-                        $washpricehistorymodel->wash_request_id = $wash_request_id;
-                        $washpricehistorymodel->vehicle_id = $car->id;
-                        $washpricehistorymodel->package = $car->vehicle_washing_package;
-                        $washpricehistorymodel->vehicle_price = $car->vehicle_washing_price;
-                        $washpricehistorymodel->pet_hair = $car->pet_hair_fee;
-                        $washpricehistorymodel->lifted_vehicle = $car->lifted_vehicle_fee;
-                        $washpricehistorymodel->exthandwax_addon = $car->exthandwax_vehicle_fee;
-                        $washpricehistorymodel->extplasticdressing_addon = $car->extplasticdressing_vehicle_fee;
-                        $washpricehistorymodel->extclaybar_addon = $car->extclaybar_vehicle_fee;
-                        $washpricehistorymodel->waterspotremove_addon = $car->waterspotremove_vehicle_fee;
-                        $washpricehistorymodel->upholstery_addon = $car->upholstery_vehicle_fee;
-                        $washpricehistorymodel->floormat_addon = $car->floormat_vehicle_fee;
-                        $washpricehistorymodel->safe_handling = $car->safe_handling_fee;
-                        $washpricehistorymodel->bundle_disc = $car->bundle_discount;
-                        $washpricehistorymodel->last_updated = date("Y-m-d H:i:s");
-                        $washpricehistorymodel->save(false);
-
-                      /* --------- car pricing save end --------- */
-                      }
-		    }
-		    
-		$result= 'true';
+                $result= 'true';
                 $response= 'order updated';
             }
 
@@ -2386,7 +2302,7 @@ $customername = ucwords($customername);
                     }
 
                     $agent_rate =  $rate/$total_rate;
-                    $agent_rate = number_format($agent_rate, 2, '.', '');
+                    $agent_rate = number_format($agent_rate, 2);
 
                 }
                 else{
@@ -2400,7 +2316,7 @@ $customername = ucwords($customername);
 
                 $agent_rate -= ($washer_total_dropjobs * $agent_id_check->rating_control);
 
-                $agent_rate = number_format($agent_rate, 2, '.', '');
+                $agent_rate = number_format($agent_rate, 2);
 
                 $agentmodel = new Agents;
                 if($agent_rate < 3.5) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1), 'id=:id', array(':id'=>$wrequest_id_check->agent_id));
@@ -3450,7 +3366,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
                     }
 
                     $agent_rate =  $rate/$total_rate;
-                    $agent_rate = number_format($agent_rate, 2, '.', '');
+                    $agent_rate = number_format($agent_rate, 2);
 
                 }
                 else{
@@ -3464,7 +3380,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
 
                 $agent_rate -= ($washer_total_dropjobs * $agent_id_check->rating_control);
 
-                $agent_rate = number_format($agent_rate, 2, '.', '');
+                $agent_rate = number_format($agent_rate, 2);
 
                 $agentmodel = new Agents;
                 if($agent_rate < 3.5) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
@@ -3499,7 +3415,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
                     }
 
                     $agent_rate =  $rate/$total_rate;
-                    $agent_rate = number_format($agent_rate, 2, '.', '');
+                    $agent_rate = number_format($agent_rate, 2);
                 }
                 else{
                     $agent_rate = 5.00;
@@ -3511,7 +3427,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
 
                 $agent_rate -= ($washer_total_dropjobs * $agent_id_check->rating_control);
 
-                $agent_rate = number_format($agent_rate, 2, '.', '');
+                $agent_rate = number_format($agent_rate, 2);
 
                 $agentmodel = new Agents;
                 $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
@@ -3583,7 +3499,7 @@ $message = "<div class='block-content' style='background: #fff; text-align: left
 <p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000".$wash_request_id."</p>
 <p><b>Customer Name:</b> ".$customers_id_check->customername."</p>
 <p><b>Customer Email:</b> ".$customers_id_check->email."</p>
-<p><b>Rating by Customer:</b> ".number_format($ratings, 2, '.', '')."</p>
+<p><b>Rating by Customer:</b> ".number_format($ratings, 2)."</p>
 <p><b>Comments:</b> ".$comments."</p>";
 
 if($fb_id) $message .= "<p><b>Facebook/Instagram handle:</b> ".$fb_id."</p>";
@@ -3699,7 +3615,7 @@ echo "feedback source: ".$feedback_source."<br>";*/
                     }
 
                     $cust_rate =  $rate/$total_rate;
-                    $cust_rate = number_format($cust_rate, 2, '.', '');
+                    $cust_rate = number_format($cust_rate, 2);
                 }
                 else{
                     $cust_rate = 5.00;
@@ -3735,7 +3651,7 @@ echo "feedback source: ".$feedback_source."<br>";*/
                     }
 
                     $cust_rate =  $rate/$total_rate;
-                    $cust_rate = number_format($cust_rate, 2, '.', '');
+                    $cust_rate = number_format($cust_rate, 2);
                 }
                 else{
                     $cust_rate = 5.00;

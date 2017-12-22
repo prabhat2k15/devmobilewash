@@ -109,64 +109,9 @@ return;
                         $prem_price = $vehicle_wash_pricing->vehicle_price;
                     }
                     else{
-			              $encode_address = urlencode($wash_id_check->address);
-				      $cust_zipcode = '';
-				      $exp_surge_factor = 0;
-				      $del_surge_factor = 0;
-				      $prem_surge_factor = 0;
-
-    /* --- Geocode lat long --- */
-
-    $geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$encode_address."&sensor=true&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
-    $ch = curl_init();
-
-	curl_setopt($ch,CURLOPT_URL,$geourl);
-	curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-//	curl_setopt($ch,CURLOPT_HEADER, false);
-
-$georesult = curl_exec($ch);
-curl_close($ch);
-$geojsondata = json_decode($georesult);
-//var_dump($geojsondata);
-if($geojsondata->status == 'ZERO_RESULTS'){
-
-}
-else{
-$addressComponents = $geojsondata->results[0]->address_components;
-            foreach($addressComponents as $addrComp){
-                if($addrComp->types[0] == 'postal_code'){
-                    //Return the zipcode
-                    $cust_zipcode = $addrComp->long_name;
-		    break;
-                }
-            }
-
-}
-
-
-			$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D', strtotime($wash_id_check->order_for)))."'", array())->queryAll();
-			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1' AND zipcodes != ''", array())->queryAll();
-		   
-			if(($cust_zipcode) && count($zipcodeprice)){
-			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
-			   foreach($all_zips as $zip){
-			      $zip = trim($zip);
-			      if($zip == $cust_zipcode){
-				 $exp_surge_factor = $zipcodeprice[0]['express'];
-				 $del_surge_factor = $zipcodeprice[0]['deluxe'];
-				 $prem_surge_factor = $zipcodeprice[0]['premium'];
-			      }
-			   }
-			}
-                        
-			$exp_surge_factor += $surgeprice[0]['express'];
-			$del_surge_factor += $surgeprice[0]['deluxe'];
-			$prem_surge_factor += $surgeprice[0]['premium'];
-			
-			$washing_plan_express = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Express"));
+                        $washing_plan_express = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Express"));
                         if(count($washing_plan_express)) {
                         $expr_price = $washing_plan_express->price;
-			$expr_price = $expr_price + ($expr_price * ($exp_surge_factor / 100));
                          }
                         else {
                         $expr_price = "19.99";
@@ -175,7 +120,7 @@ $addressComponents = $geojsondata->results[0]->address_components;
                         $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
                         if(count($washing_plan_deluxe)) {
                         $delx_price = $washing_plan_deluxe->price;
-			$delx_price = $delx_price + ($delx_price * ($del_surge_factor / 100));
+
                          }
                         else {
                         $delx_price = "24.99";
@@ -184,7 +129,6 @@ $addressComponents = $geojsondata->results[0]->address_components;
                         $washing_plan_prem = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Premium"));
                         if(count($washing_plan_prem)) {
                         $prem_price = $washing_plan_prem->price;
-			$prem_price = $prem_price + ($prem_price * ($prem_surge_factor / 100));
 
                         }
                         else {

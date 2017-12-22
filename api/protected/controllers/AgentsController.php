@@ -1560,6 +1560,7 @@ if(Yii::app()->request->getParam('limit')) $limit = Yii::app()->request->getPara
 $page = 1;
 if(Yii::app()->request->getParam('page')) $page = Yii::app()->request->getParam('page');
 $total_entries = 0;
+$total_entries2 = 0;
 $total_pages = 0;
 
             $result= 'false';
@@ -1577,6 +1578,11 @@ $total_pages = 0;
 
 			$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE agent_id='".$agent_id."' AND ((status='4' OR status='5' OR status='6')) order by created_date desc")->queryAll();
               $total_entries = $all_wash_requests_count[0]['count'];
+	      
+	      $all_wash_requests_count2 =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id='".$agent_id."' AND action='dropjob' order by action_date desc")->queryAll();
+              $total_entries2 = $all_wash_requests_count2[0]['count'];
+	      
+	      $total_entries += $total_entries2; 
 
 if($total_entries) {
 $total_pages = ceil($total_entries / $limit);
@@ -1588,11 +1594,15 @@ $total_pages = ceil($total_entries / $limit);
 			->select('*')
 			->from('washing_requests')
 			->where("agent_id='".$agent_id."' AND ((status='4' OR status='5' OR status='6'))", array())
-->limit($limit)
-->offset(($page-1) * $limit)
-            ->order(array('created_date desc'))
+			->limit($limit)
+			->offset(($page-1) * $limit)
+			->order(array('created_date desc'))
 			->queryAll();
-
+	     
+	     /*$all_wash_requests =  Yii::app()->db->createCommand("SELECT DISTINCT w.id, w.agent_id FROM washing_requests w LEFT JOIN activity_logs a ON w.id = a.wash_request_id WHERE (w.agent_id='".$agent_id."' AND (w.status='4' OR w.status='5' OR w.status='6')) OR (a.agent_id='".$agent_id."' AND a.action='dropjob') order by created_date desc")->queryAll();
+       echo count($all_wash_requests);      
+print_r($all_wash_requests);
+exit;*/
             if(count($all_wash_requests)){
             foreach($all_wash_requests as $index => $wrequest){
 

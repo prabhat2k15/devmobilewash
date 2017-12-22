@@ -2429,10 +2429,10 @@ $message = str_replace("[ORDER_ID]","#".$wash_request_id, $message);
 if($admin_command == 'update-order'){
     if($promo_code){
        if (strpos($car_packs, 'Premium') !== false) {
-        $coupon_amount = number_format($coupon_check->premium_amount, 2);
+        $coupon_amount = number_format($coupon_check->premium_amount, 2, '.', '');
        }
        else{
-        $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
+        $coupon_amount = number_format($coupon_check->deluxe_amount, 2, '.', '');
        }
 
        $fifthwash_vehicles = '';

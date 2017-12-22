@@ -16,7 +16,8 @@ if (! isset($_GET['code'])) {
   $client->authenticate($_GET['code']);
   $_SESSION['access_token'] = $client->getAccessToken();
 
-  $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/admin-new/coverage-area-zipcodes.php';
+  if((isset($_GET['redirectpage'])) && ($_GET['redirectpage'] == 'zipcode-pricing')) $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/admin-new/zipcode-pricing.php';
+  else $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/admin-new/coverage-area-zipcodes.php'; 
   header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
 }
 ?>

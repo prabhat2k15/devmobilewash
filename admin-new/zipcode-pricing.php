@@ -1,4 +1,22 @@
-<?php include('header.php') ?>
+<?php
+session_start();
+require_once 'google-api-php-client-2.0.1/vendor/autoload.php';
+
+$client = new Google_Client();
+$client->setAuthConfigFile('client_secret_947329153849.json');
+$client->addScope('https://www.googleapis.com/auth/fusiontables');
+
+if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
+//echo print_r($_SESSION['access_token']);
+  $client->setAccessToken($_SESSION['access_token']);
+ 
+        
+} else {
+  $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/admin-new/oauth2callback.php?redirectpage=zipcode-pricing';
+  header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+}
+
+include('header.php') ?>
 <?php
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
@@ -20,6 +38,37 @@ curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
+
+if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
+if($_POST['zipcodes']) $all_zips = explode(",", $_POST['zipcodes']);
+$all_zips_formatted = array();
+foreach($all_zips as $zip) array_push($all_zips_formatted, trim($zip));
+$row_ids = array();
+$client = new Google_Client();
+$client->setAuthConfigFile('client_secret_947329153849.json');
+$client->addScope('https://www.googleapis.com/auth/fusiontables');
+  $client->setAccessToken($_SESSION['access_token']);
+$tableId = '1iuPfrdpW4w8IT-v47IY3TMuKfAE25w6OCe0-6Jsc';
+        $ft = new Google_Service_Fusiontables($client);
+
+ $result = $ft->query->sql("SELECT ROWID, ZIPCODE FROM $tableId");
+//print_r($result->rows);
+if(count($all_zips_formatted)){
+foreach($result->rows as $rr){
+if (in_array($rr[1], $all_zips_formatted)) {
+array_push($row_ids, $rr[0]); 
+}
+
+}
+}
+
+$ft->query->sql("UPDATE $tableId SET SPECIAL_PRICE_APPLIED = '' WHERE SPECIAL_PRICE_APPLIED = 'true'");
+
+if(count($row_ids)) foreach($row_ids as $rid) $ft->query->sql("UPDATE $tableId SET SPECIAL_PRICE_APPLIED = 'true' WHERE ROWID = '$rid'");
+
+      
+}
+
     }
     
 

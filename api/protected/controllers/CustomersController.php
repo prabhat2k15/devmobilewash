@@ -1544,6 +1544,7 @@ die();
 					'is_first_wash'=> $customers_id->is_first_wash,
 					'braintree_id'=> $customers_id->braintree_id,
 					'client_position'=> $customers_id->client_position,
+					'rating'=> $customers_id->rating,
                     'customer_locations'=> $locations,
                     'customer_vehicles'=> $vehicles,
 		    'last_used_device' => $clientdevices,
@@ -2112,10 +2113,10 @@ $vehicle_source_id = 0;
                                         $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$wash_request_exists->coupon_code));
                                         if(count($coupon_check)){
                                             if (strpos($new_packs, 'Premium') !== false) {
-                                                $coupon_amount = number_format($coupon_check->premium_amount, 2);
+                                                $coupon_amount = number_format($coupon_check->premium_amount, 2, '.', '');
                                             }
                                             else{
-                                                $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
+                                                $coupon_amount = number_format($coupon_check->deluxe_amount, 2, '.', '');
                                             }
                                         }
                                     }
@@ -2882,10 +2883,10 @@ Vehicle::model()->updateByPk($vehicle_id, array('surge_addon' => 0));
                         $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$wash_request_exists->coupon_code));
                         if(count($coupon_check)){
                             if (strpos($updated_packs, 'Premium') !== false) {
-                                $coupon_amount = number_format($coupon_check->premium_amount, 2);
+                                $coupon_amount = number_format($coupon_check->premium_amount, 2, '.', '');
                             }
                             else{
-                                $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
+                                $coupon_amount = number_format($coupon_check->deluxe_amount, 2, '.', '');
                             }
                         }
                     }
@@ -3132,10 +3133,10 @@ $vehicle_check = Yii::app()->db->createCommand()
                         $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$wash_request_exists->coupon_code));
                         if(count($coupon_check)){
                             if (strpos($new_packs, 'Premium') !== false) {
-                                $coupon_amount = number_format($coupon_check->premium_amount, 2);
+                                $coupon_amount = number_format($coupon_check->premium_amount, 2, '.', '');
                             }
                             else{
-                                $coupon_amount = number_format($coupon_check->deluxe_amount, 2);
+                                $coupon_amount = number_format($coupon_check->deluxe_amount, 2, '.', '');
                             }
                         }
                     }
@@ -3805,9 +3806,9 @@ $first_fee = 0;
 
 
 
-if($pack_arr[$ind] == 'Express') $car_price_agent = number_format($wash_price * .80, 2);
-if($pack_arr[$ind] == 'Deluxe') $car_price_agent = number_format($wash_price * .80, 2);
-if($pack_arr[$ind] == 'Premium') $car_price_agent = number_format($wash_price * .75, 2);
+if($pack_arr[$ind] == 'Express') $car_price_agent = number_format($wash_price * .80, 2, '.', '');
+if($pack_arr[$ind] == 'Deluxe') $car_price_agent = number_format($wash_price * .80, 2, '.', '');
+if($pack_arr[$ind] == 'Premium') $car_price_agent = number_format($wash_price * .75, 2, '.', '');
 
 $total_car_price += $wash_price;
 $total_car_price += 1; //safe handling fee
@@ -3855,7 +3856,7 @@ $total_car_price_agent += $cardata->floormat_addon*.80;
 
 
 if(count($car_arr) > 1) {
-$bundle_fee_agent = number_format(.80, 2);
+$bundle_fee_agent = number_format(.80, 2, '.', '');
 $total_car_price_agent -= $bundle_fee_agent;
 }
 
@@ -4925,7 +4926,7 @@ $wash_requests[$index]['cancel_fee'] =$wrequest['cancel_fee'];
  $wash_requests[$index]['agent_id'] = $agentdata->id;
   $wash_requests[$index]['real_washer_id'] = $agentdata->real_washer_id;
         $washfeedbacks =  Washingfeedbacks::model()->findByAttributes(array("customer_id"=>$customer_id, "wash_request_id"=>$wrequest['id']));
-        if($washfeedbacks->agent_ratings) $wash_requests[$index]['rating'] = number_format($washfeedbacks->agent_ratings, 2);
+        if($washfeedbacks->agent_ratings) $wash_requests[$index]['rating'] = number_format($washfeedbacks->agent_ratings, 2, '.', '');
         else $wash_requests[$index]['rating'] = $washfeedbacks->agent_ratings;
 
         $wash_requests[$index]['status'] = $wrequest['status'];
@@ -5607,9 +5608,9 @@ if($fifth_points > 5) $fifth_points = 1;
 
 
 
-if($vehicle_exists->wash_package == 'Express') $car_price_agent = number_format($wash_price * .80, 2);
-if($vehicle_exists->wash_package == 'Deluxe') $car_price_agent = number_format($wash_price * .80, 2);
-if($vehicle_exists->wash_package == 'Premium') $car_price_agent = number_format($wash_price * .75, 2);
+if($vehicle_exists->wash_package == 'Express') $car_price_agent = number_format($wash_price * .80, 2, '.', '');
+if($vehicle_exists->wash_package == 'Deluxe') $car_price_agent = number_format($wash_price * .80, 2, '.', '');
+if($vehicle_exists->wash_package == 'Premium') $car_price_agent = number_format($wash_price * .75, 2, '.', '');
 
 $total_car_price += $wash_price;
 $total_car_price += 1; //handling fee
@@ -5669,13 +5670,13 @@ $total_car_price_agent += $vehicle_exists->floormat_addon*.80;
 
 if($action == 'edit_vehicle'){
 	if($total_cars > 1) {
-		$bundle_fee_agent = number_format(.80, 2);
+		$bundle_fee_agent = number_format(.80, 2, '.', '');
 		$total_car_price_agent -= $bundle_fee_agent;
 	}	
 }
 else{
 	if($total_cars > 0) {
-		$bundle_fee_agent = number_format(.80, 2);
+		$bundle_fee_agent = number_format(.80, 2, '.', '');
 		$total_car_price_agent -= $bundle_fee_agent;
 	}	
 }

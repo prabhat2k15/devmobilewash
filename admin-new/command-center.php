@@ -1736,14 +1736,19 @@ fusiondata = data['rows'];
             var newCoordinates = [];
 
               newCoordinates = constructNewCoordinates(rows[i][10]['geometry']);
+	      
+	      var areacolor = "#076ee1";
+if (rows[i][12] == 'true') {
+    areacolor = "#f4d942";
+}
 
             var randomnumber = Math.floor(Math.random() * 4);
             var country = new google.maps.Polygon({
               paths: newCoordinates,
-              strokeColor: '#076ee1',
+              strokeColor: areacolor,
               strokeOpacity: 0.8,
               strokeWeight: 0,
-              fillColor: "#076ee1",
+              fillColor: areacolor,
               fillOpacity: 0.6,
               zipcode: rows[i][4]
             });
@@ -1794,14 +1799,17 @@ function showziparea(data) {
             var newCoordinates = [];
 
               newCoordinates = constructNewCoordinates(data[i][10]['geometry']);
-
+var areacolor = "#076ee1";
+if (data[i][12] == 'true') {
+    areacolor = "#f4d942";
+}
             var randomnumber = Math.floor(Math.random() * 4);
             var country = new google.maps.Polygon({
               paths: newCoordinates,
-              strokeColor: '#076ee1',
+              strokeColor: areacolor,
               strokeOpacity: 0.8,
               strokeWeight: 0,
-              fillColor: "#076ee1",
+              fillColor: areacolor,
               fillOpacity: 0.6,
               zipcode: data[i][4]
             });
