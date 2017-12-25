@@ -3030,6 +3030,11 @@ die();
         $customer_details = new stdClass();
         $car_types = '';
         $feedback_5mins_passed = 0;
+	 $vehicles = array();
+       
+$veh_type = '';
+$fifth_fee_check = 0;
+$first_fee_check = 0;
         if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))){
 
             $customer_id_check = Customers::model()->findByAttributes(array('id'=>$customer_id));
@@ -3335,6 +3340,150 @@ foreach( $clientdevices as $ctdevice){
                 }
 
                 }
+		
+		/* --- getvehiclestatus --- */
+		
+		$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
+		
+		$cars = $wash_request_exists->car_list;
+                $packs = $wash_request_exists->package_list;
+                $car_arr = explode(",",$cars);
+                $pack_arr = explode(",",$packs);
+$cust_exists = Customers::model()->findByAttributes(array("id"=>$wash_request_exists->customer_id));
+
+
+                foreach($car_arr as $ind=>$carid){
+
+
+                   $cardata = Vehicle::model()->findByAttributes(array("id"=>$carid));
+
+if($cardata->vehicle_type != 'S' && $cardata->vehicle_type != 'M' && $cardata->vehicle_type != 'L' && $cardata->vehicle_type != 'E'){
+$veh_type = 'S';
+}
+
+else{
+$veh_type = $cardata->vehicle_type;
+}
+
+if($cardata->upgrade_pack == 1) {
+$washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"=>$veh_type, "title"=>$cardata->new_pack_name));
+                    if(count($washing_plan_det)) {
+                      $wash_price = $washing_plan_det->price;
+
+                    }
+                    else $wash_price = '';
+
+}
+else{
+$washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"=>$veh_type, "title"=>$pack_arr[$ind]));
+                    if(count($washing_plan_det)) {
+                      $wash_price = $washing_plan_det->price;
+
+                    }
+                    else $wash_price = '';
+}
+
+                    $draft_vehicle_id = '';
+                    $draft_vehicle_id = $wash_request_exists->draft_vehicle_id;
+                     $new_vehicle_confirm = '';
+$car_price_agent = 0;
+$total_car_price = 0;
+$total_car_price_agent = 0;
+$bundle_fee = 0;
+$bundle_fee_agent = 0;
+$fifth_fee = 0;
+$first_fee = 0;
+
+
+
+if($pack_arr[$ind] == 'Express') $car_price_agent = number_format($wash_price * .80, 2, '.', '');
+if($pack_arr[$ind] == 'Deluxe') $car_price_agent = number_format($wash_price * .80, 2, '.', '');
+if($pack_arr[$ind] == 'Premium') $car_price_agent = number_format($wash_price * .75, 2, '.', '');
+
+$total_car_price += $wash_price;
+$total_car_price += 1; //safe handling fee
+$total_car_price += $cardata->pet_hair;
+$total_car_price += $cardata->lifted_vehicle;
+$total_car_price += $cardata->exthandwax_addon;
+$total_car_price += $cardata->extplasticdressing_addon;
+$total_car_price += $cardata->extclaybar_addon;
+$total_car_price += $cardata->waterspotremove_addon;
+$total_car_price += $cardata->upholstery_addon;
+$total_car_price += $cardata->floormat_addon;
+
+
+if(($cust_exists->fifth_wash_points == 4) && (!$fifth_fee_check) && ($wash_request_exists->coupon_discount <= 0)) {
+$fifth_fee = 5;
+$total_car_price -= $fifth_fee;
+$fifth_fee_check = 1;
+}
+
+/*if(!$cust_exists->is_first_wash && (!$first_fee_check)) {
+$first_pack = '';
+if($cardata->upgrade_pack == 1) $first_pack = $cardata->new_pack_name;
+else $first_pack = $pack_arr[0];
+
+if($first_pack == 'Premium') $first_fee = 10;
+else $first_fee = 5;
+$total_car_price -= $first_fee;
+$first_fee_check = 1;
+}*/
+
+if((count($car_arr) > 1) && (!$fifth_fee) && ($wash_request_exists->coupon_discount <= 0)) {
+$bundle_fee = 1;
+$total_car_price -= $bundle_fee;
+}
+
+$total_car_price_agent += $car_price_agent;
+$total_car_price_agent += $cardata->pet_hair * .80;
+$total_car_price_agent += $cardata->lifted_vehicle * .80;
+$total_car_price_agent += $cardata->exthandwax_addon*.80;
+$total_car_price_agent += $cardata->extplasticdressing_addon*.80;
+$total_car_price_agent += $cardata->extclaybar_addon*.80;
+$total_car_price_agent += $cardata->waterspotremove_addon*.80;
+$total_car_price_agent += $cardata->upholstery_addon*.80;
+$total_car_price_agent += $cardata->floormat_addon*.80;
+
+
+if(count($car_arr) > 1) {
+$bundle_fee_agent = number_format(.80, 2, '.', '');
+$total_car_price_agent -= $bundle_fee_agent;
+}
+
+$wash_time = $washing_plan_det->wash_time;
+if($cardata->pet_hair > 0) $wash_time += 5;
+if($cardata->lifted_vehicle > 0) $wash_time += 5;
+if($cardata->exthandwax_addon > 0) $wash_time += 10;
+if($cardata->extplasticdressing_addon > 0) $wash_time += 5;
+if($cardata->extclaybar_addon > 0) $wash_time += 15;
+if($cardata->waterspotremove_addon > 0) $wash_time += 10;
+if($cardata->upholstery_addon > 0) $wash_time += 10;
+if($cardata->floormat_addon > 0) $wash_time += 10;
+
+$hours = floor($wash_time / 60);
+					$minutes = ($wash_time % 60);
+
+                    if($hours < 1){
+                      $washtime_str = sprintf('%02d min', $minutes);
+                    }
+                    else{
+                      if($hours == 1) {
+                        if($minutes > 0) $washtime_str = sprintf('%d hour %02d min', $hours, $minutes);
+                        else $washtime_str = sprintf('%d hour', $hours);
+                      }
+					  else {
+                         if($minutes > 0) $washtime_str = sprintf('%d hours %02d min', $hours, $minutes);
+                         else $washtime_str = sprintf('%d hours', $hours);
+					  }
+                    }
+
+
+                    $new_vehicle_confirm = $wash_request_exists->new_vehicle_confirm;
+                   $vehicles[] = array("id"=> $carid, "make"=>$cardata->brand_name, "model"=>$cardata->model_name, "license_no"=>$cardata->vehicle_no, "vehicle_type"=>$cardata->vehicle_type, "vehicle_category"=>$cardata->vehicle_category, "vehicle_build"=>$cardata->vehicle_build, "vehicle_image"=>$cardata->vehicle_image, "handling_fee"=>'1.00', "status"=>$cardata->status, "eco_friendly"=>$cardata->eco_friendly, "damage_points"=>$cardata->damage_points,"damage_pic"=>$cardata->damage_pic, "pet_hair"=>$cardata->pet_hair, "pet_hair_agent"=> number_format(round($cardata->pet_hair * .80, 2), 2), "lifted_vehicle"=>$cardata->lifted_vehicle, "lifted_vehicle_agent"=>number_format(round($cardata->lifted_vehicle * .80, 2), 2), "exthandwax_addon"=>$cardata->exthandwax_addon, "exthandwax_addon_agent"=>number_format(round($cardata->exthandwax_addon*.80, 2), 2),"extplasticdressing_addon"=>$cardata->extplasticdressing_addon, "extplasticdressing_addon_agent"=>number_format(round($cardata->extplasticdressing_addon*.80, 2), 2), "extclaybar_addon"=>$cardata->extclaybar_addon, "extclaybar_addon_agent"=>number_format(round($cardata->extclaybar_addon*.80, 2), 2), "waterspotremove_addon"=>$cardata->waterspotremove_addon, "waterspotremove_addon_agent"=>number_format(round($cardata->waterspotremove_addon*.80, 2), 2), "upholstery_addon"=>$cardata->upholstery_addon, "upholstery_addon_agent"=>number_format(round($cardata->upholstery_addon*.80, 2), 2), "floormat_addon"=>$cardata->floormat_addon, "floormat_addon_agent"=>number_format(round($cardata->floormat_addon*.80, 2), 2), "bundle_discount" => number_format($bundle_fee, 2), "bundle_discount_agent" => number_format($bundle_fee_agent, 2), "fifth_wash_discount" => number_format($fifth_fee, 2), "first_wash_discount" => number_format($first_fee, 2), "upgrade_pack"=> $cardata->upgrade_pack, "new_pack_name"=> $cardata->new_pack_name, "edit_vehicle"=> $cardata->edit_vehicle, "remove_vehicle_from_kart"=> $cardata->remove_vehicle_from_kart, "payment_type"=>$pack_arr[$ind], "price"=>$wash_price, "total_price"=>number_format($total_car_price, 2), "price_agent"=>$car_price_agent, "total_price_agent"=>number_format($total_car_price_agent, 2), "wash_time"=> $wash_time, "wash_time_str" => $washtime_str);
+                }
+
+		
+		/* --- getvehiclestatus end --- */
             }
 
 
@@ -3358,7 +3507,10 @@ foreach( $clientdevices as $ctdevice){
 'wash_start_since' => $mins,
 'feedback_5mins_passed' => $feedback_5mins_passed,
                 'agent_details' => $agent_details,
-                'customer_details' => $customer_details
+                'customer_details' => $customer_details,
+		 'draft_vehicle_id'=> $draft_vehicle_id,
+            'new_vehicle_confirm' => $new_vehicle_confirm,
+            'vehicles' => $vehicles,
             );
         }
         else{

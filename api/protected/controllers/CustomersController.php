@@ -8578,7 +8578,7 @@ die();
             $nonce = Yii::app()->request->getParam('nonce');
             $device_data = Yii::app()->request->getParam('device_data');
             $payment_method_token = Yii::app()->request->getParam('payment_method_token');
-
+		$payment_methods = array();
             $response = "Pass the required parameters";
             $result = "false";
             $payment_type = '';
@@ -8660,12 +8660,34 @@ die();
 						else{
 							$result = 'true';
 							$response = $createmethodresult['token'];
+							
+							if($customers->client_position == 'real') $Bresult = Yii::app()->braintree->getCustomerById_real($customers->braintree_id);
+else $Bresult = Yii::app()->braintree->getCustomerById($customers->braintree_id);
+                //var_dump($Bresult);
+                if(count($Bresult->paymentMethods)){
+
+                  foreach($Bresult->paymentMethods as $index=>$paymethod){
+                     $payment_methods[$index]['title'] = get_class($paymethod);
+                     if($payment_methods[$index]['title'] == 'Braintree\\CreditCard'){
+                         $payment_methods[$index]['title'] = 'Credit Card';
+                          $payment_methods[$index]['payment_method_details'] = array("expirationMonth"=>$paymethod->expirationMonth, "expirationYear"=>$paymethod->expirationYear, "bin"=>$paymethod->bin, "last4"=>$paymethod->last4, "maskedNumber"=>$paymethod->maskedNumber, "cardType"=>$paymethod->cardType, "token"=>$paymethod->token, "cardname"=>$paymethod->cardholderName, "cardimg"=>$paymethod->imageUrl, "isDefault" => $paymethod->isDefault());
+                     }
+
+                      if($payment_methods[$index]['title'] == 'Braintree\\PayPalAccount'){
+                         $payment_methods[$index]['title'] = 'Paypal';
+                          $payment_methods[$index]['payment_method_details'] = array("email"=>$paymethod->email, "token"=>$paymethod->token);
+                     }
+                  }
+                }
+              
+
 
 $data = array(
                 'result' => $result,
                 'response' => $response,
 'masked_number' => $createmethodresult['masked_number'],
-'card_type' => $createmethodresult['card_type']
+'card_type' => $createmethodresult['card_type'],
+'payment_methods' => $payment_methods
             );
 
             echo json_encode($data);

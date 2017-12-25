@@ -226,8 +226,8 @@ $addressComponents = $geojsondata->results[0]->address_components;
 					if($total_packs[$carindex] == 'Premium') {
                        $total += $prem_price;
                        $veh_price = $prem_price;
-                       $agent_total += number_format($veh_price * .75, 2);
-                       $company_total += number_format($veh_price * .25, 2);
+                       $agent_total += number_format($veh_price * .75, 2, '.', '');
+                       $company_total += number_format($veh_price * .25, 2, '.', '');
                        if(count($vehicle_wash_pricing)){
                           $safe_handle_fee = $vehicle_wash_pricing->safe_handling;
                         $company_total += $vehicle_wash_pricing->safe_handling;
@@ -474,10 +474,10 @@ if($vehicle_details->vehicle_type == 'E') $floormat_price = 15;
 
 					$veh_price_agent = 0;
 					if($total_packs[$carindex] == 'Premium') {
-						$veh_price_agent = number_format($veh_price * .75, 2);
+						$veh_price_agent = number_format($veh_price * .75, 2, '.', '');
 					}
 					else{
-						$veh_price_agent = number_format($veh_price * .8, 2);
+						$veh_price_agent = number_format($veh_price * .8, 2, '.', '');
 					}
 
 						/* ------------ first wash discount ------- */
@@ -528,30 +528,30 @@ if((count($total_cars) > 1) && ($carindex==0) && ($wash_id_check->coupon_discoun
 						'vehicle_inspect_image_temp'=>$vehicle_details->damage_pic,
 						'vehicle_type'=>$vehicle_details->vehicle_type,
 						'vehicle_washing_package' => $total_packs[$carindex],
-						'vehicle_washing_price'=> number_format($veh_price, 2),
+						'vehicle_washing_price'=> number_format($veh_price, 2, '.', ''),
 						'vehicle_washing_price_agent'=> $veh_price_agent,
-						'safe_handling_fee' => number_format($safe_handle_fee, 2),
-						'pet_hair_fee' => number_format($pet_hair, 2),
-'pet_hair_fee_agent' => number_format($pet_hair * .8, 2),
-						'lifted_vehicle_fee' => number_format($lift_vehicle, 2),
-'lifted_vehicle_fee_agent' => number_format($lift_vehicle * .8, 2),
-'exthandwax_vehicle_fee' => number_format($exthandwax_vehicle, 2),
-'exthandwax_vehicle_fee_agent' => number_format($exthandwax_vehicle * .8, 2),
-'extplasticdressing_vehicle_fee' => number_format($extplasticdressing_vehicle, 2),
-'extplasticdressing_vehicle_fee_agent' => number_format($extplasticdressing_vehicle * .8, 2),
-'extclaybar_vehicle_fee' => number_format($extclaybar_vehicle, 2),
-'extclaybar_vehicle_fee_agent' => number_format($extclaybar_vehicle * .8, 2),
-'waterspotremove_vehicle_fee' => number_format($waterspotremove_vehicle, 2),
-'waterspotremove_vehicle_fee_agent' => number_format($waterspotremove_vehicle * .8, 2),
-'upholstery_vehicle_fee' => number_format($upholstery_vehicle, 2),
-'upholstery_vehicle_fee_agent' => number_format($upholstery_vehicle * .8, 2),
-'floormat_vehicle_fee' => number_format($floormat_vehicle, 2),
-'floormat_vehicle_fee_agent' => number_format($floormat_vehicle * .8, 2),
-'surge_vehicle_fee' => number_format($surge_vehicle, 2),
-'surge_vehicle_fee_agent' => number_format($surge_vehicle * .8, 2),
-'bundle_discount' => number_format($bundle_disc, 2),
-'bundle_discount_agent' => number_format($agent_bundle_disc, 2),
-						'fifth_wash_discount' => number_format($fifth_wash_disc, 2)
+						'safe_handling_fee' => number_format($safe_handle_fee, 2, '.', ''),
+						'pet_hair_fee' => number_format($pet_hair, 2, '.', ''),
+'pet_hair_fee_agent' => number_format($pet_hair * .8, 2, '.', ''),
+						'lifted_vehicle_fee' => number_format($lift_vehicle, 2, '.', ''),
+'lifted_vehicle_fee_agent' => number_format($lift_vehicle * .8, 2, '.', ''),
+'exthandwax_vehicle_fee' => number_format($exthandwax_vehicle, 2, '.', ''),
+'exthandwax_vehicle_fee_agent' => number_format($exthandwax_vehicle * .8, 2, '.', ''),
+'extplasticdressing_vehicle_fee' => number_format($extplasticdressing_vehicle, 2, '.', ''),
+'extplasticdressing_vehicle_fee_agent' => number_format($extplasticdressing_vehicle * .8, 2, '.', ''),
+'extclaybar_vehicle_fee' => number_format($extclaybar_vehicle, 2, '.', ''),
+'extclaybar_vehicle_fee_agent' => number_format($extclaybar_vehicle * .8, 2, '.', ''),
+'waterspotremove_vehicle_fee' => number_format($waterspotremove_vehicle, 2, '.', ''),
+'waterspotremove_vehicle_fee_agent' => number_format($waterspotremove_vehicle * .8, 2, '.', ''),
+'upholstery_vehicle_fee' => number_format($upholstery_vehicle, 2, '.', ''),
+'upholstery_vehicle_fee_agent' => number_format($upholstery_vehicle * .8, 2, '.', ''),
+'floormat_vehicle_fee' => number_format($floormat_vehicle, 2, '.', ''),
+'floormat_vehicle_fee_agent' => number_format($floormat_vehicle * .8, 2, '.', ''),
+'surge_vehicle_fee' => number_format($surge_vehicle, 2, '.', ''),
+'surge_vehicle_fee_agent' => number_format($surge_vehicle * .8, 2, '.', ''),
+'bundle_discount' => number_format($bundle_disc, 2, '.', ''),
+'bundle_discount_agent' => number_format($agent_bundle_disc, 2, '.', ''),
+						'fifth_wash_discount' => number_format($fifth_wash_disc, 2, '.', '')
 					);
 
 
@@ -707,22 +707,22 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
 			'schedule_time'=> $wash_id_check->schedule_time,
 			'reschedule_date'=> $wash_id_check->reschedule_date,
 			'reschedule_time'=> $wash_id_check->reschedule_time,
-            'total_price'=> number_format($total, 2),
-            'net_price'=> number_format($net_total, 2),
-            'company_total' => number_format($company_total, 2),
-            'agent_total' => number_format($agent_total, 2),
-            'tip_amount' => number_format($tip_amount, 2),
-            'bundle_discount' => number_format($bundle_discount, 2),
-            'fifth_wash_discount' => number_format($fifth_wash_discount, 2),
-            'first_wash_discount' => number_format($first_wash_discount, 2),
-            'coupon_discount' => number_format($coupon_discount, 2),
+            'total_price'=> number_format($total, 2, '.', ''),
+            'net_price'=> number_format($net_total, 2, '.', ''),
+            'company_total' => number_format($company_total, 2, '.', ''),
+            'agent_total' => number_format($agent_total, 2, '.', ''),
+            'tip_amount' => number_format($tip_amount, 2, '.', ''),
+            'bundle_discount' => number_format($bundle_discount, 2, '.', ''),
+            'fifth_wash_discount' => number_format($fifth_wash_discount, 2, '.', ''),
+            'first_wash_discount' => number_format($first_wash_discount, 2, '.', ''),
+            'coupon_discount' => number_format($coupon_discount, 2, '.', ''),
             'coupon_code' => $coupon_code,
             'promo_wash_count' => $promo_wash_count,
 	       'notes' => $wash_id_check->notes,
 			'customer_wash_points' => $wash_id_check->customer_wash_points,
 			'per_car_wash_points' => $wash_id_check->per_car_wash_points,
-			'cancel_fee' => number_format($wash_id_check->cancel_fee, 2),
-			'washer_cancel_fee' => number_format($wash_id_check->washer_cancel_fee, 2),
+			'cancel_fee' => number_format($wash_id_check->cancel_fee, 2, '.', ''),
+			'washer_cancel_fee' => number_format($wash_id_check->washer_cancel_fee, 2, '.', ''),
 			'status' => $wash_id_check->status,
 			'transaction_id' => $wash_id_check->transaction_id,
             'is_flagged' => $wash_id_check->is_flagged,
