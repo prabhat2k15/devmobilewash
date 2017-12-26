@@ -306,6 +306,7 @@ die();
         $customer_total_wash = 0;
         $wash_now_fee = 0;
          if(Yii::app()->request->getParam('wash_now_fee')) $wash_now_fee = Yii::app()->request->getParam('wash_now_fee');
+	 $last_order_days = "";
 
         $json = array();
         $car_id_check = true;
@@ -646,7 +647,7 @@ $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
 
                     $mobile_receipt .= "Washes: ".$customer_total_wash."\r\n";
 
-                    if(APP_ENV == 'real'){
+                    if((APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
             spl_autoload_unregister(array(
                 'YiiBase',
@@ -661,8 +662,23 @@ $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
             $auth_token = '149336e1b81b2165e953aaec187971e6';
             $client = new Services_Twilio($account_sid, $auth_token);
 
+$cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$customers_id_check->id, 'status' => 4),array('order'=>'id DESC'));
+$last_order_days = "N/A";
+if(count($cust_last_wash_check)){
+ $current_time = strtotime(date('Y-m-d H:i:s'));
 
-            $message = "WASH NOW ATTEMPT #000".$washrequestid."- ".date('M d', strtotime($wash_details->created_date))." @ ".date('h:i A', strtotime($wash_details->created_date))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\n------\r\n".$mobile_receipt;
+	              $last_order_time = strtotime($cust_last_wash_check->order_for);
+if($current_time > $last_order_time){
+$last_order_days = floor(($current_time - $last_order_time) / (60 * 60 * 24));
+}
+
+}
+else{
+$last_order_days = "N/A";
+}
+ 
+
+            $message = "WASH NOW ATTEMPT #000".$washrequestid."- ".date('M d', strtotime($wash_details->created_date))." @ ".date('h:i A', strtotime($wash_details->created_date))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
 
   $sendmessage = $client->account->messages->create(array(
@@ -941,7 +957,7 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
 					$from = Vargas::Obj()->getAdminFromEmail();
 					Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
 
-                   if(APP_ENV == 'real'){
+                   if((APP_ENV == 'real')){
 
                     $this->layout = "xmlLayout";
             spl_autoload_unregister(array(
@@ -956,9 +972,24 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
             $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
             $auth_token = '149336e1b81b2165e953aaec187971e6';
             $client = new Services_Twilio($account_sid, $auth_token);
+	    
+	    $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$customers_id_check->id, 'status' => 4),array('order'=>'id DESC'));
+$last_order_days = "N/A";
+if(count($cust_last_wash_check)){
+ $current_time = strtotime(date('Y-m-d H:i:s'));
+
+	              $last_order_time = strtotime($cust_last_wash_check->order_for);
+if($current_time > $last_order_time){
+$last_order_days = floor(($current_time - $last_order_time) / (60 * 60 * 24));
+}
+
+}
+else{
+$last_order_days = "N/A";
+}
 
 
-            $message = "NEW Scheduled Order #000".$washrequestid."- ".date('M d', strtotime($wash_details->schedule_date))." @ ".$wash_details->schedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\n------\r\n".$mobile_receipt;
+            $message = "NEW Scheduled Order #000".$washrequestid."- ".date('M d', strtotime($wash_details->schedule_date))." @ ".$wash_details->schedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
 
   $sendmessage = $client->account->messages->create(array(
@@ -2338,7 +2369,7 @@ $customername = ucwords($customername);
                  $washrequestmodel->total_schedule_rejected = $washrequestmodel->total_schedule_rejected + 1;
                     $washrequestmodel->save(false);
 
-                    if(APP_ENV == 'real'){
+                    if((APP_ENV == 'real') || (APP_ENV == '')){
                     $this->layout = "xmlLayout";
                     spl_autoload_unregister(array(
                         'YiiBase',
@@ -2354,7 +2385,8 @@ $customername = ucwords($customername);
                     $auth_token = '149336e1b81b2165e953aaec187971e6';
 
                     $client = new Services_Twilio($account_sid, $auth_token);
-                    $smscontent = "Washer #".$agent_det->real_washer_id." dropped the order #".$wrequest_id_check->id;
+		    $agent_det =  Agents::model()->findByPk($wrequest_id_check->agent_id);
+                    $smscontent = "Washer #".$agent_det->real_washer_id." - ".$agent_det->first_name." ".$agent_det->last_name." dropped the order #".$wrequest_id_check->id;
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  '9098023158',
                         'From' => '+13103128070',
