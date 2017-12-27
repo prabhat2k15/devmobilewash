@@ -5198,12 +5198,12 @@ $response = 'device updated';
 
             
 		if($user_type == 'customer'){
-			if($user_check->online_status == 'offline') $response = 'offline';
+			if($user_check->forced_logout == 1) $response = 'offline';
 			else $response = 'online';
 		}
 		
 		if($user_type == 'agent'){
-			if(($user_check->status == 'offline') && (!$user_check->available_for_new_order)) $response = 'offline';
+			if($user_check->forced_logout == 1) $response = 'offline';
 			else $response = 'online';
 		}
 	    

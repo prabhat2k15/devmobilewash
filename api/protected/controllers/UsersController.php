@@ -5098,8 +5098,8 @@ die();
 	else $matchcode = Agents::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$userid));
 	
         if(!empty($matchcode)){
-            if($user_type == 'customer') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1' WHERE id = '$userid' AND phone_verify_code = '$sortcode' ")->execute();
-	    else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1' WHERE id = '$userid' AND phone_verify_code = '$sortcode' ")->execute();
+            if($user_type == 'customer') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', forced_logout= 0 WHERE id = '$userid' AND phone_verify_code = '$sortcode' ")->execute();
+	    else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0 WHERE id = '$userid' AND phone_verify_code = '$sortcode' ")->execute();
             
 	    $data = array(
                 'result' => 'true',

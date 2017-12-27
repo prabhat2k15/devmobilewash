@@ -856,7 +856,7 @@ die();
 					'response'=> $response
 				);
 
-			$online_status= array('online_status' => 'offline');
+			$online_status= array('online_status' => 'offline', 'forced_logout' => 0);
 
 			    $update_status = Customers::model()->updateAll($online_status,'id=:id',array(':id'=>$customers_id));
 			    Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline' WHERE customer_id = '$customers_id' AND device_token = '$device_token'")->execute();

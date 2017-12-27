@@ -383,6 +383,8 @@ die();
 					'result'=> $result,
 					'response'=> $response
 				);
+				
+				 Agents::model()->updateByPk($agent_id, array('forced_logout' => 0));
 
 $criteria = new CDbCriteria;
 $criteria->addCondition( "order_temp_assigned=$agent_id") ; // $wall_ids = array ( 1, 2, 3, 4 );
