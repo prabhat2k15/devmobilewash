@@ -5120,6 +5120,59 @@ die();
             exit;
         }
     }
+    
+    
+       public function actioncheckuseronlinestatus(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $user_type = Yii::app()->request->getParam('user_type');
+	$user_id = Yii::app()->request->getParam('user_id');
+	
+
+           $result  = 'false';
+$response = 'pass the required fields';
+
+
+if((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user_id))){
+	if($user_type == 'customer') $user_check = Customers::model()->findByPk($user_id);
+	if($user_type == 'agent') $user_check = Agents::model()->findByPk($user_id);
+
+   
+	if(!count($user_check)){
+                $result= 'false';
+                $response= 'No user found';
+        }
+        else{
+                $result = 'true';
+		if($user_type == 'customer'){
+			if($user_check->online_status == 'offline') $response = 'offline';
+			else $response = 'online';
+		}
+		
+		if($user_type == 'agent'){
+			if(($user_check->status == 'offline') && (!$user_check->available_for_new_order)) $response = 'offline';
+			else $response = 'online';
+		}
+  
+        }
+
+
+
+}
+
+
+$json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+    }
 
 
 

@@ -5174,18 +5174,40 @@ $response = 'pass the required fields';
 if((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user_id)) && (isset($device_token) && !empty($device_token))){
 
     $device_check = Yii::app()->db->createCommand("SELECT * FROM ".$user_type."_devices WHERE device_token = '$device_token' AND ".$user_type."_id = '$user_id'")->queryAll();
+    
+    if($user_type == 'customer') $user_check = Customers::model()->findByPk($user_id);
+	if($user_type == 'agent') $user_check = Agents::model()->findByPk($user_id);
 
-			if(!count($device_check)){
+   
+	if(!count($user_check)){
+                $result= 'false';
+                $response= 'No user found';
+        }
+
+	else if(!count($device_check)){
                 $result= 'false';
                 $response= 'No device found';
             }
             else{
+		
+		
                 $result = 'true';
 $response = 'device updated';
 
                  Yii::app()->db->createCommand("UPDATE ".$user_type."_devices SET device_status='online', last_used='".date("Y-m-d H:i:s")."' WHERE device_token = '$device_token' AND ".$user_type."_id = '$user_id'")->execute();
 
-            }
+            
+		if($user_type == 'customer'){
+			if($user_check->online_status == 'offline') $response = 'offline';
+			else $response = 'online';
+		}
+		
+		if($user_type == 'agent'){
+			if(($user_check->status == 'offline') && (!$user_check->available_for_new_order)) $response = 'offline';
+			else $response = 'online';
+		}
+	    
+	    }
 
 
 

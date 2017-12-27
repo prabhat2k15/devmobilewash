@@ -184,6 +184,14 @@ request.post({
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('site_updatedevicestatus');
+ try
+ {
+         io.emit('site_updatedevicestatus_'+user_type+'_'+user_id, JSON.parse(body));  
+       }
+       catch(err)
+       {
+
+       }     
            
 });
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
@@ -325,6 +333,7 @@ else{
       //console.log(data);
     customers_getcustomerpaymentmethods(data.customer_id);
   });
+   
 
   socket.on('disconnect', function(){
     if(socket.handshake.query.action == 'commandcenter') {
