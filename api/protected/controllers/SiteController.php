@@ -5216,7 +5216,9 @@ $response = 'device updated';
 
 $json= array(
 				'result'=> $result,
-				'response'=> $response
+				'response'=> $response,
+				'user_id'=> $user_id,
+				'user_type'=> $user_type
 			);
 		echo json_encode($json);
 

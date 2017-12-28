@@ -4671,6 +4671,8 @@ $json= array(
                             'push_notifications'=> $model->push_notifications,
 'phone_verified'=> $model->phone_verified,
                             'wash_id'=>$latestwash->id,
+			    'wash_status'=>$latestwash->status,
+			    'is_scheduled'=>$latestwash->is_scheduled,
                             'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
                              );
 }
@@ -4852,6 +4854,8 @@ else $agentlname = $model->last_name;
                             'total_washes' => $totalcompletedwashes,
                             'rating' => number_format($model->rating, 2, '.', ''),
                             'wash_id'=>$latestwash->id,
+			    'wash_status'=>$latestwash->status,
+			    'is_scheduled'=>$latestwash->is_scheduled,
                             'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details,
                             'is_scheduled_wash_120' => $is_scheduled_wash_120,
 'time_left_to_start' => $min_diff
@@ -5036,6 +5040,8 @@ $json= array(
                         'push_notifications'=> 0,
 			'phone_verified'=> 0,
                         'wash_id'=>$latestwash->id,
+			'wash_status'=>$latestwash->status,
+			    'is_scheduled'=>$latestwash->is_scheduled,
                         'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
                 );
 }
