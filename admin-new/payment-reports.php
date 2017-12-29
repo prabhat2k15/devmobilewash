@@ -334,7 +334,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase"> <?php if($_GET['filter'] == 'upcoming') echo 'Upcoming'; if($_GET['filter'] == 'nonupcoming') echo 'Non-Upcoming'; ?> Customer Orders </span>
+                            <span class="caption-subject bold uppercase"> Payment Reports </span>
                         </div>
                         <div class="caption font-dark">
                             <span class="caption-subject bold uppercase"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -360,17 +360,15 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                         <th> Transaction ID </th>
 				                        <th> Customer Name </th>
 				                        <th> Customer Phone </th>
-                                        <?php if($_GET['customer_id']): ?>
-                                            <th> Avg. Order<br>Frequency </th>
-                                        <?php endif; ?>
+                                        
 										<th> Agent Name </th>
                                         <th> Agent Phone </th>
                                         <th style='min-width: 115px;'> Address </th>
                                         <th> Schedule Datetime </th>
-                                        <th> Starts </th>
+                                        
                                         <th> Vehicles </th>
     						            <th> Total Price </th>
-                                        <th> Paid Amount </th>
+                                        <th> Net Price </th>
 										<th> Company Total </th>
                                         <th> Agent Total </th>
                                         <th> Bundle Discount </th>
@@ -378,7 +376,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                         <!-- <th> First Wash Discount </th> -->
                                         <th> Coupon Discount </th>
                                         <th> Coupon Code </th>
-                                        <th> VIP Coupon Code</th>
+                                        
                                         <th> Company Discount </th>
 										<th> Tip Amount </th>
 										<th> Created Date </th>
@@ -417,18 +415,16 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                             <?php endif; ?>
                                         </td>
                                         <td><?php echo $order->transaction_id; ?></td>
-                                        <td><a target="_blank" href="/admin-new/customer-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
+                                        <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                                         <td><?php echo $order->customer_phoneno; ?></td>
-                                        <?php if($_GET['customer_id']): ?>
-                                        <td><?php echo $cust_avg_order_frequency; ?> days</td>
-                                        <?php endif; ?>
+                                        
                                         <!--td><?php /*
                                         if(count($order->agent_details)) echo $order->agent_details->agent_id;
                                         else echo "N/A"; */
                                         ?>
                                         </td-->
                                         <td><?php
-                                        if(count($order->agent_details)) echo "<a target='_blank' href='/admin-new/customer-orders.php?agent_id=".$order->agent_details->agent_id."'>".$order->agent_details->agent_name."</a>";
+                                        if(count($order->agent_details)) echo "<a target='_blank' href='/admin-new/all-orders.php?agent_id=".$order->agent_details->agent_id."'>".$order->agent_details->agent_name."</a>";
                                         else echo "N/A";
                                         ?>
                                         </td>
@@ -454,9 +450,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                         N/A
                                         <?php endif; ?>
                                         </td>
-                                        <td><?php if($order->min_diff > 0) echo $order->min_diff;
-                                            else echo "-"; ?>
-                                        </td>
+                                       
                                         <td><?php if(count($order->vehicles)){
                                         echo "<ol style='padding-left: 15px;'>";
                                         foreach($order->vehicles as $car){
@@ -473,18 +467,18 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                         else echo "N/A"; */
                                         ?></td-->
                                         <!--td><?php //echo $order->transaction_id; ?></td-->
-                                        <td>$<?php echo $order->total_price; ?></td>
-                                        <td>$<?php echo $order->net_price; ?></td>
-                                        <td>$<?php echo $order->company_total; ?></td>
-                                        <td>$<?php echo $order->agent_total; ?></td>
-                                        <td>$<?php echo $order->bundle_discount; ?></td>
-                                        <td>$<?php echo $order->fifth_wash_discount; ?></td>
-                                        <!-- <td>$<?php echo $order->first_wash_discount; ?></td> -->
-                                        <td>$<?php echo $order->coupon_discount; ?></td>
+                                        <td>$<?php echo number_format($order->total_price, 2); ?></td>
+                                        <td>$<?php echo number_format($order->net_price, 2); ?></td>
+                                        <td>$<?php echo number_format($order->company_total, 2); ?></td>
+                                        <td>$<?php echo number_format($order->agent_total, 2); ?></td>
+                                        <td>$<?php echo number_format($order->bundle_discount, 2); ?></td>
+                                        <td>$<?php echo number_format($order->fifth_wash_discount, 2); ?></td>
+                                        
+                                        <td>$<?php if(!$order->coupon_discount) {echo "0.00";} else {echo number_format($order->coupon_discount, 2);} ?></td>
                                         <td><?php echo $order->coupon_code; ?></td>
-                                        <td><?php echo $order->vip_coupon_code; ?></td>
-                                        <td>$<?php echo $order->company_discount; ?></td>
-                                        <td>$<?php echo $order->tip_amount; ?></td>
+                                        
+                                        <td>$<?php echo number_format($order->company_discount, 2); ?></td>
+                                        <td>$<?php echo number_format($order->tip_amount, 2); ?></td>
                                         <td><?php echo $order->created_date; ?></td>
                                     </tr>
 					            <?php } ?>
@@ -576,55 +570,18 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     if((!params.limit) || params.limit > 100) params.limit = 100;
 
     $(function(){
-        $(document).on( 'click', '.delete-order', function(){
-            var th = $(this);
-            id = $(this).data('id');
-            var r = confirm('Are you sure you want to delete order #'+id+'?');
-            if (r == true) {
-                $(th).html('Deleting...');
-                $.getJSON( "http://www.devmobilewash.com/api/index.php?r=PhoneOrders/deleteorder", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
-                    if(data.result == 'true'){
-                        window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=delete-success&nid="+id;
-                    }
-                    if(data.result == 'false'){
-                        window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=delete-error";
-                    }
-                });
-            }
-            return false;
-        });
-
-$(document).on( 'click', '.appt-delete-order', function(){
-var th = $(this);
-id = $(this).data('id');
-var r = confirm('Are you sure you want to delete order #'+id+'?');
-if (r == true) {
-$(th).html('Deleting...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=ScheduleOrders/deleteorder", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
-if(data.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=delete-success&nid="+id;
-}
-if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=delete-error";
-}
-
-});
-
-}
-return false;
-});
-
+ 
 $(".preloader").remove();
 
-var curr_url = "http://www.devmobilewash.com/admin-new/customer-orders.php?filter=<?php echo $_GET['filter']; ?>";
+var curr_url = "http://www.devmobilewash.com/admin-new/payment-reports.php?filter=<?php echo $_GET['filter']; ?>";
 var limit = "<?php echo $_GET['limit']; ?>";
 $(".order-limit").change(function(){
   window.location.href=curr_url+'&limit='+$(this).val();
 });
 
 $(".order-filter").change(function(){
-  if(limit) window.location.href='http://www.devmobilewash.com/admin-new/customer-orders.php?filter='+$(this).val()+'&limit='+limit;
-  else window.location.href='http://www.devmobilewash.com/admin-new/customer-orders.php?filter='+$(this).val();
+  if(limit) window.location.href='http://www.devmobilewash.com/admin-new/payment-reports.php?filter='+$(this).val()+'&limit='+limit;
+  else window.location.href='http://www.devmobilewash.com/admin-new/payment-reports.php?filter='+$(this).val();
 });
 
 /*
@@ -669,150 +626,3 @@ $.each(data.wash_ids, function( index, value ) {
 }
 
 </script>
-<?php if($_GET['ajax'] == 'true'): ?>
-<script>
-function ajaxorderlist(){
-    var alldata;
-    var upcomingwashes = [];
-    var processordeclined_washes = "";
-//console.log(params);
-  $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/getallwashrequestsnew", params, function( data ) {
-    
-if(data.result == 'true'){
-//console.log(data);
-$(".portlet-body table tr").removeClass('flashrow');
-$.each(data.wash_requests, function( index, value ) {
-  
-    dt_table.fnDeleteRow( $(".portlet-body table tr#order-"+value.id));
-
-});
-
-alldata = dt_table.fnGetData();
-//console.log(alldata);
-dt_table.fnClearTable();
-
-$.each(data.wash_requests, function( index, value ) {
-    var upcomingwashes = [];
-    if(value.payment_status == 'Declined'){
-      processordeclined_washes += "<p>#"+value.id+" Processor declined order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
-    }
-    upcomingwashes["DT_RowId"] = "order-"+value.id;
-     //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
-     if((value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
-     if((value.min_diff < 0) && (value.status == 1)) upcomingwashes["DT_RowClass"] = "flashrownotarrive";
-     if(value.payment_status == 'Declined') upcomingwashes["DT_RowClass"] = "flashrowdeclined";
-     if((value.min_diff <= 30) && (value.status == 0) && (value.payment_status == 'Declined')) upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
-
-      upcomingwashes.push("<a href='edit-order.php?id="+value.id+"' class='appt-edit-order' data-id='"+value.id+"' style='margin-right: 7px;'>Edit</a>");
-      upcomingwashes.push(value.id);
-       if(value.is_scheduled == 1){
-         upcomingwashes.push("<p><span class='label label-sm label-pending' style='background-color: #0046ff !important;'>Scheduled</span></p>"); 
-      }
-      else{
-        upcomingwashes.push("<p><span class='label label-sm label-pending' style='background-color: #009688 !important;'>On-Demand</span></p>");   
-      }
-      //var checklist_arr = value.checklist.split('|');
-      
-      if(value.status == 5 || value.status == 6){
-         upcomingwashes.push("<span class='label label-sm label-cancel'>Cancelled</span>"); 
-      }
-      
-      else if(value.status == 0){
-         
-        upcomingwashes.push("<span class='label label-sm label-pending'>Pending</span>");
-      }
-      
-      else if(value.status == 1){
-         upcomingwashes.push("<span class='label label-sm label-process'>En Route</span>"); 
-      }
-      
-      else if(value.status == 2){
-         upcomingwashes.push("<span class='label label-sm label-process'>Arrived</span>"); 
-      }
-      
-       else if(value.status == 3){
-         upcomingwashes.push("<span class='label label-sm label-process'>In Process</span>"); 
-      }
-      
-      else if(value.status == 4){
-         upcomingwashes.push("<span class='label label-sm label-complete'>Completed</span>");
-      }
-      
-       var payment_status_str = '';
-if((value.payment_status == 'Declined') || (value.payment_status == 'Check Fraud')){
-payment_status_str += "<span class='label label-sm label-pending'>"+value.payment_status+"</span><br><br>";
-
-      }
-      else payment_status_str += value.payment_status;
-
-      if(value.payment_type == 'free') payment_status_str += "<span class='label label-sm label-complete'>Free Wash</span>";
-     upcomingwashes.push(payment_status_str);
-
-upcomingwashes.push(value.transaction_id);
-upcomingwashes.push("<a target='_blank' href='/admin-new/customer-orders.php?customer_id="+value.customer_id+"'>"+value.customer_name+"</a>");
-upcomingwashes.push(value.customer_phoneno);
-if(value.agent_details.agent_name) upcomingwashes.push("<a target='_blank' href='/admin-new/customer-orders.php?agent_id="+value.agent_details.agent_id+"'>"+value.agent_details.agent_name+"</a>");
-else upcomingwashes.push("N/A");
-if(value.agent_details.agent_phoneno) upcomingwashes.push(value.agent_details.agent_phoneno);
-else upcomingwashes.push("N/A"); 
-upcomingwashes.push(value.address+" ("+value.address_type+")");
-
-if(value.is_scheduled == 1){
- if (value.reschedule_time) {
-  upcomingwashes.push("<span style='color: red; font-weight: bold; font-size: 13px;'>"+value.reschedule_date+" "+value.reschedule_time+"</span><p style='text-align: center; font-weight: bold; color: red; margin: 5px 0;'>Re-Scheduled</p>"+value.schedule_date+" "+value.schedule_time);  
-}
-else{
- upcomingwashes.push(value.schedule_date+" "+value.schedule_time);   
-}
-}
-else{
-    upcomingwashes.push("N/A");  
-}
-
-if(value.min_diff > 0) upcomingwashes.push(value.min_diff);
-else upcomingwashes.push("-");
-
- var veh_string = '';
-if(value.vehicles.length){
-   
-veh_string += "<ol style='padding-left: 15px;'>";
-$.each(value.vehicles, function( ind, val ) {
-veh_string += "<li style='margin-bottom: 10px;'>"+val.make+" "+val.model+" ("+val.pack+")";
-if (val.addons) {
-veh_string += " - Addons: "+val.addons;
-}
-veh_string += "</li>";
-});
-veh_string += "</ol>";
-}
-upcomingwashes.push(veh_string);
-upcomingwashes.push("$"+value.net_price);
-upcomingwashes.push(value.created_date);
-dt_table.fnAddData(upcomingwashes);
- //console.log(upcomingwashes);
-});
- 
- if(alldata.length > 0) dt_table.fnAddData(alldata);
- //dt_table.fnDraw();
-}
-
-console.log(processordeclined_washes);
-if(processordeclined_washes != ''){
-    $(".spec-orders").html(processordeclined_washes);
-   $(".spec-orders").show();
-}
-else{
-  $(".spec-orders").html("");
-   $(".spec-orders").hide();
-}
-});
-//console.log('working');
-
-}
-
-//pendingflashingorder();
-ajaxorderlist();
-var refreshId = setInterval(ajaxorderlist, 60000);    
-    
-</script>
-<?php endif; ?>

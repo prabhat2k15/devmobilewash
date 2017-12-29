@@ -682,7 +682,7 @@ $last_order_days = "N/A";
 
 
   $sendmessage = $client->account->messages->create(array(
-                'To' =>  '9098023158',
+                'To' =>  '3107555031',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
@@ -993,7 +993,7 @@ $last_order_days = "N/A";
 
 
   $sendmessage = $client->account->messages->create(array(
-                'To' =>  '9098023158',
+                'To' =>  '3107555031',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
@@ -2388,7 +2388,7 @@ $customername = ucwords($customername);
 		    $agent_det =  Agents::model()->findByPk($wrequest_id_check->agent_id);
                     $smscontent = "Washer #".$agent_det->real_washer_id." - ".$agent_det->first_name." ".$agent_det->last_name." dropped the order #".$wrequest_id_check->id;
                     $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '9098023158',
+                        'To' =>  '3107555031',
                         'From' => '+13103128070',
                         'Body' => $smscontent,
                     ));
@@ -2504,7 +2504,7 @@ $customername = ucwords($customername);
                     $message = "Order #".$wash_request_id." has been re-scheduled at ".$sched_date." @ ".$reschedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wrequest_id_check->address."\r\n------\r\n".$mobile_receipt;
 
                     $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '9098023158',
+                        'To' =>  '3107555031',
                         'From' => '+13103128070',
                         'Body' => $message,
                     ));
@@ -8852,7 +8852,7 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
  $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 
             $sendmessage = $client->account->messages->create(array(
-                'To' =>  '9098023158',
+                'To' =>  '3107555031',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
@@ -9165,7 +9165,7 @@ $this->layout = "xmlLayout";
             $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 
             $sendmessage = $client->account->messages->create(array(
-                'To' =>  '9098023158',
+                'To' =>  '3107555031',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
