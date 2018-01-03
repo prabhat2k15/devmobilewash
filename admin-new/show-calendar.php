@@ -137,10 +137,10 @@ $(document).ready(function() {
 						// our hypothetical feed requires UNIX timestamps
 						start: start,
 						end: end,
-key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
+						key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 					},
 					success: function(doc) {
-					    //console.log(doc);
+					    console.log(doc);
 						var events = [];
                         //console.log(doc.order.empty);
 						if(doc.order.empty == 'yes'){
@@ -218,7 +218,7 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 									});
 								//}
                                  if(total_cars >= 1  ){
-								   /*	titletotalcars = value.total_cars.count+' Cars';
+								   /*	titletotalcars = value.total_cars.count+' Vehicles';
 									colortotalcars = "#000000";
 										events.push({
 										title:titletotalcars,
@@ -255,7 +255,7 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 				}else if(calEvent.color == '#EF9047'){
 					_event = 'processing';
 				}
-			else if(calEvent.color == '#AAAAAA'){
+				else if(calEvent.color == '#AAAAAA'){
 					_event = 'canceled';
 				}
 				else if(calEvent.color == '#cc0066'){
@@ -315,8 +315,8 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 					total_cars_day = $(this).data('date');
                     //console.log(total_cars_day);
 					if(total_cars_count.length < 1) total_cars_count = 0;
-					$('.fc-day-grid .fc-bg tbody tr td[data-date="'+total_cars_day+'"]').append('<div class="total-cars-div">0 Cars</div>');
-					$('td[data-date="'+total_cars_day+'"] .total-cars-div').text(total_cars_count+" Cars");
+					$('.fc-day-grid .fc-bg tbody tr td[data-date="'+total_cars_day+'"]').append('<div class="total-cars-div">0 Vehicles</div>');
+					$('td[data-date="'+total_cars_day+'"] .total-cars-div').text(total_cars_count+" Vehicles");
 
 				});
                 $('.hidd-home-work input.home').each(function(){
