@@ -176,6 +176,28 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
+function washing_getallschedulewashes(agent_id=0, washer_position = '') {
+//console.log(agent_id);
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded'},
+  url:     'http://www.devmobilewash.com/api/index.php?r=washing/getallschedulewashes',
+  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&agent_id="+agent_id+"&washer_position="+washer_position
+}, function(error, response, body){
+ //console.log(JSON.parse(body));
+ //console.log('washing_getnewwashrequest func');
+            try
+       {
+         io.emit('washing_getallschedulewashes_'+agent_id, JSON.parse(body));  
+       }
+       catch(err)
+       {
+
+       }     
+            
+});
+//getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
+}
+
 function site_updatedevicestatus(user_type='', user_id=0, device_token='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -307,6 +329,11 @@ else{
   socket.on('checkwashrequeststatus', function(data){
       //console.log(data);
     washing_checkwashrequeststatus(data.wash_request_id, data.customer_id);
+  });
+  
+   socket.on('getallschedulewashes', function(data){
+      //console.log(data);
+    washing_getallschedulewashes(data.agent_id, data.washer_position);
   });
   
    socket.on('updateuserdevice', function(data){

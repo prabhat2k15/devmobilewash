@@ -51,7 +51,7 @@ $all_coupons = $jsondata->coupons;
 
 
                     <?php if(!empty($_GET['cnf'])){ ?>
-                    <p style="text-align: center; color: green;">Successfully Create Promotion</p>
+                    <p style="background: #50BB50; color: #fff; padding: 15px; box-sizing: border-box;">Promo code added successfully</p>
                     <?php } ?>
                     <?php if(!empty($_GET['update'])){ ?>
                     <p style="text-align: center; color: green;">Successfully Update Promotion</p>

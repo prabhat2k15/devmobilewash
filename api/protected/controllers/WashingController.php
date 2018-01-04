@@ -9824,6 +9824,8 @@ die();
 		$washer_position = Yii::app()->request->getParam('washer_position');
 
 		$agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
+		$is_scheduled_wash_120 = 0;
+		$scheduled_wash_120_id = 0;
 
 		if((count($agent_detail)) && ($agent_detail->block_washer)){
 		    $json = array(
@@ -10030,13 +10032,46 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 				$result = "true";
 
 			}
+			
+
+		}
+		
+		if($agent_id){
+				
+			$agenttakenwashes = Washingrequests::model()->findAllByAttributes(array('agent_id' => $agent_id, 'is_scheduled' => 1), array('condition'=>'status = 0 OR status = 1 OR status = 2'));
+
+			if(count($agenttakenwashes)){
+				foreach($agenttakenwashes as $schedwash){
+
+					if($schedwash->reschedule_time) $scheduledatetime = $schedwash->reschedule_date." ".$schedwash->reschedule_time;
+					else $scheduledatetime = $schedwash->schedule_date." ".$schedwash->schedule_time;
+
+					$to_time = strtotime(date('Y-m-d g:i A'));
+					$from_time = strtotime($scheduledatetime);
+					$min_diff = -1;
+					if($from_time >= $to_time){
+						$min_diff = round(($from_time - $to_time) / 60,2);
+					}
+
+					if(!$is_scheduled_wash_120){
+						if($min_diff <= 120 && $min_diff >= 0){
+							$is_scheduled_wash_120 = 1;
+							$scheduled_wash_120_id = $schedwash->id;
+							break;
+						}
+					}
+
+				}
+			}
 		}
 
 
        $json = array(
 			'result'=> $result,
 			'response'=> $response,
-			'schedule_washes' => $allwashes
+			'schedule_washes' => $allwashes,
+			'is_scheduled_wash_120' => $is_scheduled_wash_120,
+			'scheduled_wash_120_id' => $scheduled_wash_120_id
 		);
 
 		echo json_encode($json);

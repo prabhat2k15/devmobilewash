@@ -27,8 +27,8 @@ $usage_limit = Yii::app()->request->getParam('usage_limit');
 
 		if((isset($coupon_name) && !empty($coupon_name)) &&
 			(isset($coupon_code) && !empty($coupon_code)) &&
-			(isset($deluxe_amount) && !empty($deluxe_amount)) &&
-(isset($premium_amount) && !empty($premium_amount)) &&
+			(is_numeric($deluxe_amount)) &&
+(is_numeric($premium_amount)) &&
 			(isset($discount_unit) && !empty($discount_unit)) &&
 			(isset($coupon_status) && !empty($coupon_status)))
 			 {
@@ -110,11 +110,11 @@ $usage_limit = Yii::app()->request->getParam('usage_limit');
                   $coupon_code = $coupon_check->coupon_code;
                 }
 
-                if(!$deluxe_amount){
+                if(!is_numeric($deluxe_amount)){
                   $deluxe_amount = $coupon_check->deluxe_amount;
                 }
 
-if(!$premium_amount){
+if(!is_numeric($premium_amount)){
                   $premium_amount = $coupon_check->premium_amount;
                 }
 
@@ -275,7 +275,7 @@ die();
         $result= 'false';
 		$response= 'none';
 
-        $coupons_exists = Yii::app()->db->createCommand()->select('*')->from('coupon_codes')->queryAll();
+        $coupons_exists = Yii::app()->db->createCommand()->select('*')->from('coupon_codes')->order('id DESC')->queryAll();
 
         if(count($coupons_exists)>0){
            $result= 'true';

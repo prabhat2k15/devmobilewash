@@ -15,7 +15,7 @@ $jsondata = json_decode($result);
 $coupon_response = $jsondata->response;
 $coupon_result_code = $jsondata->result;
 
-if($coupon_result_code == 'true' && $coupon_response == 'Coupon added successfully'){
+if($coupon_result_code == 'true'){
     ?>
     <script type="text/javascript">window.location = "manage-promotions.php?cnf=done"</script>
     <?php
