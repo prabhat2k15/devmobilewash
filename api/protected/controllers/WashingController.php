@@ -2360,11 +2360,11 @@ $customername = ucwords($customername);
             }
 		 
 
-                    if ($wrequest_id_check->agent_id > 0)
-                    {
+                    //if ($wrequest_id_check->agent_id > 0)
+                    //{
                         
                         Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0));
-                    }
+                    //}
                 // INCREMENT 'total_schedule_rejected' counter on each rejection
                  $washrequestmodel->total_schedule_rejected = $washrequestmodel->total_schedule_rejected + 1;
                     $washrequestmodel->save(false);
