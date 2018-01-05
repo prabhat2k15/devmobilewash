@@ -5605,6 +5605,10 @@ die();
         $user_type = Yii::app()->request->getParam('user_type');
 	$user_id = Yii::app()->request->getParam('user_id');
 	$device_token = Yii::app()->request->getParam('device_token');
+	$pending_wash_id = '';
+	$is_scheduled = '';
+	$wash_status = '';
+	
 
            $result  = 'false';
 $response = 'pass the required fields';
@@ -5639,6 +5643,12 @@ $response = 'device updated';
 		if($user_type == 'customer'){
 			if($user_check->forced_logout == 1) $response = 'offline';
 			else $response = 'online';
+			$pending_wash_id_check = Washingrequests::model()->findAll(array("condition"=>"status <= 3 AND customer_id=".$user_id), array('order' => 'created_date desc'));
+			if(count($pending_wash_id_check)){
+				$pending_wash_id = $pending_wash_id_check[0]->id;
+				$is_scheduled = $pending_wash_id_check[0]->is_scheduled;
+				$wash_status = $pending_wash_id_check[0]->status;
+			}
 		}
 		
 		if($user_type == 'agent'){
@@ -5657,7 +5667,11 @@ $json= array(
 				'result'=> $result,
 				'response'=> $response,
 				'user_id'=> $user_id,
-				'user_type'=> $user_type
+				'user_type'=> $user_type,
+				'customer_pending_wash_id' => $pending_wash_id,
+				'customer_pending_wash_is_scheduled' => $is_scheduled,
+				'customer_pending_wash_status' => $wash_status
+				
 			);
 		echo json_encode($json);
 

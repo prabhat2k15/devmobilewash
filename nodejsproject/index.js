@@ -13,6 +13,7 @@ var getpendingwashesdetailstimer;
 var getagentsbystatustimer;
 var getclientsbystatustimer;
 var getnewwashrequesttimer;
+var connectedusers = [];
 
 function getAppstat() {
 
@@ -294,6 +295,7 @@ request.post({
 
 io.on('connection', function(socket){
 console.log(socket.handshake.query.auth_token);
+//connectedusers.push(socket.id);
 if(socket.handshake.query.action == 'commandcenter') {
      console.log('admin user connected');
     getAppstat();
