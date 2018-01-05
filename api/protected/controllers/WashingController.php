@@ -7724,186 +7724,246 @@ die();
 			exit;
 		}
 	}
+
 	/* App Order */
 	public function Actionorder_schedule_app(){
 
-if(Yii::app()->request->getParam('key') != API_KEY){
-echo "Invalid api key";
-die();
-}
-		/* Checking for post(month) parameters */
-		$order_month='';
-		if(!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))){
-			$last_month = Yii::app()->request->getParam('start');
-			$curr_month = Yii::app()->request->getParam('end');
-			$order_month = " AND ( DATE_FORMAT(a.order_for,'%Y-%m')>= '$last_month' AND DATE_FORMAT(a.order_for,'%Y-%m')<= '$curr_month')";
-		}
-		/* Post END */
+        if(Yii::app()->request->getParam('key') != API_KEY){
+            echo "Invalid api key";
+            die();
+        }
+        /* Checking for post(month) parameters */
+        $order_month='';
+        if(!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))){
+            $last_month = Yii::app()->request->getParam('start');
+            $curr_month = Yii::app()->request->getParam('end');
+            $order_month = " AND ( DATE_FORMAT(a.order_for,'%Y-%m')>= '$last_month' AND DATE_FORMAT(a.order_for,'%Y-%m')<= '$curr_month')";
+        }
+        /* Post END */
 
-		/* web orderds */
-		$total_order =  Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'")->queryAll();
+        /* web orderds */
+        $total_order =  Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'")->queryAll();
 
         $count = $total_order[0]['countid'];
 
-        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")->queryAll();
+        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")->queryAll();
 
-		/* END */
-		if(!empty($customers_order)){
-			foreach($customers_order as $orderbycustomer){
+        /* END */
+        if(!empty($customers_order)){
+            foreach($customers_order as $orderbycustomer){
 
-				//$counttype = array_count_values($package_list_explode);
-				$orderstatus = $orderbycustomer['status'];
-				$orderid = $orderbycustomer['id'];
-				$address_type = $orderbycustomer['address_type'];
-				$created_date = $orderbycustomer['order_for'];
-				$wash_request_position = $orderbycustomer['wash_request_position'];
-				$color='';
+                //$counttype = array_count_values($package_list_explode);
+                $orderstatus = $orderbycustomer['status'];
+                $orderid = $orderbycustomer['id'];
+                $address_type = $orderbycustomer['address_type'];
+                $created_date = $orderbycustomer['order_for'];
+                $wash_request_position = $orderbycustomer['wash_request_position'];
+                $color='';
 
-				if($orderstatus == 4)
-				{
-					$order_of_status = 'Complete';
-					$totalminutes = 'N/A';
-					$near_agent = '';
-					$color = '#30A0FF';
-				}
-				elseif($orderstatus == 0)
-				{
-					$order_of_status = 'Pending';
-					$time = $orderbycustomer['order_for'];
-					$currentdate = date("Y-m-d h:i:s");
-					$to_time = strtotime($time);
-					$from_time = strtotime($currentdate);
-					$totalminutes = round(abs($to_time - $from_time) / 60,2);
-					$color = '#FF3B30';
-				}
-				elseif($orderstatus>=1 && $orderstatus<=3)
-				{
-					$order_of_status = 'Processing';
-					$totalminutes = 'N/A';
-					$near_agent = '';
-					$color = '#EF9047';
-				}
-				elseif(($orderstatus==5) || ($orderstatus==6))
-				{
-					$order_of_status = 'Canceled';
-					$totalminutes = 'N/A';
-					$near_agent = '';
-					$color = '#AAAAAA';
-				}
+                if($orderstatus == 4)
+                {
+                    $order_of_status = 'Complete';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#30A0FF';
+                }
+                elseif($orderstatus == 0)
+                {
+                    $order_of_status = 'Pending';
+                    $time = $orderbycustomer['order_for'];
+                    $currentdate = date("Y-m-d h:i:s");
+                    $to_time = strtotime($time);
+                    $from_time = strtotime($currentdate);
+                    $totalminutes = round(abs($to_time - $from_time) / 60,2);
+                    $color = '#FF3B30';
+                }
+                elseif($orderstatus>=1 && $orderstatus<=3)
+                {
+                    $order_of_status = 'Processing';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#EF9047';
+                }
+                elseif(($orderstatus==5) || ($orderstatus==6))
+                {
+                    $order_of_status = 'Canceled';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#AAAAAA';
+                }
 
-					if($orderbycustomer['failed_transaction_id'])
-				{
-					$order_of_status = 'Declined';
-					$totalminutes = 'N/A';
-					$near_agent = '';
-					$color = '#cc0066';
-				}
+                    if($orderbycustomer['failed_transaction_id'])
+                {
+                    $order_of_status = 'Declined';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#cc0066';
+                }
 
 
-				$key = 'order_'.$count.'_'.$orderid;
-				$json = array();
-				$json['title'] =  $order_of_status;
-				$json['orderid'] =  $orderid;
-				$json['time'] =  $totalminutes;
-				$json['address_type'] =  $address_type;
-				$json['start'] = date('Y-m-d',strtotime($created_date));
+                $key = 'order_'.$count.'_'.$orderid;
+                $json = array();
+                $json['title'] =  $order_of_status;
+                $json['orderid'] =  $orderid;
+                $json['time'] =  $totalminutes;
+                $json['address_type'] =  $address_type;
+                $json['start'] = date('Y-m-d',strtotime($created_date));
 
-				if($wash_request_position == APP_ENV){
-					$orderview[] = array(
-						"start"		=>	date('Y-m-d',strtotime($created_date)),
-						"title"		=>	$order_of_status,
-						"color" 	=>	$color,
-						"address_type" 	=>	$address_type,
-                        "car_list" 	=>	$orderbycustomer['car_list']
-					);
-				}
-			}
-			 //print_r($orderview);
-			$data = array();
-			foreach($orderview as $key=>$value){
-				if($value['address_type'] == 'Home'){
-					$data[$value['start']]['home'][]  = $value['address_type'];
-				}
-				if($value['address_type'] == 'Work'){
-					$data[$value['start']]['work'][]  = $value['address_type'];
-				}
-				if($value['title'] == 'Complete'){
-					$data[$value['start']]['complete'][]  = $value['title'];
-				}
-				if($value['title'] == 'Pending'){
-					$data[$value['start']]['pending'][]  = $value['title'];
-				}
-				if($value['title'] == 'Processing'){
-					$data[$value['start']]['processing'][]  = $value['title'];
-				}
-				if($value['title'] == 'Canceled'){
-					$data[$value['start']]['canceled'][]  = $value['title'];
-				}
-					if($value['title'] == 'Declined'){
-					$data[$value['start']]['declined'][]  = $value['title'];
-				}
+                if($wash_request_position == APP_ENV){
+                    $orderview[] = array(
+                        "start"     =>  date('Y-m-d',strtotime($created_date)),
+                        "title"     =>  $order_of_status,
+                        "color"     =>  $color,
+                        "address_type" => $address_type,
+                        "car_list"  =>  $orderbycustomer['car_list'],
+                        "package_list" =>  $orderbycustomer['package_list'],
+                        "coupon_code" =>  $orderbycustomer['coupon_code'],
+                        "tip_amount" => $orderbycustomer['tip_amount']
+                    );
+                }
+            }
+             //print_r($orderview);
+            $data = array();
+            foreach($orderview as $key=>$value){
 
-                if(($value['title'] == 'Pending') || ($value['title'] == 'Processing') || ($value['title'] == 'Complete')) $data[$value['start']]['total_cars'][]  = count(explode(",", $value['car_list']));
+                /*$packages = explode(",", $value['package_list']);
+                if(count($packages)>0){
+                    foreach ($packages as $package) {
+                        $data[$value['start']][trim($package)][] = 1;
+                    }
+                }*/
+                
+                if($value['address_type'] == 'Home'){
+                    $data[$value['start']]['home'][] = $value['address_type'];
+                }
+                if($value['address_type'] == 'Work'){
+                    $data[$value['start']]['work'][] = $value['address_type'];
+                }
+                if($value['title'] == 'Complete'){
+                    $data[$value['start']]['complete'][] = $value['title'];
+
+                    $packages = explode(",", $value['package_list']);
+                    if(count($packages)>0){
+                        foreach ($packages as $package) {
+                            $data[$value['start']][trim($package)][] = 1;
+                        }
+                    }
+
+                }
+                if($value['title'] == 'Pending'){
+                    $data[$value['start']]['pending'][] = $value['title'];
+                }
+                if($value['title'] == 'Processing'){
+                    $data[$value['start']]['processing'][] = $value['title'];
+                }
+                if($value['title'] == 'Canceled'){
+                    $data[$value['start']]['canceled'][] = $value['title'];
+                }
+                if($value['title'] == 'Declined'){
+                    $data[$value['start']]['declined'][] = $value['title'];
+                }
+
+                if(($value['title'] == 'Pending') || ($value['title'] == 'Processing') || ($value['title'] == 'Complete')) { 
+                    $data[$value['start']]['total_cars'][] = count(explode(",", $value['car_list']));
+
+                    if(trim($value['coupon_code']) != '' && !empty($value['coupon_code'])){
+                        $data[$value['start']]['coupon_code'][] = $value['coupon_code'];
+                    }
+                    if(intval($value['tip_amount']) != '' && intval($value['tip_amount']) != 0){
+                        $data[$value['start']]['tip_amount'][] = $value['tip_amount'];
+                    }
+                }
 
             }
             //print_r($data);
-			$dt =array();
-			foreach($data as $key=>$val){
-				$dt[$key]['complete']['color']= '';
-				$dt[$key]['pending']['color']='';
-				$dt[$key]['processing']['color']='';
-					$dt[$key]['canceled']['color']='';
-					$dt[$key]['declined']['color']='';
-				$dt[$key]['home']['count']='';
-				$dt[$key]['work']['count']='';
+            $dt =array();
+            foreach($data as $key=>$val){
+                $dt[$key]['complete']['color']= '';
+                $dt[$key]['pending']['color']='';
+                $dt[$key]['processing']['color']='';
+                $dt[$key]['canceled']['color']='';
+                $dt[$key]['declined']['color']='';
+                $dt[$key]['Express']['color']='';
+                $dt[$key]['Deluxe']['color']='';
+                $dt[$key]['Premium']['color']='';
+                $dt[$key]['coupon_code']['color']='';
+                $dt[$key]['tip_amount']['color']='';
+                $dt[$key]['home']['count']='';
+                $dt[$key]['work']['count']='';
                 $dt[$key]['total_cars']['count']='';
-				//print_r($val);
-				if(count($val['complete'])>0){
-					$dt[$key]['complete']['count']= count($val['complete']);
-					$dt[$key]['complete']['color']= '#30A0FF';
-				}
-				if(count($val['pending'])>0){
-					$dt[$key]['pending']['count']= count($val['pending']);
-					$dt[$key]['pending']['color']= '#FF3B30';
-				}
-				if(count($val['processing'])>0){
-					$dt[$key]['processing']['count']= count($val['processing']);
-					$dt[$key]['processing']['color']= '#EF9047';
-				}
-				if(count($val['canceled'])>0){
-					$dt[$key]['canceled']['count']= count($val['canceled']);
-					$dt[$key]['canceled']['color']= '#AAAAAA';
-				}
-				if(count($val['declined'])>0){
-					$dt[$key]['declined']['count']= count($val['declined']);
-					$dt[$key]['declined']['color']= '#cc0066';
-				}
-				if(count($val['home'])>0){
-					$dt[$key]['home']['count']= count($val['home']);
-				}
-				if(count($val['work'])>0){
-					$dt[$key]['work']['count']= count($val['work']);
-				}
+                //print_r($val);
+                if(count($val['complete'])>0){
+                    $dt[$key]['complete']['count']= count($val['complete']);
+                    $dt[$key]['complete']['color']= '#30A0FF';
+                }
+                if(count($val['pending'])>0){
+                    $dt[$key]['pending']['count']= count($val['pending']);
+                    $dt[$key]['pending']['color']= '#FF3B30';
+                }
+                if(count($val['processing'])>0){
+                    $dt[$key]['processing']['count']= count($val['processing']);
+                    $dt[$key]['processing']['color']= '#EF9047';
+                }
+                if(count($val['canceled'])>0){
+                    $dt[$key]['canceled']['count']= count($val['canceled']);
+                    $dt[$key]['canceled']['color']= '#AAAAAA';
+                }
+                if(count($val['declined'])>0){
+                    $dt[$key]['declined']['count']= count($val['declined']);
+                    $dt[$key]['declined']['color']= '#cc0066';
+                }
+                if(count($val['Express'])>0){
+                    $dt[$key]['Express']['count']= count($val['Express']);
+                    $dt[$key]['Express']['color']= '#581845';
+                }
+                if(count($val['Deluxe'])>0){
+                    $dt[$key]['Deluxe']['count']= count($val['Deluxe']);
+                    $dt[$key]['Deluxe']['color']= '#900C3F';
+                }
+                if(count($val['Premium'])>0){
+                    $dt[$key]['Premium']['count']= count($val['Premium']);
+                    $dt[$key]['Premium']['color']= '#7F13B8';
+                }
+                if(count($val['coupon_code'])>0){
+                    $dt[$key]['coupon_code']['count']= count($val['coupon_code']);
+                    $dt[$key]['coupon_code']['color']= '#688411';
+                }
+                if(count($val['tip_amount'])>0){
+                    $dt[$key]['tip_amount']['count']= count($val['tip_amount']);
+                    $dt[$key]['tip_amount']['color']= '#B8940E';
+                }
+                if(count($val['home'])>0){
+                    $dt[$key]['home']['count']= count($val['home']);
+                }
+                if(count($val['work'])>0){
+                    $dt[$key]['work']['count']= count($val['work']);
+                }
                 if(count($val['total_cars'])>0){
                     $dt[$key]['total_cars']['count'] = 0;
                     foreach($val['total_cars'] as $carcount){
-                      $dt[$key]['total_cars']['count'] += $carcount;
+                        $dt[$key]['total_cars']['count'] += $carcount;
                     }
+                }
+                /*if(count($val['tip_amount'])>0){
+                    $dt[$key]['tip_amount']['color']= '#cc0066';
+                    $dt[$key]['tip_amount']['count']= 0;
+                    foreach($val['tip_amount'] as $amount){
+                        $dt[$key]['tip_amount']['count'] += $amount;
+                    }
+                }*/
+            }
+             /* print_r($dt);die; */
+            $ordersdetails['order'] = $dt;
+            echo json_encode($ordersdetails,JSON_PRETTY_PRINT);
 
-				}
-			}
-			 /* print_r($dt);die; */
-			$ordersdetails['order'] = $dt;
-			echo json_encode($ordersdetails,JSON_PRETTY_PRINT);
+            exit;
+        }else{
+            $ordersdetails['order'] = array('empty'=>'yes');
+            echo json_encode($ordersdetails,JSON_PRETTY_PRINT);
 
-			exit;
-		}else{
-			$ordersdetails['order'] = array('empty'=>'yes');
-			echo json_encode($ordersdetails,JSON_PRETTY_PRINT);
-
-			exit;
-		}
-	}
+            exit;
+        }
+    }
 	/* SCHEDULE ORDER CALENDAR */
 	public function Actionorder_schedule_ordSchedule(){
 

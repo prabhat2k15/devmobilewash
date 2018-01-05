@@ -2961,10 +2961,10 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 
 	  public function actiongetallwashrequestsnew(){
 
-if(Yii::app()->request->getParam('key') != API_KEY){
-echo "Invalid api key";
-die();
-}
+        if(Yii::app()->request->getParam('key') != API_KEY){
+            echo "Invalid api key";
+            die();
+        }
 		/* Checking for post(day) parameters */
 		$order_day='';
 		if(!empty(Yii::app()->request->getParam('day')) && !empty(Yii::app()->request->getParam('event'))){
@@ -2974,22 +2974,23 @@ die();
 			if($event == 'pending'){
 				$status = 0;
 				$status_qr = ' AND w.status="'.$status.'"';
-			}elseif($event == 'completed'){
+			} elseif($event == 'completed'){
 				$status = 4;
 				$status_qr = ' AND w.status="'.$status.'"';
-			}elseif($event == 'processing'){
+			} elseif($event == 'processing'){
 				$status = 2;
 				$status_qr = ' AND (w.status >=1 && w.status <=3)';
-			}
-		elseif($event == 'canceled'){
-
+			} elseif($event == 'canceled'){
 				$status_qr = ' AND (w.status=5 || w.status=6)';
-			}
-				elseif($event == 'declined'){
-
-				$status_qr = " AND (w.failed_transaction_id != '')";
-			}
-			else{
+			} elseif($event == 'declined'){
+                $status_qr = " AND (w.failed_transaction_id != '')";
+            } elseif($event == 'Express' || $event == 'Deluxe' || $event == 'Premium'){
+                $status_qr = " AND (FIND_IN_SET('".$event."', w.package_list)>0 AND w.status = '4')";
+            } elseif($event == 'coupon_code'){
+                $status_qr = " AND w.coupon_code <> ''";
+            } elseif($event == 'tip_amount'){
+				$status_qr=" AND (w.tip_amount <> '' && w.tip_amount <> '0.00' && w.tip_amount <> '0')";
+			} else {
 				$status_qr = '';
 			}
 
