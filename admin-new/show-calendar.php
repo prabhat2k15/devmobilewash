@@ -147,7 +147,7 @@ $(document).ready(function() {
 							$('.cal-overlay').css('display','none');
 						}
 						else{
-							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,titledec,colordec,titletotalcars,colortotalcars;
+							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,titledec,colordec,titletotalcars,colortotalcars,titleExp,titleDlx,titlePre,colorExp,colorDlx,colorPre,titleCC,colorCC,titleTa,colorTa;
 							$.each( doc.order, function(index, value ) {
 							    
 								var _viewAll = ['1'];
@@ -156,6 +156,12 @@ $(document).ready(function() {
 								var pending = Object.keys(value.pending).length;
 								var processing = Object.keys(value.processing).length;
 								var declined = Object.keys(value.declined).length;
+								var canceled = Object.keys(value.canceled).length;
+								var Express = Object.keys(value.Express).length;
+								var Deluxe = Object.keys(value.Deluxe).length;
+								var Premium = Object.keys(value.Premium).length;
+								var coupon_code = Object.keys(value.coupon_code).length;
+								var tip_amount = Object.keys(value.tip_amount).length;
 								var canceled = Object.keys(value.canceled).length;
                                 var total_cars = Object.keys(value.total_cars).length;
 								var home_ord = Object.keys(value.home).length;
@@ -182,7 +188,7 @@ $(document).ready(function() {
 								if(processing > 1  ){
 									title2 = value.processing.count+' Processing';
 									color2 = value.processing.color;
-										events.push({
+									events.push({
 										title:title2,
 										start:index,
 										color  : color2
@@ -191,7 +197,7 @@ $(document).ready(function() {
 								if(canceled > 1  ){
 									title2 = value.canceled.count+' Canceled';
 									color2 = value.canceled.color;
-										events.push({
+									events.push({
 										title:title2,
 										start:index,
 										color  : color2
@@ -200,10 +206,60 @@ $(document).ready(function() {
 								if(declined > 1  ){
 									titledec = value.declined.count+' Declined';
 									colordec = value.declined.color;
-										events.push({
+									events.push({
 										title:titledec,
 										start:index,
 										color  : colordec
+									});
+								}
+								if(Express > 1  ){
+									//titledec = 'Express Completed: '+value.Express.count;
+									titleExp = value.Express.count+' Express';
+									colorExp = value.Express.color;
+									events.push({
+										title:titleExp,
+										start:index,
+										color:colorExp
+									});
+								}
+								if(Deluxe > 1  ){
+									//titledec = 'Deluxe Completed: '+value.Deluxe.count;
+									titleDlx = value.Deluxe.count+' Deluxe';
+									colorDlx = value.Deluxe.color;
+									events.push({
+										title:titleDlx,
+										start:index,
+										color:colorDlx
+									});
+								}
+								if(Premium > 1  ){
+									//titledec = 'Premium Completed: '+value.Premium.count;
+									titlePre = value.Premium.count+' Premium';
+									colorPre = value.Premium.color;
+									events.push({
+										title:titlePre,
+										start:index,
+										color:colorPre
+									});
+								}
+								if(coupon_code > 1  ){
+									//titledec = 'Promo Codes: '+value.coupon_code.count;
+									titleCC = value.coupon_code.count+' Promo Codes';
+									colorCC = value.coupon_code.color;
+									events.push({
+										title:titleCC,
+										start:index,
+										color:colorCC
+									});
+								}
+								if(tip_amount > 1  ){
+									//titledec = 'Tips: '+value.tip_amount.count;
+									titleTa = value.tip_amount.count+' Tips';
+									colorTa = value.tip_amount.color;
+									events.push({
+										title:titleTa,
+										start:index,
+										color:colorTa
 									});
 								}
 
@@ -260,6 +316,21 @@ $(document).ready(function() {
 				}
 				else if(calEvent.color == '#cc0066'){
 					_event = 'declined';
+				}
+				else if(calEvent.color == '#581845'){
+					_event = 'Express';
+				}
+				else if(calEvent.color == '#900C3F'){
+					_event = 'Deluxe';
+				}
+				else if(calEvent.color == '#7F13B8'){
+					_event = 'Premium';
+				}
+				else if(calEvent.color == '#688411'){
+					_event = 'coupon_code';
+				}
+				else if(calEvent.color == '#B8940E'){
+					_event = 'tip_amount';
 				}
 				else{
 					_event = 'all'
