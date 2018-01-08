@@ -2974,7 +2974,9 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 			if($event == 'pending'){
 				$status = 0;
 				$status_qr = ' AND w.status="'.$status.'"';
-			} elseif($event == 'completed'){
+			} elseif($event == 'total_orders'){
+                $status_qr = " AND w.status IN('0','4')";
+            } elseif($event == 'completed'){
 				$status = 4;
 				$status_qr = ' AND w.status="'.$status.'"';
 			} elseif($event == 'processing'){
@@ -2985,7 +2987,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 			} elseif($event == 'declined'){
                 $status_qr = " AND (w.failed_transaction_id != '')";
             } elseif($event == 'Express' || $event == 'Deluxe' || $event == 'Premium'){
-                $status_qr = " AND (FIND_IN_SET('".$event."', w.package_list)>0 AND w.status = '4')";
+                $status_qr=" AND (FIND_IN_SET('".$event."', w.package_list)>0 AND w.status IN('0','4'))";
             } elseif($event == 'coupon_code'){
                 $status_qr = " AND w.coupon_code <> ''";
             } elseif($event == 'tip_amount'){

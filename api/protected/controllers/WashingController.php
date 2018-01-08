@@ -7841,14 +7841,6 @@ die();
                 }
                 if($value['title'] == 'Complete'){
                     $data[$value['start']]['complete'][] = $value['title'];
-
-                    $packages = explode(",", $value['package_list']);
-                    if(count($packages)>0){
-                        foreach ($packages as $package) {
-                            $data[$value['start']][trim($package)][] = 1;
-                        }
-                    }
-
                 }
                 if($value['title'] == 'Pending'){
                     $data[$value['start']]['pending'][] = $value['title'];
@@ -7866,6 +7858,13 @@ die();
                 if(($value['title'] == 'Pending') || ($value['title'] == 'Processing') || ($value['title'] == 'Complete')) { 
                     $data[$value['start']]['total_cars'][] = count(explode(",", $value['car_list']));
 
+                    $packages = explode(",", $value['package_list']);
+                    if(count($packages)>0){
+                        foreach ($packages as $package) {
+                            $data[$value['start']][trim($package)][] = 1;
+                        }
+                    }
+
                     if(trim($value['coupon_code']) != '' && !empty($value['coupon_code'])){
                         $data[$value['start']]['coupon_code'][] = $value['coupon_code'];
                     }
@@ -7878,59 +7877,65 @@ die();
             //print_r($data);
             $dt =array();
             foreach($data as $key=>$val){
-                $dt[$key]['complete']['color']= '';
-                $dt[$key]['pending']['color']='';
-                $dt[$key]['processing']['color']='';
-                $dt[$key]['canceled']['color']='';
                 $dt[$key]['declined']['color']='';
+                $dt[$key]['total_orders']['color']='';
+                $dt[$key]['pending']['color']='';
+                $dt[$key]['complete']['color']= '';
+                $dt[$key]['canceled']['color']='';
                 $dt[$key]['Express']['color']='';
                 $dt[$key]['Deluxe']['color']='';
                 $dt[$key]['Premium']['color']='';
                 $dt[$key]['coupon_code']['color']='';
                 $dt[$key]['tip_amount']['color']='';
+                $dt[$key]['processing']['color']='';
                 $dt[$key]['home']['count']='';
                 $dt[$key]['work']['count']='';
                 $dt[$key]['total_cars']['count']='';
                 //print_r($val);
-                if(count($val['complete'])>0){
-                    $dt[$key]['complete']['count']= count($val['complete']);
-                    $dt[$key]['complete']['color']= '#30A0FF';
+                if(count($val['declined'])>0){
+                    $dt[$key]['declined']['count']= count($val['declined']);
+                    $dt[$key]['declined']['color']= '#cc0066';
+                }
+                if(count($val['pending'])>0 || count($val['complete'])>0){
+                    $total_orders = count($val['pending']) + count($val['complete']);
+                    $dt[$key]['total_orders']['count']= $total_orders;
+                    $dt[$key]['total_orders']['color']= '#ff0000';
                 }
                 if(count($val['pending'])>0){
                     $dt[$key]['pending']['count']= count($val['pending']);
-                    $dt[$key]['pending']['color']= '#FF3B30';
+                    $dt[$key]['pending']['color']= '#e5e500';
                 }
-                if(count($val['processing'])>0){
-                    $dt[$key]['processing']['count']= count($val['processing']);
-                    $dt[$key]['processing']['color']= '#EF9047';
+                if(count($val['complete'])>0){
+                    $dt[$key]['complete']['count']= count($val['complete']);
+                    $dt[$key]['complete']['color']= '#008000';
                 }
                 if(count($val['canceled'])>0){
                     $dt[$key]['canceled']['count']= count($val['canceled']);
                     $dt[$key]['canceled']['color']= '#AAAAAA';
                 }
-                if(count($val['declined'])>0){
-                    $dt[$key]['declined']['count']= count($val['declined']);
-                    $dt[$key]['declined']['color']= '#cc0066';
-                }
                 if(count($val['Express'])>0){
                     $dt[$key]['Express']['count']= count($val['Express']);
-                    $dt[$key]['Express']['color']= '#581845';
+                    $dt[$key]['Express']['color']= '#00BFFF';
                 }
                 if(count($val['Deluxe'])>0){
                     $dt[$key]['Deluxe']['count']= count($val['Deluxe']);
-                    $dt[$key]['Deluxe']['color']= '#900C3F';
+                    $dt[$key]['Deluxe']['color']= '#4169E1';
                 }
                 if(count($val['Premium'])>0){
                     $dt[$key]['Premium']['count']= count($val['Premium']);
-                    $dt[$key]['Premium']['color']= '#7F13B8';
+                    $dt[$key]['Premium']['color']= '#000080';
                 }
                 if(count($val['coupon_code'])>0){
                     $dt[$key]['coupon_code']['count']= count($val['coupon_code']);
-                    $dt[$key]['coupon_code']['color']= '#688411';
+                    $dt[$key]['coupon_code']['color']= '#800080';
                 }
                 if(count($val['tip_amount'])>0){
                     $dt[$key]['tip_amount']['count']= count($val['tip_amount']);
-                    $dt[$key]['tip_amount']['color']= '#B8940E';
+                    $dt[$key]['tip_amount']['color']= '#1b6f1b';
+                }
+                if(count($val['processing'])>0){
+                    $dt[$key]['processing']['count']= count($val['processing']);
+                    $dt[$key]['processing']['color']= '#EF9047';
                 }
                 if(count($val['home'])>0){
                     $dt[$key]['home']['count']= count($val['home']);
