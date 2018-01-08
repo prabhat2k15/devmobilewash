@@ -147,97 +147,105 @@ $(document).ready(function() {
 							$('.cal-overlay').css('display','none');
 						}
 						else{
-							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,titledec,colordec,titletotalcars,colortotalcars,titleExp,titleDlx,titlePre,colorExp,colorDlx,colorPre,titleCC,colorCC,titleTa,colorTa;
+							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,title6,titledec,colordec,titletotalcars,colortotalcars,titleExp,titleDlx,titlePre,colorExp,colorDlx,colorPre,titleCC,colorCC,titleTa,colorTa,color6;
 							$.each( doc.order, function(index, value ) {
 							    
 								var _viewAll = ['1'];
 								var view_all = Object.keys(_viewAll).length
-								var complete = Object.keys(value.complete).length;
-								var pending = Object.keys(value.pending).length;
-								var processing = Object.keys(value.processing).length;
 								var declined = Object.keys(value.declined).length;
+								var total_orders = Object.keys(value.total_orders).length;
+								var pending = Object.keys(value.pending).length;
+								var complete = Object.keys(value.complete).length;
 								var canceled = Object.keys(value.canceled).length;
 								var Express = Object.keys(value.Express).length;
 								var Deluxe = Object.keys(value.Deluxe).length;
 								var Premium = Object.keys(value.Premium).length;
 								var coupon_code = Object.keys(value.coupon_code).length;
 								var tip_amount = Object.keys(value.tip_amount).length;
-								var canceled = Object.keys(value.canceled).length;
+								var processing = Object.keys(value.processing).length;
                                 var total_cars = Object.keys(value.total_cars).length;
 								var home_ord = Object.keys(value.home).length;
 								var work_ord = Object.keys(value.work).length;
 
-								if(complete > 1 ){
-									title = value.complete.count+' Completed';
-									color = value.complete.color;
-									events.push({
-										title:title,
-										start:index,
-										color  : color
-									});
-								}
-								if(pending > 1 ){
-									title1 = value.pending.count+' Pending';
-									color1 = value.pending.color;
-									events.push({
-										title:title1,
-										start:index,
-										color  : color1
-									});
-								}
-								if(processing > 1  ){
-									title2 = value.processing.count+' Processing';
-									color2 = value.processing.color;
-									events.push({
-										title:title2,
-										start:index,
-										color  : color2
-									});
-								}
-								if(canceled > 1  ){
-									title2 = value.canceled.count+' Canceled';
-									color2 = value.canceled.color;
-									events.push({
-										title:title2,
-										start:index,
-										color  : color2
-									});
-								}
 								if(declined > 1  ){
-									titledec = value.declined.count+' Declined';
+									titledec = value.declined.count+' Declined Orders';
 									colordec = value.declined.color;
 									events.push({
 										title:titledec,
+										description:'a',
 										start:index,
-										color  : colordec
+										color:colordec
+									});
+								}
+								if(total_orders > 1 ){
+									title6 = value.total_orders.count+' Total Orders';
+									color6 = value.total_orders.color;
+									events.push({
+										title:title6,
+										description:'b',
+										start:index,
+										color:color6
+									});
+								}
+								if(pending > 1 ){
+									title1 = value.pending.count+' Pending Orders';
+									color1 = value.pending.color;
+									events.push({
+										title:title1,
+										description:'c',
+										start:index,
+										color:color1
+									});
+								}
+								if(complete > 1 ){
+									title = value.complete.count+' Completed Orders';
+									color = value.complete.color;
+									events.push({
+										title:title,
+										description:'d',
+										start:index,
+										color:color
+									});
+								}
+								if(canceled > 1  ){
+									title2 = value.canceled.count+' Canceled Orders';
+									color2 = value.canceled.color;
+									events.push({
+										title:title2,
+										description:'e',
+										start:index,
+										color:color2
 									});
 								}
 								if(Express > 1  ){
 									//titledec = 'Express Completed: '+value.Express.count;
-									titleExp = value.Express.count+' Express';
+									titleExp = value.Express.count+' Express Services';
 									colorExp = value.Express.color;
 									events.push({
 										title:titleExp,
+										description:'f',
 										start:index,
 										color:colorExp
 									});
 								}
 								if(Deluxe > 1  ){
 									//titledec = 'Deluxe Completed: '+value.Deluxe.count;
-									titleDlx = value.Deluxe.count+' Deluxe';
+									titleDlx = value.Deluxe.count+' Deluxe Services';
 									colorDlx = value.Deluxe.color;
 									events.push({
 										title:titleDlx,
+										description:'g',
 										start:index,
 										color:colorDlx
 									});
 								}
 								if(Premium > 1  ){
 									//titledec = 'Premium Completed: '+value.Premium.count;
-									titlePre = value.Premium.count+' Premium';
+									titlePre = value.Premium.count+' Premium Services';
 									colorPre = value.Premium.color;
 									events.push({
 										title:titlePre,
+										description:'h',
 										start:index,
 										color:colorPre
 									});
@@ -248,6 +256,7 @@ $(document).ready(function() {
 									colorCC = value.coupon_code.color;
 									events.push({
 										title:titleCC,
+										description:'i',
 										start:index,
 										color:colorCC
 									});
@@ -258,19 +267,30 @@ $(document).ready(function() {
 									colorTa = value.tip_amount.color;
 									events.push({
 										title:titleTa,
+										description:'j',
 										start:index,
 										color:colorTa
 									});
 								}
-
+								if(processing > 1  ){
+									title2 = value.processing.count+' Processing Orders';
+									color2 = value.processing.color;
+									events.push({
+										title:title2,
+										description:'k',
+										start:index,
+										color:color2
+									});
+								}
 
 								//if(view_all >= 1){
 									title3 = 'View All';
-									color3 = '#035954';
+									color3 = '#000000';
 									events.push({
 										title:title3,
+										description:'l',
 										start:index,
-										color: color3
+										color:color3
 									});
 								//}
                                  if(total_cars >= 1  ){
@@ -304,9 +324,11 @@ $(document).ready(function() {
 			eventClick: function(calEvent, jsEvent, view) {
 				var _day = calEvent.start._i;
 				var _event = '';
-				if(calEvent.color == '#FF3B30'){
+				if(calEvent.color == '#e5e500'){
 					_event = 'pending';
-				}else if(calEvent.color == '#30A0FF'){
+				}else if(calEvent.color == '#ff0000'){
+					_event = 'total_orders';
+				}else if(calEvent.color == '#008000'){
 					_event = 'completed';
 				}else if(calEvent.color == '#EF9047'){
 					_event = 'processing';
@@ -317,19 +339,19 @@ $(document).ready(function() {
 				else if(calEvent.color == '#cc0066'){
 					_event = 'declined';
 				}
-				else if(calEvent.color == '#581845'){
+				else if(calEvent.color == '#00BFFF'){
 					_event = 'Express';
 				}
-				else if(calEvent.color == '#900C3F'){
+				else if(calEvent.color == '#4169E1'){
 					_event = 'Deluxe';
 				}
-				else if(calEvent.color == '#7F13B8'){
+				else if(calEvent.color == '#000080'){
 					_event = 'Premium';
 				}
-				else if(calEvent.color == '#688411'){
+				else if(calEvent.color == '#800080'){
 					_event = 'coupon_code';
 				}
-				else if(calEvent.color == '#B8940E'){
+				else if(calEvent.color == '#1b6f1b'){
 					_event = 'tip_amount';
 				}
 				else{
@@ -421,7 +443,8 @@ $(document).ready(function() {
 				}else{
 					$(this).addClass('day_highlight');
 				}
-			}
+			},
+			eventOrder: "description"
 		});
 		
 		 var _html = '<div class="center" style="width: 50%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span>Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #aaa; background: #aaa;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #cc0066; background: #cc0066;"><span>Declined</span></div>	</div>';
