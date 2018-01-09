@@ -2286,7 +2286,7 @@ $customername = ucwords($customername);
                     $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
                     $cust_details = Customers::model()->findByAttributes(array('id' => $washrequestmodel->customer_id));
 
-
+if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '23' ")->queryAll();
                     $message = $pushmsg[0]['message'];
 
@@ -2313,7 +2313,9 @@ $customername = ucwords($customername);
                     curl_close($ch);
                 }
             }
-
+	    
+	    Washingrequests::model()->updateByPk($wash_request_id, array("is_washer_assigned_push_sent" => 1));
+		}
 
                     $washeractionlogdata = array(
                         'agent_id'=> $agent_id,
@@ -2358,7 +2360,7 @@ $customername = ucwords($customername);
                     curl_close($ch);
                 }
             }
-		 
+		Washingrequests::model()->updateByPk($wash_request_id, array("is_washer_assigned_push_sent" => 0)); 
 
                     //if ($wrequest_id_check->agent_id > 0)
                     //{
