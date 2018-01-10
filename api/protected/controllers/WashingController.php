@@ -2330,6 +2330,9 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 
                 if(Yii::app()->request->getParam('washer_drop_job') == 1)
                 {
+			
+			Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0, "is_washer_assigned_push_sent" => 0));
+			
                     $alert_type = "strong";
                     $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '24' ")->queryAll();
                     $notify_msg = urlencode($pushmsg[0]['message']);
@@ -2360,13 +2363,9 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     curl_close($ch);
                 }
             }
-		Washingrequests::model()->updateByPk($wash_request_id, array("is_washer_assigned_push_sent" => 0)); 
+		
 
-                    //if ($wrequest_id_check->agent_id > 0)
-                    //{
-                        
-                        Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0));
-                    //}
+                  
                 // INCREMENT 'total_schedule_rejected' counter on each rejection
                  $washrequestmodel->total_schedule_rejected = $washrequestmodel->total_schedule_rejected + 1;
                     $washrequestmodel->save(false);
