@@ -10168,9 +10168,9 @@ die();
 
 					foreach($allagents as $agent){
 						$get_notify = 1;
-						$agentallschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id'=>$agent->id, 'is_scheduled' => 1, 'status'=> 0));
+						//$agentallschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id'=>$agent->id, 'is_scheduled' => 1, 'status'=> 0));
 
-						foreach($agentallschedwashes as $wash){
+						/*foreach($agentallschedwashes as $wash){
 
 							$datediff = round((strtotime($wash['schedule_date']) -  strtotime($schedwash->schedule_date))/(60*60));
 
@@ -10179,17 +10179,19 @@ die();
 							break;
 							}
 
-						}
+						}*/
 
 						if($get_notify){
 
-                            $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' AND device_token != '' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                            //$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' AND device_token != '' ORDER BY last_used DESC LIMIT 1")->queryAll();
+			    $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 //echo $schedwash->id." - ".$agent->id."<br>";
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
 							$message = $pushmsg[0]['message'];
 
 							foreach($agentdevices as $agdevice){
+								
 $device_type = '';
 $notify_token = '';
 								//$message =  "You have a new scheduled wash request.";
