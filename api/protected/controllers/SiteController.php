@@ -3158,6 +3158,7 @@ $customername = ucwords($customername);
 				}
 $payment_status = '';
 $submerchant_id = '';
+$transaction_status = '';
 
 if($wrequest['failed_transaction_id']){
   $payment_status = 'Declined';
@@ -3177,7 +3178,8 @@ $payment_status = 'Released';
 /*if($cust_details->client_position == 'real') $payresult = Yii::app()->braintree->getTransactionById_real($wrequest['transaction_id']);
 else $payresult = Yii::app()->braintree->getTransactionById($wrequest['transaction_id']);
 if($payresult['success'] == 1) {
-$submerchant_id = $payresult['merchant_id'];	
+//$submerchant_id = $payresult['merchant_id'];
+$transaction_status = $payresult['status'];
 }*/
 
  }
@@ -3222,6 +3224,7 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 					'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
                     'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
 					'transaction_id'=>$wrequest['transaction_id'],
+					'transaction_status'=>$transaction_status,
 					'submerchant_id' => $submerchant_id,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
@@ -3268,6 +3271,7 @@ if($min_diff >= 0){
 					'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
                     'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
 					'transaction_id'=>$wrequest['transaction_id'],
+					'transaction_status'=>$transaction_status,
 					'submerchant_id' => $submerchant_id,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
@@ -3308,6 +3312,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
 					'transaction_id'=>$wrequest['transaction_id'],
 					'submerchant_id' => $submerchant_id,
+					'transaction_status'=>$transaction_status,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
@@ -3345,6 +3350,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'reschedule_time'=>$wrequest['reschedule_time'],
 					'created_date'=>$wrequest['created_date'],
 					'transaction_id'=>$wrequest['transaction_id'],
+					'transaction_status'=>$transaction_status,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
@@ -3391,7 +3397,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
         echo json_encode($json); die();
     }
 
-    public function actiongetallwashrequests(){
+    public function actiongetpaymentreports(){
 
         if(Yii::app()->request->getParam('key') != API_KEY){
             echo "Invalid api key";
@@ -3565,6 +3571,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
 
                 $payment_status = '';
                 $submerchant_id = '';
+		$transaction_status = '';
 
                 if($wrequest['failed_transaction_id']){
                     $payment_status = 'Declined';
@@ -3576,11 +3583,12 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
                             $payment_status = 'Released';
                         }
 
-                        /*if($cust_details->client_position == 'real') $payresult = Yii::app()->braintree->getTransactionById_real($wrequest['transaction_id']);
+                        if($cust_details->client_position == 'real') $payresult = Yii::app()->braintree->getTransactionById_real($wrequest['transaction_id']);
                         else $payresult = Yii::app()->braintree->getTransactionById($wrequest['transaction_id']);
                         if($payresult['success'] == 1) {
-                        $submerchant_id = $payresult['merchant_id'];    
-                        }*/
+                        //$submerchant_id = $payresult['merchant_id'];
+			$transaction_status = $payresult['status'];
+                        }
 
                     }
                 }
@@ -3621,6 +3629,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
                         'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
                         'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
                         'transaction_id'=>$wrequest['transaction_id'],
+			'transaction_status'=>$transaction_status,
                         'submerchant_id' => $submerchant_id,
                         'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                         'schedule_total'=>$wrequest['schedule_total'],
@@ -3678,6 +3687,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
                         'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
                         'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
                         'transaction_id'=>$wrequest['transaction_id'],
+			'transaction_status'=>$transaction_status,
                         'submerchant_id' => $submerchant_id,
                         'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                         'schedule_total'=>$wrequest['schedule_total'],
@@ -3729,6 +3739,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
                         'created_date'=>$wrequest['created_date'],
                         'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
                         'transaction_id'=>$wrequest['transaction_id'],
+			'transaction_status'=>$transaction_status,
                         'submerchant_id' => $submerchant_id,
                         'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                         'schedule_total'=>$wrequest['schedule_total'],
@@ -3778,6 +3789,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
                     'reschedule_time'=>$wrequest['reschedule_time'],
                     'created_date'=>$wrequest['created_date'],
                     'transaction_id'=>$wrequest['transaction_id'],
+		    'transaction_status'=>$transaction_status,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],

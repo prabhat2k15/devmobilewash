@@ -48,7 +48,7 @@ if( isset($_GET['day']) && !empty( $_GET['day'] ) ){
 	$_event = $_GET['event'];
 }
 
-$url = 'http://www.devmobilewash.com/api/index.php?r=site/getallwashrequests';
+$url = 'http://www.devmobilewash.com/api/index.php?r=site/getpaymentreports';
 $cust_id = 0;
 $agent_id = 0;
 if(isset($_GET['customer_id'])) $cust_id = $_GET['customer_id'];
@@ -357,6 +357,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                         <th> Order Type </th>
                                         <th> Status </th>
                                         <th> Payment </th>
+					<th> Braintree Status </th>
                                         <th> Transaction ID </th>
 				                        <th> Customer Name </th>
 				                        <th> Customer Phone </th>
@@ -414,6 +415,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                             <span class="label label-sm label-complete">Free Wash</span>
                                             <?php endif; ?>
                                         </td>
+					<td><?php echo $order->transaction_status; ?></td>
                                         <td><?php echo $order->transaction_id; ?></td>
                                         <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                                         <td><?php echo $order->customer_phoneno; ?></td>
