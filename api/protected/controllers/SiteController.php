@@ -3442,8 +3442,11 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
         $last_cust_lng = '';
         $filter = '';
         $limit = 0;
+	$offset = 0;
+	$page_number = 1;
         $filter = Yii::app()->request->getParam('filter');
         $limit = Yii::app()->request->getParam('limit');
+	$page_number = Yii::app()->request->getParam('page_number');
         $customer_id = Yii::app()->request->getParam('customer_id');
         $agent_id = Yii::app()->request->getParam('agent_id');
         $pendingorderscount = 0;
@@ -3452,6 +3455,8 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
         $avg_order_frequency = 0;
         $total_days_diff = 0;
         $completed_orders = 0;
+	$total_entries = 0;
+	$total_pages = 0;
 
         if($customer_id > 0) $cust_query = "w.customer_id=".$customer_id." AND ";
         if($agent_id > 0) $agent_query = "w.agent_id=".$agent_id." AND ";
@@ -3459,17 +3464,20 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
         if($customer_id > 0){
             $cust_check = Customers::model()->findByPk($customer_id);
         }
+	
+	$limit = 10;
+	$offset = ($page_number -1) * $limit;
+	
+	$total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM washing_requests WHERE wash_request_position = '".APP_ENV."'")->queryAll();
+ $total_entries = $total_rows[0]['countid'];
+ if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
 
         //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
         //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
-        if($filter == 'testorders'){
-            if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->queryAll();
-            else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
-        } else {
-            if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->queryAll();
-            else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
-        }
+       
+            if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = '".APP_ENV."' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+            
 
         //print_r($qrRequests);
 
@@ -3595,173 +3603,16 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
 
                 if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 
-                if(($min_diff < 0) && ($wrequest['status'] == 0)){
+             
+
+               
                     $resched_date = '';
                     $resched_time = '';
                     if(strtotime($wrequest['reschedule_date']) > 0){
                        $resched_date = date('Y-m-d',strtotime($wrequest['reschedule_date']));
                         $resched_time = date('h:i A',strtotime($wrequest['reschedule_time']));
                     }
-                    $pendingwashrequests_flashing[] = array(
-                        'id'=>$wrequest['id'],
-                        'customer_id'=>$wrequest['customer_id'],
-                        'customer_name'=>$cust_details->customername,
-                        'customer_email'=>$cust_details->email,
-                        'customer_phoneno'=>$cust_details->contact_number,
-                         'agent_details'=> $agent_info,
-                        'car_list'=>$wrequest['car_list'],
-                        'package_list'=>$wrequest['package_list'],
-                        'vehicles' => $vehicles,
-                        'address'=>$wrequest['address'],
-                        'address_type'=>$wrequest['address_type'],
-                        'latitude'=>$wrequest['latitude'],
-                        'longitude'=>$wrequest['longitude'],
-                        'payment_type'=>$wrequest['payment_type'],
-                        'nonce'=>$wrequest['nonce'],
-                        'estimate_time'=>$wrequest['estimate_time'],
-                        'status'=>$wrequest['status'],
-                        'is_scheduled'=>$wrequest['is_scheduled'],
-                        'schedule_date'=>date('Y-m-d',strtotime($wrequest['schedule_date'])),
-                        'schedule_time'=>date('h:i A', strtotime($wrequest['schedule_time'])),
-                        'reschedule_date'=>$resched_date,
-                        'checklist'=>$wrequest['checklist'],
-                        'reschedule_time'=>$resched_time,
-                        'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
-                        'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
-                        'transaction_id'=>$wrequest['transaction_id'],
-			'transaction_status'=>$transaction_status,
-                        'submerchant_id' => $submerchant_id,
-                        'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
-                        'schedule_total'=>$wrequest['schedule_total'],
-                        'schedule_company_total'=>$wrequest['schedule_company_total'],
-                        'schedule_agent_total'=>$wrequest['schedule_agent_total'],
-                        'wash_request_position'=>$wrequest['wash_request_position'],
-                        'total_price'=>$wrequest['total_price'],
-                        'net_price'=>$wrequest['net_price'],
-                        'company_total'=>$wrequest['company_total'],
-                        'agent_total'=>$wrequest['agent_total'],
-                        'bundle_discount'=>$wrequest['bundle_discount'],
-                        'fifth_wash_discount'=>$wrequest['fifth_wash_discount'],
-                        'first_wash_discount'=>$wrequest['first_wash_discount'],
-                        'coupon_discount'=>$wrequest['coupon_discount'],
-                        'coupon_code'=>$wrequest['coupon_code'],
-                        'vip_coupon_code'=>$wrequest['vip_coupon_code'],
-                        'company_discount'=>$wrequest['company_discount'],
-                        'tip_amount'=>$wrequest['tip_amount'],
-                        'payment_status' => $payment_status,
-                        'min_diff' => $min_diff
-                    );
-                }
-
-                if($min_diff >= 0){
-                    $resched_date = '';
-                    $resched_time = '';
-                    if(strtotime($wrequest['reschedule_date']) > 0){
-                       $resched_date = date('Y-m-d',strtotime($wrequest['reschedule_date']));
-                        $resched_time = date('h:i A',strtotime($wrequest['reschedule_time']));
-                    }
-                    $pendingwashrequests_upcoming[] = array(
-                        'id'=>$wrequest['id'],
-                        'customer_id'=>$wrequest['customer_id'],
-                        'customer_name'=>$cust_details->customername,
-                        'customer_email'=>$cust_details->email,
-                        'customer_phoneno'=>$cust_details->contact_number,
-                        'agent_details'=> $agent_info,
-                        'car_list'=>$wrequest['car_list'],
-                        'package_list'=>$wrequest['package_list'],
-                        'vehicles' => $vehicles,
-                        'address'=>$wrequest['address'],
-                        'address_type'=>$wrequest['address_type'],
-                        'latitude'=>$wrequest['latitude'],
-                        'longitude'=>$wrequest['longitude'],
-                        'payment_type'=>$wrequest['payment_type'],
-                        'nonce'=>$wrequest['nonce'],
-                        'estimate_time'=>$wrequest['estimate_time'],
-                        'status'=>$wrequest['status'],
-                        'is_scheduled'=>$wrequest['is_scheduled'],
-                        'schedule_date'=>date('Y-m-d',strtotime($wrequest['schedule_date'])),
-                        'schedule_time'=>date('h:i A', strtotime($wrequest['schedule_time'])),
-                        'reschedule_date'=>$resched_date,
-                        'checklist'=>$wrequest['checklist'],
-                        'reschedule_time'=>$resched_time,
-                        'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
-                        'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
-                        'transaction_id'=>$wrequest['transaction_id'],
-			'transaction_status'=>$transaction_status,
-                        'submerchant_id' => $submerchant_id,
-                        'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
-                        'schedule_total'=>$wrequest['schedule_total'],
-                        'schedule_company_total'=>$wrequest['schedule_company_total'],
-                        'schedule_agent_total'=>$wrequest['schedule_agent_total'],
-                        'wash_request_position'=>$wrequest['wash_request_position'],
-                        'total_price'=>$wrequest['total_price'],
-                        'net_price'=>$wrequest['net_price'],
-                        'company_total'=>$wrequest['company_total'],
-                        'agent_total'=>$wrequest['agent_total'],
-                        'bundle_discount'=>$wrequest['bundle_discount'],
-                        'fifth_wash_discount'=>$wrequest['fifth_wash_discount'],
-                        'first_wash_discount'=>$wrequest['first_wash_discount'],
-                        'coupon_discount'=>$wrequest['coupon_discount'],
-                        'coupon_code'=>$wrequest['coupon_code'],
-                        'vip_coupon_code'=>$wrequest['vip_coupon_code'],
-                        'company_discount'=>$wrequest['company_discount'],
-                        'tip_amount'=>$wrequest['tip_amount'],
-                        'payment_status' => $payment_status,
-                        'min_diff' => $min_diff
-                    );
-                }
-
-                if(($min_diff < 0) && ($wrequest['status'] > 0)){
-                    $pendingwashrequests_nonupcoming[] = array(
-                        'id'=>$wrequest['id'],
-                        'customer_id'=>$wrequest['customer_id'],
-                        'customer_name'=>$cust_details->customername,
-                        'customer_email'=>$cust_details->email,
-                        'customer_phoneno'=>$cust_details->contact_number,
-                        'agent_details'=> $agent_info,
-                        'car_list'=>$wrequest['car_list'],
-                        'package_list'=>$wrequest['package_list'],
-                        'vehicles' => $vehicles,
-                        'address'=>$wrequest['address'],
-                        'address_type'=>$wrequest['address_type'],
-                        'latitude'=>$wrequest['latitude'],
-                        'longitude'=>$wrequest['longitude'],
-                        'payment_type'=>$wrequest['payment_type'],
-                        'nonce'=>$wrequest['nonce'],
-                        'estimate_time'=>$wrequest['estimate_time'],
-                        'status'=>$wrequest['status'],
-                        'is_scheduled'=>$wrequest['is_scheduled'],
-                        'schedule_date'=>$wrequest['schedule_date'],
-                        'schedule_time'=>$wrequest['schedule_time'],
-                        'reschedule_date'=>$wrequest['reschedule_date'],
-                        'checklist'=>$wrequest['checklist'],
-                        'reschedule_time'=>$wrequest['reschedule_time'],
-                        'created_date'=>$wrequest['created_date'],
-                        'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
-                        'transaction_id'=>$wrequest['transaction_id'],
-			'transaction_status'=>$transaction_status,
-                        'submerchant_id' => $submerchant_id,
-                        'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
-                        'schedule_total'=>$wrequest['schedule_total'],
-                        'schedule_company_total'=>$wrequest['schedule_company_total'],
-                        'schedule_agent_total'=>$wrequest['schedule_agent_total'],
-                        'wash_request_position'=>$wrequest['wash_request_position'],
-                        'total_price'=>$wrequest['total_price'],
-                        'net_price'=>$wrequest['net_price'],
-                        'company_total'=>$wrequest['company_total'],
-                        'agent_total'=>$wrequest['agent_total'],
-                        'bundle_discount'=>$wrequest['bundle_discount'],
-                        'fifth_wash_discount'=>$wrequest['fifth_wash_discount'],
-                        'first_wash_discount'=>$wrequest['first_wash_discount'],
-                        'coupon_discount'=>$wrequest['coupon_discount'],
-                        'coupon_code'=>$wrequest['coupon_code'],
-                        'vip_coupon_code'=>$wrequest['vip_coupon_code'],
-                        'company_discount'=>$wrequest['company_discount'],
-                        'tip_amount'=>$wrequest['tip_amount'],
-                        'payment_status' => $payment_status,
-                        'min_diff' => $min_diff                
-                    );
-                }
+                   
 
                 $pendingwashrequests[] = array(
                     'id'=>$wrequest['id'],
@@ -3817,12 +3668,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
             //echo "average order frequency: ".round($total_days_diff/($completed_orders-1))."<br>";
             if($completed_orders > 1) $avg_order_frequency=round($total_days_diff/($completed_orders-1));
 
-            usort($pendingwashrequests_flashing, array('SiteController','sortById'));
-            usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
-            usort($pendingwashrequests_nonupcoming, array('SiteController','sortById'));
-
-            $pendingwashrequests = array_merge($pendingwashrequests_flashing,$pendingwashrequests_upcoming,$pendingwashrequests_nonupcoming);
-
+            
 
         } else {
             $result= 'false';
@@ -3834,9 +3680,9 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
             'response'=> $response,
             'wash_requests' => $pendingwashrequests,
             'pending_wash_count' => $pendingorderscount,
-            'cust_avg_order_frequency' => $avg_order_frequency
-            //'upcoming' => $pendingwashrequests_upcoming,
-            //'nonupcoming' => $pendingwashrequests_nonupcoming,
+            'cust_avg_order_frequency' => $avg_order_frequency,
+	    'total_entries' => $total_entries,
+	    'total_pages' => $total_pages
         );
 
         echo json_encode($json); die();

@@ -51,10 +51,12 @@ if( isset($_GET['day']) && !empty( $_GET['day'] ) ){
 $url = 'http://www.devmobilewash.com/api/index.php?r=site/getpaymentreports';
 $cust_id = 0;
 $agent_id = 0;
+$page_number = 1;
 if(isset($_GET['customer_id'])) $cust_id = $_GET['customer_id'];
 if(isset($_GET['agent_id'])) $agent_id = $_GET['agent_id'];
+if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
 $handle = curl_init($url);
-$data = array('day'=>$day,'event'=>$_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('customer_id' => $cust_id, 'agent_id' => $agent_id, 'page_number' => $page_number, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -66,11 +68,9 @@ $s_orders_result_code = $jsondata->result;
 $s_mw_all_orders = $jsondata->wash_requests;
 //echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; 
 $pending_order_count = '';
-if(!$jsondata->pending_wash_count) $pending_order_count = "no orders";
-if($jsondata->pending_wash_count == 1) $pending_order_count = "1 order";
-if($jsondata->pending_wash_count > 1) $pending_order_count = $jsondata->pending_wash_count." orders"; 
-$voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_order_count." pending.";
+
  $cust_avg_order_frequency = $jsondata->cust_avg_order_frequency;
+ $total_pages = $jsondata->total_pages;
 ?>
 <style>
 .label-complete {
@@ -318,6 +318,23 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     text-decoration: underline;
 }
 
+.dataTables_info{
+	display: none !important;
+}
+
+.load-more{
+	display: block;
+    text-align: center;
+    background: #337ab7;
+    padding: 15px;
+    color: #fff;
+    font-size: 20px;
+    text-decoration: none !important;
+    width: 300px;
+    margin: 10px auto;
+    color: #fff !important;
+}
+
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -345,9 +362,8 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <p style="margin-bottom: 20px; font-size: 16px;">Limit Orders <select class='order-limit'><option value="200" <?php if($_GET['limit'] == 200) echo "selected"; ?>>200</option><option value="400" <?php if($_GET['limit'] == 400) echo "selected"; ?>>400</option><option value="600" <?php if($_GET['limit'] == 600) echo "selected"; ?>>600</option><option value="800" <?php if($_GET['limit'] == 800) echo "selected"; ?>>800</option><option value="1000" <?php if($_GET['limit'] == 1000) echo "selected"; ?>>1000</option><option value="0" <?php if(!$_GET['limit']) echo "selected"; ?>>none</option></select></p>
-                        <p style="margin-bottom: 20px; font-size: 16px;">Filter Orders <select class='order-filter'><option value="" <?php if(!$_GET['filter']) echo "selected"; ?>>Real Orders</option><option value="testorders" <?php if($_GET['filter'] == 'testorders') echo "selected"; ?>>Test Orders</option></select></p>
-                        <?php if($s_orders_result_code == 'true'){ ?>   
+                        
+			<?php if($s_orders_result_code == 'true'){ ?>   
                         <!-- <div class="table-scrollable">  -->                          
                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                 <thead>
@@ -357,8 +373,9 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                         <th> Order Type </th>
                                         <th> Status </th>
                                         <th> Payment </th>
-					<th> Braintree Status </th>
                                         <th> Transaction ID </th>
+					<th> Braintree Status </th>
+					<th> Payment Processed </th>
 				                        <th> Customer Name </th>
 				                        <th> Customer Phone </th>
                                         
@@ -415,8 +432,16 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                             <span class="label label-sm label-complete">Free Wash</span>
                                             <?php endif; ?>
                                         </td>
-					<td><?php echo $order->transaction_status; ?></td>
                                         <td><?php echo $order->transaction_id; ?></td>
+					<td><?php echo $order->transaction_status; ?></td>
+					 <td>                   
+                                            <?php if(($order->transaction_status == 'authorized') || ($order->transaction_status == 'submitted_for_settlement') || ($order->transaction_status == 'settling') || ($order->transaction_status == 'settled')): ?>
+                                            <span class="label label-sm label-complete">Yes</span>
+					    <?php else: ?>
+					    <span class="label label-sm label-pending">No</span>
+					    <?php endif; ?>
+                                            
+                                        </td>
                                         <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                                         <td><?php echo $order->customer_phoneno; ?></td>
                                         
@@ -487,6 +512,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                 </tbody>
                             </table>
                         <!-- </div> -->
+                        <a href="#" class="load-more">Load More</a>
                         <?php } ?>
                     </div>
                 </div>
@@ -526,7 +552,9 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 <!-- END PAGE LEVEL SCRIPTS -->
 <script type="text/javascript">
     var dt_table;
-        
+    var page_number = 2;
+    var total_pages = "<?php echo $total_pages; ?>";
+    console.log(total_pages);
     $(document).ready(function(){
         $.fn.dataTable.moment( 'YYYY-MM-DD hh:mm A' );
         $.fn.dataTableExt.oSort['nullable-asc'] = function(a,b) {
@@ -558,73 +586,167 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
         dt_table = $('#example1, #example2').dataTable( {
             "pageLength": 20,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-            "aaSorting": []
+             order: [[ 1, "desc" ]],
+	    "bPaginate": false,
         } );
     });
 </script>
 <script>
-    var params = {};
-    <?php  foreach($_GET as $key => $value) { ?>
-        params.<?php echo $key; ?> = "<?php echo $value; ?>";
-    <?php } ; ?>
-    params.key = "Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4";
-
-    if((!params.limit) || params.limit > 100) params.limit = 100;
+  
 
     $(function(){
  
 $(".preloader").remove();
 
-var curr_url = "http://www.devmobilewash.com/admin-new/payment-reports.php?filter=<?php echo $_GET['filter']; ?>";
-var limit = "<?php echo $_GET['limit']; ?>";
-$(".order-limit").change(function(){
-  window.location.href=curr_url+'&limit='+$(this).val();
-});
 
-$(".order-filter").change(function(){
-  if(limit) window.location.href='http://www.devmobilewash.com/admin-new/payment-reports.php?filter='+$(this).val()+'&limit='+limit;
-  else window.location.href='http://www.devmobilewash.com/admin-new/payment-reports.php?filter='+$(this).val();
-});
-
-/*
-dt_table.fnDeleteRow( $(".portlet-body table tr#order-8767"));
-var alldata = dt_table.fnGetData();
- dt_table.fnClearTable();
-//console.log(alldata);
-dt_table.fnAddData( [
-   "<a href='edit-schedule-order.php?id=8783' class='appt-edit-order' data-id='8783' style='margin-right: 7px;'>Edit</a>",
-    "8784",
-    "<span class='label label-sm label-pending'>Pending</span>",
-    "",
-    "",
-    "",
-    "",
-    "",
-    "",
-     "",
-    "30"
-    ]
-  );
-
-  dt_table.fnAddData(alldata);
-
-// $(".portlet-body table tbody").prepend('<tr role="row" class="odd"><td><a href="edit-schedule-order.php?id=8783" class="appt-edit-order" data-id="8783" style="margin-right: 7px;">Edit</a></td><td>8784</td><td><span class="label label-sm label-pending">Pending</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="sorting_1">30</td><td></td><td></td></tr>');
-dt_table.fnDraw();
-*/
-});
-
-function pendingflashingorder(){
-  $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/adminpendingschedwashesalert", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
-    $(".portlet-body table tr").removeClass('flashrow');
+$(".load-more").click(function(){
+	var th = $(this);
+	$(this).removeClass('.load-more');
+	$(this).html('Loading...');
+  $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/getpaymentreports&page_number="+page_number+"&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4", function( data ) {
+    
 if(data.result == 'true'){
-//console.log(data.wash_ids);
-$.each(data.wash_ids, function( index, value ) {
-  $(".portlet-body table tr#order-"+value).addClass('flashrow');
+	page_number++;
+	if (page_number > total_pages) {
+		$('.load-more').hide();
+	}
+//console.log(data);
+$(".portlet-body table tr").removeClass('flashrow');
+$.each(data.wash_requests, function( index, value ) {
+  
+    dt_table.fnDeleteRow( $(".portlet-body table tr#order-"+value.id));
+
 });
+
+alldata = dt_table.fnGetData();
+//console.log(alldata);
+dt_table.fnClearTable();
+
+$.each(data.wash_requests, function( index, value ) {
+    var upcomingwashes = [];
+
+    upcomingwashes["DT_RowId"] = "order-"+value.id;
+
+
+      upcomingwashes.push("<a href='edit-order.php?id="+value.id+"' class='appt-edit-order' data-id='"+value.id+"' style='margin-right: 7px;'>Edit</a>");
+      upcomingwashes.push(value.id);
+       if(value.is_scheduled == 1){
+         upcomingwashes.push("<p><span class='label label-sm label-pending' style='background-color: #0046ff !important;'>Scheduled</span></p>"); 
+      }
+      else{
+        upcomingwashes.push("<p><span class='label label-sm label-pending' style='background-color: #009688 !important;'>On-Demand</span></p>");   
+      }
+      //var checklist_arr = value.checklist.split('|');
+      
+      if(value.status == 5 || value.status == 6){
+         upcomingwashes.push("<span class='label label-sm label-cancel'>Cancelled</span>"); 
+      }
+      
+      else if(value.status == 0){
+         
+        upcomingwashes.push("<span class='label label-sm label-pending'>Pending</span>");
+      }
+      
+      else if(value.status == 1){
+         upcomingwashes.push("<span class='label label-sm label-process'>En Route</span>"); 
+      }
+      
+      else if(value.status == 2){
+         upcomingwashes.push("<span class='label label-sm label-process'>Arrived</span>"); 
+      }
+      
+       else if(value.status == 3){
+         upcomingwashes.push("<span class='label label-sm label-process'>In Process</span>"); 
+      }
+      
+      else if(value.status == 4){
+         upcomingwashes.push("<span class='label label-sm label-complete'>Completed</span>");
+      }
+      
+       var payment_status_str = '';
+if((value.payment_status == 'Declined') || (value.payment_status == 'Check Fraud')){
+payment_status_str += "<span class='label label-sm label-pending'>"+value.payment_status+"</span><br><br>";
+
+      }
+      else payment_status_str += value.payment_status;
+
+      if(value.payment_type == 'free') payment_status_str += "<span class='label label-sm label-complete'>Free Wash</span>";
+     upcomingwashes.push(payment_status_str);
+
+upcomingwashes.push(value.transaction_id);
+upcomingwashes.push(value.transaction_status);
+
+					if ((value.transaction_status == 'authorized') || (value.transaction_status == 'submitted_for_settlement') || (value.transaction_status == 'settling') || (value.transaction_status == 'settled')) {
+						upcomingwashes.push("<span class='label label-sm label-complete'>Yes</span>");
+					}
+					else{
+					upcomingwashes.push("<span class='label label-sm label-pending'>No</span>");	
+					}
+upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?customer_id="+value.customer_id+"'>"+value.customer_name+"</a>");
+upcomingwashes.push(value.customer_phoneno);
+if(value.agent_details.agent_name) upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?agent_id="+value.agent_details.agent_id+"'>"+value.agent_details.agent_name+"</a>");
+else upcomingwashes.push("N/A");
+if(value.agent_details.agent_phoneno) upcomingwashes.push(value.agent_details.agent_phoneno);
+else upcomingwashes.push("N/A"); 
+upcomingwashes.push(value.address+" ("+value.address_type+")");
+
+if(value.is_scheduled == 1){
+ if (value.reschedule_time) {
+  upcomingwashes.push("<span style='color: red; font-weight: bold; font-size: 13px;'>"+value.reschedule_date+" "+value.reschedule_time+"</span><p style='text-align: center; font-weight: bold; color: red; margin: 5px 0;'>Re-Scheduled</p>"+value.schedule_date+" "+value.schedule_time);  
+}
+else{
+ upcomingwashes.push(value.schedule_date+" "+value.schedule_time);   
+}
+}
+else{
+    upcomingwashes.push("N/A");  
 }
 
 
-});
+ var veh_string = '';
+if(value.vehicles.length){
+   
+veh_string += "<ol style='padding-left: 15px;'>";
+$.each(value.vehicles, function( ind, val ) {
+veh_string += "<li style='margin-bottom: 10px;'>"+val.make+" "+val.model+" ("+val.pack+")";
+if (val.addons) {
+veh_string += " - Addons: "+val.addons;
 }
+veh_string += "</li>";
+});
+veh_string += "</ol>";
+}
+upcomingwashes.push(veh_string);
+upcomingwashes.push("$"+value.total_price);
+upcomingwashes.push("$"+value.net_price);
+upcomingwashes.push("$"+value.company_total);
+upcomingwashes.push("$"+value.agent_total);
+upcomingwashes.push("$"+value.bundle_discount);
+upcomingwashes.push("$"+value.fifth_wash_discount);
+
+if(!value.coupon_discount) upcomingwashes.push("$0.00");
+else upcomingwashes.push("$"+value.coupon_discount)
+
+upcomingwashes.push(value.coupon_code);
+upcomingwashes.push("$"+value.company_discount);
+upcomingwashes.push("$"+value.tip_amount);
+upcomingwashes.push(value.created_date);
+dt_table.fnAddData(upcomingwashes);
+ //console.log(upcomingwashes);
+});
+ 
+ if(alldata.length > 0) dt_table.fnAddData(alldata);
+ //dt_table.fnDraw();
+}
+
+$(th).addClass('load-more');
+$(th).html('Load More');
+});
+  return false;
+});
+
+});
+
+
 
 </script>
