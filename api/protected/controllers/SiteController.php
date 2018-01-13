@@ -5515,6 +5515,14 @@ $response = 'device updated';
 		if($user_type == 'agent'){
 			if($user_check->forced_logout == 1) $response = 'offline';
 			else $response = 'online';
+			
+		/*if($user_check->status != 'online'){
+			$isagentbusy = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE agent_id='".$user_check->id."' AND (status >= 1 AND status <= 3)")->queryAll();
+			if(!count($isagentbusy)){
+				Agents::model()->updateAll(array('available_for_new_order' => 1, 'status' => 'online'),'id=:id',array(':id'=>$user_check->id));
+			}	
+		}*/
+		
 		}
 	    
 	    }
@@ -5559,7 +5567,7 @@ die();
 				$min_diff = round(($current_time - $last_used_time) / 60,2);
 			}
 
-			if($min_diff > 1){
+			if($min_diff >= 1){
 				Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline' WHERE id = '".$custdevice['id']."'")->execute();
 	
 			}
@@ -5568,22 +5576,29 @@ die();
 	}
 	
 	if(count($agent_online_devices)){
+		
 		foreach($agent_online_devices as $agdevice){
+			$agent_detail = Agents::model()->findByPk($agdevice['agent_id']);
 			$current_time = strtotime(date('Y-m-d H:i:s'));
 			$last_used_time = strtotime($agdevice['last_used']);
 			$min_diff = 0;
 			if($current_time > $last_used_time){
 				$min_diff = round(($current_time - $last_used_time) / 60,2);
 			}
-
-			if($min_diff > 1){
-				Yii::app()->db->createCommand("UPDATE agent_devices SET device_status='offline' WHERE id = '".$agdevice['id']."'")->execute();
-	
+			
+			if($min_diff >= .2){
+				Yii::app()->db->createCommand("UPDATE agent_devices SET device_status='offline' WHERE id = '".$agdevice['id']."'")->execute();	
+				if((count($agent_detail) > 0) && ($agent_detail->status == 'online') && ($agent_detail->available_for_new_order == 1)){
+					Agents::model()->updateByPk($agent_detail->id, array('status' => 'offline', 'available_for_new_order' => 0));
+					Washingrequests::model()->updateAll(array('order_temp_assigned' => 0), "order_temp_assigned = ".$agent_detail->id." AND status = 0");	
+				}
+				
 			}
 		}
+		
         
 	}
-            
+	            
 
 	$json= array(
 		'result'=> 'true',

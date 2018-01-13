@@ -4743,7 +4743,6 @@ if($model->status == 'online'){
                     /* ------------- check if agent available for new order -------------*/
 
                      $isagentbusy = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE agent_id='".$model->id."' AND (status >= 1 AND status <= 3)")->queryAll();
-                    ;
                     if(!count($isagentbusy)){
                        Agents::model()->updateAll(array('available_for_new_order' => 1),'id=:id',array(':id'=>$model->id));
                     }
