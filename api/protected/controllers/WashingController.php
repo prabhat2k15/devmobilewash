@@ -7318,11 +7318,9 @@ $nearagentsdetails = json_decode($output);
      Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 1, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
 }
 else{*/
-if($time_diff >= 10){
-     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 1, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
-}
-else{
+
   Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
+ if($time_diff < 10){
  $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '29' ")->queryAll();
@@ -7350,6 +7348,7 @@ else{
                 }
             }
 }
+
 
 
 $result = 'true';

@@ -1145,7 +1145,7 @@ if(diffMins == 3 ){
    id_exists = false;
    var pending_audio = document.getElementById("order-pending-audio");
    if(!$(pending_audio).hasClass('inplay')) {
-    pending_audio.play();
+    //pending_audio.play();
     $(pending_audio).addClass('inplay');
    }
 
@@ -1504,13 +1504,13 @@ var ziparea_polys = [];
 function greeting(){
   var audio = document.getElementById("audio1");
 var audio2 = document.getElementById("audio2");
-audio1.play();
-audio2.pause();
+//audio1.play();
+//audio2.pause();
 audio.addEventListener("ended", function () {
- audio2.play();
+ //audio2.play();
 });
 }
-setTimeout(greeting, 5000);
+//setTimeout(greeting, 5000);
 
 function finishpendingaudio(elt){
     setTimeout(function(){$(elt).removeClass('inplay'); }, 180000);
@@ -1574,8 +1574,8 @@ $.post( "http://www.devmobilewash.com/api/index.php?r=users/adminorderassign", {
   $(th).html('Assigned');
 $("#container .note-message").fadeIn();
 $("#container .note-message").html('Order assigned successfully');
-var assign_audio = document.getElementById("order-assign-audio");
-assign_audio.play();
+//var assign_audio = document.getElementById("order-assign-audio");
+//assign_audio.play();
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
 });
 
@@ -1594,8 +1594,8 @@ $.post( "http://www.devmobilewash.com/api/index.php?r=users/adminorderassign", {
   $(th).html('Assigned');
 $("#container .note-message").fadeIn();
 $("#container .note-message").html('Order assigned successfully');
-var assign_audio = document.getElementById("order-assign-audio");
-assign_audio.play();
+//var assign_audio = document.getElementById("order-assign-audio");
+//assign_audio.play();
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
 });
   });
