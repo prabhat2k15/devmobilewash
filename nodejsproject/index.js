@@ -15,7 +15,7 @@ var getclientsbystatustimer;
 var getnewwashrequesttimer;
 var connectedusers = [];
 
-function getAppstat() {
+function getAppstat(socket_id='') {
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -25,7 +25,9 @@ request.post({
  // console.log(JSON.parse(body));
  //console.log('stat func');
  try{
-    io.emit('get appstat', JSON.parse(body)); 
+    //if(socket_id) io.sockets.connected[socket_id].emit('get appstat', JSON.parse(body));
+    //else io.emit('get appstat', JSON.parse(body));
+    io.emit('get appstat', JSON.parse(body));
  }
  catch(err){
      
@@ -35,7 +37,7 @@ request.post({
 getappstattimer = setTimeout(getAppstat, 5000);
 }
 
-function getpendingwashesdetails() {
+function getpendingwashesdetails(socket_id = '') {
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -45,7 +47,9 @@ request.post({
  // console.log(JSON.parse(body));
  //console.log('pendingwash func');
  try{
-   io.emit('get pendingwashesdetails', JSON.parse(body));  
+    //if(socket_id) io.sockets.connected[socket_id].emit('get pendingwashesdetails', JSON.parse(body));
+    //else io.emit('get pendingwashesdetails', JSON.parse(body));
+    io.emit('get pendingwashesdetails', JSON.parse(body));
  }
  catch(err){
      
@@ -55,7 +59,7 @@ request.post({
 getpendingwashesdetailstimer = setTimeout(getpendingwashesdetails, 5000);
 }
 
-function washing_currentwashondemandalert(wash_request_id=0) {
+function washing_currentwashondemandalert(wash_request_id=0, socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/currentwashondemandalert',
@@ -79,7 +83,7 @@ request.post({
 });
 }
 
-function washing_washingkart(wash_request_id=0) {
+function washing_washingkart(wash_request_id=0, socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/washingkart',
@@ -88,7 +92,8 @@ request.post({
  //console.log(JSON.parse(body));
  //console.log('pendingwash func');
  try{
-  io.emit('washing_washingkart_'+wash_request_id, JSON.parse(body));    
+  if(socket_id) io.sockets.connected[socket_id].emit('washing_washingkart_'+wash_request_id, JSON.parse(body));
+  else io.emit('washing_washingkart_'+wash_request_id, JSON.parse(body));
  }
  catch(err){
     
@@ -97,7 +102,7 @@ request.post({
 });
 }
 
-function washing_checkwashrequeststatus(wash_request_id=0, customer_id=0) {
+function washing_checkwashrequeststatus(wash_request_id=0, customer_id=0, socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/checkwashrequeststatus',
@@ -106,7 +111,8 @@ request.post({
  //console.log(JSON.parse(body));
  //console.log('pendingwash func');
  try{
-   io.emit('washing_checkwashrequeststatus_'+wash_request_id, JSON.parse(body));  
+   if(socket_id) io.sockets.connected[socket_id].emit('washing_checkwashrequeststatus_'+wash_request_id, JSON.parse(body));
+  else io.emit('washing_checkwashrequeststatus_'+wash_request_id, JSON.parse(body));
  }
  catch(err){
      
@@ -115,7 +121,7 @@ request.post({
 });
 }
 
-function getagentsbystatus() {
+function getagentsbystatus(socket_id = '') {
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -125,7 +131,9 @@ request.post({
  // console.log(JSON.parse(body));
  //console.log('agentsbystatus func');
  try{
-    io.emit('get agentsbystatus', JSON.parse(body)); 
+    //if(socket_id) io.sockets.connected[socket_id].emit('get agentsbystatus', JSON.parse(body));
+  //else io.emit('get agentsbystatus', JSON.parse(body));
+  io.emit('get agentsbystatus', JSON.parse(body));
  }
  catch(err){
      
@@ -135,7 +143,7 @@ request.post({
 getagentsbystatustimer = setTimeout(getagentsbystatus, 5000);
 }
 
-function getclientsbystatus() {
+function getclientsbystatus(socket_id = '') {
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -145,7 +153,9 @@ request.post({
  // console.log(JSON.parse(body));
  //console.log('clientsbystatus func');
  try{
-   io.emit('get clientsbystatus', JSON.parse(body));  
+   //if(socket_id) io.sockets.connected[socket_id].emit('get clientsbystatus', JSON.parse(body));
+  //else io.emit('get clientsbystatus', JSON.parse(body));
+  io.emit('get clientsbystatus', JSON.parse(body));
  }
  catch(err){
      
@@ -155,7 +165,7 @@ request.post({
 getclientsbystatustimer = setTimeout(getclientsbystatus, 5000);
 }
 
-function washing_getnewwashrequest(agent_id=0) {
+function washing_getnewwashrequest(agent_id=0, socket_id = '') {
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -166,7 +176,9 @@ request.post({
  //console.log('washing_getnewwashrequest func');
             try
        {
-         io.emit('washing_getnewwashrequest_'+agent_id, JSON.parse(body));  
+         
+         if(socket_id) io.sockets.connected[socket_id].emit('washing_getnewwashrequest_'+agent_id, JSON.parse(body));
+  else io.emit('washing_getnewwashrequest_'+agent_id, JSON.parse(body));
        }
        catch(err)
        {
@@ -177,7 +189,7 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function washing_getallschedulewashes(agent_id=0, washer_position = '') {
+function washing_getallschedulewashes(agent_id=0, washer_position = '', socket_id = '') {
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -188,7 +200,9 @@ request.post({
  //console.log('washing_getnewwashrequest func');
             try
        {
-         io.emit('washing_getallschedulewashes_'+agent_id, JSON.parse(body));  
+         
+         if(socket_id) io.sockets.connected[socket_id].emit('washing_getallschedulewashes_'+agent_id, JSON.parse(body));
+  else io.emit('washing_getallschedulewashes_'+agent_id, JSON.parse(body));
        }
        catch(err)
        {
@@ -199,7 +213,7 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function site_updatedevicestatus(user_type='', user_id=0, device_token='') {
+function site_updatedevicestatus(user_type='', user_id=0, device_token='', socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=site/updatedevicestatus',
@@ -209,7 +223,8 @@ request.post({
  //console.log('site_updatedevicestatus');
  try
  {
-         io.emit('site_updatedevicestatus_'+user_type+'_'+user_id, JSON.parse(body));  
+         if(socket_id) io.sockets.connected[socket_id].emit('site_updatedevicestatus_'+user_type+'_'+user_id, JSON.parse(body));
+         else io.emit('site_updatedevicestatus_'+user_type+'_'+user_id, JSON.parse(body));
        }
        catch(err)
        {
@@ -220,7 +235,7 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function agents_updateagentlocations(agent_id=0, latitude=0, longitude=0) {
+function agents_updateagentlocations(agent_id=0, latitude=0, longitude=0, socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=agents/updateagentlocations',
@@ -233,7 +248,7 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function customers_getclienttoken(customer_id=0) {
+function customers_getclienttoken(customer_id=0, socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/getClientToken',
@@ -242,7 +257,8 @@ request.post({
  //console.log(JSON.parse(body));
             try
        {
-         io.emit('customers_getclienttoken_'+customer_id, JSON.parse(body));  
+         if(socket_id) io.sockets.connected[socket_id].emit('customers_getclienttoken_'+customer_id, JSON.parse(body));
+         else io.emit('customers_getclienttoken_'+customer_id, JSON.parse(body));
        }
        catch(err)
        {
@@ -253,7 +269,7 @@ request.post({
 
 }
 
-function customers_addcustomerpaymentmethod(customer_id=0, nonce = '') {
+function customers_addcustomerpaymentmethod(customer_id=0, nonce = '', socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/addcustomerpaymentmethod',
@@ -262,7 +278,8 @@ request.post({
  //console.log(JSON.parse(body));
             try
        {
-         io.emit('customers_addcustomerpaymentmethod_'+customer_id, JSON.parse(body));  
+         if(socket_id) io.sockets.connected[socket_id].emit('customers_addcustomerpaymentmethod_'+customer_id, JSON.parse(body));
+         else io.emit('customers_addcustomerpaymentmethod_'+customer_id, JSON.parse(body));
        }
        catch(err)
        {
@@ -273,7 +290,7 @@ request.post({
 
 }
 
-function customers_getcustomerpaymentmethods(customer_id=0) {
+function customers_getcustomerpaymentmethods(customer_id=0, socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/getcustomerpaymentmethods',
@@ -282,7 +299,8 @@ request.post({
  //console.log(JSON.parse(body));
             try
        {
-         io.emit('customers_getcustomerpaymentmethods_'+customer_id, JSON.parse(body));  
+         if(socket_id) io.sockets.connected[socket_id].emit('customers_getcustomerpaymentmethods_'+customer_id, JSON.parse(body));
+         else io.emit('customers_getcustomerpaymentmethods_'+customer_id, JSON.parse(body));
        }
        catch(err)
        {
@@ -296,6 +314,7 @@ request.post({
 io.on('connection', function(socket){
 console.log(socket.handshake.query.auth_token);
 //connectedusers.push(socket.id);
+//console.log("user socket id connected: "+socket.id);
 if(socket.handshake.query.action == 'commandcenter') {
      console.log('admin user connected');
     getAppstat();
@@ -310,57 +329,57 @@ else{
 
   socket.on('getnewwashrequest', function(data){
       //console.log(data);
-     washing_getnewwashrequest(data.agent_id);
+     washing_getnewwashrequest(data.agent_id, data.socketId);
   });
   
     socket.on('currentwashondemandalert', function(data){
       //console.log(data);
-    washing_currentwashondemandalert(data.wash_request_id);
+    washing_currentwashondemandalert(data.wash_request_id, data.socketId);
   });
   
      socket.on('currentwashschedulealert', function(data){
       //console.log(data);
-    washing_currentwashschedulealert(data.wash_request_id);
+    washing_currentwashschedulealert(data.wash_request_id, data.socketId);
   });
   
   socket.on('washingkart', function(data){
       //console.log(data);
-    washing_washingkart(data.wash_request_id);
+    washing_washingkart(data.wash_request_id, data.socketId);
   });
   
   socket.on('checkwashrequeststatus', function(data){
       //console.log(data);
-    washing_checkwashrequeststatus(data.wash_request_id, data.customer_id);
+    washing_checkwashrequeststatus(data.wash_request_id, data.customer_id, data.socketId);
   });
   
    socket.on('getallschedulewashes', function(data){
       //console.log(data);
-    washing_getallschedulewashes(data.agent_id, data.washer_position);
+    washing_getallschedulewashes(data.agent_id, data.washer_position, data.socketId);
   });
   
    socket.on('updateuserdevice', function(data){
       //console.log(data);
-    site_updatedevicestatus(data.user_type, data.user_id, data.device_token);
+    site_updatedevicestatus(data.user_type, data.user_id, data.device_token, data.socketId);
   });
   
      socket.on('updateagentlocations', function(data){
       //console.log(data);
-    agents_updateagentlocations(data.agent_id, data.latitude, data.longitude);
+    agents_updateagentlocations(data.agent_id, data.latitude, data.longitude, data.socketId);
   });
   
    socket.on('getbtclienttoken', function(data){
       //console.log(data);
-    customers_getclienttoken(data.customer_id);
+    customers_getclienttoken(data.customer_id, data.socketId);
   });
   
     socket.on('addcustomerpaymentmethod', function(data){
       //console.log(data);
-    customers_addcustomerpaymentmethod(data.customer_id, data.nonce);
+    customers_addcustomerpaymentmethod(data.customer_id, data.nonce, data.socketId);
   });
   
    socket.on('getcustomerpaymentmethods', function(data){
       //console.log(data);
-    customers_getcustomerpaymentmethods(data.customer_id);
+    customers_getcustomerpaymentmethods(data.customer_id, data.socketId);
   });
    
 

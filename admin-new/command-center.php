@@ -544,6 +544,7 @@ setInterval("displaytime()", 1000)
         </div>
 	</div><!--container end-->
 <?php include_once('cc-footer.php'); ?>
+<script src="http://209.95.41.9:3000/socket.io/socket.io.js"></script>
 <script>
 var markers = [];
 var closest_markers = [];
@@ -553,6 +554,14 @@ var bounds;
 var markerClusterer;
 var infoWindow;
 var layer;
+var socketId;
+var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
+
+socket.on('connect', function() {
+socketId = socket.io.engine.id;
+  console.log(socketId);
+});
+  
 </script>
 <script>
       var script = '<script type="text/javascript" src="js/markerclusterer';
@@ -697,10 +706,8 @@ $(function(){
   });
 });
 
-function update_map(){
-
-$.getJSON("http://www.devmobilewash.com/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
-  $(".client-online .count").html(data.Online_Customers);
+socket.on('get appstat', function (data) {
+    $(".client-online .count").html(data.Online_Customers);
   $(".pending-order .count").html(data.Pending_Orders);
   $(".sched-orders .count").html(data.Schedule_Orders);
    $(".processing-order .count").html(data.Processing_Orders);
@@ -711,12 +718,10 @@ $.getJSON("http://www.devmobilewash.com/api/index.php?r=users/Appstat", {key: 'T
     $(".agent-offline .count").html(data.Offline_Agent);
      $(".cancel-order-client .count").html(data.Cancel_Orders_Client);
      $(".agent-cancel .count").html(data.Cancel_Orders_Agent);
-
-
 });
 
-$.getJSON("http://www.devmobilewash.com/api/index.php?r=washing/pendingwashesdetails", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
-    var no_avail_agent = 0;
+socket.on('get pendingwashesdetails', function (data) {
+       var no_avail_agent = 0;
 if(data.pending_washes.length){
     pending_data = '';
      pending_data += '<ul>';
@@ -750,10 +755,9 @@ if(no_avail_agent == 0){
 }
 });
 
-  $.getJSON("http://www.devmobilewash.com/api/index.php?r=agents/agentsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, UpdateAgents);
+socket.on('get agentsbystatus', UpdateAgents);
+socket.on('get clientsbystatus', UpdateClients);
 
-$.getJSON("http://www.devmobilewash.com/api/index.php?r=customers/clientsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, UpdateClients);
-}
 
 function initialize_map(){
 
@@ -816,8 +820,6 @@ if(no_avail_agent == 0){
   }
 
   initialize_map();
-
-  var refreshId = setInterval(update_map, 5000);
 
 
 function PlotAgents(agentdata){
@@ -1736,8 +1738,8 @@ fusiondata = data['rows'];
             var newCoordinates = [];
 
               newCoordinates = constructNewCoordinates(rows[i][10]['geometry']);
-	      
-	      var areacolor = "#076ee1";
+              
+              	      var areacolor = "#076ee1";
 if (rows[i][12] == 'true') {
     areacolor = "#f4d942";
 }
@@ -1799,10 +1801,12 @@ function showziparea(data) {
             var newCoordinates = [];
 
               newCoordinates = constructNewCoordinates(data[i][10]['geometry']);
-var areacolor = "#076ee1";
+              
+              var areacolor = "#076ee1";
 if (data[i][12] == 'true') {
     areacolor = "#f4d942";
 }
+
             var randomnumber = Math.floor(Math.random() * 4);
             var country = new google.maps.Polygon({
               paths: newCoordinates,
