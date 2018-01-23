@@ -7294,8 +7294,13 @@ die();
                  if($wrequest_id_check->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($wrequest_id_check->transaction_id);
                  else $voidresult = Yii::app()->braintree->void($wrequest_id_check->transaction_id);
              }
+	     
+	      if(strtotime($wrequest_id_check->wash_begin) > 0) $wash_time = strtotime($wrequest_id_check->wash_begin);
+                 else $wash_time = strtotime($wrequest_id_check->created_date);
+$now_time = time();
+$time_diff = round(abs($now_time - $wash_time) / 60,2);
 
-             /* ------- get nearest agents --------- */
+             /* ------- get nearest agents --------- 
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
 $data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
@@ -7306,10 +7311,14 @@ $output = curl_exec($handle);
 curl_close($handle);
 $nearagentsdetails = json_decode($output);
 
-            /* ------- get nearest agents end --------- */
+             ------- get nearest agents end --------- */
 
 
-if($nearagentsdetails->result == 'false'){
+/*if($nearagentsdetails->result == 'false'){
+     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 1, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
+}
+else{*/
+if($time_diff >= 10){
      Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 1, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
 }
 else{

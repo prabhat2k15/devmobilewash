@@ -336,7 +336,7 @@ $coupon_usage = CustomerDiscounts::model()->findByAttributes(array("promo_code"=
 
  else if($coupon_check->coupon_status != 'enabled'){
                    	$result= 'false';
-		           $response= "Sorry, this promo is not available this time.";
+		           $response= "Sorry, this promo code is not available at this time.";
                 }
 
   else if(strtotime($coupon_check->expire_date) > 0 && (strtotime($coupon_check->expire_date) < strtotime(date("Y-m-d")))){
@@ -467,7 +467,7 @@ $coupon_usage = CustomerDiscounts::model()->findAllByAttributes(array("promo_cod
 
  else if($coupon_check->coupon_status != 'enabled'){
                    	$result= 'false';
-		            $response= "Sorry, this promo is not available this time.";
+		            $response= "Sorry, this promo code is not available at this time.";
                 }
 
                  else if(strtotime($coupon_check->expire_date) > 0 && (strtotime($coupon_check->expire_date) < strtotime(date("Y-m-d")))){
@@ -568,7 +568,7 @@ $total_wash_avail = $deluxe_wash_avail + $premium_wash_avail;
 
                 else if($coupon_check->customer_id && ($coupon_check->customer_id != $cust_id)){
                    	$result= 'false';
-		            $response= "Sorry, this promo is not available";
+		            $response= "Sorry, this promo code is not available at this time.";
                 }
 
                 else if(($deluxe_wash_used > $coupon_check->deluxe_wash_limit) && ($premium_wash_used > $coupon_check->premium_wash_limit)){
