@@ -3163,7 +3163,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 
 
             else{
-                if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
+                /*if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
                  if(strtotime($wrequest_id_check->wash_begin) > 0) $wash_time = strtotime($wrequest_id_check->wash_begin);
                  else $wash_time = strtotime($wrequest_id_check->created_date);
 $now_time = time();
@@ -3212,7 +3212,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
         die();
 
 }
-}
+}*/
 
                 $wrequest_obj = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id, 'customer_id'=> $customer_id));
 
@@ -7320,7 +7320,7 @@ $nearagentsdetails = json_decode($output);
 else{*/
 
   Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
- if($time_diff < 10){
+
  $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '29' ")->queryAll();
@@ -7347,7 +7347,7 @@ else{*/
                     curl_close($ch);
                 }
             }
-}
+
 
 
 
