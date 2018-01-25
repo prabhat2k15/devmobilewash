@@ -682,7 +682,7 @@ $last_order_days = "N/A";
 
 
   $sendmessage = $client->account->messages->create(array(
-                'To' =>  '3107555031',
+                'To' =>  '5627817812',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
@@ -993,7 +993,7 @@ $last_order_days = "N/A";
 
 
   $sendmessage = $client->account->messages->create(array(
-                'To' =>  '3107555031',
+                'To' =>  '5627817812',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
@@ -2389,7 +2389,7 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 		    $agent_det =  Agents::model()->findByPk($wrequest_id_check->agent_id);
                     $smscontent = "Washer #".$agent_det->real_washer_id." - ".$agent_det->first_name." ".$agent_det->last_name." dropped the order #".$wrequest_id_check->id;
                     $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3107555031',
+                        'To' =>  '5627817812',
                         'From' => '+13103128070',
                         'Body' => $smscontent,
                     ));
@@ -2475,7 +2475,7 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     $message = "Order #".$wash_request_id." has been re-scheduled at ".$sched_date." @ ".$reschedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wrequest_id_check->address."\r\n------\r\n".$mobile_receipt;
 
                     $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3107555031',
+                        'To' =>  '5627817812',
                         'From' => '+13103128070',
                         'Body' => $message,
                     ));
@@ -3163,7 +3163,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 
 
             else{
-                /*if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
+                if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
                  if(strtotime($wrequest_id_check->wash_begin) > 0) $wash_time = strtotime($wrequest_id_check->wash_begin);
                  else $wash_time = strtotime($wrequest_id_check->created_date);
 $now_time = time();
@@ -3212,7 +3212,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
         die();
 
 }
-}*/
+}
 
                 $wrequest_obj = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id, 'customer_id'=> $customer_id));
 
@@ -7321,6 +7321,7 @@ else{*/
 
   Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
 
+ if($time_diff < 10){
  $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '29' ")->queryAll();
@@ -7348,7 +7349,7 @@ else{*/
                 }
             }
 
-
+	    }
 
 
 $result = 'true';
@@ -8947,7 +8948,7 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
  $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 
             $sendmessage = $client->account->messages->create(array(
-                'To' =>  '3107555031',
+                'To' =>  '5627817812',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
@@ -9260,7 +9261,7 @@ $this->layout = "xmlLayout";
             $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 
             $sendmessage = $client->account->messages->create(array(
-                'To' =>  '3107555031',
+                'To' =>  '5627817812',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
