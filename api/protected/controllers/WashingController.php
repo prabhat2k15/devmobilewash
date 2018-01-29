@@ -3602,23 +3602,21 @@ if($tip_amount == 'zero') $tip_amount = 0;
 		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$washrequest_id_check->agent_id." AND action = 'dropjob'")->queryAll();
                 if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
                 if($total_rate){
-                    $rate = 0;
+                    $rate = 50;
                     foreach($agent_feedbacks as $ind=>$agent_feedback){
-                        if($ind <= 9) $rate += 5;
-			else {
+                       
 				if(!$agent_feedback->customer_ratings) $rate += 5;
 				else $rate += $agent_feedback->customer_ratings;
-			}
+			
                     }
 
-                     if($washer_total_dropjobs) $agent_rate =  ($rate + $washer_total_dropjobs) / ($total_rate + $washer_total_dropjobs);
-		    else $agent_rate =  $rate/$total_rate;
+                     if($washer_total_dropjobs) $agent_rate =  ($rate + $washer_total_dropjobs) / ($total_rate + 10 + $washer_total_dropjobs);
+		    else $agent_rate =  $rate/($total_rate + 10);
                     $agent_rate = number_format($agent_rate, 2, '.', '');
 
                 }
                 else{
                     $agent_rate = 5.00;
-
                 }
 
                
@@ -3652,17 +3650,16 @@ if($tip_amount == 'zero') $tip_amount = 0;
 		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$washrequest_id_check->agent_id." AND action = 'dropjob'")->queryAll();
                 if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
                 if($total_rate){
-                    $rate = 0;
+                    $rate = 50;
                     foreach($agent_feedbacks as $ind=>$agent_feedback){
-                        if($ind <= 9) $rate += 5;
-			else {
+                        
 				if(!$agent_feedback->customer_ratings) $rate += 5;
 				else $rate += $agent_feedback->customer_ratings;
-			}
+			
                     }
 //echo "rate: ".$rate."<br>total drops: ".$washer_total_dropjobs."<br>total rate: ".$total_rate."<br>";
-                    if($washer_total_dropjobs) $agent_rate =  ($rate + $washer_total_dropjobs) / ($total_rate + $washer_total_dropjobs);
-		    else $agent_rate =  $rate/$total_rate;
+                    if($washer_total_dropjobs) $agent_rate =  ($rate + $washer_total_dropjobs) / ($total_rate + 10 + $washer_total_dropjobs);
+		    else $agent_rate =  $rate/$total_rate + 10;
                     $agent_rate = number_format($agent_rate, 2, '.', '');
                 }
                 else{
@@ -3838,21 +3835,20 @@ echo "feedback source: ".$feedback_source."<br>";*/
 		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$agent_id." AND action = 'dropjob'")->queryAll();
                 if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
                 if($total_rate){
-                    $rate = 0;
+                    $rate = 50;
                     foreach($agent_feedbacks as $ind=>$agent_feedback){
-                        if($ind <= 9) $rate += 5;
-                        else {
+                
 				if(!$agent_feedback->customer_ratings) $rate += 5;
 				else $rate += $agent_feedback->customer_ratings;
-			}
+			
                     }
 
                      if($washer_total_dropjobs) {
 			//echo "rate: ".$rate."<br>total drops: ".$washer_total_dropjobs."<br>total rate: ".$total_rate."<br>";
-			$agent_rate =  ($rate + $washer_total_dropjobs) / ($total_rate + $washer_total_dropjobs);
+			$agent_rate =  ($rate + $washer_total_dropjobs) / ($total_rate + 10 + $washer_total_dropjobs);
 			
 		}
-		    else $agent_rate =  $rate/$total_rate;
+		    else $agent_rate =  $rate/($total_rate + 10);
                     
 		    $agent_rate = number_format($agent_rate, 2, '.', '');
 
@@ -3889,17 +3885,16 @@ if($feedback_source != 'dropjob'){
                 $cust_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("customer_id" => $washrequest_id_check->customer_id));
                 $total_rate = count($cust_feedbacks);
                 if($total_rate){
-                    $rate = 0;
+                    $rate = 50;
                     foreach($cust_feedbacks as $ind=>$cust_feedback){
-                        if($ind <= 9) $rate += 5;
-			else {
+                        
 				if(!$cust_feedback->agent_ratings) $rate += 5;
 				else $rate += $cust_feedback->agent_ratings;
-			}
+			
                         
                     }
 
-                    $cust_rate =  $rate/$total_rate;
+                    $cust_rate =  $rate/($total_rate + 10);
                     $cust_rate = number_format($cust_rate, 2, '.', '');
                 }
                 else{
@@ -3930,16 +3925,15 @@ if($feedback_source != 'dropjob'){
                 $cust_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("customer_id" => $washrequest_id_check->customer_id));
                 $total_rate = count($cust_feedbacks);
                 if($total_rate){
-                    $rate = 0;
+                    $rate = 50;
                     foreach($cust_feedbacks as $ind=>$cust_feedback){
-                        if($ind <= 9) $rate += 5;
-			else {
+                        
 				if(!$cust_feedback->agent_ratings) $rate += 5;
 				else $rate += $cust_feedback->agent_ratings;
-			}
+			
                     }
 
-                    $cust_rate =  $rate/$total_rate;
+                    $cust_rate =  $rate/($total_rate + 10);
                     $cust_rate = number_format($cust_rate, 2, '.', '');
                 }
                 else{

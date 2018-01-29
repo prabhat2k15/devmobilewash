@@ -1,13 +1,16 @@
 <?php
 ini_set("date.timezone", "America/Los_Angeles");
 
+$site_config = file_get_contents("api/protected/site_config.json");
+$site_config_json = json_decode($site_config, true);
+
 $client_id = $_GET['id'];
 $page_no = 1;
 if($_GET['page_no']) $page_no = $_GET['page_no'];
 
 /* --- client account history call --- */
 
-$handle = curl_init("https://www.mobilewash.com/api/index.php?r=customers/accounthistory");
+$handle = curl_init($site_config_json['root_url']."/api/index.php?r=customers/accounthistory");
 $data = array('customer_id' => $client_id, 'page' => $page_no, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -226,7 +229,7 @@ else echo $agent_name[0]." #".$wrequest->agent_id;
 </p>
 </td>
 <td class="rightalign">
- <a class="view-btn" href="https://www.mobilewash.com/receipt-view.php?orderid=<?php echo $wrequest->id; ?>">View</a>
+ <a class="view-btn" href="<?php echo $site_config_json['root_url']; ?>/receipt-view.php?orderid=<?php echo $wrequest->id; ?>">View</a>
 </td>
 </tr>
 </table>
@@ -266,7 +269,7 @@ else echo $agent_name[0]." #".$wrequest->agent_id;
 $(function(){
 $(".account-history tr").click(function(){
 var orderid = $(this).data('id');
-window.location.href="https://www.mobilewash.com/receipt-view.php?orderid="+orderid;
+window.location.href="<?php echo $site_config_json['root_url']; ?>/receipt-view.php?orderid="+orderid;
 });
 });
 </script>

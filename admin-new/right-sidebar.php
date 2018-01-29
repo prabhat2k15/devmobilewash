@@ -62,7 +62,7 @@
                                     </a>                                  
                                 </li>                                
                                 <li class="nav-item  <?php if($url == 'payment-reports.php' || $newurl_page[0] == 'payment-reports.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
-                                    <a href="payment-reports.php?filter=&limit=400" class="nav-link ">
+                                    <a href="payment-reports.php" class="nav-link ">
                                     <span class="title">Payment Reports</span>
                                     </a>
                                 </li>

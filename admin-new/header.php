@@ -14,6 +14,7 @@ $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 
+
 if($jsondata_permission->users_type == 'admin'){
     $client_module_permission = $jsondata_permission->client_action;
     $washer_module_permission = $jsondata_permission->washer_action;

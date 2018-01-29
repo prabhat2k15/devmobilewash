@@ -59,7 +59,8 @@ $model= Users::model()->findByAttributes(array('id'=>$user_id->id));
 					$json= array(
 						'result'=> $result,
 						'response'=> $response,
-'user_type' => $user_id->users_type
+'user_type' => $user_id->users_type,
+'root_url' => ROOT_URL
 
 					);
 				}else{
@@ -1210,7 +1211,8 @@ if(count($userdetail)){
                     'response'=> 'user type',
                     'users_type' => $userdetail[0]['users_type'],
 'user_id' => $userdetail[0]['id'],
-'user_name' => $userdetail[0]['username']
+'user_name' => $userdetail[0]['username'],
+'root_url' => ROOT_URL
    );
 }
 else{
