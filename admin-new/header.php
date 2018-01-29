@@ -1,4 +1,5 @@
 <?php
+require_once('../api/protected/config/constant.php');
 $device_token = '';
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
@@ -6,7 +7,7 @@ $username = $_COOKIE['mw_username'];
 $uid = $_COOKIE['mw_uid'];
 }
 $userdata = array("mw_uid"=>$uid, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/dev/api/index.php?r=users/checkpermission");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/checkpermission");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -238,7 +239,7 @@ if($jsondata_permission->users_type == 'admin'){
 				$checked_order_calendar = ' ';
 }
 $data = array("device_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=users/authenticate");
+$handle = curl_init(ROOT_URL."/api/index.php?r=users/authenticate");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -249,7 +250,7 @@ $response = $jsondata->response;
 $result_code = $jsondata->result;
 
 if($response == "error" && $result_code == "false"){
-header("Location: http://www.devmobilewash.com/admin-new/login.php");
+header("Location: ".ROOT_URL."/admin-new/login.php");
 die();
 }
 
@@ -260,7 +261,7 @@ parse_str($_SERVER['QUERY_STRING']);
 if($_GET['set']=="logout"){
 $device_token = $_COOKIE["mw_admin_auth"];
 $data = array("device_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=users/logout");
+$handle = curl_init(ROOT_URL."/api/index.php?r=users/logout");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -274,11 +275,11 @@ if($result_code == "true"){
 unset($_COOKIE['mw_username']);
 setcookie("mw_admin_auth", "", time() - 3600);
 setcookie("mw_username", "", time() - 3600);
-header("Location: http://www.devmobilewash.com/admin-new/login.php");
+header("Location: ".ROOT_URL."/admin-new/login.php");
 die();
 }
 else{
-header("Location: http://www.devmobilewash.com/admin-new/login.php");
+header("Location: ".ROOT_URL."/admin-new/login.php");
 }
 }
 $pageURL = $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
@@ -341,7 +342,7 @@ $(function(){
 
 
 
-$.getJSON("http://www.devmobilewash.com/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
   $(".clientonline").html(data.Online_Customers);
   $(".clientoffline").html(data.Offline_Customers);
   $(".pendingorder").html(data.Pending_Orders);
@@ -504,7 +505,7 @@ setInterval("displaytime()", 1000)
             <div class="page-header-inner ">
                 <!-- BEGIN LOGO -->
                 <div class="page-logo">
-                    <a href="http://www.devmobilewash.com/admin-new/">
+                    <a href="<?php echo ROOT_URL; ?>/admin-new/">
                         <img src="images/logo-white2.png" alt="logo" class="logo-default" /> </a>
                     <div class="menu-toggler sidebar-toggler"> </div>
                 </div>

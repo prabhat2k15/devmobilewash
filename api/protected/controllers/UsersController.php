@@ -2921,12 +2921,23 @@ die();
 		$app_version = Yii::app()->request->getParam('app_version');
         $response = "Pass the required parameters";
         $result = "false";
+        $mobilewash_domain = "https://www.mobilewash.com";
+        $mobilewash_apiurl = "https://www.mobilewash.com/api/";
+        $mobilewash_apptype = "real";
+        $mobilewash_socketurl = "http://209.95.41.20:3000";
+        $devmobilewash_domain = "http://www.devmobilewash.com";
+        $devmobilewash_apiurl = "http://www.devmobilewash.com/api/";
+        $devmobilewash_apptype = "";
+        $devmobilewash_socketurl = "http://209.95.41.9:3000";
+        $getmobilewash_domain = "https://www.getmobilewash.com";
+        $getmobilewash_apiurl = "https://www.getmobilewash.com/api/";
+        $getmobilewash_apptype = "real";
+        $getmobilewash_socketurl = "http://209.95.41.20:3000";
 
 		if((isset($device_type) && !empty($device_type)) && (isset($app_version) && !empty($app_version))){
 		       $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = '".strtoupper($device_type)."'")->queryAll();
 
                 if(($app_settings[0]['version_check'] == 'on') && ($app_version != $app_settings[0]['app_version'])){
-
 
                    $result= "false";
                 $response = "Please update MobileWash";
@@ -2934,7 +2945,19 @@ die();
                  $json = array(
                 'result'=> $result,
                 'response'=> $response,
-                'app_link' => $app_settings[0]['app_link']
+                'app_link' => $app_settings[0]['app_link'],
+                 'mobilewash_domain' => $mobilewash_domain,
+                 'mobilewash_apiurl' => $mobilewash_apiurl,
+ 'mobilewash_apptype' => $mobilewash_apptype,
+ 'mobilewash_socketurl' => $mobilewash_socketurl,
+ 'devmobilewash_domain' => $devmobilewash_domain,
+ 'devmobilewash_apiurl' => $devmobilewash_apiurl,
+ 'devmobilewash_apptype' => $devmobilewash_apptype,
+ 'devmobilewash_socketurl' => $devmobilewash_socketurl,
+ 'getmobilewash_domain' => $getmobilewash_domain,
+ 'getmobilewash_apiurl' => $getmobilewash_apiurl,
+ 'getmobilewash_apptype' => $getmobilewash_apptype,
+ 'getmobilewash_socketurl' => $getmobilewash_socketurl
             );
 
                 }
@@ -2944,7 +2967,19 @@ die();
 
                   $json = array(
                 'result'=> $result,
-                'response'=> $response
+                'response'=> $response,
+                'mobilewash_domain' => $mobilewash_domain,
+                 'mobilewash_apiurl' => $mobilewash_apiurl,
+ 'mobilewash_apptype' => $mobilewash_apptype,
+ 'mobilewash_socketurl' => $mobilewash_socketurl,
+ 'devmobilewash_domain' => $devmobilewash_domain,
+ 'devmobilewash_apiurl' => $devmobilewash_apiurl,
+ 'devmobilewash_apptype' => $devmobilewash_apptype,
+ 'devmobilewash_socketurl' => $devmobilewash_socketurl,
+ 'getmobilewash_domain' => $getmobilewash_domain,
+ 'getmobilewash_apiurl' => $getmobilewash_apiurl,
+ 'getmobilewash_apptype' => $getmobilewash_apptype,
+ 'getmobilewash_socketurl' => $getmobilewash_socketurl
             );
 
                 }
@@ -2953,7 +2988,19 @@ die();
 
            $json = array(
                 'result'=> $result,
-                'response'=> $response
+                'response'=> $response,
+                'mobilewash_domain' => $mobilewash_domain,
+                 'mobilewash_apiurl' => $mobilewash_apiurl,
+ 'mobilewash_apptype' => $mobilewash_apptype,
+ 'mobilewash_socketurl' => $mobilewash_socketurl,
+ 'devmobilewash_domain' => $devmobilewash_domain,
+ 'devmobilewash_apiurl' => $devmobilewash_apiurl,
+ 'devmobilewash_apptype' => $devmobilewash_apptype,
+ 'devmobilewash_socketurl' => $devmobilewash_socketurl,
+ 'getmobilewash_domain' => $getmobilewash_domain,
+ 'getmobilewash_apiurl' => $getmobilewash_apiurl,
+ 'getmobilewash_apptype' => $getmobilewash_apptype,
+ 'getmobilewash_socketurl' => $getmobilewash_socketurl
             );
         }
 

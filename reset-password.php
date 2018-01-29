@@ -1,12 +1,12 @@
 <?php
-
+require_once('api/protected/config/constant.php');
 /* --------- Client password reset handling ---------- */
 $pass_reset_success = '';
 if(isset($_POST['forget-pass-cl-submit'])){
 $email = $_POST['email'];
 $error = '';
 $data = array("emailid"=>$email, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://devmobilewash.com/api/index.php?r=customers/forgetpassword");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/forgetpassword");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -30,7 +30,7 @@ $newpassword = $_POST['newpassword'];
 $cnfpassword = $_POST['newpassword'];
 
 $data = array("token"=> $token, "id"=> $id, "newpassword"=> $newpassword, "cnfpassword"=> $cnfpassword, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://devmobilewash.com/api/index.php?r=customers/resetpassword");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/resetpassword");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -56,7 +56,7 @@ if(isset($_POST['forget-pass-ag-submit'])){
 $email = $_POST['email'];
 $error = '';
 $data = array("emailid"=>$email, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://devmobilewash.com/api/index.php?r=agents/forgetpassword");
+$handle = curl_init(ROOT_URL."/api/index.php?r=agents/forgetpassword");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -80,7 +80,7 @@ $newpassword = $_POST['newpassword'];
 $cnfpassword = $_POST['cnfpassword'];
 
 $data = array("token"=> $token, "id"=> $id, "newpassword"=> $newpassword, "cnfpassword"=> $cnfpassword, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://devmobilewash.com/api/index.php?r=agents/resetpassword");
+$handle = curl_init(ROOT_URL."/api/index.php?r=agents/resetpassword");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -92,7 +92,7 @@ $pass_reset_result_code = $jsondata->result;
 }
 
 if(isset($_GET['customer_id'])){
-  $handle = curl_init("http://devmobilewash.com/api/index.php?r=customers/profiledetails");
+  $handle = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 $data = array('customerid' => $_GET['customer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -106,7 +106,7 @@ $profiledetail = json_decode($result);
 }
 
 if(isset($_GET['washer_id'])){
-  $handle = curl_init("http://devmobilewash.com/api/index.php?r=agents/profiledetails");
+  $handle = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
 $data = array('agent_id' => $_GET['washer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);

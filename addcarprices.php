@@ -1,10 +1,11 @@
 <?php
+require_once('api/protected/config/constant.php');
 ini_set("date.timezone", "America/Los_Angeles");
 
 
 /* --- washing kart call --- */
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/allwashes");
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/allwashes");
 $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -42,7 +43,7 @@ $allwashes = json_decode($result);
     <?php } ?>
     //console.log(allcars.length);
      $.each(allwashes, function( index, item ) {
-         $.post( "http://devmobilewash.com/api/index.php?r=site/createsingleorderpricinghistory", {wash_request_id: item, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+         $.post( "<?php echo ROOT_URL; ?>/api/index.php?r=site/createsingleorderpricinghistory", {wash_request_id: item, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
  console.log(data);
 
 });

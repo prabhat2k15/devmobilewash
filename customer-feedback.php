@@ -1,9 +1,9 @@
 <?php
-
+require_once('api/protected/config/constant.php');
 
 /* ------- recent wash request id ----------- */
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=washing/getwashrequestbyid");
+$handle = curl_init(ROOT_URL."/api/index.php?r=washing/getwashrequestbyid");
 $data = array('id' => $_GET['order_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -27,7 +27,7 @@ $comment = $_POST['feedback'];
 
 /* --------- feedback api ------------- */
 //echo $wash_request_id;
-$handle2 = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/customer3hrfeedback");
+$handle2 = curl_init(ROOT_URL."/api/index.php?r=customers/customer3hrfeedback");
 $fb_id = '';
 if(isset($_POST['fb_id'])) $fb_id = $_POST['fb_id']; 
 $data2 = array('wash_request_id' => $_GET['order_id'], 'comments' => $comment, 'ratings' => $rating, 'fb_id' => $fb_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -135,7 +135,7 @@ width: 100%;
 <?php if($jsondata2->result == 'true'): ?>
  <h2 style='text-align: center; font-weight: 400; font-size: 34px;'>Your feedback has been submitted. Thank you.</h2>
 <a href="https://www.yelp.com/biz/mobile-wash-los-angeles-3" class="btn btn-red">Leave a Review on Yelp.com</a>
-<a href="http://www.devmobilewash.com/" class="btn">Return to MobileWash.com</a>
+<a href="<?php echo ROOT_URL; ?>" class="btn">Return to MobileWash.com</a>
 <?php endif; ?>
 <?php if($jsondata2->result == 'false'): ?>
 <p class="err" style="font-size: 22px; margin-top: 0px; background: red; color: #fff; padding: 10px;">Error in submitting your feedback. Please try again.</p>

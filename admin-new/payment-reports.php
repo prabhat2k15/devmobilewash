@@ -5,7 +5,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init($_COOKIE["root_url"]."/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -48,7 +48,7 @@ if( isset($_GET['day']) && !empty( $_GET['day'] ) ){
 	$_event = $_GET['event'];
 }
 
-$url = $_COOKIE["root_url"].'/api/index.php?r=site/getpaymentreports';
+$url = ROOT_URL.'/api/index.php?r=site/getpaymentreports';
 $cust_id = 0;
 $agent_id = 0;
 $page_number = 1;
@@ -603,7 +603,7 @@ $(".load-more").click(function(){
 	var th = $(this);
 	$(this).removeClass('.load-more');
 	$(this).html('Loading...');
-  $.getJSON( "<?php echo $_COOKIE["root_url"]; ?>/api/index.php?r=site/getpaymentreports&page_number="+page_number+"&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4", function( data ) {
+  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getpaymentreports&page_number="+page_number+"&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4", function( data ) {
     
 if(data.result == 'true'){
 	page_number++;

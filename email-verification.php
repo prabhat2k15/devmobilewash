@@ -1,12 +1,12 @@
 <?php
-
+require_once('api/protected/config/constant.php');
 /* --------- Client password reset handling ---------- */
 
 if(isset($_POST['email-verify-client-submit'])){
 $email = $_POST['email'];
 $error = '';
 $data = array("emailid"=>$email, 'customer_id' => $_GET['customer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://devmobilewash.com/api/index.php?r=customers/resendverifyemail");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/resendverifyemail");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -22,7 +22,7 @@ if(isset($_POST['email-verify-washer-submit'])){
 $email = $_POST['email'];
 $error = '';
 $data = array("emailid"=>$email, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://devmobilewash.com/api/index.php?r=agents/resendverifyemail");
+$handle = curl_init(ROOT_URL."/api/index.php?r=agents/resendverifyemail");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -35,7 +35,7 @@ $result_code = $jsondata->result;
 }
 
 if(isset($_GET['customer_id'])){
-  $handle = curl_init("http://devmobilewash.com/api/index.php?r=customers/profiledetails");
+  $handle = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 $data = array('customerid' => $_GET['customer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -50,7 +50,7 @@ $profiledetail_result_code = $profiledetail->result;
 }
 
 if(isset($_GET['washer_id'])){
-  $handle = curl_init("http://devmobilewash.com/api/index.php?r=agents/profiledetails");
+  $handle = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
 $data = array('agent_id' => $_GET['washer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);

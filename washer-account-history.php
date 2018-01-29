@@ -1,4 +1,5 @@
 <?php
+require_once('api/protected/config/constant.php');
 ini_set("date.timezone", "America/Los_Angeles");
 
 $washer_id = $_GET['id'];
@@ -7,7 +8,7 @@ if($_GET['page_no']) $page_no = $_GET['page_no'];
 
 /* --- agent account history call --- */
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=agents/accounthistory");
+$handle = curl_init(ROOT_URL."/api/index.php?r=agents/accounthistory");
 $data = array('agent_id' => $washer_id, 'page' => $page_no, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -224,7 +225,7 @@ else echo $cust_name[0];
 </p>
     </td>
     <td class="rightalign">
-      <a class="view-btn" href="http://www.devmobilewash.com/washer-receipt-view.php?orderid=<?php echo $wrequest->id; ?>">View</a>
+      <a class="view-btn" href="<?php echo ROOT_URL; ?>/washer-receipt-view.php?orderid=<?php echo $wrequest->id; ?>">View</a>
     </td>
  </tr>
 </table>
@@ -265,7 +266,7 @@ else echo $cust_name[0];
 $(function(){
 $(".account-history tr").click(function(){
 var orderid = $(this).data('id');
-window.location.href="http://www.devmobilewash.com/washer-receipt-view.php?orderid="+orderid;
+window.location.href="<?php echo ROOT_URL; ?>/washer-receipt-view.php?orderid="+orderid;
 });
 });
 </script>

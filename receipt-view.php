@@ -1,11 +1,12 @@
 <?php
+require_once('api/protected/config/constant.php');
 ini_set("date.timezone", "America/Los_Angeles");
 
 $order_id = $_GET['orderid'];
 
 /* --- washing kart call --- */
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=washing/washingkart");
+$handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
 $data = array('wash_request_id' => $order_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);

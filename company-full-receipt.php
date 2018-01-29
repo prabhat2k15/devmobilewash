@@ -1,4 +1,5 @@
 <?php
+require_once('api/protected/config/constant.php');
 //error_reporting(E_ALL);
 //ini_set('display_errors', 'On');
 ini_set("date.timezone", "America/Los_Angeles");
@@ -7,7 +8,7 @@ $order_id = $_GET['orderid'];
 
 /* --- washing kart call --- */
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=washing/washingkart");
+$handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
 $data = array('wash_request_id' => $order_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -18,7 +19,7 @@ $kartdata = json_decode($result);
 $per_car_wash_points_arr = explode(",", $kartdata->per_car_wash_points);
 /* --- washing kart call end --- */
 
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/profiledetails");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customerid' => $kartdata->customer_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -26,7 +27,7 @@ $result = curl_exec($handle_data);
 curl_close($handle_data);
 $custdetails = json_decode($result);
 
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=agents/profiledetails");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('agent_id' => $kartdata->agent_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
