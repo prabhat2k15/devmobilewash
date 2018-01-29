@@ -7,7 +7,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -28,7 +28,7 @@ else{
   $to = "2017-12-31";  
 }
 
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/gettopmostwashers");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/gettopmostwashers");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array("key" => "Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4", "from" => $from, "to" => $to));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);

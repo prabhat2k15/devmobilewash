@@ -5,7 +5,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -14,7 +14,7 @@ curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 
     if($washer_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -71,8 +71,8 @@ $jsondata_permission = json_decode($result_permission);
                 $profile_pic_type = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $_GET['id']."_".$md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, '/home/devmobilewash/public_html/api/images/agent_img/'.$picname);
-                $profileimg = 'http://www.devmobilewash.com/api/images/agent_img/'.$picname;
+                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/'.$picname);
+                $profileimg = ROOT_URL.'/api/images/agent_img/'.$picname;
             }
             else
             {
@@ -89,8 +89,8 @@ $jsondata_permission = json_decode($result_permission);
                 $profile_pic_type = pathinfo($_FILES['driver_license']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, '/home/devmobilewash/public_html/api/images/agent_img/agent_docs/'.$picname);
-                $driver_license = 'http://www.devmobilewash.com/api/images/agent_img/agent_docs/'.$picname;
+                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/agent_docs/'.$picname);
+                $driver_license = ROOT_URL.'/api/images/agent_img/agent_docs/'.$picname;
             }
             else
             {
@@ -103,8 +103,8 @@ $jsondata_permission = json_decode($result_permission);
                 $profile_pic_type = pathinfo($_FILES['business_license']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, '/home/devmobilewash/public_html/api/images/agent_img/agent_docs/'.$picname);
-                $business_license = 'http://www.devmobilewash.com/api/images/agent_img/agent_docs/'.$picname;
+                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/agent_docs/'.$picname);
+                $business_license = ROOT_URL.'/api/images/agent_img/agent_docs/'.$picname;
             }
             else
             {
@@ -123,8 +123,8 @@ $jsondata_permission = json_decode($result_permission);
                 $profile_pic_type = pathinfo($_FILES['proof_insurance']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, '/home/devmobilewash/public_html/api/images/agent_img/agent_docs/'.$picname);
-                $proof_insurance = 'http://www.devmobilewash.com/api/images/agent_img/agent_docs/'.$picname;
+                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/agent_docs/'.$picname);
+                $proof_insurance = ROOT_URL.'/api/images/agent_img/agent_docs/'.$picname;
             }
             else
             {
@@ -142,8 +142,8 @@ $jsondata_permission = json_decode($result_permission);
                 $profile_pic_type = pathinfo($_FILES['agreement_prof']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, '/home/devmobilewash/public_html/api/images/agent_img/agent_docs/'.$picname);
-                $agreement_prof = 'http://www.devmobilewash.com/api/images/agent_img/agent_docs/'.$picname;
+                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/agent_docs/'.$picname);
+                $agreement_prof = ROOT_URL.'/api/images/agent_img/agent_docs/'.$picname;
             }
             else
             {
@@ -160,8 +160,8 @@ $jsondata_permission = json_decode($result_permission);
                 $profile_pic_type = pathinfo($_FILES['privacy_policy']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, '/home/devmobilewash/public_html/api/images/agent_img/agent_docs/'.$picname);
-                $privacy_policy = 'http://www.devmobilewash.com/api/images/agent_img/agent_docs/'.$picname;
+                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/agent_docs/'.$picname);
+                $privacy_policy = ROOT_URL.'/api/images/agent_img/agent_docs/'.$picname;
             }
             else
             {
@@ -179,8 +179,8 @@ $jsondata_permission = json_decode($result_permission);
                 $profile_pic_type = pathinfo($_FILES['notice_standard']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, '/home/devmobilewash/public_html/api/images/agent_img/agent_docs/'.$picname);
-                $notice_standard = 'http://www.devmobilewash.com/api/images/agent_img/agent_docs/'.$picname;
+                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/agent_docs/'.$picname);
+                $notice_standard = ROOT_URL.'/api/images/agent_img/agent_docs/'.$picname;
             }
             else
             {
@@ -198,8 +198,8 @@ $jsondata_permission = json_decode($result_permission);
                 $profile_pic_type = pathinfo($_FILES['notice_card_security']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, '/home/devmobilewash/public_html/api/images/agent_img/agent_docs/'.$picname);
-                $notice_card_security = 'http://www.devmobilewash.com/api/images/agent_img/agent_docs/'.$picname;
+                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/agent_docs/'.$picname);
+                $notice_card_security = ROOT_URL.'/api/images/agent_img/agent_docs/'.$picname;
             }
             else
             {
@@ -252,7 +252,7 @@ $jsondata_permission = json_decode($result_permission);
             $data = array('agent_id' => strip_tags($_GET['id']), 'first_name'=> strip_tags($first_name),'last_name'=> strip_tags($last_name),'email'=> strip_tags($email),'phone_number'=> strip_tags($phone_number),'date_of_birth'=> strip_tags($date_of_birth),'new_password'=> strip_tags($password),'confirm_password'=> strip_tags($password),'street_address'=> strip_tags($street_address),'suite_apt'=> strip_tags($suite_apt),'city'=> strip_tags($city),'state'=> strip_tags($state),'zipcode'=> strip_tags($zipcode),'wash_experience'=> strip_tags($wash_experience),'rating'=> strip_tags($rating),'driver_license'=> strip_tags($driver_license),'business_license'=> strip_tags($business_license),'proof_insurance'=> strip_tags($proof_insurance),'agent_profile_img'=> strip_tags($profileimg),'agreement_prof'=>strip_tags($agreement_prof),'privacy_policy'=>strip_tags($privacy_policy),'notice_standard'=>strip_tags($notice_standard),'notice_card_security'=>strip_tags($notice_card_security),'mobile_type'=>strip_tags($mobile_type),'bank_account_number'=>strip_tags($bank_account_number),'routing_number'=>strip_tags($routing_number),'legally_eligible'=>strip_tags($legally_eligible),'own_vehicle'=>strip_tags($own_vehicle),'waterless_wash_product'=>strip_tags($waterless_wash_product),'operate_area'=>strip_tags($operate_area),'work_schedule'=>strip_tags($work_schedule),'operating_as'=>strip_tags($operating_as),'company_name'=>strip_tags($company_name),'email_alerts'=>strip_tags($email_alerts),'push_notifications'=>strip_tags($push_notifications),'agent_location'=>strip_tags($agent_location),'bt_submerchant_id'=>strip_tags($bt_submerchant_id),'status'=>strip_tags($status),'total_wash'=>strip_tags($total_wash),'account_status'=>strip_tags($account_status),'available_for_new_order'=>strip_tags($available_for_new_order),'driver_license_expiration'=>strip_tags($driverlicense_expiration), 'washer_position'=>strip_tags($_POST['washer_position']), 'real_washer_id'=>strip_tags($_POST['real_washer_id']), 'block_washer' => $block_washer, 'admin_edit' => 'true', 'notes' => strip_tags($notes), 'hours_opt_check' => strip_tags($hours_opt_check), 'rating_control' => strip_tags($rating_control), 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
 
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=agents/profileupdate");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=agents/profileupdate");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -266,7 +266,7 @@ $jsondata_permission = json_decode($result_permission);
          
     }
 
-     $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=agents/profiledetails");
+     $handle = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('agent_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

@@ -10,6 +10,7 @@
 
 define("API_KEY","Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
 define("ROOT_URL","http://www.devmobilewash.com");
+define("ROOT_WEBFOLDER","/home/devmobilewash");
 define("APP_ENV",""); // real or blank
 
 define("ENV","sandbox");//sandbox or production

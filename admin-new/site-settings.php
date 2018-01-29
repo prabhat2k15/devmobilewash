@@ -1,4 +1,5 @@
 <?php
+include('header.php');
     if(!empty($_POST['hidden']))
     {
        $from_date = $_POST['from_date'];
@@ -15,7 +16,7 @@
           
             // END COLLECT POST VALUE //
             
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/savesitesettings");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=site/savesitesettings");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -41,7 +42,7 @@
 
     }else{
         
-        $url = 'http://www.devmobilewash.com/api/index.php?r=site/getsiteconfiguration'; 
+        $url = ROOT_URL.'/api/index.php?r=site/getsiteconfiguration'; 
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -58,10 +59,9 @@
             $message = $jsondata->message;
     }
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_site_settings == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <?php include('right-sidebar.php') ?>

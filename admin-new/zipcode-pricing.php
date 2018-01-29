@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'google-api-php-client-2.0.1/vendor/autoload.php';
+include('header.php');
 
 $client = new Google_Client();
 $client->setAuthConfigFile('client_secret_947329153849.json');
@@ -12,17 +13,17 @@ if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
  
         
 } else {
-  $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/admin-new/oauth2callback.php?redirectpage=zipcode-pricing';
+  $redirect_uri = ROOT_URL. '/admin-new/oauth2callback.php?redirectpage=zipcode-pricing';
   header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
 }
 
-include('header.php') ?>
+?>
 <?php
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -32,7 +33,7 @@ $jsondata_permission = json_decode($result_permission);
 
 if(isset($_POST['pricing_submit'])){
         $userdata = array("id"=>1, 'zip' => $_POST['zipcodes'], 'express_price' => $_POST['exp_price'], 'deluxe_price' => $_POST['del_price'], 'premium_price' => $_POST['prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatezipprice");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatezipprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -73,7 +74,7 @@ if(count($row_ids)) foreach($row_ids as $rid) $ft->query->sql("UPDATE $tableId S
     
 
  $userdata = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getzipprices");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/getzipprices");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -85,7 +86,7 @@ $pricedata = json_decode($result);
 ?>
 <?php
     if($company_module_permission == 'no' || $checked_vehicles_packages == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->

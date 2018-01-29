@@ -39,15 +39,7 @@
 $(function(){
 
 
-
-/*$.getJSON("http://www.devmobilewash.com/api/index.php?r=customers/customermontwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
-    console.log(data);
-    $.each(data, function(k, v){
-
-
-    });
-});*/
-$.getJSON("http://www.devmobilewash.com/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
   $(".clientonline").html(data.Online_Customers);
   $(".clientoffline").html(data.Offline_Customers);
   $(".pendingorder").html(data.Pending_Orders);
@@ -103,20 +95,20 @@ if ($('#site_activities').size() != 0) {
 
                  if(selectedvalue == 'year'){
                      $('#new_customer_section').text('Yearly New Customer');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customeryearwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customeryearwise';
                  }else if(selectedvalue == 'week'){
                      $('#new_customer_section').text('Weekly New Customer');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customerweekwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customerweekwise';
 
                  }else if(selectedvalue == 'month'){
                      $('#new_customer_section').text('Monthly New Customer');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customermontwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwise';
                  }else if(selectedvalue == 'monthdays'){
 					$('#new_customer_section').text('Daily Customer');
-					var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customerDaywise';
+					var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customerDaywise';
                  }else{
                      $('#new_customer_section').text('Monthly New Customer');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customermontwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwise';
                  }
                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
@@ -244,19 +236,19 @@ if ($('#site_statistics_new').size() != 0)
 
                  if(selectedvalue == 'year'){
                      $('#revenue').text('Client Revenue Yearly');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/TotalRevenueYearWise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/TotalRevenueYearWise';
                  }else if(selectedvalue == 'week'){
                      $('#revenue').text('Client Revenue Weekly');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/TotalRevenueWeekWise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/TotalRevenueWeekWise';
 
                  }else if(selectedvalue == 'month'){
                      $('#revenue').text('Client Revenue Monthly');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/TotalRevenueMonthWise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/TotalRevenueMonthWise';
                  }else{
                      $('#revenue').text('Client Revenue Monthly');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/TotalRevenueMonthWise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/TotalRevenueMonthWise';
                  }
-                //var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customermontwiseorder';
+                //var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwiseorder';
                 $('#site_statistics_new_loading').hide();
                 $('#site_statistics_new_content').show();
                 $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
@@ -384,17 +376,17 @@ if ($('#site_statistics_4').size() != 0) {
 
                  if(selectedvalue == 'year'){
                      $('#new_washers').text('Yearly New Washers');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/washeryearwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/washeryearwise';
                  }else if(selectedvalue == 'week'){
                      $('#new_washers').text('Weekly New Washers');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/washerweekwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/washerweekwise';
 
                  }else if(selectedvalue == 'month'){
                      $('#new_washers').text('Monthly New Washers');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/washermonthwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/washermonthwise';
                  }else{
                      $('#new_washers').text('Monthly New Washers');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/washermonthwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/washermonthwise';
                  }
                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
@@ -528,17 +520,17 @@ if ($('#site_activities_2').size() != 0) {
 
                  if(selectedvalue == 'year'){
                      $('#new_washers').text('Yearly New Washers');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/CompRevenueYearWise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/CompRevenueYearWise';
                  }else if(selectedvalue == 'week'){
                      $('#new_washers').text('Weekly New Washers');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/CompRevenueWeekWise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/CompRevenueWeekWise';
 
                  }else if(selectedvalue == 'month'){
                      $('#new_washers').text('Monthly New Washers');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/CompRevenueMonthWise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/CompRevenueMonthWise';
                  }else{
                      $('#new_washers').text('Monthly New Washers');
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/CompRevenueMonthWise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/CompRevenueMonthWise';
                  }
                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
@@ -671,14 +663,14 @@ if ($('#site_statistics_5').size() != 0) {
                 var selectedvalue = this.value;
 
                  if(selectedvalue == 'year'){
-                var url = 'http://www.devmobilewash.com/api/index.php?r=site/visitorsyearwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=site/visitorsyearwise';
                  }else if(selectedvalue == 'week'){
-                var url = 'http://www.devmobilewash.com/api/index.php?r=site/visitorsweekwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=site/visitorsweekwise';
 
                  }else if(selectedvalue == 'month'){
-                var url = 'http://www.devmobilewash.com/api/index.php?r=site/visitorsmonthwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=site/visitorsmonthwise';
                  }else{
-                var url = 'http://www.devmobilewash.com/api/index.php?r=site/visitorsmonthwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=site/visitorsmonthwise';
                  }
                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
@@ -811,14 +803,14 @@ if ($('#site_statistics_6').size() != 0) {
                 var selectedvalue = this.value;
 
                  if(selectedvalue == 'year'){
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/prewasheryearwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewasheryearwise';
                  }else if(selectedvalue == 'week'){
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/prewasherweekwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewasherweekwise';
 
                  }else if(selectedvalue == 'month'){
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/prewashermonthwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewashermonthwise';
                  }else{
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/prewashermonthwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewashermonthwise';
                  }
                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
@@ -950,14 +942,14 @@ if ($('#site_statistics_7').size() != 0) {
                 var selectedvalue = this.value;
 
                  if(selectedvalue == 'year'){
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsyearwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/preclientsyearwise';
                  }else if(selectedvalue == 'week'){
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsweekwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/preclientsweekwise';
 
                  }else if(selectedvalue == 'month'){
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsmonthwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/preclientsmonthwise';
                  }else{
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsmonthwise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/preclientsmonthwise';
                  }
                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
@@ -1084,7 +1076,7 @@ $(document).ready(function(){
             {
 
 
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customerweekwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customerweekwiseorder';
 
                 $('#weekly_order_loading').hide();
                 $('#weekly_order_content').show();
@@ -1193,7 +1185,7 @@ $(document).ready(function(){
             {
 
 
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customermontwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwiseorder';
 
                 $('#monthly_order_loading').hide();
                 $('#monthly_order_content').show();
@@ -1302,7 +1294,7 @@ $(document).ready(function(){
             {
 
 
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customeryearwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customeryearwiseorder';
 
                 $('#yearly_order_loading').hide();
                 $('#yearly_order_content').show();
@@ -1413,7 +1405,7 @@ $(document).ready(function(){
             {
 
 
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customerweekwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customerweekwiseorder';
 
                 $('#weekly_comp_order_loading').hide();
                 $('#weekly_comp_order_content').show();
@@ -1522,7 +1514,7 @@ $(document).ready(function(){
             {
 
 
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customermontwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwiseorder';
 
                 $('#monthly_comp_order_loading').hide();
                 $('#monthly_comp_order_content').show();
@@ -1631,7 +1623,7 @@ $(document).ready(function(){
             {
 
 
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customeryearwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customeryearwiseorder';
 
                 $('#yearly_comp_order_loading').hide();
                 $('#yearly_comp_order_content').show();
@@ -1743,7 +1735,7 @@ $(document).ready(function(){
                 $('#site_activities_loading').hide();
                 $('#site_activities_content').show();
 
-               $.getJSON("http://www.devmobilewash.com/api/index.php?r=customers/customermontwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -1851,9 +1843,9 @@ $(document).ready(function(){
             }
     if ($('#site_statistics_new').size() != 0)
     {
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/TotalRevenueMonthWise';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/TotalRevenueMonthWise';
 
-                //var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customermontwiseorder';
+                //var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwiseorder';
                 $('#site_statistics_new_loading').hide();
                 $('#site_statistics_new_content').show();
                 $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
@@ -1964,7 +1956,7 @@ $(document).ready(function(){
                 $('#site_statistics_4_loading').hide();
                 $('#site_statistics_4_content').show();
 
-               $.getJSON("http://www.devmobilewash.com/api/index.php?r=agents/washermonthwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/washermonthwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -2076,7 +2068,7 @@ $(document).ready(function(){
                 $('#site_activities_2_loading').hide();
                 $('#site_activities_2_content').show();
 
-               $.getJSON("http://www.devmobilewash.com/api/index.php?r=agents/CompRevenueMonthWise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/CompRevenueMonthWise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -2189,7 +2181,7 @@ $(document).ready(function(){
                 $('#site_statistics_5_loading').hide();
                 $('#site_statistics_5_content').show();
 
-               $.getJSON("http://www.devmobilewash.com/api/index.php?r=site/visitorsmonthwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=site/visitorsmonthwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -2303,7 +2295,7 @@ $(document).ready(function(){
                 $('#site_statistics_6_loading').hide();
                 $('#site_statistics_6_content').show();
 
-               $.getJSON("http://www.devmobilewash.com/api/index.php?r=agents/prewashermonthwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewashermonthwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -2421,7 +2413,7 @@ $(document).ready(function(){
 		var selectedvalue = this.value;
 
 
-		var url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsmonthwise';
+		var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/preclientsmonthwise';
 
 	   $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
@@ -2543,7 +2535,7 @@ if ($('#site_statistics_8').size() != 0) {
                 var selectedvalue = this.value;
 
 
-                var url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsperday';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/preclientsperday';
 
                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
@@ -2664,7 +2656,7 @@ if ($('#site_statistics_9').size() != 0) {
                 var selectedvalue = this.value;
 
 
-                var url = 'http://www.devmobilewash.com/api/index.php?r=agents/prewasherperday';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewasherperday';
 
                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 

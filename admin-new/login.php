@@ -1,4 +1,5 @@
 <?php
+require_once('../api/protected/config/constant.php');
 if(isset($_POST['admin-login-submit'])){
 
 	$email = $_POST['email'];
@@ -6,7 +7,7 @@ if(isset($_POST['admin-login-submit'])){
 	$error = '';
 	$device_token = md5(uniqid(rand(), true));
 	$data = array("email"=>$email, "password"=>$password, "device_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-	$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=users/login");
+	$handle = curl_init(ROOT_URL."/api/index.php?r=users/login");
 	curl_setopt($handle, CURLOPT_POST, true);
 	curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 	curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -37,11 +38,11 @@ if(isset($_POST['admin-login-submit'])){
 		
 
 		if($jsondata->user_type == 'employee'){
-			header("Location: http://www.devmobilewash.com/admin-new/all-orders.php?filter=&limit=400");
+			header("Location: ".ROOT_URL."/admin-new/all-orders.php?filter=&limit=400");
 			die();
 		}
 		else{
-			header("Location: http://www.devmobilewash.com/admin-new/");
+			header("Location: ".ROOT_URL."/admin-new/");
 			die();
 		}
 	}

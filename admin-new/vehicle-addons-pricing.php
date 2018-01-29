@@ -4,7 +4,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -30,7 +30,7 @@ $wash_times = rtrim($wash_times, '|');
 $prices = rtrim($prices, '|');
 
 $vehdata = array('fulltitles' => $fulltitles, 'descs' => $descs, 'wash_times' => $wash_times, 'prices' => $prices, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=washing/updatevehicleaddonsplan");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=washing/updatevehicleaddonsplan");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -39,7 +39,7 @@ curl_close($handle_data);
 }
 
 $vehdata = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=washing/getvehicleaddons");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=washing/getvehicleaddons");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -50,7 +50,7 @@ $pricingdata = json_decode($result);
 ?>
 <?php
     if($company_module_permission == 'no' || $checked_vehicles_packages == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->

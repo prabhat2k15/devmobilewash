@@ -761,11 +761,11 @@ socket.on('get clientsbystatus', UpdateClients);
 
 function initialize_map(){
 
-$.getJSON("http://www.devmobilewash.com/api/index.php?r=agents/agentsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, PlotAgents);
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/agentsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, PlotAgents);
 
-$.getJSON("http://www.devmobilewash.com/api/index.php?r=customers/clientsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, PlotClients);
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/clientsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, PlotClients);
 
-$.getJSON("http://www.devmobilewash.com/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
   $(".client-online .count").html(data.Online_Customers);
   $(".pending-order .count").html(data.Pending_Orders);
   $(".sched-orders .count").html(data.Schedule_Orders);
@@ -782,7 +782,7 @@ $.getJSON("http://www.devmobilewash.com/api/index.php?r=users/Appstat", {key: 'T
 
 });
 
-$.getJSON("http://www.devmobilewash.com/api/index.php?r=washing/pendingwashesdetails", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/pendingwashesdetails", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
     var no_avail_agent = 0;
 if(data.pending_washes.length){
     pending_data = '';
@@ -1570,7 +1570,7 @@ var th = $(this);
 //alert(wash_id+" "+agent_id);
 $(this).html('Assigning...');
 
-$.post( "http://www.devmobilewash.com/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+$.post( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
   $(th).html('Assigned');
 $("#container .note-message").fadeIn();
 $("#container .note-message").html('Order assigned successfully');
@@ -1590,7 +1590,7 @@ var th = $(this);
 //alert(wash_id+" "+agent_id);
 $(this).html('Assigning...');
 
-$.post( "http://www.devmobilewash.com/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+$.post( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
   $(th).html('Assigned');
 $("#container .note-message").fadeIn();
 $("#container .note-message").html('Order assigned successfully');
@@ -1604,7 +1604,7 @@ setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
 $(".menu-container .search-cc").on('keyup', '#cc-search-text', function(){
 var search_q = $("#cc-search-text").val();
 if(search_q){
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=users/searchagentsclients", { search_query: search_q, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/searchagentsclients", { search_query: search_q, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
 if(data.result == 'true'){
 $(".menu-container .search-cc .search-autocomplete-box").show();
 search_data = '';
@@ -1671,7 +1671,7 @@ $('body').on('click', '.send-client-notify', function(){
       $("#container .note-message").fadeIn();
 $("#container .note-message").html('Sending...');
 
-    $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/cccustomerpushnotify", { customer_id: cust_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/cccustomerpushnotify", { customer_id: cust_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
        $("#container .note-message").html(data.response);
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });
@@ -1687,7 +1687,7 @@ $('body').on('click', '.send-agent-notify', function(){
       $("#container .note-message").fadeIn();
 $("#container .note-message").html('Sending...');
 
-    $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/cccagentpushnotify", { agent_id: agent_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/cccagentpushnotify", { agent_id: agent_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
        $("#container .note-message").html(data.response);
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });
@@ -1703,7 +1703,7 @@ $('body').on('click', '.send-client-sms', function(){
       $("#container .note-message").fadeIn();
 $("#container .note-message").html('Sending...');
 
-    $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/cccustomersendsms", { customer_id: cust_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/cccustomersendsms", { customer_id: cust_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
        $("#container .note-message").html(data.response);
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });
@@ -1719,7 +1719,7 @@ $('body').on('click', '.send-agent-sms', function(){
       $("#container .note-message").fadeIn();
 $("#container .note-message").html('Sending...');
 
-    $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/ccagentsendsms", { agent_id: agent_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/ccagentsendsms", { agent_id: agent_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
        $("#container .note-message").html(data.response);
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });

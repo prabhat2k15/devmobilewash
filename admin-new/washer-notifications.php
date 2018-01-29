@@ -1,7 +1,7 @@
 <?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_notifications == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -16,7 +16,7 @@
 $response = '';
 $result_code = '';
 if(isset($_POST['notify-form-submit'])){
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=users/adminnotify");
+$handle = curl_init(ROOT_URL."/api/index.php?r=users/adminnotify");
 		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>'agents', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);

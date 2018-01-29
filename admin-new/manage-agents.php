@@ -1,7 +1,7 @@
 <?php
-
-if($_GET['type']) $url = 'http://www.devmobilewash.com/api/index.php?r=agents/getallagents&type='.$_GET['type'];
-else $url = 'http://www.devmobilewash.com/api/index.php?r=agents/getallagents';
+include('header.php');
+if($_GET['type']) $url = ROOT_URL.'/api/index.php?r=agents/getallagents&type='.$_GET['type'];
+else $url = ROOT_URL.'/api/index.php?r=agents/getallagents';
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -15,7 +15,7 @@ else $url = 'http://www.devmobilewash.com/api/index.php?r=agents/getallagents';
 
     if(!empty($_GET['actionss'])){
         $agentID = $_GET['agentID'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=agents/deleteagents&id='.$agentID;
+        $url = ROOT_URL.'/api/index.php?r=agents/deleteagents&id='.$agentID;
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -28,16 +28,15 @@ else $url = 'http://www.devmobilewash.com/api/index.php?r=agents/getallagents';
         $result_code = $jsondata->result;
         if($response == "agents deleted" && $result_code == "true"){
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/manage-agents.php?dell=cnf"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?dell=cnf"</script>
             <?php
             die();
             }
     }
 ?>
-<?php include('header.php') ?>
 <?php
     if($washer_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -74,7 +73,7 @@ else $url = 'http://www.devmobilewash.com/api/index.php?r=agents/getallagents';
 </style>
 <?php
     if(empty($_GET['type'])){
-       $url = 'http://www.devmobilewash.com/api/index.php?r=agents/agentsadmin';
+       $url = ROOT_URL.'/api/index.php?r=agents/agentsadmin';
 
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -96,7 +95,7 @@ else $url = 'http://www.devmobilewash.com/api/index.php?r=agents/getallagents';
 
 
         $type = $_GET['type'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=agents/viewagent&type='.$type;
+        $url = ROOT_URL.'/api/index.php?r=agents/viewagent&type='.$type;
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -241,7 +240,7 @@ $('#late_drivers').click(function(){
                                     <div class="caption font-dark" style="padding: 10px 0px 0px 20px; padding-top: 3px; display: <?php echo $add_washer; ?>">
                                         <span class="caption-subject bold uppercase"><a href="add-agent.php"> Add New Agent</a></span>
 <?php /*<button class="btn blue all-agents-logout" style="margin-left: 15px;">Logout All Agents</button>*/ ?>
-<select name="washer-type" class="washer-type" style="margin-left: 15px; font-size: 16px; padding: 5px;"><option value="http://www.devmobilewash.com/admin-new/manage-agents.php?type=real">Real Washer</option><option <?php if($_GET['type'] == 'demo') echo 'selected'; ?> value="http://www.devmobilewash.com/admin-new/manage-agents.php?type=demo">Demo Washer<option></select>                                    
+<select name="washer-type" class="washer-type" style="margin-left: 15px; font-size: 16px; padding: 5px;"><option value="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?type=real">Real Washer</option><option <?php if($_GET['type'] == 'demo') echo 'selected'; ?> value="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?type=demo">Demo Washer<option></select>                                    
 </div>
                                     <div class="actions">
                                          <i class="icon-calendar"></i>&nbsp;
@@ -361,13 +360,13 @@ var th = $(this);
 var r = confirm('Are you sure you want to logout all agents?');
 if (r == true) {
 $(th).html('Logging out...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=agents/allagentslogout", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=agents/allagentslogout", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 //console.log(data);
 if(data.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/manage-agents.php?action=allaglogout-success";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?action=allaglogout-success";
 }
 if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/manage-agents.php?action=allaglogout-error";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?action=allaglogout-error";
 }
 
 });

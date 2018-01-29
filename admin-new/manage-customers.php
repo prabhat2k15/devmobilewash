@@ -4,7 +4,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -42,7 +42,7 @@ $('.cust-search-box').show();
 <?php
 
 
-    $url = 'http://www.devmobilewash.com/api/index.php?r=customers/clientsadmin';
+    $url = ROOT_URL.'/api/index.php?r=customers/clientsadmin';
 
 
         //echo $url;
@@ -248,7 +248,7 @@ cursor: pointer !important;
 										$city = 'N/A';
 $address = 'N/A';
 /*
-										$url = 'http://www.devmobilewash.com/api/index.php?r=customers/getcustomerAddress&customer_id='.$responseagents->id;
+										$url = ROOT_URL.'/api/index.php?r=customers/getcustomerAddress&customer_id='.$responseagents->id;
 										$handle = curl_init($url);
 										$data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 										curl_setopt($handle, CURLOPT_POST, true);
@@ -280,7 +280,7 @@ $address = 'N/A';
  <td> <?php echo $responseagents->name; ?> </td>
 <td> <?php echo $responseagents->email; ?> </td>
  <td> <?php 
-if($responseagents->total_wash > 0) echo "<a target='_blank' href='http://www.devmobilewash.com/admin-new/all-orders.php?customer_id=".$responseagents->id."'>".$responseagents->total_wash."</a>";
+if($responseagents->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$responseagents->id."'>".$responseagents->total_wash."</a>";
 else echo $responseagents->total_wash; 
 
 ?> </td>
@@ -339,12 +339,12 @@ console.log(th);
 var r = confirm('Are you sure you want to logout all clients?');
 if (r == true) {
 $(th).html('Logging out...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=customers/allclientslogout", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/allclientslogout", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 if(data.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/manage-customers.php?action=allclogout-success";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/manage-customers.php?action=allclogout-success";
 }
 if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/manage-customers.php?action=allclogout-error";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/manage-customers.php?action=allclogout-error";
 }
 
 });
@@ -353,7 +353,7 @@ window.location.href="http://www.devmobilewash.com/admin-new/manage-customers.ph
 return false;
 });
 
-var curr_url = "http://www.devmobilewash.com/admin-new/manage-customers.php";
+var curr_url = "<?php echo ROOT_URL; ?>/admin-new/manage-customers.php";
 
 $(".order-limit").change(function(){
   if($(this).val()) window.location.href=curr_url+'?limit='+$(this).val();

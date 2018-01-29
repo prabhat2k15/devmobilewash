@@ -4,7 +4,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -15,7 +15,7 @@ $jsondata_permission = json_decode($result_permission);
 if(isset($_POST['pricing_submit'])){
     if(isset($_POST['mon_del_price']) && isset($_POST['mon_prem_price'])){
         $userdata = array("id"=>1, 'express_price' => $_POST['mon_exp_price'], 'deluxe_price' => $_POST['mon_del_price'], 'premium_price' => $_POST['mon_prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatesurgeprice");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatesurgeprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -25,7 +25,7 @@ curl_close($handle_data);
     
       if(isset($_POST['tue_del_price']) && isset($_POST['tue_prem_price'])){
         $userdata = array("id"=>2, 'express_price' => $_POST['tue_exp_price'], 'deluxe_price' => $_POST['tue_del_price'], 'premium_price' => $_POST['tue_prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatesurgeprice");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatesurgeprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -35,7 +35,7 @@ curl_close($handle_data);
     
      if(isset($_POST['wed_del_price']) && isset($_POST['wed_prem_price'])){
         $userdata = array("id"=>3, 'express_price' => $_POST['wed_exp_price'], 'deluxe_price' => $_POST['wed_del_price'], 'premium_price' => $_POST['wed_prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatesurgeprice");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatesurgeprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -45,7 +45,7 @@ curl_close($handle_data);
     
     if(isset($_POST['thu_del_price']) && isset($_POST['thu_prem_price'])){
         $userdata = array("id"=>4, 'express_price' => $_POST['thu_exp_price'], 'deluxe_price' => $_POST['thu_del_price'], 'premium_price' => $_POST['thu_prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatesurgeprice");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatesurgeprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -55,7 +55,7 @@ curl_close($handle_data);
     
     if(isset($_POST['fri_del_price']) && isset($_POST['fri_prem_price'])){
         $userdata = array("id"=>5, 'express_price' => $_POST['fri_exp_price'], 'deluxe_price' => $_POST['fri_del_price'], 'premium_price' => $_POST['fri_prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatesurgeprice");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatesurgeprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -65,7 +65,7 @@ curl_close($handle_data);
     
     if(isset($_POST['sat_del_price']) && isset($_POST['sat_prem_price'])){
         $userdata = array("id"=>6, 'express_price' => $_POST['sat_exp_price'], 'deluxe_price' => $_POST['sat_del_price'], 'premium_price' => $_POST['sat_prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatesurgeprice");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatesurgeprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -75,7 +75,7 @@ curl_close($handle_data);
     
      if(isset($_POST['sun_del_price']) && isset($_POST['sun_prem_price'])){
         $userdata = array("id"=>7, 'express_price' => $_POST['sun_exp_price'], 'deluxe_price' => $_POST['sun_del_price'], 'premium_price' => $_POST['sun_prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatesurgeprice");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatesurgeprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -85,7 +85,7 @@ curl_close($handle_data);
 }
 
  $userdata = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getsurgeprices");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/getsurgeprices");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -97,7 +97,7 @@ $pricedata = json_decode($result);
 ?>
 <?php
     if($company_module_permission == 'no' || $checked_vehicles_packages == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->

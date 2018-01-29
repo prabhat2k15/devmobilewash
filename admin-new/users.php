@@ -1,10 +1,10 @@
 <?php 
-
+include('header.php');
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -12,11 +12,11 @@ $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 if($jsondata_permission->users_type != 'admin'){
-header("Location: http://www.devmobilewash.com/admin-new/index.php");
+header("Location: ".ROOT_URL."/admin-new/index.php");
 die();
 }
 
-include('header.php');
+
 
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -34,7 +34,7 @@ include('header.php');
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
-    $url = 'http://www.devmobilewash.com/api/index.php?r=users/getallusers';
+    $url = ROOT_URL.'/api/index.php?r=users/getallusers';
 
     $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -156,12 +156,12 @@ id = $(this).data('id');
 var r = confirm('Are you sure you want to delete user #'+id+'?');
 if (r == true) {
 $(th).html('Deleting...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=users/deleteuser", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/deleteuser", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 if(data.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/users.php?action=delete-success&nid="+id;
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/users.php?action=delete-success&nid="+id;
 }
 if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/users.php?action=delete-error";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/users.php?action=delete-error";
 }
 
 });

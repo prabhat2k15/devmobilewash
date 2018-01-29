@@ -5,7 +5,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -14,7 +14,7 @@ curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 
     if($client_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -70,8 +70,8 @@ $err = '';
                 $profile_pic_type = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $_POST['id']."_".$md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, '/home/devmobilewash/public_html/api/images/cust_img/'.$picname);
-                $profileimg = 'http://www.devmobilewash.com/api/images/cust_img/'.$picname;
+                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/cust_img/'.$picname);
+                $profileimg = ROOT_URL.'/api/images/cust_img/'.$picname;
             }
             else
             {
@@ -111,7 +111,7 @@ $err = '';
 
             // END COLLECT POST VALUE //
 
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/UpdateCustomersRecord");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=customers/UpdateCustomersRecord");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -123,7 +123,7 @@ $err = '';
 
             if($response == "updated successfully" && $result_code == "true"){
                 ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/edit-customer.php?customerID=<?php echo $id; ?>&cnf=done"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-customer.php?customerID=<?php echo $id; ?>&cnf=done"</script>
             <?php
             }
             if($result_code == 'false'){
@@ -132,7 +132,7 @@ $err = '';
     }
 
             $customerID = $_GET['customerID'];
-            $url = 'http://www.devmobilewash.com/api/index.php?r=customers/EditCustomers&customerID='.$customerID;
+            $url = ROOT_URL.'/api/index.php?r=customers/EditCustomers&customerID='.$customerID;
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -161,7 +161,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
              $block_client = $jsondata->block_client;
 
 
-			$url = 'http://www.devmobilewash.com/api/index.php?r=customers/getcustomerlogindetail&customerID='.$customerID;
+			$url = ROOT_URL.'/api/index.php?r=customers/getcustomerlogindetail&customerID='.$customerID;
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

@@ -1,7 +1,7 @@
 <?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_messages == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -22,7 +22,7 @@
 
 	if(!empty($_GET['action'])){
 		$id = $_GET['id'];
-		$url = 'http://www.devmobilewash.com/api/index.php?r=twilio/deletemessage&id='.$id;
+		$url = ROOT_URL.'/api/index.php?r=twilio/deletemessage&id='.$id;
 		$handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 		curl_setopt($handle, CURLOPT_POST, true);
@@ -35,7 +35,7 @@
 		$result_code = $jsondata->result;
 		if($response == "agents deleted" && $result_code == "true"){
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/messagess.php?dell=cnf"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/messagess.php?dell=cnf"</script>
             <?php
             die();
             }
@@ -68,9 +68,9 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
 			echo "<br>";
 			continue;
 		if(!empty($media)){
-		$url = 'http://www.devmobilewash.com/api/index.php?r=twilio/sendsms&tonumber='.$phonenumber;
+		$url = ROOT_URL.'/api/index.php?r=twilio/sendsms&tonumber='.$phonenumber;
 		}else{
-		$url = 'http://www.devmobilewash.com/api/index.php?r=twilio/sendsms&tonumber='.$phonenumber;	
+		$url = ROOT_URL.'/api/index.php?r=twilio/sendsms&tonumber='.$phonenumber;	
 		}
 
 		$handle = curl_init($url);
@@ -84,7 +84,7 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
 		$result_code = $jsondata->status;
 
 		if($result_code == "queued"){
-				$url = 'http://www.devmobilewash.com/api/index.php?r=twilio/reportchange&id='.$id;
+				$url = ROOT_URL.'/api/index.php?r=twilio/reportchange&id='.$id;
 		$handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -97,7 +97,7 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
                 $result_code = $jsondata->result;
                 if($response == "updated successfully" && $result == "true"){
                ?>
-			   <!--<script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/messagess.php"</script>-->
+			   
 			   <?php
 				}
             
@@ -107,7 +107,7 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
 
 	die();	   
 	}
-    $url = 'http://www.devmobilewash.com/api/index.php?r=twilio/getmessges';
+    $url = ROOT_URL.'/api/index.php?r=twilio/getmessges';
        
     $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');

@@ -1,7 +1,8 @@
 <?php
+include('header.php');
     if(!empty($_GET['action'])){
         $agentID = $_GET['id'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=agents/restoreprewasher&id='.$agentID;
+        $url = ROOT_URL.'/api/index.php?r=agents/restoreprewasher&id='.$agentID;
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -14,19 +15,18 @@
         $result_code = $jsondata->result;
         if($response == "agents restore" && $result_code == "true"){
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/manage-pre-washers.php?restore=true"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/manage-pre-washers.php?restore=true"</script>
             <?php
             die();
             }
     }
 ?>
-<?php include('header.php') ?>
 <?php
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -36,7 +36,7 @@ $jsondata_permission = json_decode($result_permission);
 ?>
 <?php
     if($washer_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -76,7 +76,7 @@ $jsondata_permission = json_decode($result_permission);
 </style>
 <?php
     
-       $url = 'http://www.devmobilewash.com/api/index.php?r=agents/getalltrashprewashers'; 
+       $url = ROOT_URL.'/api/index.php?r=agents/getalltrashprewashers'; 
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

@@ -1,5 +1,4 @@
 <?php
-$root_url = "http://www.devmobilewash.com";
   require_once('../api/protected/vendors/braintree/lib/Braintree.php');
 include('header.php');
 
@@ -19,7 +18,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init($root_url."/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -41,7 +40,7 @@ unlink($rootpath.$_GET['id']."/".$_GET['car-remove']);
 exit;
 }
 
-$handle = curl_init($root_url."/api/index.php?r=washing/washingkart");
+$handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -52,7 +51,7 @@ $handle = curl_init($root_url."/api/index.php?r=washing/washingkart");
 $getorder_result_code = $jsondata->result;
 $getorder = $jsondata;
 
-$handle = curl_init($root_url."/api/index.php?r=vehicles/vehiclemakes");
+$handle = curl_init(ROOT_URL."/api/index.php?r=vehicles/vehiclemakes");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -62,7 +61,7 @@ $handle = curl_init($root_url."/api/index.php?r=vehicles/vehiclemakes");
 
 $vehicle_makes = $jsondata->vehicle_makes;
 
-$handle = curl_init($root_url."/api/index.php?r=vehicles/vehiclemakesclassic");
+$handle = curl_init(ROOT_URL."/api/index.php?r=vehicles/vehiclemakesclassic");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -72,8 +71,8 @@ $handle = curl_init($root_url."/api/index.php?r=vehicles/vehiclemakesclassic");
 
 $classic_makes = $jsondata->vehicle_makes;
 
-   //$handle = curl_init($root_url."/api/index.php?r=agents/allagents");
-   $handle = curl_init($root_url."/api/index.php?r=agents/allagents_formatted");
+   //$handle = curl_init(ROOT_URL."/api/index.php?r=agents/allagents");
+   $handle = curl_init(ROOT_URL."/api/index.php?r=agents/allagents_formatted");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -99,7 +98,7 @@ if(isset($_POST['payment_method_nonce'])){
     
     if(!empty($_POST['loc_id'])){
 
-$handle = curl_init($root_url."/api/index.php?r=customers/getlocationbyid");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/getlocationbyid");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $getorder->customer_id, "location_id" => $_POST['loc_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -155,7 +154,7 @@ $schedule_area = '';
 
 if(!$zip) $zip = $_POST['czip'];
 
-$url = $root_url.'/api/index.php?r=washing/checkcoveragezipcode';
+$url = ROOT_URL.'/api/index.php?r=washing/checkcoveragezipcode';
 
             $handle = curl_init($url);
             $data = array("zipcode" => $zip, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -211,7 +210,7 @@ $long = $geojsondata->results[0]->geometry->location->lng;
 
 $address_type = $_POST['address_type'];
 
-$handle = curl_init($root_url."/api/index.php?r=customers/addlocation");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/addlocation");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $getorder->customer_id, "wash_request_id" => $getorder->id, "location_title" => $_POST['address_type'], "location_address" => $full_address, 'actual_latitude'=> $lat, 'actual_longitude' => $long, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -243,7 +242,7 @@ foreach($_POST['car_makes'] as $ind=>$make){
     $addi_detail = '';
     $addon_detail = '';
 if($_POST['car_ids'][$ind] == 0){
-$handle = curl_init($root_url."/api/index.php?r=customers/addvehicle");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/addvehicle");
 curl_setopt($handle, CURLOPT_POST, true);
 $data = array('customer_id' => $getorder->customer_id, 'brand_name' => $make, 'model_name' => $_POST['car_models'][$ind], 'car_pack' => $_POST['car_packs'][$ind], 'vehicle_image' => 'https://www.mobilewash.com/api/images/veh_img/no_pic.jpg', 'vehicle_build' => $_POST['car_types'][$ind], 'add_log' => 'true', 'admin_username' => $jsondata_permission->user_name, 'wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -300,7 +299,7 @@ $addon_detail = rtrim($addon_detail, ", ");
 
 if(isset($_POST['is_package_changed'][$ind]) && ($_POST['is_package_changed'][$ind] == 1)){
     $addi_detail = $make." ".$_POST['car_models'][$ind]." ".$_POST['car_packs'][$ind];
-   $handle = curl_init($root_url."/api/index.php?r=site/addcustomlog");
+   $handle = curl_init(ROOT_URL."/api/index.php?r=site/addcustomlog");
 curl_setopt($handle, CURLOPT_POST, true);
 $data = array('wash_request_id' => $getorder->id, 'admin_username' => $jsondata_permission->user_name, 'action' => 'adminchangepack', 'addi_detail' => $addi_detail, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -312,7 +311,7 @@ curl_close($handle);
 if(isset($_POST['is_addons_changed'][$ind]) && ($_POST['is_addons_changed'][$ind] == 1)){
     
     $addi_detail = $make." ".$_POST['car_models'][$ind]." Addons: ".$addon_detail;
-   $handle = curl_init($root_url."/api/index.php?r=site/addcustomlog");
+   $handle = curl_init(ROOT_URL."/api/index.php?r=site/addcustomlog");
 curl_setopt($handle, CURLOPT_POST, true);
 $data = array('wash_request_id' => $getorder->id, 'admin_username' => $jsondata_permission->user_name, 'action' => 'adminchangeaddons', 'addi_detail' => $addi_detail, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -340,7 +339,7 @@ curl_close($handle);
  foreach($getorder->vehicles as $vehicle){
     if(($key = array_search($vehicle->id, $new_car_list)) === false) {
     $addi_detail = $vehicle->brand_name." ".$vehicle->model_name;
-   $handle = curl_init($root_url."/api/index.php?r=site/addcustomlog");
+   $handle = curl_init(ROOT_URL."/api/index.php?r=site/addcustomlog");
 curl_setopt($handle, CURLOPT_POST, true);
 $data = array('wash_request_id' => $getorder->id, 'admin_username' => $jsondata_permission->user_name, 'action' => 'adminremovecar', 'addi_detail' => $addi_detail, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -357,7 +356,7 @@ curl_close($handle);
 $data = array("wash_request_id" => $_GET['id'], "car_ids" => $car_ids, "car_packs" => $car_packs, "pet_hair_vehicles" => $pet_hair_vehicles, "lifted_vehicles" => $lifted_vehicles, "exthandwax_vehicles" => $exthandwax_vehicles, "extplasticdressing_vehicles" => $extplasticdressing_vehicles, "extclaybar_vehicles" => $extclaybar_vehicles, "waterspotremove_vehicles" => $waterspotremove_vehicles, "upholstery_vehicles" => $upholstery_vehicles, "floormat_vehicles" => $floormat_vehicles, "fifthwash_vehicles" => $fifthwash_vehicles, "tip_amount" => $_POST['ctip'], "full_address" => $full_address, "address_type" => $address_type, "lat" => $lat, "lng" => $long, "admin_command" => "update-order", 'promo_code' => $_POST['promo_code'], "admin_username" => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
 //print_r($data);
-  $handle_data = curl_init($root_url."/api/index.php?r=site/updatewashadmin");
+  $handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatewashadmin");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -383,7 +382,7 @@ if(!empty($_POST['pay_method_token'])){
 
  }
 
-$handle = curl_init($root_url."/api/index.php?r=customers/CustomerPaymentWebsite");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/CustomerPaymentWebsite");
 
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $paymentdata);
@@ -413,7 +412,7 @@ else{
 }
 
 
-$handle = curl_init($root_url."/api/index.php?r=washing/washingkart");
+$handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -427,7 +426,7 @@ $getorder = $jsondata;
 $per_car_wash_points_arr = explode(",", $getorder->per_car_wash_points);
 
 
-$handle_data = curl_init($root_url."/api/index.php?r=customers/profiledetails");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customerid' => $getorder->customer_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -444,7 +443,7 @@ $org_wash_points = 0;
 $wash_points = 0;
 }
 
-$handle_data = curl_init($root_url."/api/index.php?r=agents/profiledetails");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('agent_id' => $getorder->agent_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -454,7 +453,7 @@ $agentdetails = json_decode($result);
   $transaction_details = '';
 
  if($getorder->transaction_id){
-   $handle_data = curl_init($root_url."/api/index.php?r=users/gettransactionbyid");
+   $handle_data = curl_init(ROOT_URL."/api/index.php?r=users/gettransactionbyid");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customer_id' => $getorder->customer_id, 'wash_request_id' => $_GET['id'], 'transaction_id' => $getorder->transaction_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -1070,7 +1069,7 @@ $point_index = 0;
 foreach($regular_vehicles as $ind => $veh): ?>
 <?php
 $wash_points++;
-$handle = curl_init($root_url."/api/index.php?r=customers/getvehiclebyid");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/getvehiclebyid");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("vehicle_id" => $veh->id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -1204,7 +1203,7 @@ else{
 foreach($classic_vehicles as $ind=>$veh): ?>
 <?php
 $wash_points++;
-$handle = curl_init($root_url."/api/index.php?r=customers/getvehiclebyid");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/getvehiclebyid");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("vehicle_id" => $veh->id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -1344,7 +1343,7 @@ else{
      <?php
  if($getorder->customer_id) {
 
-$handle = curl_init($root_url."/api/index.php?r=customers/getcustomerpaymentmethods");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/getcustomerpaymentmethods");
 $data = array('customer_id' => $getorder->customer_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -1528,7 +1527,7 @@ $first_card_type = ''; ?>
 </div>
                                                  <?php endif; ?>
 <?php
-$handle = curl_init($root_url."/api/index.php?r=site/getwashersavedroplog");
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/getwashersavedroplog");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -1795,10 +1794,10 @@ var current_vehicle_id;
       $( this ).dialog( "close" );
 $(".cancel-order").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=washing/cancelscheduleorder", { customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 10, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/cancelscheduleorder", { customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 10, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -1814,10 +1813,10 @@ $(".cancel-order").html('Cancel Order');
           $( this ).dialog( "close" );
 $(".cancel-order").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=washing/cancelscheduleorder", { customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", fee: 10, free_cancel: true, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/cancelscheduleorder", { customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", fee: 10, free_cancel: true, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -1842,10 +1841,10 @@ $(".cancel-order").html('Cancel Order');
       $( this ).dialog( "close" );
 $(".cancel-order-ondemand").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: 5, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: 5, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -1860,10 +1859,10 @@ $(".cancel-order-ondemand").html('Cancel Order');
       $( this ).dialog( "close" );
 $(".cancel-order-ondemand").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: 5, free_cancel: 'yes', admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: 5, free_cancel: 'yes', admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -1879,10 +1878,10 @@ $(".cancel-order-ondemand").html('Cancel Order');
           $( this ).dialog( "close" );
 $(".cancel-order-ondemand").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: 6, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: 6, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -1908,7 +1907,7 @@ $(".cancel-order-ondemand").html('Cancel Order');
         "Ok": function() {
       $( this ).dialog( "close" );
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=washing/updatewashrequeststatus", { agent_id: "<?php echo $getorder->agent_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", status: 3, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", { agent_id: "<?php echo $getorder->agent_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", status: 3, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'false'){
 
@@ -1938,7 +1937,7 @@ $(".err-text").show();
         "Accept": function() {
       $( this ).dialog( "close" );
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=customers/setvehiclestatus", { vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 5, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", { vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 5, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'false'){
 
@@ -1954,7 +1953,7 @@ $(".err-text").show();
 
                $( this ).dialog( "close" );
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=customers/setvehiclestatus", { vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 3, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", { vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 3, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'false'){
 
@@ -2929,10 +2928,10 @@ var th = $(this);
 $("#checkout input[type='submit']").val('Processing...');
 $(".err-text").hide();
 var spdisc = $("#checkout #spdisc").val();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/adminschedulewashprocesspayment", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", agent_id: "<?php echo $getorder->agent_id; ?>", spdisc: spdisc, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminschedulewashprocesspayment", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", agent_id: "<?php echo $getorder->agent_id; ?>", spdisc: spdisc, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -2978,10 +2977,10 @@ var th = $(this);
 $(this).html('Processing, please wait...');
 $(this).removeClass('process-free-wash');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/adminschedulewashprocesspaymentfree", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminschedulewashprocesspaymentfree", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3006,10 +3005,10 @@ var th = $(this);
 $(this).html('Processing, please wait...');
 $(this).removeClass('release-payment');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/releaseescrow", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", transaction_id: "<?php echo $getorder->transaction_id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/releaseescrow", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", transaction_id: "<?php echo $getorder->transaction_id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3034,10 +3033,10 @@ var th = $(this);
 $(this).html('Processing, please wait...');
 $(this).removeClass('void-payment');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/voidpayment", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", transaction_id: "<?php echo $getorder->transaction_id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/voidpayment", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", transaction_id: "<?php echo $getorder->transaction_id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3062,10 +3061,10 @@ var th = $(this);
 $(this).html('Processing, please wait...');
 $(this).removeClass('refund-payment');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/refundpayment", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", transaction_id: "<?php echo $getorder->transaction_id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/refundpayment", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", transaction_id: "<?php echo $getorder->transaction_id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3091,10 +3090,10 @@ var amount = $("#submit_for_settle_amount").val();
 $(this).val('Processing, please wait...');
 $(this).removeClass('submit_settle_btn');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/submitforsettlement", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", transaction_id: "<?php echo $getorder->transaction_id; ?>", amount: amount, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/submitforsettlement", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", transaction_id: "<?php echo $getorder->transaction_id; ?>", amount: amount, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3119,10 +3118,10 @@ var th = $(this);
 $(this).html('Processing, please wait...');
 $(this).removeClass('pass-fraud');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/passfraud", { wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/passfraud", { wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3146,10 +3145,10 @@ var th = $(this);
 $(this).html('Processing, please wait...');
 $(this).removeClass('wash-uncancel');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminuncancel", { wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminuncancel", { wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3173,7 +3172,7 @@ var th = $(this);
 $(this).html('Sending...');
 $(this).removeClass('client-receipt-send');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/sendclientappreceipt", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/sendclientappreceipt", { customer_id: "<?php echo $getorder->customer_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 $(th).html('Receipt Sent');
@@ -3206,7 +3205,7 @@ var th = $(this);
 $(this).html('Sending...');
 $(this).removeClass('agent-receipt-send');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/sendagentappreceipt", { agent_id: "<?php echo $getorder->agent_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/sendagentappreceipt", { agent_id: "<?php echo $getorder->agent_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 $(th).html('Receipt Sent');
@@ -3232,7 +3231,7 @@ return false;
 });
 
 $(".company-receipt-send").click(function(){
- window.open("<?php echo $root_url; ?>/company-full-receipt.php?orderid=<?php echo $getorder->id; ?>",'_blank');
+ window.open("<?php echo ROOT_URL; ?>/company-full-receipt.php?orderid=<?php echo $getorder->id; ?>",'_blank');
 
 });
 
@@ -3249,7 +3248,7 @@ var resched_time = $("#phone-order-form #reschedule_time").val();
 $(this).val('Saving...');
 $(this).removeClass('reschedule_update');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/updatewashadmin", { reschedule_date: resched_date, reschedule_time: resched_time, admin_command: 'save-reschedule', wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/updatewashadmin", { reschedule_date: resched_date, reschedule_time: resched_time, admin_command: 'save-reschedule', wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
     $(th).addClass('reschedule_update');
@@ -3279,7 +3278,7 @@ var notes = $("#phone-order-form #notes").val();
 $(this).val('Saving...');
 $(this).removeClass('note_update');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/updatewashadmin", { notes: notes, admin_command: 'save-note', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/updatewashadmin", { notes: notes, admin_command: 'save-note', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
     $(th).addClass('note_update');
@@ -3310,7 +3309,7 @@ $(this).parent().next().html('');
 $(this).parent().next().removeClass('error');
 $(this).parent().next().removeClass('success');
 $(this).removeClass('send_washer_push');
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/sendwasherpush", { message: msg, agent_id: "<?php echo $getorder->agent_id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/sendwasherpush", { message: msg, agent_id: "<?php echo $getorder->agent_id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 
 if(data.result == 'true'){
     $(th).addClass('send_washer_push');
@@ -3354,12 +3353,12 @@ var agent_id = $("#phone-order-form #detailer").val();
 $(this).val('Saving...');
 $(this).removeClass('washer_update');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminchangewasher", { agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminchangewasher", { agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
     $(th).addClass('washer_update');
 $(th).val('Save Washer');
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3388,10 +3387,10 @@ var th = $(this);
 $(this).html('Processing, please wait...');
 $(this).removeClass('order-status-update');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/updatewashadmin", { status: order_status, admin_command: 'save-status', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/updatewashadmin", { status: order_status, admin_command: 'save-status', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3429,10 +3428,10 @@ var token = $(th).data('token');
 $(this).html('Removing...');
 $(this).removeClass('card-remove');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=customers/deletecustomerpaymentmethod", { token: token, cust_type: '', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: <?php echo $getorder->id; ?>, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/deletecustomerpaymentmethod", { token: token, cust_type: '', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: <?php echo $getorder->id; ?>, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.success == 1){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3457,10 +3456,10 @@ var locid = $(th).data('locid');
 $(this).html('Removing...');
 $(this).removeClass('addr-remove');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=customers/deletelocation", { location_id: locid, wash_request_id: <?php echo $getorder->id; ?>, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/deletelocation", { location_id: locid, wash_request_id: <?php echo $getorder->id; ?>, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3485,10 +3484,10 @@ var th = $(this);
 $(this).html('Processing...');
 $(this).removeClass('stop-washer-pay');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminupdatewasherpaystatus", { status: 2, wash_request_id: "<?php echo $_GET['id']; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminupdatewasherpaystatus", { status: 2, wash_request_id: "<?php echo $_GET['id']; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $_GET['id']; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $_GET['id']; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3513,10 +3512,10 @@ var th = $(this);
 $(this).html('Processing...');
 $(this).removeClass('enable-washer-pay');
 $(".err-text").hide();
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/adminupdatewasherpaystatus", { status: 'ZERO', wash_request_id: "<?php echo $_GET['id']; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminupdatewasherpaystatus", { status: 'ZERO', wash_request_id: "<?php echo $_GET['id']; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
-window.location = "<?php echo $root_url; ?>/admin-new/edit-order.php?id=<?php echo $_GET['id']; ?>";
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $_GET['id']; ?>";
 }
 else{
 $(".err-text").html(data.response);
@@ -3545,7 +3544,7 @@ var customer_id = "<?php echo $getorder->customer_id; ?>";
 //console.log(customer_id);
 
 function checkadmineditstatus(){
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=users/updateadminscheduleeditstatus", { wash_request_id: wash_id, admin_id: admin_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/updateadminscheduleeditstatus", { wash_request_id: wash_id, admin_id: admin_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 $("form #edit-order-submit").show();
@@ -3567,7 +3566,7 @@ checkadmineditstatus();
  var ic = setInterval(checkadmineditstatus, 10000);
 
  function checkwashstatus(){
-$.getJSON( "<?php echo $root_url; ?>/api/index.php?r=washing/washingkart", { wash_request_id: wash_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/washingkart", { wash_request_id: wash_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true' && data.status == 2){
 $('#washer-arrive-dialog').dialog('open');
@@ -3671,7 +3670,7 @@ $("#phone-order-form #bt_exp").val(exp_date);
 }});
 
 function updateactivitylogs(){
-  $.getJSON( "<?php echo $root_url; ?>/api/index.php?r=site/getwashersavedroplog", { wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getwashersavedroplog", { wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
     var contents = "";

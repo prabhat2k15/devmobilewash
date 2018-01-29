@@ -5,7 +5,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -48,7 +48,7 @@ if( isset($_GET['day']) && !empty( $_GET['day'] ) ){
 	$_event = $_GET['event'];
 }
 
-$url = 'http://www.devmobilewash.com/api/index.php?r=site/getallwashrequestsnew';
+$url = ROOT_URL.'/api/index.php?r=site/getallwashrequestsnew';
 $cust_id = 0;
 $agent_id = 0;
 if(isset($_GET['customer_id'])) $cust_id = $_GET['customer_id'];
@@ -586,12 +586,12 @@ id = $(this).data('id');
 var r = confirm('Are you sure you want to delete order #'+id+'?');
 if (r == true) {
 $(th).html('Deleting...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=PhoneOrders/deleteorder", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=PhoneOrders/deleteorder", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 if(data.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=delete-success&nid="+id;
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/phone-orders.php?action=delete-success&nid="+id;
 }
 if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=delete-error";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/phone-orders.php?action=delete-error";
 }
 
 });
@@ -606,12 +606,12 @@ id = $(this).data('id');
 var r = confirm('Are you sure you want to delete order #'+id+'?');
 if (r == true) {
 $(th).html('Deleting...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=ScheduleOrders/deleteorder", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=ScheduleOrders/deleteorder", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 if(data.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=delete-success&nid="+id;
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/phone-orders.php?action=delete-success&nid="+id;
 }
 if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=delete-error";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/phone-orders.php?action=delete-error";
 }
 
 });
@@ -622,15 +622,15 @@ return false;
 
 $(".preloader").remove();
 
-var curr_url = "http://www.devmobilewash.com/admin-new/all-orders.php?filter=<?php echo $_GET['filter']; ?>";
+var curr_url = "<?php echo ROOT_URL; ?>/admin-new/all-orders.php?filter=<?php echo $_GET['filter']; ?>";
 var limit = "<?php echo $_GET['limit']; ?>";
 $(".order-limit").change(function(){
   window.location.href=curr_url+'&limit='+$(this).val();
 });
 
 $(".order-filter").change(function(){
-  if(limit) window.location.href='http://www.devmobilewash.com/admin-new/all-orders.php?filter='+$(this).val()+'&limit='+limit;
-  else window.location.href='http://www.devmobilewash.com/admin-new/all-orders.php?filter='+$(this).val();
+  if(limit) window.location.href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?filter='+$(this).val()+'&limit='+limit;
+  else window.location.href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?filter='+$(this).val();
 });
 
 /*
@@ -661,7 +661,7 @@ dt_table.fnDraw();
 });
 
 function pendingflashingorder(){
-  $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/adminpendingschedwashesalert", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminpendingschedwashesalert", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
     $(".portlet-body table tr").removeClass('flashrow');
 if(data.result == 'true'){
 //console.log(data.wash_ids);
@@ -682,7 +682,7 @@ function ajaxorderlist(){
     var upcomingwashes = [];
     var processordeclined_washes = "";
 //console.log(params);
-  $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/getallwashrequestsnew", params, function( data ) {
+  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getallwashrequestsnew", params, function( data ) {
     
 if(data.result == 'true'){
 //console.log(data);
