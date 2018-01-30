@@ -1,4 +1,5 @@
 <?php
+include('header.php');
     if(!empty($_POST['hidden']))
     {
 
@@ -25,7 +26,7 @@ $client_reminder_json_arr = json_encode($client_reminder);
 
             // END COLLECT POST VALUE //
 
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/addreminder");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=site/addreminder");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -37,15 +38,14 @@ $client_reminder_json_arr = json_encode($client_reminder);
 
     }
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_reminder_client == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <?php include('right-sidebar.php') ?>
 <?php
-            $url = 'http://www.devmobilewash.com/api/index.php?r=site/getremindersadmin';
+            $url = ROOT_URL.'/api/index.php?r=site/getremindersadmin';
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

@@ -1,4 +1,5 @@
 <?php
+require_once('../api/protected/config/constant.php');
 if($_GET['action'] == 'adrp'){
 $id = '';
 $token = '';
@@ -10,7 +11,7 @@ if(isset($_POST['pass-reset-ad-submit'])){
 $newpassword = $_POST['pass'];
 $cnfpassword = $_POST['cpass'];
 $data = array("token"=> $token, "id"=> $id, "newpassword"=> $newpassword, "cnfpassword"=> $cnfpassword, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=users/resetpassword");
+$handle = curl_init(ROOT_URL."/api/index.php?r=users/resetpassword");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

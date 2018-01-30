@@ -1,6 +1,6 @@
 <?php
-
-  $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getallpromopopups");
+include('header.php');
+  $handle = curl_init(ROOT_URL."/api/index.php?r=site/getallpromopopups");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -22,14 +22,14 @@ if($_POST['home_promo_status']){
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $md5.".".$home_promo_pic_type;
                 move_uploaded_file($home_promo_pic, '/home/mobilewa/public_html/admin-new/images/promo-img/'.$picname);
-                $homepromoimg = 'http://www.devmobilewash.com/admin-new/images/promo-img/'.$picname;
+                $homepromoimg = ROOT_URL.'/admin-new/images/promo-img/'.$picname;
 }
 
             $data = array('id'=> 1,'promo_img_url'=> $homepromoimg,'promo_status'=> $_POST['home_promo_status'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
           
             // END COLLECT POST VALUE //
             
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatepromopopup");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=site/updatepromopopup");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -42,7 +42,7 @@ if($_POST['home_promo_status']){
 
 }
            
-header('location: http://www.devmobilewash.com/admin-new/promo-popups.php');
+header('location: '.ROOT_URL.'/admin-new/promo-popups.php');
 die();
 
     }
@@ -50,10 +50,9 @@ die();
 
 
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_site_settings == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <?php include('right-sidebar.php') ?>

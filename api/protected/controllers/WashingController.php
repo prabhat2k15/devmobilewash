@@ -3605,7 +3605,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
                     $rate = 50;
                     foreach($agent_feedbacks as $ind=>$agent_feedback){
                        
-				if(!$agent_feedback->customer_ratings) $rate += 5;
+				if(!is_numeric($agent_feedback->customer_ratings)) $rate += 5;
 				else $rate += $agent_feedback->customer_ratings;
 			
                     }
@@ -3653,7 +3653,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
                     $rate = 50;
                     foreach($agent_feedbacks as $ind=>$agent_feedback){
                         
-				if(!$agent_feedback->customer_ratings) $rate += 5;
+				if(!is_numeric($agent_feedback->customer_ratings)) $rate += 5;
 				else $rate += $agent_feedback->customer_ratings;
 			
                     }
@@ -3838,7 +3838,7 @@ echo "feedback source: ".$feedback_source."<br>";*/
                     $rate = 50;
                     foreach($agent_feedbacks as $ind=>$agent_feedback){
                 
-				if(!$agent_feedback->customer_ratings) $rate += 5;
+				if(!is_numeric($agent_feedback->customer_ratings)) $rate += 5;
 				else $rate += $agent_feedback->customer_ratings;
 			
                     }
@@ -3888,7 +3888,7 @@ if($feedback_source != 'dropjob'){
                     $rate = 50;
                     foreach($cust_feedbacks as $ind=>$cust_feedback){
                         
-				if(!$cust_feedback->agent_ratings) $rate += 5;
+				if(!is_numeric($cust_feedback->agent_ratings)) $rate += 5;
 				else $rate += $cust_feedback->agent_ratings;
 			
                         
@@ -3928,7 +3928,7 @@ if($feedback_source != 'dropjob'){
                     $rate = 50;
                     foreach($cust_feedbacks as $ind=>$cust_feedback){
                         
-				if(!$cust_feedback->agent_ratings) $rate += 5;
+				if(!is_numeric($cust_feedback->agent_ratings)) $rate += 5;
 				else $rate += $cust_feedback->agent_ratings;
 			
                     }
@@ -7276,7 +7276,7 @@ die();
             'action_date'=> date('Y-m-d H:i:s'));
         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-            Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => 0));
+            Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => 0, 'wash_begin' => date("Y-m-d H:i:s")));
 
              if($wrequest_id_check->agent_id && $wrequest_id_check->agent_id > 0){
                   $agentmodel = Agents::model()->findByPk($wrequest_id_check->agent_id);
@@ -7289,33 +7289,10 @@ die();
                  else $voidresult = Yii::app()->braintree->void($wrequest_id_check->transaction_id);
              }
 	     
-	      if(strtotime($wrequest_id_check->wash_begin) > 0) $wash_time = strtotime($wrequest_id_check->wash_begin);
-                 else $wash_time = strtotime($wrequest_id_check->created_date);
-$now_time = time();
-$time_diff = round(abs($now_time - $wash_time) / 60,2);
-
-             /* ------- get nearest agents --------- 
-
-$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
-curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-$output = curl_exec($handle);
-curl_close($handle);
-$nearagentsdetails = json_decode($output);
-
-             ------- get nearest agents end --------- */
-
-
-/*if($nearagentsdetails->result == 'false'){
-     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 1, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
-}
-else{*/
 
   Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
 
- if($time_diff < 10){
+ 
  $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '29' ")->queryAll();
@@ -7343,7 +7320,7 @@ else{*/
                 }
             }
 
-	    }
+	    
 
 
 $result = 'true';

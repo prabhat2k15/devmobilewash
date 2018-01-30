@@ -5,7 +5,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -16,7 +16,7 @@ $jsondata_permission = json_decode($result_permission);
 $limit = 20;
 if($_GET['limit']) $limit = $_GET['limit'];
 if(($_GET['search_type'] != 'customer') && ($_GET['search_type'] != 'order')){
-$url = 'http://www.devmobilewash.com/api/index.php?r=agents/searchagents';
+$url = ROOT_URL.'/api/index.php?r=agents/searchagents';
         $handle = curl_init($url);
         $data = array('query' => $_GET['q'], 'limit' => $limit, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -30,7 +30,7 @@ $url = 'http://www.devmobilewash.com/api/index.php?r=agents/searchagents';
 }
     
     if(($_GET['search_type'] != 'agent') && ($_GET['search_type'] != 'order')){    
-        $url = 'http://www.devmobilewash.com/api/index.php?r=customers/searchcustomers';
+        $url = ROOT_URL.'/api/index.php?r=customers/searchcustomers';
         $handle = curl_init($url);
         $data = array('query' => $_GET['q'], 'limit' => $limit, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -44,7 +44,7 @@ $url = 'http://www.devmobilewash.com/api/index.php?r=agents/searchagents';
     }
     
     if(($_GET['search_type'] != 'customer') && ($_GET['search_type'] != 'agent')){    
-        $url = 'http://www.devmobilewash.com/api/index.php?r=site/searchorders';
+        $url = ROOT_URL.'/api/index.php?r=site/searchorders';
         $handle = curl_init($url);
         $data = array('query' => $_GET['q'], 'limit' => $limit, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -62,7 +62,7 @@ $url = 'http://www.devmobilewash.com/api/index.php?r=agents/searchagents';
 
 <?php
     if($washer_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -183,7 +183,7 @@ $address = 'N/A';
  <td> <a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $customer->id; ?>"><?php echo $customer->name; ?></a> </td>
 <td> <?php echo $customer->email; ?> </td>
  <td> <?php 
-if($customer->total_wash > 0) echo "<a target='_blank' href='http://www.devmobilewash.com/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
+if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
 else echo $customer->total_wash; 
 
 ?> </td>
@@ -448,7 +448,7 @@ echo "</ol>";
               $(".cust-sms-pop .action-btns").show();
               $(".cust-sms-pop .sms-content").html('Loading...');
                cust_id = $(this).data('id');
-              $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/adminpreviewcustpasssms", { customer_id: cust_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+              $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminpreviewcustpasssms", { customer_id: cust_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
     cust_email = data.customer_email;
@@ -475,7 +475,7 @@ cust_email = '';
              var th = $(this);
               $(this).html('Sending...');
 
-              $.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/adminsmscustpass", { customer_id: cust_id, customer_email: cust_email, customer_password: cust_pass, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+              $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminsmscustpass", { customer_id: cust_id, customer_email: cust_email, customer_password: cust_pass, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
      $(".cust-sms-pop .sms-content").html(data.response);

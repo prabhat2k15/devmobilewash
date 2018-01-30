@@ -14,7 +14,7 @@ margin-top: 50px !important;
 </style>
 <?php if(!empty($_GET['id'])){
 
- $url = 'http://www.devmobilewash.com/api/index.php?r=agents/prewasherdetails';
+ $url = ROOT_URL.'/api/index.php?r=agents/prewasherdetails';
             $handle = curl_init($url);
             $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -27,7 +27,7 @@ margin-top: 50px !important;
 }
 
 $data = array("id"=> 16, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getcmsdata");
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -39,7 +39,7 @@ $contracttext = $contracttext->content;
 
 
 $data = array("id"=> 15, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getcmsdata");
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -50,7 +50,7 @@ $contracttext_sec = $contracttext_sec->content;
 
 
 $data = array("id"=> 13, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getcmsdata");
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -60,7 +60,7 @@ $contracttext_rating = json_decode($result);
 $contracttext_rating = $contracttext_rating->content;
 
 $data = array("id"=> 11, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getcmsdata");
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -70,7 +70,7 @@ $contracttext_privacy = json_decode($result);
 $contracttext_privacy = $contracttext_privacy->content;
 
 $data = array("id"=> 10, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getcmsdata");
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -317,7 +317,7 @@ move_uploaded_file($w9, '../api/images/agent_img/agent_docs/'.$w9_name);
 
 $data = array("id"=> $_GET['id'], "first_name" => $_POST['fname'], "last_name" => $_POST['lname'], "email" => $_POST['email'], "phone" => $_POST['phoneno'], "city" => $_POST['city'], "state" => $_POST['state'], "zipcode" => $_POST['zipcode'], "hear_mw_how" => $_POST['hear_mw_how'], "date_of_birth" => $_POST['dob'], "street_address" => $_POST['staddr'], "suite_apt" => $_POST['suiteno'], "legally_eligible" => $_POST['legally_eligible'], "own_vehicle" => $_POST['own_vehicle'], "waterless_wash_product" => $_POST['waterless_wash_product'], "operate_area" => $_POST['operate_area'], "work_schedule" => $_POST['work_schedule'], "operating_as" => $_POST['operationmethod'], "company_name" => $_POST['companyname'], "wash_experience" => $_POST['wash_exp'], "liable_insurance" => $piname, "ssn_image" => $ssnname,"vehicle_front_img" => $vehicle_front_name, "vehicle_back_img" => $vehicle_back_name, "vehicle_left_img" => $vehicle_left_name, "vehicle_right_img" => $vehicle_right_name, "equipment_img" => $equipment_name, "driver_license" => $driver_license_name, "vehicle_insurance" => $vehicle_insurance_name, "vehicle_register" => $vehicle_register_name, "cl_insurance" => $cl_insurance_name, "w9" => $w9_name, "insurance_expire_date"=> $_POST['insure_exp_date'], "ssn_expire_date"=> $_POST['ssn_exp_date'], "bank_name" => $_POST['bank_name'], "bank_account_name" => $_POST['bank_account_name'], "routing_number" => $_POST['routing_no'], "bank_account_number" => $_POST['bank_account_no'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=agents/prewasherupdate");
+$handle = curl_init(ROOT_URL."/api/index.php?r=agents/prewasherupdate");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -326,7 +326,7 @@ curl_close($handle);
 //print_r($result);
 $updatedata = json_decode($result);
 
- $url = 'http://www.devmobilewash.com/api/index.php?r=agents/prewasherdetails';
+ $url = ROOT_URL.'/api/index.php?r=agents/prewasherdetails';
             $handle = curl_init($url);
             $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -680,7 +680,7 @@ if(trim($jsondata->washer_details->ssn_expire_date) && strtotime($jsondata->wash
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->liable_insurance): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->liable_insurance; ?>" target="_blank"><img id="proof_insurance_preview" class="file_img_preview" style="display: block; max-width: 300px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->liable_insurance; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->liable_insurance; ?>" target="_blank"><img id="proof_insurance_preview" class="file_img_preview" style="display: block; max-width: 300px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->liable_insurance; ?>" /></a>
 <?php else: ?>
 <img id="proof_insurance_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -702,7 +702,7 @@ if(trim($jsondata->washer_details->ssn_expire_date) && strtotime($jsondata->wash
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->ssn_image): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->ssn_image; ?>" target="_blank"><img id="ssn_image_preview" class="file_img_preview" style="display: block; max-width: 300px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->ssn_image; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->ssn_image; ?>" target="_blank"><img id="ssn_image_preview" class="file_img_preview" style="display: block; max-width: 300px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->ssn_image; ?>" /></a>
 <?php else: ?>
 <img id="ssn_image_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -796,7 +796,7 @@ if(trim($jsondata->washer_details->vehicle_right_img)) $vehicle_info_progress +=
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->vehicle_front_img): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_front_img; ?>" target="_blank"><img id="vehicle_front_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_front_img; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_front_img; ?>" target="_blank"><img id="vehicle_front_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_front_img; ?>" /></a>
 <?php else: ?>
 <img id="vehicle_front_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -811,7 +811,7 @@ if(trim($jsondata->washer_details->vehicle_right_img)) $vehicle_info_progress +=
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->vehicle_left_img): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_left_img; ?>" target="_blank"><img id="vehicle_left_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_left_img; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_left_img; ?>" target="_blank"><img id="vehicle_left_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_left_img; ?>" /></a>
 <?php else: ?>
 <img id="vehicle_left_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -826,7 +826,7 @@ if(trim($jsondata->washer_details->vehicle_right_img)) $vehicle_info_progress +=
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->equipment_img): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->equipment_img; ?>" target="_blank"><img id="equipment_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->equipment_img; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->equipment_img; ?>" target="_blank"><img id="equipment_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->equipment_img; ?>" /></a>
 <?php else: ?>
 <img id="equipment_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -847,7 +847,7 @@ if(trim($jsondata->washer_details->vehicle_right_img)) $vehicle_info_progress +=
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->vehicle_back_img): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_back_img; ?>" target="_blank"><img id="vehicle_back_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_back_img; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_back_img; ?>" target="_blank"><img id="vehicle_back_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_back_img; ?>" /></a>
 <?php else: ?>
 <img id="vehicle_back_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -862,7 +862,7 @@ if(trim($jsondata->washer_details->vehicle_right_img)) $vehicle_info_progress +=
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->vehicle_right_img): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_right_img; ?>" target="_blank"><img id="vehicle_right_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_right_img; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_right_img; ?>" target="_blank"><img id="vehicle_right_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_right_img; ?>" /></a>
 <?php else: ?>
 <img id="vehicle_right_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -907,7 +907,7 @@ if(trim($jsondata->washer_details->cl_insurance)) $license_info_progress += $lic
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->driver_license): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->driver_license; ?>" target="_blank"><img id="drivers_license_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->driver_license; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->driver_license; ?>" target="_blank"><img id="drivers_license_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->driver_license; ?>" /></a>
 <?php else: ?>
 <img id="drivers_license_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -922,7 +922,7 @@ if(trim($jsondata->washer_details->cl_insurance)) $license_info_progress += $lic
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->vehicle_insurance): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_insurance; ?>" target="_blank"><img id="vehicle_insurance_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_insurance; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_insurance; ?>" target="_blank"><img id="vehicle_insurance_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_insurance; ?>" /></a>
 <?php else: ?>
 <img id="vehicle_insurance_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -937,7 +937,7 @@ if(trim($jsondata->washer_details->cl_insurance)) $license_info_progress += $lic
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->w9): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->w9; ?>" target="_blank"><img id="w9_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/register/washer/steps/images/w9-done.jpg" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->w9; ?>" target="_blank"><img id="w9_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/register/washer/steps/images/w9-done.jpg" /></a>
 <?php else: ?>
 <img id="w9_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -957,7 +957,7 @@ if(trim($jsondata->washer_details->cl_insurance)) $license_info_progress += $lic
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->vehicle_register): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_register; ?>" target="_blank"><img id="vehicle_register_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_register; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_register; ?>" target="_blank"><img id="vehicle_register_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->vehicle_register; ?>" /></a>
 <?php else: ?>
 <img id="vehicle_register_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>
@@ -972,7 +972,7 @@ if(trim($jsondata->washer_details->cl_insurance)) $license_info_progress += $lic
 <?php endif; ?>
 </div>
 <?php if($jsondata->washer_details->cl_insurance): ?>
-<a href="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->cl_insurance; ?>" target="_blank"><img id="cl_insurance_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="http://www.devmobilewash.com/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->cl_insurance; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->cl_insurance; ?>" target="_blank"><img id="cl_insurance_preview" class="file_img_preview" style="display: block; max-width: 300px; height: 200px;" src="<?php echo ROOT_URL; ?>/api/images/agent_img/agent_docs/<?php echo $jsondata->washer_details->cl_insurance; ?>" /></a>
 <?php else: ?>
 <img id="cl_insurance_preview" class="file_img_preview" style="max-width: 300px;" />
 <?php endif; ?>

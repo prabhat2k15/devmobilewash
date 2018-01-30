@@ -1,7 +1,8 @@
 <?php
+include('header.php');
 if(isset($_POST['schedule_times_submit'])){
 
- $url = 'http://www.devmobilewash.com/api/index.php?r=site/updatescheduletimes';
+ $url = ROOT_URL.'/api/index.php?r=site/updatescheduletimes';
 
     $handle = curl_init($url);
 curl_setopt($handle, CURLOPT_POST, true);
@@ -12,10 +13,10 @@ curl_close($handle);
 $jsondata = json_decode($result);
 
 }
-include('header.php') ?>
+ ?>
 <?php
     if($company_module_permission == 'no' || $checked_opening_hours == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -33,7 +34,7 @@ include('header.php') ?>
 
 <?php include('right-sidebar.php');
 
- $url = 'http://www.devmobilewash.com/api/index.php?r=site/getscheduletimes';
+ $url = ROOT_URL.'/api/index.php?r=site/getscheduletimes';
 
     $handle = curl_init($url);
 curl_setopt($handle, CURLOPT_POST, true);

@@ -1,7 +1,8 @@
 <?php
+include('header.php');
     if(!empty($_POST['getphone'])){
         $phone = $_POST['getphone'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=twilio/getreplysms&number='.$phone;    
+        $url = ROOT_URL.'/api/index.php?r=twilio/getreplysms&number='.$phone;    
         $handle = curl_init($url);
         //$data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -14,10 +15,9 @@
         $message = $jsondata->messages;
     }
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_messages == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -47,7 +47,7 @@
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
-$url = 'http://www.devmobilewash.com/api/index.php?r=twilio/getreplynumber';
+$url = ROOT_URL.'/api/index.php?r=twilio/getreplynumber';
 $handle = curl_init($url);
 $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
