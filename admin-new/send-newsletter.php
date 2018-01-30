@@ -1,6 +1,6 @@
 <?php
-
- $url = 'http://www.devmobilewash.com/api/index.php?r=site/getallnewslettersubscribers';
+include('header.php');
+ $url = ROOT_URL.'/api/index.php?r=site/getallnewslettersubscribers';
 
     $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -21,7 +21,7 @@ array_push($mw_all_subscribers_arr,$ss->email);
 
 //print_r($mw_all_subscribers_arr);
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getnewsletterbyid");
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/getnewsletterbyid");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -34,7 +34,6 @@ $getletter = $jsondata->newsletter_details;
 $receivers =  explode(",", $getletter->receivers);
 
 ?>
-<?php include('header.php') ?>
 <style>
 .scan-report{
 display: none;
@@ -103,7 +102,7 @@ background: green;
 </style>
 <?php
     if($company_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <?php include('right-sidebar.php') ?>
@@ -197,7 +196,7 @@ return false;
 function send_newsletter(email, id){
 
 
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/sendnewsletter", {email: email, newsletter_id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/sendnewsletter", {email: email, newsletter_id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 
 if(data.result == 'true') {
 $(".scan-details").append("<pre>"+email+" - <span style='background: green; color: #fff;'>Send Successful</span></pre>");
