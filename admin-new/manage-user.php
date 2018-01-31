@@ -1,7 +1,8 @@
 <?php
+include('header.php');
     if(!empty($_GET['action'])){
         $id = $_GET['id'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=users/deleteadminuser&id='.$id;
+        $url = ROOT_URL.'/api/index.php?r=users/deleteadminuser&id='.$id;
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -14,16 +15,16 @@
         $result_code = $jsondata->result;
         if($response == "successfully delete" && $result_code == "true"){
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/manage-user.php?delete=true"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/manage-user.php?delete=true"</script>
             <?php
             die();
             }
     }
 ?>
-<?php include('header.php') ?>
+<?php  ?>
 <?php
     if($company_module_permission == 'no' || $checked_manage_user == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -59,7 +60,7 @@
 </style>
 <?php
     
-            $url = 'http://www.devmobilewash.com/api/index.php?r=users/manageuser'; 
+            $url = ROOT_URL.'/api/index.php?r=users/manageuser'; 
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

@@ -4,7 +4,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -36,7 +36,7 @@ var table;
 <?php
 
 
-    $url = 'http://www.devmobilewash.com/api/index.php?r=site/getnonreturncustomers';
+    $url = ROOT_URL.'/api/index.php?r=site/getnonreturncustomers';
 
 
         //echo $url;
@@ -212,7 +212,7 @@ cursor: pointer !important;
 <td> <?php echo $customer->email; ?> </td>
 <td> <?php echo $customer->phone; ?> </td>
  <td> <?php
-if($customer->total_wash > 0) echo "<a target='_blank' href='http://www.devmobilewash.com/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
+if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
 else echo $customer->total_wash;?> </td>
 
  <td> <?php echo $customer->last_order; ?> </td>

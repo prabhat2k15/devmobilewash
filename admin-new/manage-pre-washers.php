@@ -1,7 +1,8 @@
 <?php
+include('header.php');
     if(!empty($_GET['action'])){
         $agentID = $_GET['id'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=agents/trashprewasher&id='.$agentID;
+        $url = ROOT_URL.'/api/index.php?r=agents/trashprewasher&id='.$agentID;
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -14,19 +15,18 @@
         $result_code = $jsondata->result;
         if($response == "agents trash" && $result_code == "true"){
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/manage-pre-washers.php?trash=true"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/manage-pre-washers.php?trash=true"</script>
             <?php
             die();
             }
     }
 ?>
-<?php include('header.php') ?>
 <?php
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -36,7 +36,7 @@ $jsondata_permission = json_decode($result_permission);
 ?>
 <?php
     if($washer_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -73,7 +73,7 @@ $jsondata_permission = json_decode($result_permission);
 </style>
 <?php
     
-       $url = 'http://www.devmobilewash.com/api/index.php?r=agents/getallprewashers'; 
+       $url = ROOT_URL.'/api/index.php?r=agents/getallprewashers'; 
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -83,7 +83,7 @@ $jsondata_permission = json_decode($result_permission);
             curl_close($handle);
             $prewashers = json_decode($result);
             
-       $url_trash = 'http://www.devmobilewash.com/api/index.php?r=agents/getprewashertrashdata'; 
+       $url_trash = ROOT_URL.'/api/index.php?r=agents/getprewashertrashdata'; 
             $handle_trash = curl_init($url_trash);
             $data_trash = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle_trash, CURLOPT_POST, true);
@@ -241,7 +241,7 @@ cursor: pointer !important;
 <script type="text/javascript">
 $('.copy_washers').click(function(){
     $('#copy_washers').show();
-    $.getJSON("http://www.devmobilewash.com/admin-new/data_update_washer.php", function( data ) {
+    $.getJSON("<?php echo ROOT_URL; ?>/admin-new/data_update_washer.php", function( data ) {
 if(data.response == 'copy'){
     $('#copy_washers').hide();
     window.location.href = "manage-pre-washers.php?datacopy=true";
@@ -293,7 +293,7 @@ jQuery(document).ready(function() {
            
           
            
-            $.getJSON('http://www.devmobilewash.com/api/index.php?r=agents/MovePreToRealWasher&agentsid='+x+'&'+z+'='+y, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+            $.getJSON('<?php echo ROOT_URL; ?>/api/index.php?r=agents/MovePreToRealWasher&agentsid='+x+'&'+z+'='+y, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
                 if(data.response == 'move successfully'){
                     window.location.href = "manage-pre-washers.php?act=move";
                 }

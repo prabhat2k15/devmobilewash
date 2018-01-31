@@ -1,7 +1,7 @@
 <?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_opening_hours == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -19,7 +19,7 @@
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
-    $url = 'http://www.devmobilewash.com/api/index.php?r=site/getallnewslettersubscribers';
+    $url = ROOT_URL.'/api/index.php?r=site/getallnewslettersubscribers';
 
     $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -154,12 +154,12 @@ user_id = $(this).data('id');
 var r = confirm('Are you sure you want to delete subscriber #'+user_id+'?');
 if (r == true) {
 $(th).html('Deleting...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/DeleteSubscriber", {subscriber_id: user_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/DeleteSubscriber", {subscriber_id: user_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 if(data.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/newsletter-subscribers.php?action=delete-success&sid="+user_id;
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/newsletter-subscribers.php?action=delete-success&sid="+user_id;
 }
 if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/newsletter-subscribers.php?action=delete-error";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/newsletter-subscribers.php?action=delete-error";
 }
 
 });

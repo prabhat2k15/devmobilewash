@@ -1,7 +1,7 @@
 <?php include('header.php') ?>
 <?php
     if($client_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <style>	
@@ -122,7 +122,7 @@
 	var data1 = new Array();
 	$(function(){
 		$('.cal-overlay').css('display','block');
-		var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customerDaywise';
+		var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customerDaywise';
 		 
 		$.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 		
@@ -145,7 +145,7 @@
 				$('#from_date').css('border-color','#c2cad8');
 				$('#to_date').css('border-color','#c2cad8');
 				
-				var url = 'http://www.devmobilewash.com/api/index.php?r=customers/customerDaywise&type='+type+'&from_date='+from_date+'&to_date='+to_date;
+				var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customerDaywise&type='+type+'&from_date='+from_date+'&to_date='+to_date;
 				//console.log(url);
 				//return false;
 				$.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {

@@ -15,7 +15,7 @@ function getExcerpt($str, $startPos=0, $maxLength=100) {
 }
 
     if($company_module_permission == 'no' || $checked_opening_hours == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -33,7 +33,7 @@ function getExcerpt($str, $startPos=0, $maxLength=100) {
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
-    $url = 'http://www.devmobilewash.com/api/index.php?r=site/getallnewsletters';
+    $url = ROOT_URL.'/api/index.php?r=site/getallnewsletters';
 
     $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -159,12 +159,12 @@ id = $(this).data('id');
 var r = confirm('Are you sure you want to delete newsletter #'+id+'?');
 if (r == true) {
 $(th).html('Deleting...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=site/deletenewsletter", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/deletenewsletter", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 if(data.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/newsletters.php?action=delete-success&nid="+id;
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/newsletters.php?action=delete-success&nid="+id;
 }
 if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/newsletters.php?action=delete-error";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/newsletters.php?action=delete-error";
 }
 
 });

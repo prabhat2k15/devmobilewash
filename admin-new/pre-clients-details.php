@@ -1,9 +1,10 @@
 <?php
+include('header.php');
     if(isset($_POST['hidden'])){
         
         $data = array("id"=> $_GET['id'], "first_name" => $_POST['fname'], "last_name" => $_POST['lname'], "email" => $_POST['email'], "phone" => $_POST['phoneno'], "city" => $_POST['city'], "state" => $_POST['state'], "how_hear_mw" => $_POST['how_hear_mw'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
-        $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/preclientsupdate");
+        $handle = curl_init(ROOT_URL."/api/index.php?r=customers/preclientsupdate");
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -11,7 +12,7 @@
         curl_close($handle);
         //print_r($result);
         $updatedata = json_decode($result);
-        $url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsdetails';
+        $url = ROOT_URL.'/api/index.php?r=customers/preclientsdetails';
             $handle = curl_init($url);
             $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -29,13 +30,12 @@
 }
     }
 ?>
-<?php include('header.php') ?>
 <?php
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -45,7 +45,7 @@ $jsondata_permission = json_decode($result_permission);
 ?>
 <?php
     if($client_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -67,7 +67,7 @@ $jsondata_permission = json_decode($result_permission);
 <?php endif; ?>
 <?php
             $id = $_GET['id'];
-            $url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsdetails';
+            $url = ROOT_URL.'/api/index.php?r=customers/preclientsdetails';
             $handle = curl_init($url);
             $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

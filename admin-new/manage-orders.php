@@ -1,7 +1,7 @@
 <?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_manage_order == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -27,7 +27,7 @@
 		$_event = $_GET['event'];
 	}
 
-	$url = 'http://www.devmobilewash.com/api/index.php?r=washing/vieworder/';
+	$url = ROOT_URL.'/api/index.php?r=washing/vieworder/';
 
 	$handle = curl_init($url);
 	$data = array('day'=>$day,'event'=>$_event, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');

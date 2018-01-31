@@ -227,7 +227,7 @@ function ajax_function(){
    
   
    /*Onlin customer*/
-    $.getJSON("http://www.devmobilewash.com/api/index.php?r=customers/clientsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/clientsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
         
         
         $.each(data, function(k, v){
@@ -254,7 +254,7 @@ function ajax_function(){
         
     /*Online agents*/  
     
-    $.getJSON("http://www.devmobilewash.com/api/index.php?r=agents/onlineagents", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/onlineagents", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
         
         
         $.each(data.agents, function(k, v){

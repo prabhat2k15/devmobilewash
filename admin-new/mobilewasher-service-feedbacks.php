@@ -1,7 +1,7 @@
 <?php include('header.php') ?>
 <?php
     if($client_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -20,7 +20,7 @@
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
-    $url = 'http://www.devmobilewash.com/api/index.php?r=customers/get3hourfeedbacks';
+    $url = ROOT_URL.'/api/index.php?r=customers/get3hourfeedbacks';
         //echo $url;
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -36,11 +36,11 @@ $result_code = $jsondata->result;
 ?>
 <style>
 table.dataTable thead .sorting_asc {
-    background: rgba(0, 0, 0, 0) url("http://www.devmobilewash.com/admin-new/assets/global/css/../plugins/datatables/images/sort_both.png") no-repeat scroll right center !important;
+    background: rgba(0, 0, 0, 0) url("<?php echo ROOT_URL; ?>/admin-new/assets/global/css/../plugins/datatables/images/sort_both.png") no-repeat scroll right center !important;
     padding-right: 50px !important;
 }
 table.dataTable thead .sorting_desc {
-    background: rgba(0, 0, 0, 0) url("http://www.devmobilewash.com/admin-new/assets/global/css/../plugins/datatables/images/sort_both.png") no-repeat scroll right center !important;
+    background: rgba(0, 0, 0, 0) url("<?php echo ROOT_URL; ?>/admin-new/assets/global/css/../plugins/datatables/images/sort_both.png") no-repeat scroll right center !important;
     padding-right: 50px !important;
 }
 </style>

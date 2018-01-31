@@ -1,7 +1,8 @@
 <?php
+include('header.php');
     if($_GET['action'] == 'trash'){
         $clientsid = $_GET['id'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=customers/trashpreclients&id='.$clientsid;
+        $url = ROOT_URL.'/api/index.php?r=customers/trashpreclients&id='.$clientsid;
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -14,19 +15,19 @@
         $result_code = $jsondata->result;
         if($response == "clients trashed" && $result_code == "true"){
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/manage-pre-clients.php?trash=true"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/manage-pre-clients.php?trash=true"</script>
             <?php
             die();
             }
     }
 
-include('header.php') ?>
+ ?>
 <?php
 if (isset($_COOKIE['mw_admin_auth'])) {
 	$device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -37,7 +38,7 @@ $jsondata_permission = json_decode($result_permission);
 <?php
 
     if($company_module_permission == 'no' || $checked_opening_hours == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 
@@ -56,7 +57,7 @@ text-transform: capitalize;
 </style>
 <?php endif; ?>
 <?php
-	$url = 'http://www.devmobilewash.com/api/index.php?r=customers/getallpreclients';
+	$url = ROOT_URL.'/api/index.php?r=customers/getallpreclients';
 	$handle = curl_init($url);
 	$data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 	curl_setopt($handle, CURLOPT_POST, true);
@@ -67,7 +68,7 @@ text-transform: capitalize;
 	$preclients = json_decode($result);
 
 
-	$url_trash = 'http://www.devmobilewash.com/api/index.php?r=customers/getpreclientstrashdata';
+	$url_trash = ROOT_URL.'/api/index.php?r=customers/getpreclientstrashdata';
 	$handle_trash = curl_init($url_trash);
 	$data_trash = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 	curl_setopt($handle_trash, CURLOPT_POST, true);
@@ -364,7 +365,7 @@ function refreshCal(){
 				$('.fc-left').append(_html); 
 				//console.log('working');
 				timetracker+= 10;
-				if(timetracker >= 120) window.location.href="http://www.devmobilewash.com/admin-new/order_calendar.php";
+				if(timetracker >= 120) window.location.href="<?php echo ROOT_URL; ?>/admin-new/order_calendar.php";
 				 setTimeout( refreshCal, 10000 );
 }
 

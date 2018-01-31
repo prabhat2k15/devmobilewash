@@ -4,7 +4,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -37,7 +37,7 @@ $.fn.dataTable.moment( 'MM-DD-YYYY hh:mm A' );
 <?php include('navigation-employee.php') ?>
 <?php endif; ?>
 <?php
-    $url = 'http://www.devmobilewash.com/api/index.php?r=PhoneOrders/merge_all_orders';
+    $url = ROOT_URL.'/api/index.php?r=PhoneOrders/merge_all_orders';
 
     $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -387,12 +387,12 @@ id = $(this).data('id');
 var r = confirm('Are you sure you want to cancel order #'+id+'?');
 if (r == true) {
 $(th).html('Cancelling...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=PhoneOrders/editorder", {id: id, is_cancel: 1, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=PhoneOrders/editorder", {id: id, is_cancel: 1, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 if(data.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=cancel-success&nid="+id;
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/phone-orders.php?action=cancel-success&nid="+id;
 }
 if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/phone-orders.php?action=cancel-error";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/phone-orders.php?action=cancel-error";
 }
 
 });

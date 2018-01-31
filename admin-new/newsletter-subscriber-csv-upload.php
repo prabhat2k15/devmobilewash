@@ -1,4 +1,5 @@
 <?php
+require_once('../api/protected/config/constant.php');
  if (!empty($_POST) && isset($_POST['csv-submit'])) {
 
             $error = array();
@@ -6,7 +7,7 @@
             if (isset($_FILES['csv']['tmp_name']) && is_uploaded_file($_FILES['csv']['tmp_name'])) {
                 $extention = strtolower(strrchr($_FILES['csv']['name'],"."));
                 if ($extention != '.csv') {
-                 header("Location: http://www.devmobilewash.com/admin-new/newsletter-subscribers.php?action=csv-error1");
+                 header("Location: ".ROOT_URL."/admin-new/newsletter-subscribers.php?action=csv-error1");
 die();
                 }
                 else{
@@ -14,7 +15,7 @@ die();
                         "r");
                 if (count(fgetcsv($file)) < 1) {
 //
-                   header("Location: http://www.devmobilewash.com/admin-new/newsletter-subscribers.php?action=csv-error2");
+                   header("Location: ".ROOT_URL."/admin-new/newsletter-subscribers.php?action=csv-error2");
 die();
                 } else {
 
@@ -28,7 +29,7 @@ die();
                             break;
                         }
 
- $url = 'http://www.devmobilewash.com/api/index.php?r=site/addnewslettersubscriber';
+ $url = ROOT_URL.'/api/index.php?r=site/addnewslettersubscriber';
 
     $handle = curl_init($url);
         $data = array('name' => $row[0], 'email' => $row[1], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -43,7 +44,7 @@ $jsondata = json_decode($result);
                    $i++;
                 }
 
-              header("Location: http://www.devmobilewash.com/admin-new/newsletter-subscribers.php?action=csv-success");
+              header("Location: ".ROOT_URL."/admin-new/newsletter-subscribers.php?action=csv-success");
 die();
             }
         }
