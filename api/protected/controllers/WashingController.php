@@ -3206,7 +3206,8 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 
   $json= array(
                 'result'=> $result,
-                'response'=> $response
+                'response'=> $response,
+		'no_washer_cancel' => 1
             );
         echo json_encode($json);
         die();
@@ -3514,12 +3515,14 @@ $hours = floor($wash_time / 60);
 		 'draft_vehicle_id'=> $draft_vehicle_id,
             'new_vehicle_confirm' => $new_vehicle_confirm,
             'vehicles' => $vehicles,
+	    'no_washer_cancel' => $wrequest_id_check->no_washer_cancel
             );
         }
         else{
             $json= array(
                 'result'=> $result,
-                'response'=> $response
+                'response'=> $response,
+		'no_washer_cancel' => $wrequest_id_check->no_washer_cancel
             );
         }
         echo json_encode($json);
