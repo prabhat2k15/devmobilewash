@@ -1,6 +1,6 @@
 <?php
-
- $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getallnewslettersubscribers");
+include('header.php');
+ $handle = curl_init(ROOT_URL."/api/index.php?r=site/getallnewslettersubscribers");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -13,7 +13,7 @@ $mw_all_subscribers = $jsondata->subscribers;
 
 /* echo"<pre>";print_r($result);echo"</pre>";die; */
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getnewsletterbyid");
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/getnewsletterbyid");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -45,7 +45,7 @@ $getletter = $jsondata->newsletter_details;
 
             // END COLLECT POST VALUE //
 
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/editnewsletter");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=site/editnewsletter");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -59,7 +59,7 @@ $getletter = $jsondata->newsletter_details;
             if($edit_result_code == "true"){
 
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/newsletters.php?action=update-newsletter-success"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/newsletters.php?action=update-newsletter-success"</script>
             <?php
             die();
             //die();
@@ -67,10 +67,9 @@ $getletter = $jsondata->newsletter_details;
 
     }
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <?php include('right-sidebar.php') ?>

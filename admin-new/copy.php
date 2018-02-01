@@ -1,4 +1,5 @@
 <?php
+require_once('../api/protected/config/constant.php');
     backup_tables('localhost','devmobil_mwuser','XUS9Qf9bwJ%&','devmobil_mwmain');//host-name,user-name,password,DB name
 
 function backup_tables($host,$user,$pass,$name,$tables = '*')
@@ -46,7 +47,7 @@ $return.= ");\n";
 $return.="\n\n\n";
 }
 //save file
-$handle = fopen('/home/devmobilewash/public_html/admin-new/backup_db/db-backup-'.date('Y-m-d h:i:s').'.sql','w+');
+$handle = fopen(ROOT_WEBFOLDER.'/public_html/admin-new/backup_db/db-backup-'.date('Y-m-d h:i:s').'.sql','w+');
  //echo $return;
 fwrite($handle,$return);
 fclose($handle);

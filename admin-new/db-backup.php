@@ -1,7 +1,7 @@
 <?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_backup_db == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -37,7 +37,7 @@
 </style>
 <?php
     
-       $url = 'http://www.devmobilewash.com/api/index.php?r=site/getbackupfile'; 
+       $url = ROOT_URL.'/api/index.php?r=site/getbackupfile'; 
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -151,7 +151,7 @@ cursor: pointer !important;
 <script type="text/javascript">
 $('.backup').click(function(){
     $('#backup').show();
-    $.getJSON("http://www.devmobilewash.com/admin-new/copy.php", function( data ) {
+    $.getJSON("<?php echo ROOT_URL; ?>/admin-new/copy.php", function( data ) {
 if(data.response == 'backup'){
     $('#backup').hide();
     window.location.href = "db-backup.php?backup=true";

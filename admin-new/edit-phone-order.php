@@ -22,7 +22,7 @@ $device_token = $_COOKIE["mw_admin_auth"];
 
 $phone_order_err = '';
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -46,7 +46,7 @@ exit;
 
 
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=vehicles/vehiclemakes");
+$handle = curl_init(ROOT_URL."/api/index.php?r=vehicles/vehiclemakes");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -56,7 +56,7 @@ $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=vehicles/vehic
 
 $vehicle_makes = $jsondata->vehicle_makes;
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=vehicles/vehiclemakesclassic");
+$handle = curl_init(ROOT_URL."/api/index.php?r=vehicles/vehiclemakesclassic");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -67,7 +67,7 @@ $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=vehicles/vehic
 $classic_makes = $jsondata->vehicle_makes;
 
 
- $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=agents/allagents");
+ $handle = curl_init(ROOT_URL."/api/index.php?r=agents/allagents");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -119,7 +119,7 @@ foreach($_POST['regular-make'] as $ind=>$rmake){
 $regular_vehicles .= $rmake.",".$_POST['regular-model'][$ind].",".$_POST['regular-pack'][$ind].",".$_POST['regular-disc'][$ind].",".$_POST['regular_pet_fees'][$ind].",".$_POST['regular_truck_fees'][$ind].",".$_POST['regular_exthandwaxes'][$ind].",".$_POST['regular_extplasticdressings'][$ind].",".$_POST['regular_extclaybars'][$ind].",".$_POST['regular_waterspotremoves'][$ind]."|";
 //print_r($_FILES['regular-car-img']['tmp_name'][$ind]);
 
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=washing/plans");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=washing/plans");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('vehicle_make' => $rmake, 'vehicle_model' => $_POST['regular-model'][$ind], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -200,7 +200,7 @@ foreach($_POST['classic-make'] as $ind=>$cmake){
 
 $classic_vehicles .= $cmake.",".$_POST['classic-model'][$ind].",".$_POST['classic-pack'][$ind].",".$_POST['classic-disc'][$ind].",".$_POST['classic_pet_fees'][$ind].",".$_POST['classic_truck_fees'][$ind].",".$_POST['classic_exthandwaxes'][$ind].",".$_POST['classic_extplasticdressings'][$ind].",".$_POST['classic_extclaybars'][$ind].",".$_POST['classic_waterspotremoves'][$ind]."|";
 
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=washing/plans");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=washing/plans");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('vehicle_make' => $cmake, 'vehicle_model' => $_POST['classic-model'][$ind], 'vehicle_build' => 'classic', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -295,7 +295,7 @@ if($_POST['property_allowed']) $property_allowed = $_POST['property_allowed'];
 if($_POST['process_payment']) $payment_processed = $_POST['process_payment'];
 
 $data = array("id" => $_GET['id'], "customername"=>$_POST['cname'], "phoneno"=>$_POST['cphone'], "address"=>$_POST['caddress'], "address_type" => $_POST['address_type'], "city"=>$_POST['ccity'], "schedule_date"=>$_POST['sdate'], "schedule_time"=>$_POST['stime'], "email"=>$_POST['cemail'], "how_hear_mw"=>$_POST['how-hear'], "regular_vehicles"=>$regular_vehicles, "classic_vehicles"=>$classic_vehicles, "notes"=>$_POST['notes'], "checklist" => $checklist, "total_price" => number_format($total, 2), "agent_total" => number_format($agent_total, 2), "company_total" => number_format($company_total, 2), 'agent_id' => $_POST['detailer'], 'is_property_allowed' => $property_allowed, 'is_payment_processed' => $payment_processed, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=PhoneOrders/editorder");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=PhoneOrders/editorder");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -308,7 +308,7 @@ if($add_jsondata->result == 'true'){
 }
 }
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=PhoneOrders/getorderbyid");
+$handle = curl_init(ROOT_URL."/api/index.php?r=PhoneOrders/getorderbyid");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -319,7 +319,7 @@ $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=PhoneOrders/ge
 $getorder_result_code = $jsondata->result;
 $getorder = $jsondata->order_details;
 
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=agents/profiledetails");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('agent_id' => $getorder->agent_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -353,7 +353,7 @@ $result = Braintree_Transaction::sale($request_data);
 if ($result->success) {
 
 $data = array("id" => $_GET['id'], "payment_status" => 'complete', "transaction_id" => $result->transaction->id, 'order_discount' => $_POST['order_discount'], 'tip_amount' => $_POST['tip_amount'], 'total_price' => $net_total_price, 'company_total' => number_format($company_total, 2), 'agent_total' => number_format($agent_total,2), 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=PhoneOrders/editorder");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=PhoneOrders/editorder");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -915,7 +915,7 @@ foreach (glob($rootpath.$_GET['id']."/*") as $file) {
 <?php foreach($files as $img): ?>
   <li>
 <p style="text-align: right; margin: 0;"><a href="/admin-new/edit-phone-order.php?id=<?php echo $_GET['id']; ?>&car-remove=<?php echo $img; ?>">X</a></p>
-<a href="http://www.devmobilewash.com/admin-new/phone-orders-img/<?php echo $_GET['id']; ?>/<?php echo $img; ?>" target="_blank"><img src="http://www.devmobilewash.com/admin-new/phone-orders-img/<?php echo $_GET['id']; ?>/<?php echo $img; ?>" /></a>
+<a href="<?php echo ROOT_URL; ?>/admin-new/phone-orders-img/<?php echo $_GET['id']; ?>/<?php echo $img; ?>" target="_blank"><img src="<?php echo ROOT_URL; ?>/admin-new/phone-orders-img/<?php echo $_GET['id']; ?>/<?php echo $img; ?>" /></a>
 </li>
 <?php endforeach; ?>
 </ul>

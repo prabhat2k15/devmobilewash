@@ -1,4 +1,5 @@
 <?php
+include('header.php');
 if ($_FILES['csv']['size'] > 0) { 
 
     //get the csv file 
@@ -24,8 +25,8 @@ if ($_FILES['csv']['size'] > 0) {
     unset($array[0]) ;
     
     $val = implode(',', $array);
-    $dataval = array('to'=> 'custom','phone'=> $val,'message'=> 'Sign-up to use the MobileWash App! http://www.devmobilewash.com/register/','media'=> 'http://www.devmobilewash.com/documents/mw-icon.png', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=twilio/messges");
+    $dataval = array('to'=> 'custom','phone'=> $val,'message'=> 'Sign-up to use the MobileWash App! '.ROOT_URL.'/register/','media'=> ROOT_URL.'/documents/mw-icon.png', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$handle = curl_init(ROOT_URL."/api/index.php?r=twilio/messges");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $dataval);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -40,7 +41,7 @@ $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=twilio/messges
                
             $msg = 'Successfully Saved';
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/messagess.php"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/messagess.php"</script>
             <?php
             //die();
             }
@@ -51,7 +52,6 @@ $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=twilio/messges
 
 } 
 ?>
-<?php include('header.php') ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>

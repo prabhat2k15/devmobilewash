@@ -1,6 +1,6 @@
 <?php
-
- $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/getallnewslettersubscribers");
+include('header.php');
+ $handle = curl_init(ROOT_URL."/api/index.php?r=site/getallnewslettersubscribers");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -32,7 +32,7 @@ $mw_all_subscribers = $jsondata->subscribers;
 
             // END COLLECT POST VALUE //
 
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/addnewsletter");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=site/addnewsletter");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -46,7 +46,7 @@ $mw_all_subscribers = $jsondata->subscribers;
             if($add_result_code == "true"){
 
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/newsletters.php?action=add-newsletter-success"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/newsletters.php?action=add-newsletter-success"</script>
             <?php
             die();
             //die();
@@ -54,10 +54,9 @@ $mw_all_subscribers = $jsondata->subscribers;
 
     }
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <?php include('right-sidebar.php') ?>

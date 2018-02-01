@@ -1,10 +1,11 @@
 <?php
+include('header.php');
     if(!empty($_POST['submit']))
     {
 
             $data = $_POST;
 
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/shedule");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=site/shedule");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -16,7 +17,7 @@
 
     }
 
-            $url = 'http://www.devmobilewash.com/api/index.php?r=site/sheduleresult';
+            $url = ROOT_URL.'/api/index.php?r=site/sheduleresult';
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -63,10 +64,9 @@
 $status_text = $jsondata->status_text[0]->status;
 
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_opening_hours == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->

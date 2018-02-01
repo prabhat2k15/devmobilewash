@@ -4,7 +4,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -15,7 +15,7 @@ $jsondata_permission = json_decode($result_permission);
 <?php
 if(isset($_POST['add-car-regular-submit'])){
 $vehdata = array("make"=>$_POST['regular-make'], "model"=>$_POST['regular-model'], "type"=>$_POST['regular-type'], "category"=>$_POST['regular-cat'], "vehicle_build"=>'regular', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=vehicles/addvehicle");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=vehicles/addvehicle");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -27,7 +27,7 @@ $vehadddata = json_decode($result);
 <?php
 if(isset($_POST['add-car-classic-submit'])){
 $vehdata = array("make"=>$_POST['classic-make'], "model"=>$_POST['classic-model'], "type"=>$_POST['classic-type'], "category"=>$_POST['classic-cat'], "vehicle_build"=>'classic', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=vehicles/addvehicle");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=vehicles/addvehicle");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -38,7 +38,7 @@ $vehadddata = json_decode($result);
 ?>
 <?php
     if($company_module_permission == 'no' || $checked_vehicles_packages == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -60,7 +60,7 @@ $vehadddata = json_decode($result);
 <?php endif; ?>
 <?php
 
-            $url = 'http://www.devmobilewash.com/api/index.php?r=agents/prewasherdetails';
+            $url = ROOT_URL.'/api/index.php?r=agents/prewasherdetails';
             $handle = curl_init($url);
             $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

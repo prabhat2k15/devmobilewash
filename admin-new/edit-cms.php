@@ -1,4 +1,5 @@
 <?php
+include('header.php');
     if(!empty($_POST['hidden']))
     {
        $title = $_POST['title'];
@@ -11,7 +12,7 @@
           
             // END COLLECT POST VALUE //
             
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/cms");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=site/cms");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -25,7 +26,7 @@
             if($response == "Update Successfully" && $result_code == "true"){
                
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/cms.php?cnf=ok"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/cms.php?cnf=ok"</script>
             <?php
             die();
             //die();
@@ -40,17 +41,16 @@
 
     }
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <?php include('right-sidebar.php') ?>
 <?php
     
         $id = $_GET['id'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=site/getcmsdataadmin&id='.$id; 
+        $url = ROOT_URL.'/api/index.php?r=site/getcmsdataadmin&id='.$id; 
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

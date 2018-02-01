@@ -1,7 +1,7 @@
 <?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->

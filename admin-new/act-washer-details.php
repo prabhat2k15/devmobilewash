@@ -1,9 +1,10 @@
 <?php
+include('header.php');
     if(isset($_POST['hidden'])){
         
         $data = array("id"=> $_GET['id'], "user_id" => $_POST['user_id'], "user_email" => $_POST['user_email'], "first_name" => $_POST['first_name'], "last_name" => $_POST['last_name'], "phone" => $_POST['phone'], "address" => $_POST['address'], "city" => $_POST['city'], "state" => $_POST['state'], "zip" => $_POST['zip'], "ID_number" => $_POST['ID_number'], "DL_ID_exp" => $_POST['DL_ID_exp'], "insurance_exp" => $_POST['insurance_exp'], "payment_due_d_ins" => $_POST['payment_due_d_ins'], "account_name" => $_POST['account_name'], "SSN_ITIN_TAX_ID" => $_POST['SSN_ITIN_TAX_ID'], "routing_number" => $_POST['routing_number'], "account_number" => $_POST['account_number'], "trash_status" => $_POST['trash_status'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
-        $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/preclientsupdate2");
+        $handle = curl_init(ROOT_URL."/api/index.php?r=customers/preclientsupdate2");
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -11,7 +12,7 @@
         curl_close($handle);
         //print_r($result);
         $updatedata = json_decode($result);
-        $url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsdetails2';
+        $url = ROOT_URL.'/api/index.php?r=customers/preclientsdetails2';
             $handle = curl_init($url);
             $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -37,7 +38,7 @@
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $_POST['id']."_".$md5.".".$profile_pic_type;
                 move_uploaded_file($profile_pic, '/home/mobilewa/public_html/api/images/washer_img/'.$picname);
-                $profileimg = 'http://www.devmobilewash.com/api/images/washer_img/'.$picname;
+                $profileimg = ROOT_URL.'/api/images/washer_img/'.$picname;
             }
             else
             {
@@ -53,7 +54,7 @@
             
             // END COLLECT POST VALUE //
             
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/updatewasherimage");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=customers/updatewasherimage");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -65,19 +66,18 @@
 
             if($response == "updated successfully" && $result_code == "true"){
                 ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/act-washer-details.php?id=<?php echo $id; ?>&cnf=done"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/act-washer-details.php?id=<?php echo $id; ?>&cnf=done"</script>
             <?php
             }
             
     }
 ?>
-<?php include('header.php') ?>
 <?php
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -87,7 +87,7 @@ $jsondata_permission = json_decode($result_permission);
 ?>
 <?php
     if($client_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -109,7 +109,7 @@ $jsondata_permission = json_decode($result_permission);
 <?php endif; ?>
 <?php
             $id = $_GET['id'];
-            $url = 'http://www.devmobilewash.com/api/index.php?r=customers/preclientsdetails2';
+            $url = ROOT_URL.'/api/index.php?r=customers/preclientsdetails2';
             $handle = curl_init($url);
             $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -167,7 +167,7 @@ $jsondata_permission = json_decode($result_permission);
         if(!empty($image)){ ?>
         <img src="<?php echo $image; ?>" class="img-responsive" alt="">
         <?php }else{ ?>
-            <img src="http://www.devmobilewash.com/api/images/cust_img/no_profile.jpg" class="img-responsive" alt=""> 
+            <img src="<?php echo ROOT_URL; ?>/api/images/cust_img/no_profile.jpg" class="img-responsive" alt=""> 
             <?php } ?>
             </div>
         <!-- END SIDEBAR USERPIC -->
@@ -316,13 +316,13 @@ $jsondata_permission = json_decode($result_permission);
                 <div class="form-group">
                 <div data-provides="fileinput" class="fileinput fileinput-new">
                 <div style="width: 200px; height: 150px;" class="fileinput-new thumbnail">
-                <img alt="" src="http://www.devmobilewash.com/api/images/cust_img/no_profile.jpg"> </div>
+                <img alt="" src="<?php echo ROOT_URL; ?>/api/images/cust_img/no_profile.jpg"> </div>
                 <div style="max-width: 200px; max-height: 150px;" class="fileinput-preview fileinput-exists thumbnail"> </div>
                 <div>
                 <span class="btn default btn-file">
                 <span class="fileinput-new"> Select image </span>
                 <span class="fileinput-exists"> Change </span>
-                <input type="file" value="http://www.devmobilewash.com/api/images/cust_img/no_profile.jpg" name="image"> </span>
+                <input type="file" value="<?php echo ROOT_URL; ?>/api/images/cust_img/no_profile.jpg" name="image"> </span>
                 <a data-dismiss="fileinput" class="btn default fileinput-exists" href="javascript:;"> Remove </a>
                 </div>
                 </div>

@@ -1,11 +1,12 @@
 <?php
+include('header.php');
 $response = '';
 $result_code = '';
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -13,13 +14,13 @@ $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 if($jsondata_permission->users_type != 'admin'){
-header("Location: http://www.devmobilewash.com/admin-new/index.php");
+header("Location: ".ROOT_URL."/admin-new/index.php");
 die();
 }
 
 if(isset($_POST['adduser-form-submit'])){
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=users/adduser");
+$handle = curl_init(ROOT_URL."/api/index.php?r=users/adduser");
         $data = array("email"=>$_POST['email'], "username"=>$_POST['username'], "password"=>$_POST['pass'], "usertype"=>$_POST['usertype'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         
 curl_setopt($handle, CURLOPT_POST, true);
@@ -38,7 +39,6 @@ if($user_result_code == 'true'){
 }
 }
 ?>
-<?php include('header.php') ?>
 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />

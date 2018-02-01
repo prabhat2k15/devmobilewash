@@ -1,4 +1,5 @@
-<?php 
+<?php
+include('header.php');
 session_start();
 require_once 'google-api-php-client-2.0.1/vendor/autoload.php';
 
@@ -12,11 +13,11 @@ if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
  
         
 } else {
-  $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/admin-new/oauth2callback.php';
+  $redirect_uri = ROOT_URL.'/admin-new/oauth2callback.php';
   header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
 }
 
-include('header.php');
+
 
 
 function getExcerpt($str, $startPos=0, $maxLength=100) {
@@ -33,7 +34,7 @@ function getExcerpt($str, $startPos=0, $maxLength=100) {
 }
 
     if($company_module_permission == 'no' || $checked_opening_hours == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -51,7 +52,7 @@ function getExcerpt($str, $startPos=0, $maxLength=100) {
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
-    $url = 'http://www.devmobilewash.com/api/index.php?r=washing/getallcoveragezipcodes';
+    $url = ROOT_URL.'/api/index.php?r=washing/getallcoveragezipcodes';
 
     $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -170,17 +171,17 @@ zip = $(this).data('zip');
 var r = confirm('Are you sure you want to delete zipcode #'+id+'?');
 if (r == true) {
 $(th).html('Deleting...');
-$.getJSON( "http://www.devmobilewash.com/api/index.php?r=washing/deletecoveragezipcode", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/deletecoveragezipcode", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 if(data.result == 'true'){
-$.getJSON( "http://www.devmobilewash.com/admin-new/delete-zipcode-fusion-table.php",{zipcode: zip}, function( data2 ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/admin-new/delete-zipcode-fusion-table.php",{zipcode: zip}, function( data2 ) {
 //console.log(data2);
 if(data2.result == 'true'){
-window.location.href="http://www.devmobilewash.com/admin-new/coverage-area-zipcodes.php?action=delete-success&nid="+id;
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/coverage-area-zipcodes.php?action=delete-success&nid="+id;
 }
 });
 }
 if(data.result == 'false'){
-window.location.href="http://www.devmobilewash.com/admin-new/coverage-area-zipcodes.php?action=delete-error";
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/coverage-area-zipcodes.php?action=delete-error";
 }
 
 });

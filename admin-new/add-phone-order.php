@@ -1,4 +1,5 @@
 <?php
+include('header.php');
 session_start();
 
  require_once('../api/protected/vendors/braintree/lib/Braintree.php');
@@ -7,7 +8,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -30,7 +31,7 @@ if($_GET['customer_id']){
 
 /* --- client my account call --- */
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/profiledetails");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 $data = array('customerid' => $_GET['customer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -69,7 +70,7 @@ $long = '';
 
 $data = array('customername' => $_POST['cname'], 'emailid'=> $_POST['cemail'], 'contact_number'=>$_POST['cphone'], 'password'=>$pass_new, 'time_zone'=> 'America/Los_Angeles', 'client_position' => 'real', 'how_hear_mw' => $_POST['how-hear'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/register");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/register");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -105,7 +106,7 @@ $fifth_disc = 0;
 $car_id = 0;
 
 if(!isset($_POST['car_prices'][$ind])){
-    $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=washing/plans");
+    $handle = curl_init(ROOT_URL."/api/index.php?r=washing/plans");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("vehicle_make" => $make, "vehicle_model" => $_POST['car_models'][$ind], "vehicle_build" => $_POST['car_types'][$ind], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -145,9 +146,9 @@ $fifth_disc = $_POST['fifth_discs'][$ind];
 }
 
 if($_POST['car_ids'][$ind] == 0){
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/addvehicle");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/addvehicle");
 curl_setopt($handle, CURLOPT_POST, true);
-$data = array('customer_id' => $cust_id, 'brand_name' => $make, 'model_name' => $_POST['car_models'][$ind], 'vehicle_image' => 'http://www.devmobilewash.com/api/images/veh_img/no_pic.jpg', 'vehicle_build' => $_POST['car_types'][$ind], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('customer_id' => $cust_id, 'brand_name' => $make, 'model_name' => $_POST['car_models'][$ind], 'vehicle_image' => ROOT_URL.'/api/images/veh_img/no_pic.jpg', 'vehicle_build' => $_POST['car_types'][$ind], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
@@ -227,7 +228,7 @@ $car_packs = trim($car_packs,",");
 if(!empty($_POST['loc_id'])){
 
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/getlocationbyid");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/getlocationbyid");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $cust_id, "location_id" => $_POST['loc_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -259,7 +260,7 @@ $geojsondata = json_decode($georesult);
 //var_dump($geojsondata);
 if($geojsondata->status == 'ZERO_RESULTS'){
 $adderror = "Error in adding location.";
-//header('location: http://www.devmobilewash.com/admin-new/add-schedule-order.php?step=2');
+//header('location: '.ROOT_URL.'/admin-new/add-schedule-order.php?step=2');
 //die();
 }
 else{
@@ -274,7 +275,7 @@ else{
 
 
 
-$url = 'http://www.devmobilewash.com/api/index.php?r=washing/checkcoveragezipcode';
+$url = ROOT_URL.'/api/index.php?r=washing/checkcoveragezipcode';
             $handle = curl_init($url);
             $data = array("zipcode" => $zip, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);
@@ -290,7 +291,7 @@ $url = 'http://www.devmobilewash.com/api/index.php?r=washing/checkcoveragezipcod
 
    if(($on_demand_area == '')){
        $adderror = "Sorry, Mobile Wash is currently not available in your area. Please register to find out when we're available in your area!";
-//header('location: http://www.devmobilewash.com/admin-new/add-schedule-order.php?step=2');
+//header('location: '.ROOT_URL.'/admin-new/add-schedule-order.php?step=2');
 //die();
 }
 
@@ -317,7 +318,7 @@ $geojsondata = json_decode($georesult);
 //var_dump($geojsondata);
 if($geojsondata->status == 'ZERO_RESULTS'){
   $adderror = "Error in adding location.";
-//header('location: http://www.devmobilewash.com/admin-new/add-schedule-order.php?step=2');
+//header('location: '.ROOT_URL.'/admin-new/add-schedule-order.php?step=2');
 //die();
 }
 else{
@@ -336,7 +337,7 @@ $schedule_area = '';
 
 if(!$zip) $zip = $_POST['czip'];
 
-$url = 'http://www.devmobilewash.com/api/index.php?r=washing/checkcoveragezipcode';
+$url = ROOT_URL.'/api/index.php?r=washing/checkcoveragezipcode';
 
             $handle = curl_init($url);
             $data = array("zipcode" => $zip, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
@@ -351,7 +352,7 @@ $url = 'http://www.devmobilewash.com/api/index.php?r=washing/checkcoveragezipcod
 
    if(($on_demand_area == '')){
         $adderror = "Sorry, Mobile Wash is currently not available in your area. Please register to find out when we're available in your area!";
-//header('location: http://www.devmobilewash.com/admin-new/add-schedule-order.php?step=2');
+//header('location: '.ROOT_URL.'/admin-new/add-schedule-order.php?step=2');
 //die();
 
 }
@@ -381,7 +382,7 @@ $geojsondata = json_decode($georesult);
 //var_dump($geojsondata);
 if($geojsondata->status == 'ZERO_RESULTS'){
           $adderror = "Error in adding location.";
-//header('location: http://www.devmobilewash.com/admin-new/add-schedule-order.php?step=2');
+//header('location: '.ROOT_URL.'/admin-new/add-schedule-order.php?step=2');
 //die();
 }
 else{
@@ -391,7 +392,7 @@ $long = $geojsondata->results[0]->geometry->location->lng;
 }
 
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/addlocation");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/addlocation");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $cust_id, "location_title" => $_POST['address_type'], "location_address" => $full_address, 'actual_latitude'=> $lat, 'actual_longitude' => $long, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -407,7 +408,7 @@ $jsondata = json_decode($result);
 /* -------- estimate time ---------- */
 $eta = '60';
 
- $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/estimatetime");
+ $handle = curl_init(ROOT_URL."/api/index.php?r=customers/estimatetime");
 $data = array('customer_id' => $cust_id, 'latitude'=> $lat, 'longitude' => $long, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
 curl_setopt($handle, CURLOPT_POST, true);
@@ -424,7 +425,7 @@ if($jsondata->estimate_time) $eta = $jsondata->estimate_time;
 
 if(isset($_POST['payment_method_nonce'])){
 
- $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/getclienttoken");
+ $handle = curl_init(ROOT_URL."/api/index.php?r=customers/getclienttoken");
 $data = array('customer_id' => $cust_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -438,7 +439,7 @@ $jsondata = json_decode($result);
 //$clientToken = $jsondata->client_token;
 
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/profiledetails");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 $data = array('customerid' => $cust_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -470,7 +471,7 @@ if(!empty($_POST['pay_method_token'])){
 
  /* --- payment process api --- */
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/CustomerPaymentWebsite");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/CustomerPaymentWebsite");
 
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $paymentdata);
@@ -492,7 +493,7 @@ $payment_pass = 1;
 else{
 
   $adderror = $afterpay_response;
-//header('location: http://www.devmobilewash.com/admin-new/add-schedule-order.php?step=2');
+//header('location: '.ROOT_URL.'/admin-new/add-schedule-order.php?step=2');
 //die();
 }
 
@@ -500,7 +501,7 @@ else{
 
 
  if($payment_pass){
- $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=washing/createwashrequest");
+ $handle = curl_init(ROOT_URL."/api/index.php?r=washing/createwashrequest");
   //echo $car_ids."<br>".$car_packs."<br>".$address."<br>".$address_type."<br>".$lat."<br>".$long."<br>".$eta."<br>".$_POST['sdate']."<br>".$_POST['stime']."<br>".$all_cars."<br>".$total."<br>".$company_total."<br>".$agent_total;
 $data = array('customer_id' => $cust_id, 'car_ids'=> $car_ids, 'package_names'=>$car_packs, 'address'=> $full_address, 'address_type'=> $address_type, 'latitude'=> $lat, 'longitude' => $long, 'estimate_time' => $eta, 'is_scheduled' => 1, 'schedule_date' =>$_POST['sdate'], 'schedule_time' =>date('h:i A', strtotime($_POST['stime'])), 'schedule_cars_info' =>$all_cars, 'schedule_total' =>number_format($total, 2), 'schedule_company_total' =>number_format($company_total, 2), 'schedule_agent_total' =>number_format($agent_total, 2), 'coupon_amount' => $_POST['coupon_amount'], 'coupon_code' => $_POST['coupon_code'], 'tip_amount' => $_POST['tip_amount'], 'wash_request_position' => 'real', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
@@ -543,7 +544,7 @@ else{
 
 }
 
-include('header.php');
+
 ?>
 
 
@@ -895,7 +896,7 @@ endforeach; ?>
       <?php
                        $all_cars = '';
       if(isset($_GET['customer_id'])) {
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/getvehicals");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/getvehicals");
 curl_setopt($handle, CURLOPT_POST, true);
 $data = array('customer_id' => $_GET['customer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -1080,7 +1081,7 @@ foreach($cla_vehicles as $ind=>$veh): ?>
      <?php
  if(isset($_GET['customer_id'])) {
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/getcustomerpaymentmethods");
+$handle = curl_init(ROOT_URL."/api/index.php?r=customers/getcustomerpaymentmethods");
 $data = array('customer_id' => $_GET['customer_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);

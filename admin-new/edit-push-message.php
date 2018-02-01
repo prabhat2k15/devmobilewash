@@ -1,4 +1,5 @@
 <?php
+include('header.php');
     if(!empty($_POST['hidden']))
     {
        
@@ -11,7 +12,7 @@
           
             // END COLLECT POST VALUE //
             
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=site/updatepushmessage");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=site/updatepushmessage");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -23,7 +24,7 @@
             
             //exit;
             if($result_code == "true"){
-               header('location: http://www.devmobilewash.com/admin-new/push-messages.php?action=update-success');
+               header('location: '.ROOT_URL.'/admin-new/push-messages.php?action=update-success');
 die();
            
             }
@@ -34,17 +35,16 @@ die();
 
     }
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <?php include('right-sidebar.php') ?>
 <?php
     
         $id = $_GET['id'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=site/getpushmessagebyid'; 
+        $url = ROOT_URL.'/api/index.php?r=site/getpushmessagebyid'; 
             $handle = curl_init($url);
             $data = array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

@@ -1,7 +1,8 @@
 <?php
+include('header.php');
 if(!empty($_GET['action'])){
         $id = $_GET['id'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=site/deletecms&id='.$id;
+        $url = ROOT_URL.'/api/index.php?r=site/deletecms&id='.$id;
         $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -15,17 +16,16 @@ if(!empty($_GET['action'])){
         
         if($response == "delete" && $result_code == "true"){
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/cms.php?dell=cnf"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/cms.php?dell=cnf"</script>
             <?php
             die();
             }
     }
     
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no' || $checked_cms == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -43,7 +43,7 @@ if(!empty($_GET['action'])){
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
-    $url = 'http://www.devmobilewash.com/api/index.php?r=site/getallcms';
+    $url = ROOT_URL.'/api/index.php?r=site/getallcms';
 
     $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');

@@ -19,7 +19,7 @@
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
-    $url = '<?php echo ROOT_URL; ?>/api/index.php?r=coupons/getallcoupons';
+    $url = ROOT_URL.'/api/index.php?r=coupons/getallcoupons';
 
     $handle = curl_init($url);
         $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');

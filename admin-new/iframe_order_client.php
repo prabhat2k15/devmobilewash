@@ -1,3 +1,6 @@
+ <?php
+ require_once('../api/protected/config/constant.php');
+ ?>
  <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
@@ -82,16 +85,16 @@ $(function(){
 if ($('#site_statistics').size() != 0) 
             {
                 <?php if($_GET['typeorder'] == 'year'){ ?>
-                var url = 'http://www.devmobilewash.com/dev/api/index.php?r=customers/customeryearwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customeryearwiseorder';
                 <?php }elseif($_GET['typeorder'] == 'week'){ ?>
-                var url = 'http://www.devmobilewash.com/dev/api/index.php?r=customers/customerweekwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customerweekwiseorder';
                 
                 <?php }elseif($_GET['typeorder'] == 'month'){ ?>
-                var url = 'http://www.devmobilewash.com/dev/api/index.php?r=customers/customermontwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwiseorder';
                 <?php }else{ ?>
-                var url = 'http://www.devmobilewash.com/dev/api/index.php?r=customers/customermontwiseorder';
+                var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwiseorder';
                 <?php  } ?>
-                //var url = 'http://www.devmobilewash.com/dev/api/index.php?r=customers/customermontwiseorder';
+                //var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwiseorder';
                 $('#site_statistics_loading').hide();
                 $('#site_statistics_content').show();
                 $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {

@@ -1,9 +1,10 @@
 <?php
+require_once('../api/protected/config/constant.php');
 if(isset($_POST['admin-login-submit'])){
 $email = $_POST['email'];
 
 $data = array("emailid"=>$email, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=users/forgetpassword");
+$handle = curl_init(ROOT_URL."/api/index.php?r=users/forgetpassword");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

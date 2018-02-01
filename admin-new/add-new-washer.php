@@ -4,7 +4,7 @@ if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
 $userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=users/getusertypebytoken");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -15,7 +15,7 @@ $jsondata_permission = json_decode($result_permission);
 <?php
 /*if(isset($_POST['add-car-regular-submit'])){
 $vehdata = array("make"=>$_POST['regular-make'], "model"=>$_POST['regular-model'], "type"=>$_POST['regular-type'], "category"=>$_POST['regular-cat'], "vehicle_build"=>'regular', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=vehicles/addvehicle");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=vehicles/addvehicle");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -27,7 +27,7 @@ $vehadddata = json_decode($result);
 <?php
 if(isset($_POST['submit'])){
 $washerdata = array("user_email"=>$_POST['user_email'], "first_name"=>$_POST['first_name'], "last_name"=>$_POST['last_name'], "phone"=>$_POST['phone'], "address"=>$_POST['address'], "city"=>$_POST['city'], "state"=>$_POST['state'], "zip"=>$_POST['zip'], "ID_number"=>$_POST['ID_number'], "DL_ID_exp"=>$_POST['DL_ID_exp'], "insurance_exp"=>$_POST['insurance_exp'], "payment_due_d_ins"=>$_POST['payment_due_d_ins'], "account_name"=>$_POST['account_name'], "SSN_ITIN_TAX_ID"=>$_POST['SSN_ITIN_TAX_ID'], "routing_number"=>$_POST['routing_number'], "account_number"=>$_POST['account_number'], "trash_status"=>$_POST['trash_status'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init("http://www.devmobilewash.com/api/index.php?r=customers/AddNewWasher");
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/AddNewWasher");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $washerdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -38,14 +38,14 @@ $response = $vehadddata->response;
 $result_code = $vehadddata->result;
 if($response == "insert successfully" && $result_code == "true"){
                 ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/add-new-washer.php?insrt=done"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/add-new-washer.php?insrt=done"</script>
             <?php
             }
 }
 ?>
 <?php
     if($company_module_permission == 'no' || $checked_vehicles_packages == ''){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -67,7 +67,7 @@ if($response == "insert successfully" && $result_code == "true"){
 <?php endif; ?>
 <?php
 
-            $url = 'http://www.devmobilewash.com/api/index.php?r=agents/prewasherdetails';
+            $url = ROOT_URL.'/api/index.php?r=agents/prewasherdetails';
             $handle = curl_init($url);
             $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

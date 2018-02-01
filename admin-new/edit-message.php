@@ -33,7 +33,7 @@
 
             // END COLLECT POST VALUE //
             
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=twilio/editmessges");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=twilio/editmessges");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -46,7 +46,7 @@
             //exit;
             if($response == "update successfully" && $result_code == "true"){
                ?>
-			   <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/messagess.php"</script>
+			   <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/messagess.php"</script>
 			   <?php
             
             }
@@ -60,7 +60,7 @@
 
     }else{
         $id = $_GET['id'];
-        $url = 'http://www.devmobilewash.com/api/index.php?r=twilio/getsinglemessage&id='.$id; 
+        $url = ROOT_URL.'/api/index.php?r=twilio/getsinglemessage&id='.$id; 
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

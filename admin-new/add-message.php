@@ -1,4 +1,5 @@
 <?php
+include('header.php');
     if(!empty($_POST['hidden']))
     {
        $to = $_POST['to'];
@@ -17,7 +18,7 @@
 
             // END COLLECT POST VALUE //
             
-            $handle = curl_init("http://www.devmobilewash.com/api/index.php?r=twilio/messges");
+            $handle = curl_init(ROOT_URL."/api/index.php?r=twilio/messges");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -32,7 +33,7 @@
                
             $msg = 'Successfully Saved';
             ?>
-            <script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/messagess.php"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/messagess.php"</script>
             <?php
             //die();
             }
@@ -46,10 +47,9 @@
 
     }
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -67,7 +67,7 @@
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
-            $url = 'http://www.devmobilewash.com/api/index.php?r=site/getsiteconfiguration'; 
+            $url = ROOT_URL.'/api/index.php?r=site/getsiteconfiguration'; 
             $handle = curl_init($url);
             $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
             curl_setopt($handle, CURLOPT_POST, true);

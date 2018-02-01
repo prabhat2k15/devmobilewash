@@ -1,10 +1,11 @@
 <?php
+include('header.php');
 $response = '';
 $result_code = '';
 $couponid = $_GET['couponid'];
 if(isset($_POST['updatecoupon-form-submit'])){
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=coupons/editcoupon");
+$handle = curl_init(ROOT_URL."/api/index.php?r=coupons/editcoupon");
         $data = array("id"=> $_GET['couponid'], "coupon_name"=>$_POST['coupon_name'], "coupon_code"=>$_POST['coupon_code'], "deluxe_amount"=>$_POST['discount_deluxe'], "premium_amount"=>$_POST['discount_premium'], "discount_unit"=>$_POST['discount_unit'], "coupon_status"=>$_POST['coupon_status'], "usage_limit"=>$_POST['coupon_use_limit'], "expire_date"=>$_POST['expire_date'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
 curl_setopt($handle, CURLOPT_POST, true);
@@ -18,7 +19,7 @@ $coupon_result_code = $jsondata->result;
 
 }
 
-$handle = curl_init("http://www.devmobilewash.com/api/index.php?r=coupons/getcouponbyid");
+$handle = curl_init(ROOT_URL."/api/index.php?r=coupons/getcouponbyid");
 		$data = array("id"=>$_GET['couponid'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -29,10 +30,9 @@ $jsondata = json_decode($result);
 $coupon_details = $jsondata->coupon_details;
 
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "http://www.devmobilewash.com/admin-new/index.php"</script><?php
+        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
     }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
