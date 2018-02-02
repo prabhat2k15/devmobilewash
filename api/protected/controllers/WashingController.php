@@ -1367,6 +1367,8 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
         $longitude = Yii::app()->request->getParam('longitude');
         $schedule_date = Yii::app()->request->getParam('schedule_date');
          $schedule_time = Yii::app()->request->getParam('schedule_time');
+	$ondemand_10_min_cancel_schedule = Yii::app()->request->getParam('ondemand_10_min_cancel_schedule');
+	$is_rescheduled = Yii::app()->request->getParam('is_rescheduled');
 
         $json = array();
 
@@ -1413,9 +1415,16 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
 
             $order_for_date = date("Y-m-d H:i:s", strtotime($schedule_date." ".$schedule_time));
 
-                Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date));
-
-                WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
+                if($ondemand_10_min_cancel_schedule == 1) {
+			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
+			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
+		}
+		else {
+			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date));
+			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date));
+		}
+                
+		WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
 
                     $wash_details = Washingrequests::model()->findByPk($wash_request_id);
                     $kartapiresult = $this->washingkart($wash_request_id, API_KEY);
