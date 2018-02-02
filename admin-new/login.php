@@ -26,13 +26,13 @@ if(isset($_POST['admin-login-submit'])){
 		setcookie( "mw_admin_auth", $device_token, time() + (86400 * 30), "/" ) ;
 		setcookie( "mw_username", $username, time() + (86400 * 30), "/" ) ;
 		setcookie( "mw_uid", $uid, time() + (86400 * 30), "/" ) ;
-		setcookie( "root_url", $jsondata->root_url, time() + (86400 * 30), "/" ) ;
+		
 		}
 		else{
 		setcookie( "mw_admin_auth", $device_token, time()+3600, "/" ) ;
 		setcookie( "mw_username", $username, time()+3600, "/" ) ;
 		setcookie( "mw_uid", $uid, time()+3600, "/" ) ;
-		setcookie( "root_url", $jsondata->root_url, time()+3600, "/" ) ;
+		
 		}
 		
 		
