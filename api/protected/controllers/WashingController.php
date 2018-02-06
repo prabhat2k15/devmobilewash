@@ -11092,6 +11092,38 @@ die();
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
+						
+			if($current_mile <= 10){
+				$agent_det =  Agents::model()->findByPk($agid);
+				if((count($agent_det)) && ($agent_det->phone_number)){
+				  //if(APP_ENV == 'real'){
+                    $this->layout = "xmlLayout";
+                   
+                    //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+                    require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                    require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+
+                    $client = new Services_Twilio($account_sid, $auth_token);
+		    
+                    try {
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  $agent_det->phone_number,
+                        'From' => '+13103128070',
+                        'Body' => $message,
+                    ));
+ }
+ catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+                    
+                    
+                    //}
+			}
+			}
 
                     }
 
