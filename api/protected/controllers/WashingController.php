@@ -10708,6 +10708,7 @@ if($expaddon['title'] == 'Exterior Hand Wax') $par_send = 'exthandwax_vehicles';
 if($expaddon['title'] == 'Exterior Dressing') $par_send = 'extplasticdressing_vehicles';
 if($expaddon['title'] == 'Clay Bar') $par_send = 'extclaybar_vehicles';
 if($expaddon['title'] == 'Water Spot') $par_send = 'waterspotremove_vehicles';
+if($expaddon['title'] == 'Lifted Truck') $par_send = 'lifted_vehicles';
 
 $addons['express'][] = array('id' => $expaddon['id'], 'title' => $expaddon['title'], 'fulltitle' => $expaddon['fulltitle'], 'desc' => $expaddon['description'], 'par_send' => $par_send, 'package' => $expaddon['package'], 'washtime' => $expaddon['wash_time'], 'price' => $expaddon['price'], 'vehicle_type' => $expaddon['vehicle_type']);
 }
@@ -11073,8 +11074,8 @@ die();
 
                      $current_mile = round($nearagentdis);
                         if($current_mile < 1) $current_mile = 1;
-                        if($current_mile <= 1) $message = str_replace("[MILE]",$current_mile." mile", $message);
-                        else $message = str_replace("[MILE]",$current_mile." miles", $message);
+                        if($current_mile <= 1) $message = str_replace("[MILE]",$current_mile." MILE", $message);
+                        else $message = str_replace("[MILE]",$current_mile." MILES", $message);
 						foreach($agentdevices as $agdevice){
 
 						    $device_type = strtolower($agdevice['device_type']);

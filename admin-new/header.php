@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require_once('../api/protected/config/constant.php');
 $device_token = '';
 if (isset($_COOKIE['mw_admin_auth'])) {
