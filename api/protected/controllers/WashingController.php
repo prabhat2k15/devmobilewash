@@ -7924,7 +7924,7 @@ die();
                 }
                 if(count($val['tip_amount'])>0){
                     $dt[$key]['tip_amount']['count']= count($val['tip_amount']);
-                    $dt[$key]['tip_amount']['color']= '#1b6f1b';
+                    $dt[$key]['tip_amount']['color']= '#BFFF00';
                 }
                 if(count($val['processing'])>0){
                     $dt[$key]['processing']['count']= count($val['processing']);

@@ -194,7 +194,8 @@ $(document).ready(function() {
 										title:title1,
 										description:'c',
 										start:index,
-										color:color1
+										color:color1,
+										textColor: '#000000'
 									});
 								}
 								if(complete > 1 ){
@@ -269,7 +270,8 @@ $(document).ready(function() {
 										title:titleTa,
 										description:'j',
 										start:index,
-										color:colorTa
+										color:colorTa,
+										textColor: '#000000'
 									});
 								}
 								if(processing > 1  ){
@@ -351,7 +353,7 @@ $(document).ready(function() {
 				else if(calEvent.color == '#800080'){
 					_event = 'coupon_code';
 				}
-				else if(calEvent.color == '#1b6f1b'){
+				else if(calEvent.color == '#BFFF00'){
 					_event = 'tip_amount';
 				}
 				else{
@@ -447,7 +449,7 @@ $(document).ready(function() {
 			eventOrder: "description"
 		});
 		
-		 var _html = '<div class="center" style="width: 50%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span>Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #aaa; background: #aaa;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #cc0066; background: #cc0066;"><span>Declined</span></div>	</div>';
+		 var _html = '<div class="center" style="width: 70%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span style="color: #000;">Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #aaa; background: #aaa;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #cc0066; background: #cc0066;"><span>Declined</span></div><div id="express" style="border: 1px solid #00BFFF; background: #00BFFF;"><span>Express</span></div><div id="deluxe" style="border: 1px solid #4169E1; background: #4169E1;"><span>Deluxe</span></div><div id="premium" style="border: 1px solid #000080; background: #000080;"><span>Premium</span></div><div id="tip" style="border: 1px solid #BFFF00; background: #BFFF00; color: #000;"><span>Tip</span></div>	</div>';
 
 				$('.fc-left').append(_html);
 				
