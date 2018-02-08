@@ -11076,6 +11076,7 @@ die();
                         if($current_mile < 1) $current_mile = 1;
                         if($current_mile <= 1) $message = str_replace("[MILE]",$current_mile." MILE", $message);
                         else $message = str_replace("[MILE]",$current_mile." MILES", $message);
+			$message = str_replace("[ORDER_ID]","#".$wash_request_id, $message);
 						foreach($agentdevices as $agdevice){
 
 						    $device_type = strtolower($agdevice['device_type']);
