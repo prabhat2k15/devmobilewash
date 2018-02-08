@@ -555,11 +555,21 @@ var markerClusterer;
 var infoWindow;
 var layer;
 var socketId;
+var socketintvaltimer;
 var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
 
 socket.on('connect', function() {
 socketId = socket.io.engine.id;
-  console.log(socketId);
+  //console.log(socketId);
+  socketintvaltimer = setInterval(function(){
+    
+    socket.emit('get_appstat',{socketId:socketId});
+    socket.emit('get_pendingwashesdetails',{socketId:socketId});
+    socket.emit('get_agentsbystatus',{socketId:socketId});
+    socket.emit('get_clientsbystatus',{socketId:socketId});
+    
+    }, 5000);
+  
 });
   
 </script>
@@ -705,6 +715,8 @@ $(function(){
     });
   });
 });
+
+
 
 socket.on('get appstat', function (data) {
     $(".client-online .count").html(data.Online_Customers);

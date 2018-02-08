@@ -25,16 +25,16 @@ request.post({
  // console.log(JSON.parse(body));
  //console.log('stat func');
  try{
-    //if(socket_id) io.sockets.connected[socket_id].emit('get appstat', JSON.parse(body));
-    //else io.emit('get appstat', JSON.parse(body));
-    io.emit('get appstat', JSON.parse(body));
+    if(socket_id) io.sockets.connected[socket_id].emit('get appstat', JSON.parse(body));
+    else io.emit('get appstat', JSON.parse(body));
+    
  }
  catch(err){
      
  }
             
 });
-getappstattimer = setTimeout(getAppstat, 5000);
+//getappstattimer = setTimeout(getAppstat, 5000);
 }
 
 function getpendingwashesdetails(socket_id = '') {
@@ -47,16 +47,16 @@ request.post({
  // console.log(JSON.parse(body));
  //console.log('pendingwash func');
  try{
-    //if(socket_id) io.sockets.connected[socket_id].emit('get pendingwashesdetails', JSON.parse(body));
-    //else io.emit('get pendingwashesdetails', JSON.parse(body));
-    io.emit('get pendingwashesdetails', JSON.parse(body));
+    if(socket_id) io.sockets.connected[socket_id].emit('get pendingwashesdetails', JSON.parse(body));
+    else io.emit('get pendingwashesdetails', JSON.parse(body));
+    
  }
  catch(err){
      
  }
  
 });
-getpendingwashesdetailstimer = setTimeout(getpendingwashesdetails, 5000);
+//getpendingwashesdetailstimer = setTimeout(getpendingwashesdetails, 5000);
 }
 
 function washing_currentwashondemandalert(wash_request_id=0, socket_id = '') {
@@ -131,16 +131,15 @@ request.post({
  // console.log(JSON.parse(body));
  //console.log('agentsbystatus func');
  try{
-    //if(socket_id) io.sockets.connected[socket_id].emit('get agentsbystatus', JSON.parse(body));
-  //else io.emit('get agentsbystatus', JSON.parse(body));
-  io.emit('get agentsbystatus', JSON.parse(body));
+    if(socket_id) io.sockets.connected[socket_id].emit('get agentsbystatus', JSON.parse(body));
+  else io.emit('get agentsbystatus', JSON.parse(body));
  }
  catch(err){
      
  }
             
 });
-getagentsbystatustimer = setTimeout(getagentsbystatus, 5000);
+//getagentsbystatustimer = setTimeout(getagentsbystatus, 5000);
 }
 
 function getclientsbystatus(socket_id = '') {
@@ -153,16 +152,15 @@ request.post({
  // console.log(JSON.parse(body));
  //console.log('clientsbystatus func');
  try{
-   //if(socket_id) io.sockets.connected[socket_id].emit('get clientsbystatus', JSON.parse(body));
-  //else io.emit('get clientsbystatus', JSON.parse(body));
-  io.emit('get clientsbystatus', JSON.parse(body));
+   if(socket_id) io.sockets.connected[socket_id].emit('get clientsbystatus', JSON.parse(body));
+  else io.emit('get clientsbystatus', JSON.parse(body));
  }
  catch(err){
      
  }
             
 });
-getclientsbystatustimer = setTimeout(getclientsbystatus, 5000);
+//getclientsbystatustimer = setTimeout(getclientsbystatus, 5000);
 }
 
 function washing_getnewwashrequest(agent_id=0, socket_id = '') {
@@ -317,16 +315,35 @@ console.log(socket.handshake.query.auth_token);
 //console.log("user socket id connected: "+socket.id);
 if(socket.handshake.query.action == 'commandcenter') {
      console.log('admin user connected');
-    getAppstat();
-    getpendingwashesdetails();
-    getagentsbystatus();
-    getclientsbystatus();
+    //getAppstat();
+    //getpendingwashesdetails();
+    //getagentsbystatus();
+    //getclientsbystatus();
 }
 else{
   console.log('app user connected');  
 }
 
-
+  socket.on('get_appstat', function(data){
+      //console.log(data);
+     getAppstat(data.socketId);
+  });
+  
+  socket.on('get_pendingwashesdetails', function(data){
+      //console.log(data);
+     getpendingwashesdetails(data.socketId);
+  });
+  
+   socket.on('get_agentsbystatus', function(data){
+      //console.log(data);
+     getagentsbystatus(data.socketId);
+  });
+   
+      socket.on('get_clientsbystatus', function(data){
+      //console.log(data);
+     getclientsbystatus(data.socketId);
+  });
+  
   socket.on('getnewwashrequest', function(data){
       //console.log(data);
      washing_getnewwashrequest(data.agent_id, data.socketId);
@@ -386,10 +403,10 @@ else{
   socket.on('disconnect', function(){
     if(socket.handshake.query.action == 'commandcenter') {
         console.log('admin user disconnected');
-        clearTimeout(getappstattimer);
-        clearTimeout(getpendingwashesdetailstimer);
-        clearTimeout(getagentsbystatustimer);
-        clearTimeout(getclientsbystatustimer);
+        //clearTimeout(getappstattimer);
+        //clearTimeout(getpendingwashesdetailstimer);
+        //clearTimeout(getagentsbystatustimer);
+        //clearTimeout(getclientsbystatustimer);
     }
     else{
       console.log('app user disconnected');
