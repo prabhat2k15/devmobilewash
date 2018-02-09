@@ -9278,8 +9278,8 @@ $sendmessage = $client->account->messages->create(array(
   $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$order_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '20' ")->queryAll();
-							$message = $pushmsg[0]['message'];
-                            $message = str_replace("[ORDER_ID]","#".$order_exists->id, $message);
+							//$message = $pushmsg[0]['message'];
+                            $message = str_replace("[ORDER_ID]","#".$order_exists->id, $pushmsg[0]['message']);
 							foreach($agentdevices as $agdevice){
 								//$message =  "You have a new scheduled wash request.";
 								//echo $agentdetails['mobile_type'];
@@ -10273,8 +10273,8 @@ $notify_token = '';
                             $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$schedwash->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '18' ")->queryAll();
-							$message = $pushmsg[0]['message'];
-                            $message = str_replace("[ORDER_ID]","#".$schedwash->id, $message);
+							//$message = $pushmsg[0]['message'];
+                            $message = str_replace("[ORDER_ID]","#".$schedwash->id, $pushmsg[0]['message']);
 
 							foreach($agentdevices as $agdevice){
 								//$message =  "You have a new scheduled wash request.";
@@ -10318,8 +10318,8 @@ $notify_token = '';
                             $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '18' ")->queryAll();
-							$message = $pushmsg[0]['message'];
-                             $message = str_replace("[ORDER_ID]","#".$schedwash->id, $message);
+							//$message = $pushmsg[0]['message'];
+                             $message = str_replace("[ORDER_ID]","#".$schedwash->id, $pushmsg[0]['message']);
 							foreach($agentdevices as $agdevice){
 								//$message =  "You have a new scheduled wash request.";
 								//echo $agentdetails['mobile_type'];
@@ -11069,21 +11069,24 @@ die();
 
 			    $message = $pushmsg[0]['message'];
                     foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
-
+                        $current_mile = 0;
+                        $message2 = '';
+//echo $agid." ".$nearagentdis." ";
                         $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
                      $current_mile = round($nearagentdis);
+                     
                         if($current_mile < 1) $current_mile = 1;
-                        if($current_mile <= 1) $message = str_replace("[MILE]",$current_mile." MILE", $message);
-                        else $message = str_replace("[MILE]",$current_mile." MILES", $message);
-			$message = str_replace("[ORDER_ID]","#".$wash_request_id, $message);
+                        if($current_mile <= 1) $message2 = str_replace(array("[MILE]", "[ORDER_ID]"), array($current_mile." MILE", "#".$wash_request_id), $message);
+                        else $message2 = str_replace(array("[MILE]", "[ORDER_ID]"), array($current_mile." MILES", "#".$wash_request_id), $message);
+                        //echo $agid." ".$message2."<br>";
 						foreach($agentdevices as $agdevice){
 
 						    $device_type = strtolower($agdevice['device_type']);
 							$notify_token = $agdevice['device_token'];
 							$alert_type = "default";
 
-							$notify_msg = urlencode($message);
+							$notify_msg = urlencode($message2);
 
 							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
 								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
@@ -11115,7 +11118,7 @@ die();
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  $agent_det->phone_number,
                         'From' => '+13103128070',
-                        'Body' => $message,
+                        'Body' => $message2,
                     ));
  }
  catch (Services_Twilio_RestException $e) {
