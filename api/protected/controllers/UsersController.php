@@ -5150,6 +5150,37 @@ die();
 	else $model=new Agents;
         if($user_type == 'customer') $matchcode = Customers::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$userid));
 	else $matchcode = Agents::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$userid));
+        
+        
+
+                if($user_type == 'customer') $customer_login_status =  Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id='".$userid."' AND device_status = 'online'")->queryAll();
+                if($user_type == 'agent') $agent_login_status =  Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id='".$userid."' AND device_status = 'online'")->queryAll();
+
+            
+              if(count($customer_login_status))
+             {
+                 $result= "false";
+                $response = "There is no permission for log in with same account on 2 devices";
+                $json = array(
+                    'result'=> $result,
+                    'response'=> $response
+                );
+                echo json_encode($json);
+                exit;
+             }
+	     
+	     if(count($agent_login_status))
+             {
+                 $result= "false";
+                $response = "There is no permission for log in with same account on 2 devices";
+                $json = array(
+                    'result'=> $result,
+                    'response'=> $response
+                );
+                echo json_encode($json);
+                exit;
+             }
+         
 	
         if(!empty($matchcode)){
             if($user_type == 'customer') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', forced_logout= 0 WHERE id = '$userid' AND phone_verify_code = '$sortcode' ")->execute();
