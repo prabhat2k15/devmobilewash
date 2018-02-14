@@ -694,6 +694,7 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
             'id'=> $wash_id_check->id,
             'order_date'=> $wash_id_check->created_date,
             'address'=> $wash_id_check->address,
+	    'city'=> $wash_id_check->city,
             'address_type'=> $wash_id_check->address_type,
             'latitude'=> $wash_id_check->latitude,
             'longitude'=> $wash_id_check->longitude,

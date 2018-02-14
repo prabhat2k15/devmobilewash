@@ -28,8 +28,8 @@ class CustomerLocation extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('customer_id, location_title, location_address, actual_longitude, actual_latitude', 'required'),
-			array('id, customer_id, location_title, location_address, actual_latitude, actual_longitude', 'safe', 'on'=>'search'),
+			array('customer_id, location_title, location_address, city, actual_longitude, actual_latitude', 'required'),
+			array('id, customer_id, location_title, location_address, city, actual_latitude, actual_longitude', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -55,6 +55,7 @@ class CustomerLocation extends CActiveRecord
 			'location_id' => 'location_id',
 			'location_title' => 'location_title',
 			'location_address' => 'location_address',
+			'city' => 'city',
 			'actual_longitude'=>'actual_longitude',
 			'actual_latitude' => 'Actual latitude'
 		);
@@ -71,6 +72,7 @@ class CustomerLocation extends CActiveRecord
 		$criteria->compare('location_id',$this->location_id,true);
 		$criteria->compare('location_title',$this->location_title,true);
 		$criteria->compare('location_address',$this->location_address,true);
+		$criteria->compare('city',$this->city,true);
 		$criteria->compare('actual_longitude',$this->actual_longitude,true);
 		$criteria->compare('vehicle_type',$this->vehicle_type);
 		$criteria->compare('actual_latitude',$this->actual_latitude);

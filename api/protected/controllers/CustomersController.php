@@ -1499,6 +1499,7 @@ die();
                             'location_id'=> $sloc['id'],
 								'location_title'=> $sloc['location_title'],
 								'location_address'=> $sloc['location_address'],
+								'city'=> $sloc['city'],
 								'actual_longitude'=> $sloc['actual_longitude'],
 								'actual_latitude'=> $sloc['actual_latitude'],
 								'is_editable'=> $sloc['is_editable']
@@ -1613,6 +1614,7 @@ die();
 		$location_address = Yii::app()->request->getParam('location_address');
 		$actual_longitude = Yii::app()->request->getParam('actual_longitude');
 		$actual_latitude = Yii::app()->request->getParam('actual_latitude');
+		$city = Yii::app()->request->getParam('city');
 		$admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
 $wash_request_id  = Yii::app()->request->getParam('wash_request_id');
@@ -1645,7 +1647,8 @@ if(!count($cust_address_check)){
 					'location_title'=> $location_title,
 					'location_address'=> $location_address,
 					'actual_longitude'=> $actual_longitude,
-					'actual_latitude'=> $actual_latitude
+					'actual_latitude'=> $actual_latitude,
+					'city'=> $city
 				);
 
 				    $locationdata= array_filter($locationdata);
@@ -1664,7 +1667,7 @@ else{
         }
     }
 
-  CustomerLocation::model()->updateByPk($location_id, array( 'location_address' => $location_address, 'actual_longitude' => $actual_longitude, 'actual_latitude' => $actual_latitude ));
+  CustomerLocation::model()->updateByPk($location_id, array( 'location_address' => $location_address, 'city'=> $city, 'actual_longitude' => $actual_longitude, 'actual_latitude' => $actual_latitude ));
 }
 
                     	$result= 'true';
