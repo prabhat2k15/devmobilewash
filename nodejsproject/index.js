@@ -246,6 +246,19 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
+function customers_updatecustomerlocations(customer_id=0, latitude=0, longitude=0, socket_id = '') {
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded'},
+  url:     'http://www.devmobilewash.com/api/index.php?r=customers/updatecustomerlocations',
+  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&customer_id="+customer_id+"&latitude="+latitude+"&longitude="+longitude
+}, function(error, response, body){
+ //console.log(JSON.parse(body));
+ //console.log('site_updatedevicestatus');
+           
+});
+//getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
+}
+
 function customers_getclienttoken(customer_id=0, socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -382,6 +395,11 @@ else{
      socket.on('updateagentlocations', function(data){
       //console.log(data);
     agents_updateagentlocations(data.agent_id, data.latitude, data.longitude, data.socketId);
+  });
+     
+          socket.on('updatecustomerlocations', function(data){
+      //console.log(data);
+    customers_updatecustomerlocations(data.customer_id, data.latitude, data.longitude, data.socketId);
   });
   
    socket.on('getbtclienttoken', function(data){
