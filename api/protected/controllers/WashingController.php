@@ -3178,7 +3178,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 
 
             else{
-                if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
+                /*if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
                  if(strtotime($wrequest_id_check->wash_begin) > 0) $wash_time = strtotime($wrequest_id_check->wash_begin);
                  else $wash_time = strtotime($wrequest_id_check->created_date);
 $now_time = time();
@@ -3228,7 +3228,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
         die();
 
 }
-}
+}*/
 
                 $wrequest_obj = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id, 'customer_id'=> $customer_id));
 
@@ -4072,6 +4072,52 @@ echo "clearing rejects of wash #".$wrequest['id']."<br>";
                    }
 
             }
+	    
+	    
+	/* -------- ondemand 10 min no washer available check -------- */
+	
+	if(!$wrequest['agent_id']){
+	 if(strtotime($wrequest['wash_begin']) > 0) $wash_time = strtotime($wrequest['wash_begin']);
+                 else $wash_time = strtotime($wrequest['created_date']);
+$now_time = time();
+$time_diff = round(abs($now_time - $wash_time) / 60,2);
+
+if($time_diff >= 10){
+
+
+                if($wrequest['transaction_id']){
+   if($wrequest['wash_request_position'] == 'real') Yii::app()->braintree->void_real($wrequest['transaction_id']);
+   else Yii::app()->braintree->void($wrequest['transaction_id']);
+}
+
+ Washingrequests::model()->updateByPk($wrequest['id'], array( 'status' => 5, 'no_washer_cancel' => 1));
+
+$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest['customer_id']."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '22' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+
+						foreach( $clientdevices as $ctdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($ctdevice['device_type']);
+							$notify_token = $ctdevice['device_token'];
+								$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+	
+}
+}
+	/* -------- ondemand 10 min no washer available check end -------- */
 
 }
 }
