@@ -3574,7 +3574,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
 
                 $agent_info = array();
                 if(count($agent_details)){
-                    $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
+                    $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email, 'agent_submerchant_id'=>$agent_details->bt_submerchant_id);
                 }
 
                 $payment_status = '';

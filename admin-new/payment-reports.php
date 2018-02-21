@@ -381,6 +381,7 @@ $pending_order_count = '';
                                         
 										<th> Agent Name </th>
                                         <th> Agent Phone </th>
+					<th> Agent Submerchant ID </th>
                                         <th style='min-width: 115px;'> Address </th>
                                         <th> Schedule Datetime </th>
                                         
@@ -462,6 +463,11 @@ $pending_order_count = '';
                                         </td-->
                                         <td><?php
                                         if(count($order->agent_details)) echo $order->agent_details->agent_phoneno;
+                                        else echo "N/A";
+                                        ?>
+                                        </td>
+					<td><?php
+					 if($order->agent_details->agent_submerchant_id) echo $order->agent_details->agent_submerchant_id;
                                         else echo "N/A";
                                         ?>
                                         </td>
@@ -687,7 +693,9 @@ upcomingwashes.push(value.customer_phoneno);
 if(value.agent_details.agent_name) upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?agent_id="+value.agent_details.agent_id+"'>"+value.agent_details.agent_name+"</a>");
 else upcomingwashes.push("N/A");
 if(value.agent_details.agent_phoneno) upcomingwashes.push(value.agent_details.agent_phoneno);
-else upcomingwashes.push("N/A"); 
+else upcomingwashes.push("N/A");
+if(value.agent_details.agent_submerchant_id) upcomingwashes.push(value.agent_details.agent_submerchant_id);
+else upcomingwashes.push("N/A");
 upcomingwashes.push(value.address+" ("+value.address_type+")");
 
 if(value.is_scheduled == 1){
