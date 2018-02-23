@@ -1068,7 +1068,7 @@ $point_index = 0;
 <?php
 foreach($regular_vehicles as $ind => $veh): ?>
 <?php
-$wash_points++;
+if($getorder->status != 4) $wash_points++;
 $handle = curl_init(ROOT_URL."/api/index.php?r=customers/getvehiclebyid");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("vehicle_id" => $veh->id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
@@ -1202,7 +1202,7 @@ else{
 <?php
 foreach($classic_vehicles as $ind=>$veh): ?>
 <?php
-$wash_points++;
+if($getorder->status != 4)  $wash_points++;
 $handle = curl_init(ROOT_URL."/api/index.php?r=customers/getvehiclebyid");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("vehicle_id" => $veh->id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
@@ -1997,6 +1997,7 @@ org_wash_points = 0;
 wash_points = 0;
 }
 
+console.log('wash point '+ wash_points);
 $(function(){
 initial_pay_token = $("#pay_method_token").val();
  $(".cust_locations li input").click(function(){
@@ -2371,8 +2372,7 @@ console.log('regular '+wash_points);
        }
 
            if(wash_points >= 5){
-             if($(this).find('.regular-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
-            if($(this).find('.regular-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$10 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='10' />");
+             if($(this).find('.regular-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express' || $(this).find('.regular-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
              wash_points = 0;
            }
 
@@ -2389,8 +2389,7 @@ console.log('classic '+wash_points);
            first_time_wash = 0;
        }
            if(wash_points >= 5){
-             if($(this).find('.classic-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
-            if($(this).find('.classic-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$10 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='10' />");
+             if($(this).find('.classic-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express' || $(this).find('.regular-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
              wash_points = 0;
            }
 
@@ -2423,8 +2422,7 @@ console.log('regular '+wash_points);
            first_time_wash = 0;
        }
            if(wash_points >= 5){
-             if($(this).find('.regular-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
-            if($(this).find('.regular-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$10 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='10' />");
+             if($(this).find('.regular-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express' || $(this).find('.regular-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
              wash_points = 0;
            }
 
@@ -2442,8 +2440,7 @@ wash_points++;
            first_time_wash = 0;
        }
            if(wash_points >= 5){
-             if($(this).find('.classic-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
-            if($(this).find('.classic-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$10 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='10' />");
+             if($(this).find('.classic-pack').val() == 'Deluxe' || $(this).find('.regular-pack').val() == 'Express' || $(this).find('.regular-pack').val() == 'Premium') $(this).find('.fifth-disc-wrap').html("<p>$5 Fifth Wash Discount</p><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='5' />");
              wash_points = 0;
            }
 
@@ -2538,8 +2535,8 @@ $(this).parent().find('#first_discs').prev().html('$10 First Wash Discount');
 }
 
 if(fifth_dis != '0') {
-$(this).parent().find('#fifth_discs').val('10');
-$(this).parent().find('#fifth_discs').prev().html('$10 Fifth Wash Discount');
+$(this).parent().find('#fifth_discs').val('5');
+$(this).parent().find('#fifth_discs').prev().html('$5 Fifth Wash Discount');
 }
 
 $(this).parent().find('.pet_fee_el, .lifted_truck_el').show();

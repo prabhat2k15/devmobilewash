@@ -55,6 +55,7 @@ return;
         $card_exp_yr = '';
         $cardholder_name = '';
         $card_img = '';
+	$total_cars = array();
 
 		if((isset($wash_request_id) && !empty($wash_request_id))){
 
@@ -76,7 +77,7 @@ return;
 
                  /* --------- Get total price ------------- */
 
-				$total_cars = explode(",",$wash_id_check->car_list);
+				if($wash_id_check->car_list) $total_cars = explode(",",$wash_id_check->car_list);
 				$total_packs = explode(",",$wash_id_check->package_list);
 				$pet_hair_arr = explode(",",$wash_id_check->pet_hair_vehicles);
 				$lifted_vehicles_arr = explode(",",$wash_id_check->lifted_vehicles);
@@ -92,6 +93,7 @@ return;
                 if($wash_id_check->coupon_discount) $coupon_discount = $wash_id_check->coupon_discount;
                 if($wash_id_check->coupon_code) $coupon_code = $wash_id_check->coupon_code;
 
+		if(count($total_cars)){
 				foreach($total_cars as $carindex=>$car){
 
 					$vehicle_details = Vehicle::model()->findByAttributes(array("id"=>$car));
@@ -557,6 +559,7 @@ if((count($total_cars) > 1) && ($carindex==0) && ($wash_id_check->coupon_discoun
 
 
 				}
+			}
 
 				/* --------- Get total price end ------------- */
 
@@ -662,7 +665,12 @@ if($first_wash_discount && $bundle_discount) $bundle_discount -= 1;
 				$agent_total = round($agent_total, 2);
 				$company_total = round($company_total, 2);
 
-
+if(!count($total_cars)){
+   $total = 0;
+   $net_total = 0;
+   $agent_total = 0;
+   $company_total = 0;  
+}
 
 				//$company_total = round(($net_total - count($total_cars)) * .2, 2);
 				//$company_total += count($total_cars);

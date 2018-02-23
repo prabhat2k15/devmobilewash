@@ -2852,62 +2852,39 @@ $washers_exists = Agents::model()->findAll(array('condition' => "washer_position
 
                 foreach($washers_exists as $ind=> $washer){
 
-$avg_care_rating = 0;
-$final_avg_care_rating = 100;
-$washer_first_wash_check = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status = 4 AND `agent_id` = '$washer->id' ORDER BY id ASC LIMIT 0, 1")->queryAll();
 
-if(count($washer_first_wash_check)){
-    //echo $washer->id." ".$washer_first_wash_check[0]['order_for'];
-    $now = time(); // or your date as well
-$datediff = $now - strtotime($washer_first_wash_check[0]['order_for']);
-$washer_working_since = round($datediff / (60 * 60 * 24));
-$num_of_30_days_segment = floor($washer_working_since/30);
-//echo " washer working since ".$washer_working_since;
-//echo " number of 30 days segment ".floor($washer_working_since/30);
-//echo "<br>";
-for($i=1; $i<=$num_of_30_days_segment; $i++){
   $cust_served_ids = array();
   $care_rating = 0;
   $total_returning_customers = 0;
   $totalwash = 0;
-  if($i == 1){
-    $fromdate = $washer_first_wash_check[0]['order_for'];
-  $todate = date('Y-m-d', strtotime($washer_first_wash_check[0]['order_for']. " + 30 days"));
-  }
-  else{
-    $fromdate = date('Y-m-d', strtotime($todate. " + 1 days"));
-  $todate = date('Y-m-d', strtotime($fromdate. " + 30 days"));
-  }
-  $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '$washer->id' AND order_for BETWEEN '".$fromdate."' AND '".$todate."'")->queryAll();
+  
+  $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '$washer->id'")->queryAll();
 $totalwash = count($totalwash_arr);
 
 if(count($totalwash_arr)){
   foreach($totalwash_arr as $agentwash){
      $cust_served_ids[] = $agentwash['customer_id'];
   }
-}
+
 
 $cust_served_ids = array_unique($cust_served_ids);
 
   if(count($cust_served_ids) > 0){
       foreach($cust_served_ids as $cid){
          $cust_check = Customers::model()->findByAttributes(array("id"=>$cid));
-     if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning)){
+	 $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$cid, 'status' => 4),array('order'=>'id DESC'));
+     if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning) && ($cust_last_wash_check->agent_id == $washer->id)){
          $total_returning_customers++;
      }
       }
   }
 
- if(count($cust_served_ids) > 0) $care_rating = ($total_returning_customers/count($cust_served_ids)) * 100;
-  $avg_care_rating += $care_rating;
-}
-
-if($num_of_30_days_segment) $final_avg_care_rating = $avg_care_rating / $num_of_30_days_segment;
-
-}
-
-
-
+ if(count($cust_served_ids) > 0) {
+  $care_rating = ($total_returning_customers/$totalwash) * 100;
+ $care_rating = round($care_rating, 2);
+ }
+		}
+		else $care_rating = "N/A";
 
                     $all_washers[$ind]['id'] = $washer->id;
 $all_washers[$ind]['real_washer_id'] = $washer->real_washer_id;
@@ -2920,7 +2897,7 @@ $all_washers[$ind]['real_washer_id'] = $washer->real_washer_id;
                     $all_washers[$ind]['zipcode'] = $washer->zipcode;
 		    $all_washers[$ind]['phone_verify_code'] = $washer->phone_verify_code;
 $all_washers[$ind]['rating'] = $washer->rating;
-$all_washers[$ind]['care_rating'] = round($final_avg_care_rating, 2);
+$all_washers[$ind]['care_rating'] = $care_rating;
 $all_washers[$ind]['total_wash'] = $washer->total_wash;
 $all_washers[$ind]['bt_submerchant_id'] = $washer->bt_submerchant_id;
 $all_washers[$ind]['status'] = $washer->status;
