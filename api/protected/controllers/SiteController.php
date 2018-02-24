@@ -5643,6 +5643,126 @@ $addi_detail = Yii::app()->request->getParam('addi_detail');
 
 
     }
+    
+    
+        public function actionaddcoverageareacity()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $city = Yii::app()->request->getParam('city');
+        $citypage_url = Yii::app()->request->getParam('citypage_url');
+       
+        if(!empty($city))
+        {
+
+            Yii::app()->db->createCommand("INSERT INTO `coverage_area_cities` (`city`, `citypage_url`) VALUES ('$city', '$citypage_url'); ")->execute();
+        $result = 'true';
+                $response = 'city added';
+                $result = 'true';
+               
+               $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );echo json_encode($json);
+            die();
+            
+        }
+        else
+        {
+
+            $result = 'false';
+            $response = 'Please enter city';
+                $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );echo json_encode($json);
+            die();
+        }
+
+    }
+    
+    
+            public function actiondeletecoverageareacity()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $id = Yii::app()->request->getParam('id');
+        
+        if(!empty($id))
+        {
+		
+		$city_exists = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` WHERE id = ".$id)->queryAll();
+		if(!count($city_exists)){
+			$result = 'false';
+			$response = 'Invalid city id';
+			 $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+			 echo json_encode($json);
+            die();
+		}
+		
+			Yii::app()->db->createCommand("DELETE FROM `coverage_area_cities` WHERE id = ".$id)->execute();
+			$result = 'true';
+			$response = 'city deleted';
+			$result = 'true';
+               
+			$json = array(
+			'result'=> $result,
+			'response'=> $response
+			);
+			
+			echo json_encode($json);
+			die();	
+		
+    
+        }
+        else
+        {
+
+            $result = 'false';
+            $response = 'Please enter city id';
+                $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );echo json_encode($json);
+            die();
+        }
+
+    }
+    
+    
+    public function actiongetallcoverageareacities()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+		
+		$all_cities = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities`")->queryAll();
+		
+			$result = 'true';
+			$response = 'all cities';
+			 $json = array(
+                'result'=> $result,
+                'response'=> $response,
+		'all_cities' => $all_cities
+            );
+			 echo json_encode($json);
+            die();
+		
+   
+    }
 	
 
 }
