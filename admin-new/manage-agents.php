@@ -1,9 +1,11 @@
 <?php
 include('header.php');
+$page_number = 1;
+if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
 if($_GET['type']) $url = ROOT_URL.'/api/index.php?r=agents/getallagents&type='.$_GET['type'];
 else $url = ROOT_URL.'/api/index.php?r=agents/getallagents';
         $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'page_number' => $page_number);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -12,7 +14,7 @@ else $url = ROOT_URL.'/api/index.php?r=agents/getallagents';
         $allagents = json_decode($result);
         $response = $jsondata->response;
         $result_code = $jsondata->result;
-
+$total_pages = $allagents->total_pages;
     if(!empty($_GET['actionss'])){
         $agentID = $_GET['agentID'];
         $url = ROOT_URL.'/api/index.php?r=agents/deleteagents&id='.$agentID;
@@ -47,11 +49,14 @@ else $url = ROOT_URL.'/api/index.php?r=agents/getallagents';
 
         <!-- END PAGE LEVEL PLUGINS -->
         <script type="text/javascript">
+             var dt_table;
         $(document).ready(function(){
-            $('#example1').dataTable( {
+            dt_table = $('#example1').dataTable( {
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-"aaSorting": []
+"aaSorting": [],
+ order: [[ 1, "desc" ]],
+	    "bPaginate": false,
 } );
 
         });
@@ -69,6 +74,18 @@ else $url = ROOT_URL.'/api/index.php?r=agents/getallagents';
     background-color: #FF0202 !important;
 }
 
+.load-more{
+	display: block;
+    text-align: center;
+    background: #337ab7;
+    padding: 15px;
+    color: #fff;
+    font-size: 20px;
+    text-decoration: none !important;
+    width: 300px;
+    margin: 10px auto;
+    color: #fff !important;
+}
 
 </style>
 <?php
@@ -313,7 +330,7 @@ $('#late_drivers').click(function(){
                                                  <td> <?php echo $washer->phone_number; ?> </td>
                                                  <td> <?php echo $washer->phone_verify_code; ?> </td>
                                                    <td> <?php echo $washer->city; ?> </td>
- <td> <?php if(strtotime($washer->insurance_exp_date) > 0) echo date('m-d-Y', strtotime($washer->insurance_exp_date)); ?> </td>
+ <td> <?php echo $washer->insurance_exp_date; ?> </td>
 
 <td> <?php echo $washer->rating; ?> </td>
 <td> <?php echo $washer->care_rating; ?><?php if($washer->care_rating != "N/A") echo "%"; ?></td>
@@ -331,6 +348,7 @@ $('#late_drivers').click(function(){
                                         ?>
                                         </tbody>
                                     </table>
+                                     <a href="#" class="load-more">Load More</a>
                                 </div>
                             </div>
                             <!-- END EXAMPLE TABLE PORTLET-->
@@ -381,6 +399,72 @@ $(".page-content .washer-type option").filter(function() {
 
 $(".page-content .washer-type").change(function(){
 window.location.href=$(this).val();
+});
+
+var page_number = 2;
+    var total_pages = "<?php echo $total_pages; ?>";
+    
+$(".load-more").click(function(){
+	var th = $(this);
+	$(this).removeClass('.load-more');
+	$(this).html('Loading...');
+  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=agents/getallagents&page_number="+page_number+"&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&type=<?php echo $_GET['type']; ?>", function( data ) {
+//    console.log(data);
+if(data.result == 'true'){
+	page_number++;
+  //      console.log('pageno'+page_number);
+    //    console.log(total_pages);
+	if (page_number > total_pages) {
+		$('.load-more').hide();
+	}
+//console.log(data);
+$(".portlet-body table tr").removeClass('flashrow');
+$.each(data.all_washers, function( index, value ) {
+  
+    dt_table.fnDeleteRow( $(".portlet-body table tr#washer-"+value.id));
+
+});
+
+alldata = dt_table.fnGetData();
+//console.log(alldata);
+dt_table.fnClearTable();
+
+$.each(data.all_washers, function( index, value ) {
+    var allwashers = [];
+
+    allwashers["DT_RowId"] = "washer-"+value.id;
+
+
+      allwashers.push("<a href='edit-agent.php?id="+value.id+"'>Edit</a>");
+      allwashers.push(value.id);
+      allwashers.push(value.real_washer_id);
+      allwashers.push("<a href='/admin-new/all-orders.php?agent_id="+value.id+"' target='_blank'>"+value.first_name);
+      allwashers.push("<a href='/admin-new/all-orders.php?agent_id="+value.id+"' target='_blank'>"+value.last_name);
+      allwashers.push(value.email);
+      allwashers.push(value.phone_number);
+      allwashers.push(value.phone_verify_code);
+      allwashers.push(value.city);
+      allwashers.push(value.insurance_exp_date);
+      allwashers.push(value.rating);
+     if(value.care_rating != "N/A") allwashers.push(value.care_rating+"%");
+     else allwashers.push(value.care_rating);
+      allwashers.push(value.total_wash);
+      allwashers.push(value.bt_submerchant_id);
+      allwashers.push(value.status);
+      
+
+dt_table.fnAddData(allwashers);
+ //console.log(upcomingwashes);
+});
+ 
+ if(alldata.length > 0) dt_table.fnAddData(alldata);
+ //dt_table.fnDraw();
+}
+
+$(th).addClass('load-more');
+$(th).html('Load More');
+});
+  return false;
 });
 
 

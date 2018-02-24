@@ -2836,14 +2836,30 @@ die();
        $result = 'false';
        $response = 'no washers found';
        $all_washers = array();
-    
+    $total_entries = 0;
+	$total_pages = 0;
+	$limit = 0;
+	$offset = 0;
+	$page_number = 1;
+	$limit = Yii::app()->request->getParam('limit');
+	$page_number = Yii::app()->request->getParam('page_number');
+	$limit = 10;
+	$offset = ($page_number -1) * $limit;
   
           if(Yii::app()->request->getParam('type') == 'demo'){
-$washers_exists = Agents::model()->findAll(array('condition' => "washer_position = 'demo' OR washer_position = ''", 'order'=>'id DESC'));
+$total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'demo' OR washer_position = ''")->queryAll();
+ if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'demo' OR washer_position = '' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
 }
 else{
-$washers_exists = Agents::model()->findAll(array('condition' => "washer_position = 'real'", 'order'=>'id DESC'));
-} 
+$total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'real'")->queryAll();
+if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+}
+
+
+	
+	
+ $total_entries = $total_rows[0]['countid'];
+ if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
       
 
 			if(count($washers_exists)>0){
@@ -2858,7 +2874,7 @@ $washers_exists = Agents::model()->findAll(array('condition' => "washer_position
   $total_returning_customers = 0;
   $totalwash = 0;
   
-  $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '$washer->id'")->queryAll();
+  $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$washer['id']."'")->queryAll();
 $totalwash = count($totalwash_arr);
 
 if(count($totalwash_arr)){
@@ -2873,7 +2889,7 @@ $cust_served_ids = array_unique($cust_served_ids);
       foreach($cust_served_ids as $cid){
          $cust_check = Customers::model()->findByAttributes(array("id"=>$cid));
 	 $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$cid, 'status' => 4),array('order'=>'id DESC'));
-     if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning) && ($cust_last_wash_check->agent_id == $washer->id)){
+     if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning) && ($cust_last_wash_check->agent_id == $washer['id'])){
          $total_returning_customers++;
      }
       }
@@ -2885,24 +2901,28 @@ $cust_served_ids = array_unique($cust_served_ids);
  }
 		}
 		else $care_rating = "N/A";
+		
+		$insurance_date = '';
+		if(strtotime($washer['insurance_license_expiration']) > 0) $insurance_date = date('m-d-Y', strtotime($washer['insurance_license_expiration']));
+		else $insurance_date = '';
 
-                    $all_washers[$ind]['id'] = $washer->id;
-$all_washers[$ind]['real_washer_id'] = $washer->real_washer_id;
-                    $all_washers[$ind]['email'] = $washer->email;
-                    $all_washers[$ind]['first_name'] = $washer->first_name;
-                    $all_washers[$ind]['last_name'] = $washer->last_name;
-                    $all_washers[$ind]['phone_number'] = $washer->phone_number;
-                    $all_washers[$ind]['city'] = $washer->city;
-                    $all_washers[$ind]['state'] = $washer->state;
-                    $all_washers[$ind]['zipcode'] = $washer->zipcode;
-		    $all_washers[$ind]['phone_verify_code'] = $washer->phone_verify_code;
-$all_washers[$ind]['rating'] = $washer->rating;
+                    $all_washers[$ind]['id'] = $washer['id'];
+$all_washers[$ind]['real_washer_id'] = $washer['real_washer_id'];
+                    $all_washers[$ind]['email'] = $washer['email'];
+                    $all_washers[$ind]['first_name'] = $washer['first_name'];
+                    $all_washers[$ind]['last_name'] = $washer['last_name'];
+                    $all_washers[$ind]['phone_number'] = $washer['phone_number'];
+                    $all_washers[$ind]['city'] = $washer['city'];
+                    $all_washers[$ind]['state'] = $washer['state'];
+                    $all_washers[$ind]['zipcode'] = $washer['zipcode'];
+		    $all_washers[$ind]['phone_verify_code'] = $washer['phone_verify_code'];
+$all_washers[$ind]['rating'] = $washer['rating'];
 $all_washers[$ind]['care_rating'] = $care_rating;
-$all_washers[$ind]['total_wash'] = $washer->total_wash;
-$all_washers[$ind]['bt_submerchant_id'] = $washer->bt_submerchant_id;
-$all_washers[$ind]['status'] = $washer->status;
-$all_washers[$ind]['insurance_exp_date'] = $washer->insurance_license_expiration;
-                    $all_washers[$ind]['created_date'] = $washer->created_date;
+$all_washers[$ind]['total_wash'] = $washer['total_wash'];
+$all_washers[$ind]['bt_submerchant_id'] = $washer['bt_submerchant_id'];
+$all_washers[$ind]['status'] = $washer['status'];
+$all_washers[$ind]['insurance_exp_date'] = $insurance_date;
+                    $all_washers[$ind]['created_date'] = $washer['created_date'];
                 }
 
 			}
@@ -2911,7 +2931,9 @@ $all_washers[$ind]['insurance_exp_date'] = $washer->insurance_license_expiration
 			$json= array(
 				'result'=> $result,
 				'response'=> $response,
-                'all_washers' => $all_washers
+                'all_washers' => $all_washers,
+		'total_entries' => $total_entries,
+	    'total_pages' => $total_pages
 			);
 
 		echo json_encode($json); die();
