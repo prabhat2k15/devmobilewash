@@ -5654,12 +5654,13 @@ die();
 }
 
         $city = Yii::app()->request->getParam('city');
+	$state = Yii::app()->request->getParam('state');
         $citypage_url = Yii::app()->request->getParam('citypage_url');
        
         if(!empty($city))
         {
 
-            Yii::app()->db->createCommand("INSERT INTO `coverage_area_cities` (`city`, `citypage_url`) VALUES ('$city', '$citypage_url'); ")->execute();
+            Yii::app()->db->createCommand("INSERT INTO `coverage_area_cities` (`city`, `state`, `citypage_url`) VALUES ('$city', '$state', '$citypage_url'); ")->execute();
         $result = 'true';
                 $response = 'city added';
                 $result = 'true';

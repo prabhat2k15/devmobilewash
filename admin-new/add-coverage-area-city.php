@@ -15,7 +15,7 @@ $jsondata_permission = json_decode($result_permission);
 ?>
 <?php
 if(isset($_POST['city-submit'])){
-$vehdata = array("city"=>$_POST['city'], "citypage_url"=>$_POST['citypage_url'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$vehdata = array("city"=>$_POST['city'], "state"=>$_POST['state'], "citypage_url"=>$_POST['citypage_url'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=site/addcoverageareacity");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
@@ -118,6 +118,10 @@ if($citydata->result == 'true'){
                                                      <div class="form-group">
                                                                 <label class="control-label">City</label>
                                                               <input type="text" name="city" id="city" style="width: 400px;" class="form-control" required />
+                                                            </div>
+                                                     <div class="form-group">
+                                                                <label class="control-label">State</label>
+                                                              <input type="text" name="state" id="state" style="width: 400px;" class="form-control" required />
                                                             </div>
                                                      <div class="form-group">
                                                                 <label class="control-label">City Page Url</label>

@@ -3210,7 +3210,8 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 							$notify_msg = urlencode($message);
 
 							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							file_put_contents("washing_notificaiton.log","order id ".$wrequest_id_check->id." - "."customer id ".$ctdevice['customer_id']." "."device id ".$ctdevice['id']." ".$notifyurl." source: checkwashrequeststatus<br><br>",FILE_APPEND);
+						
 							$ch = curl_init();
 							curl_setopt($ch,CURLOPT_URL,$notifyurl);
 							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
@@ -4090,8 +4091,8 @@ if($time_diff >= 10){
    else Yii::app()->braintree->void($wrequest['transaction_id']);
 }
 
- Washingrequests::model()->updateByPk($wrequest['id'], array( 'status' => 5, 'no_washer_cancel' => 1));
-
+ 
+if((!$wrequest['status']) && (!$wrequest['no_washer_cancel'])){
 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest['customer_id']."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '22' ")->queryAll();
@@ -4106,7 +4107,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 							$notify_msg = urlencode($message);
 
 							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							file_put_contents("washing_notificaiton.log","order id ".$wrequest['id']." - "."customer id ".$ctdevice['customer_id']." "."device id ".$ctdevice['id']." ".$notifyurl." source: resetrejectedwashrequests cron<br><br>",FILE_APPEND);
 							$ch = curl_init();
 							curl_setopt($ch,CURLOPT_URL,$notifyurl);
 							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
@@ -4114,6 +4115,9 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
+}
+						
+						Washingrequests::model()->updateByPk($wrequest['id'], array( 'status' => 5, 'no_washer_cancel' => 1));
 	
 }
 }
@@ -7284,7 +7288,7 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
             $auth_token = '149336e1b81b2165e953aaec187971e6';
             $client = new Services_Twilio($account_sid, $auth_token);
 
- $message = "Order #".$wrequest_id_check->id." has been canceled\r\nCustomer Name: ".$cust_detail->customername."\r\nPhone: ".$cust_detail->contact_number."\r\nAddress: ".$wrequest_id_check->address;
+ $message = "Order #".$wrequest_id_check->id." has been canceled\r\nCustomer Name: ".$cust_detail->customername."\r\nAddress: ".$wrequest_id_check->address;
 
            
              $sendmessage = $client->account->messages->create(array(
@@ -11129,8 +11133,9 @@ die();
                      $current_mile = round($nearagentdis);
                      
                         if($current_mile < 1) $current_mile = 1;
-                        if($current_mile <= 1) $message2 = str_replace(array("[MILE]", "[CITY]"), array($current_mile." MILE", " IN ".strtoupper($wash_id_check->city)), $message);
-                        else $message2 = str_replace(array("[MILE]", "[CITY]"), array($current_mile." MILES", " IN ".strtoupper($wash_id_check->city)), $message);
+                        //if($current_mile <= 1) $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
+                        //else $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
+			$message2 = str_replace(array("[CITY]"), array(strtoupper($wash_id_check->city)), $message);
                         //echo $agid." ".$message2."<br>";
 						foreach($agentdevices as $agdevice){
 
