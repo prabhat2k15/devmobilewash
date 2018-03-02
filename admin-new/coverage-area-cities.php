@@ -88,6 +88,8 @@ $all_cities = $jsondata->all_cities;
                                             <tr>
                                                
                                                 <th style="text-align: left; padding: 10px 5px;"> City </th>
+						<th style="text-align: left; padding: 10px 5px;"> State </th>
+						<th style="text-align: left; padding: 10px 5px;"> Actions </th>
                                                
                                             </tr>
                                         </thead>
@@ -96,12 +98,10 @@ $all_cities = $jsondata->all_cities;
                    <?php foreach($all_cities as $city){ ?>
                 <tr class="odd gradeX">
                     
-                    <td style="text-align: left; padding: 10px 5px;"><a href="<?php if($city->citypage_url) {echo $city->citypage_url;} else{echo "#";} ?>" target="_blank"><?php echo $city->city; ?></a> <a style="float: right;" href="#" class="delete-city" data-id="<?php echo $city->id; ?>" data-city="<?php echo $city->city; ?>">X</a>
-<div style="clear: both;"></div>
-</td>
+                    <td style="text-align: left; padding: 10px 5px;"><a href="<?php if($city->citypage_url) {echo $city->citypage_url;} else{echo "#";} ?>" target="_blank"><?php echo $city->city; ?></a></td>
+		                        <td style="text-align: left; padding: 10px 5px;"><?php echo $city->state; ?></td>
+					<td style="text-align: left; padding: 10px 5px;"><a href="edit-coverage-area-city.php?id=<?php echo $city->id; ?>">Edit</a> <a style="margin-left: 10px;" href="#" class="delete-city" data-id="<?php echo $city->id; ?>" data-city="<?php echo $city->city; ?>">Delete</a></td>
                    
-             
-
                 </tr>
                 <?php } ?>
                                       </tbody>

@@ -5750,7 +5750,7 @@ echo "Invalid api key";
 die();
 }
 		
-		$all_cities = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities`")->queryAll();
+		$all_cities = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` ORDER BY city ASC")->queryAll();
 		
 			$result = 'true';
 			$response = 'all cities';
