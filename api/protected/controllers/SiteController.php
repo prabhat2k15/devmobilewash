@@ -5687,6 +5687,104 @@ die();
     }
     
     
+         public function actioneditcoverageareacity()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $id = Yii::app()->request->getParam('id');
+	$city = Yii::app()->request->getParam('city');
+	$state = Yii::app()->request->getParam('state');
+        $citypage_url = Yii::app()->request->getParam('citypage_url');
+       
+        if((!empty($city)) && (!empty($id)))
+        {
+
+            Yii::app()->db->createCommand("UPDATE `coverage_area_cities` SET `city`='".$city."',`state`='".$state."',`citypage_url`='".$citypage_url."' WHERE `id` = ".$id)->execute();
+        $result = 'true';
+                $response = 'city updated';
+                $result = 'true';
+               
+               $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );echo json_encode($json);
+            die();
+            
+        }
+        else
+        {
+
+            $result = 'false';
+            $response = 'Please enter city and id';
+                $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );echo json_encode($json);
+            die();
+        }
+
+    }
+    
+    
+                public function actiongetcoverageareacitybyid()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $id = Yii::app()->request->getParam('id');
+        
+        if(!empty($id))
+        {
+		
+		$city_exists = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` WHERE id = ".$id)->queryAll();
+		if(!count($city_exists)){
+			$result = 'false';
+			$response = 'Invalid city id';
+			 $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+			 echo json_encode($json);
+            die();
+		}
+		
+			$result = 'true';
+			$response = 'coverage city';
+			$result = 'true';
+               
+			$json = array(
+			'result'=> $result,
+			'response'=> $response,
+			'coverage_city' => $city_exists
+			);
+			
+			echo json_encode($json);
+			die();	
+		
+    
+        }
+        else
+        {
+
+            $result = 'false';
+            $response = 'Please enter city id';
+                $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );echo json_encode($json);
+            die();
+        }
+
+    }
+    
+    
             public function actiondeletecoverageareacity()
     {
 
