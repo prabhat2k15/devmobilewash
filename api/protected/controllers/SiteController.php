@@ -5469,6 +5469,7 @@ die();
 	$pending_wash_id = '';
 	$is_scheduled = '';
 	$wash_status = '';
+	$agent_wash_details = array();
 	
 
            $result  = 'false';
@@ -5516,6 +5517,21 @@ $response = 'device updated';
 			if($user_check->forced_logout == 1) $response = 'offline';
 			else $response = 'online';
 			
+			$is_agent_has_wash = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE agent_id='".$user_check->id."' AND (status >= 1 AND status <= 3)")->queryAll();
+			
+			if(count($is_agent_has_wash)){
+				$cust_detail = Customers::model()->findByPk($is_agent_has_wash[0]['customer_id']);
+			$agent_wash_details['wash_id'] = $is_agent_has_wash[0]['id'];
+			$agent_wash_details['customer_id'] = $is_agent_has_wash[0]['customer_id'];
+			$agent_wash_details['customer_name'] = $cust_detail->customername;
+			$agent_wash_details['customer_phoneno'] = $cust_detail->contact_number;
+			$agent_wash_details['customer_rating'] = $cust_detail->rating;
+			$agent_wash_details['address'] = $is_agent_has_wash[0]['address'];
+			$agent_wash_details['latitude'] = $is_agent_has_wash[0]['latitude'];
+			$agent_wash_details['longitude'] = $is_agent_has_wash[0]['longitude'];
+			$agent_wash_details['wash_status'] = $is_agent_has_wash[0]['status'];
+			$agent_wash_details['is_scheduled'] = $is_agent_has_wash[0]['is_scheduled'];
+			}
 		/*if($user_check->status != 'online'){
 			$isagentbusy = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE agent_id='".$user_check->id."' AND (status >= 1 AND status <= 3)")->queryAll();
 			if(!count($isagentbusy)){
@@ -5539,7 +5555,8 @@ $json= array(
 				'user_type'=> $user_type,
 				'customer_pending_wash_id' => $pending_wash_id,
 				'customer_pending_wash_is_scheduled' => $is_scheduled,
-				'customer_pending_wash_status' => $wash_status
+				'customer_pending_wash_status' => $wash_status,
+				'agent_current_wash_details' => $agent_wash_details
 				
 			);
 		echo json_encode($json);

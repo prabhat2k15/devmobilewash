@@ -333,7 +333,7 @@ $('#late_drivers').click(function(){
  <td> <?php echo $washer->insurance_exp_date; ?> </td>
 
 <td> <?php echo $washer->rating; ?> </td>
-<td> <?php echo $washer->care_rating; ?><?php if($washer->care_rating != "N/A") echo "%"; ?></td>
+<td> <?php echo $washer->care_rating; ?><?php if(($washer->care_rating != "N/A") && ($washer->care_rating != "NEW")) echo "%"; ?></td>
 <td> <?php echo $washer->total_wash; ?> </td>
 <td> <?php echo $washer->bt_submerchant_id; ?> </td>
                                               <td> <?php echo $washer->status; ?> </td>
@@ -446,7 +446,7 @@ $.each(data.all_washers, function( index, value ) {
       allwashers.push(value.city);
       allwashers.push(value.insurance_exp_date);
       allwashers.push(value.rating);
-     if(value.care_rating != "N/A") allwashers.push(value.care_rating+"%");
+     if((value.care_rating != "N/A") && (value.care_rating != "NEW")) allwashers.push(value.care_rating+"%");
      else allwashers.push(value.care_rating);
       allwashers.push(value.total_wash);
       allwashers.push(value.bt_submerchant_id);

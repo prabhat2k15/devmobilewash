@@ -2873,6 +2873,13 @@ if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM a
   $care_rating = 0;
   $total_returning_customers = 0;
   $totalwash = 0;
+  $washer_registered_since = 0;
+  $current_time = time(); // or your date as well
+$washer_created = strtotime($washer['created_date']);
+$datediff = $current_time - $washer_created;
+
+$washer_registered_since = round($datediff / (60 * 60 * 24));
+if($washer_registered_since > 30){
   
   $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$washer['id']."'")->queryAll();
 $totalwash = count($totalwash_arr);
@@ -2901,6 +2908,10 @@ $cust_served_ids = array_unique($cust_served_ids);
  }
 		}
 		else $care_rating = "N/A";
+		}
+		else{
+		  $care_rating = "NEW";
+		}
 		
 		$insurance_date = '';
 		if(strtotime($washer['insurance_license_expiration']) > 0) $insurance_date = date('m-d-Y', strtotime($washer['insurance_license_expiration']));

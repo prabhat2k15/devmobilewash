@@ -4593,13 +4593,10 @@ die();
             $json    = array();
 
             $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
+
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
             /* Instantiate a new Twilio Rest Client */
 
@@ -4609,13 +4606,18 @@ die();
 
 
             $message = $randum_number." is your MobileWash verification code";
-            $sendmessage = $client->account->messages->create(array(
+            try {
+	    $sendmessage = $client->account->messages->create(array(
                 'To' =>  $phone,
-                'From' => '+13103128070',
+                'From' => '+13106834902',
                 'Body' => $message,
             ));
+	     }
+ catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+} 
 	    
-	     spl_autoload_register(array('YiiBase','autoload'));
+	     
 	}
 
 	$result = 'true';
@@ -4757,13 +4759,10 @@ else{
             $json    = array();
 
             $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
+         
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
             /* Instantiate a new Twilio Rest Client */
 
@@ -4773,13 +4772,19 @@ else{
 
 
             $message = $randum_number." is your MobileWash verification code";
-            $sendmessage = $client->account->messages->create(array(
+             try {
+	    $sendmessage = $client->account->messages->create(array(
                 'To' =>  $phone,
-                'From' => '+13103128070',
+                'From' => '+13106834902',
                 'Body' => $message,
             ));
 	    
-	     spl_autoload_register(array('YiiBase','autoload'));
+	    	}
+	catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+	    
+	 
 	}
 
 	$result = 'true';
@@ -4975,13 +4980,10 @@ else $agentlname = $model->last_name;
             $json    = array();
 
             $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
+     
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
             /* Instantiate a new Twilio Rest Client */
 
@@ -4991,13 +4993,17 @@ else $agentlname = $model->last_name;
 
 
             $message = $randum_number." is your MobileWash verification code";
-            $sendmessage = $client->account->messages->create(array(
+             try {
+	    $sendmessage = $client->account->messages->create(array(
                 'To' =>  $phone,
-                'From' => '+13103128070',
+                'From' => '+13106834902',
                 'Body' => $message,
             ));
 	    
-	     spl_autoload_register(array('YiiBase','autoload'));
+	       }
+ catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
 	$result = 'true';
         $response = 'Send 4 digit code.';
