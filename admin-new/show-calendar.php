@@ -61,6 +61,7 @@ $jsondata_permission = json_decode($result_permission);
     text-align: center;
     font-size: 14px;
 }
+.fc-basic-view .fc-body .fc-row{min-height:340px !important;}
 
 </style>
 <script src='assets/global/scripts/full-cal/moment.min.js'></script>
@@ -125,8 +126,8 @@ $(document).ready(function() {
                  }
 				start = startMonthYear(month,year)
 				end = endMonthYear(month,year)
-                 //console.log(start);
-                 //console.log(end);
+                 console.log("start "+start);
+                 console.log("end "+end);
 				//$('.cal-overlay').css('display','block');
 			   $('.fc-left .center').remove();
 				$.ajax({
@@ -140,7 +141,7 @@ $(document).ready(function() {
 						key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 					},
 					success: function(doc) {
-					    console.log(doc);
+					    //console.log(doc);
 						var events = [];
                         //console.log(doc.order.empty);
 						if(doc.order.empty == 'yes'){
@@ -166,7 +167,8 @@ $(document).ready(function() {
                                 var total_cars = Object.keys(value.total_cars).length;
 								var home_ord = Object.keys(value.home).length;
 								var work_ord = Object.keys(value.work).length;
-
+								
+								
 								if(declined > 1  ){
 									titledec = value.declined.count+' Declined Orders';
 									colordec = value.declined.color;
@@ -177,6 +179,7 @@ $(document).ready(function() {
 										color:colordec
 									});
 								}
+								
 								if(total_orders > 1 ){
 									title6 = value.total_orders.count+' Total Orders';
 									color6 = value.total_orders.color;
@@ -184,9 +187,11 @@ $(document).ready(function() {
 										title:title6,
 										description:'b',
 										start:index,
-										color:color6
+										color:color6,
+										
 									});
 								}
+								
 								if(pending > 1 ){
 									title1 = value.pending.count+' Pending Orders';
 									color1 = value.pending.color;
@@ -195,7 +200,8 @@ $(document).ready(function() {
 										description:'c',
 										start:index,
 										color:color1,
-										textColor: '#000000'
+										textColor: '#fff',
+										
 									});
 								}
 								if(complete > 1 ){
@@ -205,7 +211,8 @@ $(document).ready(function() {
 										title:title,
 										description:'d',
 										start:index,
-										color:color
+										color:color,
+										
 									});
 								}
 								if(canceled > 1  ){
@@ -215,9 +222,25 @@ $(document).ready(function() {
 										title:title2,
 										description:'e',
 										start:index,
-										color:color2
+										color:color2,
+										
 									});
 								}
+								
+								
+								if(processing > 1  ){
+								    title2 = value.processing.count+' Processing Orders';
+									color2 = value.processing.color;
+									events.push({
+										title:title2,
+										description:'k',
+										start:index,
+										color:color2,
+										
+									});
+								}
+								
+								
 								if(Express > 1  ){
 									//titledec = 'Express Completed: '+value.Express.count;
 									titleExp = value.Express.count+' Express Services';
@@ -226,9 +249,10 @@ $(document).ready(function() {
 										title:titleExp,
 										description:'f',
 										start:index,
-										color:colorExp
+										color:colorExp,
 									});
 								}
+								
 								if(Deluxe > 1  ){
 									//titledec = 'Deluxe Completed: '+value.Deluxe.count;
 									titleDlx = value.Deluxe.count+' Deluxe Services';
@@ -237,7 +261,8 @@ $(document).ready(function() {
 										title:titleDlx,
 										description:'g',
 										start:index,
-										color:colorDlx
+										color:colorDlx,
+										
 									});
 								}
 								if(Premium > 1  ){
@@ -248,7 +273,8 @@ $(document).ready(function() {
 										title:titlePre,
 										description:'h',
 										start:index,
-										color:colorPre
+										color:colorPre,
+										
 									});
 								}
 								if(coupon_code > 1  ){
@@ -259,9 +285,11 @@ $(document).ready(function() {
 										title:titleCC,
 										description:'i',
 										start:index,
-										color:colorCC
+										color:colorCC,
+										
 									});
 								}
+								
 								if(tip_amount > 1  ){
 									//titledec = 'Tips: '+value.tip_amount.count;
 									titleTa = value.tip_amount.count+' Tips';
@@ -271,28 +299,26 @@ $(document).ready(function() {
 										description:'j',
 										start:index,
 										color:colorTa,
-										textColor: '#000000'
+										textColor: '#fff',
+										
 									});
 								}
-								if(processing > 1  ){
-									title2 = value.processing.count+' Processing Orders';
-									color2 = value.processing.color;
-									events.push({
-										title:title2,
-										description:'k',
-										start:index,
-										color:color2
-									});
-								}
+								
+								
+								
+								
+								
+								
 
 								//if(view_all >= 1){
 									title3 = 'View All';
-									color3 = '#000000';
+									color3 = '#2a3f53';
 									events.push({
 										title:title3,
 										description:'l',
 										start:index,
-										color:color3
+										color:color3,
+										
 									});
 								//}
                                  if(total_cars >= 1  ){
@@ -449,7 +475,7 @@ $(document).ready(function() {
 			eventOrder: "description"
 		});
 		
-		 var _html = '<div class="center" style="width: 70%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span style="color: #000;">Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #aaa; background: #aaa;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #cc0066; background: #cc0066;"><span>Declined</span></div><div id="express" style="border: 1px solid #00BFFF; background: #00BFFF;"><span>Express</span></div><div id="deluxe" style="border: 1px solid #4169E1; background: #4169E1;"><span>Deluxe</span></div><div id="premium" style="border: 1px solid #000080; background: #000080;"><span>Premium</span></div><div id="tip" style="border: 1px solid #BFFF00; background: #BFFF00; color: #000;"><span>Tip</span></div>	</div>';
+		 var _html = '<div class="center" style="width: 70%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span style="color: #fff;">Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #8b9d9e; background: #8b9d9e;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #eb1350; background: #eb1350;"><span>Declined</span></div><div id="express" style="border: 1px solid #2490d7; background: #2490d7;"><span>Express</span></div><div id="deluxe" style="border: 1px solid #2490d7; background: #2490d7;"><span>Deluxe</span></div><div id="premium" style="border: 1px solid #2490d7; background: #2490d7;"><span>Premium</span></div><div id="tip" style="border: 1px solid #f28fba; background: #f28fba; color: #fff;"><span>Tip</span></div>	</div>';
 
 				$('.fc-left').append(_html);
 				

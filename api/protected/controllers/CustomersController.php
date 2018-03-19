@@ -4624,10 +4624,12 @@ else $Bresult = Yii::app()->braintree->getCustomerById($braintree_id);
                   $result = 'true';
                   $response = 'payment methods';
                   foreach($Bresult->paymentMethods as $index=>$paymethod){
+			$cardholder_name = '';
+			if($paymethod->cardholderName) $cardholder_name = $paymethod->cardholderName;
                      $payment_methods[$index]['title'] = get_class($paymethod);
                      if($payment_methods[$index]['title'] == 'Braintree\\CreditCard'){
                          $payment_methods[$index]['title'] = 'Credit Card';
-                          $payment_methods[$index]['payment_method_details'] = array("expirationMonth"=>$paymethod->expirationMonth, "expirationYear"=>$paymethod->expirationYear, "bin"=>$paymethod->bin, "last4"=>$paymethod->last4, "maskedNumber"=>$paymethod->maskedNumber, "cardType"=>$paymethod->cardType, "token"=>$paymethod->token, "cardname"=>$paymethod->cardholderName, "cardimg"=>$paymethod->imageUrl, "isDefault" => $paymethod->isDefault());
+                          $payment_methods[$index]['payment_method_details'] = array("expirationMonth"=>$paymethod->expirationMonth, "expirationYear"=>$paymethod->expirationYear, "bin"=>$paymethod->bin, "last4"=>$paymethod->last4, "maskedNumber"=>$paymethod->maskedNumber, "cardType"=>$paymethod->cardType, "token"=>$paymethod->token, "cardname"=>$cardholder_name, "cardimg"=>$paymethod->imageUrl, "isDefault" => $paymethod->isDefault());
                      }
 
                       if($payment_methods[$index]['title'] == 'Braintree\\PayPalAccount'){
@@ -5877,18 +5879,31 @@ die();
 }
 
 		$query = Yii::app()->request->getParam('query');
+		$limit = 0;
 		$limit = Yii::app()->request->getParam('limit');
+		$total_pages = 0;
+$search_area = Yii::app()->request->getParam('search_area');
+$cust_query = '';
+      $total_count = 0;
+$page_number = 1;
+	if(Yii::app()->request->getParam('page_number')) $page_number = Yii::app()->request->getParam('page_number');
+	$offset = ($page_number -1) * $limit;
 
 		$limit_str = '';
       $total_count = 0;
       if($limit && ($limit != 'none')){
-          $limit_str = " LIMIT ".$limit;
+          $limit_str = " LIMIT ".$limit." OFFSET ".$offset;
       }
+      
+      if($search_area == "Customer Name") $cust_query = "(customername LIKE '%$query%') ";
+if($search_area == "Customer Email") $cust_query = "(email LIKE '%$query%') ";
+if($search_area == "Customer Phone") $cust_query = "(contact_number LIKE '%$query%') ";
 
 if($query){
- $customers = Yii::app()->db->createCommand("SELECT * FROM customers WHERE customername LIKE '%$query%' OR email LIKE '%$query%' OR contact_number LIKE '%$query%'".$limit_str)->queryAll();
-  $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE customername LIKE '%$query%' OR email LIKE '%$query%' OR contact_number LIKE '%$query%'")->queryAll();
+ $customers = Yii::app()->db->createCommand("SELECT * FROM customers WHERE ".$cust_query."ORDER BY id DESC".$limit_str)->queryAll();
+  $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE ".$cust_query."ORDER BY id DESC")->queryAll();
  $total_count = $total_rows[0]['countid'];
+ if($total_count > 0) $total_pages = ceil($total_count / $limit);
 }
 
 		$customerdetail = array();
@@ -5938,7 +5953,7 @@ $json['how_hear_mw'] =  $customername['how_hear_mw'];
         }
 
 
-		echo json_encode(array("response" => "all clients", "result" => "true", "allcustomers" => $customerdetail, "total_customers" => $total_count));
+		echo json_encode(array("response" => "all clients", "result" => "true", "allcustomers" => $customerdetail, "total_customers" => $total_count, 'total_pages' => $total_pages));
 
          die();
 

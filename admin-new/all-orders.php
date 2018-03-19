@@ -372,6 +372,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                                  <th> Avg. Order<br>Frequency </th>
                                                  <?php endif; ?>
 												<!--th> Agent ID </th-->
+												<th> Badge </th>
 												<th> Agent Name </th>
 												<!--th> Agent Email </th-->
                                                 <th> Agent Phone </th>
@@ -424,11 +425,11 @@ else echo $order->payment_status; ?>
                     <?php if($_GET['customer_id']): ?>
                     <td><?php echo $cust_avg_order_frequency; ?> days</td>
                     <?php endif; ?>
-<!--td><?php /*
-if(count($order->agent_details)) echo $order->agent_details->agent_id;
-else echo "N/A"; */
+<td><?php 
+if(count($order->agent_details)) echo $order->agent_details->real_washer_id;
+else echo "N/A";
 ?>
-</td-->
+</td>
 <td><?php
 if(count($order->agent_details)) echo "<a target='_blank' href='/admin-new/all-orders.php?agent_id=".$order->agent_details->agent_id."'>".$order->agent_details->agent_name."</a>";
 else echo "N/A";
@@ -452,7 +453,7 @@ else echo "N/A";
 
 <span style="color: red; font-weight: bold; font-size: 13px;"><?php echo $order->reschedule_date." ".$order->reschedule_time; ?></span><p style="text-align: center; font-weight: bold; color: red; margin: 5px 0;">Re-Scheduled</p>
 <?php endif; ?>
-<?php echo $order->schedule_date." ".$order->schedule_time; ?>
+<?php if(strtotime($order->schedule_date) > 0) echo $order->schedule_date." ".$order->schedule_time; ?>
 <?php else: ?>
 N/A
 <?php endif; ?>
@@ -757,6 +758,8 @@ payment_status_str += "<span class='label label-sm label-pending'>"+value.paymen
 upcomingwashes.push(value.transaction_id);
 upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?customer_id="+value.customer_id+"'>"+value.customer_name+"</a>");
 upcomingwashes.push(value.customer_phoneno);
+if(value.agent_details.real_washer_id) upcomingwashes.push(value.agent_details.real_washer_id);
+else upcomingwashes.push("N/A");
 if(value.agent_details.agent_name) upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?agent_id="+value.agent_details.agent_id+"'>"+value.agent_details.agent_name+"</a>");
 else upcomingwashes.push("N/A");
 if(value.agent_details.agent_phoneno) upcomingwashes.push(value.agent_details.agent_phoneno);
@@ -768,7 +771,7 @@ if(value.is_scheduled == 1){
   upcomingwashes.push("<span style='color: red; font-weight: bold; font-size: 13px;'>"+value.reschedule_date+" "+value.reschedule_time+"</span><p style='text-align: center; font-weight: bold; color: red; margin: 5px 0;'>Re-Scheduled</p>"+value.schedule_date+" "+value.schedule_time);  
 }
 else{
- upcomingwashes.push(value.schedule_date+" "+value.schedule_time);   
+ if(value.schedule_time) upcomingwashes.push(value.schedule_date+" "+value.schedule_time);   
 }
 }
 else{

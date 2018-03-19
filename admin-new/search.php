@@ -13,50 +13,22 @@ $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 
-$limit = 20;
-if($_GET['limit']) $limit = $_GET['limit'];
-if(($_GET['search_type'] != 'customer') && ($_GET['search_type'] != 'order')){
-$url = ROOT_URL.'/api/index.php?r=agents/searchagents';
+$page_number = 1;
+if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
+if(($_GET['search_area'] == 'Order Number') || ($_GET['search_area'] == 'Created Date') || ($_GET['search_area'] == 'Scheduled Date') || ($_GET['search_area'] == 'On-Demand') || ($_GET['search_area'] == 'Scheduled')) $url = ROOT_URL.'/api/index.php?r=site/searchorders';
+if(($_GET['search_area'] == 'Customer Name') || ($_GET['search_area'] == 'Customer Email') || ($_GET['search_area'] == 'Customer Phone')) $url = ROOT_URL.'/api/index.php?r=customers/searchcustomers';
+if(($_GET['search_area'] == 'Washer Name')) $url = ROOT_URL.'/api/index.php?r=agents/searchagents';
         $handle = curl_init($url);
-        $data = array('query' => $_GET['q'], 'limit' => $limit, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('query' => $_GET['q'], 'limit' => 10, 'search_area' => $_GET['search_area'], 'page_number' => $page_number, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
         $result = curl_exec($handle);
         curl_close($handle);
-        $allagents = json_decode($result);
-        $allagents_response = $jsondata->response;
-        $allagents_result_code = $jsondata->result;
-}
-    
-    if(($_GET['search_type'] != 'agent') && ($_GET['search_type'] != 'order')){    
-        $url = ROOT_URL.'/api/index.php?r=customers/searchcustomers';
-        $handle = curl_init($url);
-        $data = array('query' => $_GET['q'], 'limit' => $limit, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-        curl_setopt($handle, CURLOPT_POST, true);
-        curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-        $result = curl_exec($handle);
-        curl_close($handle);
-        $allcustomers = json_decode($result);
-        $allcustomers_response = $jsondata->response;
-        $allcustomers_result_code = $jsondata->result;
-    }
-    
-    if(($_GET['search_type'] != 'customer') && ($_GET['search_type'] != 'agent')){    
-        $url = ROOT_URL.'/api/index.php?r=site/searchorders';
-        $handle = curl_init($url);
-        $data = array('query' => $_GET['q'], 'limit' => $limit, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-        curl_setopt($handle, CURLOPT_POST, true);
-        curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-        $result = curl_exec($handle);
-        curl_close($handle);
-        $allorders = json_decode($result);
-        $allorders_response = $jsondata->response;
-        $allorders_result_code = $jsondata->result;
-    }
-
+        $searchresults = json_decode($result);
+        $searchresult_response = $searchresults->response;
+        $searchresult_result_code = $searchresults->result;
+      
 
 ?>
 
@@ -78,6 +50,7 @@ $url = ROOT_URL.'/api/index.php?r=agents/searchagents';
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
 "aaSorting": [],
+"bPaginate": false,
 "columnDefs": [ {
 "targets": 0,
 "orderable": false
@@ -113,6 +86,41 @@ $url = ROOT_URL.'/api/index.php?r=agents/searchagents';
     display: none;
 }
 
+.label-complete {
+    background-color: #16CE0C !important;
+}
+
+.label-pending {
+    background-color: red !important;
+}
+
+.label-process {
+    background-color: #FF8C00 !important;
+}
+
+.label-enroute {
+    background-color: #00BCD4 !important;
+}
+
+.label-cancel {
+    background-color: #999 !important;
+}
+
+.custom-pagination{
+    text-align: center;
+    margin: 10px;
+}
+
+.custom-pagination a{
+   padding: 5px 10px;
+    background: #337ab7;
+    color: #fff;
+    margin-right: 2px; 
+}
+
+.custom-pagination a:hover{
+    text-decoration: none;
+}
 </style>
 
 <!-- BEGIN CONTENT -->
@@ -132,7 +140,7 @@ $url = ROOT_URL.'/api/index.php?r=agents/searchagents';
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold" style="font-size: 22px;"> Search Results For: <?php if(isset($_GET['q'])) echo $_GET['q']; ?></span>
+                                        <span class="caption-subject bold" style="font-size: 22px;"> Search Results For: <?php if(isset($_GET['q'])) echo $_GET['q']; ?><?php if(isset($_GET['search_area'])) echo " (".$_GET['search_area'].")"; ?></span>
                                     </div>
       
                                     <div class="actions">
@@ -140,12 +148,10 @@ $url = ROOT_URL.'/api/index.php?r=agents/searchagents';
                                          <span id="servertime" style="font-weight: 300 !important;"></span>&nbsp;
                                     </div>
                                 </div>
-                                <?php if(count($allcustomers->allcustomers) > 0): ?>
+                                <?php if((($_GET['search_area'] == 'Customer Name') || ($_GET['search_area'] == 'Customer Email') || ($_GET['search_area'] == 'Customer Phone')) && (count($searchresults->allcustomers) > 0)): ?>
                                 <div class="portlet-body">
                                     <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Customers</h3>
-                                    <?php if(($allcustomers->total_customers > 20) && (count($allcustomers->allcustomers) < $allcustomers->total_customers)): ?>
-                                    <p style="text-align: right;"><a style="display: block; background: #000; color: #fff; padding: 7px; text-align: center; width: 120px; margin-left: auto;" href="/admin-new/search.php?q=<?php echo $_GET['q']; ?>&search_type=customer&limit=none">View All</a></p>
-                                    <?php endif; ?>
+                                  
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                         <thead>
                                              <tr>
@@ -169,7 +175,7 @@ $url = ROOT_URL.'/api/index.php?r=agents/searchagents';
                                         <tbody>
                                         <?php
 
-                                            foreach( $allcustomers->allcustomers as $customer){
+                                            foreach( $searchresults->allcustomers as $customer){
                                            
                                         ?>
                                             <?php $city = 'N/A';
@@ -209,14 +215,23 @@ else echo $customer->total_wash;
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class='custom-pagination'>
+                                    <?php 
+                                    //echo $searchresults->total_pages."<br>";
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/search.php?q=".$_GET['q']."&search_area=".$_GET['search_area']."&page_number=1'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$searchresults->total_pages; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/search.php?q=".$_GET['q']."&search_area=".$_GET['search_area']."&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    if($page_number != $searchresults->total_pages) echo "<a href='".ROOT_URL."/admin-new/search.php?q=".$_GET['q']."&search_area=".$_GET['search_area']."&page_number=".$searchresults->total_pages."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
                                 <?php endif; ?>
                                 
-<?php if(count($allagents->all_washers) > 0): ?>
+<?php if(($_GET['search_area'] == 'Washer Name') && (count($searchresults->all_washers) > 0)): ?>
                                 <div class="portlet-body">
                                     <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Washers</h3>
-                                    <?php if(($allagents->total_washers > 20) && (count($allagents->all_washers) < $allagents->total_washers)): ?>
-                                    <p style="text-align: right;"><a style="display: block; background: #000; color: #fff; padding: 7px; text-align: center; width: 120px; margin-left: auto;" href="/admin-new/search.php?q=<?php echo $_GET['q']; ?>&search_type=agent&limit=none">View All</a></p>
-                                    <?php endif; ?>
+                                    
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example2">
                                         <thead>
                                             <tr>
@@ -239,7 +254,7 @@ else echo $customer->total_wash;
                                         <?php
 
 
-                                            foreach( $allagents->all_washers as $washer){
+                                            foreach( $searchresults->all_washers as $washer){
                                                 if($washer->status == 'busy'){
                                                        $status = '<span class="label label-sm label-busy">Busy</span>';
                                                        }
@@ -291,18 +306,27 @@ else echo $customer->total_wash;
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class='custom-pagination'>
+                                    <?php 
+                                    //echo $searchresults->total_pages."<br>";
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/search.php?q=".$_GET['q']."&search_area=".$_GET['search_area']."&page_number=1'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$searchresults->total_pages; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/search.php?q=".$_GET['q']."&search_area=".$_GET['search_area']."&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    if($page_number != $searchresults->total_pages) echo "<a href='".ROOT_URL."/admin-new/search.php?q=".$_GET['q']."&search_area=".$_GET['search_area']."&page_number=".$searchresults->total_pages."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
                                 <?php endif; ?>
-                                
-                                <?php if(count($allorders->wash_requests)): ?>
+                               
+                                <?php if((($_GET['search_area'] == 'Order Number') || ($_GET['search_area'] == 'Created Date') || ($_GET['search_area'] == 'Scheduled Date') || ($_GET['search_area'] == 'On-Demand') || ($_GET['search_area'] == 'Scheduled')) && (count($searchresults->wash_requests))): ?>
                                  <div class="portlet-body">
                                     <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Orders</h3>
-                                    <?php if(($allorders->total_wash_requests > 20) && (count($allorders->wash_requests) < $allorders->total_wash_requests)): ?>
-                                    <p style="text-align: right;"><a style="display: block; background: #000; color: #fff; padding: 7px; text-align: center; width: 120px; margin-left: auto;" href="/admin-new/search.php?q=<?php echo $_GET['q']; ?>&search_type=order&limit=none">View All</a></p>
-                                    <?php endif; ?>
+                                    
                                 <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example3">
                                         <thead>
                                             <tr>
-												<th style="min-width: 300px;"> Actions </th>
+												<th> Actions </th>
                                                 <th> ID </th>
                                                  <th> Order Type </th>
                                                 <th> Status </th>
@@ -328,7 +352,7 @@ else echo $customer->total_wash;
                                         </thead>
                                         <tbody>
 
-                   <?php foreach($allorders->wash_requests as $ind=>$order){
+                   <?php foreach($searchresults->wash_requests as $ind=>$order){
 						
 				   ?>
                 <tr class="odd gradeX <?php if($ind == 0) echo "flashro";?>" id="order-<?php echo $order->id; ?>">
@@ -416,6 +440,17 @@ echo "</ol>";
 							<?php } ?>
                                       </tbody>
                                     </table>
+                                    </div>
+                                    <div class='custom-pagination'>
+                                    <?php 
+                                    //echo $searchresults->total_pages."<br>";
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/search.php?q=".$_GET['q']."&search_area=".$_GET['search_area']."&page_number=1'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$searchresults->total_pages; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/search.php?q=".$_GET['q']."&search_area=".$_GET['search_area']."&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    if($page_number != $searchresults->total_pages) echo "<a href='".ROOT_URL."/admin-new/search.php?q=".$_GET['q']."&search_area=".$_GET['search_area']."&page_number=".$searchresults->total_pages."'>&raquo;</a> ";
+                                    ?>
                                     </div>
                                    <?php endif; ?>
                             </div>

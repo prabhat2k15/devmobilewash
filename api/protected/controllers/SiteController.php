@@ -2018,7 +2018,7 @@ $times['sun_spec'] = $schedule_times_spec[0]['sun'];
 
 
     public function actionclearpendingsandlogins(){
-    if(Yii::app()->request->getParam('key') != API_KEY){
+    if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -3154,7 +3154,7 @@ $customername = ucwords($customername);
 
 								$agent_info = array();
 				if(count($agent_details)){
-					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
+					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'real_washer_id'=>$agent_details->real_washer_id, 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
 				}
 $payment_status = '';
 $submerchant_id = '';
@@ -3574,7 +3574,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
 
                 $agent_info = array();
                 if(count($agent_details)){
-                    $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email, 'agent_submerchant_id'=>$agent_details->bt_submerchant_id);
+                    $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
                 }
 
                 $payment_status = '';
@@ -3703,6 +3703,7 @@ die();
         $pendingwashrequests = array();
         $pendingwashrequests_upcoming = array();
         $pendingwashrequests_nonupcoming = array();
+        $total_pages = 0;
         $last_cust_id = '';
         $last_cust_lat = '';
         $last_cust_lng = '';
@@ -3710,6 +3711,7 @@ die();
         $limit = 0;
         $filter = Yii::app()->request->getParam('filter');
         $limit = Yii::app()->request->getParam('limit');
+        $search_area = Yii::app()->request->getParam('search_area');
         $customer_id = Yii::app()->request->getParam('customer_id');
         $agent_id = Yii::app()->request->getParam('agent_id');
 $pendingorderscount = 0;
@@ -3719,27 +3721,33 @@ $cust_veh_query = '';
 $order_query = '';
 
 $query = Yii::app()->request->getParam('query');
-		$limit = Yii::app()->request->getParam('limit');
+	$page_number = 1;
+	if(Yii::app()->request->getParam('page_number')) $page_number = Yii::app()->request->getParam('page_number');
+	$offset = ($page_number -1) * $limit;
 
 		$limit_str = '';
       $total_count = 0;
       if($limit && ($limit != 'none')){
-          $limit_str = " LIMIT ".$limit;
+          $limit_str = " LIMIT ".$limit." OFFSET ".$offset;
       }
 
- $cust_query = "(c.customername LIKE '%$query%' OR c.email LIKE '%$query%' OR c.contact_number LIKE '%$query%') OR ";
- $cust_veh_query = "(cv.brand_name LIKE '%$query%' OR cv.model_name LIKE '%$query%') OR ";
-$agent_query = "(a.first_name LIKE '%$query%' OR a.last_name LIKE '%$query%' OR a.email LIKE '%$query%' OR a.phone_number LIKE '%$query%') OR ";
-$order_query = "(w.id LIKE '%$query%') ";
+if(!$search_area) $search_area = "Order Number";
+
+if($search_area == "Order Number") $order_query = "(id LIKE '%$query%') ";
+if($search_area == "Created Date") $order_query = "(created_date LIKE '%$query%') ";
+if($search_area == "Scheduled Date") $order_query = "(order_for LIKE '%$query%' AND is_scheduled = 1) ";
+if($search_area == "On-Demand") $order_query = "(is_scheduled = 0) ";
+if($search_area == "Scheduled") $order_query = "(is_scheduled = 1) ";
 
 		//if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
 //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
 
 if($query){
-    $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN customer_vehicals cv ON FIND_IN_SET(w.car_list, cv.id) != 0 LEFT JOIN agents a ON w.agent_id = a.id WHERE ".$cust_query.$cust_veh_query.$agent_query.$order_query."ORDER BY w.id DESC".$limit_str)->queryAll();
- $total_rows = Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN customer_vehicals cv ON FIND_IN_SET(w.car_list, cv.id) != 0 LEFT JOIN agents a ON w.agent_id = a.id WHERE ".$cust_query.$cust_veh_query.$agent_query.$order_query."ORDER BY w.id DESC")->queryAll();
+    $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE ".$order_query."ORDER BY id DESC".$limit_str)->queryAll();
+ $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM washing_requests WHERE ".$order_query."ORDER BY id DESC")->queryAll();
  $total_count = $total_rows[0]['countid'];
+ if($total_count > 0) $total_pages = ceil($total_count / $limit);
 
 }
 
@@ -3961,7 +3969,8 @@ if($min_diff < 0){
             'response'=> $response,
             'wash_requests' => $pendingwashrequests,
             'pending_wash_count' => $pendingorderscount,
-            'total_wash_requests' => $total_count
+            'total_wash_requests' => $total_count,
+            'total_pages' => $total_pages
         );
 
         echo json_encode($json); die();
@@ -3969,7 +3978,7 @@ if($min_diff < 0){
 
 
 public function actionnewcustomerwelcomepush(){
-  if(Yii::app()->request->getParam('key') != API_KEY){
+  if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -4038,7 +4047,7 @@ $message = str_replace("[CUSTNAME]",$custname, $message);
 
 
 public function actioncustomernextwashremindpush(){
-  if(Yii::app()->request->getParam('key') != API_KEY){
+  if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -4267,7 +4276,7 @@ die();
 
 
     public function actionnonreturncustomercheck(){
-  if(Yii::app()->request->getParam('key') != API_KEY){
+  if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -4357,7 +4366,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 
 public function actionwashfraudcheck() {
 
-if(Yii::app()->request->getParam('key') != API_KEY){
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -5532,6 +5541,7 @@ $response = 'device updated';
 			$agent_wash_details['wash_status'] = $is_agent_has_wash[0]['status'];
 			$agent_wash_details['is_scheduled'] = $is_agent_has_wash[0]['is_scheduled'];
 			}
+			
 		/*if($user_check->status != 'online'){
 			$isagentbusy = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE agent_id='".$user_check->id."' AND (status >= 1 AND status <= 3)")->queryAll();
 			if(!count($isagentbusy)){
@@ -5567,7 +5577,7 @@ $json= array(
     
     public function actioncheckuseronlinedevices(){
 
-if(Yii::app()->request->getParam('key') != API_KEY){
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -5864,8 +5874,12 @@ if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
 }
-		
-		$all_cities = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` ORDER BY city ASC")->queryAll();
+		$where = '';
+		if(Yii::app()->request->getParam('county') != ""){
+		    $countyName = Yii::app()->request->getParam('county');
+            $where = "where county='$countyName'";
+        }
+		$all_cities = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` $where ORDER BY city ASC")->queryAll();
 		
 			$result = 'true';
 			$response = 'all cities';
@@ -5879,6 +5893,43 @@ die();
 		
    
     }
-	
+    
+     public function actionfixcusotmerphoneformat()
+    {
 
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$offset = 0;
+$offset = Yii::app()->request->getParam('offset');
+
+		
+		$all_cust = Yii::app()->db->createCommand("SELECT * FROM customers ORDER BY id ASC LIMIT 10 OFFSET ".$offset)->queryAll();
+//echo count($all_cust);
+
+if(count($all_cust)){
+    foreach($all_cust as $cust){
+        $new_phone = '';
+        $new_phone = preg_replace('/\D/', '', $cust['contact_number']);
+        echo "before: ".$cust['contact_number']." | after: ".$new_phone;
+        echo "<br>";
+        Customers::model()->updateByPk($cust['id'], array("contact_number" => $new_phone));
+    }
+}
+else{
+    echo "nothing found";
+}
+
+/*$all_phones = ["999-000-0999", "(787) 878 0999", "444 444 3333", " 999 - 990 -0999", "555 444 3333 ", "8989880099", "4444 44", "(999)898 8988", "(888)-999-9089", "(333) 898-9000"];
+
+foreach($all_phones as $phone){
+    $phone_new = preg_replace('/\D/', '', $phone);
+    echo $phone_new."<br>";
+}*/		
+   
+    }
+    
+    
 }

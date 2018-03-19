@@ -2965,19 +2965,29 @@ die();
        $query_str = '';
        $limit = 0;
       $limit = Yii::app()->request->getParam('limit');
-      $limit_str = '';
+      		$total_pages = 0;
+$search_area = Yii::app()->request->getParam('search_area');
+$agent_query = '';
+    
+$page_number = 1;
+	if(Yii::app()->request->getParam('page_number')) $page_number = Yii::app()->request->getParam('page_number');
+	$offset = ($page_number -1) * $limit;
+
+		$limit_str = '';
       $total_count = 0;
       if($limit && ($limit != 'none')){
-          $limit_str = " LIMIT ".$limit; 
+          $limit_str = " LIMIT ".$limit." OFFSET ".$offset;
       }
+      
+      if($search_area == "Washer Name") $agent_query = "(first_name LIKE '%$query%' OR last_name LIKE '%$query%') ";
      
        if($query){
         
-             $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE first_name LIKE '%$query%' OR last_name LIKE '%$query%' OR email LIKE '%$query%' OR phone_number LIKE '%$query%'".$limit_str)->queryAll();
+             $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE ".$agent_query."ORDER BY id DESC".$limit_str)->queryAll();
          
-             $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE first_name LIKE '%$query%' OR last_name LIKE '%$query%' OR email LIKE '%$query%' OR phone_number LIKE '%$query%'")->queryAll();
+             $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE ".$agent_query."ORDER BY id DESC")->queryAll();
 $total_count = $total_rows[0]['countid'];
-
+if($total_count > 0) $total_pages = ceil($total_count / $limit);
        }
      
 			if(count($washers_exists)>0){
@@ -3015,7 +3025,8 @@ $all_washers[$ind]['insurance_exp_date'] = $washer['insurance_license_expiration
 				'result'=> $result,
 				'response'=> $response,
                 'all_washers' => $all_washers,
-                'total_washers' => $total_count
+                'total_washers' => $total_count,
+                'total_pages' => $total_pages
 			);
 
 		echo json_encode($json); die();
@@ -4492,7 +4503,7 @@ die();
 
      public function actioninactiveagentslogout(){
 
-if(Yii::app()->request->getParam('key') != API_KEY){
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -5224,7 +5235,7 @@ $json= array(
 
 public function actionbuggedagentlogout(){
 
-if(Yii::app()->request->getParam('key') != API_KEY){
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }

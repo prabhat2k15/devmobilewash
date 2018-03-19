@@ -59,8 +59,7 @@ $model= Users::model()->findByAttributes(array('id'=>$user_id->id));
 					$json= array(
 						'result'=> $result,
 						'response'=> $response,
-'user_type' => $user_id->users_type,
-'root_url' => ROOT_URL
+'user_type' => $user_id->users_type
 
 					);
 				}else{
@@ -1211,8 +1210,7 @@ if(count($userdetail)){
                     'response'=> 'user type',
                     'users_type' => $userdetail[0]['users_type'],
 'user_id' => $userdetail[0]['id'],
-'user_name' => $userdetail[0]['username'],
-'root_url' => ROOT_URL
+'user_name' => $userdetail[0]['username']
    );
 }
 else{
@@ -2936,6 +2934,31 @@ die();
 
 		if((isset($device_type) && !empty($device_type)) && (isset($app_version) && !empty($app_version))){
 		       $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = '".strtoupper($device_type)."'")->queryAll();
+		       
+		       /*if(($app_version == '2.0.1') && ($device_type == 'IOS')){
+		             $result= "true";
+                $response = "Latest version of App installed";
+
+                  $json = array(
+                'result'=> $result,
+                'response'=> $response,
+                'mobilewash_domain' => $mobilewash_domain,
+                 'mobilewash_apiurl' => $mobilewash_apiurl,
+ 'mobilewash_apptype' => $mobilewash_apptype,
+ 'mobilewash_socketurl' => $mobilewash_socketurl,
+ 'devmobilewash_domain' => $devmobilewash_domain,
+ 'devmobilewash_apiurl' => $devmobilewash_apiurl,
+ 'devmobilewash_apptype' => $devmobilewash_apptype,
+ 'devmobilewash_socketurl' => $devmobilewash_socketurl,
+ 'getmobilewash_domain' => $getmobilewash_domain,
+ 'getmobilewash_apiurl' => $getmobilewash_apiurl,
+ 'getmobilewash_apptype' => $getmobilewash_apptype,
+ 'getmobilewash_socketurl' => $getmobilewash_socketurl
+            );
+            
+            echo json_encode($json);
+		die();
+		       }*/
 
                 if(($app_settings[0]['version_check'] == 'on') && ($app_version != $app_settings[0]['app_version'])){
 
@@ -3815,7 +3838,7 @@ curl_close($handle);
 
 public function actioncronwasherpaymentscheck(){
 
-if(Yii::app()->request->getParam('key') != API_KEY){
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -3870,7 +3893,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintre
 				
 				if($transaction_check['success'] == 1) {
 					if(($transaction_check['status'] == 'submitted_for_settlement') || ($transaction_check['status'] == 'settling') || ($transaction_check['status'] == 'settled')){
-						Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1));	
+						Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id'=>''));	
 					}
 					else{
 						
@@ -3910,7 +3933,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintre
 						else $payresult = Yii::app()->braintree->submitforsettlement($wash->transaction_id);
 
 						if($payresult['success'] == 1) {
-							Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1));
+							Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id'=>''));
 
 						}	
 					}
@@ -4589,11 +4612,11 @@ die();
 		
 	$digits = 4;
             $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
-           $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
+           if($phone != '8887776423') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
             $json    = array();
 
             $this->layout = "xmlLayout";
-
+         
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
@@ -4606,17 +4629,16 @@ die();
 
 
             $message = $randum_number." is your MobileWash verification code";
-            try {
-	    $sendmessage = $client->account->messages->create(array(
+             try {
+            $sendmessage = $client->account->messages->create(array(
                 'To' =>  $phone,
                 'From' => '+13106834902',
                 'Body' => $message,
             ));
-	     }
+ }
  catch (Services_Twilio_RestException $e) {
             //echo  $e;
 } 
-	    
 	     
 	}
 
@@ -4755,11 +4777,11 @@ else{
 		      
 		      $digits = 4;
             $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
-           $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
+           if($phone != '8889995698') $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
             $json    = array();
 
             $this->layout = "xmlLayout";
-         
+          
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
@@ -4772,19 +4794,17 @@ else{
 
 
             $message = $randum_number." is your MobileWash verification code";
-             try {
-	    $sendmessage = $client->account->messages->create(array(
+            try {
+            $sendmessage = $client->account->messages->create(array(
                 'To' =>  $phone,
                 'From' => '+13106834902',
                 'Body' => $message,
             ));
 	    
-	    	}
+	}
 	catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
-	    
-	 
 	}
 
 	$result = 'true';
@@ -4980,7 +5000,7 @@ else $agentlname = $model->last_name;
             $json    = array();
 
             $this->layout = "xmlLayout";
-     
+          
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
@@ -4994,13 +5014,13 @@ else $agentlname = $model->last_name;
 
             $message = $randum_number." is your MobileWash verification code";
              try {
-	    $sendmessage = $client->account->messages->create(array(
+            $sendmessage = $client->account->messages->create(array(
                 'To' =>  $phone,
                 'From' => '+13106834902',
                 'Body' => $message,
             ));
 	    
-	       }
+             }
  catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
@@ -5141,7 +5161,7 @@ else{
     }
     
     
-    public function actionConfirmPhone(){
+ public function actionConfirmPhone(){
 
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";

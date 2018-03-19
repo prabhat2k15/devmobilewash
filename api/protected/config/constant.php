@@ -9,6 +9,7 @@
 /* --- API key --- */
 
 define("API_KEY","Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
+define("API_KEY_CRON","ZZAvmySKskGsEL4ecUuXyytCcTLXLuDAsGrzSq9T");
 define("ROOT_URL","http://www.devmobilewash.com");
 define("ROOT_WEBFOLDER","/home/devmobilewash");
 define("APP_ENV",""); // real or blank

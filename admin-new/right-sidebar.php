@@ -1,3 +1,9 @@
+ <style>
+     .page-sidebar-closed .sidebar-search{
+         display: none;
+     }
+     
+ </style>
  <!-- BEGIN CONTAINER -->
         <div class="page-container">
             <!-- BEGIN SIDEBAR -->
@@ -26,7 +32,7 @@
                             <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
                             <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
                             <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-                            <form class="sidebar-search  " action="search.php" method="GET">
+                            <form style="visibility: hidden; margin-top: 15px;" class="sidebar-search  " action="" method="GET">
                                 <a href="javascript:;" class="remove">
                                     <i class="icon-close"></i>
                                 </a>
@@ -62,7 +68,7 @@
                                     </a>                                  
                                 </li>                                
                                 <li class="nav-item  <?php if($url == 'payment-reports.php' || $newurl_page[0] == 'payment-reports.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
-                                    <a href="payment-reports.php" class="nav-link ">
+                                    <a href="payment-reports.php?filter=&limit=400" class="nav-link ">
                                     <span class="title">Payment Reports</span>
                                     </a>
                                 </li>
@@ -208,13 +214,13 @@
                                         <span class="title">Coverage Area Zipcodes</span>
                                     </a>
                                 </li>
-				<li style="display: <?php echo $checked_backup_db_display; ?>" class="nav-item  <?php if($url == 'coverage-area-cities.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                <li style="display: <?php echo $checked_backup_db_display; ?>" class="nav-item  <?php if($url == 'coverage-area-cities.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="coverage-area-cities.php" class="nav-link ">
                                         <span class="title">Coverage Area Cities</span>
                                     </a>
                                 </li>
                                 <li style="display: <?php echo $checked_command_center_display; ?>" class="nav-item  <?php if($url == 'command-center.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="command-center.php" target="_blank" class="nav-link ">
+                                    <a href="http://www.getmobilewash.com/admin-new/command-center.php" target="_blank" class="nav-link ">
                                         <span class="title">Command Center</span>
                                     </a>
                                 </li>
@@ -257,7 +263,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php if($url == 'manage-customers.php' || $newurl_page[0] == 'manage-customers.php' || $newurl_page[0] == 'edit-customer.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="manage-customers.php" class="nav-link ">
+                                    <a href="manage-customers.php?limit=400" class="nav-link ">
                                         <span class="title">Manage Customers</span>
                                     </a>
                                 </li>
@@ -330,7 +336,28 @@
                     <!-- END SIDEBAR MENU -->
                     <!-- END SIDEBAR MENU -->
 <a class="add-bug-btn" href="add-new-bug.php" style="display: block;margin: 0 auto;color: #fff;text-align: center;padding: 10px;margin: 20px 45px;box-sizing: border-box;border-radius: 50px;text-decoration: none;border: 2px solid #b4bcc8;">Report Bug</a>
-
+ <form class="sidebar-search  " action="search.php" method="GET">
+                                
+                               
+                                    <input style="background: #fff; padding: 6px; width: 100%; display: block; margin-bottom: 10px;" type="text" class="form-control" name="q" placeholder="Search..." required>
+                                
+                               
+                                    <select name="search_area" style="background: #fff; padding: 6px; width: 100%; display: block; margin-bottom: 10px;" required>
+                                        <option value="">-- Select Search Area --</option>
+                                        <option value="Order Number">Order Number</option>
+                                        <option value="Washer Name">Washer Name</option>
+                                        <option value="Customer Name">Customer Name</option>
+                                        <option value="Customer Email">Customer Email</option>
+                                        <option value="Customer Phone">Customer Phone</option>
+                                        <option value="Created Date">Created Date</option>
+                                        <option value="Scheduled Date">Scheduled Date</option>
+                                        <option value="On-Demand">On-Demand</option>
+                                        <option value="Scheduled">Scheduled</option>
+                                        
+                                    </select>
+                                
+                                <input style="width: 100%;" type="submit" value='Search' />
+                            </form>
 </div>
                 <!-- END SIDEBAR -->
             </div>

@@ -951,7 +951,7 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
                     $mobile_receipt .= "Washes: ".$customer_total_wash."\r\n";
 
 					$message .= "<p style='text-align: center; font-size: 18px; padding: 10px; border: 1px solid #016fd0; border-radius: 8px; line-height: 22px; font-size: 16px; margin-top: 25px;'>We may kindly ask for a 20 minute grace period due to unforeseen traffic delays.<br>Appointment times may be rescheduled due to overwhelming demand.</p><p style='text-align: center; font-size: 18px;'>Log in to <a href='".ROOT_URL."' style='color: #016fd0'>MobileWash.com</a> to view your scheduled order options</p>";
-					$message .= "<p style='text-align: center; font-size: 16px; margin-bottom: 0; line-height: 22px;'>$10 cancellation fee will apply for canceling within 30 minutes of your <br>scheduled wash time</p>";
+					$message .= "<p style='text-align: center; font-size: 16px; margin-bottom: 0; line-height: 22px;'>$15 cancellation fee will apply for canceling within 1 hour of your <br>scheduled wash time</p>";
 
 					//Vargas::Obj()->SendMail($customers_id_check->email,"billing@Mobilewash.com",$message,$subject, 'mail-receipt');
 					$to = Vargas::Obj()->getAdminToEmail();
@@ -2468,7 +2468,7 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 
                     $mobile_receipt .= "Total: $".$wrequest_id_check->schedule_total."\r\n";
 					$message .= "<p style='text-align: center; font-size: 18px; padding: 10px; border: 1px solid #016fd0; border-radius: 8px; line-height: 22px; font-size: 16px; margin-top: 25px;'>We may kindly ask for a 20 minute grace period due to unforeseen traffic delays.<br>Appointment times may be rescheduled due to overwhelming demand.</p><p style='text-align: center; font-size: 18px;'>Log in to <a href='".ROOT_URL."' style='color: #016fd0'>MobileWash.com</a> to view your scheduled order options</p>";
-					$message .= "<p style='text-align: center; font-size: 16px; margin-bottom: 0; line-height: 22px;'>$10 cancellation fee will apply for canceling within 30 minutes of your <br>scheduled wash time</p>";
+					$message .= "<p style='text-align: center; font-size: 16px; margin-bottom: 0; line-height: 22px;'>$15 cancellation fee will apply for canceling within 1 hour of your <br>scheduled wash time</p>";
 
 					//Vargas::Obj()->SendMail($customers_id_check->email,"billing@Mobilewash.com",$message,$subject, 'mail-receipt');
 					$to = Vargas::Obj()->getAdminToEmail();
@@ -3323,7 +3323,7 @@ foreach( $clientdevices as $ctdevice){
                             $notify_msg = urlencode($message);
 
                             $notifyurl = "https://www.mobilewash.com/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-
+file_put_contents("washing_one_min_notificaiton.log","order id ".$wrequest_id_check->id." - "."customer id ".$ctdevice['customer_id']." "."device id ".$ctdevice['id']." ".$notifyurl." source: checkwashrequeststatus\r\n",FILE_APPEND);
                             $ch = curl_init();
                             curl_setopt($ch,CURLOPT_URL,$notifyurl);
                             curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
@@ -4024,7 +4024,7 @@ if($feedback_source != 'dropjob'){
 
      public function actionresetrejectedwashrequests(){
 
-if(Yii::app()->request->getParam('key') != API_KEY){
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -7288,7 +7288,7 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
             $auth_token = '149336e1b81b2165e953aaec187971e6';
             $client = new Services_Twilio($account_sid, $auth_token);
 
- $message = "Order #".$wrequest_id_check->id." has been canceled\r\nCustomer Name: ".$cust_detail->customername."\r\nAddress: ".$wrequest_id_check->address;
+ $message = "Order #".$wrequest_id_check->id." has been canceled";
 
            
              $sendmessage = $client->account->messages->create(array(
@@ -7943,54 +7943,7 @@ die();
                 //print_r($val);
                 if(count($val['declined'])>0){
                     $dt[$key]['declined']['count']= count($val['declined']);
-                    $dt[$key]['declined']['color']= '#cc0066';
-                }
-                if(count($val['pending'])>0 || count($val['complete'])>0){
-                    $total_orders = count($val['pending']) + count($val['complete']);
-                    $dt[$key]['total_orders']['count']= $total_orders;
-                    $dt[$key]['total_orders']['color']= '#ff0000';
-                }
-                if(count($val['pending'])>0){
-                    $dt[$key]['pending']['count']= count($val['pending']);
-                    $dt[$key]['pending']['color']= '#e5e500';
-                }
-                if(count($val['complete'])>0){
-                    $dt[$key]['complete']['count']= count($val['complete']);
-                    $dt[$key]['complete']['color']= '#008000';
-                }
-                if(count($val['canceled'])>0){
-                    $dt[$key]['canceled']['count']= count($val['canceled']);
-                    $dt[$key]['canceled']['color']= '#AAAAAA';
-                }
-                if(count($val['Express'])>0){
-                    $dt[$key]['Express']['count']= count($val['Express']);
-                    $dt[$key]['Express']['color']= '#00BFFF';
-                }
-                if(count($val['Deluxe'])>0){
-                    $dt[$key]['Deluxe']['count']= count($val['Deluxe']);
-                    $dt[$key]['Deluxe']['color']= '#4169E1';
-                }
-                if(count($val['Premium'])>0){
-                    $dt[$key]['Premium']['count']= count($val['Premium']);
-                    $dt[$key]['Premium']['color']= '#000080';
-                }
-                if(count($val['coupon_code'])>0){
-                    $dt[$key]['coupon_code']['count']= count($val['coupon_code']);
-                    $dt[$key]['coupon_code']['color']= '#800080';
-                }
-                if(count($val['tip_amount'])>0){
-                    $dt[$key]['tip_amount']['count']= count($val['tip_amount']);
-                    $dt[$key]['tip_amount']['color']= '#BFFF00';
-                }
-                if(count($val['processing'])>0){
-                    $dt[$key]['processing']['count']= count($val['processing']);
-                    $dt[$key]['processing']['color']= '#EF9047';
-                }
-                if(count($val['home'])>0){
-                    $dt[$key]['home']['count']= count($val['home']);
-                }
-                if(count($val['work'])>0){
-                    $dt[$key]['work']['count']= count($val['work']);
+                    $dt[$key]['declined']['color']= '#eb1350';
                 }
                 if(count($val['total_cars'])>0){
                     $dt[$key]['total_cars']['count'] = 0;
@@ -7998,6 +7951,55 @@ die();
                         $dt[$key]['total_cars']['count'] += $carcount;
                     }
                 }
+                if(count($val['pending'])>0 || count($val['processing']) >0 || count($val['complete'])>0){
+                    $total_orders = count($val['pending']) + count($val['processing']) + count($val['complete']);
+                    $dt[$key]['total_orders']['count']= $total_orders;
+                    $dt[$key]['total_orders']['color']= '#9c64b7';
+                }
+                if(count($val['pending'])>0){
+                    $dt[$key]['pending']['count']= count($val['pending']);
+                    $dt[$key]['pending']['color']= '#f6a635';
+                }
+                if(count($val['complete'])>0){
+                    $dt[$key]['complete']['count']= count($val['complete']);
+                    $dt[$key]['complete']['color']= '#14c266';
+                }
+                if(count($val['canceled'])>0){
+                    $dt[$key]['canceled']['count']= count($val['canceled']);
+                    $dt[$key]['canceled']['color']= '#8b9d9e';
+                }
+                if(count($val['processing'])>0){
+                    $dt[$key]['processing']['count']= count($val['processing']);
+                    $dt[$key]['processing']['color']= '#e67418';
+                }
+                if(count($val['Express'])>0){
+                    $dt[$key]['Express']['count']= count($val['Express']);
+                    $dt[$key]['Express']['color']= '#2490d7';
+                }
+                if(count($val['Deluxe'])>0){
+                    $dt[$key]['Deluxe']['count']= count($val['Deluxe']);
+                    $dt[$key]['Deluxe']['color']= '#2490d7';
+                }
+                if(count($val['Premium'])>0){
+                    $dt[$key]['Premium']['count']= count($val['Premium']);
+                    $dt[$key]['Premium']['color']= '#2490d7';
+                }
+                if(count($val['coupon_code'])>0){
+                    $dt[$key]['coupon_code']['count']= count($val['coupon_code']);
+                    $dt[$key]['coupon_code']['color']= '#ec6858';
+                }
+                if(count($val['tip_amount'])>0){
+                    $dt[$key]['tip_amount']['count']= count($val['tip_amount']);
+                    $dt[$key]['tip_amount']['color']= '#f28fba';
+                }
+                
+                if(count($val['home'])>0){
+                    $dt[$key]['home']['count']= count($val['home']);
+                }
+                if(count($val['work'])>0){
+                    $dt[$key]['work']['count']= count($val['work']);
+                }
+                
                 /*if(count($val['tip_amount'])>0){
                     $dt[$key]['tip_amount']['color']= '#cc0066';
                     $dt[$key]['tip_amount']['count']= 0;
@@ -8985,6 +8987,7 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
             $client = new Services_Twilio($account_sid, $auth_token);
 
  $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
+$message2 = "Order #".$id." has been canceled";
 
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  '5627817812',
@@ -9008,7 +9011,7 @@ $sendmessage = $client->account->messages->create(array(
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
                 'From' => '+13103128070',
-                'Body' => $message,
+                'Body' => $message2,
             ));
             }
 
@@ -9298,6 +9301,7 @@ $this->layout = "xmlLayout";
 
 
             $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
+$message2 = "Order #".$id." has been canceled";
 
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  '5627817812',
@@ -9321,7 +9325,7 @@ $sendmessage = $client->account->messages->create(array(
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
                 'From' => '+13103128070',
-                'Body' => $message,
+                'Body' => $message2,
             ));
             }
 
@@ -10197,7 +10201,7 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 
    public function actionschedulewashalert() {
 
- if(Yii::app()->request->getParam('key') != API_KEY){
+ if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -10476,7 +10480,7 @@ else if($min_diff < 15 && $min_diff >= 10) $message2 = "You have a scheduled car
 
       public function actionschedulewashtenminalert() {
 
-if(Yii::app()->request->getParam('key') != API_KEY){
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -10621,7 +10625,7 @@ $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id =
 
 public function actioncustomerwashfeedbackemails() {
 
-if(Yii::app()->request->getParam('key') != API_KEY){
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -10970,9 +10974,9 @@ Yii::app()->db->createCommand("UPDATE washing_plans_addons SET fulltitle='".$ful
     }
 
 
-     public function actioncompletedwashfeedbackcheck() {
+     public function actioncompleted_wash_feedback_check() {
 
-if(Yii::app()->request->getParam('key') != API_KEY){
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
@@ -11135,7 +11139,7 @@ die();
                         if($current_mile < 1) $current_mile = 1;
                         //if($current_mile <= 1) $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
                         //else $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
-			$message2 = str_replace(array("[CITY]"), array(strtoupper($wash_id_check->city)), $message);
+			            $message2 = str_replace(array("[CITY]"), array(strtoupper($wash_id_check->city)), $message);
                         //echo $agid." ".$message2."<br>";
 						foreach($agentdevices as $agdevice){
 
