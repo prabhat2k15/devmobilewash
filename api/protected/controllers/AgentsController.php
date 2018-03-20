@@ -3007,6 +3007,7 @@ $all_washers[$ind]['real_washer_id'] = $washer['real_washer_id'];
                     $all_washers[$ind]['first_name'] = $washer['first_name'];
                     $all_washers[$ind]['last_name'] = $washer['last_name'];
                     $all_washers[$ind]['phone_number'] = $washer['phone_number'];
+		    $all_washers[$ind]['phone_verify_code'] = $washer['phone_verify_code'];
                     $all_washers[$ind]['city'] = $washer['city'];
                     $all_washers[$ind]['state'] = $washer['state'];
                     $all_washers[$ind]['zipcode'] = $washer['zipcode'];

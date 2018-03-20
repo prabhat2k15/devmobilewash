@@ -242,6 +242,7 @@ else echo $customer->total_wash;
                                                 
                                                 <th> Email </th>
                                                 <th> Phone Number </th>
+                                                <th> Phone Verify Code </th>
                                                 <th> City </th>
 <th> Insurance Exp. Date </th>
                                                 <th> Rating </th>
@@ -287,6 +288,7 @@ else echo $customer->total_wash;
                                                
                                                  <td> <?php echo $washer->email; ?> </td>
                                                  <td> <?php echo $washer->phone_number; ?> </td>
+                                                 <td> <?php echo $washer->phone_verify_code; ?> </td>
                                                    <td> <?php echo $washer->city; ?> </td>
  <td> <?php if(strtotime($washer->insurance_exp_date) > 0) echo date('m-d-Y', strtotime($washer->insurance_exp_date)); ?> </td>
 

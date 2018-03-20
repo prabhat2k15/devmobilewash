@@ -367,7 +367,7 @@ $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: 'Tva4hw
 </script>
         <script type="text/javascript">
 var currenttime = '<?php echo date("F d, Y H:i:s", time())?>' 
-
+console.log(currenttime);
 var montharray=new Array("January","February","March","April","May","June","July","August","September","October","November","December")
 var serverdate=new Date(currenttime)
 

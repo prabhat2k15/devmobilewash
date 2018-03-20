@@ -7270,10 +7270,11 @@ if($wrequest_id_check->coupon_code){
 
             }
 	    
-	    if((APP_ENV == 'real') && ($result == 'true') && ($wrequest_id_check->agent_id)){
+	    if(($result == 'true') && ($wrequest_id_check->agent_id)){
 		
 $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
 $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_check->customer_id));
+ if(APP_ENV == 'real'){
  $this->layout = "xmlLayout";
             spl_autoload_unregister(array(
                 'YiiBase',
@@ -7298,6 +7299,35 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
             ));
 
             spl_autoload_register(array('YiiBase','autoload'));
+	    }
+	    
+	    $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wrequest_id_check->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+					$message = "Order #".$wrequest_id_check->id." has been canceled";
+
+                    if(count($agentdevices))
+                    {
+                        foreach($agentdevices as $agdevice)
+                        {
+                            //$message =  "You have a new scheduled wash request.";
+                            //echo $agentdetails['mobile_type'];
+                            $device_type = strtolower($agdevice['device_type']);
+                            $notify_token = $agdevice['device_token'];
+                            $alert_type = "default";
+                            $notify_msg = urlencode($message);
+
+                            $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+                            //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                            $ch = curl_init();
+                            curl_setopt($ch,CURLOPT_URL,$notifyurl);
+                            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+                            if($notify_msg) $notifyresult = curl_exec($ch);
+                            curl_close($ch);
+                        }
+                    }
+	    
+	    
            }
 
 
