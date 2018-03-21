@@ -5406,7 +5406,7 @@ if((isset($num) && !empty($num))){
 
 
 
-            $message = "Here is your MobileWash Washer registration link ".ROOT_URL."/register/complete-registration.php?wephn=".rtrim(strtr(base64_encode($num), '+/', '-_'), '=');
+            $message = "Here is your MobileWash Washer registration link https://www.mobilewash.com/register/complete-registration.php?wephn=".rtrim(strtr(base64_encode($num), '+/', '-_'), '=');
 
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  $num,

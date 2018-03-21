@@ -1860,6 +1860,14 @@ $customername = ucwords($customername);
 
             echo json_encode($json);die();
             }
+	    
+	      if(($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id))
+                    {
+                        $result = 'false';
+                        $response = 'Sorry, this order is already assigned to another washer';
+                        $json = array('result' => $result, 'response' => $response);
+                        echo json_encode($json);die();
+                    }
 
         }
 
@@ -1872,6 +1880,14 @@ $customername = ucwords($customername);
 
             echo json_encode($json);die();
             }
+	    
+	      if(($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id))
+                    {
+                        $result = 'false';
+                        $response = 'Sorry, this order is already assigned to another washer';
+                        $json = array('result' => $result, 'response' => $response);
+                        echo json_encode($json);die();
+                    }
 
         }
 
