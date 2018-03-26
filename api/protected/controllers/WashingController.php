@@ -8718,17 +8718,9 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
            else{
 
              /* ------- kart details ----------- */
-
-$handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $id, "key" => API_KEY);
-curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-$kartresult = curl_exec($handle);
-curl_close($handle);
-$kartdata = json_decode($kartresult);
-//var_dump($jsondata);
-
+             
+             $kartapiresult = $this->washingkart($id, API_KEY);
+            $kartdata = json_decode($kartapiresult);
 
 /* ------- kart details end ----------- */
 
@@ -9019,14 +9011,11 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
   if(APP_ENV == 'real'){
 
  $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
+
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
             $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
             $auth_token = '149336e1b81b2165e953aaec187971e6';
@@ -9054,14 +9043,17 @@ $sendmessage = $client->account->messages->create(array(
             ));
 
 	       if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
+              try {
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
                 'From' => '+13103128070',
                 'Body' => $message2,
             ));
+              }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
             }
 
-            spl_autoload_register(array('YiiBase','autoload'));
            }
 
 
@@ -9155,7 +9147,7 @@ $sched_time = $order_exists->schedule_time;
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
 
-                                            foreach($kartdata->vehicles as $ind=>$vehicle){
+                    foreach($kartdata->vehicles as $ind=>$vehicle){
 
 $message .="<tr>
 <td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
@@ -9332,14 +9324,11 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
 if(APP_ENV == 'real'){
 
 $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
+
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
             $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
             $auth_token = '149336e1b81b2165e953aaec187971e6';
@@ -9368,14 +9357,18 @@ $sendmessage = $client->account->messages->create(array(
             ));
 
             if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
+             try{
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
                 'From' => '+13103128070',
                 'Body' => $message2,
             ));
+             }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
             }
 
-            spl_autoload_register(array('YiiBase','autoload'));
+
            }
 
 }
