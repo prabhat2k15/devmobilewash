@@ -1,4 +1,5 @@
 <?php
+include('header.php');
 $response = '';
 $result_code = '';
 if(isset($_POST['addcoupon-form-submit'])){
@@ -22,7 +23,6 @@ if($coupon_result_code == 'true'){
 }
 }
 ?>
-<?php include('header.php') ?>
 <?php
     if($company_module_permission == 'no'){
         ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php

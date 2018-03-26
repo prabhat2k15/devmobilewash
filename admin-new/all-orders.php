@@ -364,6 +364,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                                 <th> Status </th>
 <th> Payment </th>
 <th> Transaction ID </th>
+<th> Declined Transaction ID </th>
 												<!--th> Customer ID </th-->
 												<th> Customer Name </th>
 
@@ -420,6 +421,7 @@ else echo $order->payment_status; ?>
 <?php endif; ?>
 </td>
  <td><?php echo $order->transaction_id; ?></td>
+ <td><?php echo $order->failed_transaction_id; ?></td>
                     <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                     <td><?php echo $order->customer_phoneno; ?></td>
                     <?php if($_GET['customer_id']): ?>
@@ -756,6 +758,7 @@ payment_status_str += "<span class='label label-sm label-pending'>"+value.paymen
      upcomingwashes.push(payment_status_str);
 
 upcomingwashes.push(value.transaction_id);
+upcomingwashes.push(value.failed_transaction_id);
 upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?customer_id="+value.customer_id+"'>"+value.customer_name+"</a>");
 upcomingwashes.push(value.customer_phoneno);
 if(value.agent_details.real_washer_id) upcomingwashes.push(value.agent_details.real_washer_id);

@@ -1086,6 +1086,7 @@ if($bt_result->fundingDetails->routingNumber) $routing_no = $bt_result->fundingD
                     'zipcode' => $agent_id_check->zipcode,
                     'driver_license' => $agent_id_check->driver_license,
                     'proof_insurance' => $agent_id_check->proof_insurance,
+                    'insurance_expiration' => $agent_id_check->insurance_license_expiration,
                     'business_license' => $agent_id_check->business_license,
                     'bank_account_number' => $bank_no,
                     'routing_number' => $routing_no,
@@ -1199,6 +1200,8 @@ $hours_opt_check = '';
 $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
 $rating_control = 0;
 $rating_control = Yii::app()->request->getParam('rating_control');
+$insurance_expiration = '';
+        $insurance_expiration = Yii::app()->request->getParam('insurance_expiration');
 
    if($phone_dup_check == 'true'){
            $agent_phone_exists = Agents::model()->findByAttributes(array("phone_number"=>$phone_number));
@@ -1363,6 +1366,10 @@ $rating_control = Yii::app()->request->getParam('rating_control');
                     $routing_number = $model->routing_number;
                 }
                 
+                if(empty($insurance_expiration)){
+                    $insurance_expiration = $model->insurance_license_expiration;
+                }
+                
                 if(!is_numeric($block_washer)){
                     $block_washer = $model->block_washer;
                 }
@@ -1458,6 +1465,7 @@ $rating_control = Yii::app()->request->getParam('rating_control');
 					'password' => $password,
                     'driver_license' => $driver_license,
                     'proof_insurance' => $proof_insurance,
+                    'insurance_license_expiration' => $insurance_expiration,
                     'business_license' => $business_license,
 'washer_position' => $washer_position,
 'block_washer' => $block_washer,
@@ -3007,7 +3015,7 @@ $all_washers[$ind]['real_washer_id'] = $washer['real_washer_id'];
                     $all_washers[$ind]['first_name'] = $washer['first_name'];
                     $all_washers[$ind]['last_name'] = $washer['last_name'];
                     $all_washers[$ind]['phone_number'] = $washer['phone_number'];
-		    $all_washers[$ind]['phone_verify_code'] = $washer['phone_verify_code'];
+                    $all_washers[$ind]['phone_verify_code'] = $washer['phone_verify_code'];
                     $all_washers[$ind]['city'] = $washer['city'];
                     $all_washers[$ind]['state'] = $washer['state'];
                     $all_washers[$ind]['zipcode'] = $washer['zipcode'];

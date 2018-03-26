@@ -374,6 +374,7 @@ $pending_order_count = '';
                                         <th> Status </th>
                                         <th> Payment </th>
                                         <th> Transaction ID </th>
+					<th> Declined Transaction ID </th>
 					<th> Braintree Status </th>
 					<th> Payment Processed </th>
 				                        <th> Customer Name </th>
@@ -434,6 +435,7 @@ $pending_order_count = '';
                                             <?php endif; ?>
                                         </td>
                                         <td><?php echo $order->transaction_id; ?></td>
+					<td><?php echo $order->failed_transaction_id; ?></td>
 					<td><?php echo $order->transaction_status; ?></td>
 					 <td>                   
                                             <?php if(($order->transaction_status == 'authorized') || ($order->transaction_status == 'submitted_for_settlement') || ($order->transaction_status == 'settling') || ($order->transaction_status == 'settled')): ?>
@@ -680,6 +682,7 @@ payment_status_str += "<span class='label label-sm label-pending'>"+value.paymen
      upcomingwashes.push(payment_status_str);
 
 upcomingwashes.push(value.transaction_id);
+upcomingwashes.push(value.failed_transaction_id);
 upcomingwashes.push(value.transaction_status);
 
 					if ((value.transaction_status == 'authorized') || (value.transaction_status == 'submitted_for_settlement') || (value.transaction_status == 'settling') || (value.transaction_status == 'settled')) {
