@@ -3181,7 +3181,7 @@ $android_washer_search_radius = $app_settings[1]['washer_search_radius'];
 	}
 
 
-		public function actionadminondemandcancelorder(){
+	public function actionadminondemandcancelorder(){
 
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
@@ -3228,7 +3228,10 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
 
                 $resUpdate = $washrequestmodel->updateAll($data, 'id=:id', array(':id'=>$wash_request_id));
                 
-                
+                 if($wash_id_check->transaction_id) {
+                    if($wash_id_check->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($wash_id_check->transaction_id);
+                    else $voidresult = Yii::app()->braintree->void($wash_id_check->transaction_id);
+               }
 
            }
            else{
@@ -3244,7 +3247,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
             if($jsondata->result == 'false'){
                 if($jsondata->response == 'you cannot cancel wash until paying $10'){
                      $handle = curl_init(ROOT_URL."/api/index.php?r=customers/CustomerCancelWashPayment");
-            $data = array('customer_id' => $wash_id_check->customer_id, 'agent_id' => $wash_id_check->agent_id, 'wash_request_id' => $wash_request_id, 'amount' => 10, 'wash_position' => 'real', "key" => API_KEY);
+            $data = array('customer_id' => $wash_id_check->customer_id, 'agent_id' => $wash_id_check->agent_id, 'wash_request_id' => $wash_request_id, 'amount' => 15, 'wash_position' => APP_ENV, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -3273,6 +3276,11 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
             $response = $jsondata->response;
             }
             
+              if($wash_id_check->transaction_id) {
+                    if($wash_id_check->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($wash_id_check->transaction_id);
+                    else $voidresult = Yii::app()->braintree->void($wash_id_check->transaction_id);
+               }
+            
          
        }
        
@@ -3299,8 +3307,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
 
 		echo json_encode($json);
 		die();
-	}
-
+	}	
 
 	  public function actionadminsendwasherpayment(){
 

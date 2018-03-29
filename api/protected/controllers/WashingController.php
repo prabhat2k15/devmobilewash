@@ -650,14 +650,11 @@ $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
 
                     if((APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
+          
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+ require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
             $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
             $auth_token = '149336e1b81b2165e953aaec187971e6';
@@ -681,34 +678,50 @@ $last_order_days = "N/A";
 
             $message = "WASH NOW ATTEMPT #000".$washrequestid."- ".date('M d', strtotime($wash_details->created_date))." @ ".date('h:i A', strtotime($wash_details->created_date))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
-
+ try {
   $sendmessage = $client->account->messages->create(array(
                 'To' =>  '5627817812',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+   }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
 
-
+try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '8183313631',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+ }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
+try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '3109999334',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
 
+	     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+try {
+
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  '3103442534',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+	     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
-            spl_autoload_register(array('YiiBase','autoload'));
+          
            }
 
   }
@@ -961,14 +974,11 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
                    if((APP_ENV == 'real')){
 
                     $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
+   
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+        require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
             $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
             $auth_token = '149336e1b81b2165e953aaec187971e6';
@@ -992,34 +1002,49 @@ $last_order_days = "N/A";
 
             $message = "NEW Scheduled Order #000".$washrequestid."- ".date('M d', strtotime($wash_details->schedule_date))." @ ".$wash_details->schedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
-
+try {
   $sendmessage = $client->account->messages->create(array(
                 'To' =>  '5627817812',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+   }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
 
-
+try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '8183313631',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+ }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
+try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '3109999334',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+}catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+try {
 
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  '3103442534',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+}catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
-            spl_autoload_register(array('YiiBase','autoload'));
+      
             }
 
 
@@ -2403,15 +2428,12 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 
                     if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
-                    spl_autoload_unregister(array(
-                        'YiiBase',
-                        'autoload'
-                    ));
+                    
 
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-                    require('Services/Twilio.php');
-                    require('Services/Twilio/Capability.php');
+                    require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
                     $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
                     $auth_token = '149336e1b81b2165e953aaec187971e6';
@@ -2419,25 +2441,39 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     $client = new Services_Twilio($account_sid, $auth_token);
 		    $agent_det =  Agents::model()->findByPk($wrequest_id_check->agent_id);
                     $smscontent = "Washer #".$agent_det->real_washer_id." - ".$agent_det->first_name." ".$agent_det->last_name." dropped the order #".$wrequest_id_check->id;
-                    $sendmessage = $client->account->messages->create(array(
+                    
+		    try {
+		    $sendmessage = $client->account->messages->create(array(
                         'To' =>  '5627817812',
                         'From' => '+13103128070',
                         'Body' => $smscontent,
                     ));
+		     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
+ try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  '8183313631',
                         'From' => '+13103128070',
                         'Body' => $smscontent,
                     ));
+		     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+try {
 
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  '3109999334',
                         'From' => '+13103128070',
                         'Body' => $smscontent,
                     ));
+}catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
-                    spl_autoload_register(array('YiiBase','autoload'));
+                   
                     }
 
 
@@ -2493,11 +2529,11 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 
                     if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
-                    spl_autoload_unregister(array('YiiBase', 'autoload'));
+                    
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-                    require('Services/Twilio.php');
-                    require('Services/Twilio/Capability.php');
+                    require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
                     $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
                     $auth_token = '149336e1b81b2165e953aaec187971e6';
@@ -2505,25 +2541,38 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 
                     $message = "Order #".$wash_request_id." has been re-scheduled at ".$sched_date." @ ".$reschedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wrequest_id_check->address."\r\n------\r\n".$mobile_receipt;
 
+		    try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  '5627817812',
                         'From' => '+13103128070',
                         'Body' => $message,
                     ));
+		    }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
+try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  '8183313631',
                         'From' => '+13103128070',
                         'Body' => $message,
                     ));
+		     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
+
+try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  '3109999334',
                         'From' => '+13103128070',
                         'Body' => $message,
                     ));
+		      }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
-                    spl_autoload_register(array('YiiBase','autoload'));
+                    
                     }
 				}
 
@@ -2862,26 +2911,27 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
                      $this->layout = "xmlLayout";
-                        spl_autoload_unregister(array(
-                        'YiiBase',
-                        'autoload'
-                    ));
+                
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-                    require('Services/Twilio.php');
-                    require('Services/Twilio/Capability.php');
+                   require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
                     $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
                     $auth_token = '149336e1b81b2165e953aaec187971e6';
                     $client = new Services_Twilio($account_sid, $auth_token);
 
+		    try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  $cust_details->contact_number,
                         'From' => '+13103128070',
                         'Body' => $notify_msg,
                     ));
+		    }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
-                    spl_autoload_register(array('YiiBase','autoload'));
+               
                 }
 
                 if(($status == WASHREQUEST_STATUS_AGENTARRIVED) && (!$wrequest_id_check->meet_washer_push_sent))
@@ -2902,26 +2952,27 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
                     $this->layout = "xmlLayout";
-                        spl_autoload_unregister(array(
-                        'YiiBase',
-                        'autoload'
-                    ));
+                   
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-                    require('Services/Twilio.php');
-                    require('Services/Twilio/Capability.php');
+                   require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
                     $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
                     $auth_token = '149336e1b81b2165e953aaec187971e6';
                     $client = new Services_Twilio($account_sid, $auth_token);
 
+		    try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  $cust_details->contact_number,
                         'From' => '+13103128070',
                         'Body' => "Your washer is outside. Please open your app. Washer will wait up to 20 minutes.",
                     ));
+		      }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
-                    spl_autoload_register(array('YiiBase','autoload'));
+                   
                 }
 
                 if(($status == WASHREQUEST_STATUS_AGENTARRIVED_CONFIRMED_BYCLIENT) && (!$wrequest_id_check->inspect_begin_push_sent))
@@ -2952,26 +3003,27 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("wash_complete_push_sent" => 1));
 		    
 		    $this->layout = "xmlLayout";
-                        spl_autoload_unregister(array(
-                        'YiiBase',
-                        'autoload'
-                    ));
+          
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-                    require('Services/Twilio.php');
-                    require('Services/Twilio/Capability.php');
+                    require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
                     $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
                     $auth_token = '149336e1b81b2165e953aaec187971e6';
                     $client = new Services_Twilio($account_sid, $auth_token);
 
+		    try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  $cust_details->contact_number,
                         'From' => '+13103128070',
                         'Body' => "Wash complete. Please open your app and meet your washer outside to ensure satisfaction. Your washer will wait up to 10 minutes.",
                     ));
+		     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
-                    spl_autoload_register(array('YiiBase','autoload'));
+                  
                 }
 
                 if($notify_msg)
@@ -3785,6 +3837,18 @@ if(!$washrequest_id_check->is_feedback_sent) Vargas::Obj()->SendMail($to,$from,$
 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
 Washingrequests::model()->updateByPk($wash_request_id, array('tip_amount' => $tip_amount));
 
+if(is_numeric($ratings)) $logcomment = $comments." (Ratings: ".$ratings.")";
+else $logcomment = $comments;
+			
+ $washeractionlogdata= array(
+                            'agent_id'=> $washrequest_id_check->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'action'=> 'customerfeedback',
+			    'addi_detail' => $logcomment,
+                            'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
 
             }
         }
@@ -3981,6 +4045,20 @@ if($feedback_source != 'dropjob'){
                 /* ------------ calculate customer average feedback end ---------------- */
                 }
                 }
+		
+		if($agent_id){
+			if(is_numeric($ratings)) $logcomment = $comments." (Ratings: ".$ratings.")";
+			else $logcomment = $comments;
+			$washeractionlogdata= array(
+                            'agent_id'=> $agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agents_id_check->real_washer_id,
+                            'action'=> 'agentfeedback',
+			    'addi_detail' => $logcomment,
+                            'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+		}
 	    }
 
                 $result= 'true';
@@ -7292,14 +7370,11 @@ $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check
 $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_check->customer_id));
  if(APP_ENV == 'real'){
  $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
+
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
             $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
             $auth_token = '149336e1b81b2165e953aaec187971e6';
@@ -7307,14 +7382,16 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
 
  $message = "Order #".$wrequest_id_check->id." has been canceled";
 
-           
+           try {
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_detail->phone_number,
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+	      }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
-            spl_autoload_register(array('YiiBase','autoload'));
 	    }
 	    
 	    $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wrequest_id_check->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
@@ -9023,24 +9100,35 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
 
  $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 $message2 = "Order #".$id." has been canceled";
-
+try {
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  '5627817812',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+	     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
+try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '8183313631',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+}catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
+try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '3109999334',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+}catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
 	       if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
               try {
@@ -9338,23 +9426,36 @@ $this->layout = "xmlLayout";
             $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 $message2 = "Order #".$id." has been canceled";
 
+try {
             $sendmessage = $client->account->messages->create(array(
                 'To' =>  '5627817812',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+	     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
+
+try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '8183313631',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+ }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
+try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '3109999334',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
+}catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
             if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
              try{

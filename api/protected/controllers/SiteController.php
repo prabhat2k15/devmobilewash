@@ -2986,7 +2986,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 				$status_qr = ' AND (w.status=5 || w.status=6)';
 			} elseif($event == 'declined'){
                 $status_qr = " AND (w.failed_transaction_id != '')";
-            } elseif($event == 'Express' || $event == 'Deluxe' || $event == 'Premium'){
+            } elseif($event == 'express' || $event == 'deluxe' || $event == 'premium'){
                 $status_qr=" AND (FIND_IN_SET('".$event."', w.package_list)>0 AND w.status IN('0','4'))";
             } elseif($event == 'coupon_code'){
                 $status_qr = " AND w.coupon_code <> ''";

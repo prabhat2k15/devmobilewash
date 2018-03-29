@@ -771,7 +771,7 @@ upcomingwashes.push(value.address+" ("+value.address_type+")");
 
 if(value.is_scheduled == 1){
  if (value.reschedule_time) {
-  upcomingwashes.push("<span style='color: red; font-weight: bold; font-size: 13px;'>"+value.reschedule_date+" "+value.reschedule_time+"</span><p style='text-align: center; font-weight: bold; color: red; margin: 5px 0;'>Re-Scheduled</p>"+value.schedule_date+" "+value.schedule_time);  
+  upcomingwashes.push("<span style='color: red; font-weight: bold; font-size: 13px;'>"+value.reschedule_date+" "+value.reschedule_time+"</span><p style='text-align: center; font-weight: bold; color: red; margin: 5px 0;'>Re-Scheduled</p>");  
 }
 else{
  if(value.schedule_time) upcomingwashes.push(value.schedule_date+" "+value.schedule_time);   

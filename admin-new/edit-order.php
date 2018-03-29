@@ -1681,6 +1681,12 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'adminremovecar'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> removed <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'customerfeedback'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'agentfeedback'): ?>
+                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
+                                                          <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
                                                           </div>
@@ -3566,7 +3572,7 @@ checkadmineditstatus();
 $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/washingkart", { wash_request_id: wash_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true' && data.status == 2){
-$('#washer-arrive-dialog').dialog('open');
+//$('#washer-arrive-dialog').dialog('open');
 }
 
 if(data.result == 'true' && data.status == 3){
@@ -3575,7 +3581,7 @@ if(veh.status == 2){
   current_vehicle_id = veh.id;
     $('#car-inspect-dialog').html("<p>"+veh.brand_name+" "+veh.model_name+"</p><p><img src='"+veh.vehicle_inspect_image_temp+"' style='width: 100%;' /></p>");
 
-  $('#car-inspect-dialog').dialog('open');
+  //$('#car-inspect-dialog').dialog('open');
   return false;
 }
 });
@@ -3874,7 +3880,14 @@ if(data.result == 'true'){
        if(log.action == 'adminremovecar'){
             contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" removed "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
       }
-                        
+      
+       if(log.action == 'customerfeedback'){
+            contents += "<p style='margin-bottom: 10px;'>Customer feedback at "+log.formatted_action_date +" : "+ log.addi_detail+"</p>";
+      }
+      
+       if(log.action == 'agentfeedback'){
+            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" feedback at "+log.formatted_action_date +" : "+ log.addi_detail+"</p>";
+      }                        
 
    });
    

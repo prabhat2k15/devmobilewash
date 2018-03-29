@@ -173,6 +173,7 @@ $(document).ready(function() {
 									titledec = value.declined.count+' Declined Orders';
 									colordec = value.declined.color;
 									events.push({
+										eventtitle: 'declined',
 										title:titledec,
 										description:'a',
 										start:index,
@@ -184,6 +185,7 @@ $(document).ready(function() {
 									title6 = value.total_orders.count+' Total Orders';
 									color6 = value.total_orders.color;
 									events.push({
+										eventtitle: 'total_orders',
 										title:title6,
 										description:'b',
 										start:index,
@@ -196,6 +198,7 @@ $(document).ready(function() {
 									title1 = value.pending.count+' Pending Orders';
 									color1 = value.pending.color;
 									events.push({
+										eventtitle: 'pending',
 										title:title1,
 										description:'c',
 										start:index,
@@ -208,6 +211,7 @@ $(document).ready(function() {
 									title = value.complete.count+' Completed Orders';
 									color = value.complete.color;
 									events.push({
+										eventtitle: 'completed',
 										title:title,
 										description:'d',
 										start:index,
@@ -219,6 +223,7 @@ $(document).ready(function() {
 									title2 = value.canceled.count+' Canceled Orders';
 									color2 = value.canceled.color;
 									events.push({
+										eventtitle: 'canceled',
 										title:title2,
 										description:'e',
 										start:index,
@@ -232,6 +237,7 @@ $(document).ready(function() {
 								    title2 = value.processing.count+' Processing Orders';
 									color2 = value.processing.color;
 									events.push({
+										eventtitle: 'processing',
 										title:title2,
 										description:'k',
 										start:index,
@@ -246,6 +252,7 @@ $(document).ready(function() {
 									titleExp = value.Express.count+' Express Services';
 									colorExp = value.Express.color;
 									events.push({
+										eventtitle: 'express',
 										title:titleExp,
 										description:'f',
 										start:index,
@@ -258,6 +265,7 @@ $(document).ready(function() {
 									titleDlx = value.Deluxe.count+' Deluxe Services';
 									colorDlx = value.Deluxe.color;
 									events.push({
+										eventtitle: 'deluxe',
 										title:titleDlx,
 										description:'g',
 										start:index,
@@ -270,6 +278,7 @@ $(document).ready(function() {
 									titlePre = value.Premium.count+' Premium Services';
 									colorPre = value.Premium.color;
 									events.push({
+										eventtitle: 'premium',
 										title:titlePre,
 										description:'h',
 										start:index,
@@ -282,6 +291,7 @@ $(document).ready(function() {
 									titleCC = value.coupon_code.count+' Promo Codes';
 									colorCC = value.coupon_code.color;
 									events.push({
+										eventtitle: 'coupon_code',
 										title:titleCC,
 										description:'i',
 										start:index,
@@ -295,6 +305,7 @@ $(document).ready(function() {
 									titleTa = value.tip_amount.count+' Tips';
 									colorTa = value.tip_amount.color;
 									events.push({
+										eventtitle: 'tip_amount',
 										title:titleTa,
 										description:'j',
 										start:index,
@@ -350,42 +361,49 @@ $(document).ready(function() {
 				});
 			},
 			eventClick: function(calEvent, jsEvent, view) {
+				
 				var _day = calEvent.start._i;
-				var _event = '';
-				if(calEvent.color == '#e5e500'){
+				var _event = calEvent.eventtitle;
+				
+				if ((calEvent.eventtitle == '') || (!calEvent.eventtitle)) {
+					_event = 'all';
+				}
+				
+				/*if(calEvent.color == '#f6a635'){
 					_event = 'pending';
-				}else if(calEvent.color == '#ff0000'){
+				}else if(calEvent.color == '#9c64b7'){
 					_event = 'total_orders';
-				}else if(calEvent.color == '#008000'){
+				}else if(calEvent.color == '#14c266'){
 					_event = 'completed';
-				}else if(calEvent.color == '#EF9047'){
+				}else if(calEvent.color == '#e67418'){
 					_event = 'processing';
 				}
-				else if(calEvent.color == '#AAAAAA'){
+				else if(calEvent.color == '#8b9d9e'){
 					_event = 'canceled';
 				}
-				else if(calEvent.color == '#cc0066'){
+				else if(calEvent.color == '#eb1350'){
 					_event = 'declined';
 				}
-				else if(calEvent.color == '#00BFFF'){
-					_event = 'Express';
+				else if(calEvent.color == '#2490d7'){
+					_event = 'express';
 				}
-				else if(calEvent.color == '#4169E1'){
-					_event = 'Deluxe';
+				else if(calEvent.color == '#2490d7'){
+					_event = 'deluxe';
 				}
-				else if(calEvent.color == '#000080'){
-					_event = 'Premium';
+				else if(calEvent.color == '#2490d7'){
+					_event = 'premium';
 				}
 				else if(calEvent.color == '#800080'){
 					_event = 'coupon_code';
 				}
-				else if(calEvent.color == '#BFFF00'){
+				else if(calEvent.color == '#f28fba'){
 					_event = 'tip_amount';
 				}
 				else{
 					_event = 'all'
-				}
-
+				}*/
+				
+			
 				if(type == 'app_orders'){
 					window.location  = "/admin-new/manage-orders.php?day="+_day+"&event="+_event;
 				}else if(type == 'phone_orders'){
