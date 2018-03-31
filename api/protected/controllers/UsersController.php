@@ -832,8 +832,12 @@ die();
           if($receiver_type == 'agents'){
 
         foreach($allagents as $agent){
+		
+		$agent_detail = Agents::model()->findByPk($agent['agent_id']);
 
-                        /* --- notification call --- */
+                       if((count($agent_detail)) && (!$agent_detail->block_washer)){
+			
+		        /* --- notification call --- */
 
                             //echo $agentdetails['device_type'];
                             $device_type = strtolower($agent['device_type']);
@@ -851,6 +855,7 @@ die();
                             curl_close($ch);
 
                             /* --- notification call end --- */
+	}
         }
         }
 

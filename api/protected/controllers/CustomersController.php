@@ -2927,6 +2927,7 @@ $log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name.
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '35' ")->queryAll();
 						$message = $pushmsg[0]['message'];
 
+						if(!$agent_detail->block_washer){
 						foreach( $agentdevices as $agdevice){
 
 							//echo $agentdetails['mobile_type'];
@@ -2944,12 +2945,15 @@ $log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name.
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
+		}
 /* --- notification call end --- */
 }
 
 if($upgrade_pack == 3){
 
 Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
+
+$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 
 $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -2958,6 +2962,7 @@ $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '36' ")->queryAll();
 						$message = $pushmsg[0]['message'];
 
+						if(!$agent_detail->block_washer){
 						foreach( $agentdevices as $agdevice){
 
 							//echo $agentdetails['mobile_type'];
@@ -2975,6 +2980,7 @@ $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
+}
 /* --- notification call end --- */
 
 }
@@ -3033,6 +3039,7 @@ $vehicle_check = Yii::app()->db->createCommand()
                     WashPricingHistory::model()->updateAll(array('vehicle_price' => $draft_vehicle_exists->package_price, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id="'.$wash_request_id.'" AND vehicle_id="'.$vehicle_id.'"');
                    Vehicle::model()->updateByPk($vehicle_id, array("vehicle_source_id" => $vehicle_check[0]['id'], "brand_name" => $draft_vehicle_exists->brand_name, "model_name" => $draft_vehicle_exists->model_name, "vehicle_type" => $draft_vehicle_exists->vehicle_type, "vehicle_category" => $draft_vehicle_exists->vehicle_category, "vehicle_build" => $draft_vehicle_exists->vehicle_build, "vehicle_image" => $draft_vehicle_exists->vehicle_image));
                  
+		 $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 		 $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 			/* --- notification call --- */
@@ -3040,6 +3047,7 @@ $vehicle_check = Yii::app()->db->createCommand()
 			$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '33' ")->queryAll();
 			$message = $pushmsg[0]['message'];
 
+			if(!$agent_detail->block_washer){
 			foreach( $agentdevices as $agdevice){
 
 				$device_type = strtolower($agdevice['device_type']);
@@ -3056,6 +3064,7 @@ $vehicle_check = Yii::app()->db->createCommand()
 				if($notify_msg) $notifyresult = curl_exec($ch);
 				curl_close($ch);
 			}
+		 }
 			/* --- notification call end --- */
 			
 			$log_detail = $draft_vehicle_exists->brand_name." ".$draft_vehicle_exists->model_name;
@@ -3073,6 +3082,7 @@ $vehicle_check = Yii::app()->db->createCommand()
 		 }
 		 
 		 if($edit_vehicle == 3){
+			$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 			$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 			/* --- notification call --- */
@@ -3080,6 +3090,7 @@ $vehicle_check = Yii::app()->db->createCommand()
 			$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '34' ")->queryAll();
 			$message = $pushmsg[0]['message'];
 
+			if(!$agent_detail->block_washer){
 			foreach( $agentdevices as $agdevice){
 
 				$device_type = strtolower($agdevice['device_type']);
@@ -3096,6 +3107,7 @@ $vehicle_check = Yii::app()->db->createCommand()
 				if($notify_msg) $notifyresult = curl_exec($ch);
 				curl_close($ch);
 			}
+		 }
 			/* --- notification call end --- */
 		 }
 
@@ -3335,8 +3347,9 @@ $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, '
 			$notify_msg = urlencode($notify_msg);
 		     
 			$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-
-			if(count($agentdevices))
+			$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+			
+			if((count($agentdevices)) && (!$agent_detail->block_washer))
 			{
 				foreach($agentdevices as $agdevice)
 				{
@@ -3371,10 +3384,12 @@ $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, '
 
 			$notify_msg = $pushmsg[0]['message'];
 			$notify_msg = urlencode($notify_msg);
+			
+			$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 		     
 			$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-			if(count($agentdevices))
+			if((count($agentdevices)) && (!$agent_detail->block_washer))
 			{
 				foreach($agentdevices as $agdevice)
 				{
@@ -3502,10 +3517,10 @@ $notify_msg = str_replace("[BRAND_NAME]",$vehicle_details->brand_name, $notify_m
 $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_msg);
 
                      //$notify_msg = "Begin ".$vehicle_details->brand_name." ".$vehicle_details->model_name." car wash.";
-		     
+		     $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 		     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-			if(count($agentdevices))
+			if((count($agentdevices)) && (!$agent_detail->block_washer))
 			{
 				foreach($agentdevices as $agdevice)
 				{

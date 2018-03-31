@@ -3053,7 +3053,7 @@ try {
 		    
 		     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-            if(count($agentdevices))
+            if((count($agentdevices)) && (!$agent_details->block_washer))
             {
                 foreach($agentdevices as $agdevice)
                 {
@@ -4850,7 +4850,7 @@ if(!$agent_has_order->create_wash_push_sent){
 
                      $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agents_id_check->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-            if(count($agentdevices))
+            if((count($agentdevices)) && (!$agentdetails->block_washer))
             {
                 foreach($agentdevices as $agdevice)
                 {
@@ -4999,7 +4999,7 @@ if(!$prequest['create_wash_push_sent']){
 				  
 				     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agents_id_check->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-            if(count($agentdevices))
+            if((count($agentdevices)) && (!$agentdetails->block_washer))
             {
                 foreach($agentdevices as $agdevice)
                 {
@@ -7368,7 +7368,7 @@ if($wrequest_id_check->coupon_code){
 		
 $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
 $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_check->customer_id));
- if(APP_ENV == 'real'){
+ if((APP_ENV == 'real') && (!$agent_detail->block_washer)){
  $this->layout = "xmlLayout";
 
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -7398,7 +7398,7 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
 
 					$message = "Order #".$wrequest_id_check->id." has been canceled";
 
-                    if(count($agentdevices))
+                    if((count($agentdevices)) && (!$agent_detail->block_washer))
                     {
                         foreach($agentdevices as $agdevice)
                         {
@@ -9130,7 +9130,7 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-	       if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
+	       if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer)){
               try {
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
@@ -9457,7 +9457,7 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-            if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
+            if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer)){
              try{
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
@@ -9473,7 +9473,7 @@ $sendmessage = $client->account->messages->create(array(
            }
 
 }
-  if($result == 'true' && $response == 'Order canceled' && $order_exists->agent_id){
+  if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer)){
 
   $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$order_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -10643,6 +10643,7 @@ $min_diff = round(($from_time - $to_time) / 60,2);
 if($min_diff < 10){
 
                if($schedwash->agent_id){
+		$agent_detail = Agents::model()->findByPk($schedwash->agent_id);
                         $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$schedwash->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
                 //$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
                 //$message = $pushmsg[0]['message'];
@@ -10696,7 +10697,8 @@ $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id =
 
 }
 
-                foreach($agentdevices as $agdevice){
+                if(!$agent_detail->block_washer){
+		foreach($agentdevices as $agdevice){
                             //$message =  "You have a new scheduled wash request.";
                             //echo $agentdetails['mobile_type'];
                             $device_type = strtolower($agdevice['device_type']);
@@ -10713,6 +10715,7 @@ $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id =
                             if($notify_msg) $notifyresult = curl_exec($ch);
                             curl_close($ch);
                 }
+	       }
          }
          else{
 
@@ -11301,7 +11304,7 @@ die();
 						
 			if($current_mile <= 10){
 				$agent_det =  Agents::model()->findByPk($agid);
-				if((count($agent_det)) && ($agent_det->phone_number)){
+				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer)){
 				  //if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
                    

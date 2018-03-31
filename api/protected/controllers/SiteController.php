@@ -2397,12 +2397,14 @@ if($admin_command == 'save-note'){
 
 if(($admin_command == 'save-reschedule') && ($wrequest_id_check->is_scheduled == 1) && ($wrequest_id_check->agent_id) && ($reschedule_time) && ((strtotime($reschedule_date) != strtotime($wrequest_id_check->schedule_date)) || (strtotime($reschedule_time) != strtotime($wrequest_id_check->schedule_time)))){
 
+$agent_detail = Agents::model()->findByPk($wrequest_id_check->agent_id);
   $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wrequest_id_check->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 						/* --- notification call --- */
 
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '18' ")->queryAll();
 						$message = $pushmsg[0]['message'];
 $message = str_replace("[ORDER_ID]","#".$wash_request_id, $message);
+						if(!$agent_detail->block_washer){
 						foreach( $agentdevices as $ctdevice){
 							//$message =  "You have a new scheduled wash request.";
 							//echo $agentdetails['mobile_type'];
@@ -2420,6 +2422,7 @@ $message = str_replace("[ORDER_ID]","#".$wash_request_id, $message);
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
+}
 				/* --- notification call end --- */
 				
 				Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_create_schedulewash_push_sent" => 1));
@@ -4234,7 +4237,7 @@ die();
 			     }
 			     else{
                       $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-         if(count($agentdevices))
+         if((count($agentdevices)) && (!$agent_check->block_washer))
             {
                 foreach($agentdevices as $agdevice)
                 {
@@ -4978,7 +4981,7 @@ die();
     $agent_id_check = Agents::model()->findByPk($agent_id);
       $result = 'false';
       $response = 'Error in sending notification';
-        if(count($agent_id_check)){
+        if((count($agent_id_check)) && (!$agent_id_check->block_washer)){
 
                         $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
                         foreach($agentdevices as $agdevice){
@@ -5077,7 +5080,7 @@ die();
     $agent_id_check = Agents::model()->findByPk($agent_id);
       $result = 'false';
       $response = 'Error in sending SMS';
-        if(count($agent_id_check)){
+        if((count($agent_id_check)) && (!$agent_id_check->block_washer)){
 
                     $this->layout = "xmlLayout";
             spl_autoload_unregister(array(
