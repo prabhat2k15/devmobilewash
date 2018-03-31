@@ -2988,7 +2988,7 @@ $page_number = 1;
       }
       
       if($search_area == "Washer Name") $agent_query = "(first_name LIKE '%$query%' OR last_name LIKE '%$query%') ";
-     
+     if($search_area == "Washer Phone") $agent_query = "(phone_number LIKE '%$query%') ";
        if($query){
         
              $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE ".$agent_query."ORDER BY id DESC".$limit_str)->queryAll();

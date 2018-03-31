@@ -231,7 +231,7 @@ $completed_orders = number_format($completed_orders);
 
          $completed_orders_today = count($completed_orders_check); */
 
-         $completed_orders_today_res =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE status = 4 AND wash_request_position = '".APP_ENV."' AND date(created_date) = '".$today."'")->queryAll();
+         $completed_orders_today_res =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE status = 4 AND wash_request_position = '".APP_ENV."' AND date(order_for) = '".$today."'")->queryAll();
           $completed_orders_today = $completed_orders_today_res[0]['count'];
 /*$home_orders_check = Yii::app()->db->createCommand()
             ->select('*')
@@ -315,7 +315,7 @@ $office_orders = number_format($office_orders);
 
          $today_order = count($ordertoday); */
 
-         $today_order_res =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE wash_request_position = '".APP_ENV."' AND date(created_date) = '".$today."'")->queryAll();
+         $today_order_res =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE wash_request_position = '".APP_ENV."' AND date(order_for) = '".$today."'")->queryAll();
          $today_order = $today_order_res[0]['count'];
 
         $data = array(

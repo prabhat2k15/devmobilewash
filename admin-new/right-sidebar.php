@@ -346,6 +346,7 @@
                                         <option value="">-- Select Search Area --</option>
                                         <option value="Order Number">Order Number</option>
                                         <option value="Washer Name">Washer Name</option>
+					<option value="Washer Phone">Washer Phone</option>
                                         <option value="Customer Name">Customer Name</option>
                                         <option value="Customer Email">Customer Email</option>
                                         <option value="Customer Phone">Customer Phone</option>
