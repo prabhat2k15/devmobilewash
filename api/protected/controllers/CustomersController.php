@@ -1615,6 +1615,7 @@ die();
 		$actual_longitude = Yii::app()->request->getParam('actual_longitude');
 		$actual_latitude = Yii::app()->request->getParam('actual_latitude');
 		$city = Yii::app()->request->getParam('city');
+		$zipcode = Yii::app()->request->getParam('zipcode');
 		$admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
 $wash_request_id  = Yii::app()->request->getParam('wash_request_id');
@@ -1648,7 +1649,8 @@ if(!count($cust_address_check)){
 					'location_address'=> $location_address,
 					'actual_longitude'=> $actual_longitude,
 					'actual_latitude'=> $actual_latitude,
-					'city'=> $city
+					'city'=> $city,
+					'zipcode'=> $zipcode
 				);
 
 				    $locationdata= array_filter($locationdata);
@@ -1667,7 +1669,7 @@ else{
         }
     }
 
-  CustomerLocation::model()->updateByPk($location_id, array( 'location_address' => $location_address, 'city'=> $city, 'actual_longitude' => $actual_longitude, 'actual_latitude' => $actual_latitude ));
+  CustomerLocation::model()->updateByPk($location_id, array( 'location_address' => $location_address, 'city'=> $city, 'zipcode'=> $zipcode, 'actual_longitude' => $actual_longitude, 'actual_latitude' => $actual_latitude ));
 }
 
                     	$result= 'true';

@@ -50,6 +50,8 @@
 		$media = $_POST['media'];
 		$message_get = explode(',', $phone);
 		   $phone = array();
+		   $mw_from_mumbers = array("+18335674415", "+18338107607", "+18335674490", "+18335673979", "+18339568060", "+18335673609", "+18335674492", "+18335673706", "+18337896894", "+18335674230");
+$fromindex = 0;
 		   foreach($message_get as $message_list){
 			   $phone[] = $message_list;
 		   }
@@ -64,13 +66,13 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
 			$message_data = http_build_query($message_data);
 		   foreach($phone as $phonenumber){
 			$phonenumber = trim($phonenumber);
-			echo $phonenumber;
-			echo "<br>";
-			continue;
+			//echo $phonenumber;
+			//echo "<br>";
+			//continue;
 		if(!empty($media)){
-		$url = ROOT_URL.'/api/index.php?r=twilio/sendsms&tonumber='.$phonenumber;
+		$url = ROOT_URL.'/api/index.php?r=twilio/sendsms&tonumber='.$phonenumber.'&fromnumber='.$mw_from_mumbers[$fromindex];
 		}else{
-		$url = ROOT_URL.'/api/index.php?r=twilio/sendsms&tonumber='.$phonenumber;	
+		$url = ROOT_URL.'/api/index.php?r=twilio/sendsms&tonumber='.$phonenumber.'&fromnumber='.$mw_from_mumbers[$fromindex];	
 		}
 
 		$handle = curl_init($url);
@@ -103,6 +105,9 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
             
             }
 		
+		$fromindex++;
+			if($fromindex > 9) $fromindex = 0;
+			
 		   }
 
 	die();	   

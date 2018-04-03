@@ -220,7 +220,7 @@
                                     </a>
                                 </li>
                                 <li style="display: <?php echo $checked_command_center_display; ?>" class="nav-item  <?php if($url == 'command-center.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="http://www.getmobilewash.com/admin-new/command-center.php" target="_blank" class="nav-link ">
+                                    <a href="command-center.php" target="_blank" class="nav-link ">
                                         <span class="title">Command Center</span>
                                     </a>
                                 </li>

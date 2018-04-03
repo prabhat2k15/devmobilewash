@@ -38,11 +38,16 @@ die();
 		$vehicle_build = '';
 		$vehicle_build = Yii::app()->request->getParam('vehicle_build');
 		$customer_id = Yii::app()->request->getParam('customer_id');
+		$location_id = '';
+		if(Yii::app()->request->getParam('location_id')) $location_id = Yii::app()->request->getParam('location_id');
         $json = array();
         $plans = array();
         $express_plan = array();
         $deluxe_plan = array();
         $premium_plan = array();
+	$exp_surge_factor = 0;
+	$del_surge_factor = 0;
+	$prem_surge_factor = 0;
         $vehicle_type = '';
         $result= 'false';
         $response= 'Pass the required parameters';
@@ -88,6 +93,24 @@ $vehicle_type = $vehicle_exists[0]['type'];
                     ->where("day='".strtolower(date('D'))."'", array())
                     ->queryAll(); */
 
+		    	$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
+			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1' AND zipcodes != ''", array())->queryAll();
+		   if($location_id) $loc_check = CustomerLocation::model()->findByPk($location_id);
+			if((count($loc_check)) && (count($zipcodeprice))){
+			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
+			   foreach($all_zips as $zip){
+			      $zip = trim($zip);
+			      if($zip == $loc_check->zipcode){
+				 $exp_surge_factor = $zipcodeprice[0]['express'];
+				 $del_surge_factor = $zipcodeprice[0]['deluxe'];
+				 $prem_surge_factor = $zipcodeprice[0]['premium'];
+			      }
+			   }
+			}
+                        
+			$exp_surge_factor += $surgeprice[0]['express'];
+			$del_surge_factor += $surgeprice[0]['deluxe'];
+			$prem_surge_factor += $surgeprice[0]['premium'];
 
 
                     //print_r($surgeprice);
@@ -100,16 +123,22 @@ $vehicle_type = $vehicle_exists[0]['type'];
                     if($planDetails['title'] == "Express") {
                          //$planDetails['price'] += $surgeprice[0]['deluxe'];
                          //$planDetails['price'] = (string) $planDetails['price'];
+			 $planDetails['price'] = $planDetails['price'] + ($planDetails['price'] * ($exp_surge_factor / 100));
+			 $planDetails['price'] = number_format($planDetails['price'], 2);
                         $express_plan[] = $planDetails;
                     }
                     if($planDetails['title'] == "Deluxe") {
                          //$planDetails['price'] += $surgeprice[0]['deluxe'];
                          //$planDetails['price'] = (string) $planDetails['price'];
+			 $planDetails['price'] = $planDetails['price'] + ($planDetails['price'] * ($del_surge_factor / 100));
+			 $planDetails['price'] = number_format($planDetails['price'], 2);
                         $deluxe_plan[] = $planDetails;
                     }
                     if($planDetails['title'] == "Premium") {
                         //$planDetails['price'] += $surgeprice[0]['premium'];
                         //$planDetails['price'] = (string) $planDetails['price'];
+			$planDetails['price'] = $planDetails['price'] + ($planDetails['price'] * ($prem_surge_factor / 100));
+			$planDetails['price'] = number_format($planDetails['price'], 2);
                         $premium_plan[] = $planDetails;
                     }
                      //$plans[] = $planDetails;
@@ -11269,7 +11298,8 @@ die();
             /* ------- get nearest agents end --------- */
 
             if($nearagentsdetails->result == 'true'){
-
+$mw_from_mumbers = array("+18335674415", "+18338107607", "+18335674490", "+18335673979", "+18339568060", "+18335673609", "+18335674492", "+18335673706", "+18337896894", "+18335674230");
+$fromindex = 0;
 			    $message = $pushmsg[0]['message'];
                     foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis){
                         $current_mile = 0;
@@ -11321,7 +11351,7 @@ die();
                     try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  $agent_det->phone_number,
-                        'From' => '+13103128070',
+                        'From' => $mw_from_mumbers[$fromindex],
                         'Body' => $message2,
                     ));
  }
@@ -11333,6 +11363,9 @@ die();
                     //}
 			}
 			}
+			
+			$fromindex++;
+			if($fromindex > 9) $fromindex = 0;
 
                     }
 

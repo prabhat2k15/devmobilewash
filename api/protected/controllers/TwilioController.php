@@ -169,6 +169,7 @@ die();
 }
 		   
 		   $to_num = Yii::app()->request->getParam('tonumber');
+		   $from_num = Yii::app()->request->getParam('fromnumber');
 		   $message = Yii::app()->request->getParam('message');
 		   $media = Yii::app()->request->getParam('media');
            $to_num = urlencode($to_num);
@@ -178,13 +179,10 @@ die();
 			$json    = array();
            
             $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
+
 			
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+           require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
            
             /* Instantiate a new Twilio Rest Client */
 
@@ -193,18 +191,34 @@ die();
 			$client = new Services_Twilio($account_sid, $auth_token);
 			
 			if(!empty($media)){
+			 try {
 			$sendmessage = $client->account->messages->create(array( 
 			    'To' =>  $to_num, 
-				'From' => '+13103128070',
+				'From' => $from_num,
 				'Body' => $message, 
 				'MediaUrl' => $media,
 			));
+			 }catch (Services_Twilio_RestException $e) {
+      $data = array(
+                'result' => 'false',
+                'response' => 'phone numbers are wrong, Please check.'
+                
+            );
+}
 			}else{
+			     try {
 			$sendmessage = $client->account->messages->create(array( 
 			    'To' =>  $to_num, 
-				'From' => '+13103128070',
+				'From' => $from_num,
 				'Body' => $message,
-			));	
+			));
+			     }catch (Services_Twilio_RestException $e) {
+         $data = array(
+                'result' => 'false',
+                'response' => 'phone numbers are wrong, Please check.'
+                
+            );
+}
 			}
            
 			
@@ -227,10 +241,7 @@ die();
 			}
 
         echo json_encode($data);
-		spl_autoload_register(array(
-                'YiiBase',
-                'autoload'
-            ));
+
         exit;
         
     }
