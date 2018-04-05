@@ -1188,6 +1188,8 @@ die();
         $proof_insurance = Yii::app()->request->getParam('proof_insurance');
          $business_license = '';
         $business_license = Yii::app()->request->getParam('business_license');
+	$bt_submerchant_id = '';
+        $bt_submerchant_id = Yii::app()->request->getParam('bt_submerchant_id');
 $washer_position = Yii::app()->request->getParam('washer_position');
 $real_washer_id = Yii::app()->request->getParam('real_washer_id');
 $rating = Yii::app()->request->getParam('rating');
@@ -1369,6 +1371,10 @@ $insurance_expiration = '';
                 if(empty($insurance_expiration)){
                     $insurance_expiration = $model->insurance_license_expiration;
                 }
+		
+		if(empty($bt_submerchant_id)){
+                    $bt_submerchant_id = $model->bt_submerchant_id;
+                }
                 
                 if(!is_numeric($block_washer)){
                     $block_washer = $model->block_washer;
@@ -1474,6 +1480,7 @@ $insurance_expiration = '';
 'notes' => $notes,
 'hours_opt_check' => $hours_opt_check,
 'rating_control' => $rating_control,
+'bt_submerchant_id' => $bt_submerchant_id,
 					'updated_date'=> date('Y-m-d h:i:s')
 				);
 

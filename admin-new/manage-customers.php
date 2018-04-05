@@ -226,7 +226,7 @@ cursor: pointer !important;
 <th> User Type </th>
    <th> Customer Name </th>
 <th> Email </th>
-<th> Washes </th>
+<th> Orders </th>
 <th> Points </th>
 <th> Phone </th>
 <th> Phone Verify Code </th>

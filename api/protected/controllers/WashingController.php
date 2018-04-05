@@ -161,6 +161,127 @@ $vehicle_type = $vehicle_exists[0]['type'];
 
         echo json_encode($json); die();
     }
+    
+    
+        public function actionmultivehicleplans(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$vehicle_ids  = Yii::app()->request->getParam('vehicle_ids');
+
+		$customer_id = Yii::app()->request->getParam('customer_id');
+		$location_id = '';
+		if(Yii::app()->request->getParam('location_id')) $location_id = Yii::app()->request->getParam('location_id');
+        $json = array();
+        $plans = array();
+        $express_plan = array();
+        $deluxe_plan = array();
+        $premium_plan = array();
+	$exp_surge_factor = 0;
+	$del_surge_factor = 0;
+	$prem_surge_factor = 0;
+        $vehicle_type = '';
+        $result= 'false';
+        $response= 'Pass the required parameters';
+
+        if(isset($vehicle_ids) && !empty($vehicle_ids)){
+		
+		if($location_id) $loc_check = CustomerLocation::model()->findByPk($location_id);
+		$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
+			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1' AND zipcodes != ''", array())->queryAll();
+
+		$allvehicles = explode(",", $vehicle_ids);
+		
+		if(count($allvehicles)){
+			foreach($allvehicles as $vehicle){
+				$exp_surge_factor = 0;
+	$del_surge_factor = 0;
+	$prem_surge_factor = 0;
+	$express_plan = array();
+        $deluxe_plan = array();
+        $premium_plan = array();
+				$vehicle_exists = Vehicle::model()->findByAttributes(array("id"=>trim($vehicle)));
+				
+				if(count($vehicle_exists) && ($vehicle_exists->vehicle_type)){
+					$vehplan = Yii::app()->db->createCommand()->select('*')->from('washing_plans')->where("vehicle_type='".$vehicle_exists->vehicle_type."'", array())->queryAll();
+				
+					
+			if((count($loc_check)) && (count($zipcodeprice))){
+			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
+			   foreach($all_zips as $zip){
+			      $zip = trim($zip);
+			      if($zip == $loc_check->zipcode){
+				 $exp_surge_factor = $zipcodeprice[0]['express'];
+				 $del_surge_factor = $zipcodeprice[0]['deluxe'];
+				 $prem_surge_factor = $zipcodeprice[0]['premium'];
+			      }
+			   }
+			}
+                        
+			$exp_surge_factor += $surgeprice[0]['express'];
+			$del_surge_factor += $surgeprice[0]['deluxe'];
+			$prem_surge_factor += $surgeprice[0]['premium'];
+
+                    //print_r($surgeprice);
+                    //echo $surgeprice[0]['day'];
+
+                foreach($vehplan as $planDetails){
+                    $planDetails['description'] = preg_split('/\r\n|[\r\n]/', $planDetails['description']);
+                    unset($planDetails['id']);
+
+                    if($planDetails['title'] == "Express") {
+                         //$planDetails['price'] += $surgeprice[0]['deluxe'];
+                         //$planDetails['price'] = (string) $planDetails['price'];
+			 $planDetails['price'] = $planDetails['price'] + ($planDetails['price'] * ($exp_surge_factor / 100));
+			 $planDetails['price'] = number_format($planDetails['price'], 2);
+                        $express_plan[] = $planDetails;
+                    }
+                    if($planDetails['title'] == "Deluxe") {
+                         //$planDetails['price'] += $surgeprice[0]['deluxe'];
+                         //$planDetails['price'] = (string) $planDetails['price'];
+			 $planDetails['price'] = $planDetails['price'] + ($planDetails['price'] * ($del_surge_factor / 100));
+			 $planDetails['price'] = number_format($planDetails['price'], 2);
+                        $deluxe_plan[] = $planDetails;
+                    }
+                    if($planDetails['title'] == "Premium") {
+                        //$planDetails['price'] += $surgeprice[0]['premium'];
+                        //$planDetails['price'] = (string) $planDetails['price'];
+			$planDetails['price'] = $planDetails['price'] + ($planDetails['price'] * ($prem_surge_factor / 100));
+			$planDetails['price'] = number_format($planDetails['price'], 2);
+                        $premium_plan[] = $planDetails;
+                    }
+                     //$plans[] = $planDetails;
+                }
+
+                $plans[$vehicle_exists->id]['express'] = $express_plan;
+                $plans[$vehicle_exists->id]['deluxe'] = $deluxe_plan;
+                $plans[$vehicle_exists->id]['premium'] = $premium_plan;			
+				}
+			}
+		}
+		
+	
+            if(count($plans)){
+$result = 'true';
+$response = 'plans';
+
+
+            }else{
+                $response = 'No plans exists';
+            }
+        }
+
+        $json = array(
+            'result'=> $result,
+            'response'=> $response,
+            'plans'=> $plans
+        );
+
+        echo json_encode($json); die();
+    }
 
 
  public function actiongetvehicleplans(){
