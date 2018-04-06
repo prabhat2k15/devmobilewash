@@ -8068,7 +8068,7 @@ die();
 
         $count = $total_order[0]['countid'];
 
-        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")->queryAll();
+        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")->queryAll();
 
         /* END */
         if(!empty($customers_order)){
@@ -8140,7 +8140,16 @@ die();
                         "car_list"  =>  $orderbycustomer['car_list'],
                         "package_list" =>  $orderbycustomer['package_list'],
                         "coupon_code" =>  $orderbycustomer['coupon_code'],
-                        "tip_amount" => $orderbycustomer['tip_amount']
+                        "tip_amount" => $orderbycustomer['tip_amount'],
+			"is_scheduled" => $orderbycustomer['is_scheduled'],
+			"pet_hair_vehicles" => $orderbycustomer['pet_hair_vehicles'],
+			"lifted_vehicles" => $orderbycustomer['lifted_vehicles'],
+			"exthandwax_vehicles" => $orderbycustomer['exthandwax_vehicles'],
+			"extplasticdressing_vehicles" => $orderbycustomer['extplasticdressing_vehicles'],
+			"extclaybar_vehicles" => $orderbycustomer['extclaybar_vehicles'],
+			"waterspotremove_vehicles" => $orderbycustomer['waterspotremove_vehicles'],
+			"upholstery_vehicles" => $orderbycustomer['upholstery_vehicles'],
+			"floormat_vehicles" => $orderbycustomer['floormat_vehicles']
                     );
                 }
             }
@@ -8163,7 +8172,35 @@ die();
                 }
                 if($value['title'] == 'Complete'){
                     $data[$value['start']]['complete'][] = $value['title'];
+		    if($value['is_scheduled'] == 1) $data[$value['start']]['schedulecompleted'][] = 'schedulecompleted';
+		    else $data[$value['start']]['ondemandcompleted'][] = 'ondemandcompleted';
+		    
+		    if(trim($value['pet_hair_vehicles'])) $data[$value['start']]['pet_hair_vehicles'][] = count(explode(",", $value['pet_hair_vehicles']));
+		    else $data[$value['start']]['pet_hair_vehicles'][] = 0;
+		    
+		    if(trim($value['lifted_vehicles'])) $data[$value['start']]['lifted_vehicles'][] = count(explode(",", $value['lifted_vehicles']));
+		    else $data[$value['start']]['lifted_vehicles'][] = 0;
+		    
+		    if(trim($value['exthandwax_vehicles'])) $data[$value['start']]['exthandwax_vehicles'][] = count(explode(",", $value['exthandwax_vehicles']));
+		    else $data[$value['start']]['exthandwax_vehicles'][] = 0;
+		    
+		    if(trim($value['extplasticdressing_vehicles'])) $data[$value['start']]['extplasticdressing_vehicles'][] = count(explode(",", $value['extplasticdressing_vehicles']));
+		    else $data[$value['start']]['extplasticdressing_vehicles'][] = 0;
+		    
+		    if(trim($value['extclaybar_vehicles'])) $data[$value['start']]['extclaybar_vehicles'][] = count(explode(",", $value['extclaybar_vehicles']));
+		    else $data[$value['start']]['extclaybar_vehicles'][] = 0;
+		    
+		    if(trim($value['waterspotremove_vehicles'])) $data[$value['start']]['waterspotremove_vehicles'][] = count(explode(",", $value['waterspotremove_vehicles']));
+		    else $data[$value['start']]['waterspotremove_vehicles'][] = 0;
+		    
+		    if(trim($value['upholstery_vehicles'])) $data[$value['start']]['upholstery_vehicles'][] = count(explode(",", $value['upholstery_vehicles']));
+		    else $data[$value['start']]['upholstery_vehicles'][] = 0;
+		    
+		    if(trim($value['floormat_vehicles'])) $data[$value['start']]['floormat_vehicles'][] = count(explode(",", $value['floormat_vehicles']));
+		    else $data[$value['start']]['floormat_vehicles'][] = 0;
+		    
                 }
+		
                 if($value['title'] == 'Pending'){
                     $data[$value['start']]['pending'][] = $value['title'];
                 }
@@ -8213,6 +8250,10 @@ die();
                 $dt[$key]['home']['count']='';
                 $dt[$key]['work']['count']='';
                 $dt[$key]['total_cars']['count']='';
+		$dt[$key]['schedulecompleted']['color']= '';
+		$dt[$key]['ondemandcompleted']['color']= '';
+		$dt[$key]['addoncompleted']['color']= '';
+		$addonscompleted = 0;
                 //print_r($val);
                 if(count($val['declined'])>0){
                     $dt[$key]['declined']['count']= count($val['declined']);
@@ -8264,6 +8305,70 @@ die();
                 if(count($val['tip_amount'])>0){
                     $dt[$key]['tip_amount']['count']= count($val['tip_amount']);
                     $dt[$key]['tip_amount']['color']= '#f28fba';
+                }
+		
+		if(count($val['schedulecompleted'])>0){
+                    $dt[$key]['schedulecompleted']['count']= count($val['schedulecompleted']);
+                    $dt[$key]['schedulecompleted']['color']= '#0000ff';
+                }
+		
+		if(count($val['ondemandcompleted'])>0){
+                    $dt[$key]['ondemandcompleted']['count']= count($val['ondemandcompleted']);
+                    $dt[$key]['ondemandcompleted']['color']= '#008080';
+                }
+		
+		
+		 if(count($val['pet_hair_vehicles'])>0){
+                    foreach($val['pet_hair_vehicles'] as $addoncount){
+                        $addonscompleted += $addoncount;
+                    }
+                }
+		
+		 if(count($val['lifted_vehicles'])>0){
+                    foreach($val['lifted_vehicles'] as $addoncount){
+                        $addonscompleted += $addoncount;
+                    }
+                }
+		
+		 if(count($val['exthandwax_vehicles'])>0){
+                    foreach($val['exthandwax_vehicles'] as $addoncount){
+                        $addonscompleted += $addoncount;
+                    }
+                }
+		
+		 if(count($val['extplasticdressing_vehicles'])>0){
+                    foreach($val['extplasticdressing_vehicles'] as $addoncount){
+                        $addonscompleted += $addoncount;
+                    }
+                }
+		
+		 if(count($val['extclaybar_vehicles'])>0){
+                    foreach($val['extclaybar_vehicles'] as $addoncount){
+                        $addonscompleted += $addoncount;
+                    }
+                }
+		
+		 if(count($val['waterspotremove_vehicles'])>0){
+                    foreach($val['waterspotremove_vehicles'] as $addoncount){
+                        $addonscompleted += $addoncount;
+                    }
+                }
+		
+		 if(count($val['upholstery_vehicles'])>0){
+                    foreach($val['upholstery_vehicles'] as $addoncount){
+                        $addonscompleted += $addoncount;
+                    }
+                }
+		
+		 if(count($val['floormat_vehicles'])>0){
+                    foreach($val['floormat_vehicles'] as $addoncount){
+                        $addonscompleted += $addoncount;
+                    }
+                }
+		
+		if($addonscompleted>0){
+                    $dt[$key]['addoncompleted']['count']= $addonscompleted;
+                    $dt[$key]['addoncompleted']['color']= '#87CEFA';
                 }
                 
                 if(count($val['home'])>0){

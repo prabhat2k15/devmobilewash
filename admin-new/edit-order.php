@@ -244,7 +244,7 @@ foreach($_POST['car_makes'] as $ind=>$make){
 if($_POST['car_ids'][$ind] == 0){
 $handle = curl_init(ROOT_URL."/api/index.php?r=customers/addvehicle");
 curl_setopt($handle, CURLOPT_POST, true);
-$data = array('customer_id' => $getorder->customer_id, 'brand_name' => $make, 'model_name' => $_POST['car_models'][$ind], 'car_pack' => $_POST['car_packs'][$ind], 'vehicle_image' => 'https://www.mobilewash.com/api/images/veh_img/no_pic.jpg', 'vehicle_build' => $_POST['car_types'][$ind], 'add_log' => 'true', 'admin_username' => $jsondata_permission->user_name, 'wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('customer_id' => $getorder->customer_id, 'brand_name' => $make, 'model_name' => $_POST['car_models'][$ind], 'car_pack' => $_POST['car_packs'][$ind], 'vehicle_image' => ROOT_URL.'/api/images/veh_img/defimage.png', 'vehicle_build' => $_POST['car_types'][$ind], 'add_log' => 'true', 'admin_username' => $jsondata_permission->user_name, 'wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);

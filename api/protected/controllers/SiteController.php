@@ -2995,7 +2995,17 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
                 $status_qr = " AND w.coupon_code <> ''";
             } elseif($event == 'tip_amount'){
 				$status_qr=" AND (w.tip_amount <> '' && w.tip_amount <> '0.00' && w.tip_amount <> '0')";
-			} else {
+			}
+			elseif($event == 'addoncompleted'){
+				$status_qr=" AND (w.pet_hair_vehicles != '' OR  w.lifted_vehicles != '' OR  w.exthandwax_vehicles != '' OR  w.extplasticdressing_vehicles != '' OR  w.extclaybar_vehicles != '' OR  w.waterspotremove_vehicles != '' OR  w.upholstery_vehicles != '' OR  w.floormat_vehicles != '') AND w.status = 4";
+			}
+			elseif($event == 'ondemandcompleted'){
+				$status_qr=" AND w.is_scheduled = 0 AND w.status = 4";
+			}
+			elseif($event == 'schedulecompleted'){
+				$status_qr=" AND w.is_scheduled = 1 AND w.status = 4";
+			}
+			else {
 				$status_qr = '';
 			}
 
