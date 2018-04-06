@@ -3066,12 +3066,16 @@ die();
                 'ios_cust_ondemand_wait_time' => $app_settings[0]['customer_ondemand_wait_time'],
                 'ios_max_order_rotate_time' => $app_settings[0]['max_order_rotate_time'],
                 'ios_washer_search_radius' => $app_settings[0]['washer_search_radius'],
+		'ios_wash_now_fee' => $app_settings[0]['wash_now_fee'],
+		'ios_wash_later_fee' => $app_settings[0]['wash_later_fee'],
                 'android_app_version_check' => $app_settings[1]['version_check'],
                 'android_app_version' => $app_settings[1]['app_version'],
                 'android_app_link' => $app_settings[1]['app_link'],
                 'android_cust_ondemand_wait_time' => $app_settings[1]['customer_ondemand_wait_time'],
                 'android_max_order_rotate_time' => $app_settings[1]['max_order_rotate_time'],
-                'android_washer_search_radius' => $app_settings[1]['washer_search_radius']
+                'android_washer_search_radius' => $app_settings[1]['washer_search_radius'],
+		'android_wash_now_fee' => $app_settings[1]['wash_now_fee'],
+		'android_wash_later_fee' => $app_settings[1]['wash_later_fee']
             );
 
                 }
@@ -3107,12 +3111,16 @@ die();
         $ios_order_wait_time = Yii::app()->request->getParam('ios_order_wait_time');
         $ios_order_rotate_time = Yii::app()->request->getParam('ios_order_rotate_time');
         $ios_washer_search_radius = Yii::app()->request->getParam('ios_washer_search_radius');
+	$ios_wash_now_fee = Yii::app()->request->getParam('ios_wash_now_fee');
+	$ios_wash_later_fee = Yii::app()->request->getParam('ios_wash_later_fee');
         $android_version_check = Yii::app()->request->getParam('android_app_version_check');
         $android_version = Yii::app()->request->getParam('android_app_version');
         $android_app_link = Yii::app()->request->getParam('android_app_link');
         $android_order_wait_time = Yii::app()->request->getParam('android_order_wait_time');
         $android_order_rotate_time = Yii::app()->request->getParam('android_order_rotate_time');
         $android_washer_search_radius = Yii::app()->request->getParam('android_washer_search_radius');
+	$android_wash_now_fee = Yii::app()->request->getParam('android_wash_now_fee');
+	$android_wash_later_fee = Yii::app()->request->getParam('android_wash_later_fee');
 
         $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
 
@@ -3140,6 +3148,14 @@ $ios_order_rotate_time = $app_settings[0]['max_order_rotate_time'];
                  if(empty($ios_washer_search_radius)){
 $ios_washer_search_radius = $app_settings[0]['washer_search_radius'];
                 }
+		
+if(!is_numeric($ios_wash_now_fee)){
+$ios_wash_now_fee = $app_settings[0]['ios_wash_now_fee'];
+                }
+		
+if(!is_numeric($ios_wash_later_fee)){
+$ios_wash_later_fee = $app_settings[0]['ios_wash_later_fee'];
+                }
 
 
                     if(empty($android_version_check)){
@@ -3165,11 +3181,19 @@ $android_order_rotate_time = $app_settings[1]['max_order_rotate_time'];
                  if(empty($android_washer_search_radius)){
 $android_washer_search_radius = $app_settings[1]['washer_search_radius'];
                 }
+		
+		if(!is_numeric($android_wash_now_fee)){
+$android_wash_now_fee = $app_settings[0]['android_wash_now_fee'];
+                }
+		
+if(!is_numeric($android_wash_later_fee)){
+$android_wash_later_fee = $app_settings[0]['android_wash_later_fee'];
+                }
 
 
 
-      Yii::app()->db->createCommand("UPDATE app_settings SET version_check='".$ios_version_check."', app_version='".$ios_version."', app_link='".$ios_app_link."', customer_ondemand_wait_time='".$ios_order_wait_time."', max_order_rotate_time='".$ios_order_rotate_time."', washer_search_radius='".$ios_washer_search_radius."' WHERE id = '1' ")->execute();
-      Yii::app()->db->createCommand("UPDATE app_settings SET version_check='".$android_version_check."', app_version='".$android_version."', app_link='".$android_app_link."', customer_ondemand_wait_time='".$android_order_wait_time."', max_order_rotate_time='".$android_order_rotate_time."', washer_search_radius='".$android_washer_search_radius."' WHERE id = '2' ")->execute();
+      Yii::app()->db->createCommand("UPDATE app_settings SET version_check='".$ios_version_check."', app_version='".$ios_version."', app_link='".$ios_app_link."', customer_ondemand_wait_time='".$ios_order_wait_time."', max_order_rotate_time='".$ios_order_rotate_time."', washer_search_radius='".$ios_washer_search_radius."', wash_now_fee = '".$ios_wash_now_fee."', wash_later_fee = '".$ios_wash_later_fee."' WHERE id = '1' ")->execute();
+      Yii::app()->db->createCommand("UPDATE app_settings SET version_check='".$android_version_check."', app_version='".$android_version."', app_link='".$android_app_link."', customer_ondemand_wait_time='".$android_order_wait_time."', max_order_rotate_time='".$android_order_rotate_time."', washer_search_radius='".$android_washer_search_radius."', wash_now_fee = '".$android_wash_now_fee."', wash_later_fee = '".$android_wash_later_fee."' WHERE id = '2' ")->execute();
 
 
             $result = 'true';

@@ -1496,7 +1496,7 @@ strokeColor: "#076ee1",
         var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
         url.push('sql=');
         //var query = 'SELECT * FROM ' + '1KGA8BqTBlI6Rvv1sQACLdhDHa-7DmvoizGUCcbQr';
-var query = "SELECT * FROM " + "1iuPfrdpW4w8IT-v47IY3TMuKfAE25w6OCe0-6Jsc WHERE MW_COVERAGE_AREA = 'true'";
+var query = "SELECT * FROM " + "1Up7xCTaar4u8bGMYVW-lHP-YndDpoS8yTEJlKmtH WHERE MW_COVERAGE_AREA = 'true'";
         var encodedQuery = encodeURIComponent(query);
         url.push(encodedQuery);
         url.push('&callback=drawMap');

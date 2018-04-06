@@ -61,7 +61,7 @@ $jsondata_permission = json_decode($result_permission);
     text-align: center;
     font-size: 14px;
 }
-.fc-basic-view .fc-body .fc-row{min-height:340px !important;}
+.fc-basic-view .fc-body .fc-row{min-height:410px !important;}
 .fc-left .center div{
 	margin-bottom: 5px;
 }
@@ -96,23 +96,23 @@ $(document).ready(function() {
 	function show_calendar(type){
 	    //console.log(type);
 		$('#calendar').fullCalendar( 'destroy' );
-		$url = '/api/index.php?r=washing/order_schedule_app';
+		$url = '<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule_app';
 
 		if(type == 'app_orders'){
-			$url = '/api/index.php?r=washing/order_schedule_app';
+			$url = '<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule_app';
 		}if(type == 'phone_orders'){
-			$url = "/api/index.php?r=washing/order_schedule";
+			$url = "<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule";
 		}if(type == 'schedule_orders'){
-			$url = '/api/index.php?r=washing/order_schedule_ordSchedule';
+			$url = '<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule_ordSchedule';
 		}if(type == 'all_orders'){
-			$url = '/api/index.php?r=washing/order_schedule_all_orders';
+			$url = '<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule_all_orders';
 		}
         //console.log($url);
 		$('#calendar').fullCalendar({
 			defaultDate: moment().toDate(),
-			editable: true,
+			editable: false,
 			eventLimit: true, // allow "more" link when too many events
-			droppable: true,
+			droppable: false,
 			aspectRatio: 1,
 			events: function(start, end, timezone, callback) {
 				//$('#calendar').fullCalendar('removeEvents');
@@ -322,7 +322,7 @@ $(document).ready(function() {
 								}
 								
 								if(addoncompleted > 1  ){
-								    titleaddoncompleted = value.addoncompleted.count+' Add-ons Completed';
+								    titleaddoncompleted = value.addoncompleted.count+' Add-Ons Completed';
 									coloraddoncompleted = value.addoncompleted.color;
 									events.push({
 										eventtitle: 'addoncompleted',
@@ -445,16 +445,16 @@ $(document).ready(function() {
 				
 			
 				if(type == 'app_orders'){
-					window.location  = "/admin-new/manage-orders.php?day="+_day+"&event="+_event;
+					window.location  = "<?php echo ROOT_URL; ?>/admin-new/manage-orders.php?day="+_day+"&event="+_event;
 				}else if(type == 'phone_orders'){
-					window.location = "/admin-new/phone-orders.php?day="+_day+"&event="+_event;
+					window.location = "<?php echo ROOT_URL; ?>/admin-new/phone-orders.php?day="+_day+"&event="+_event;
 				}else if(type == 'schedule_orders'){
-					window.location = "/admin-new/schedule-orders.php?sday="+_day+"&event="+_event;
+					window.location = "<?php echo ROOT_URL; ?>/admin-new/schedule-orders.php?sday="+_day+"&event="+_event;
 				}else if(type == 'all_orders'){
-					window.location = "/admin-new/all-orders.php?ajax=true&alordday="+_day+"&event="+_event;
+					window.location = "<?php echo ROOT_URL; ?>/admin-new/all-orders.php?ajax=true&alordday="+_day+"&event="+_event;
 				}else{
-					window.open("/admin-new/all-orders.php?ajax=true&day="+_day+"&event="+_event);
-					//window.location  = "/admin-new/all-orders.php?day="+_day+"&event="+_event;
+					window.open("<?php echo ROOT_URL; ?>/admin-new/all-orders.php?ajax=true&day="+_day+"&event="+_event);
+					//window.location  = "<?php echo ROOT_URL; ?>/admin-new/all-orders.php?day="+_day+"&event="+_event;
 				}
 			},
 			eventRender: function(event, element) {
@@ -533,7 +533,7 @@ $(document).ready(function() {
 			eventOrder: "description"
 		});
 		
-		 var _html = '<div class="center" style="width: 70%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span style="color: #fff;">Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #8b9d9e; background: #8b9d9e;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #eb1350; background: #eb1350;"><span>Declined</span></div><div id="express" style="border: 1px solid #2490d7; background: #2490d7;"><span>Express</span></div><div id="deluxe" style="border: 1px solid #2490d7; background: #2490d7;"><span>Deluxe</span></div><div id="premium" style="border: 1px solid #2490d7; background: #2490d7;"><span>Premium</span></div><div id="tip" style="border: 1px solid #f28fba; background: #f28fba; color: #fff;"><span>Tip</span></div><div id="addoncompleted" style="border: 1px solid #87CEFA; background: #87CEFA; color: #fff;"><span>Add-ons</span></div><div id="ondemandcompleted" style="border: 1px solid #008080; background: #008080; color: #fff;"><span>On-Demand</span></div><div id="schedulecompleted" style="border: 1px solid #0000ff; background: #0000ff; color: #fff;"><span>Scheduled</span></div>	</div>';
+		 var _html = '<div class="center" style="width: 70%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span style="color: #fff;">Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #8b9d9e; background: #8b9d9e;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #eb1350; background: #eb1350;"><span>Declined</span></div><div id="express" style="border: 1px solid #2490d7; background: #2490d7;"><span>Express</span></div><div id="deluxe" style="border: 1px solid #2490d7; background: #2490d7;"><span>Deluxe</span></div><div id="premium" style="border: 1px solid #2490d7; background: #2490d7;"><span>Premium</span></div><div id="tip" style="border: 1px solid #f28fba; background: #f28fba; color: #fff;"><span>Tip</span></div><div id="addoncompleted" style="border: 1px solid #87CEFA; background: #87CEFA; color: #fff;"><span>Add-Ons</span></div><div id="ondemandcompleted" style="border: 1px solid #008080; background: #008080; color: #fff;"><span>On-Demand</span></div><div id="schedulecompleted" style="border: 1px solid #0000ff; background: #0000ff; color: #fff;"><span>Scheduled</span></div>	</div>';
 
 				$('.fc-left').append(_html);
 				

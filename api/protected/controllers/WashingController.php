@@ -48,9 +48,17 @@ die();
 	$exp_surge_factor = 0;
 	$del_surge_factor = 0;
 	$prem_surge_factor = 0;
+	$wash_now_fee = 0;
+	$wash_later_fee = 0;
         $vehicle_type = '';
         $result= 'false';
         $response= 'Pass the required parameters';
+	
+	$app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
+	if(count($app_settings)){
+		if(is_numeric($app_settings[0]['wash_now_fee'])) $wash_now_fee = $app_settings[0]['wash_now_fee'];
+		if(is_numeric($app_settings[0]['wash_later_fee'])) $wash_later_fee = $app_settings[0]['wash_later_fee'];
+	}
 
         if(isset($vehicle_make) && !empty($vehicle_make) && isset($vehicle_model) && !empty($vehicle_model)){
 
@@ -156,7 +164,9 @@ $vehicle_type = $vehicle_exists[0]['type'];
         $json = array(
             'result'=> $result,
             'response'=> $response,
-            'plans'=> $plans
+            'plans'=> $plans,
+	    'wash_now_fee' => $wash_now_fee,
+	    'wash_later_fee' => $wash_later_fee
         );
 
         echo json_encode($json); die();
