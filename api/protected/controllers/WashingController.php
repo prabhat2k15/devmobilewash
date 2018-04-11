@@ -40,6 +40,8 @@ die();
 		$customer_id = Yii::app()->request->getParam('customer_id');
 		$location_id = '';
 		if(Yii::app()->request->getParam('location_id')) $location_id = Yii::app()->request->getParam('location_id');
+		$zipcode = '';
+		if(Yii::app()->request->getParam('zipcode')) $zipcode = Yii::app()->request->getParam('zipcode');
         $json = array();
         $plans = array();
         $express_plan = array();
@@ -103,6 +105,21 @@ $vehicle_type = $vehicle_exists[0]['type'];
 
 		    	$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
 			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1' AND zipcodes != ''", array())->queryAll();
+		   
+		   if(($zipcode) && (count($zipcodeprice))){
+		
+			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
+			   foreach($all_zips as $zip){
+			      $zip = trim($zip);
+			      if($zip == $zipcode){
+				 $exp_surge_factor = $zipcodeprice[0]['express'];
+				 $del_surge_factor = $zipcodeprice[0]['deluxe'];
+				 $prem_surge_factor = $zipcodeprice[0]['premium'];
+			      }
+			   }
+			
+		   }
+		   else{
 		   if($location_id) $loc_check = CustomerLocation::model()->findByPk($location_id);
 			if((count($loc_check)) && (count($zipcodeprice))){
 			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
@@ -115,6 +132,7 @@ $vehicle_type = $vehicle_exists[0]['type'];
 			      }
 			   }
 			}
+		}
                         
 			$exp_surge_factor += $surgeprice[0]['express'];
 			$del_surge_factor += $surgeprice[0]['deluxe'];
@@ -467,6 +485,8 @@ die();
         $customer_total_wash = 0;
         $wash_now_fee = 0;
          if(Yii::app()->request->getParam('wash_now_fee')) $wash_now_fee = Yii::app()->request->getParam('wash_now_fee');
+	 $wash_later_fee = 0;
+         if(Yii::app()->request->getParam('wash_later_fee')) $wash_later_fee = Yii::app()->request->getParam('wash_later_fee');
 	 $last_order_days = "";
 
         $json = array();
@@ -629,7 +649,7 @@ $coupondata= array(
 $fifth_disc = 0;
          if($fifth_wash_vehicles) $fifth_disc = 5;
 
-                        Washingrequests::model()->updateByPk($washrequestid, array('city' => $order_city, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee));
+                        Washingrequests::model()->updateByPk($washrequestid, array('city' => $order_city, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee, 'wash_later_fee' => $wash_later_fee));
 
 $car_arr = explode(",",$car_ids);
 $car_packs = explode(",",$package_ids);
@@ -1553,9 +1573,11 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
         $latitude = Yii::app()->request->getParam('latitude');
         $longitude = Yii::app()->request->getParam('longitude');
         $schedule_date = Yii::app()->request->getParam('schedule_date');
-         $schedule_time = Yii::app()->request->getParam('schedule_time');
+        $schedule_time = Yii::app()->request->getParam('schedule_time');
 	$ondemand_10_min_cancel_schedule = Yii::app()->request->getParam('ondemand_10_min_cancel_schedule');
 	$is_rescheduled = Yii::app()->request->getParam('is_rescheduled');
+	$wash_later_fee = 0;
+	
 
         $json = array();
 
@@ -1603,16 +1625,22 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
             if(!$schedule_time){
                $schedule_time =  $wash_id_check->schedule_time;
             }
+	    
+	    $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
+	if(count($app_settings)){
+		
+		if(is_numeric($app_settings[0]['wash_later_fee'])) $wash_later_fee = $app_settings[0]['wash_later_fee'];
+	}
 
             $order_for_date = date("Y-m-d H:i:s", strtotime($schedule_date." ".$schedule_time));
 
                 if($ondemand_10_min_cancel_schedule == 1) {
-			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
-			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
+			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
+			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
 		}
 		else {
-			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date));
-			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'order_for' => $order_for_date));
+			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date));
+			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date));
 		}
                 
 		WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
@@ -3281,6 +3309,10 @@ die();
 $veh_type = '';
 $fifth_fee_check = 0;
 $first_fee_check = 0;
+if(Yii::app()->request->getParam('zipcode')) $zipcode = Yii::app()->request->getParam('zipcode');
+	$exp_surge_factor = 0;
+	$del_surge_factor = 0;
+	$prem_surge_factor = 0;
         if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))){
 
             $customer_id_check = Customers::model()->findByAttributes(array('id'=>$customer_id));
@@ -3593,6 +3625,27 @@ file_put_contents("washing_one_min_notificaiton.log","order id ".$wrequest_id_ch
 		
 		$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
 		
+		   $surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
+$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1' AND zipcodes != ''", array())->queryAll();
+
+if(($zipcode) && (count($zipcodeprice))){
+		
+			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
+			   foreach($all_zips as $zip){
+			      $zip = trim($zip);
+			      if($zip == $zipcode){
+				 $exp_surge_factor = $zipcodeprice[0]['express'];
+				 $del_surge_factor = $zipcodeprice[0]['deluxe'];
+				 $prem_surge_factor = $zipcodeprice[0]['premium'];
+			      }
+			   }
+			
+		   }
+		   
+		   $exp_surge_factor += $surgeprice[0]['express'];
+			$del_surge_factor += $surgeprice[0]['deluxe'];
+			$prem_surge_factor += $surgeprice[0]['premium'];
+		
 		$cars = $wash_request_exists->car_list;
                 $packs = $wash_request_exists->package_list;
                 $car_arr = explode(",",$cars);
@@ -3617,6 +3670,12 @@ if($cardata->upgrade_pack == 1) {
 $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"=>$veh_type, "title"=>$cardata->new_pack_name));
                     if(count($washing_plan_det)) {
                       $wash_price = $washing_plan_det->price;
+		      
+		      if($cardata->new_pack_name == 'Express') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($exp_surge_factor / 100));
+		      if($cardata->new_pack_name == 'Deluxe') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($del_surge_factor / 100));
+		      if($cardata->new_pack_name == 'Premium') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($prem_surge_factor / 100));
+		      
+		      $wash_price = number_format($wash_price, 2);
 
                     }
                     else $wash_price = '';
@@ -3626,6 +3685,12 @@ else{
 $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"=>$veh_type, "title"=>$pack_arr[$ind]));
                     if(count($washing_plan_det)) {
                       $wash_price = $washing_plan_det->price;
+		      
+		      if($pack_arr[$ind] == 'Express') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($exp_surge_factor / 100));
+		      if($pack_arr[$ind] == 'Deluxe') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($del_surge_factor / 100));
+		      if($pack_arr[$ind] == 'Premium') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($prem_surge_factor / 100));
+		      
+		      $wash_price = number_format($wash_price, 2);
 
                     }
                     else $wash_price = '';
@@ -3759,7 +3824,8 @@ $hours = floor($wash_time / 60);
 		 'draft_vehicle_id'=> $draft_vehicle_id,
             'new_vehicle_confirm' => $new_vehicle_confirm,
             'vehicles' => $vehicles,
-	    'no_washer_cancel' => $wrequest_id_check->no_washer_cancel
+	    'no_washer_cancel' => $wrequest_id_check->no_washer_cancel,
+	    'order_address' => $wrequest_id_check->address
             );
         }
         else{
@@ -5917,6 +5983,19 @@ $message .= "<tr>
 $message .= "</table>";
 }
 
+if($kartdata->wash_later_fee > 0){
+$message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$message .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->wash_later_fee, 2)."</p>
+</td>
+</tr>";
+
+$message .= "</table>";
+}
+
 if($kartdata->tip_amount > 0){
 $message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
@@ -6087,6 +6166,19 @@ $message_agent .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
 <p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.80, 2), 2)."</p>
+</td>
+</tr>";
+
+$message_agent .= "</table>";
+}
+
+if($kartdata->wash_later_fee > 0){
+$message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$message_agent .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.80, 2), 2)."</p>
 </td>
 </tr>";
 
@@ -6331,6 +6423,19 @@ $com_message .= "<tr>
 $com_message .= "</table>";
 }
 
+if($kartdata->wash_later_fee > 0){
+$com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$com_message .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.20, 2), 2)."</p>
+</td>
+</tr>";
+
+$com_message .= "</table>";
+}
+
 if($kartdata->tip_amount > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
@@ -6557,6 +6662,19 @@ $com_message .= "<tr>
 $com_message .= "</table>";
 }
 
+if($kartdata->wash_later_fee > 0){
+$com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$com_message .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->wash_later_fee, 2)."</p>
+</td>
+</tr>";
+
+$com_message .= "</table>";
+}
+
 if($kartdata->tip_amount > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
@@ -6730,6 +6848,19 @@ $com_message .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
 <p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.80, 2), 2)."</p>
+</td>
+</tr>";
+
+$com_message .= "</table>";
+}
+
+if($kartdata->wash_later_fee > 0){
+$com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$com_message .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.80, 2), 2)."</p>
 </td>
 </tr>";
 
@@ -8219,7 +8350,10 @@ die();
                 }
                 if($value['title'] == 'Canceled'){
                     $data[$value['start']]['canceled'][] = $value['title'];
+		    if($value['is_scheduled'] == 1) $data[$value['start']]['schedulecanceled'][] = $value['title'];
+		    else $data[$value['start']]['ondemandcanceled'][] = $value['title'];
                 }
+		
                 if($value['title'] == 'Declined'){
                     $data[$value['start']]['declined'][] = $value['title'];
                 }
@@ -8251,6 +8385,8 @@ die();
                 $dt[$key]['pending']['color']='';
                 $dt[$key]['complete']['color']= '';
                 $dt[$key]['canceled']['color']='';
+		$dt[$key]['schedulecanceled']['color']='';
+		$dt[$key]['ondemandcanceled']['color']='';
                 $dt[$key]['Express']['color']='';
                 $dt[$key]['Deluxe']['color']='';
                 $dt[$key]['Premium']['color']='';
@@ -8291,6 +8427,14 @@ die();
                 if(count($val['canceled'])>0){
                     $dt[$key]['canceled']['count']= count($val['canceled']);
                     $dt[$key]['canceled']['color']= '#8b9d9e';
+                }
+		if(count($val['schedulecanceled'])>0){
+                    $dt[$key]['schedulecanceled']['count']= count($val['schedulecanceled']);
+                    $dt[$key]['schedulecanceled']['color']= '#8b9d9e';
+                }
+		if(count($val['ondemandcanceled'])>0){
+                    $dt[$key]['ondemandcanceled']['count']= count($val['ondemandcanceled']);
+                    $dt[$key]['ondemandcanceled']['color']= '#8b9d9e';
                 }
                 if(count($val['processing'])>0){
                     $dt[$key]['processing']['count']= count($val['processing']);

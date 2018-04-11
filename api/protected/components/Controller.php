@@ -585,6 +585,17 @@ $total =  $total + $wash_now_fee;
 
 /* ----- wash now fee end ---- */
 
+/* ---- wash later fee ---- */
+
+if($wash_id_check->wash_later_fee > 0) {
+$wash_later_fee = $wash_id_check->wash_later_fee;
+$total =  $total + $wash_later_fee;
+ $company_total =  $company_total + ($wash_later_fee * .20);
+ $agent_total =  $agent_total + ($wash_later_fee * .80);
+}
+
+/* ----- wash later fee end ---- */
+
 				/* ------------ bundle discount ------- */
 
 				if(count($total_cars) >= 2) {
@@ -744,7 +755,8 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
             'washer_late_cancel' => $wash_id_check->washer_late_cancel,
             'washer_payment_status' => $wash_id_check->washer_payment_status,
             'total_schedule_rejected' => $wash_id_check->total_schedule_rejected,
-            'wash_now_fee' => $wash_id_check->wash_now_fee,
+            'wash_now_fee' => number_format($wash_id_check->wash_now_fee, 2),
+	    'wash_later_fee' => number_format($wash_id_check->wash_later_fee, 2),
 	    'payment_type' => $wash_id_check->payment_type,
 	    'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
             'vehicles' => $vehicles

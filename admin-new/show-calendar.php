@@ -61,9 +61,17 @@ $jsondata_permission = json_decode($result_permission);
     text-align: center;
     font-size: 14px;
 }
-.fc-basic-view .fc-body .fc-row{min-height:410px !important;}
+.fc-basic-view .fc-body .fc-row{padding-bottom: 60px;}
 .fc-left .center div{
 	margin-bottom: 5px;
+}
+
+.fc-row.fc-rigid .fc-content-skeleton{
+	position: relative;
+}
+
+.fc-day-grid-event .fc-content{
+	white-space: normal;
 }
 
 </style>
@@ -151,7 +159,7 @@ $(document).ready(function() {
 							$('.cal-overlay').css('display','none');
 						}
 						else{
-							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,title6,titledec,colordec,titletotalcars,colortotalcars,titleExp,titleDlx,titlePre,colorExp,colorDlx,colorPre,titleCC,colorCC,titleTa,titleondemandcompleted, titleschedulecompleted, titleaddoncompleted, colorTa,color6, colorschedulecompleted, colorondemandcompleted, coloraddoncompleted;
+							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,title6,titledec,colordec,titletotalcars,colortotalcars,titleExp,titleDlx,titlePre,colorExp,colorDlx,colorPre,titleCC,colorCC,titleTa,titleondemandcompleted, titleschedulecompleted, titleaddoncompleted, colorTa,color6, colorschedulecompleted, colorondemandcompleted, coloraddoncompleted, schedulecanceledtitle, schedulecanceledcolor, ondemandcanceledtitle, ondemandcanceledcolor;
 							$.each( doc.order, function(index, value ) {
 							    
 								var _viewAll = ['1'];
@@ -170,6 +178,8 @@ $(document).ready(function() {
 								var addoncompleted = Object.keys(value.addoncompleted).length;
 								var ondemandcompleted = Object.keys(value.ondemandcompleted).length;
 								var schedulecompleted = Object.keys(value.schedulecompleted).length;
+								var schedulecanceled = Object.keys(value.schedulecanceled).length;
+								var ondemandcanceled = Object.keys(value.ondemandcanceled).length;
                                 var total_cars = Object.keys(value.total_cars).length;
 								var home_ord = Object.keys(value.home).length;
 								var work_ord = Object.keys(value.work).length;
@@ -226,7 +236,7 @@ $(document).ready(function() {
 									});
 								}
 								if(canceled > 1  ){
-									title2 = value.canceled.count+' Canceled Orders';
+									title2 = value.canceled.count+' Total Canceled Orders';
 									color2 = value.canceled.color;
 									events.push({
 										eventtitle: 'canceled',
@@ -238,6 +248,32 @@ $(document).ready(function() {
 									});
 								}
 								
+								if(schedulecanceled > 1  ){
+									schedulecanceledtitle = value.schedulecanceled.count+' Scheduled Canceled Orders';
+									schedulecanceledcolor = value.schedulecanceled.color;
+									events.push({
+										eventtitle: 'schedulecanceled',
+										title:schedulecanceledtitle,
+										description:'f',
+										start:index,
+										color:schedulecanceledcolor,
+										
+									});
+								}
+								
+								if(ondemandcanceled > 1  ){
+									ondemandcanceledtitle = value.ondemandcanceled.count+' On-Demand Canceled Orders';
+									ondemandcanceledcolor = value.ondemandcanceled.color;
+									events.push({
+										eventtitle: 'ondemandcanceled',
+										title:ondemandcanceledtitle,
+										description:'g',
+										start:index,
+										color:ondemandcanceledcolor,
+										
+									});
+								}
+								
 								
 								if(processing > 1  ){
 								    title2 = value.processing.count+' Processing Orders';
@@ -245,7 +281,7 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'processing',
 										title:title2,
-										description:'k',
+										description:'l',
 										start:index,
 										color:color2,
 										
@@ -260,7 +296,7 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'express',
 										title:titleExp,
-										description:'f',
+										description:'h',
 										start:index,
 										color:colorExp,
 									});
@@ -273,7 +309,7 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'deluxe',
 										title:titleDlx,
-										description:'g',
+										description:'i',
 										start:index,
 										color:colorDlx,
 										
@@ -286,7 +322,7 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'premium',
 										title:titlePre,
-										description:'h',
+										description:'j',
 										start:index,
 										color:colorPre,
 										
@@ -313,7 +349,7 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'tip_amount',
 										title:titleTa,
-										description:'j',
+										description:'k',
 										start:index,
 										color:colorTa,
 										textColor: '#fff',

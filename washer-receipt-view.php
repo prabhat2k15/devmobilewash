@@ -310,6 +310,18 @@ font-size: 24px !important;
 
 </table>
 <?php endif; ?>
+<?php if($kartdata->wash_later_fee > 0): ?>
+<table class="discount-details">
+
+<tr>
+<td><p>Wash Later Fee</p></td>
+<td class="rightalign" style="vertical-align: top; min-width: 90px;">
+<p class="price">+$<?php echo number_format(round($kartdata->wash_later_fee*.80, 2), 2); ?></p>
+</td>
+</tr>
+
+</table>
+<?php endif; ?>
 <?php if($kartdata->tip_amount > 0): ?>
 <table class="discount-details">
 

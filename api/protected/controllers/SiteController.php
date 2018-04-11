@@ -3005,6 +3005,12 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 			elseif($event == 'schedulecompleted'){
 				$status_qr=" AND w.is_scheduled = 1 AND w.status = 4";
 			}
+			elseif($event == 'schedulecanceled'){
+				$status_qr=" AND w.is_scheduled = 1 AND (w.status=5 || w.status=6)";
+			}
+			elseif($event == 'ondemandcanceled'){
+				$status_qr=" AND w.is_scheduled = 0 AND (w.status=5 || w.status=6)";
+			}
 			else {
 				$status_qr = '';
 			}
@@ -5949,6 +5955,98 @@ foreach($all_phones as $phone){
     $phone_new = preg_replace('/\D/', '', $phone);
     echo $phone_new."<br>";
 }*/		
+   
+    }
+    
+    
+         public function actionfixblankcities()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$offset = 0;
+$offset = Yii::app()->request->getParam('offset');
+
+		
+		$all_orders = Yii::app()->db->createCommand("SELECT * FROM washing_requests ORDER BY id ASC LIMIT 500 OFFSET ".$offset)->queryAll();
+
+if(count($all_orders)){
+    foreach($all_orders as $order){
+        if(!trim($order['city'])){
+	$city = '';
+	
+	$geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($order['address'])."&sensor=true&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+    $ch = curl_init();
+	curl_setopt($ch,CURLOPT_URL,$geourl);
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+//	curl_setopt($ch,CURLOPT_HEADER, false);
+
+$georesult = curl_exec($ch);
+curl_close($ch);
+$geojsondata = json_decode($georesult);
+//var_dump($geojsondata);
+if($geojsondata->status == 'ZERO_RESULTS'){
+
+}
+else{
+   $addressComponents = $geojsondata->results[0]->address_components;
+            foreach($addressComponents as $addrComp){
+                if($addrComp->types[0] == 'locality'){
+                    //Return the zipcode
+                    $city = $addrComp->short_name;
+                }
+            }
+}
+
+        Washingrequests::model()->updateByPk($order['id'], array("city" => $city));	
+	}
+	else $city = $order['city'];
+	
+	echo "order id: ".$order['id']." | city: ".$city;
+        echo "<br>";
+	
+    }
+}
+else{
+    echo "nothing found";
+}
+   
+    }
+    
+    
+        public function actiontotalorderspercity()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+				
+		$from  = Yii::app()->request->getParam('from');
+$to  = Yii::app()->request->getParam('to');
+
+			$result= 'false';
+			$response= 'nothing found';
+			
+			$all_washes =  Yii::app()->db->createCommand("SELECT city,COUNT(*) FROM washing_requests WHERE (order_for >= '".$from." 00:00:00' AND order_for <= '".$to." 23:59:00') AND status = 4 GROUP BY city ORDER BY count(*) DESC")->queryAll();
+						
+if(count($all_washes) > 0){
+    $result= 'true';
+			$response= 'all orders';
+			
+}
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+			'all_orders' => $all_washes
+		);
+		echo json_encode($json);
+		
    
     }
     
