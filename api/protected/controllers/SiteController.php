@@ -1,6 +1,6 @@
 <?php
-//error_reporting(E_ALL);
-//ini_set('display_errors', 'On');
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
 class SiteController extends Controller
 {
 	/**
@@ -4079,7 +4079,7 @@ echo "Invalid api key";
 die();
 }
 
-	$clientlist = Yii::app()->db->createCommand("SELECT * FROM customers WHERE is_first_wash = 1 AND is_nextwash_reminder_push_sent = 0")->queryAll();
+	$clientlist = Yii::app()->db->createCommand("SELECT * FROM customers WHERE is_first_wash = 1 AND (is_nextwash_reminder_push_sent = 0 OR is_30days_reminder_push_sent = 0)")->queryAll();
 
 	if(count($clientlist)){
 	    foreach($clientlist as $client){
@@ -4097,7 +4097,7 @@ $min_diff = round(($current_time - $create_time) / 60,2);
 
 //echo $min_diff;
 //echo "<br>";
-if($min_diff >= 14400){
+if(($min_diff >= 14400) && ($min_diff < 43200) && (!$client['is_nextwash_reminder_push_sent'])){
 
                  $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$client['id']."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -4133,6 +4133,46 @@ $message = str_replace("[CUSTNAME]",$custname, $message);
 						}
 
 						 Customers::model()->updateByPk($client['id'], array("is_nextwash_reminder_push_sent" => 1));
+
+
+}
+
+if(($min_diff >= 43200) && (!$client['is_30days_reminder_push_sent'])){
+
+                 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$client['id']."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+$cust_details = Customers::model()->findByAttributes(array("id"=>$client['id']));
+if(($cust_details->customername) && ($cust_details->customername != 'N/A')){
+  $custname_arr = explode(" ",$cust_details->customername);
+  $custname = " ".$custname_arr[0];
+}
+else{
+  $custname = '';
+}
+
+
+						 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '38' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+$message = str_replace("[CUSTNAME]",$custname, $message);
+						foreach( $clientdevices as $ctdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($ctdevice['device_type']);
+							$notify_token = $ctdevice['device_token'];
+								$alert_type = "default";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+
+						 Customers::model()->updateByPk($client['id'], array("is_nextwash_reminder_push_sent" => 1, "is_30days_reminder_push_sent" => 1));
 
 
 }
@@ -6032,6 +6072,43 @@ $to  = Yii::app()->request->getParam('to');
 			$response= 'nothing found';
 			
 			$all_washes =  Yii::app()->db->createCommand("SELECT city,COUNT(*) FROM washing_requests WHERE (order_for >= '".$from." 00:00:00' AND order_for <= '".$to." 23:59:00') AND status = 4 GROUP BY city ORDER BY count(*) DESC")->queryAll();
+						
+if(count($all_washes) > 0){
+    $result= 'true';
+			$response= 'all orders';
+			
+}
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+			'all_orders' => $all_washes
+		);
+		echo json_encode($json);
+		
+   
+    }
+    
+    
+            public function actiongetorderslatlong()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+				
+		$status = 4;
+		if(Yii::app()->request->getParam('status')) $status  = Yii::app()->request->getParam('status');
+
+
+			$result= 'false';
+			$response= 'nothing found';
+			
+			$all_washes =  Yii::app()->db->createCommand("SELECT id, latitude, longitude FROM washing_requests WHERE status = ".$status)->queryAll();
+				
+			//print_r($all_washes);
 						
 if(count($all_washes) > 0){
     $result= 'true';

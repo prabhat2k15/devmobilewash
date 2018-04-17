@@ -8700,7 +8700,8 @@ die();
 
             $customer_id = Yii::app()->request->getParam('customer_id');
             $nonce = Yii::app()->request->getParam('nonce');
-            $device_data = Yii::app()->request->getParam('device_data');
+            $deviceData = '';
+	    if(Yii::app()->request->getParam('deviceData')) $deviceData = Yii::app()->request->getParam('deviceData');
             $payment_method_token = Yii::app()->request->getParam('payment_method_token');
 		$payment_methods = array();
             $response = "Pass the required parameters";
@@ -8749,6 +8750,7 @@ die();
 						     $createmethodresult = Yii::app()->braintree->addPaymentMethod_real([
 								'customerId' => $cust_bt_id,
 								'paymentMethodNonce' => $nonce,
+								'deviceData' => $deviceData,
 								'options' => [
 									'verifyCard' => true,
 
@@ -8760,6 +8762,7 @@ die();
 						       $createmethodresult = Yii::app()->braintree->addPaymentMethod([
 								'customerId' => $cust_bt_id,
 								'paymentMethodNonce' => $nonce,
+								'deviceData' => $deviceData,
 								'options' => [
 									'verifyCard' => true,
 
@@ -8997,6 +9000,8 @@ public function actioncustomerupfrontpayment()
      $longitude = Yii::app()->request->getParam('longitude');
      $is_scheduled = Yii::app()->request->getParam('is_scheduled');
      $token = Yii::app()->request->getParam('payment_token');
+     $deviceData = '';
+     if(Yii::app()->request->getParam('deviceData')) $deviceData = Yii::app()->request->getParam('deviceData');
 
       $response = "Pass the required parameters";
       $result = "false";
@@ -9140,12 +9145,12 @@ $min_diff = round(($current_time - $last_edit_time) / 60,2);
 
              //$request_data = ['merchantAccountId' => 'al_davi_instant_4pjkk25r', 'serviceFeeAmount' => $company_total, 'amount' => $total,'paymentMethodToken' => $token];
              if($customer_check->client_position == 'real'){
-               $request_data = ['merchantAccountId' => 'al_davi_instant_4pjkk25r', 'serviceFeeAmount' => $company_total, 'amount' => $total,'paymentMethodToken' => $token];
+               $request_data = ['merchantAccountId' => 'al_davi_instant_4pjkk25r', 'serviceFeeAmount' => $company_total, 'amount' => $total,'paymentMethodToken' => $token, 'deviceData' => $deviceData];
 
                     $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
              }
              else{
-                $request_data = ['merchantAccountId' => 'mobilewash_payment_inst_m59bj2b6', 'serviceFeeAmount' => $company_total, 'amount' => $total,'paymentMethodToken' => $token];
+                $request_data = ['merchantAccountId' => 'mobilewash_payment_inst_m59bj2b6', 'serviceFeeAmount' => $company_total, 'amount' => $total,'paymentMethodToken' => $token, 'deviceData' => $deviceData];
 
                     $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
              }

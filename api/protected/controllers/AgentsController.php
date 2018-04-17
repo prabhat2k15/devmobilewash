@@ -2858,7 +2858,7 @@ die();
 	$page_number = 1;
 	$limit = Yii::app()->request->getParam('limit');
 	$page_number = Yii::app()->request->getParam('page_number');
-	$limit = 10;
+	$limit = 20;
 	$offset = ($page_number -1) * $limit;
   
           if(Yii::app()->request->getParam('type') == 'demo'){

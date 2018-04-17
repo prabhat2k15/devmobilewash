@@ -4074,6 +4074,15 @@ else $logcomment = $comments;
                             'action_date'=> date('Y-m-d H:i:s'));
 
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+	
+	$kartapiresult = $this->washingkart($wash_request_id, API_KEY);
+        $kartdetails = json_decode($kartapiresult);
+		    
+	/* ----------- update pricing details -------------- */
+							
+		Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total));
+	
+	/* ----------- update pricing details end -------------- */
 
 
             }

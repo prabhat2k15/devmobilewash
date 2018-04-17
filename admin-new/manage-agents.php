@@ -12,8 +12,8 @@ else $url = ROOT_URL.'/api/index.php?r=agents/getallagents';
         $result = curl_exec($handle);
         curl_close($handle);
         $allagents = json_decode($result);
-        $response = $jsondata->response;
-        $result_code = $jsondata->result;
+        $response = $allagents->response;
+        $result_code = $allagents->result;
 $total_pages = $allagents->total_pages;
     if(!empty($_GET['actionss'])){
         $agentID = $_GET['agentID'];
@@ -55,7 +55,6 @@ $total_pages = $allagents->total_pages;
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
 "aaSorting": [],
- order: [[ 1, "desc" ]],
 	    "bPaginate": false,
 } );
 
@@ -85,6 +84,23 @@ $total_pages = $allagents->total_pages;
     width: 300px;
     margin: 10px auto;
     color: #fff !important;
+    display: none;
+}
+
+.custom-pagination{
+    text-align: center;
+    margin: 10px;
+}
+
+.custom-pagination a{
+   padding: 5px 10px;
+    background: #337ab7;
+    color: #fff;
+    margin-right: 2px; 
+}
+
+.custom-pagination a:hover{
+    text-decoration: none;
 }
 
 </style>
@@ -348,6 +364,17 @@ $('#late_drivers').click(function(){
                                         ?>
                                         </tbody>
                                     </table>
+				    <div class='custom-pagination'>
+                                    <?php 
+                                    //echo $searchresults->total_pages."<br>";
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/manage-agents.php?type=".$_GET['type']."&page_number=1'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$allagents->total_pages; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/manage-agents.php?type=".$_GET['type']."&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    if($page_number != $allagents->total_pages) echo "<a href='".ROOT_URL."/admin-new/manage-agents.php?type=".$_GET['type']."&page_number=".$allagents->total_pages."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
                                      <a href="#" class="load-more">Load More</a>
                                 </div>
                             </div>

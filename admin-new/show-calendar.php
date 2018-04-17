@@ -235,11 +235,12 @@ $(document).ready(function() {
 										
 									});
 								}
-								if(canceled > 1  ){
-									title2 = value.canceled.count+' Total Canceled Orders';
-									color2 = value.canceled.color;
+								
+									if(processing > 1  ){
+								    title2 = value.processing.count+' Processing Orders';
+									color2 = value.processing.color;
 									events.push({
-										eventtitle: 'canceled',
+										eventtitle: 'processing',
 										title:title2,
 										description:'e',
 										start:index,
@@ -248,55 +249,14 @@ $(document).ready(function() {
 									});
 								}
 								
-								if(schedulecanceled > 1  ){
-									schedulecanceledtitle = value.schedulecanceled.count+' Scheduled Canceled Orders';
-									schedulecanceledcolor = value.schedulecanceled.color;
-									events.push({
-										eventtitle: 'schedulecanceled',
-										title:schedulecanceledtitle,
-										description:'f',
-										start:index,
-										color:schedulecanceledcolor,
-										
-									});
-								}
-								
-								if(ondemandcanceled > 1  ){
-									ondemandcanceledtitle = value.ondemandcanceled.count+' On-Demand Canceled Orders';
-									ondemandcanceledcolor = value.ondemandcanceled.color;
-									events.push({
-										eventtitle: 'ondemandcanceled',
-										title:ondemandcanceledtitle,
-										description:'g',
-										start:index,
-										color:ondemandcanceledcolor,
-										
-									});
-								}
-								
-								
-								if(processing > 1  ){
-								    title2 = value.processing.count+' Processing Orders';
-									color2 = value.processing.color;
-									events.push({
-										eventtitle: 'processing',
-										title:title2,
-										description:'l',
-										start:index,
-										color:color2,
-										
-									});
-								}
-								
-								
-								if(Express > 1  ){
+									if(Express > 1  ){
 									//titledec = 'Express Completed: '+value.Express.count;
 									titleExp = value.Express.count+' Express Services';
 									colorExp = value.Express.color;
 									events.push({
 										eventtitle: 'express',
 										title:titleExp,
-										description:'h',
+										description:'f',
 										start:index,
 										color:colorExp,
 									});
@@ -309,7 +269,7 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'deluxe',
 										title:titleDlx,
-										description:'i',
+										description:'g',
 										start:index,
 										color:colorDlx,
 										
@@ -322,13 +282,14 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'premium',
 										title:titlePre,
-										description:'j',
+										description:'h',
 										start:index,
 										color:colorPre,
 										
 									});
 								}
-								if(coupon_code > 1  ){
+								
+									if(coupon_code > 1  ){
 									//titledec = 'Promo Codes: '+value.coupon_code.count;
 									titleCC = value.coupon_code.count+' Promo Codes';
 									colorCC = value.coupon_code.color;
@@ -342,14 +303,14 @@ $(document).ready(function() {
 									});
 								}
 								
-								if(tip_amount > 1  ){
+									if(tip_amount > 1  ){
 									//titledec = 'Tips: '+value.tip_amount.count;
 									titleTa = value.tip_amount.count+' Tips';
 									colorTa = value.tip_amount.color;
 									events.push({
 										eventtitle: 'tip_amount',
 										title:titleTa,
-										description:'k',
+										description:'j',
 										start:index,
 										color:colorTa,
 										textColor: '#fff',
@@ -363,7 +324,7 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'addoncompleted',
 										title:titleaddoncompleted,
-										description:'m',
+										description:'k',
 										start:index,
 										color:coloraddoncompleted,
 										
@@ -376,7 +337,7 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'ondemandcompleted',
 										title:titleondemandcompleted,
-										description:'n',
+										description:'l',
 										start:index,
 										color:colorondemandcompleted,
 										
@@ -389,20 +350,59 @@ $(document).ready(function() {
 									events.push({
 										eventtitle: 'schedulecompleted',
 										title:titleschedulecompleted,
-										description:'o',
+										description:'m',
 										start:index,
 										color:colorschedulecompleted,
 										
 									});
 								}
 								
+								if(canceled > 1  ){
+									title2 = value.canceled.count+' Total Canceled Orders';
+									color2 = value.canceled.color;
+									events.push({
+										eventtitle: 'canceled',
+										title:title2,
+										description:'n',
+										start:index,
+										color:color2,
+										
+									});
+								}
 								
+								if(ondemandcanceled > 1  ){
+									ondemandcanceledtitle = value.ondemandcanceled.count+' On-Demand Canceled Orders';
+									ondemandcanceledcolor = value.ondemandcanceled.color;
+									events.push({
+										eventtitle: 'ondemandcanceled',
+										title:ondemandcanceledtitle,
+										description:'o',
+										start:index,
+										color:ondemandcanceledcolor,
+										
+									});
+								}
+								
+								if(schedulecanceled > 1  ){
+									schedulecanceledtitle = value.schedulecanceled.count+' Scheduled Canceled Orders';
+									schedulecanceledcolor = value.schedulecanceled.color;
+									events.push({
+										eventtitle: 'schedulecanceled',
+										title:schedulecanceledtitle,
+										description:'p',
+										start:index,
+										color:schedulecanceledcolor,
+										
+									});
+								}
+								
+							
 								//if(view_all >= 1){
 									title3 = 'View All';
 									color3 = '#2a3f53';
 									events.push({
 										title:title3,
-										description:'p',
+										description:'q',
 										start:index,
 										color:color3,
 										

@@ -4,7 +4,7 @@ include('header.php');
     {
 
 
-            $data = array('ios_app_version_check'=> $_POST['ios_app_version_check'], 'ios_app_version'=> $_POST['ios_app_version'],'ios_app_link'=> $_POST['ios_app_link'],'ios_order_wait_time'=> $_POST['ios_order_wait_time'],'ios_order_rotate_time'=> $_POST['ios_order_rotate_time'],'ios_washer_search_radius'=> $_POST['ios_washer_search_radius'], 'ios_wash_now_fee'=> $_POST['ios_wash_now_fee'], 'ios_wash_later_fee'=> $_POST['ios_wash_later_fee'],'android_app_version_check'=> $_POST['android_app_version_check'], 'android_app_version'=> $_POST['android_app_version'], 'android_app_link'=> $_POST['android_app_link'], 'android_order_wait_time'=> $_POST['android_order_wait_time'],'android_order_rotate_time'=> $_POST['android_order_rotate_time'], 'android_washer_search_radius'=> $_POST['android_washer_search_radius'], 'android_wash_now_fee'=> $_POST['android_wash_now_fee'], 'android_wash_later_fee'=> $_POST['android_wash_later_fee'],'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('ios_app_version_check'=> $_POST['ios_app_version_check'], 'ios_app_version'=> $_POST['ios_app_version'],'ios_app_link'=> $_POST['ios_app_link'],'ios_order_wait_time'=> $_POST['ios_order_wait_time'],'ios_order_rotate_time'=> $_POST['ios_order_rotate_time'],'ios_washer_search_radius'=> $_POST['ios_washer_search_radius'], 'ios_wash_now_fee'=> $_POST['ios_wash_now_fee'], 'ios_wash_later_fee'=> $_POST['ios_wash_later_fee'],'android_app_version_check'=> $_POST['android_app_version_check'], 'android_app_version'=> $_POST['android_app_version'], 'android_app_link'=> $_POST['android_app_link'], 'android_order_wait_time'=> $_POST['android_order_wait_time'],'android_order_rotate_time'=> $_POST['android_order_rotate_time'], 'android_washer_search_radius'=> $_POST['android_washer_search_radius'], 'android_wash_now_fee'=> $_POST['ios_wash_now_fee'], 'android_wash_later_fee'=> $_POST['ios_wash_later_fee'],'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
             // END COLLECT POST VALUE //
 
@@ -129,11 +129,11 @@ include('header.php');
                                 <input type="text" id="ios_washer_search_radius" name="ios_washer_search_radius" class="form-control small" value="<?php echo $appsettings->ios_washer_search_radius; ?>" /> miles
                                 
                             </td>
-                             <td>
+                             <td rowspan="2">
                                 <span>$</span><input type="text" id="ios_wash_now_fee" name="ios_wash_now_fee" class="form-control small" value="<?php echo $appsettings->ios_wash_now_fee; ?>" />
                                 
                             </td>
-                             <td>
+                             <td rowspan="2">
                                 <span>$</span><input type="text" id="ios_wash_later_fee" name="ios_wash_later_fee" class="form-control small" value="<?php echo $appsettings->ios_wash_later_fee; ?>" />
                                 
                             </td>
@@ -161,14 +161,7 @@ include('header.php');
                                 <input type="text" id="android_washer_search_radius" name="android_washer_search_radius" class="form-control small" value="<?php echo $appsettings->android_washer_search_radius; ?>" /> miles
                                 
                             </td>
-                             <td>
-                                <span>$</span><input type="text" id="android_wash_now_fee" name="android_wash_now_fee" class="form-control small" value="<?php echo $appsettings->android_wash_now_fee; ?>" />
-                                
-                            </td>
-                             <td>
-                                <span>$</span><input type="text" id="android_wash_later_fee" name="android_wash_later_fee" class="form-control small" value="<?php echo $appsettings->android_wash_later_fee; ?>" />
-                                
-                            </td>
+                           
                             </tr>
                             
                             
