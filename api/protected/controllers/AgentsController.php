@@ -2666,7 +2666,7 @@ $phone_verified = Yii::app()->request->getParam('phone_verified');
        $result = 'false';
        $response = 'All fields are required';
 
-       	if((isset($first_name) && !empty($first_name)) && (isset($last_name) && !empty($last_name)) && (isset($email) && !empty($email)) && (isset($phone) && !empty($phone)) && (isset($password) && !empty($password)) && (isset($city) && !empty($city)) && (isset($state) && !empty($state))){
+       	if((isset($first_name) && !empty($first_name)) && (isset($last_name) && !empty($last_name)) && (isset($email) && !empty($email)) && (isset($phone) && !empty($phone)) && (isset($city) && !empty($city)) && (isset($state) && !empty($state))){
 
             $agents_email_exists = PreRegWashers::model()->findByAttributes(array("email"=>$email));
  $agents_phone_exists = PreRegWashers::model()->findByAttributes(array("phone"=>$phone));
@@ -2689,7 +2689,7 @@ $phone_verified = Yii::app()->request->getParam('phone_verified');
                 'phone'=> $phone,
                 'city' => $city,
                 'state' => $state,
-'password' => md5($password),
+'password' => '',
               
 'van_lease' => $van_lease,
 'register_token' => $register_token,

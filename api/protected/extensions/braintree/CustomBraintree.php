@@ -301,6 +301,44 @@ Braintree_Configuration::environment('production');
             ));
         }
     }
+    
+        public function createClientTokencustom() {
+
+
+try {
+  
+                $clientToken = Braintree_ClientToken::generate();
+                return (array("success"=>1,"customer_id"=>$customer->id,"token"=>$clientToken));
+           
+        } catch (Exception $e) {
+            return (array(
+                'success' => 0,
+                'message' => 'Error in generating client token',
+
+            ));
+        }
+    }
+    
+            public function createClientTokencustom_real() {
+
+            Braintree_Configuration::environment('production');
+        Braintree_Configuration::merchantId('74zsnfqy5svgpvjv');
+        Braintree_Configuration::publicKey('7gg5kfvkx8w5fcx8');
+        Braintree_Configuration::privateKey('579e6af0c752079c2f9596c838191327');
+
+try {
+  
+                $clientToken = Braintree_ClientToken::generate();
+                return (array("success"=>1,"customer_id"=>$customer->id,"token"=>$clientToken));
+           
+        } catch (Exception $e) {
+            return (array(
+                'success' => 0,
+                'message' => 'Error in generating client token',
+
+            ));
+        }
+    }
 
     public function deleteCustomer($id)
     {

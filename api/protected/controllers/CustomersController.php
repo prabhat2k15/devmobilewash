@@ -4203,8 +4203,10 @@ die();
                   if($customers) {
 
                       if($customers->braintree_id) {
-                          if($customers->client_position == 'real') $result = Yii::app()->braintree->createClientToken_real($customers->braintree_id);
-else $result = Yii::app()->braintree->createClientToken($customers->braintree_id);
+                          //if($customers->client_position == 'real') $result = Yii::app()->braintree->createClientToken_real($customers->braintree_id);
+//else $result = Yii::app()->braintree->createClientToken($customers->braintree_id);
+                          if($customers->client_position == 'real') $result = Yii::app()->braintree->createClientTokencustom_real();
+else $result = Yii::app()->braintree->createClientTokencustom();
                       } else {
                           if($customers->client_position == 'real') {
                             if (!filter_var($customers->email, FILTER_VALIDATE_EMAIL)) $result = Yii::app()->braintree->createCustomer_real(array('firstName' => $customers->customername, 'company' => '-'));
@@ -4242,6 +4244,7 @@ else $result = Yii::app()->braintree->createClientToken($customers->braintree_id
               die();
 
           }
+	  
          /*
         // Generate Payment with requested payment nonce
         public function actionCustomerPayment() {
@@ -8751,6 +8754,7 @@ die();
 								'customerId' => $cust_bt_id,
 								'paymentMethodNonce' => $nonce,
 								'deviceData' => $deviceData,
+								
 								'options' => [
 									'verifyCard' => true,
 
@@ -8763,6 +8767,7 @@ die();
 								'customerId' => $cust_bt_id,
 								'paymentMethodNonce' => $nonce,
 								'deviceData' => $deviceData,
+								
 								'options' => [
 									'verifyCard' => true,
 
@@ -8846,6 +8851,8 @@ die();
 		$customer_id = Yii::app()->request->getParam('customer_id');
 		$wash_request_id = Yii::app()->request->getParam('wash_request_id');
 		$agent_id = Yii::app()->request->getParam('agent_id');
+		$deviceData = '';
+		if(Yii::app()->request->getParam('deviceData')) $deviceData = Yii::app()->request->getParam('deviceData');
 
 		$amount = 0;
 		$amount = Yii::app()->request->getParam('amount');
@@ -8956,8 +8963,8 @@ $kartdetails = json_decode($kartapiresult);
 				    else $voidresult = Yii::app()->braintree->void($wash_check->transaction_id);
 				}
 
-				if($amount > 0) $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $company_total, 'amount' => str_replace(",", "", $amount), 'paymentMethodToken' => $token];
-				else $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => str_replace(",", "", $kartdetails->net_price), 'paymentMethodToken' => $token];
+				if($amount > 0) $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $company_total, 'amount' => str_replace(",", "", $amount), 'paymentMethodToken' => $token, 'deviceData' => $deviceData];
+				else $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => str_replace(",", "", $kartdetails->net_price), 'paymentMethodToken' => $token, 'deviceData' => $deviceData];
 
                 if($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
                 else $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
@@ -9330,6 +9337,8 @@ die();
             $agent_id = Yii::app()->request->getParam('agent_id');
             $amount = Yii::app()->request->getParam('amount');
             $washing_request_id =Yii::app()->request->getParam('wash_request_id');
+	    $deviceData = '';
+	    if(Yii::app()->request->getParam('deviceData')) $deviceData = Yii::app()->request->getParam('deviceData');
             $wash_position =Yii::app()->request->getParam('wash_position');
             $response = "Pass the required parameters";
             $result = "false";
@@ -9415,12 +9424,12 @@ die();
                 }
 
                     if(($wash_id_check->status >= 1) && ($wash_id_check->status <= 3)){
-                            $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'serviceFeeAmount' => "5.00", 'amount' => $amount,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => true]];
+                            $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'serviceFeeAmount' => "5.00", 'amount' => $amount,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => true], 'deviceData' => $deviceData];
                             if(($wash_position == 'demo') || ($wash_position == '')) $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
                             else $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
                     }
                     else {
-                         $request_data = ['amount' => $amount,'paymentMethodToken' => $token,'options' => ['submitForSettlement' => true]];
+                         $request_data = ['amount' => $amount,'paymentMethodToken' => $token,'options' => ['submitForSettlement' => true], 'deviceData' => $deviceData];
                     if(($wash_position == 'demo') || ($wash_position == '')) $payresult = Yii::app()->braintree->sale($request_data);
                     else $payresult = Yii::app()->braintree->sale_real($request_data);
 

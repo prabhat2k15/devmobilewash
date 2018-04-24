@@ -55,7 +55,6 @@ die();
         $vehicle_type = '';
         $result= 'false';
         $response= 'Pass the required parameters';
-	
 	$app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
 	if(count($app_settings)){
 		if(is_numeric($app_settings[0]['wash_now_fee'])) $wash_now_fee = $app_settings[0]['wash_now_fee'];
