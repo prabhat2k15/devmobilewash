@@ -1575,6 +1575,8 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
         $schedule_time = Yii::app()->request->getParam('schedule_time');
 	$ondemand_10_min_cancel_schedule = Yii::app()->request->getParam('ondemand_10_min_cancel_schedule');
 	$is_rescheduled = Yii::app()->request->getParam('is_rescheduled');
+	$wash_now_reschedule = 0;
+	if(Yii::app()->request->getParam('wash_now_reschedule')) $wash_now_reschedule = Yii::app()->request->getParam('wash_now_reschedule');
 	$wash_later_fee = 0;
 	
 
@@ -1717,6 +1719,60 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
                       /* --------- car pricing save end --------- */
                       }
 		    }
+		    
+		    if(($wash_now_reschedule == 1) && ((APP_ENV == 'real') || (APP_ENV == ''))){
+                    $this->layout = "xmlLayout";
+                    
+
+                    //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+                    require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+
+                    $client = new Services_Twilio($account_sid, $auth_token);
+		    $wash_details = Washingrequests::model()->findByPk($wash_request_id);
+		    $customers_id_check = Customers::model()->findByAttributes(array("id"=>$wash_details->customer_id));
+                    
+                    $smscontent = "WASH NOW SCHEDULED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")";
+
+		    try {
+		    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  '5627817812',
+                        'From' => '+13103128070',
+                        'Body' => $smscontent,
+                    ));
+		     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+ try {
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  '8183313631',
+                        'From' => '+13103128070',
+                        'Body' => $smscontent,
+                    ));
+		     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+try {
+
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  '3109999334',
+                        'From' => '+13103128070',
+                        'Body' => $smscontent,
+                    ));
+}catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+                   
+                    }
+
+
 		    
 		$result= 'true';
                 $response= 'order updated';
@@ -7435,6 +7491,8 @@ die();
         $status = Yii::app()->request->getParam('status');
 	$check_wash_status_before_cancel = 0;
 	if(Yii::app()->request->getParam('check_wash_status_before_cancel')) $check_wash_status_before_cancel = Yii::app()->request->getParam('check_wash_status_before_cancel');
+	$wash_now_canceled = 0;
+	if(Yii::app()->request->getParam('wash_now_canceled')) $wash_now_canceled = Yii::app()->request->getParam('wash_now_canceled');
         $result= 'false';
         $response= 'Pass the required parameters';
         $json= array();
@@ -7721,6 +7779,58 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
 	    
 	    
            }
+	   
+	if(($result == 'true') && ($wash_now_canceled == 1) && ((APP_ENV == 'real') || (APP_ENV == ''))){
+                    $this->layout = "xmlLayout";
+                    
+
+                    //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+                    require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
+                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+
+                    $client = new Services_Twilio($account_sid, $auth_token);
+		    $wash_details = Washingrequests::model()->findByPk($wash_request_id);
+		    $customers_id_check = Customers::model()->findByAttributes(array("id"=>$wash_details->customer_id));
+                    
+                    $smscontent = "WASH NOW CANCELED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")";
+
+		    try {
+		    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  '5627817812',
+                        'From' => '+13103128070',
+                        'Body' => $smscontent,
+                    ));
+		     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+ try {
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  '8183313631',
+                        'From' => '+13103128070',
+                        'Body' => $smscontent,
+                    ));
+		     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+try {
+
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' =>  '3109999334',
+                        'From' => '+13103128070',
+                        'Body' => $smscontent,
+                    ));
+}catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+                   
+                    }
 
 
         }

@@ -2882,6 +2882,61 @@ $premium_price = $item_check[0]['premium'];
 	}
 	
 	
+		public function actionupdatezippricenew(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$result= 'false';
+		$response= 'Fill up required fields';
+
+ $id = Yii::app()->request->getParam('id');
+  $zip = Yii::app()->request->getParam('zip');
+ $express_price = Yii::app()->request->getParam('express_price');
+        $deluxe_price = Yii::app()->request->getParam('deluxe_price');
+		$premium_price = Yii::app()->request->getParam('premium_price');
+
+
+
+		if((isset($id) && !empty($id)))
+
+			 {
+
+$item_check = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where('id='.$id)->queryAll();
+
+             	if(!count($item_check)){
+                   	$result= 'false';
+		$response= "Invalid id";
+                }
+else{
+
+if($item_check->zipcodes) $new_zips = $item_check->zipcodes.",".$zip;
+else $new_zips = $zip;
+$new_zips = trim($new_zips);
+                   $data= array(
+					'zipcodes'=> $new_zips
+					
+				);
+
+
+				   $resUpdate = Yii::app()->db->createCommand()->update('zipcode_pricing', $data,"id='".$id."'");
+
+                    	$result= 'true';
+		$response= 'update successful';
+}
+}
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+		echo json_encode($json);
+	}
+	
+	
 	public function actiongetzipprices(){
 
 if(Yii::app()->request->getParam('key') != API_KEY){

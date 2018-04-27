@@ -1496,7 +1496,7 @@ strokeColor: "#076ee1",
         var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
         url.push('sql=');
         //var query = 'SELECT * FROM ' + '1KGA8BqTBlI6Rvv1sQACLdhDHa-7DmvoizGUCcbQr';
-var query = "SELECT * FROM " + "1Up7xCTaar4u8bGMYVW-lHP-YndDpoS8yTEJlKmtH WHERE MW_COVERAGE_AREA = 'true'";
+var query = "SELECT * FROM " + "1Ck5Bulp_3881RFZqDRNb5yl-HgHnwA-p9Vv2JB-k WHERE MW_COVERAGE_AREA = 'true'";
         var encodedQuery = encodeURIComponent(query);
         url.push(encodedQuery);
         url.push('&callback=drawMap');
@@ -1739,6 +1739,38 @@ setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
 return false;
 });
 
+$('body').on('click', '.enable-zip-surge', function(){
+    var zip = $(this).data('zip');
+
+  if (zip != null) {
+      $("#container .note-message").fadeIn();
+$("#container .note-message").html('Enabling...');
+
+    $.getJSON( "ajax.php", { action: 'enablesurge', zipcode: zip }, function( data ) {
+       $("#container .note-message").html(data.response);
+if(data.response == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
+else setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
+    });
+  }
+return false;
+});
+
+$('body').on('click', '.disable-zip-surge', function(){
+    var zip = $(this).data('zip');
+
+  if (zip != null) {
+      $("#container .note-message").fadeIn();
+$("#container .note-message").html('Disabling...');
+
+    $.getJSON( "ajax.php", { action: 'disablesurge', zipcode: zip }, function( data ) {
+       $("#container .note-message").html(data.response);
+if(data.response == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
+else setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
+    });
+  }
+return false;
+});
+
 });
 
 function drawMap(data) {
@@ -1752,8 +1784,10 @@ fusiondata = data['rows'];
               newCoordinates = constructNewCoordinates(rows[i][10]['geometry']);
               
               	      var areacolor = "#076ee1";
+		      var surgeactive = 0;
 if (rows[i][12] == 'true') {
     areacolor = "#f4d942";
+    surgeactive = 1;
 }
 
             var randomnumber = Math.floor(Math.random() * 4);
@@ -1764,23 +1798,27 @@ if (rows[i][12] == 'true') {
               strokeWeight: 0,
               fillColor: areacolor,
               fillOpacity: 0.6,
-              zipcode: rows[i][4]
+              zipcode: rows[i][4],
+	      surgeactive: surgeactive
             });
 
 ziparea_polys.push(country);
-/*
+
             google.maps.event.addListener(country, 'mouseover', function() {
-              //this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
+		//console.log(this);
+              this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
             });
             google.maps.event.addListener(country, 'mouseout', function() {
-              //this.setOptions({fillColor: '#ffffff', fillOpacity: 0.3});
+              if(this.surgeactive == 1) this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
+	      else this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
             });
 
             google.maps.event.addListener(country, 'click', function(e)
 {
    // console.log(country);
    //this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
-    var content = "<p><b>ZIPCODE: </b>"+this.zipcode;
+    if(this.surgeactive == 1) var content = "<p><b>ZIPCODE: </b>"+this.zipcode+"</p><p><a href='#' class='disable-zip-surge' data-zip='"+this.zipcode+"'>Disable Surge</a></p>";
+    else var content = "<p><b>ZIPCODE: </b>"+this.zipcode+"</p><p><a href='#' class='enable-zip-surge' data-zip='"+this.zipcode+"'>Enable Surge</a></p>";
   var infowindow = new google.maps.InfoWindow({
         content: content
          , position: e.latLng
@@ -1788,7 +1826,7 @@ ziparea_polys.push(country);
     });
     infowindow.open(map, this);
 });
-*/
+
 
             country.setMap(map);
 

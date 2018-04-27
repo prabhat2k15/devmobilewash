@@ -3150,11 +3150,11 @@ $ios_washer_search_radius = $app_settings[0]['washer_search_radius'];
                 }
 		
 if(!is_numeric($ios_wash_now_fee)){
-$ios_wash_now_fee = $app_settings[0]['ios_wash_now_fee'];
+$ios_wash_now_fee = $app_settings[0]['wash_now_fee'];
                 }
 		
 if(!is_numeric($ios_wash_later_fee)){
-$ios_wash_later_fee = $app_settings[0]['ios_wash_later_fee'];
+$ios_wash_later_fee = $app_settings[0]['wash_later_fee'];
                 }
 
 
@@ -3183,11 +3183,11 @@ $android_washer_search_radius = $app_settings[1]['washer_search_radius'];
                 }
 		
 		if(!is_numeric($android_wash_now_fee)){
-$android_wash_now_fee = $app_settings[0]['android_wash_now_fee'];
+$android_wash_now_fee = $app_settings[1]['wash_now_fee'];
                 }
 		
 if(!is_numeric($android_wash_later_fee)){
-$android_wash_later_fee = $app_settings[0]['android_wash_later_fee'];
+$android_wash_later_fee = $app_settings[1]['wash_later_fee'];
                 }
 
 

@@ -49,7 +49,7 @@ $client = new Google_Client();
 $client->setAuthConfigFile('client_secret_947329153849.json');
 $client->addScope('https://www.googleapis.com/auth/fusiontables');
   $client->setAccessToken($_SESSION['access_token']);
-$tableId = '1Up7xCTaar4u8bGMYVW-lHP-YndDpoS8yTEJlKmtH';
+$tableId = '1Ck5Bulp_3881RFZqDRNb5yl-HgHnwA-p9Vv2JB-k';
         $ft = new Google_Service_Fusiontables($client);
 
  $result = $ft->query->sql("SELECT ROWID, ZIPCODE FROM $tableId");
