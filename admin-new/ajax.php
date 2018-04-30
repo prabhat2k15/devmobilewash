@@ -28,6 +28,14 @@ array_push($row_ids, $rr[0]);
 
 $ft->query->sql("UPDATE $tableId SET SPECIAL_PRICE_APPLIED = 'true' WHERE ZIPCODE = '$zip'");
 
+        $userdata = array("id"=>1, 'zip' => $zip, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatezippricenew");
+curl_setopt($handle_data, CURLOPT_POST, true);
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
+curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle_data);
+curl_close($handle_data);
+
  $json = array("result" => 'true', "response" => 'Surge price enabled for '.$zip);
 echo json_encode($json);       
 } else {
@@ -66,6 +74,14 @@ array_push($row_ids, $rr[0]);
 
 
 $ft->query->sql("UPDATE $tableId SET SPECIAL_PRICE_APPLIED = '' WHERE ZIPCODE = '$zip'");
+
+        $userdata = array("id"=>1, 'zip' => $zip, 'action' => 'disablesurge', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatezippricenew");
+curl_setopt($handle_data, CURLOPT_POST, true);
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
+curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle_data);
+curl_close($handle_data);
 
  $json = array("result" => 'true', "response" => 'Surge price disabled for '.$zip);
 echo json_encode($json);       

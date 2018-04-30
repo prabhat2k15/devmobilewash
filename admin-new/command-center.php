@@ -1748,7 +1748,7 @@ $("#container .note-message").html('Enabling...');
 
     $.getJSON( "ajax.php", { action: 'enablesurge', zipcode: zip }, function( data ) {
        $("#container .note-message").html(data.response);
-if(data.response == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
+if(data.result == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
 else setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });
   }
@@ -1764,7 +1764,7 @@ $("#container .note-message").html('Disabling...');
 
     $.getJSON( "ajax.php", { action: 'disablesurge', zipcode: zip }, function( data ) {
        $("#container .note-message").html(data.response);
-if(data.response == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
+if(data.result == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
 else setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });
   }

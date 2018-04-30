@@ -2826,7 +2826,7 @@ die();
 		$response= 'Fill up required fields';
 
  $id = Yii::app()->request->getParam('id');
-  $zip = Yii::app()->request->getParam('zip');
+  $price_unit = Yii::app()->request->getParam('price_unit');
  $express_price = Yii::app()->request->getParam('express_price');
         $deluxe_price = Yii::app()->request->getParam('deluxe_price');
 		$premium_price = Yii::app()->request->getParam('premium_price');
@@ -2857,9 +2857,13 @@ if(!is_numeric($premium_price)){
 $premium_price = $item_check[0]['premium'];
 }
 
+ if(!$price_unit){
+$price_unit = $item_check[0]['price_unit'];
+}
+
 
                    $data= array(
-					'zipcodes'=> $zip,
+					'price_unit'=> $price_unit,
 					'express'=> $express_price,
 					'deluxe'=> $deluxe_price,
 					'premium'=> $premium_price
@@ -2894,6 +2898,7 @@ die();
 
  $id = Yii::app()->request->getParam('id');
   $zip = Yii::app()->request->getParam('zip');
+  $action = Yii::app()->request->getParam('action');
  $express_price = Yii::app()->request->getParam('express_price');
         $deluxe_price = Yii::app()->request->getParam('deluxe_price');
 		$premium_price = Yii::app()->request->getParam('premium_price');
@@ -2912,9 +2917,23 @@ $item_check = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricin
                 }
 else{
 
-if($item_check->zipcodes) $new_zips = $item_check->zipcodes.",".$zip;
+if($action == 'disablesurge'){
+	$all_zips = explode(",", $item_check[0]['zipcodes']);
+$all_zips = array_filter($all_zips, function($v) use ($zip) {
+    if ($v != $zip) {
+        return true;
+   }
+});
+
+$new_zips = implode(",", $all_zips);
+
+}
+else{
+if($item_check[0]['zipcodes']) $new_zips = $item_check[0]['zipcodes'].",".$zip;
 else $new_zips = $zip;
-$new_zips = trim($new_zips);
+$new_zips = trim($new_zips);	
+}
+
                    $data= array(
 					'zipcodes'=> $new_zips
 					

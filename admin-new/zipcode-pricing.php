@@ -1,24 +1,7 @@
 <?php
 session_start();
-require_once 'google-api-php-client-2.0.1/vendor/autoload.php';
 include('header.php');
 
-$client = new Google_Client();
-$client->setAuthConfigFile('client_secret_947329153849.json');
-$client->addScope('https://www.googleapis.com/auth/fusiontables');
-
-if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
-//echo print_r($_SESSION['access_token']);
-  $client->setAccessToken($_SESSION['access_token']);
- 
-        
-} else {
-  $redirect_uri = ROOT_URL. '/admin-new/oauth2callback.php?redirectpage=zipcode-pricing';
-  header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
-}
-
-?>
-<?php
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
 }
@@ -32,43 +15,13 @@ curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 
 if(isset($_POST['pricing_submit'])){
-        $userdata = array("id"=>1, 'zip' => $_POST['zipcodes'], 'express_price' => $_POST['exp_price'], 'deluxe_price' => $_POST['del_price'], 'premium_price' => $_POST['prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $userdata = array("id"=>1, 'price_unit' => $_POST['price_unit'], 'express_price' => $_POST['exp_price'], 'deluxe_price' => $_POST['del_price'], 'premium_price' => $_POST['prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatezipprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
-
-if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
-if($_POST['zipcodes']) $all_zips = explode(",", $_POST['zipcodes']);
-$all_zips_formatted = array();
-foreach($all_zips as $zip) array_push($all_zips_formatted, trim($zip));
-$row_ids = array();
-$client = new Google_Client();
-$client->setAuthConfigFile('client_secret_947329153849.json');
-$client->addScope('https://www.googleapis.com/auth/fusiontables');
-  $client->setAccessToken($_SESSION['access_token']);
-$tableId = '1Ck5Bulp_3881RFZqDRNb5yl-HgHnwA-p9Vv2JB-k';
-        $ft = new Google_Service_Fusiontables($client);
-
- $result = $ft->query->sql("SELECT ROWID, ZIPCODE FROM $tableId");
-//print_r($result->rows);
-if(count($all_zips_formatted)){
-foreach($result->rows as $rr){
-if (in_array($rr[1], $all_zips_formatted)) {
-array_push($row_ids, $rr[0]); 
-}
-
-}
-}
-
-$ft->query->sql("UPDATE $tableId SET SPECIAL_PRICE_APPLIED = '' WHERE SPECIAL_PRICE_APPLIED = 'true'");
-
-if(count($row_ids)) foreach($row_ids as $rid) $ft->query->sql("UPDATE $tableId SET SPECIAL_PRICE_APPLIED = 'true' WHERE ROWID = '$rid'");
-
-      
-}
 
     }
     
@@ -142,7 +95,22 @@ $pricedata = json_decode($result);
     padding: 5px;
 }
 
+.usd-active{
+    display: none;
+}
+
 </style>
+<?php if($pricedata->zipcode_prices[0]->price_unit == 'usd'): ?>
+<style>
+  .percent-active{
+    display: none;
+}
+
+.usd-active{
+    display: inline;
+}
+</style>
+<?php endif; ?>
 <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
                 <div class="page-content" id="main">
@@ -177,23 +145,29 @@ $pricedata = json_decode($result);
 <form action="" method="post" id="pricing_form">
 <table class="table table-striped table-bordered order-column no-footer" style="width: 450px;">
 <tr>
-    <th>Zipcodes</th>
+    
     <th>Express</th>
     <th>Deluxe</th>
     <th>Premium</th>
+    <th>Unit</th>
 </tr>
 <tr>
-    <td><input name="zipcodes" style="width: 400px;" type="text" value="<?php echo $pricedata->zipcode_prices[0]->zipcodes; ?>" /></td>
     <td style="min-width: 105px;">
-        <input name="exp_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->express; ?>" style="width: 70px;" />%
+        <span class='usd-active'>$</span><input name="exp_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->express; ?>" style="width: 70px;" /><span class='percent-active'>%</span>
        
     </td>
     <td style="min-width: 105px;">
-        <input name="del_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->deluxe; ?>" style="width: 70px;" />%
+        <span class='usd-active'>$</span><input name="del_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->deluxe; ?>" style="width: 70px;" /><span class='percent-active'>%</span>
        
     </td>
     <td style="min-width: 105px;">
-        <input name="prem_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->premium; ?>" style="width: 70px;" />%
+        <span class='usd-active'>$</span><input name="prem_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->premium; ?>" style="width: 70px;" /><span class='percent-active'>%</span>
+    </td>
+    <td style="min-width: 105px;">
+        <select id="price_unit" name="price_unit">
+            <option value="percent" <?php if($pricedata->zipcode_prices[0]->price_unit == 'percent') echo "selected"; ?>>Percent</option>
+            <option value="usd" <?php if($pricedata->zipcode_prices[0]->price_unit == 'usd') echo "selected"; ?>>USD</option>
+        </select>
     </td>
 </tr>
 
@@ -231,6 +205,19 @@ $pricedata = json_decode($result);
                 <!-- END CONTENT BODY -->
             </div>
 <?php include('footer.php') ?>
+<script>
+    $( "#pricing_form #price_unit" ).change(function() {
+  console.log($(this).val());
+  if ($(this).val() == 'usd'){
+    $("#pricing_form .percent-active").hide();
+    $("#pricing_form .usd-active").show();
+  }
+  if ($(this).val() == 'percent'){
+    $("#pricing_form .usd-active").hide();
+    $("#pricing_form .percent-active").show();
+  }
+});
+</script>
 
 
 <!-- BEGIN PAGE LEVEL PLUGINS -->

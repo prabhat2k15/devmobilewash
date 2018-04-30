@@ -68,7 +68,7 @@ background: #ccc;
 <tr>
 <td><p style='font-size: 20px; margin: 0;'>Cancel Fee</p></td>
 <td style='text-align: right;'>
-<p style='font-size: 20px; margin: 0;'>+$5.00</p>
+<p style='font-size: 20px; margin: 0;'>+$<?php echo number_format($kartdata->cancel_fee - $kartdata->washer_cancel_fee, 2); ?></p>
 </td>
 </tr>
 </table>
@@ -77,7 +77,7 @@ background: #ccc;
 <table class='total' style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr>
 <td></td>
-<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$5.00</span></p></td>
+<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$<?php echo number_format($kartdata->cancel_fee - $kartdata->washer_cancel_fee, 2); ?></span></p></td>
 </tr>
 </table>
 
@@ -518,7 +518,7 @@ if($kartdata->cancel_fee > 0){  ?>
 <tr>
 <td><p style='font-size: 20px; margin: 0;'>Cancel Fee</p></td>
 <td style='text-align: right;'>
-<p style='font-size: 20px; margin: 0;'>+$5</p>
+<p style='font-size: 20px; margin: 0;'>+$<?php if($kartdata->washer_cancel_fee) {echo number_format($kartdata->washer_cancel_fee, 2);} else {echo "0.00";} ?></p>
 </td>
 </tr>
 </table>
@@ -527,7 +527,7 @@ if($kartdata->cancel_fee > 0){  ?>
 <table class='total' style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr>
 <td></td>
-<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$5</span></p></td>
+<td style='text-align: right;'><p style='font-size: 20px; margin: 0;'>Order Total: <span style='font-weight: bold;'>$<?php if($kartdata->washer_cancel_fee) {echo number_format($kartdata->washer_cancel_fee, 2);} else {echo "0.00";} ?></span></p></td>
 </tr>
 </table>
 

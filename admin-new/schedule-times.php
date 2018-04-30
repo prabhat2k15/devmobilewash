@@ -137,6 +137,10 @@ border: 3px solid #FF9800;
  background: #ffeb3b;
 }
 
+.portlet-body .price-row .red{
+ background: #ff5722;
+}
+
  </style>
 <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
@@ -170,7 +174,7 @@ $date = date('m/d/Y h:i:s a', time());
                                      <div class="price-row">
                                       <p><span class='color-block gray'></span> - Surge Price N/A</p>
                                       <p><span class='color-block blue'></span> - Standard Surge Price ($0)</p>
-                                      <p><span class='color-block yellow'></span> - Custom Surge Price <input type="text" name="custom_surge" id="custom_surge" value = "<?php echo $appsettings->ios_wash_later_fee; ?>"/></p>
+                                      <p><span class='color-block yellow'></span> / <span class='color-block red'></span> - Custom Surge Price <input type="text" name="custom_surge" id="custom_surge" value = "<?php echo $appsettings->ios_wash_later_fee; ?>"/></p>
                                      </div>
 
                                      <div class="col">
