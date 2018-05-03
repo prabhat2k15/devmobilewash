@@ -3770,6 +3770,7 @@ $first_fee_check = 0;
 $exp_surge_factor = 0;
 	$del_surge_factor = 0;
 	$prem_surge_factor = 0;
+	$zipcode_price_factor = 0;
 
 		if((isset($wash_request_id) && !empty($wash_request_id)))
 		{
@@ -3782,18 +3783,31 @@ $exp_surge_factor = 0;
             else{
 		
 		$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
-			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1' AND zipcodes != ''", array())->queryAll();
+			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
 			
 			if(($zipcode) && (count($zipcodeprice))){
 		
-			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
-			   foreach($all_zips as $zip){
-			      $zip = trim($zip);
-			      if($zip == $zipcode){
-				 $exp_surge_factor = $zipcodeprice[0]['express'];
-				 $del_surge_factor = $zipcodeprice[0]['deluxe'];
-				 $prem_surge_factor = $zipcodeprice[0]['premium'];
+			$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$zipcode));
+			   if(count($coveragezipcheck)){
+			      
+			      if($coveragezipcheck->zip_color == 'yellow'){
+				 $zipcode_price_factor = $zipcodeprice[0]['yellow']; 
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'red'){
+				 $zipcode_price_factor = $zipcodeprice[0]['red']; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == ''){
+				 $zipcode_price_factor = $zipcodeprice[0]['blue']; 
+			      }
+			      
+			if($zipcodeprice[0]['price_unit'] == 'percent'){
+				$exp_surge_factor += $zipcode_price_factor;
+				$del_surge_factor += $zipcode_price_factor;
+				$prem_surge_factor += $zipcode_price_factor; 	
+			}
+			
 			   }
 			
 		   }
@@ -3829,6 +3843,11 @@ $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"
 		      if($cardata->new_pack_name == 'Deluxe') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($del_surge_factor / 100));
 		      if($cardata->new_pack_name == 'Premium') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($prem_surge_factor / 100));
 		      
+		      if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+			$wash_price += $zipcode_price_factor;
+                         $wash_price = (string) $wash_price;	
+			 }
+			 
 		      $wash_price = number_format($wash_price, 2);
 
                     }
@@ -3842,6 +3861,11 @@ $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"
 		      if($pack_arr[$ind] == 'Deluxe') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($del_surge_factor / 100));
 		      if($pack_arr[$ind] == 'Premium') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($prem_surge_factor / 100));
 		      
+		      if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+			$wash_price += $zipcode_price_factor;
+                         $wash_price = (string) $wash_price;	
+			}
+			 
 		      $wash_price = number_format($wash_price, 2);
 
                     }
@@ -5481,6 +5505,7 @@ if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()
 			$exp_surge_factor = 0;
 	$del_surge_factor = 0;
 	$prem_surge_factor = 0;
+	$zipcode_price_factor = 0;
 			if((isset($customer_id) && !empty($customer_id)) &&
 			(isset($brand_name) && !empty($brand_name)) &&
             (isset($model_name) && !empty($model_name)) &&
@@ -5488,18 +5513,31 @@ if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()
 			 {
 				
 				$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
-			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1' AND zipcodes != ''", array())->queryAll();
+			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
 			
 			if(($zipcode) && (count($zipcodeprice))){
 		
-			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
-			   foreach($all_zips as $zip){
-			      $zip = trim($zip);
-			      if($zip == $zipcode){
-				 $exp_surge_factor = $zipcodeprice[0]['express'];
-				 $del_surge_factor = $zipcodeprice[0]['deluxe'];
-				 $prem_surge_factor = $zipcodeprice[0]['premium'];
+			   $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$zipcode));
+			   if(count($coveragezipcheck)){
+			      
+			      if($coveragezipcheck->zip_color == 'yellow'){
+				 $zipcode_price_factor = $zipcodeprice[0]['yellow']; 
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'red'){
+				 $zipcode_price_factor = $zipcodeprice[0]['red']; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == ''){
+				 $zipcode_price_factor = $zipcodeprice[0]['blue']; 
+			      }
+			      
+			if($zipcodeprice[0]['price_unit'] == 'percent'){
+				$exp_surge_factor += $zipcode_price_factor;
+				$del_surge_factor += $zipcode_price_factor;
+				$prem_surge_factor += $zipcode_price_factor; 	
+			}
+			
 			   }
 			
 		   }
@@ -5542,6 +5580,11 @@ if(count( $washplan_id_exists)){
 		      if($wash_package == 'Deluxe') $package_price = $washplan_id_exists->price + ($washplan_id_exists->price * ($del_surge_factor / 100));
 		      if($wash_package == 'Premium') $package_price = $washplan_id_exists->price + ($washplan_id_exists->price * ($prem_surge_factor / 100));
 		      
+		       if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+			$package_price += $zipcode_price_factor;
+                         $package_price = (string) $package_price;	
+			 }
+			 
 		      $package_price = number_format($package_price, 2);
 
 }
@@ -5642,6 +5685,7 @@ $zipcode = '';
 	$exp_surge_factor = 0;
 	$del_surge_factor = 0;
 	$prem_surge_factor = 0;
+	$zipcode_price_factor = 0;
 
 		$vehicle = array();
 		if((isset($vehicle_id) && !empty($vehicle_id)))
@@ -5655,18 +5699,31 @@ $cust_exists = Customers::model()->findByAttributes(array("id"=>$vehicle_exists-
 $wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
 
    $surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
-$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1' AND zipcodes != ''", array())->queryAll();
+$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
 
 if(($zipcode) && (count($zipcodeprice))){
 		
-			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
-			   foreach($all_zips as $zip){
-			      $zip = trim($zip);
-			      if($zip == $zipcode){
-				 $exp_surge_factor = $zipcodeprice[0]['express'];
-				 $del_surge_factor = $zipcodeprice[0]['deluxe'];
-				 $prem_surge_factor = $zipcodeprice[0]['premium'];
+		   $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$zipcode));
+			   if(count($coveragezipcheck)){
+			      
+			      if($coveragezipcheck->zip_color == 'yellow'){
+				 $zipcode_price_factor = $zipcodeprice[0]['yellow']; 
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'red'){
+				 $zipcode_price_factor = $zipcodeprice[0]['red']; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == ''){
+				 $zipcode_price_factor = $zipcodeprice[0]['blue']; 
+			      }
+			      
+			if($zipcodeprice[0]['price_unit'] == 'percent'){
+				$exp_surge_factor += $zipcode_price_factor;
+				$del_surge_factor += $zipcode_price_factor;
+				$prem_surge_factor += $zipcode_price_factor; 	
+			}
+			
 			   }
 			
 		   }
@@ -5680,6 +5737,11 @@ $wash_price = 0;
  $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_exists->vehicle_type, "title"=>$vehicle_exists->wash_package));
                     if($vehicle_exists->package_price) $wash_price = $vehicle_exists->package_price;
                     else $wash_price = $washing_plan_det->price;
+		    
+		    if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+			$wash_price += $zipcode_price_factor;
+                         $wash_price = (string) $wash_price;	
+			 }
 
 if($vehicle_exists->wash_package == 'Express'){
    
@@ -6300,37 +6362,38 @@ die();
 
        $first_name = Yii::app()->request->getParam('first_name');
        $last_name = Yii::app()->request->getParam('last_name');
+       $name = Yii::app()->request->getParam('name');
        $email = Yii::app()->request->getParam('email');
        $phone = Yii::app()->request->getParam('phone');
        $city = Yii::app()->request->getParam('city');
        $state = Yii::app()->request->getParam('state');
+       $zipcode = Yii::app()->request->getParam('zipcode');
 $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
        $register_date = date("Y-m-d H:i:s");
        $result = 'false';
        $response = 'All fields are required';
 
 
-       	if((isset($first_name) && !empty($first_name)) && (isset($last_name) && !empty($last_name)) && (isset($email) && !empty($email)) && (isset($phone) && !empty($phone)) && (isset($city) && !empty($city)) && (isset($state) && !empty($state)) && (isset($how_hear_mw) && !empty($how_hear_mw))){
+       	if((isset($name) && !empty($name)) && (isset($email) && !empty($email)) && (isset($phone) && !empty($phone)) && (isset($city) && !empty($city)) && (isset($state) && !empty($state))){
 
-            $clients_email_exists = PreRegClients::model()->findByAttributes(array("email"=>$email));
+            /*$clients_email_exists = PreRegClients::model()->findByAttributes(array("email"=>$email));
 			if(count($clients_email_exists)>0){
 				$result = 'false';
 				$response = 'Email already exists';
 
 			}
-            else{
+            else{*/
                  $result = 'true';
        $response = 'Registration successful';
 
                 	$clientdata= array(
-				'first_name'=> $first_name,
-                'last_name'=> $last_name,
+				'first_name'=> $name,
 				'email'=> $email,
                 'phone'=> $phone,
                 'city' => $city,
                 'state' => $state,
                 'register_date' => $register_date,
-'how_hear_mw' => $how_hear_mw
+'how_hear_mw' => ''
 				);
 
 				$model=new PreRegClients;
@@ -6339,6 +6402,9 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
 
 
  $from = Vargas::Obj()->getAdminFromEmail();
+
+$to = Vargas::Obj()->getAdminToEmail();
+
 
 $message = "<h3>Dear ".$first_name." ".$last_name.",</h3>";
 $message .= "<p>Thank you for registering with Mobile Wash! Our app is coming soon, but we'd love to service you today! Call <strong>(888)209-5585</strong> and we'll send you a mobile detailer.</p>";
@@ -6350,24 +6416,22 @@ $message .= "<p>Thank you for registering with Mobile Wash! Our app is coming so
                <p style='margin-top: 5px;'>support@mobilewash.com</p>";
 
 
-Vargas::Obj()->SendMail($email,$from,$message, "Thank you for your pre-registration with MobileWash");
+//Vargas::Obj()->SendMail($email,$from,$message, "Thank you for your pre-registration with MobileWash");
 
 $msg = '';
 $msg = "Registration Date: ".date("Y-m-d H:i:s")."<br>";
-$msg .= "Name: ".$first_name." ".$last_name."<br>";
+$msg .= "Name: ".$name."<br>";
 $msg .= "Email: ".$email."<br>";
 $msg .= "Phone: ".$phone."<br>";
 $msg .= "City: ".$city."<br>";
 $msg .= "State: ".$state."<br>";
-$msg .= "How did you hear about Mobile Wash: ".$how_hear_mw."<br>";
+$msg .= "Zipcode: ".$zipcode."<br>";
+//$msg .= "How did you hear about Mobile Wash: ".$how_hear_mw."<br>";
 
-$headers = "From: ".$first_name." ".$last_name."<".$email.">\r\n";
-$headers .= "Reply-To: ".$first_name." ".$last_name."<".$email.">\r\n";
-$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 
-mail("preclient@mobilewash.com", "MobileWash Client Pre-Registration", $msg, $headers);
+Vargas::Obj()->SendMail($to,$from,$msg, "New Customer Pre-Registration");
 
-            }
+            //}
         }
 
 			$json= array(
@@ -10122,6 +10186,37 @@ die();
 
         echo json_encode($feedbackadmin,JSON_PRETTY_PRINT);
         exit;
+    }
+    
+    
+        public function actionaddcustomerw(){
+         $washeractionlogdata = array(
+
+            'first_name'=> $_POST['first_name'],
+            'last_name'=> $_POST['last_name'],
+            'email' => $_POST['email22'],
+            'phone'=> $_POST['phone-number'],
+            'city'=> $_POST['city'],
+            'state'=> $_POST['state'],
+            'register_date'=> date('Y-m-d H:i:s'),
+            'trash_status'=>0
+        );
+
+        Yii::app()->db->createCommand()->insert('pre_registered_clients', $washeractionlogdata);
+        echo 'Inserted Data';
+        $from = Vargas::Obj()->getAdminFromEmail();
+
+$message2 = "<p>First Name: ".$_POST['first_name']."</p>";
+$message2 .= "<p>Last Name: ".$_POST['last_name']."</p>";
+$message2 .= "<p>Email: ".$_POST['email22']."</p>";
+$message2 .= "<p>Phone: ".$_POST['phone-number']."</p>";
+$message2 .= "<p>City: ".$_POST['city']."</p>";
+$message2 .= "<p>State: ".$_POST['state']."</p>";
+$message2 .= "<p>Zipcode: ".$_POST['pre_zipcode']."</p>";
+
+$to = Vargas::Obj()->getAdminToEmail();
+
+Vargas::Obj()->SendMail($to,$from,$message2, "New Customer Pre-Registration");
     }
 
 

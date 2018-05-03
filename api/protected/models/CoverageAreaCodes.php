@@ -21,8 +21,8 @@ class CoverageAreaCodes extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('zipcode', 'required'),
-			array('id, zipcode', 'safe', 'on'=>'search'),
+			array('zipcode, zip_color', 'required'),
+			array('id, zipcode, zip_color', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -44,7 +44,8 @@ class CoverageAreaCodes extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'zipcode' => 'Zipcode'
+			'zipcode' => 'Zipcode',
+			'zip_color' => 'Zipcolor'
 		);
 	}
 
@@ -56,6 +57,7 @@ class CoverageAreaCodes extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('zipcode',$this->zipcode,true);
+		$criteria->compare('zip_color',$this->zip_color,true);
 		
 
 		return new CActiveDataProvider($this, array(

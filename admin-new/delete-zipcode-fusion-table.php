@@ -24,7 +24,7 @@ array_push($row_ids, $rr[0]);
 }
 
 
-foreach($row_ids as $rid) $ft->query->sql("UPDATE $tableId SET MW_COVERAGE_AREA = '' WHERE ROWID = '$rid'");
+foreach($row_ids as $rid) $ft->query->sql("UPDATE $tableId SET MW_COVERAGE_AREA = '', ZIP_COLOR = '' WHERE ROWID = '$rid'");
 
  $json = array("result" => 'true', "zip" => $zip);
 echo json_encode($json);       

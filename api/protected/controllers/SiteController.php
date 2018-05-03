@@ -2827,9 +2827,9 @@ die();
 
  $id = Yii::app()->request->getParam('id');
   $price_unit = Yii::app()->request->getParam('price_unit');
- $express_price = Yii::app()->request->getParam('express_price');
-        $deluxe_price = Yii::app()->request->getParam('deluxe_price');
-		$premium_price = Yii::app()->request->getParam('premium_price');
+ $blue_price = Yii::app()->request->getParam('blue_price');
+        $yellow_price = Yii::app()->request->getParam('yellow_price');
+		$red_price = Yii::app()->request->getParam('red_price');
 
 
 
@@ -2845,16 +2845,16 @@ $item_check = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricin
                 }
 else{
 
- if(!is_numeric($express_price)){
-$express_price = $item_check[0]['express'];
+ if(!is_numeric($blue_price)){
+$blue_price = $item_check[0]['blue'];
 }
 
- if(!is_numeric($deluxe_price)){
-$deluxe_price = $item_check[0]['deluxe'];
+ if(!is_numeric($yellow_price)){
+$yellow_price = $item_check[0]['yellow'];
 }
 
-if(!is_numeric($premium_price)){
-$premium_price = $item_check[0]['premium'];
+if(!is_numeric($red_price)){
+$red_price = $item_check[0]['red'];
 }
 
  if(!$price_unit){
@@ -2864,9 +2864,9 @@ $price_unit = $item_check[0]['price_unit'];
 
                    $data= array(
 					'price_unit'=> $price_unit,
-					'express'=> $express_price,
-					'deluxe'=> $deluxe_price,
-					'premium'=> $premium_price
+					'blue'=> $blue_price,
+					'yellow'=> $yellow_price,
+					'red'=> $red_price
 				);
 
 

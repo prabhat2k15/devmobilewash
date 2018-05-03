@@ -315,6 +315,22 @@ font-size: 16px;
 padding-right: 35px;
 }
 
+.color-block{
+     width: 10px;
+    height: 10px;
+    background: #ccc;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.color-block.yellow{
+ background: #ffeb3b;
+}
+
+.color-block.red{
+ background: #ff5722;
+}
+
 </style>
 <script type="text/javascript">
 var currenttime = '<?php echo date("F d, Y H:i:s", time())?>'
@@ -1739,14 +1755,16 @@ setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
 return false;
 });
 
-$('body').on('click', '.enable-zip-surge', function(){
+$('body').on('click', '.save-zip-info', function(){
     var zip = $(this).data('zip');
+    var zipcolor = $(this).parent().parent().find('.zip-color').val();
+    console.log(zipcolor);
 
   if (zip != null) {
       $("#container .note-message").fadeIn();
-$("#container .note-message").html('Enabling...');
+$("#container .note-message").html('Saving...');
 
-    $.getJSON( "ajax.php", { action: 'enablesurge', zipcode: zip }, function( data ) {
+    $.getJSON( "ajax.php", { action: 'savezip', zipcode: zip, zipcolor: zipcolor  }, function( data ) {
        $("#container .note-message").html(data.response);
 if(data.result == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
 else setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
@@ -1755,21 +1773,6 @@ else setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
 return false;
 });
 
-$('body').on('click', '.disable-zip-surge', function(){
-    var zip = $(this).data('zip');
-
-  if (zip != null) {
-      $("#container .note-message").fadeIn();
-$("#container .note-message").html('Disabling...');
-
-    $.getJSON( "ajax.php", { action: 'disablesurge', zipcode: zip }, function( data ) {
-       $("#container .note-message").html(data.response);
-if(data.result == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
-else setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
-    });
-  }
-return false;
-});
 
 });
 
@@ -1784,10 +1787,16 @@ fusiondata = data['rows'];
               newCoordinates = constructNewCoordinates(rows[i][10]['geometry']);
               
               	      var areacolor = "#076ee1";
-		      var surgeactive = 0;
-if (rows[i][12] == 'true') {
+		     
+		      
+if (rows[i][12] == 'yellow') {
     areacolor = "#f4d942";
-    surgeactive = 1;
+
+}
+
+if (rows[i][12] == 'red') {
+    areacolor = "#ff5722";
+
 }
 
             var randomnumber = Math.floor(Math.random() * 4);
@@ -1799,7 +1808,7 @@ if (rows[i][12] == 'true') {
               fillColor: areacolor,
               fillOpacity: 0.6,
               zipcode: rows[i][4],
-	      surgeactive: surgeactive
+	      zipcolor: rows[i][12]
             });
 
 ziparea_polys.push(country);
@@ -1809,7 +1818,8 @@ ziparea_polys.push(country);
               this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
             });
             google.maps.event.addListener(country, 'mouseout', function() {
-              if(this.surgeactive == 1) this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
+              if(this.zipcolor == 'yellow') this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
+	      else if(this.zipcolor == 'red') this.setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
 	      else this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
             });
 
@@ -1817,11 +1827,25 @@ ziparea_polys.push(country);
 {
    // console.log(country);
    //this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
-    if(this.surgeactive == 1) var content = "<p><b>ZIPCODE: </b>"+this.zipcode+"</p><p><a href='#' class='disable-zip-surge' data-zip='"+this.zipcode+"'>Disable Surge</a></p>";
-    else var content = "<p><b>ZIPCODE: </b>"+this.zipcode+"</p><p><a href='#' class='enable-zip-surge' data-zip='"+this.zipcode+"'>Enable Surge</a></p>";
+  		      var blue_selected = "selected='selected'";
+		      var yellow_selected = '';
+		      var red_selected = '';
+		      
+if (this.zipcolor == 'yellow') {
+    yellow_selected = "selected='selected'";
+    blue_selected = '';
+    red_selected = '';
+}
+
+if (this.zipcolor == 'red') {
+    yellow_selected = '';
+    blue_selected = '';
+    red_selected = "selected='selected'";
+} 
+   
+    var content = "<div class='zip-info'><p><b>ZIPCODE: </b>"+this.zipcode+"</p><p>Zip Color <select class='zip-color'><option value='' "+blue_selected+">Blue</option><option value='yellow' "+yellow_selected+">Yellow</option><option value='red' "+red_selected+">Red</option></select></p><p><a href='#' class='save-zip-info' data-zip='"+this.zipcode+"'>Save</a></p></div>";
   var infowindow = new google.maps.InfoWindow({
-        content: content
-         , position: e.latLng
+        content: content, position: e.latLng
 
     });
     infowindow.open(map, this);
@@ -1853,8 +1877,12 @@ function showziparea(data) {
               newCoordinates = constructNewCoordinates(data[i][10]['geometry']);
               
               var areacolor = "#076ee1";
-if (data[i][12] == 'true') {
+if (data[i][12] == 'yellow') {
     areacolor = "#f4d942";
+}
+
+if (data[i][12] == 'red') {
+    areacolor = "#ff5722";
 }
 
             var randomnumber = Math.floor(Math.random() * 4);
@@ -1865,7 +1893,8 @@ if (data[i][12] == 'true') {
               strokeWeight: 0,
               fillColor: areacolor,
               fillOpacity: 0.6,
-              zipcode: data[i][4]
+              zipcode: data[i][4],
+	      zipcolor: data[i][12]
             });
 
 ziparea_polys.push(country);

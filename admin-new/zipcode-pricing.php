@@ -15,7 +15,7 @@ curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 
 if(isset($_POST['pricing_submit'])){
-        $userdata = array("id"=>1, 'price_unit' => $_POST['price_unit'], 'express_price' => $_POST['exp_price'], 'deluxe_price' => $_POST['del_price'], 'premium_price' => $_POST['prem_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $userdata = array("id"=>1, 'price_unit' => $_POST['price_unit'], 'blue_price' => $_POST['blue_price'], 'yellow_price' => $_POST['yellow_price'], 'red_price' => $_POST['red_price'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatezipprice");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
@@ -146,22 +146,22 @@ $pricedata = json_decode($result);
 <table class="table table-striped table-bordered order-column no-footer" style="width: 450px;">
 <tr>
     
-    <th>Express</th>
-    <th>Deluxe</th>
-    <th>Premium</th>
+    <th>Blue</th>
+    <th>Yellow</th>
+    <th>Red</th>
     <th>Unit</th>
 </tr>
 <tr>
     <td style="min-width: 105px;">
-        <span class='usd-active'>$</span><input name="exp_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->express; ?>" style="width: 70px;" /><span class='percent-active'>%</span>
+        <span class='usd-active'>$</span><input name="blue_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->blue; ?>" style="width: 70px;" /><span class='percent-active'>%</span>
        
     </td>
     <td style="min-width: 105px;">
-        <span class='usd-active'>$</span><input name="del_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->deluxe; ?>" style="width: 70px;" /><span class='percent-active'>%</span>
+        <span class='usd-active'>$</span><input name="yellow_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->yellow; ?>" style="width: 70px;" /><span class='percent-active'>%</span>
        
     </td>
     <td style="min-width: 105px;">
-        <span class='usd-active'>$</span><input name="prem_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->premium; ?>" style="width: 70px;" /><span class='percent-active'>%</span>
+        <span class='usd-active'>$</span><input name="red_price" type="text" value="<?php echo $pricedata->zipcode_prices[0]->red; ?>" style="width: 70px;" /><span class='percent-active'>%</span>
     </td>
     <td style="min-width: 105px;">
         <select id="price_unit" name="price_unit">

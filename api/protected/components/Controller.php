@@ -116,6 +116,7 @@ return;
 				      $exp_surge_factor = 0;
 				      $del_surge_factor = 0;
 				      $prem_surge_factor = 0;
+				      $zipcode_price_factor = 0;
 
     /* --- Geocode lat long --- */
 
@@ -147,17 +148,30 @@ $addressComponents = $geojsondata->results[0]->address_components;
 
 
 			$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D', strtotime($wash_id_check->order_for)))."'", array())->queryAll();
-			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1' AND zipcodes != ''", array())->queryAll();
+			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
 		   
 			if(($cust_zipcode) && count($zipcodeprice)){
-			   $all_zips = explode(",", $zipcodeprice[0]['zipcodes']);
-			   foreach($all_zips as $zip){
-			      $zip = trim($zip);
-			      if($zip == $cust_zipcode){
-				 $exp_surge_factor = $zipcodeprice[0]['express'];
-				 $del_surge_factor = $zipcodeprice[0]['deluxe'];
-				 $prem_surge_factor = $zipcodeprice[0]['premium'];
+				   $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$cust_zipcode));
+			   if(count($coveragezipcheck)){
+			      
+			      if($coveragezipcheck->zip_color == 'yellow'){
+				 $zipcode_price_factor = $zipcodeprice[0]['yellow']; 
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'red'){
+				 $zipcode_price_factor = $zipcodeprice[0]['red']; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == ''){
+				 $zipcode_price_factor = $zipcodeprice[0]['blue']; 
+			      }
+			      
+			if($zipcodeprice[0]['price_unit'] == 'percent'){
+				$exp_surge_factor += $zipcode_price_factor;
+				$del_surge_factor += $zipcode_price_factor;
+				$prem_surge_factor += $zipcode_price_factor; 	
+			}
+			
 			   }
 			}
                         
@@ -168,6 +182,10 @@ $addressComponents = $geojsondata->results[0]->address_components;
 			$washing_plan_express = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Express"));
                         if(count($washing_plan_express)) {
                         $expr_price = $washing_plan_express->price;
+			if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+			$expr_price += $zipcode_price_factor;
+                         $expr_price = (string) $expr_price;	
+			 }
 			$expr_price = $expr_price + ($expr_price * ($exp_surge_factor / 100));
                          }
                         else {
@@ -177,6 +195,10 @@ $addressComponents = $geojsondata->results[0]->address_components;
                         $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
                         if(count($washing_plan_deluxe)) {
                         $delx_price = $washing_plan_deluxe->price;
+			if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+			$delx_price += $zipcode_price_factor;
+                         $delx_price = (string) $delx_price;	
+			 }
 			$delx_price = $delx_price + ($delx_price * ($del_surge_factor / 100));
                          }
                         else {
@@ -186,6 +208,10 @@ $addressComponents = $geojsondata->results[0]->address_components;
                         $washing_plan_prem = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Premium"));
                         if(count($washing_plan_prem)) {
                         $prem_price = $washing_plan_prem->price;
+			if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+			$prem_price += $zipcode_price_factor;
+                         $prem_price = (string) $prem_price;	
+			 }
 			$prem_price = $prem_price + ($prem_price * ($prem_surge_factor / 100));
 
                         }
