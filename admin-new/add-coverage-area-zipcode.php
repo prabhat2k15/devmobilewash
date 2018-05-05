@@ -44,6 +44,7 @@ $row_ids = array();
 
 $client = new Google_Client();
 $client->setAuthConfigFile('client_secret_947329153849.json');
+$client->setAccessType('offline');
 $client->addScope('http://www.googleapis.com/auth/fusiontables');
 //print_r($client);
 
@@ -63,10 +64,16 @@ array_push($row_ids, $rr[0]);
 }
 
     foreach($row_ids as $rid) $result = $ft->query->sql("UPDATE $tableId SET MW_COVERAGE_AREA = 'true' WHERE ROWID = '$rid'");
+     echo "<script type='text/javascript'>window.location = '".ROOT_URL."/admin-new/coverage-area-zipcodes.php?action=add-zipcode-success'</script>";
             //print_r($result);
 }
+else{
+   $redirect_uri =  ROOT_URL.'/admin-new/oauth2callback.php';
+  header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
+  
+}
 
- echo "<script type='text/javascript'>window.location = '".ROOT_URL."/admin-new/coverage-area-zipcodes.php?action=add-zipcode-success'</script>";
+
 }
 }
 ?>

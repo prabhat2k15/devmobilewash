@@ -1,10 +1,13 @@
 <?php
+//error_reporting(E_ALL);
+//ini_set('display_errors', 'On');
 include('header.php');
 session_start();
 require_once 'google-api-php-client-2.0.1/vendor/autoload.php';
 
 $client = new Google_Client();
 $client->setAuthConfigFile('client_secret_947329153849.json');
+$client->setAccessType('offline'); 
 $client->addScope('https://www.googleapis.com/auth/fusiontables');
 
 if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
@@ -13,6 +16,7 @@ if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
  
         
 } else {
+  
   $redirect_uri = ROOT_URL.'/admin-new/oauth2callback.php';
   header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
 }

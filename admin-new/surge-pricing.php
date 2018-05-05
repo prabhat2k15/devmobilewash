@@ -176,7 +176,7 @@ $pricedata = json_decode($result);
                                             <div class="portlet-title tabbable-line">
                                                 <div class="caption caption-md">
                                                     <i class="icon-globe theme-font hide"></i>
-                                                    <span class="caption-subject font-blue-madison bold uppercase">Surge Pricing</span>
+                                                    <span class="caption-subject font-blue-madison bold uppercase">Dynamic Package Pricing</span>
                                                 </div>
                                             </div>
                                             <div class="portlet-body">

@@ -1,4 +1,6 @@
 <?php
+//error_reporting(E_ALL);
+//ini_set('display_errors', 'On');
 class TwilioController extends Controller
 {
     protected $pccountSid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
@@ -499,6 +501,52 @@ die();
                     echo json_encode($json);
         
         exit;
+        
+    }
+    
+    public function actiongetallcalls()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+		   
+		   $to_num = Yii::app()->request->getParam('tonumber');
+		   $from_num = Yii::app()->request->getParam('fromnumber');
+		   $message = Yii::app()->request->getParam('message');
+		   $media = Yii::app()->request->getParam('media');
+           $to_num = urlencode($to_num);
+		  // $message = urlencode($message);
+		   
+		   $result  = 'false';
+			$json    = array();
+           
+            $this->layout = "xmlLayout";
+
+			
+           require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+           
+            /* Instantiate a new Twilio Rest Client */
+
+			$account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423'; 
+			$auth_token = '149336e1b81b2165e953aaec187971e6'; 
+			
+		
+			$client = new Services_Twilio($account_sid, $auth_token);
+//var_dump($client->account);
+$calls = $client->account->calls->read();
+
+foreach ($calls as $record) {
+    print($record->sid);
+}
+           
+			
+
+        //echo json_encode($data);
+
+        //exit;
         
     }
 

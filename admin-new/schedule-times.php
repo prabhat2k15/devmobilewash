@@ -174,7 +174,7 @@ $date = date('m/d/Y h:i:s a', time());
                                      <div class="price-row">
                                       <p><span class='color-block gray'></span> - Surge Price N/A</p>
                                       <p><span class='color-block blue'></span> - Standard Surge Price ($0)</p>
-                                      <p><span class='color-block yellow'></span> - Custom Surge Price <input type="text" name="custom_surge" id="custom_surge" value = "<?php echo $appsettings->ios_wash_later_fee; ?>"/></p>
+                                      <p><span class='color-block yellow'></span> - Dynamic Wash Later Fee <input type="text" name="custom_surge" id="custom_surge" value = "<?php echo $appsettings->ios_wash_later_fee; ?>"/></p>
                                      </div>
 
                                      <div class="col">

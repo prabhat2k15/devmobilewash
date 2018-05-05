@@ -7,6 +7,7 @@ session_start();
 
 $client = new Google_Client();
 $client->setAuthConfigFile('client_secret_947329153849.json');
+$client->setAccessType('offline'); 
 $client->setRedirectUri(ROOT_URL.'/admin-new/oauth2callback.php');
 $client->addScope('https://www.googleapis.com/auth/fusiontables');
 
