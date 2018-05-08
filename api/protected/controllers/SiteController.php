@@ -2189,8 +2189,8 @@ if((isset($num) && !empty($num))){
             require('Services/Twilio.php');
             require('Services/Twilio/Capability.php');
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
@@ -4909,8 +4909,8 @@ $customer_password = Yii::app()->request->getParam('customer_password');
             require('Services/Twilio.php');
             require('Services/Twilio/Capability.php');
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
@@ -5170,8 +5170,8 @@ die();
             require('Services/Twilio.php');
             require('Services/Twilio/Capability.php');
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
@@ -5222,8 +5222,8 @@ die();
             require('Services/Twilio.php');
             require('Services/Twilio/Capability.php');
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 

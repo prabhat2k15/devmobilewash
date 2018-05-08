@@ -6,8 +6,8 @@
 
 class CustomersController extends Controller{
 
-	protected $pccountSid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-    protected $authToken = '149336e1b81b2165e953aaec187971e6';
+	protected $pccountSid = TWILIO_SID;
+    protected $authToken = TWILIO_AUTH_TOKEN;
     protected $from = '+13102941020';
     protected $callbackurl = ROOT_URL.'/api/complete_call.php?fromnumber=+';
     protected $apiurl = 'https://api.twilio.com';
@@ -8669,8 +8669,8 @@ die();
 
             /* Instantiate a new Twilio Rest Client */
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 

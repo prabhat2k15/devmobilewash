@@ -3,8 +3,8 @@
 //ini_set('display_errors', 'On');
 class TwilioController extends Controller
 {
-    protected $pccountSid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-    protected $authToken = '149336e1b81b2165e953aaec187971e6';
+    protected $pccountSid = TWILIO_SID;
+    protected $authToken = TWILIO_AUTH_TOKEN;
     protected $from = '+13108703052 ';
     protected $callbackurl = ROOT_URL.'/api/complete_call.php?fromnumber=+';
     protected $apiurl = 'https://api.twilio.com';
@@ -120,8 +120,8 @@ die();
         $json    = array();
         
             include 'Services/Twilio/Capability.php';
-            $accountSid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $authToken  = '149336e1b81b2165e953aaec187971e6';
+            $accountSid = TWILIO_SID;
+            $authToken  = TWILIO_AUTH_TOKEN;
 
             // put your Twilio Application Sid here
             $appSid     = 'APfd976a6070947f3d1368191eba84ed70';
@@ -188,8 +188,8 @@ die();
            
             /* Instantiate a new Twilio Rest Client */
 
-			$account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423'; 
-			$auth_token = '149336e1b81b2165e953aaec187971e6'; 
+			$account_sid = TWILIO_SID; 
+			$auth_token = TWILIO_AUTH_TOKEN; 
 			$client = new Services_Twilio($account_sid, $auth_token);
 			
 			if(!empty($media)){
@@ -431,8 +431,8 @@ die();
            
             /* Instantiate a new Twilio Rest Client */
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423'; 
-            $auth_token = '149336e1b81b2165e953aaec187971e6'; 
+            $account_sid = TWILIO_SID; 
+            $auth_token = TWILIO_AUTH_TOKEN; 
             $client = new Services_Twilio($account_sid, $auth_token);
            $data = array();
             foreach ($client->account->sms_messages as $sms) {
@@ -480,8 +480,8 @@ die();
            
             /* Instantiate a new Twilio Rest Client */
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423'; 
-            $auth_token = '149336e1b81b2165e953aaec187971e6'; 
+            $account_sid = TWILIO_SID; 
+            $auth_token = TWILIO_AUTH_TOKEN; 
             $client = new Services_Twilio($account_sid, $auth_token);
             $phone = array();
             $i = 0;
@@ -530,13 +530,21 @@ die();
            
             /* Instantiate a new Twilio Rest Client */
 
-			$account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423'; 
-			$auth_token = '149336e1b81b2165e953aaec187971e6'; 
+			$account_sid = TWILIO_SID; 
+			$auth_token = TWILIO_AUTH_TOKEN; 
 			
 		
-			$client = new Services_Twilio($account_sid, $auth_token);
+			/*$client = new Services_Twilio($account_sid, $auth_token);
 //var_dump($client->account);
 $calls = $client->account->calls->read();
+
+foreach ($calls as $record) {
+    print($record->sid);
+}*/
+
+$twilio = new Client($account_sid, $auth_token);
+
+$calls = $twilio->calls->read();
 
 foreach ($calls as $record) {
     print($record->sid);

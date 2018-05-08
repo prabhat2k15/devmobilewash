@@ -5,8 +5,8 @@
 
 class WashingController extends Controller{
 
-	protected $pccountSid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-    protected $authToken = '149336e1b81b2165e953aaec187971e6';
+	protected $pccountSid = TWILIO_SID;
+    protected $authToken = TWILIO_AUTH_TOKEN;
     protected $from = '+13102941020';
     protected $callbackurl = 'http://www.devmobilewash.com/api/complete_call.php?fromnumber=+';
     protected $apiurl = 'https://api.twilio.com';
@@ -886,8 +886,8 @@ $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
  require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$customers_id_check->id, 'status' => 4),array('order'=>'id DESC'));
@@ -1210,8 +1210,8 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
         require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 	    
 	    $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$customers_id_check->id, 'status' => 4),array('order'=>'id DESC'));
@@ -1780,8 +1780,8 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
                     require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
 
                     $client = new Services_Twilio($account_sid, $auth_token);
 		    $wash_details = Washingrequests::model()->findByPk($wash_request_id);
@@ -2729,8 +2729,8 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
 
                     $client = new Services_Twilio($account_sid, $auth_token);
 		    $agent_det =  Agents::model()->findByPk($wrequest_id_check->agent_id);
@@ -2829,8 +2829,8 @@ try {
                     require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
                     $client = new Services_Twilio($account_sid, $auth_token);
 
                     $message = "Order #".$wash_request_id." has been re-scheduled at ".$sched_date." @ ".$reschedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wrequest_id_check->address."\r\n------\r\n".$mobile_receipt;
@@ -3211,8 +3211,8 @@ try {
                    require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
                     $client = new Services_Twilio($account_sid, $auth_token);
 
 		    try {
@@ -3252,8 +3252,8 @@ try {
                    require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
                     $client = new Services_Twilio($account_sid, $auth_token);
 
 		    try {
@@ -3303,8 +3303,8 @@ try {
                     require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
                     $client = new Services_Twilio($account_sid, $auth_token);
 
 		    try {
@@ -7808,8 +7808,8 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
              require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
  $message = "Order #".$wrequest_id_check->id." has been canceled";
@@ -7864,8 +7864,8 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
                     require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
 
                     $client = new Services_Twilio($account_sid, $auth_token);
 		    $wash_details = Washingrequests::model()->findByPk($wash_request_id);
@@ -9740,8 +9740,8 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
              require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
  $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
@@ -10064,8 +10064,8 @@ $this->layout = "xmlLayout";
             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
@@ -11900,6 +11900,9 @@ die();
 
         if(count($wash_id_check) && (!$wash_id_check->ondemand_create_push_sent)){
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
+	    $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
+	    $wash_now_fee = number_format($app_settings[0]['wash_now_fee']*.80, 2);
+	    
 
             /* ------- get nearest agents --------- */
 
@@ -11929,7 +11932,7 @@ $fromindex = 0;
                         if($current_mile < 1) $current_mile = 1;
                         //if($current_mile <= 1) $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
                         //else $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
-			            $message2 = str_replace(array("[CITY]"), array(strtoupper($wash_id_check->city)), $message);
+			            $message2 = str_replace(array("[CITY]", "[WASH_NOW_FEE]"), array(strtoupper($wash_id_check->city), $wash_now_fee), $message);
                         //echo $agid." ".$message2."<br>";
 						foreach($agentdevices as $agdevice){
 
@@ -11960,8 +11963,8 @@ $fromindex = 0;
                     require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                     require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                    $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-                    $auth_token = '149336e1b81b2165e953aaec187971e6';
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
 
                     $client = new Services_Twilio($account_sid, $auth_token);
 		    

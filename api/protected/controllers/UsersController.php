@@ -4685,8 +4685,8 @@ die();
 
             /* Instantiate a new Twilio Rest Client */
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
@@ -4850,8 +4850,8 @@ else{
 
             /* Instantiate a new Twilio Rest Client */
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
@@ -5069,8 +5069,8 @@ else $agentlname = $model->last_name;
 
             /* Instantiate a new Twilio Rest Client */
 
-            $account_sid = 'ACa9a7569fc80a0bd3a709fb6979b19423';
-            $auth_token = '149336e1b81b2165e953aaec187971e6';
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
 

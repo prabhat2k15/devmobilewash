@@ -31,8 +31,8 @@ define("MERCHANT_ACCOUNT_ID","");
 
 //
 
-define("SID",'ACb25f4b4987698fcd9f5ca7512a704105'); // production  ACa9a7569fc80a0bd3a709fb6979b19423
-define("CLIENT_TOKEN","38e0bce8600d30b2446c1b7e6aa725ed"); // production  149336e1b81b2165e953aaec187971e6
+define("TWILIO_SID",'ACa9a7569fc80a0bd3a709fb6979b19423'); 
+define("TWILIO_AUTH_TOKEN","c2644f802b56217189ae58736e246e69"); 
 define("VERSION",'2010-04-01');
 
 // wash request staus
