@@ -2015,6 +2015,262 @@ $times['sun_spec'] = $schedule_times_spec[0]['sun'];
 		);
 		echo json_encode($json);
 	}
+	
+	
+	public function actionupdateondemandsurgetimes(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$result= 'false';
+		$response= 'Fill up required fields';
+
+ $mon = Yii::app()->request->getParam('mon');
+         $tue = Yii::app()->request->getParam('tue');
+ $wed = Yii::app()->request->getParam('wed');
+ $thurs = Yii::app()->request->getParam('thurs');
+ $fri = Yii::app()->request->getParam('fri');
+ $sat = Yii::app()->request->getParam('sat');
+ $sun = Yii::app()->request->getParam('sun');
+
+ $mon_spec = Yii::app()->request->getParam('mon_spec');
+         $tue_spec = Yii::app()->request->getParam('tue_spec');
+ $wed_spec = Yii::app()->request->getParam('wed_spec');
+ $thurs_spec = Yii::app()->request->getParam('thurs_spec');
+ $fri_spec = Yii::app()->request->getParam('fri_spec');
+ $sat_spec = Yii::app()->request->getParam('sat_spec');
+ $sun_spec = Yii::app()->request->getParam('sun_spec');
+
+
+$schedule_times = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=1')->queryAll();
+$schedule_times_spec = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=2')->queryAll();
+
+ if(!$mon){
+$mon = $schedule_times[0]['mon'];
+}
+
+ if(!$tue){
+$tue = $schedule_times[0]['tue'];
+}
+
+ if(!$wed){
+$wed = $schedule_times[0]['wed'];
+}
+
+ if(!$thurs){
+$thurs = $schedule_times[0]['thurs'];
+}
+
+ if(!$fri){
+$fri = $schedule_times[0]['fri'];
+}
+
+ if(!$sat){
+ $sat = $schedule_times[0]['sat'];
+}
+
+ if(!$sun){
+ $sun = $schedule_times[0]['sun'];
+}
+
+ if(!$mon_spec){
+$mon_spec = $schedule_times_spec[0]['mon'];
+}
+
+ if(!$tue_spec){
+$tue_spec = $schedule_times_spec[0]['tue'];
+}
+
+ if(!$wed_spec){
+$wed_spec = $schedule_times_spec[0]['wed'];
+}
+
+ if(!$thurs_spec){
+$thurs_spec = $schedule_times_spec[0]['thurs'];
+}
+
+ if(!$fri_spec){
+$fri_spec = $schedule_times_spec[0]['fri'];
+}
+
+ if(!$sat_spec){
+ $sat_spec = $schedule_times_spec[0]['sat'];
+}
+
+ if(!$sun_spec){
+ $sun_spec = $schedule_times_spec[0]['sun'];
+}
+
+
+
+
+
+                   $data= array(
+					'mon'=> $mon,
+					'tue'=> $tue,
+                    'wed'=> $wed,
+                    'thurs'=> $thurs,
+					'fri'=> $fri,
+                    'sat'=> $sat,
+                    'sun'=>  $sun
+				);
+
+ $data2= array('mon'=> $mon_spec,
+					'tue'=> $tue_spec,
+                    'wed'=> $wed_spec,
+                    'thurs'=> $thurs_spec,
+					'fri'=> $fri_spec,
+                    'sat'=> $sat_spec,
+                    'sun'=>  $sun_spec
+				);
+
+
+				   $resUpdate = Yii::app()->db->createCommand()->update('ondemand_surge_times', $data,"id=1");
+$resUpdate2 = Yii::app()->db->createCommand()->update('ondemand_surge_times', $data2,"id=2");
+
+                    	$result= 'true';
+		$response= 'ondemand surge times updated successfully';
+
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+		);
+		echo json_encode($json);
+	}
+
+
+public function actiongetondemandsurgetimes(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$result= 'false';
+		$response= 'Fill up required fields';
+
+$times = array();
+
+$schedule_times = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=1')->queryAll();
+$schedule_times_spec = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=2')->queryAll();
+
+
+$times['mon'] = $schedule_times[0]['mon'];
+
+$times['tue'] = $schedule_times[0]['tue'];
+
+$times['wed'] = $schedule_times[0]['wed'];
+
+$times['thurs'] = $schedule_times[0]['thurs'];
+
+$times['fri'] = $schedule_times[0]['fri'];
+
+$times['sat'] = $schedule_times[0]['sat'];
+
+$times['sun'] = $schedule_times[0]['sun'];
+
+$times['mon_spec'] = $schedule_times_spec[0]['mon'];
+
+$times['tue_spec'] = $schedule_times_spec[0]['tue'];
+
+$times['wed_spec'] = $schedule_times_spec[0]['wed'];
+
+$times['thurs_spec'] = $schedule_times_spec[0]['thurs'];
+
+$times['fri_spec'] = $schedule_times_spec[0]['fri'];
+
+$times['sat_spec'] = $schedule_times_spec[0]['sat'];
+
+$times['sun_spec'] = $schedule_times_spec[0]['sun'];
+
+
+
+                    	$result= 'true';
+		$response= 'ondemand surge times';
+
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+'schedule_times' => $times
+		);
+		echo json_encode($json);
+	}
+	
+	
+	public function actiongetorderwashnowfee(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+if(Yii::app()->request->getParam('timezone')){
+date_default_timezone_set(Yii::app()->request->getParam('timezone'));
+}
+ 
+
+		$result= 'false';
+		$response= 'Fill up required fields';
+		$wash_now_fee = 0;
+
+$times = '';
+$current_date_time = date('Y-m-d H:i:s');
+$current_date = date('Y-m-d');
+$current_day = date('l');
+$current_time = date('g:i A');
+//echo $current_date."<br>".$current_day."<br>".$current_time;
+$schedule_times = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=1')->queryAll();
+
+
+if($current_day == 'Monday') $times = $schedule_times[0]['mon'];
+if($current_day == 'Tuesday') $times = $schedule_times[0]['tue'];
+if($current_day == 'Wednesday') $times = $schedule_times[0]['wed'];
+if($current_day == 'Thursday') $times = $schedule_times[0]['thurs'];
+if($current_day == 'Friday') $times = $schedule_times[0]['fri'];
+if($current_day == 'Saturday') $times = $schedule_times[0]['sat'];
+if($current_day == 'Sunday') $times = $schedule_times[0]['sun'];
+
+//echo "<br>".$times;
+
+$times_arr = explode("|",$times);
+
+foreach($times_arr as $time){
+$time_detail = explode(",",$time);
+if($time_detail[1] == 'inactive') continue;
+$start = strtotime($current_date." ".$time_detail[0]);
+$end = strtotime($current_date." ".$time_detail[0]." +14 minutes");
+//echo $start." ".$end."<br>";
+
+if(time() >= $start && time() <= $end) {
+  $wash_now_fee = $time_detail[2];
+  break;
+} 
+}
+
+
+
+                    	$result= 'true';
+		$response= 'wash now fee and timing';
+
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+'current_date_time' => $current_date_time,
+'current_day' => $current_day,
+'current_time' => $current_time,
+'wash_now_fee' => $wash_now_fee
+
+		);
+		echo json_encode($json);
+	}
 
 
     public function actionclearpendingsandlogins(){

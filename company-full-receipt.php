@@ -241,7 +241,7 @@ if($kartdata->wash_now_fee > 0){ ?>
 <tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_now_fee*.20, 2), 2); ?></p>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_now_fee*.25, 2), 2); ?></p>
 </td>
 </tr>
 </table>
@@ -252,21 +252,12 @@ if($kartdata->wash_later_fee > 0){ ?>
 <tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_later_fee*.20, 2), 2); ?></p>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_later_fee*.25, 2), 2); ?></p>
 </td>
 </tr>
 </table>
 <?php }
-if($kartdata->tip_amount > 0){ ?>
-<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
-<tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Tip</p></td>
-<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->tip_amount*.20, 2), 2); ?></p>
-</td>
-</tr>
-</table>
-<?php }
+
 if($kartdata->coupon_discount > 0){  ?>
     <table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
    <?php if((count($kartdata->vehicles) > 1)){ ?>
@@ -651,7 +642,7 @@ if($vehicle->extplasticdressing_vehicle_fee_agent > 0){ ?>
 <tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_now_fee*.80, 2), 2); ?></p>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_now_fee*.75, 2), 2); ?></p>
 </td>
 </tr>
 
@@ -663,7 +654,7 @@ if($kartdata->wash_later_fee > 0){ ?>
 <tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_later_fee*.80, 2), 2); ?></p>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_later_fee*.75, 2), 2); ?></p>
 </td>
 </tr>
 
@@ -675,7 +666,7 @@ if($kartdata->tip_amount > 0){ ?>
 <tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Tip</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->tip_amount*.80, 2), 2); ?></p>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo number_format($kartdata->tip_amount, 2); ?></p>
 </td>
 </tr>
 

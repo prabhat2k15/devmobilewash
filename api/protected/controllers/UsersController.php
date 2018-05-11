@@ -1694,7 +1694,7 @@ $netprice -= $spdisc;
 }
 
 if($tip){
-$company_fee += $tip * .20;
+//$company_fee += $tip * .20;
 $netprice += $tip;
 }
 
@@ -1710,7 +1710,7 @@ $netprice -= $spdisc;
 }
 
 if($tip){
-$company_fee += $tip * .20;
+//$company_fee += $tip * .20;
 $netprice += $tip;
 }
 
@@ -1896,7 +1896,7 @@ $netprice -= $spdisc;
 }
 
 if($tip){
-$company_fee += $tip * .20;
+//$company_fee += $tip * .20;
 $netprice += $tip;
 }
 
@@ -1913,7 +1913,7 @@ $netprice -= $spdisc;
 }
 
 if($tip){
-$company_fee += $tip * .20;
+//$company_fee += $tip * .20;
 $netprice += $tip;
 }
 
@@ -2841,7 +2841,7 @@ if($wash_details->tip_amount > 0){
 							<td style='padding-bottom: 15px;'>
 							<p style='font-size: 18px; margin: 0;'>Tip</p>
 							</td>
-							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>+$".number_format($wash_details->tip_amount*.8, 2)."</p></td>
+							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>+$".number_format($wash_details->tip_amount, 2)."</p></td>
 							</tr></table>";
 						}
 
@@ -4531,7 +4531,7 @@ $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-
 $message_agent .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.80, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.75, 2), 2)."</p>
 </td>
 </tr>";
 
@@ -4544,7 +4544,7 @@ $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-
 $message_agent .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.80, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.75, 2), 2)."</p>
 </td>
 </tr>";
 
@@ -4557,7 +4557,7 @@ $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-
 $message_agent .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Tip</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->tip_amount*.80, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->tip_amount, 2)."</p>
 </td>
 </tr>";
 

@@ -1193,7 +1193,7 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
 
                     $mobile_receipt .= "Washes: ".$customer_total_wash."\r\n";
 
-					$message .= "<p style='text-align: center; font-size: 18px; padding: 10px; border: 1px solid #016fd0; border-radius: 8px; line-height: 22px; font-size: 16px; margin-top: 25px;'>We may kindly ask for a 20 minute grace period due to unforeseen traffic delays.<br>Appointment times may be rescheduled due to overwhelming demand.</p><p style='text-align: center; font-size: 18px;'>Log in to <a href='".ROOT_URL."' style='color: #016fd0'>MobileWash.com</a> to view your scheduled order options</p>";
+					$message .= "<p style='text-align: center; font-size: 14px; line-height: 22px; font-size: 16px; margin-top: 25px;'>Once you request a service, a pre-authorization charge is in place to ensure the credit card on file is valid. Please note that this charge will immediately be voided following the service request. Only the actual total will be charged at the end of the service.<br><br>We may kindly ask for a 20 minute grace period due to unforeseen traffic delays.<br>Appointment times may be rescheduled due to overwhelming demand.</p><p style='text-align: center; font-size: 18px;'>Log in to <a href='".ROOT_URL."' style='color: #016fd0'>MobileWash.com</a> to view your scheduled order options</p>";
 					$message .= "<p style='text-align: center; font-size: 16px; margin-bottom: 0; line-height: 22px;'>$15 cancellation fee will apply for canceling within 1 hour of your <br>scheduled wash time</p>";
 
 					//Vargas::Obj()->SendMail($customers_id_check->email,"billing@Mobilewash.com",$message,$subject, 'mail-receipt');
@@ -2813,7 +2813,7 @@ try {
 					<td style='text-align: right;'><p style='font-size: 20px; margin: 0; color: #000;'>Order Total: <span style='font-weight: bold;'>$".$wrequest_id_check->schedule_total."</span></p></td></tr></table>";
 
                     $mobile_receipt .= "Total: $".$wrequest_id_check->schedule_total."\r\n";
-					$message .= "<p style='text-align: center; font-size: 18px; padding: 10px; border: 1px solid #016fd0; border-radius: 8px; line-height: 22px; font-size: 16px; margin-top: 25px;'>We may kindly ask for a 20 minute grace period due to unforeseen traffic delays.<br>Appointment times may be rescheduled due to overwhelming demand.</p><p style='text-align: center; font-size: 18px;'>Log in to <a href='".ROOT_URL."' style='color: #016fd0'>MobileWash.com</a> to view your scheduled order options</p>";
+					$message .= "<p style='text-align: center; font-size: 14px; line-height: 22px; font-size: 16px; margin-top: 25px;'>Once you request a service, a pre-authorization charge is in place to ensure the credit card on file is valid. Please note that this charge will immediately be voided following the service request. Only the actual total will be charged at the end of the service.<br><br>We may kindly ask for a 20 minute grace period due to unforeseen traffic delays.<br>Appointment times may be rescheduled due to overwhelming demand.</p><p style='text-align: center; font-size: 18px;'>Log in to <a href='".ROOT_URL."' style='color: #016fd0'>MobileWash.com</a> to view your scheduled order options</p>";
 					$message .= "<p style='text-align: center; font-size: 16px; margin-bottom: 0; line-height: 22px;'>$15 cancellation fee will apply for canceling within 1 hour of your <br>scheduled wash time</p>";
 
 					//Vargas::Obj()->SendMail($customers_id_check->email,"billing@Mobilewash.com",$message,$subject, 'mail-receipt');
@@ -6304,7 +6304,7 @@ $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-
 $message_agent .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.80, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.75, 2), 2)."</p>
 </td>
 </tr>";
 
@@ -6317,7 +6317,7 @@ $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-
 $message_agent .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.80, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.75, 2), 2)."</p>
 </td>
 </tr>";
 
@@ -6330,7 +6330,7 @@ $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-
 $message_agent .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Tip</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->tip_amount*.80, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->tip_amount, 2)."</p>
 </td>
 </tr>";
 
@@ -6555,7 +6555,7 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 $com_message .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.20, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.25, 2), 2)."</p>
 </td>
 </tr>";
 
@@ -6568,14 +6568,14 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 $com_message .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.20, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.25, 2), 2)."</p>
 </td>
 </tr>";
 
 $com_message .= "</table>";
 }
 
-if($kartdata->tip_amount > 0){
+/*if($kartdata->tip_amount > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
 $com_message .= "<tr>
@@ -6586,7 +6586,7 @@ $com_message .= "<tr>
 </tr>";
 
 $com_message .= "</table>";
-}
+}*/
 
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
 <tr>
@@ -6986,7 +6986,7 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 $com_message .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.80, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.75, 2), 2)."</p>
 </td>
 </tr>";
 
@@ -6999,7 +6999,7 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 $com_message .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.80, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.75, 2), 2)."</p>
 </td>
 </tr>";
 
@@ -7012,7 +7012,7 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 $com_message .= "<tr>
 <td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Tip</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
-<p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->tip_amount*.80, 2), 2)."</p>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->tip_amount, 2)."</p>
 </td>
 </tr>";
 
@@ -11901,7 +11901,7 @@ die();
         if(count($wash_id_check) && (!$wash_id_check->ondemand_create_push_sent)){
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
 	    $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
-	    $wash_now_fee = number_format($app_settings[0]['wash_now_fee']*.80, 2);
+	    $wash_now_fee = number_format($app_settings[0]['wash_now_fee']*.75, 2);
 	    
 
             /* ------- get nearest agents --------- */

@@ -594,8 +594,7 @@ if((count($total_cars) > 1) && ($carindex==0) && ($wash_id_check->coupon_discoun
 if($wash_id_check->tip_amount > 0) {
 $tip_amount = $wash_id_check->tip_amount;
 $total =  $total + $tip_amount;
- $company_total =  $company_total + ($tip_amount * .20);
- $agent_total =  $agent_total + ($tip_amount * .80);
+ $agent_total =  $agent_total + $tip_amount;
 }
 
 /* ----- tip end ---- */
@@ -605,8 +604,8 @@ $total =  $total + $tip_amount;
 if($wash_id_check->wash_now_fee > 0) {
 $wash_now_fee = $wash_id_check->wash_now_fee;
 $total =  $total + $wash_now_fee;
- $company_total =  $company_total + ($wash_now_fee * .20);
- $agent_total =  $agent_total + ($wash_now_fee * .80);
+ $company_total =  $company_total + ($wash_now_fee * .25);
+ $agent_total =  $agent_total + ($wash_now_fee * .75);
 }
 
 /* ----- wash now fee end ---- */
@@ -616,8 +615,8 @@ $total =  $total + $wash_now_fee;
 if($wash_id_check->wash_later_fee > 0) {
 $wash_later_fee = $wash_id_check->wash_later_fee;
 $total =  $total + $wash_later_fee;
- $company_total =  $company_total + ($wash_later_fee * .20);
- $agent_total =  $agent_total + ($wash_later_fee * .80);
+ $company_total =  $company_total + ($wash_later_fee * .25);
+ $agent_total =  $agent_total + ($wash_later_fee * .75);
 }
 
 /* ----- wash later fee end ---- */
@@ -737,7 +736,7 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
             'result'=> $result,
             'response'=> $response,
             'id'=> $wash_id_check->id,
-            'order_date'=> $wash_id_check->created_date,
+            'order_date'=> $wash_id_check->order_for,
             'address'=> $wash_id_check->address,
 	    'city'=> $wash_id_check->city,
             'address_type'=> $wash_id_check->address_type,

@@ -218,11 +218,8 @@ margin: 0;
 <h1>Order # 000<?php echo $order_id; ?></h1>
 </div>
 <div class="content">
-<?php if($kartdata->is_scheduled): ?>
-<h2 class="order-date"><?php echo date('M d, Y', strtotime($kartdata->schedule_date)); ?> @ <?php echo $kartdata->schedule_time; ?></h2>
-<?php else: ?>
 <h2 class="order-date"><?php echo date('M d, Y', strtotime($kartdata->order_date)); ?> @ <?php echo date('h:i A', strtotime($kartdata->order_date)); ?></h2>
-<?php endif; ?>
+
 <?php if($kartdata->status == 5 || $kartdata->status == 6): ?>
 <?php if($kartdata->status == 5): ?>
 <h2 style="padding: 0 20px; margin-bottom: 0;">This order is canceled</h2>

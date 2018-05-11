@@ -1642,7 +1642,7 @@ $kartdata = json_decode($kartapiresult);
                         /* ----- total and discounts end ------- */
 
                  $wash_requests[$index]['id'] = $wrequest['id'];
-              $wash_requests[$index]['date'] = $wrequest['created_date'];
+              $wash_requests[$index]['date'] = $wrequest['order_for'];
               $wash_requests[$index]['address'] = $wrequest['address'];
               $plan_ids =  $wrequest['package_list'];
           $car_ids =  $wrequest['car_list'];

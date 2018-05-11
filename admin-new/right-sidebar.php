@@ -137,6 +137,11 @@
                                         <span class="title">Schedule Times</span>
                                     </a>
                                 </li>
+				<li style="display: <?php echo $checked_opening_display; ?>" class="nav-item  <?php if($url == 'ondemand-surge-times.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="ondemand-surge-times.php" class="nav-link ">
+                                        <span class="title">On-Demand Surge Times</span>
+                                    </a>
+                                </li>
                                 <li class="nav-item  <?php if($url == 'site-settings.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_site_display; ?>">
                                     <a href="site-settings.php" class="nav-link ">
                                         <span class="title">Site Settings</span>

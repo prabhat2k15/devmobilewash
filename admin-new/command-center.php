@@ -963,7 +963,7 @@ $.each( clientdata.schedule_orders, function( index, client ){
     content += "<p>Schedule DateTime: "+client['schedule_date']+" "+client['schedule_time']+"</p>";
     content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
 
-   addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/processing-order-pin.png', 'schedorders', content, client['wash_request_id']);
+   addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/pending-order-pin.png', 'schedorders', content, client['wash_request_id']);
 
 });
 
@@ -1236,7 +1236,7 @@ $.each( clientdata.schedule_orders, function( index, client ){
     content += "<p>Schedule DateTime: "+client['schedule_date']+" "+client['schedule_time']+"</p>";
     content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
 
-    addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/processing-order-pin.png', 'schedorders', content, client['wash_request_id']);
+    addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/pending-order-pin.png', 'schedorders', content, client['wash_request_id']);
   }
   else{
     updatelocation(client['id'], client['latitude'], client['longitude']);

@@ -341,16 +341,7 @@ margin: 0;
 </tr>
 </table>
 <?php endif; ?>
-<?php if($kartdata->tip_amount > 0): ?>
-<table class="discount-details">
-<tr>
-<td><p>Tip</p></td>
-<td class="rightalign" style="vertical-align: top; min-width: 90px;">
-<p class="price">-</p>
-</td>
-</tr>
-</table>
-<?php endif; ?>
+
 
 <table class="discount-details">
 <tr>
@@ -500,7 +491,7 @@ else echo number_format($vehicle->fifth_wash_discount, 2); ?></p></td>
 <tr>
 <td><p>Wash Now Fee</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
-<p class="price">+$<?php echo number_format($kartdata->wash_now_fee*.20, 2); ?></p>
+<p class="price">+$<?php echo number_format($kartdata->wash_now_fee*.25, 2); ?></p>
 </td>
 </tr>
 </table>
@@ -511,22 +502,12 @@ else echo number_format($vehicle->fifth_wash_discount, 2); ?></p></td>
 <tr>
 <td><p>Wash Later Fee</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
-<p class="price">+$<?php echo number_format($kartdata->wash_later_fee*.20, 2); ?></p>
+<p class="price">+$<?php echo number_format($kartdata->wash_later_fee*.25, 2); ?></p>
 </td>
 </tr>
 </table>
 <?php endif; ?>
 
-<?php if($kartdata->tip_amount > 0): ?>
-<table class="discount-details">
-<tr>
-<td><p>Tip</p></td>
-<td class="rightalign" style="vertical-align: top; min-width: 90px;">
-<p class="price">+$<?php echo number_format($kartdata->tip_amount*.20, 2); ?></p>
-</td>
-</tr>
-</table>
-<?php endif; ?>
 
 <?php if($kartdata->coupon_discount > 0): ?>
 <table class="discount-details">

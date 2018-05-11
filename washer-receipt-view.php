@@ -163,11 +163,9 @@ font-size: 24px !important;
 <h1>Order # 000<?php echo $order_id; ?></h1>
 </div>
 <div class="content">
-<?php if($kartdata->is_scheduled): ?>
-<h2 class="order-date"><?php echo date('M d, Y', strtotime($kartdata->schedule_date)); ?> @ <?php echo $kartdata->schedule_time; ?></h2>
-<?php else: ?>
+
 <h2 class="order-date"><?php echo date('M d, Y', strtotime($kartdata->order_date)); ?> @ <?php echo date('h:i A', strtotime($kartdata->order_date)); ?></h2>
-<?php endif; ?>
+
 <?php if($kartdata->status == 5): ?>
 <h2 style="padding: 0 20px;">This order is canceled by client</h2>
 <table class="discount-details">
@@ -304,7 +302,7 @@ font-size: 24px !important;
 <tr>
 <td><p>Wash Now Fee</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
-<p class="price">+$<?php echo number_format(round($kartdata->wash_now_fee*.80, 2), 2); ?></p>
+<p class="price">+$<?php echo number_format(round($kartdata->wash_now_fee*.75, 2), 2); ?></p>
 </td>
 </tr>
 
@@ -316,7 +314,7 @@ font-size: 24px !important;
 <tr>
 <td><p>Wash Later Fee</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
-<p class="price">+$<?php echo number_format(round($kartdata->wash_later_fee*.80, 2), 2); ?></p>
+<p class="price">+$<?php echo number_format(round($kartdata->wash_later_fee*.75, 2), 2); ?></p>
 </td>
 </tr>
 
@@ -328,7 +326,7 @@ font-size: 24px !important;
 <tr>
 <td><p>Tip</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
-<p class="price">+$<?php echo number_format(round($kartdata->tip_amount*.80, 2), 2); ?></p>
+<p class="price">+$<?php echo number_format($kartdata->tip_amount, 2); ?></p>
 </td>
 </tr>
 
