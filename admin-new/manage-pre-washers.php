@@ -144,7 +144,7 @@ cursor: pointer !important;
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> Manage Pre-Registered Washers</span>
+                                        <span class="caption-subject bold uppercase"> Manage Pre-Registered Washers</span> <a style="margin-left: 20px;" target="_blank" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/prewasherexport&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4">Download CSV</a>
                                     </div>
                                     <div style="margin: -20px 0px 0px 100px; display: none;" class="caption font-dark" id="copy_washers">
                                         <span class="caption-subject bold uppercase"> <img width="84" src="images/loader.gif" class="copy_clients"></span>
@@ -177,6 +177,7 @@ cursor: pointer !important;
                     <th>City</th>
                     <th>State</th>
                     <th>Zipcode</th>
+                    <th>How you heard about us</th>
                     <th>Register Date</th>
                                                 
                                             </tr>
@@ -203,6 +204,7 @@ cursor: pointer !important;
                                                 <td> <?php echo $washer->city; ?> </td>
                                                 <td> <?php echo $washer->state; ?> </td>
                                                 <td> <?php echo $washer->zipcode; ?> </td>
+                                                <td> <?php echo $washer->hear_mw_how; ?> </td>
                                                 <td> <?php echo $usdate; ?> </td>
 												
                                                 

@@ -2034,18 +2034,9 @@ die();
  $fri = Yii::app()->request->getParam('fri');
  $sat = Yii::app()->request->getParam('sat');
  $sun = Yii::app()->request->getParam('sun');
-
- $mon_spec = Yii::app()->request->getParam('mon_spec');
-         $tue_spec = Yii::app()->request->getParam('tue_spec');
- $wed_spec = Yii::app()->request->getParam('wed_spec');
- $thurs_spec = Yii::app()->request->getParam('thurs_spec');
- $fri_spec = Yii::app()->request->getParam('fri_spec');
- $sat_spec = Yii::app()->request->getParam('sat_spec');
- $sun_spec = Yii::app()->request->getParam('sun_spec');
-
+  $message = Yii::app()->request->getParam('message');
 
 $schedule_times = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=1')->queryAll();
-$schedule_times_spec = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=2')->queryAll();
 
  if(!$mon){
 $mon = $schedule_times[0]['mon'];
@@ -2075,37 +2066,11 @@ $fri = $schedule_times[0]['fri'];
  $sun = $schedule_times[0]['sun'];
 }
 
- if(!$mon_spec){
-$mon_spec = $schedule_times_spec[0]['mon'];
+ if(!$message){
+ $message = $schedule_times[0]['message'];
 }
 
- if(!$tue_spec){
-$tue_spec = $schedule_times_spec[0]['tue'];
-}
-
- if(!$wed_spec){
-$wed_spec = $schedule_times_spec[0]['wed'];
-}
-
- if(!$thurs_spec){
-$thurs_spec = $schedule_times_spec[0]['thurs'];
-}
-
- if(!$fri_spec){
-$fri_spec = $schedule_times_spec[0]['fri'];
-}
-
- if(!$sat_spec){
- $sat_spec = $schedule_times_spec[0]['sat'];
-}
-
- if(!$sun_spec){
- $sun_spec = $schedule_times_spec[0]['sun'];
-}
-
-
-
-
+ 
 
                    $data= array(
 					'mon'=> $mon,
@@ -2114,21 +2079,12 @@ $fri_spec = $schedule_times_spec[0]['fri'];
                     'thurs'=> $thurs,
 					'fri'=> $fri,
                     'sat'=> $sat,
-                    'sun'=>  $sun
-				);
-
- $data2= array('mon'=> $mon_spec,
-					'tue'=> $tue_spec,
-                    'wed'=> $wed_spec,
-                    'thurs'=> $thurs_spec,
-					'fri'=> $fri_spec,
-                    'sat'=> $sat_spec,
-                    'sun'=>  $sun_spec
+                    'sun'=>  $sun,
+		    'message'=>  $message
 				);
 
 
 				   $resUpdate = Yii::app()->db->createCommand()->update('ondemand_surge_times', $data,"id=1");
-$resUpdate2 = Yii::app()->db->createCommand()->update('ondemand_surge_times', $data2,"id=2");
 
                     	$result= 'true';
 		$response= 'ondemand surge times updated successfully';
@@ -2156,7 +2112,6 @@ die();
 $times = array();
 
 $schedule_times = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=1')->queryAll();
-$schedule_times_spec = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=2')->queryAll();
 
 
 $times['mon'] = $schedule_times[0]['mon'];
@@ -2173,19 +2128,8 @@ $times['sat'] = $schedule_times[0]['sat'];
 
 $times['sun'] = $schedule_times[0]['sun'];
 
-$times['mon_spec'] = $schedule_times_spec[0]['mon'];
+$times['message'] = $schedule_times[0]['message'];
 
-$times['tue_spec'] = $schedule_times_spec[0]['tue'];
-
-$times['wed_spec'] = $schedule_times_spec[0]['wed'];
-
-$times['thurs_spec'] = $schedule_times_spec[0]['thurs'];
-
-$times['fri_spec'] = $schedule_times_spec[0]['fri'];
-
-$times['sat_spec'] = $schedule_times_spec[0]['sat'];
-
-$times['sun_spec'] = $schedule_times_spec[0]['sun'];
 
 
 
@@ -2218,6 +2162,7 @@ date_default_timezone_set(Yii::app()->request->getParam('timezone'));
 		$result= 'false';
 		$response= 'Fill up required fields';
 		$wash_now_fee = 0;
+		$wash_unavailable = 0;
 
 $times = '';
 $current_date_time = date('Y-m-d H:i:s');
@@ -2242,21 +2187,29 @@ $times_arr = explode("|",$times);
 
 foreach($times_arr as $time){
 $time_detail = explode(",",$time);
-if($time_detail[1] == 'inactive') continue;
+//if($time_detail[1] == 'inactive') continue;
 $start = strtotime($current_date." ".$time_detail[0]);
 $end = strtotime($current_date." ".$time_detail[0]." +14 minutes");
 //echo $start." ".$end."<br>";
 
 if(time() >= $start && time() <= $end) {
   $wash_now_fee = $time_detail[2];
+  if($time_detail[1] == 'inactive') $wash_unavailable = 1;
   break;
 } 
 }
 
 
+if($wash_unavailable){
+$result= 'false';
+		$response= $schedule_times[0]['message'];	
+}
+else{
+$result= 'true';
+		$response= 'wash now fee and timing';	
+}
 
-                    	$result= 'true';
-		$response= 'wash now fee and timing';
+                    	
 
 
 
@@ -6456,6 +6409,21 @@ if(count($all_washes) > 0){
 		
    
     }
+    
+      public function actionprewasherexport(){
+        if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+  CsvExport::export(
+    PreRegWashers::model()->findAll(), // a CActiveRecord array OR any CModel array
+    array('id'=>array('raw'),'first_name'=>array('text'), 'last_name'=>array('text'), 'email'=>array('text'), 'phone'=>array('text'), 'city'=>array('text'), 'state'=>array('text'), 'zipcode'=>array('text'), 'hear_mw_how'=>array('text'), 'van_lease'=>array('text'), 'register_date'=>array('date')),
+    true, // boolPrintRows
+    'prewashers--'.date('Y-m-d-H-i-s').".csv",
+    ","
+   );
+}
+
     
     
 }

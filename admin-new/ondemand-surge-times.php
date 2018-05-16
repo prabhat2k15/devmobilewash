@@ -6,7 +6,7 @@ if(isset($_POST['schedule_times_submit'])){
 
     $handle = curl_init($url);
 curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, array('mon' => $_POST['mon_time'], 'tue' => $_POST['tue_time'], 'wed' => $_POST['wed_time'], 'thurs' => $_POST['thurs_time'], 'fri' => $_POST['fri_time'], 'sat' => $_POST['sat_time'], 'sun' => $_POST['sun_time'], 'mon_spec' => $_POST['mon_spec_time'], 'tue_spec' => $_POST['tue_spec_time'], 'wed_spec' => $_POST['wed_spec_time'], 'thurs_spec' => $_POST['thurs_spec_time'], 'fri_spec' => $_POST['fri_spec_time'], 'sat_spec' => $_POST['sat_spec_time'], 'sun_spec' => $_POST['sun_spec_time'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle, CURLOPT_POSTFIELDS, array('mon' => $_POST['mon_time'], 'tue' => $_POST['tue_time'], 'wed' => $_POST['wed_time'], 'thurs' => $_POST['thurs_time'], 'fri' => $_POST['fri_time'], 'sat' => $_POST['sat_time'], 'sun' => $_POST['sun_time'], 'message' => $_POST['business_unavail_notice'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
 curl_close($handle);
@@ -175,6 +175,10 @@ $date = date('m/d/Y h:i:s a', time());
                                       <p><span class='color-block gray'></span> - Surge Price N/A</p>
                                       <p><span class='color-block blue'></span> - Standard Surge Price ($0)</p>
                                       <p><span class='color-block yellow'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge" id="custom_surge" value = "<?php echo $appsettings->ios_wash_now_fee; ?>"/></p>
+                                      <h5>Message (when unavailable)</h5>
+                                        
+                                                <textarea style="margin-bottom: 40px; display: block; width: 60%; height: 130px; padding: 5px;" name="business_unavail_notice" id="business_unavail_notice"><?php echo $sched_times->message; ?></textarea>
+
                                      </div>
 
                                      <div class="col">
@@ -662,13 +666,7 @@ $suntimes_arr = explode("|", $suntimes);
 var surge_price = 0;
  var timearr = [];
     var timestr = '';
-var mon_spec = "<?php echo $sched_times->mon_spec; ?>";
-var tue_spec = "<?php echo $sched_times->tue_spec; ?>";
-var wed_spec = "<?php echo $sched_times->wed_spec; ?>";
-var thurs_spec = "<?php echo $sched_times->thurs_spec; ?>";
-var fri_spec = "<?php echo $sched_times->fri_spec; ?>";
-var sat_spec = "<?php echo $sched_times->sat_spec; ?>";
-var sun_spec = "<?php echo $sched_times->sun_spec; ?>";
+
 
 function refreshtimesandprice(){
   timearr = [];
@@ -684,7 +682,7 @@ function refreshtimesandprice(){
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == mon_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#mon_time').val(timestr);
@@ -701,7 +699,7 @@ if($(this).text() == mon_spec) $(this).addClass('spec-time');
          if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == tue_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#tue_time').val(timestr);
@@ -718,7 +716,7 @@ if($(this).text() == tue_spec) $(this).addClass('spec-time');
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == wed_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#wed_time').val(timestr);
@@ -735,7 +733,7 @@ if($(this).text() == wed_spec) $(this).addClass('spec-time');
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == thurs_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#thurs_time').val(timestr);
@@ -752,7 +750,7 @@ $(".fritime li").each(function(idx, li) {
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == fri_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#fri_time').val(timestr);
@@ -769,7 +767,7 @@ if($(this).text() == fri_spec) $(this).addClass('spec-time');
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == sat_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#sat_time').val(timestr);
@@ -786,7 +784,7 @@ if($(this).text() == sat_spec) $(this).addClass('spec-time');
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == sun_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#sun_time').val(timestr);
@@ -807,7 +805,7 @@ $(function(){
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == mon_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#mon_time').val(timestr);
@@ -824,7 +822,7 @@ if($(this).text() == mon_spec) $(this).addClass('spec-time');
          if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == tue_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#tue_time').val(timestr);
@@ -841,7 +839,7 @@ if($(this).text() == tue_spec) $(this).addClass('spec-time');
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == wed_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#wed_time').val(timestr);
@@ -858,7 +856,7 @@ if($(this).text() == wed_spec) $(this).addClass('spec-time');
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == thurs_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#thurs_time').val(timestr);
@@ -875,7 +873,7 @@ $(".fritime li").each(function(idx, li) {
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == fri_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#fri_time').val(timestr);
@@ -892,7 +890,7 @@ if($(this).text() == fri_spec) $(this).addClass('spec-time');
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == sat_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#sat_time').val(timestr);
@@ -909,7 +907,7 @@ if($(this).text() == sat_spec) $(this).addClass('spec-time');
         if($(this).hasClass('surgeactive')) s += ","+surge_price;
         else s += ",0";
         timearr.push(s);
-if($(this).text() == sun_spec) $(this).addClass('spec-time');
+
     });
     timestr = timearr.join('|');
     $('#sun_time').val(timestr);
@@ -1060,46 +1058,6 @@ if($(this).parent().hasClass('suntime')){
 
 $(".portlet-body form").submit(function(){
  refreshtimesandprice();
-});
-});
-</script>
-<script>
-$(function(){
-$(".times li").mousedown(function(event) {
- if(event.button == 2) { 
-$(this).parent().find('li').removeClass('spec-time');
-        $(this).addClass("spec-time");
-if($(this).parent().hasClass('montime')){
-$('#mon_spec_time').val($(this).text());
-}
-if($(this).parent().hasClass('tuetime')){
-$('#tue_spec_time').val($(this).text());
-}
-if($(this).parent().hasClass('wedtime')){
-$('#wed_spec_time').val($(this).text());
-}
-
-if($(this).parent().hasClass('thurstime')){
-$('#thurs_spec_time').val($(this).text());
-}
-
-if($(this).parent().hasClass('fritime')){
-$('#fri_spec_time').val($(this).text());
-}
-
-if($(this).parent().hasClass('sattime')){
-$('#sat_spec_time').val($(this).text());
-}
-
-if($(this).parent().hasClass('suntime')){
-$('#sun_spec_time').val($(this).text());
-}
-    }
-
-});
-
-$('.times li').contextmenu(function() {
-    return false;
 });
 });
 </script>

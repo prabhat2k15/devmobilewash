@@ -923,7 +923,11 @@ $.each( clientdata.online_clients, function( index, client ){
 
 $.each( clientdata.pending_orders, function( index, client ){
 //console.log(index);
-
+var pin_image = 'images/order-pin-animated.gif';
+if (client['agent_id'] != 0) {
+    pin_image = 'images/order-pin-yellow.png';
+}
+//console.log(client['agent_id']+" "+client['wash_request_id']+" "+pin_image);
  var order_date = new Date(client['created_date']);
  //console.log(order_date);
  today = new Date();
@@ -938,17 +942,27 @@ var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
     content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    if (client['agent_id'] != 0) {
+	content += "<p>Washer Badge: #"+client['agent_badge_id']+"</p>";
+	content += "<p>Washer Name: "+client['agent_name']+"</p>";
+	content += "<p>Washer Phone: "+client['agent_phone']+"</p>";
+    }
     content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     if(diffMins >= 3 ){
-       addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/order-pin-animated.gif', 'pendingorders', content, client['wash_request_id']);
+       addlocation(client['id'], clientname, client['latitude'], client['longitude'], pin_image, 'pendingorders', content, client['wash_request_id']);
 
  }
-    else addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/pending-order-pin.png', 'pendingorders', content, client['wash_request_id']);
+    else addlocation(client['id'], clientname, client['latitude'], client['longitude'], pin_image, 'pendingorders', content, client['wash_request_id']);
 
 });
 
 $.each( clientdata.schedule_orders, function( index, client ){
 //console.log(index);
+
+var pin_image = 'images/pending-order-pin.png';
+if (client['agent_id'] != 0) {
+    pin_image = 'images/order-pin-yellow.png';
+}
 
  var order_date = new Date(client['created_date']);
 
@@ -961,9 +975,14 @@ $.each( clientdata.schedule_orders, function( index, client ){
     content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
     content += "<p>Schedule DateTime: "+client['schedule_date']+" "+client['schedule_time']+"</p>";
+    if (client['agent_id'] != 0) {
+	content += "<p>Washer Badge: #"+client['agent_badge_id']+"</p>";
+	content += "<p>Washer Name: "+client['agent_name']+"</p>";
+	content += "<p>Washer Phone: "+client['agent_phone']+"</p>";
+    }
     content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
 
-   addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/pending-order-pin.png', 'schedorders', content, client['wash_request_id']);
+   addlocation(client['id'], clientname, client['latitude'], client['longitude'], pin_image, 'schedorders', content, client['wash_request_id']);
 
 });
 
@@ -1159,6 +1178,10 @@ $.each( clientdata.pending_orders, function( index, client ){
  }
 
 //console.log(client['created_date']);
+var pin_image = 'images/order-pin-animated.gif';
+if (client['agent_id'] != 0) {
+    pin_image = 'images/order-pin-yellow.png';
+}
  var order_date = new Date(client['created_date']);
  //console.log("order date "+order_date);
  today = new Date();
@@ -1187,12 +1210,17 @@ if(diffMins == 3 ){
     content += "<p>Phone Number: "+client['contact_number']+"</p>";
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
+    if (client['agent_id'] != 0) {
+	content += "<p>Washer Badge: #"+client['agent_badge_id']+"</p>";
+	content += "<p>Washer Name: "+client['agent_name']+"</p>";
+	content += "<p>Washer Phone: "+client['agent_phone']+"</p>";
+    }
     content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
 
     if(diffMins == 3 ){
-       addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/order-pin-animated.gif', 'pendingorders', content, client['wash_request_id']);
+       addlocation(client['id'], clientname, client['latitude'], client['longitude'], pin_image, 'pendingorders', content, client['wash_request_id']);
     }
-    else addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/pending-order-pin.png', 'pendingorders', content, client['wash_request_id']);
+    else addlocation(client['id'], clientname, client['latitude'], client['longitude'], pin_image, 'pendingorders', content, client['wash_request_id']);
   }
   else{
     updatelocation(client['id'], client['latitude'], client['longitude']);
@@ -1220,6 +1248,10 @@ $.each( clientdata.schedule_orders, function( index, client ){
  }
 
 //console.log(client['created_date']);
+var pin_image = 'images/pending-order-pin.png';
+if (client['agent_id'] != 0) {
+    pin_image = 'images/order-pin-yellow.png';
+}
  var order_date = new Date(client['created_date']);
  //console.log("order date "+order_date);
 
@@ -1234,9 +1266,14 @@ $.each( clientdata.schedule_orders, function( index, client ){
      content += "<p>Rating: "+client['rating']+"</p>";
     content += "<p>Total Washes: "+client['total_wash']+"</p>";
     content += "<p>Schedule DateTime: "+client['schedule_date']+" "+client['schedule_time']+"</p>";
+    if (client['agent_id'] != 0) {
+	content += "<p>Washer Badge: #"+client['agent_badge_id']+"</p>";
+	content += "<p>Washer Name: "+client['agent_name']+"</p>";
+	content += "<p>Washer Phone: "+client['agent_phone']+"</p>";
+    }
     content += "<p><a href='#' class='send-client-notify' data-id='"+client['id']+"'>Send Notification</a><a href='#' class='send-client-sms' data-id='"+client['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
 
-    addlocation(client['id'], clientname, client['latitude'], client['longitude'], 'images/pending-order-pin.png', 'schedorders', content, client['wash_request_id']);
+    addlocation(client['id'], clientname, client['latitude'], client['longitude'], pin_image, 'schedorders', content, client['wash_request_id']);
   }
   else{
     updatelocation(client['id'], client['latitude'], client['longitude']);

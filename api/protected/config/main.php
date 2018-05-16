@@ -70,8 +70,8 @@ return array(
 	),
 	'params'=>array(
 		//	Global Admin Email
-		'adminEmail'=>'mobilewashapp@gmail.com',
-		'adminToEmail'=>'mobilewashapp@gmail.com',
+		'adminEmail'=>'mobilewash8@gmail.com',
+		'adminToEmail'=>'mobilewash8@gmail.com',
 		'adminFromEmail'=>'info@devmobilewash.com'
 	),
 );

@@ -2661,6 +2661,7 @@ $password = Yii::app()->request->getParam('password');
 $van_lease = '';
 $van_lease = Yii::app()->request->getParam('van_lease');
 $phone_verified = Yii::app()->request->getParam('phone_verified');
+$how_you_hear_mw = Yii::app()->request->getParam('how_you_hear_mw');
 
        $register_date = date("Y-m-d H:i:s");
        $result = 'false';
@@ -2694,6 +2695,7 @@ $phone_verified = Yii::app()->request->getParam('phone_verified');
 'van_lease' => $van_lease,
 'register_token' => $register_token,
 'phone_verified' => $phone_verified,
+'hear_mw_how' => $how_you_hear_mw,
                 'register_date' => $register_date
 				);
 
@@ -2725,6 +2727,7 @@ $message2 .= "<p>Email: ".$email."</p>";
 $message2 .= "<p>Phone: ".$phone."</p>";
 $message2 .= "<p>City: ".$city."</p>";
 $message2 .= "<p>State: ".$state."</p>";
+$message2 .= "<p>How heard about us: ".$how_you_hear_mw."</p>";
 $message2 .= "<p>Interested in leasing MobileWash van: ".$van_lease."</p>";
 
 $to = Vargas::Obj()->getAdminToEmail();
@@ -2744,7 +2747,6 @@ Vargas::Obj()->SendMail($to,$from,$message2, "New Washer Registration");
 
 		echo json_encode($json); die();
     }
-
 
 
     public function actionresendprewasherverifyemail(){
@@ -2810,8 +2812,8 @@ die();
        $response = 'no washers found';
        $all_washers = array();
 $orderby = Yii::app()->request->getParam('order_by');
-if($orderby == 'd_ASC') $washers_exists = PreRegWashers::model()->findAll(array('order'=>'register_date ASC'));
-else $washers_exists = PreRegWashers::model()->findAll(array('order'=>'register_date DESC'));
+if($orderby == 'd_ASC') $washers_exists = PreRegWashers::model()->findAll(array("condition"=>"trash_status = 0"), array('order'=>'register_date ASC'));
+else $washers_exists = PreRegWashers::model()->findAll(array("condition"=>"trash_status = 0"), array('order'=>'register_date DESC'));
 			if(count($washers_exists)>0){
 				$result = 'true';
 				$response = 'all pre washers';
@@ -2825,6 +2827,7 @@ else $washers_exists = PreRegWashers::model()->findAll(array('order'=>'register_
                     $all_washers[$ind]['city'] = $washer->city;
                     $all_washers[$ind]['state'] = $washer->state;
                     $all_washers[$ind]['zipcode'] = $washer->zipcode;
+                    $all_washers[$ind]['hear_mw_how'] = $washer->hear_mw_how;
                     $all_washers[$ind]['register_date'] = $washer->register_date;
                 }
 
@@ -2835,6 +2838,76 @@ else $washers_exists = PreRegWashers::model()->findAll(array('order'=>'register_
 				'result'=> $result,
 				'response'=> $response,
                 'all_washers' => $all_washers
+			);
+
+		echo json_encode($json); die();
+    }
+    
+    public function actiongetalltrashprewashers(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+       $result = 'false';
+       $response = 'no washers found';
+       $all_washers = array();
+$orderby = Yii::app()->request->getParam('order_by');
+if($orderby == 'd_ASC') $washers_exists = PreRegWashers::model()->findAll(array("condition"=>"trash_status = 1"), array('order'=>'register_date ASC'));
+else $washers_exists = PreRegWashers::model()->findAll(array("condition"=>"trash_status = 1"), array('order'=>'register_date DESC'));
+			if(count($washers_exists)>0){
+				$result = 'true';
+				$response = 'all pre washers';
+
+                foreach($washers_exists as $ind=> $washer){
+                    $all_washers[$ind]['id'] = $washer->id;
+                    $all_washers[$ind]['email'] = $washer->email;
+                    $all_washers[$ind]['first_name'] = $washer->first_name;
+                    $all_washers[$ind]['last_name'] = $washer->last_name;
+                    $all_washers[$ind]['phone'] = $washer->phone;
+                    $all_washers[$ind]['city'] = $washer->city;
+                    $all_washers[$ind]['state'] = $washer->state;
+                    $all_washers[$ind]['zipcode'] = $washer->zipcode;
+                    $all_washers[$ind]['hear_mw_how'] = $washer->hear_mw_how;
+                    $all_washers[$ind]['register_date'] = $washer->register_date;
+                }
+
+			}
+
+
+			$json= array(
+				'result'=> $result,
+				'response'=> $response,
+                'all_washers' => $all_washers
+			);
+
+		echo json_encode($json); die();
+    }
+    
+        public function actionrestoreprewasher(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+       $result = 'false';
+       $response = 'no washer found';
+$id = Yii::app()->request->getParam('id');
+$washers_exists = PreRegWashers::model()->findByPk($id);
+			if(count($washers_exists)>0){
+				$result = 'true';
+				$response = 'agents restore';
+
+              PreRegWashers::model()->updateByPk($id, array('trash_status' => 0));
+
+			}
+
+
+			$json= array(
+				'result'=> $result,
+				'response'=> $response
 			);
 
 		echo json_encode($json); die();

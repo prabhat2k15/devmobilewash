@@ -4173,7 +4173,8 @@ Washingrequests::model()->updateByPk($wash_request_id, array('is_order_receipt_s
 					}
 
 					/* ------- send order receipt end ----------- */
-
+					
+if($washrequest_id_check->agent_id) $agent_detail = Agents::model()->findByAttributes(array("id"=>$washrequest_id_check->agent_id));
 
 $message = "<div class='block-content' style='background: #fff; text-align: left;'>
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer Feedback</h2>
@@ -4182,6 +4183,7 @@ $message = "<div class='block-content' style='background: #fff; text-align: left
 <p><b>Customer Email:</b> ".$customers_id_check->email."</p>
 <p><b>Rating by Customer:</b> ".number_format($ratings, 2, '.', '')."</p>
 <p><b>Comments:</b> ".$comments."</p>";
+if($washrequest_id_check->agent_id) $message .= "<p><b>Service Provider Name:</b> #".$agent_detail->real_washer_id." ".$agent_detail->first_name." ".$agent_detail->last_name."</p>";
 
 if($fb_id) $message .= "<p><b>Facebook/Instagram handle:</b> ".$fb_id."</p>";
 
@@ -11059,7 +11061,7 @@ $notify_token = '';
                /* --- send schedule wash create alert end ------- */
 	       
 	       
-	       /* --- send no washer before 1 hour alert ------- */
+	       /* --- send no washer before 30 mins alert ------- */
 	       
 	       if($schedwash->reschedule_time) $scheduledatetime = $schedwash->reschedule_date." ".$schedwash->reschedule_time;
 else $scheduledatetime = $schedwash->schedule_date." ".$schedwash->schedule_time;
@@ -11071,7 +11073,7 @@ if($from_time >= $to_time){
 $min_diff = round(($from_time - $to_time) / 60,2);
 }
 
-               if((!$schedwash->is_schedule_no_washer_befor1hour_alert_sent) && (!$schedwash->agent_id) && ($min_diff <= 60)){
+               if((!$schedwash->is_schedule_no_washer_befor1hour_alert_sent) && (!$schedwash->agent_id) && ($min_diff <= 30)){
 
                  		
                    $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
@@ -11106,7 +11108,7 @@ $notify_token = '';
                     Washingrequests::model()->updateByPk($schedwash->id, array("is_schedule_no_washer_befor1hour_alert_sent" => 1));
                }
 
-               /* --- send no washer before 1 hour alert end ------- */
+               /* --- send no washer before 30 mins alert end ------- */
 
                 /* --- send reschedule wash alert ------- */
 
@@ -11367,14 +11369,14 @@ $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id =
 
          if(($min_diff <= 0) && (!$schedwash->network_error_push_sent)) {
 
-  //Washingrequests::model()->updateByPk($schedwash->id, array("status" => 5, "no_washer_cancel" => 1));
+  Washingrequests::model()->updateByPk($schedwash->id, array("status" => 5, "no_washer_cancel" => 1));
 Washingrequests::model()->updateByPk($schedwash->id, array("network_error_push_sent" => 1));
    if($schedwash->transaction_id) {
-                 //if($schedwash->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($schedwash->transaction_id);
-                 //else $voidresult = Yii::app()->braintree->void($schedwash->transaction_id);
+                 if($schedwash->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($schedwash->transaction_id);
+                 else $voidresult = Yii::app()->braintree->void($schedwash->transaction_id);
                }
 
-   $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+   /*$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '19' ")->queryAll();
 							$message = $pushmsg[0]['message'];
@@ -11397,7 +11399,28 @@ $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id =
                             if($notify_msg) $notifyresult = curl_exec($ch);
                             curl_close($ch);
                 }
-                }
+                }*/
+   
+   $customers_details = Customers::model()->findByPk($schedwash->customer_id);
+   $cust_name = explode(" ", trim($customers_details->customername));
+					
+                    $cust_firstname = '';
+                    $cust_firstname = $cust_name[0];
+		    
+   $from = Vargas::Obj()->getAdminFromEmail();
+   
+$message = "<h2 style='margin-top: 10px;'>Greetings ".$cust_firstname.",</h2>";
+
+					$message .= "<p style='color: #333;'>We apologize for not being able to ensure services were provided recently. We are a growing organization and are doing everything that we can to ensure that we meet the enormous demand that exists for the on-demand car wash industry. As a courtesy, we would like you to use the PROMO CODE: SAVE, which you can use to save on your next service. You will not be charged for services that were not provided.</p>";
+
+					
+					$message .= "<p style='height: 0px;'>&nbsp;</p>
+					<p style='color: #333;'>Thank you for your consideration.</p>
+					<p style='color: #333;'>MobileWash</p>";
+
+					Vargas::Obj()->SendMail($customers_details->email,$from,$message,"MobileWash", 'mail-receipt');
+   
+   
 
 }
 

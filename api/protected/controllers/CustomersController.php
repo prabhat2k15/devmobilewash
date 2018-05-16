@@ -2638,8 +2638,11 @@ if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($vehicle_id) 
                 /* ------------ upgrade pack ------------- */
 
  if($upgrade_pack == 1){
-Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => $pet_hair, 'lifted_vehicle' => $lifted_vehicle, 'new_pack_name' => $new_pack_name, 'exthandwax_addon' => $exthandwax_addon, 'extplasticdressing_addon' => $extplasticdressing_addon, 'extclaybar_addon' => $extclaybar_addon, 'waterspotremove_addon' => $waterspotremove_addon, 'upholstery_addon' => $upholstery_addon, 'floormat_addon' => $floormat_addon));
+	
+//Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => $pet_hair, 'lifted_vehicle' => $lifted_vehicle, 'new_pack_name' => $new_pack_name, 'exthandwax_addon' => $exthandwax_addon, 'extplasticdressing_addon' => $extplasticdressing_addon, 'extclaybar_addon' => $extclaybar_addon, 'waterspotremove_addon' => $waterspotremove_addon, 'upholstery_addon' => $upholstery_addon, 'floormat_addon' => $floormat_addon));
 
+
+/*
 if(!$pet_hair){
 $pet_hair_vehicles_arr = explode(",", $wash_request_exists->pet_hair_vehicles);
 if(($key = array_search($vehicle_id, $pet_hair_vehicles_arr)) !== false) {
@@ -2733,6 +2736,8 @@ $floormat_addon_new = trim($floormat_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
 }
 
+*/
+
  $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 						/* --- notification call --- */
@@ -2763,8 +2768,12 @@ Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles'
 }
 
                 if($upgrade_pack == 2){
-
-                $cust_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
+		
+		$cust_vehicle_data = CustomerDraftVehicle::model()->findByAttributes(array("id"=>$draft_vehicle_id));
+		
+		Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => $cust_vehicle_data->pet_hair, 'lifted_vehicle' => $cust_vehicle_data->lifted_vehicle, 'new_pack_name' => $cust_vehicle_data->wash_package, 'exthandwax_addon' => $cust_vehicle_data->exthandwax_addon, 'extplasticdressing_addon' => $cust_vehicle_data->extplasticdressing_addon, 'extclaybar_addon' => $cust_vehicle_data->extclaybar_addon, 'waterspotremove_addon' => $cust_vehicle_data->waterspotremove_addon, 'upholstery_addon' => $cust_vehicle_data->upholstery_addon, 'floormat_addon' => $cust_vehicle_data->floormat_addon));
+			
+                //$cust_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
 		$log_addon_detail = "Add-ons: ";
 		$log_detail = "";
 
@@ -2864,7 +2873,7 @@ $log_addon_detail .= "Floormat, ";
 
 $log_addon_detail = rtrim($log_addon_detail,', ');
 
-                    if($new_pack_name == 'Premium'){
+                    if($cust_vehicle_data->wash_package == 'Premium'){
                        $surge_addon_arr = explode(",", $wash_request_exists->surge_price_vehicles);
 if(($key = array_search($vehicle_id, $surge_addon_arr)) !== false) {
     unset($surge_addon_arr[$key]);
@@ -2881,7 +2890,7 @@ Vehicle::model()->updateByPk($vehicle_id, array('surge_addon' => 0));
                     $cars_arr = explode(",", $cars);
                     $old_packs_arr = explode(",", $packs);
                     $carkey = array_search($vehicle_id, $cars_arr);
-                    $old_packs_arr[$carkey] = $new_pack_name;
+                    $old_packs_arr[$carkey] = $cust_vehicle_data->wash_package;
                     $updated_packs = implode(",", $old_packs_arr);
                     $coupon_amount = 0;
                     if($wash_request_exists->coupon_code) {
@@ -2897,17 +2906,17 @@ Vehicle::model()->updateByPk($vehicle_id, array('surge_addon' => 0));
                     }
 
                     Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $updated_packs, 'surge_price_vehicles' => $surge_addon_new, 'coupon_discount' => $coupon_amount));
-$newpriceobj = Washingplans::model()->findByAttributes(array("vehicle_type"=>$cust_vehicle_data->vehicle_type, "title"=>$new_pack_name));
+$newpriceobj = Washingplans::model()->findByAttributes(array("vehicle_type"=>$cust_vehicle_data->vehicle_type, "title"=>$cust_vehicle_data->wash_package));
 $newprice = 0;
 if(count($newpriceobj)) {
  $newprice = $newpriceobj->price;
 }
 else{
- if($new_pack_name == 'Express') $newprice = 19.99;
- if($new_pack_name == 'Deluxe') $newprice = 24.99;
- if($new_pack_name == 'Premium') $newprice = 59.99;
+ if($cust_vehicle_data->wash_package == 'Express') $newprice = 19.99;
+ if($cust_vehicle_data->wash_package == 'Deluxe') $newprice = 24.99;
+ if($cust_vehicle_data->wash_package == 'Premium') $newprice = 59.99;
 }
-WashPricingHistory::model()->updateAll(array('vehicle_price' => $newprice, 'package' => $new_pack_name, 'pet_hair'=>$cust_vehicle_data->pet_hair, 'lifted_vehicle'=>$cust_vehicle_data->lifted_vehicle, 'exthandwax_addon'=>$cust_vehicle_data->exthandwax_addon, 'extplasticdressing_addon'=>$cust_vehicle_data->extplasticdressing_addon, 'extclaybar_addon'=>$cust_vehicle_data->extclaybar_addon, 'waterspotremove_addon'=>$cust_vehicle_data->waterspotremove_addon, 'upholstery_addon'=>$cust_vehicle_data->upholstery_addon, 'floormat_addon'=>$cust_vehicle_data->floormat_addon, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id="'.$wash_request_id.'" AND vehicle_id="'.$vehicle_id.'"');
+WashPricingHistory::model()->updateAll(array('vehicle_price' => $newprice, 'package' => $cust_vehicle_data->wash_package, 'pet_hair'=>$cust_vehicle_data->pet_hair, 'lifted_vehicle'=>$cust_vehicle_data->lifted_vehicle, 'exthandwax_addon'=>$cust_vehicle_data->exthandwax_addon, 'extplasticdressing_addon'=>$cust_vehicle_data->extplasticdressing_addon, 'extclaybar_addon'=>$cust_vehicle_data->extclaybar_addon, 'waterspotremove_addon'=>$cust_vehicle_data->waterspotremove_addon, 'upholstery_addon'=>$cust_vehicle_data->upholstery_addon, 'floormat_addon'=>$cust_vehicle_data->floormat_addon, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id="'.$wash_request_id.'" AND vehicle_id="'.$vehicle_id.'"');
 
 $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 
@@ -2953,7 +2962,7 @@ $log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name.
 
 if($upgrade_pack == 3){
 
-Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
+//Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
 
 $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 
@@ -3428,10 +3437,10 @@ $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, '
 		            $cust_vehicle_model = Vehicle::model()->findByPk($vehicle_id);
                     $cust_vehicle_model->status = $status;
                     if($status == 2) $cust_vehicle_model->eco_friendly = $eco_friendly;
-if(!Yii::app()->request->getParam('pet_hair')) $pet_hair = $cust_vehicle_model->pet_hair;
-$cust_vehicle_model->pet_hair = $pet_hair;
-if(!Yii::app()->request->getParam('lifted_vehicle')) $lifted_vehicle = $cust_vehicle_model->lifted_vehicle;
-$cust_vehicle_model->lifted_vehicle = $lifted_vehicle;
+//if(!Yii::app()->request->getParam('pet_hair')) $pet_hair = $cust_vehicle_model->pet_hair;
+//$cust_vehicle_model->pet_hair = $pet_hair;
+//if(!Yii::app()->request->getParam('lifted_vehicle')) $lifted_vehicle = $cust_vehicle_model->lifted_vehicle;
+//$cust_vehicle_model->lifted_vehicle = $lifted_vehicle;
                     $cust_vehicle_model->damage_points =  $damage_points;
                     $cust_vehicle_model->upgrade_pack =  $upgrade_pack;
                     $cust_vehicle_model->edit_vehicle =  $edit_vehicle;
@@ -5287,9 +5296,9 @@ $jsononlineclient['id'] =  $client->id;
 
         $pendingorders= array();
 		foreach($pending_orders as $pendings_orders){
-
+$washer_detail = '';
 		    $customers_detail = Customers::model()->findByAttributes(array("id"=>$pendings_orders ->customer_id));
-
+if($pendings_orders->agent_id) $washer_detail = Agents::model()->findByPk($pendings_orders->agent_id);
 
 			$customer_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("customer_id" => $pendings_orders ->customer_id));
 
@@ -5318,6 +5327,12 @@ $jsonpending['wash_request_id'] =  $pendings_orders ->id;
 				 $jsonpending['total_wash'] =  $customers_detail ->total_wash;
                  $jsonpending['latitude'] =  $pendings_orders->latitude;
                  $jsonpending['longitude'] =  $pendings_orders->longitude;
+		 $jsonpending['agent_id'] =  $pendings_orders->agent_id;
+		 if(count($washer_detail)) {
+		 $jsonpending['agent_badge_id'] = $washer_detail->real_washer_id;
+		 $jsonpending['agent_name'] = $washer_detail->first_name." ".$washer_detail->last_name;
+		 $jsonpending['agent_phone'] = $washer_detail->phone_number;
+		 }
 				 $jsonpending['rating'] = $customers_detail ->rating;
 $jsonpending['created_date'] = $pendings_orders->created_date;
 				 $pendingorders[$key] = $jsonpending;
@@ -5330,9 +5345,10 @@ $jsonpending['created_date'] = $pendings_orders->created_date;
 
         $scheduleorders= array();
 		foreach($schedule_orders as $schedorder){
-
+$washer_detail = '';
 		    $customers_detail = Customers::model()->findByAttributes(array("id"=>$schedorder->customer_id));
 
+if($schedorder->agent_id) $washer_detail = Agents::model()->findByPk($schedorder->agent_id);
 
 			$customer_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("customer_id" => $schedorder->customer_id));
 
@@ -5363,6 +5379,12 @@ $jsonpending['wash_request_id'] = $schedorder->id;
                  $jsonpending['longitude'] =  $schedorder->longitude;
 				 $jsonpending['rating'] = $customers_detail ->rating;
 $jsonpending['created_date'] = $schedorder->created_date;
+$jsonpending['agent_id'] = $schedorder->agent_id;
+if(count($washer_detail)) {
+		 $jsonpending['agent_badge_id'] = $washer_detail->real_washer_id;
+		 $jsonpending['agent_name'] = $washer_detail->first_name." ".$washer_detail->last_name;
+		 $jsonpending['agent_phone'] = $washer_detail->phone_number;
+		 }
 $jsonpending['schedule_date'] = date('m-d-Y',strtotime($schedorder->schedule_date));
 $jsonpending['schedule_time'] = $schedorder->schedule_time;
 				 $scheduleorders[$key] = $jsonpending;
