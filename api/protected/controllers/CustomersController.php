@@ -2641,6 +2641,7 @@ if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($vehicle_id) 
 	
 //Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => $pet_hair, 'lifted_vehicle' => $lifted_vehicle, 'new_pack_name' => $new_pack_name, 'exthandwax_addon' => $exthandwax_addon, 'extplasticdressing_addon' => $extplasticdressing_addon, 'extclaybar_addon' => $extclaybar_addon, 'waterspotremove_addon' => $waterspotremove_addon, 'upholstery_addon' => $upholstery_addon, 'floormat_addon' => $floormat_addon));
 
+Vehicle::model()->updateByPk($vehicle_id, array('upgrade_requested_at' => date('Y-m-d H:i:s')));
 
 /*
 if(!$pet_hair){

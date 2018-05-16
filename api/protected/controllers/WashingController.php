@@ -3403,6 +3403,8 @@ die();
 
         $customer_id = Yii::app()->request->getParam('customer_id');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+	$upgrade_pack = Yii::app()->request->getParam('upgrade_pack');
+	$vehicle_id = Yii::app()->request->getParam('vehicle_id');
         $result= 'false';
         $response= 'Pass the required parameters';
         $json= array();
@@ -3597,6 +3599,10 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 
 }
 }*/
+		// upgrade started
+		if($upgrade_pack==11){
+		Vehicle::model()->updateByPk($vehicle_id, array("upgrade_pack" => $upgrade_pack));	
+		}
 
                 $wrequest_obj = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id, 'customer_id'=> $customer_id));
 
@@ -3922,7 +3928,7 @@ $hours = floor($wash_time / 60);
 
 
                     $new_vehicle_confirm = $wash_request_exists->new_vehicle_confirm;
-                   $vehicles[] = array("id"=> $carid, "make"=>$cardata->brand_name, "model"=>$cardata->model_name, "license_no"=>$cardata->vehicle_no, "vehicle_type"=>$cardata->vehicle_type, "vehicle_category"=>$cardata->vehicle_category, "vehicle_build"=>$cardata->vehicle_build, "vehicle_image"=>$cardata->vehicle_image, "handling_fee"=>'1.00', "status"=>$cardata->status, "eco_friendly"=>$cardata->eco_friendly, "damage_points"=>$cardata->damage_points,"damage_pic"=>$cardata->damage_pic, "pet_hair"=>$cardata->pet_hair, "pet_hair_agent"=> number_format(round($cardata->pet_hair * .80, 2), 2), "lifted_vehicle"=>$cardata->lifted_vehicle, "lifted_vehicle_agent"=>number_format(round($cardata->lifted_vehicle * .80, 2), 2), "exthandwax_addon"=>$cardata->exthandwax_addon, "exthandwax_addon_agent"=>number_format(round($cardata->exthandwax_addon*.80, 2), 2),"extplasticdressing_addon"=>$cardata->extplasticdressing_addon, "extplasticdressing_addon_agent"=>number_format(round($cardata->extplasticdressing_addon*.80, 2), 2), "extclaybar_addon"=>$cardata->extclaybar_addon, "extclaybar_addon_agent"=>number_format(round($cardata->extclaybar_addon*.80, 2), 2), "waterspotremove_addon"=>$cardata->waterspotremove_addon, "waterspotremove_addon_agent"=>number_format(round($cardata->waterspotremove_addon*.80, 2), 2), "upholstery_addon"=>$cardata->upholstery_addon, "upholstery_addon_agent"=>number_format(round($cardata->upholstery_addon*.80, 2), 2), "floormat_addon"=>$cardata->floormat_addon, "floormat_addon_agent"=>number_format(round($cardata->floormat_addon*.80, 2), 2), "bundle_discount" => number_format($bundle_fee, 2), "bundle_discount_agent" => number_format($bundle_fee_agent, 2), "fifth_wash_discount" => number_format($fifth_fee, 2), "first_wash_discount" => number_format($first_fee, 2), "upgrade_pack"=> $cardata->upgrade_pack, "new_pack_name"=> $cardata->new_pack_name, "edit_vehicle"=> $cardata->edit_vehicle, "remove_vehicle_from_kart"=> $cardata->remove_vehicle_from_kart, "payment_type"=>$pack_arr[$ind], "price"=>$wash_price, "total_price"=>number_format($total_car_price, 2), "price_agent"=>$car_price_agent, "total_price_agent"=>number_format($total_car_price_agent, 2), "wash_time"=> $wash_time, "wash_time_str" => $washtime_str);
+                   $vehicles[] = array("id"=> $carid, "make"=>$cardata->brand_name, "model"=>$cardata->model_name, "license_no"=>$cardata->vehicle_no, "vehicle_type"=>$cardata->vehicle_type, "vehicle_category"=>$cardata->vehicle_category, "vehicle_build"=>$cardata->vehicle_build, "vehicle_image"=>$cardata->vehicle_image, "handling_fee"=>'1.00', "status"=>$cardata->status, "eco_friendly"=>$cardata->eco_friendly, "damage_points"=>$cardata->damage_points,"damage_pic"=>$cardata->damage_pic, "pet_hair"=>$cardata->pet_hair, "pet_hair_agent"=> number_format(round($cardata->pet_hair * .80, 2), 2), "lifted_vehicle"=>$cardata->lifted_vehicle, "lifted_vehicle_agent"=>number_format(round($cardata->lifted_vehicle * .80, 2), 2), "exthandwax_addon"=>$cardata->exthandwax_addon, "exthandwax_addon_agent"=>number_format(round($cardata->exthandwax_addon*.80, 2), 2),"extplasticdressing_addon"=>$cardata->extplasticdressing_addon, "extplasticdressing_addon_agent"=>number_format(round($cardata->extplasticdressing_addon*.80, 2), 2), "extclaybar_addon"=>$cardata->extclaybar_addon, "extclaybar_addon_agent"=>number_format(round($cardata->extclaybar_addon*.80, 2), 2), "waterspotremove_addon"=>$cardata->waterspotremove_addon, "waterspotremove_addon_agent"=>number_format(round($cardata->waterspotremove_addon*.80, 2), 2), "upholstery_addon"=>$cardata->upholstery_addon, "upholstery_addon_agent"=>number_format(round($cardata->upholstery_addon*.80, 2), 2), "floormat_addon"=>$cardata->floormat_addon, "floormat_addon_agent"=>number_format(round($cardata->floormat_addon*.80, 2), 2), "bundle_discount" => number_format($bundle_fee, 2), "bundle_discount_agent" => number_format($bundle_fee_agent, 2), "fifth_wash_discount" => number_format($fifth_fee, 2), "first_wash_discount" => number_format($first_fee, 2), "upgrade_pack"=> $cardata->upgrade_pack, "upgrade_requested_at"=> $cardata->upgrade_requested_at, "new_pack_name"=> $cardata->new_pack_name, "edit_vehicle"=> $cardata->edit_vehicle, "remove_vehicle_from_kart"=> $cardata->remove_vehicle_from_kart, "payment_type"=>$pack_arr[$ind], "price"=>$wash_price, "total_price"=>number_format($total_car_price, 2), "price_agent"=>$car_price_agent, "total_price_agent"=>number_format($total_car_price_agent, 2), "wash_time"=> $wash_time, "wash_time_str" => $washtime_str);
                 }
 
 		
