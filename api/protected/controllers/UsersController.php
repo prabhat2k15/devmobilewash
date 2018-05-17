@@ -3056,7 +3056,7 @@ die();
 
                    $result= "true";
                 $response = "app settings";
-
+$wash_now_fee_json = json_decode($app_settings[0]['wash_now_fee']);
                 $json = array(
                 'result'=> $result,
                 'response'=> $response,
@@ -3066,7 +3066,7 @@ die();
                 'ios_cust_ondemand_wait_time' => $app_settings[0]['customer_ondemand_wait_time'],
                 'ios_max_order_rotate_time' => $app_settings[0]['max_order_rotate_time'],
                 'ios_washer_search_radius' => $app_settings[0]['washer_search_radius'],
-		'ios_wash_now_fee' => $app_settings[0]['wash_now_fee'],
+		'ios_wash_now_fee' => $wash_now_fee_json,
 		'ios_wash_later_fee' => $app_settings[0]['wash_later_fee'],
                 'android_app_version_check' => $app_settings[1]['version_check'],
                 'android_app_version' => $app_settings[1]['app_version'],
@@ -3074,7 +3074,7 @@ die();
                 'android_cust_ondemand_wait_time' => $app_settings[1]['customer_ondemand_wait_time'],
                 'android_max_order_rotate_time' => $app_settings[1]['max_order_rotate_time'],
                 'android_washer_search_radius' => $app_settings[1]['washer_search_radius'],
-		'android_wash_now_fee' => $app_settings[1]['wash_now_fee'],
+		'android_wash_now_fee' => $wash_now_fee_json,
 		'android_wash_later_fee' => $app_settings[1]['wash_later_fee']
             );
 
@@ -3149,7 +3149,7 @@ $ios_order_rotate_time = $app_settings[0]['max_order_rotate_time'];
 $ios_washer_search_radius = $app_settings[0]['washer_search_radius'];
                 }
 		
-if(!is_numeric($ios_wash_now_fee)){
+if(!$ios_wash_now_fee){
 $ios_wash_now_fee = $app_settings[0]['wash_now_fee'];
                 }
 		
@@ -3182,7 +3182,7 @@ $android_order_rotate_time = $app_settings[1]['max_order_rotate_time'];
 $android_washer_search_radius = $app_settings[1]['washer_search_radius'];
                 }
 		
-		if(!is_numeric($android_wash_now_fee)){
+		if(!$android_wash_now_fee){
 $android_wash_now_fee = $app_settings[1]['wash_now_fee'];
                 }
 		

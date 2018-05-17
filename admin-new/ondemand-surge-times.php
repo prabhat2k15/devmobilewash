@@ -1,6 +1,13 @@
 <?php
 include('header.php');
+
+
 if(isset($_POST['schedule_times_submit'])){
+ 
+ $wash_now_fees_json['yellow'] = $_POST['custom_surge_yellow'];
+$wash_now_fees_json['red'] = $_POST['custom_surge_red'];
+$wash_now_fees_json['orange'] = $_POST['custom_surge_orange'];
+$wash_now_fees_json['purple'] = $_POST['custom_surge_purple'];
 
  $url = ROOT_URL.'/api/index.php?r=site/updateondemandsurgetimes';
 
@@ -12,7 +19,7 @@ $result = curl_exec($handle);
 curl_close($handle);
 $jsondata = json_decode($result);
 
- $data = array('ios_wash_now_fee'=> $_POST['custom_surge'], 'android_wash_now_fee'=> $_POST['custom_surge'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+ $data = array('ios_wash_now_fee'=> json_encode($wash_now_fees_json), 'android_wash_now_fee'=> json_encode($wash_now_fees_json), 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
             // END COLLECT POST VALUE //
 
@@ -23,7 +30,7 @@ $jsondata = json_decode($result);
             $result2 = curl_exec($handle);
             curl_close($handle);
             $jsondata2 = json_decode($result2);
-            
+
 
 }
  ?>
@@ -67,6 +74,7 @@ $sched_times = $jsondata->schedule_times;
             $result = curl_exec($handle);
             curl_close($handle);
             $appsettings = json_decode($result);
+            //echo $appsettings->ios_wash_now_fee->yellow."<br>".$appsettings->ios_wash_now_fee->red;
 ?>
  <style>
  .portlet-body .col{
@@ -104,8 +112,21 @@ $sched_times = $jsondata->schedule_times;
       background: #63dffb;
   }
   
-  .portlet-body .col ul li.surgeactive{
+  .portlet-body .col ul li.surgeactive-yellow{
       background: #ffeb3b;
+  }
+  
+   .portlet-body .col ul li.surgeactive-red{
+      background: #FF0000;
+  }
+  
+   .portlet-body .col ul li.surgeactive-orange{
+      background: #FF8000;
+  }
+  
+    .portlet-body .col ul li.surgeactive-purple{
+      background: #800080;
+      color: #fff;
   }
 
 .portlet-body .col ul li.spec-time{
@@ -138,7 +159,15 @@ border: 3px solid #FF9800;
 }
 
 .portlet-body .price-row .red{
- background: #ff5722;
+ background: #FF0000;
+}
+
+.portlet-body .price-row .orange{
+ background: #FF8000;
+}
+
+.portlet-body .price-row .purple{
+ background: #800080;
 }
 
  </style>
@@ -172,9 +201,12 @@ $date = date('m/d/Y h:i:s a', time());
 
                                     <form class="form-inline" method="post" action="" role="form">
                                      <div class="price-row">
-                                      <p><span class='color-block gray'></span> - Surge Price N/A</p>
-                                      <p><span class='color-block blue'></span> - Standard Surge Price ($0)</p>
-                                      <p><span class='color-block yellow'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge" id="custom_surge" value = "<?php echo $appsettings->ios_wash_now_fee; ?>"/></p>
+                                      <p><span class='color-block gray'></span> - Disabled</p>
+                                      <p><span class='color-block blue'></span> - Enabled</p>
+                                      <p><span class='color-block yellow'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_yellow" id="custom_surgeactive-yellow" value = "<?php echo $appsettings->ios_wash_now_fee->yellow; ?>"/></p>
+                                      <p><span class='color-block red'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_red" id="custom_surgeactive-red" value = "<?php echo $appsettings->ios_wash_now_fee->red; ?>"/></p>
+                                      <p><span class='color-block orange'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_orange" id="custom_surgeactive-orange" value = "<?php echo $appsettings->ios_wash_now_fee->orange; ?>"/></p>
+                                      <p><span class='color-block purple'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_purple" id="custom_surgeactive-purple" value = "<?php echo $appsettings->ios_wash_now_fee->purple; ?>"/></p>
                                       <h5>Message (when unavailable)</h5>
                                         
                                                 <textarea style="margin-bottom: 40px; display: block; width: 60%; height: 130px; padding: 5px;" name="business_unavail_notice" id="business_unavail_notice"><?php echo $sched_times->message; ?></textarea>
@@ -188,58 +220,58 @@ $montimes = $sched_times->mon;
 $montimes_arr = explode("|", $montimes);
 ?>
                                         <ul class="times montime">
-                                           <li <?php $time_det = explode(",",$montimes_arr[0]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[1]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[2]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[3]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[4]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:00 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[5]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:15 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[6]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:30 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[7]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:45 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[8]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:00 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[9]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:15 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[10]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:30 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[11]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:45 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[12]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:00 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[13]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:15 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[14]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:30 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[15]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:45 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[16]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:00 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[17]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:15 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[18]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:30 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[19]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:45 AM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[20]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:00 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[21]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:15 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[22]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:30 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[23]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:45 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[24]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:00 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[25]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:15 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[26]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:30 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[27]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:45 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[28]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:00 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[29]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:15 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[30]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:30 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[31]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:45 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[32]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:00 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[33]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:15 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[34]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:30 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[35]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:45 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[36]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:00 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[37]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:15 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[38]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:30 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[39]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:45 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[40]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:00 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[41]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:15 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[42]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:30 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[43]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:45 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[44]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:00 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[45]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:15 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[46]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:30 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[47]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:45 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[48]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[49]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[50]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 PM</li>
-                                           <li <?php $time_det = explode(",",$montimes_arr[51]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[0]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[1]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[2]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[3]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[4]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:00 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[5]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:15 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[6]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:30 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[7]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:45 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[8]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:00 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[9]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:15 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[10]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:30 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[11]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:45 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[12]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:00 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[13]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:15 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[14]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:30 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[15]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:45 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[16]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:00 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[17]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:15 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[18]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:30 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[19]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:45 AM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[20]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:00 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[21]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:15 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[22]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:30 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[23]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:45 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[24]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:00 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[25]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:15 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[26]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:30 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[27]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:45 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[28]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:00 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[29]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:15 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[30]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:30 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[31]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:45 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[32]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:00 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[33]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:15 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[34]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:30 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[35]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:45 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[36]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:00 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[37]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:15 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[38]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:30 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[39]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:45 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[40]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:00 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[41]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:15 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[42]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:30 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[43]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:45 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[44]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:00 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[45]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:15 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[46]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:30 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[47]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:45 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[48]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[49]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[50]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 PM</li>
+                                           <li <?php $time_det = explode(",",$montimes_arr[51]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 PM</li>
                                         </ul>
                                      </div>
                                      <div class="col">
@@ -249,58 +281,58 @@ $tuetimes = $sched_times->tue;
 $tuetimes_arr = explode("|", $tuetimes);
 ?>
                                         <ul class="times tuetime">
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[0]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[1]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[2]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[3]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[4]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:00 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[5]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:15 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[6]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:30 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[7]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:45 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[8]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:00 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[9]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:15 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[10]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:30 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[11]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:45 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[12]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:00 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[13]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:15 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[14]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:30 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[15]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:45 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[16]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:00 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[17]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:15 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[18]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:30 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[19]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:45 AM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[20]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:00 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[21]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:15 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[22]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:30 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[23]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:45 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[24]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:00 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[25]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:15 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[26]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:30 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[27]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:45 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[28]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:00 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[29]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:15 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[30]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:30 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[31]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:45 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[32]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:00 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[33]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:15 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[34]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:30 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[35]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:45 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[36]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:00 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[37]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:15 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[38]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:30 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[39]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:45 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[40]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:00 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[41]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:15 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[42]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:30 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[43]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:45 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[44]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:00 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[45]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:15 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[46]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:30 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[47]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:45 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[48]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[49]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[50]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 PM</li>
-                                           <li <?php $time_det = explode(",",$tuetimes_arr[51]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[0]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[1]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[2]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[3]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[4]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:00 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[5]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:15 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[6]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:30 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[7]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:45 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[8]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:00 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[9]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:15 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[10]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:30 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[11]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:45 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[12]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:00 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[13]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:15 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[14]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:30 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[15]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:45 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[16]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:00 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[17]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:15 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[18]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:30 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[19]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:45 AM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[20]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:00 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[21]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:15 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[22]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:30 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[23]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:45 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[24]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:00 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[25]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:15 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[26]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:30 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[27]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:45 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[28]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:00 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[29]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:15 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[30]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:30 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[31]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:45 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[32]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:00 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[33]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:15 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[34]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:30 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[35]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:45 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[36]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:00 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[37]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:15 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[38]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:30 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[39]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:45 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[40]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:00 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[41]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:15 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[42]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:30 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[43]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:45 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[44]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:00 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[45]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:15 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[46]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:30 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[47]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:45 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[48]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[49]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[50]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 PM</li>
+                                           <li <?php $time_det = explode(",",$tuetimes_arr[51]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 PM</li>
                                         </ul>
                                      </div>
                                      <div class="col">
@@ -310,58 +342,58 @@ $wedtimes = $sched_times->wed;
 $wedtimes_arr = explode("|", $wedtimes);
 ?>
                                         <ul class="times wedtime">
-                                            <li <?php $time_det = explode(",",$wedtimes_arr[0]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[1]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[2]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[3]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[4]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:00 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[5]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:15 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[6]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:30 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[7]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:45 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[8]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:00 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[9]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:15 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[10]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:30 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[11]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:45 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[12]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:00 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[13]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:15 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[14]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:30 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[15]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:45 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[16]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:00 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[17]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:15 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[18]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:30 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[19]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:45 AM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[20]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:00 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[21]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:15 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[22]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:30 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[23]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:45 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[24]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:00 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[25]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:15 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[26]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:30 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[27]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:45 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[28]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:00 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[29]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:15 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[30]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:30 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[31]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:45 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[32]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:00 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[33]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:15 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[34]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:30 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[35]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:45 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[36]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:00 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[37]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:15 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[38]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:30 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[39]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:45 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[40]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:00 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[41]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:15 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[42]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:30 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[43]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:45 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[44]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:00 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[45]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:15 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[46]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:30 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[47]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:45 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[48]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[49]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[50]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 PM</li>
-                                           <li <?php $time_det = explode(",",$wedtimes_arr[51]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 PM</li>
+                                            <li <?php $time_det = explode(",",$wedtimes_arr[0]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[1]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[2]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[3]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[4]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:00 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[5]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:15 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[6]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:30 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[7]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:45 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[8]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:00 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[9]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:15 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[10]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:30 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[11]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:45 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[12]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:00 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[13]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:15 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[14]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:30 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[15]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:45 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[16]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:00 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[17]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:15 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[18]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:30 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[19]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:45 AM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[20]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:00 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[21]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:15 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[22]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:30 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[23]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:45 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[24]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:00 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[25]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:15 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[26]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:30 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[27]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:45 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[28]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:00 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[29]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:15 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[30]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:30 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[31]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:45 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[32]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:00 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[33]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:15 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[34]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:30 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[35]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:45 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[36]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:00 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[37]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:15 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[38]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:30 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[39]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:45 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[40]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:00 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[41]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:15 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[42]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:30 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[43]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:45 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[44]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:00 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[45]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:15 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[46]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:30 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[47]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:45 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[48]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[49]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[50]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 PM</li>
+                                           <li <?php $time_det = explode(",",$wedtimes_arr[51]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 PM</li>
                                         </ul>
                                      </div>
                                      <div class="col">
@@ -371,58 +403,58 @@ $thurstimes = $sched_times->thurs;
 $thurstimes_arr = explode("|", $thurstimes);
 ?>
                                         <ul class="times thurstime">
-                                            <li <?php $time_det = explode(",",$thurstimes_arr[0]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[1]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[2]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[3]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[4]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:00 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[5]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:15 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[6]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:30 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[7]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:45 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[8]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:00 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[9]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:15 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[10]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:30 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[11]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:45 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[12]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:00 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[13]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:15 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[14]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:30 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[15]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:45 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[16]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:00 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[17]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:15 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[18]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:30 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[19]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:45 AM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[20]); if($time_det[1] == 'active') echo "class='active'";  if($time_det[1] == 'surgeactive') echo "class='surgeactive'";?>>12:00 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[21]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:15 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[22]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:30 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[23]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:45 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[24]); if($time_det[1] == 'active') echo "class='active'";  if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:00 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[25]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:15 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[26]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:30 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[27]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:45 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[28]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:00 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[29]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:15 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[30]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:30 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[31]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:45 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[32]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:00 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[33]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:15 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[34]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:30 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[35]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:45 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[36]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:00 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[37]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:15 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[38]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:30 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[39]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:45 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[40]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:00 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[41]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:15 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[42]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:30 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[43]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:45 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[44]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:00 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[45]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:15 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[46]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:30 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[47]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:45 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[48]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[49]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[50]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 PM</li>
-                                           <li <?php $time_det = explode(",",$thurstimes_arr[51]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 PM</li>
+                                            <li <?php $time_det = explode(",",$thurstimes_arr[0]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[1]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[2]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[3]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[4]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:00 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[5]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:15 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[6]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:30 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[7]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:45 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[8]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:00 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[9]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:15 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[10]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:30 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[11]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:45 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[12]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:00 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[13]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:15 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[14]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:30 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[15]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:45 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[16]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:00 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[17]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:15 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[18]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:30 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[19]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:45 AM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[20]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:00 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[21]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:15 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[22]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:30 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[23]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:45 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[24]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:00 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[25]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:15 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[26]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:30 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[27]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:45 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[28]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:00 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[29]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:15 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[30]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:30 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[31]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:45 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[32]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:00 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[33]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:15 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[34]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:30 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[35]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:45 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[36]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:00 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[37]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:15 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[38]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:30 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[39]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:45 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[40]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:00 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[41]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:15 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[42]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:30 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[43]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:45 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[44]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:00 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[45]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:15 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[46]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:30 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[47]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:45 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[48]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[49]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[50]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 PM</li>
+                                           <li <?php $time_det = explode(",",$thurstimes_arr[51]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 PM</li>
                                         </ul>
                                      </div>
                                      <div class="col">
@@ -432,58 +464,58 @@ $fritimes = $sched_times->fri;
 $fritimes_arr = explode("|", $fritimes);
 ?>
                                         <ul class="times fritime">
-                                           <li <?php $time_det = explode(",",$fritimes_arr[0]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[1]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[2]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[3]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[4]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:00 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[5]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:15 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[6]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:30 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[7]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:45 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[8]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:00 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[9]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:15 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[10]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:30 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[11]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:45 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[12]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:00 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[13]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:15 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[14]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:30 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[15]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:45 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[16]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:00 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[17]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:15 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[18]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:30 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[19]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:45 AM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[20]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:00 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[21]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:15 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[22]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:30 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[23]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:45 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[24]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:00 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[25]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:15 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[26]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:30 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[27]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:45 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[28]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:00 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[29]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:15 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[30]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:30 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[31]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:45 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[32]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:00 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[33]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:15 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[34]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:30 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[35]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:45 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[36]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:00 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[37]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:15 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[38]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:30 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[39]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:45 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[40]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:00 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[41]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:15 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[42]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:30 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[43]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:45 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[44]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:00 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[45]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:15 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[46]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:30 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[47]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:45 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[48]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[49]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[50]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 PM</li>
-                                           <li <?php $time_det = explode(",",$fritimes_arr[51]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[0]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[1]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[2]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[3]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[4]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:00 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[5]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:15 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[6]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:30 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[7]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:45 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[8]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:00 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[9]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:15 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[10]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:30 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[11]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:45 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[12]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:00 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[13]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:15 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[14]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:30 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[15]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:45 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[16]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:00 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[17]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:15 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[18]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:30 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[19]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:45 AM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[20]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:00 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[21]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:15 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[22]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:30 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[23]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:45 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[24]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:00 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[25]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:15 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[26]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:30 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[27]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:45 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[28]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:00 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[29]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:15 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[30]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:30 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[31]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:45 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[32]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:00 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[33]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:15 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[34]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:30 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[35]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:45 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[36]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:00 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[37]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:15 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[38]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:30 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[39]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:45 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[40]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:00 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[41]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:15 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[42]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:30 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[43]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:45 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[44]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:00 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[45]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:15 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[46]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:30 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[47]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:45 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[48]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[49]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[50]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 PM</li>
+                                           <li <?php $time_det = explode(",",$fritimes_arr[51]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 PM</li>
                                         </ul>
                                      </div>
                                      <div class="col">
@@ -493,58 +525,58 @@ $sattimes = $sched_times->sat;
 $sattimes_arr = explode("|", $sattimes);
 ?>
                                         <ul class="times sattime">
-                                          <li <?php $time_det = explode(",",$sattimes_arr[0]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[1]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[2]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[3]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[4]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:00 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[5]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:15 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[6]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:30 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[7]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:45 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[8]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:00 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[9]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:15 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[10]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:30 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[11]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:45 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[12]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:00 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[13]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:15 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[14]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:30 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[15]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:45 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[16]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:00 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[17]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:15 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[18]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:30 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[19]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:45 AM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[20]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:00 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[21]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:15 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[22]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:30 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[23]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:45 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[24]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:00 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[25]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:15 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[26]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:30 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[27]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:45 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[28]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:00 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[29]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:15 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[30]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:30 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[31]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:45 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[32]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:00 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[33]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:15 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[34]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:30 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[35]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:45 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[36]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:00 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[37]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:15 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[38]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:30 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[39]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:45 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[40]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:00 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[41]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:15 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[42]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:30 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[43]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:45 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[44]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:00 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[45]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:15 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[46]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:30 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[47]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:45 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[48]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[49]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[50]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 PM</li>
-                                           <li <?php $time_det = explode(",",$sattimes_arr[51]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 PM</li>
+                                          <li <?php $time_det = explode(",",$sattimes_arr[0]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[1]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[2]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[3]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[4]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:00 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[5]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:15 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[6]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:30 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[7]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:45 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[8]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:00 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[9]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:15 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[10]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:30 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[11]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:45 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[12]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:00 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[13]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:15 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[14]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:30 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[15]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:45 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[16]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:00 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[17]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:15 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[18]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:30 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[19]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:45 AM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[20]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:00 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[21]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:15 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[22]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:30 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[23]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:45 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[24]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:00 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[25]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:15 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[26]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:30 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[27]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:45 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[28]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:00 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[29]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:15 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[30]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:30 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[31]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:45 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[32]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:00 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[33]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:15 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[34]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:30 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[35]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:45 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[36]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:00 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[37]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:15 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[38]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:30 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[39]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:45 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[40]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:00 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[41]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:15 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[42]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:30 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[43]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:45 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[44]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:00 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[45]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:15 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[46]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:30 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[47]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:45 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[48]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[49]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[50]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 PM</li>
+                                           <li <?php $time_det = explode(",",$sattimes_arr[51]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 PM</li>
                                         </ul>
                                      </div>
                                      <div class="col" style="margin-right: 0;">
@@ -554,76 +586,69 @@ $suntimes = $sched_times->sun;
 $suntimes_arr = explode("|", $suntimes);
 ?>
                                         <ul class="times suntime">
-                                           <li <?php $time_det = explode(",",$suntimes_arr[0]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[1]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[2]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[3]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[4]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:00 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[5]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:15 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[6]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:30 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[7]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>8:45 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[8]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:00 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[9]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:15 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[10]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:30 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[11]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>9:45 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[12]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:00 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[13]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:15 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[14]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:30 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[15]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>10:45 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[16]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:00 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[17]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:15 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[18]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:30 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[19]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>11:45 AM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[20]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:00 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[21]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:15 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[22]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:30 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[23]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>12:45 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[24]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:00 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[25]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:15 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[26]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:30 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[27]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>1:45 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[28]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:00 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[29]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:15 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[30]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:30 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[31]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>2:45 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[32]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:00 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[33]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:15 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[34]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:30 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[35]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>3:45 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[36]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:00 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[37]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:15 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[38]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:30 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[39]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>4:45 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[40]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:00 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[41]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:15 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[42]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:30 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[43]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>5:45 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[44]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:00 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[45]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:15 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[46]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:30 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[47]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>6:45 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[48]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:00 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[49]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:15 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[50]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:30 PM</li>
-                                           <li <?php $time_det = explode(",",$suntimes_arr[51]); if($time_det[1] == 'active') echo "class='active'"; if($time_det[1] == 'surgeactive') echo "class='surgeactive'"; ?>>7:45 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[0]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[1]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[2]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[3]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[4]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:00 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[5]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:15 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[6]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:30 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[7]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>8:45 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[8]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:00 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[9]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:15 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[10]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:30 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[11]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>9:45 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[12]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:00 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[13]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:15 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[14]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:30 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[15]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>10:45 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[16]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:00 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[17]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:15 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[18]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:30 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[19]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>11:45 AM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[20]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:00 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[21]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:15 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[22]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:30 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[23]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>12:45 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[24]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:00 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[25]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:15 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[26]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:30 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[27]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>1:45 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[28]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:00 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[29]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:15 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[30]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:30 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[31]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>2:45 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[32]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:00 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[33]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:15 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[34]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:30 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[35]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>3:45 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[36]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:00 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[37]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:15 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[38]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:30 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[39]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>4:45 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[40]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:00 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[41]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:15 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[42]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:30 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[43]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>5:45 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[44]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:00 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[45]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:15 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[46]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:30 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[47]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>6:45 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[48]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:00 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[49]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:15 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[50]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:30 PM</li>
+                                           <li <?php $time_det = explode(",",$suntimes_arr[51]); echo "class='".$time_det[1]."'"; echo " data-price='".$time_det[2]."'"; ?>>7:45 PM</li>
                                         </ul>
                                      </div>
                                      <div style="clear: both"></div>
-                                     <input type="hidden" name="mon_time" id="mon_time" />
-<input type="hidden" name="tue_time" id="tue_time" />
-<input type="hidden" name="wed_time" id="wed_time" />
-<input type="hidden" name="thurs_time" id="thurs_time" />
-<input type="hidden" name="fri_time" id="fri_time" />
-<input type="hidden" name="sat_time" id="sat_time" />
-<input type="hidden" name="sun_time" id="sun_time" />
+                                     <input type="hidden" name="mon_time" id="mon_time" value="<?php echo $sched_times->mon; ?>" />
+<input type="hidden" name="tue_time" id="tue_time" value="<?php echo $sched_times->tue; ?>" />
+<input type="hidden" name="wed_time" id="wed_time" value="<?php echo $sched_times->wed; ?>" />
+<input type="hidden" name="thurs_time" id="thurs_time" value="<?php echo $sched_times->thurs; ?>" />
+<input type="hidden" name="fri_time" id="fri_time" value="<?php echo $sched_times->fri; ?>" />
+<input type="hidden" name="sat_time" id="sat_time" value="<?php echo $sched_times->sat; ?>" />
+<input type="hidden" name="sun_time" id="sun_time" value="<?php echo $sched_times->sun; ?>" />
 
-<input type="hidden" name="mon_spec_time" id="mon_spec_time" value="<?php echo $sched_times->mon_spec; ?>" />
-<input type="hidden" name="tue_spec_time" id="tue_spec_time" value="<?php echo $sched_times->tue_spec; ?>" />
-<input type="hidden" name="wed_spec_time" id="wed_spec_time" value="<?php echo $sched_times->wed_spec; ?>" />
-<input type="hidden" name="thurs_spec_time" id="thurs_spec_time" value="<?php echo $sched_times->thurs_spec; ?>" />
-<input type="hidden" name="fri_spec_time" id="fri_spec_time" value="<?php echo $sched_times->fri_spec; ?>" />
-<input type="hidden" name="sat_spec_time" id="sat_spec_time" value="<?php echo $sched_times->sat_spec; ?>" />
-<input type="hidden" name="sun_spec_time" id="sun_spec_time" value="<?php echo $sched_times->sun_spec; ?>" />
                                      <p>
                                      <input type="submit" style="color: rgb(255, 255, 255); background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 7px 20px 7px 20px; border-radius: 3px; margin-top: 30px;" name="schedule_times_submit" value="Update">
 
@@ -669,9 +694,116 @@ var surge_price = 0;
 
 
 function refreshtimesandprice(){
-  timearr = [];
+ 
+    timearr = [];
     timestr = '';
-    if($('.portlet-body #custom_surge').val()) surge_price = $('.portlet-body #custom_surge').val();
+    $(".montime li").each(function(idx, li) {
+        var s = '';
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
+        timearr.push(s);
+    });
+    timestr = timearr.join('|');
+    $('#mon_time').val(timestr);
+
+
+
+    timearr = [];
+    timestr = '';
+    $(".tuetime li").each(function(idx, li) {
+        var s = '';
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
+        timearr.push(s);
+    });
+    timestr = timearr.join('|');
+    $('#tue_time').val(timestr);
+
+
+    timearr = [];
+    timestr = '';
+    $(".wedtime li").each(function(idx, li) {
+        var s = '';
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
+        timearr.push(s);
+    });
+    timestr = timearr.join('|');
+    $('#wed_time').val(timestr);
+
+
+    timearr = [];
+    timestr = '';
+    $(".thurstime li").each(function(idx, li) {
+        var s = '';
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
+        timearr.push(s);
+    });
+    timestr = timearr.join('|');
+    $('#thurs_time').val(timestr);
+
+
+    timearr = [];
+    timestr = '';
+    $(".fritime li").each(function(idx, li) {
+        var s = '';
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
+        timearr.push(s);
+    });
+    timestr = timearr.join('|');
+    $('#fri_time').val(timestr);
+
+
+    timearr = [];
+    timestr = '';
+    $(".sattime li").each(function(idx, li) {
+        var s = '';
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
+        timearr.push(s);
+    });
+    timestr = timearr.join('|');
+    $('#sat_time').val(timestr);
+
+
+    timearr = [];
+    timestr = '';
+    $(".suntime li").each(function(idx, li) {
+        var s = '';
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
+        timearr.push(s);
+    });
+    timestr = timearr.join('|');
+    $('#sun_time').val(timestr);
+
+
+  /*timearr = [];
+    timestr = '';
+    //if($('.portlet-body #custom_surge').val()) surge_price = $('.portlet-body #custom_surge').val();
 
     $(".montime li").each(function(idx, li) {
         var s = '';
@@ -788,165 +920,38 @@ $(".fritime li").each(function(idx, li) {
     });
     timestr = timearr.join('|');
     $('#sun_time').val(timestr);
+    */
 }
 
 $(function(){
 
- timearr = [];
-    timestr = '';
-    if($('.portlet-body #custom_surge').val()) surge_price = $('.portlet-body #custom_surge').val();
-
-    $(".montime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#mon_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".tuetime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-         if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#tue_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".wedtime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#wed_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".thurstime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#thurs_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
-$(".fritime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#fri_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".sattime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#sat_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".suntime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#sun_time').val(timestr);
-
-
-
 $('.portlet-body .col ul li').click(function(){
  var changeclass = 0;
- if($(this).hasClass('active') && (!changeclass)) {
-  $(this).removeClass('active');
-  $(this).addClass('surgeactive');
-  if($('.portlet-body #custom_surge').val()) surge_price = $('.portlet-body #custom_surge').val();
+ var surgeclasses = ['inactive', 'active', 'surgeactive-yellow', 'surgeactive-red', 'surgeactive-orange', 'surgeactive-purple'];
+ var currentclass = $(this).attr('class');
+ var currentclassindex = $.inArray( currentclass, surgeclasses );
+ console.log('current: '+currentclassindex);
+  console.log(currentclassindex + 1);
+ if ((currentclassindex + 1) > (surgeclasses.length -1)) {
+  currentclassindex = -1;
+ }
+  $(this).removeClass();
+  
+  $(this).addClass(surgeclasses[currentclassindex + 1]);
+  if($('.portlet-body #custom_'+surgeclasses[currentclassindex + 1]).val()) surge_price = $('.portlet-body #custom_'+surgeclasses[currentclassindex + 1]).val();
   else surge_price = 0;
-  changeclass = 1;
- }
- 
-  if($(this).hasClass('surgeactive') && (!changeclass)) {
-  $(this).removeClass('surgeactive');
-  surge_price = 0;
-  changeclass = 1;
- }
- 
-   if((!changeclass)) {
-  $(this).addClass('active');
-  surge_price = 0;
-  changeclass = 1;
- }
+$(this).data('price', surge_price);
 
 if($(this).parent().hasClass('montime')){
     timearr = [];
     timestr = '';
     $(".montime li").each(function(idx, li) {
         var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
+        s += $(this).html()+","+$(this).attr('class');
+       
+
+        s += ","+$(this).data('price');
+        
         timearr.push(s);
     });
     timestr = timearr.join('|');
@@ -958,63 +963,62 @@ if($(this).parent().hasClass('tuetime')){
     timestr = '';
     $(".tuetime li").each(function(idx, li) {
         var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-         if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
         timearr.push(s);
     });
     timestr = timearr.join('|');
     $('#tue_time').val(timestr);
 }
 
+
 if($(this).parent().hasClass('wedtime')){
     timearr = [];
     timestr = '';
     $(".wedtime li").each(function(idx, li) {
         var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
         timearr.push(s);
     });
     timestr = timearr.join('|');
     $('#wed_time').val(timestr);
 }
 
+
 if($(this).parent().hasClass('thurstime')){
     timearr = [];
     timestr = '';
     $(".thurstime li").each(function(idx, li) {
         var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
         timearr.push(s);
     });
     timestr = timearr.join('|');
     $('#thurs_time').val(timestr);
 }
 
+
 if($(this).parent().hasClass('fritime')){
-     timearr = [];
+    timearr = [];
     timestr = '';
     $(".fritime li").each(function(idx, li) {
         var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
         timearr.push(s);
     });
     timestr = timearr.join('|');
@@ -1026,34 +1030,34 @@ if($(this).parent().hasClass('sattime')){
     timestr = '';
     $(".sattime li").each(function(idx, li) {
         var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
         timearr.push(s);
     });
     timestr = timearr.join('|');
     $('#sat_time').val(timestr);
 }
 
+
 if($(this).parent().hasClass('suntime')){
     timearr = [];
     timestr = '';
     $(".suntime li").each(function(idx, li) {
         var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
+        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
+        else s += $(this).html()+",inactive";
+
+        s += ","+$(this).data('price');
+        
         timearr.push(s);
     });
     timestr = timearr.join('|');
     $('#sun_time').val(timestr);
 }
+
 });
 
 $(".portlet-body form").submit(function(){
