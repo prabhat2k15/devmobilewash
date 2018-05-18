@@ -204,8 +204,9 @@ $date = date('m/d/Y h:i:s a', time());
                                       <p><span class='color-block gray'></span> - Disabled</p>
                                       <p><span class='color-block blue'></span> - Enabled</p>
                                       <p><span class='color-block yellow'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_yellow" id="custom_surgeactive-yellow" value = "<?php echo $appsettings->ios_wash_now_fee->yellow; ?>"/></p>
-                                      <p><span class='color-block red'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_red" id="custom_surgeactive-red" value = "<?php echo $appsettings->ios_wash_now_fee->red; ?>"/></p>
                                       <p><span class='color-block orange'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_orange" id="custom_surgeactive-orange" value = "<?php echo $appsettings->ios_wash_now_fee->orange; ?>"/></p>
+                                      <p><span class='color-block red'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_red" id="custom_surgeactive-red" value = "<?php echo $appsettings->ios_wash_now_fee->red; ?>"/></p>
+                                      
                                       <p><span class='color-block purple'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_purple" id="custom_surgeactive-purple" value = "<?php echo $appsettings->ios_wash_now_fee->purple; ?>"/></p>
                                       <h5>Message (when unavailable)</h5>
                                         
@@ -927,11 +928,11 @@ $(function(){
 
 $('.portlet-body .col ul li').click(function(){
  var changeclass = 0;
- var surgeclasses = ['inactive', 'active', 'surgeactive-yellow', 'surgeactive-red', 'surgeactive-orange', 'surgeactive-purple'];
+ var surgeclasses = ['inactive', 'active', 'surgeactive-yellow', 'surgeactive-orange', 'surgeactive-red', 'surgeactive-purple'];
  var currentclass = $(this).attr('class');
  var currentclassindex = $.inArray( currentclass, surgeclasses );
- console.log('current: '+currentclassindex);
-  console.log(currentclassindex + 1);
+ //console.log('current: '+currentclassindex);
+  //console.log(currentclassindex + 1);
  if ((currentclassindex + 1) > (surgeclasses.length -1)) {
   currentclassindex = -1;
  }

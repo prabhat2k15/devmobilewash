@@ -2157,8 +2157,7 @@ die();
 if(Yii::app()->request->getParam('timezone')){
 date_default_timezone_set(Yii::app()->request->getParam('timezone'));
 }
- 
-
+ 			  
 		$result= 'false';
 		$response= 'Fill up required fields';
 		$wash_now_fee = 0;
