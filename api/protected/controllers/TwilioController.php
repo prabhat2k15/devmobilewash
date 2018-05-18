@@ -20,6 +20,8 @@ die();
         
         $call_id = Yii::app()->request->getParam('tonumber');
         $fromnumber = Yii::app()->request->getParam('fromnumber');
+	$wash_request_id = '';
+	if(Yii::app()->request->getParam('wash_request_id')) $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $url = $this->callbackurl.$fromnumber;
         $newurl = preg_replace( '/\s+/', '', $url ); 
         $result  = 'false';
@@ -34,19 +36,17 @@ die();
 	       if($validatephone_to >=10 || $validatephone_to >= 10){
             
             $this->layout = "xmlLayout";
-            spl_autoload_unregister(array(
-                'YiiBase',
-                'autoload'
-            ));
-            require('Services/Twilio.php');
-            require('Services/Twilio/Capability.php');
+          
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
             
             
             /* Number you wish to call */
             $to = $call_id;
             
             /* Instantiate a new Twilio Rest Client */
-            $http = new Services_Twilio_TinyHttp($this->apiurl, array(
+            try {
+	    $http = new Services_Twilio_TinyHttp($this->apiurl, array(
                 'curlopts' => array(
                     CURLOPT_SSL_VERIFYPEER => false,
                     CURLOPT_SSL_VERIFYHOST => 2
@@ -63,11 +63,46 @@ die();
             $capability = new Services_Twilio_Capability($this->pccountSid, $this->authToken);
             $capability->allowClientOutgoing($this->appSid);
             $token = $capability->generateToken();
+	    		     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
 			if($token !=""){
             $data = array(
                 'token' => $token
             );
+		
+		if($wash_request_id){
+		   $cust_details = Customers::model()->findByAttributes(array('contact_number' => $fromnumber));
+		$agent_details = Agents::model()->findByAttributes(array('phone_number' => $fromnumber));
+		$wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
+		
+		if(count($cust_details)){
+		    $agent_det = Agents::model()->findByPk($wash_id_check->agent_id);
+		 $logdata = array(
+                        'agent_id'=> $wash_id_check->agent_id,
+                        'wash_request_id'=> $wash_request_id,
+			'agent_company_id'=> $agent_det->real_washer_id,
+                        'action'=> 'customercall',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+		}
+		
+		if(count($agent_details)){
+		 $logdata = array(
+                        'agent_id'=> $wash_id_check->agent_id,
+                        'wash_request_id'=> $wash_request_id,
+			'agent_company_id'=> $agent_details->real_washer_id,
+                        'action'=> 'agentcall',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+		} 
+		}
+		
+		  
+		    
 			}else{
 
 				$data = array(

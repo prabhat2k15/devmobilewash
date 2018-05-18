@@ -1687,6 +1687,12 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'agentfeedback'): ?>
                                                           <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'customercall'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer called washer #<?php echo $log->agent_company_id; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'agentcall'): ?>
+                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> called customer at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
                                                           </div>
@@ -3887,8 +3893,16 @@ if(data.result == 'true'){
       
        if(log.action == 'agentfeedback'){
             contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" feedback at "+log.formatted_action_date +" : "+ log.addi_detail+"</p>";
-      }                        
-
+      }
+      
+       if(log.action == 'customercall'){
+            contents += "<p style='margin-bottom: 10px;'>Customer called washer #"+log.agent_company_id +" at "+ log.formatted_action_date+"</p>";
+      }
+      
+       if(log.action == 'agentcall'){
+            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id +" called customer at "+ log.formatted_action_date+"</p>";
+      }
+      
    });
    
    $(".activity-logs").html(contents);

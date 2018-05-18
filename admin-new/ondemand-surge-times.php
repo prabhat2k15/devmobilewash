@@ -700,8 +700,8 @@ function refreshtimesandprice(){
     timestr = '';
     $(".montime li").each(function(idx, li) {
         var s = '';
-        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
-        else s += $(this).html()+",inactive";
+        s += $(this).html()+","+$(this).attr('class');
+       
 
         s += ","+$(this).data('price');
         
@@ -709,7 +709,6 @@ function refreshtimesandprice(){
     });
     timestr = timearr.join('|');
     $('#mon_time').val(timestr);
-
 
 
     timearr = [];
@@ -802,126 +801,6 @@ function refreshtimesandprice(){
     $('#sun_time').val(timestr);
 
 
-  /*timearr = [];
-    timestr = '';
-    //if($('.portlet-body #custom_surge').val()) surge_price = $('.portlet-body #custom_surge').val();
-
-    $(".montime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#mon_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".tuetime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-         if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#tue_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".wedtime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#wed_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".thurstime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#thurs_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
-$(".fritime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#fri_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".sattime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#sat_time').val(timestr);
-
- timearr = [];
-    timestr = '';
-
- $(".suntime li").each(function(idx, li) {
-        var s = '';
-        s += $(this).html()+",";
-        if($(this).hasClass('active')) s += "active";
-        else if($(this).hasClass('surgeactive')) s += "surgeactive";
-        else s += "inactive";
-        if($(this).hasClass('surgeactive')) s += ","+surge_price;
-        else s += ",0";
-        timearr.push(s);
-
-    });
-    timestr = timearr.join('|');
-    $('#sun_time').val(timestr);
-    */
 }
 
 $(function(){
@@ -964,8 +843,8 @@ if($(this).parent().hasClass('tuetime')){
     timestr = '';
     $(".tuetime li").each(function(idx, li) {
         var s = '';
-        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
-        else s += $(this).html()+",inactive";
+        s += $(this).html()+","+$(this).attr('class');
+       
 
         s += ","+$(this).data('price');
         
@@ -975,14 +854,13 @@ if($(this).parent().hasClass('tuetime')){
     $('#tue_time').val(timestr);
 }
 
-
 if($(this).parent().hasClass('wedtime')){
     timearr = [];
     timestr = '';
     $(".wedtime li").each(function(idx, li) {
         var s = '';
-        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
-        else s += $(this).html()+",inactive";
+        s += $(this).html()+","+$(this).attr('class');
+       
 
         s += ","+$(this).data('price');
         
@@ -998,8 +876,8 @@ if($(this).parent().hasClass('thurstime')){
     timestr = '';
     $(".thurstime li").each(function(idx, li) {
         var s = '';
-        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
-        else s += $(this).html()+",inactive";
+        s += $(this).html()+","+$(this).attr('class');
+       
 
         s += ","+$(this).data('price');
         
@@ -1009,14 +887,13 @@ if($(this).parent().hasClass('thurstime')){
     $('#thurs_time').val(timestr);
 }
 
-
 if($(this).parent().hasClass('fritime')){
     timearr = [];
     timestr = '';
     $(".fritime li").each(function(idx, li) {
         var s = '';
-        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
-        else s += $(this).html()+",inactive";
+        s += $(this).html()+","+$(this).attr('class');
+       
 
         s += ","+$(this).data('price');
         
@@ -1026,13 +903,14 @@ if($(this).parent().hasClass('fritime')){
     $('#fri_time').val(timestr);
 }
 
+
 if($(this).parent().hasClass('sattime')){
     timearr = [];
     timestr = '';
     $(".sattime li").each(function(idx, li) {
         var s = '';
-        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
-        else s += $(this).html()+",inactive";
+        s += $(this).html()+","+$(this).attr('class');
+       
 
         s += ","+$(this).data('price');
         
@@ -1048,8 +926,8 @@ if($(this).parent().hasClass('suntime')){
     timestr = '';
     $(".suntime li").each(function(idx, li) {
         var s = '';
-        if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
-        else s += $(this).html()+",inactive";
+        s += $(this).html()+","+$(this).attr('class');
+       
 
         s += ","+$(this).data('price');
         
@@ -1063,6 +941,7 @@ if($(this).parent().hasClass('suntime')){
 
 $(".portlet-body form").submit(function(){
  refreshtimesandprice();
+ return false;
 });
 });
 </script>
