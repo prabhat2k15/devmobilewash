@@ -696,6 +696,11 @@ var surge_price = 0;
 
 function refreshtimesandprice(){
  
+ $(".portlet-body .times li.surgeactive-yellow").attr('data-price', $('.portlet-body #custom_surgeactive-yellow').val());
+ $(".portlet-body .times li.surgeactive-red").attr('data-price', $('.portlet-body #custom_surgeactive-red').val());
+ $(".portlet-body .times li.surgeactive-orange").attr('data-price', $('.portlet-body #custom_surgeactive-orange').val());
+ $(".portlet-body .times li.surgeactive-purple").attr('data-price', $('.portlet-body #custom_surgeactive-purple').val());
+
     timearr = [];
     timestr = '';
     $(".montime li").each(function(idx, li) {
@@ -703,7 +708,7 @@ function refreshtimesandprice(){
         s += $(this).html()+","+$(this).attr('class');
        
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -718,7 +723,7 @@ function refreshtimesandprice(){
         if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
         else s += $(this).html()+",inactive";
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -733,7 +738,7 @@ function refreshtimesandprice(){
         if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
         else s += $(this).html()+",inactive";
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -748,7 +753,7 @@ function refreshtimesandprice(){
         if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
         else s += $(this).html()+",inactive";
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -763,7 +768,7 @@ function refreshtimesandprice(){
         if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
         else s += $(this).html()+",inactive";
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -778,7 +783,7 @@ function refreshtimesandprice(){
         if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
         else s += $(this).html()+",inactive";
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -793,7 +798,7 @@ function refreshtimesandprice(){
         if($(this).attr('class')) s += $(this).html()+","+$(this).attr('class');
         else s += $(this).html()+",inactive";
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -820,7 +825,7 @@ $('.portlet-body .col ul li').click(function(){
   $(this).addClass(surgeclasses[currentclassindex + 1]);
   if($('.portlet-body #custom_'+surgeclasses[currentclassindex + 1]).val()) surge_price = $('.portlet-body #custom_'+surgeclasses[currentclassindex + 1]).val();
   else surge_price = 0;
-$(this).data('price', surge_price);
+$(this).attr('data-price', surge_price);
 
 if($(this).parent().hasClass('montime')){
     timearr = [];
@@ -830,7 +835,7 @@ if($(this).parent().hasClass('montime')){
         s += $(this).html()+","+$(this).attr('class');
        
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -846,7 +851,7 @@ if($(this).parent().hasClass('tuetime')){
         s += $(this).html()+","+$(this).attr('class');
        
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -862,7 +867,7 @@ if($(this).parent().hasClass('wedtime')){
         s += $(this).html()+","+$(this).attr('class');
        
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -879,7 +884,7 @@ if($(this).parent().hasClass('thurstime')){
         s += $(this).html()+","+$(this).attr('class');
        
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -895,7 +900,7 @@ if($(this).parent().hasClass('fritime')){
         s += $(this).html()+","+$(this).attr('class');
        
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -912,7 +917,7 @@ if($(this).parent().hasClass('sattime')){
         s += $(this).html()+","+$(this).attr('class');
        
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -929,7 +934,7 @@ if($(this).parent().hasClass('suntime')){
         s += $(this).html()+","+$(this).attr('class');
        
 
-        s += ","+$(this).data('price');
+        s += ","+$(this).attr('data-price');
         
         timearr.push(s);
     });
@@ -941,7 +946,6 @@ if($(this).parent().hasClass('suntime')){
 
 $(".portlet-body form").submit(function(){
  refreshtimesandprice();
- return false;
 });
 });
 </script>
