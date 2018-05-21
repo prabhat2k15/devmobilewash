@@ -1693,6 +1693,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'agentcall'): ?>
                                                           <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> called customer at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'agentbuzz'): ?>
+                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> buzzed customer at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
                                                           </div>
@@ -3901,6 +3904,10 @@ if(data.result == 'true'){
       
        if(log.action == 'agentcall'){
             contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id +" called customer at "+ log.formatted_action_date+"</p>";
+      }
+      
+       if(log.action == 'agentbuzz'){
+            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id +" buzzed customer at "+ log.formatted_action_date+"</p>";
       }
       
    });

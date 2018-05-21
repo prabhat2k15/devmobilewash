@@ -2270,6 +2270,16 @@ $customername = ucwords($customername);
 				$sound = 'buzzsound.mp3';
 				$response = 'Wash buzz status changed';
 			}
+			$wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+			$agent_detail = Agents::model()->findByPk($wrequest_id_check->agent_id);
+			$logdata = array(
+                        'agent_id'=> $wrequest_id_check->agent_id,
+                        'wash_request_id'=> $wash_request_id,
+			'agent_company_id'=> $agent_detail->real_washer_id,
+                        'action'=> 'agentbuzz',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
         }
 		elseif($wash_request_id && is_numeric($is_scheduled))
         {
