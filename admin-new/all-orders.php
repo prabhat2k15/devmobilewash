@@ -32,11 +32,11 @@ $jsondata_permission = json_decode($result_permission);
 <?php
 
 
-	/* $day = $_event = '';
-	if( isset($_GET['day']) && !empty( $_GET['event'] ) ){
-		$day = $_GET['day'];
-		//$_event = $_GET['event'];
-	} */
+  /* $day = $_event = '';
+  if( isset($_GET['day']) && !empty( $_GET['event'] ) ){
+    $day = $_GET['day'];
+    //$_event = $_GET['event'];
+  } */
 
 
 
@@ -44,8 +44,8 @@ $jsondata_permission = json_decode($result_permission);
 
 $day = $_event = '';
 if( isset($_GET['day']) && !empty( $_GET['day'] ) ){
-	$day = $_GET['day'];
-	$_event = $_GET['event'];
+  $day = $_GET['day'];
+  $_event = $_GET['event'];
 }
 
 $url = ROOT_URL.'/api/index.php?r=site/getallwashrequestsnew';
@@ -317,7 +317,38 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     color: #fff;
     text-decoration: underline;
 }
-
+/*.table-scrollable {
+  overflow-x: scroll;
+  overflow-y: auto;
+}*/
+.table-scrollable {
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: auto;
+	border: 1px solid #e7ecf1;
+	margin: 10px 0 !important;
+	height: 800px;
+}
+.table-scrollable table {
+  width: 2785px;
+}
+.large-table-fake-top-scroll-container-3 {
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: auto;
+}
+.large-table-fake-top-scroll-container-3 div {
+  font-size:1px;
+  line-height:1px;
+  width: 2785px;
+  height: 1px;
+}
+.portlet.light{
+    margin-bottom: 0px;
+}
+.dataTables_paginate{
+    height: 28px;
+}   
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -355,46 +386,51 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                  <p style="margin-bottom: 20px; font-size: 16px;">Filter Orders <select class='order-filter'><option value="" <?php if(!$_GET['filter']) echo "selected"; ?>>Real Orders</option><option value="testorders" <?php if($_GET['filter'] == 'testorders') echo "selected"; ?>>Test Orders</option></select></p>
                                  
                                  <?php if($s_orders_result_code == 'true'){ ?>
+                                    <div class="large-table-fake-top-scroll-container-3">
+                                      <div>&nbsp;</div>
+                                    </div>
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                         <thead>
                                             <tr>
-												<th> Actions </th>
+                        <th> Actions </th>
                                                 <th> ID </th>
                                                  <th> Order Type </th>
                                                 <th> Status </th>
 <th> Payment </th>
 <th> Transaction ID </th>
 <th> Declined Transaction ID </th>
-												<!--th> Customer ID </th-->
-												<th> Customer Name </th>
+                        <!--th> Customer ID </th-->
+                        <th> Customer Name </th>
 
-												<th> Customer Phone </th>
+                        <th> Customer Phone </th>
                                                 <?php if($_GET['customer_id']): ?>
                                                  <th> Avg. Order<br>Frequency </th>
                                                  <?php endif; ?>
-												<!--th> Agent ID </th-->
-												<th> Badge </th>
-												<th> Agent Name </th>
-												<!--th> Agent Email </th-->
+                        <!--th> Agent ID </th-->
+                        <th> Badge </th>
+                        <th> Agent Name </th>
+                        <!--th> Agent Email </th-->
                                                 <th> Agent Phone </th>
                                                 <th style='min-width: 115px;'> Address </th>
                                                 <th> Schedule Datetime </th>
 <th> Starts </th>
                                                 <th> Vehicles </th>
-						<th> Total Price </th>
-												<!--th>Total Price </th-->
-												<!--th>Transaction ID </th-->
-												<th> Created Date </th>
-
+            <th> Total Price </th>
+                        <!--th>Total Price </th-->
+                        <!--th>Transaction ID </th-->
+                        <th> Created Date </th>
+                                                <th>Street Map &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                                <th>Map View</th>
+                                                <th>Satelite View</th>
                                             </tr>
                                         </thead>
                                         <tbody>
 
                    <?php foreach($s_mw_all_orders as $ind=>$order){
-						
-				   ?>
+            
+           ?>
                 <tr class="odd gradeX <?php if($ind == 0) echo "flashro";?>" id="order-<?php echo $order->id; ?>">
-					<td><a href="edit-order.php?id=<?php echo $order->id; ?>" class="appt-edit-order" data-id="<?php echo $order->id; ?>" style="margin-right: 7px;">Edit</a></td>
+          <td><a href="edit-order.php?id=<?php echo $order->id; ?>" class="appt-edit-order" data-id="<?php echo $order->id; ?>" style="margin-right: 7px;">Edit</a></td>
                     <td><?php echo $order->id; ?></td>
                     <td><?php if($order->is_scheduled): ?><p><span class="label label-sm label-pending" style="background-color: #0046ff !important;">Scheduled</span></p><?php endif; ?><?php if(!$order->is_scheduled): ?><p><span class="label label-sm label-pending" style="background-color: #009688 !important;">On-Demand</span></p><?php endif; ?></td>
                     <td>
@@ -486,11 +522,12 @@ else echo "N/A"; */
 <!--td><?php //echo $order->transaction_id; ?></td-->
 <td>$<?php echo $order->net_price; ?></td>
  <td><?php echo $order->created_date; ?></td>
-
-
-
+ <!-- data-toggle="modal" data-target="#ModalStreet" -->
+<td><div class="street_view" id="street_<?php echo $ind;?>" style="width: 375px; height: 150px; max-width: 300px;" data-lat="<?php echo $order->latitude;?>" data-lng="<?php echo $order->longitude;?>" data-address="<?php echo $order->address;?>"></div></td>
+<td><div class="street_view" id="map-view_<?php echo $ind;?>" style="width: 375px; height: 150px; max-width: 300px;" data-lat="<?php echo $order->latitude;?>" data-address="<?php echo $order->address;?>" data-lng="<?php echo $order->longitude;?>" ></div></td>
+<td><div class="street_view" id="Satelite_<?php echo $ind;?>" style="width: 375px; height: 150px; max-width: 300px;" data-lat="<?php echo $order->latitude;?>" data-address="<?php echo $order->address;?>" data-lng="<?php echo $order->longitude;?>" ></div></td>
                 </tr>
-							<?php } ?>
+              <?php } ?>
                                       </tbody>
                                     </table>
                                     <?php  } ?>
@@ -500,7 +537,22 @@ else echo "N/A"; */
                         </div>
                     </div>
                     <div class="clearfix"></div>
-
+                     <!-- <div class="modal fade" id="ModalStreet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                              <h4 class="modal-title" id="myModalLabel">Street Map</h4>
+                            </div>
+                            <div class="modal-body">
+                              <div id="display_ifream"></div>
+                            </div>
+                            <div class="modal-footer"> 
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                      </div>
+                    </div> -->
                 </div>
                 <!-- END CONTENT BODY -->
             </div>
@@ -566,7 +618,8 @@ $.fn.dataTableExt.oSort['nullable-desc'] = function(a,b) {
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
 
-"aaSorting": []
+"aaSorting": [],
+stateSave: true
 
 } );
 
@@ -825,6 +878,142 @@ else{
 //pendingflashingorder();
 ajaxorderlist();
 var refreshId = setInterval(ajaxorderlist, 60000);    
-    
+  
 </script>
 <?php endif; ?>
+<script type="application/javascript">
+/*$(document).ready(function(){
+    $('.street_view').on('click', function(){
+        var location = $(this).attr('data-location');
+        var html = '<iframe width="100%" height="500" src="https://www.google.com/maps/embed/v1/streetview?key=AIzaSyAY5eN11LgHp6jVQxLAhH0wP815dvlDaJ8&location='+location+'&heading=210&pitch=10&fov=35" allowfullscreen></iframe>'; 
+        $('#display_ifream').html(html);
+    });
+});*/
+function loadMapAPI() {
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAY5eN11LgHp6jVQxLAhH0wP815dvlDaJ8&callback=mapInit_stal';
+      document.body.appendChild(script);
+    }
+    
+    function mapInit_stal() {
+      (function ($) {
+        $('div[id^="map-view_"]').each(function (index) {
+          try {
+            var m = $(this);
+             
+            var lat_val = m.attr('data-lat');
+            var lng_val = m.attr('data-lng');
+            var address = m.attr('data-address');
+            var mylatlng = new google.maps.LatLng(lat_val, lng_val);
+            var options = {
+              center: mylatlng,
+              zoom: 10,
+              mapTypeId: google.maps.MapTypeId.StreetViewPanorama
+            };
+            var map = new google.maps.Map(m.get(0), options);
+            var marker = new google.maps.Marker({
+                position: mylatlng,
+                map: map,
+                title: address
+            }); 
+        // Note: constructed panorama objects have visible: true
+        // set by default.
+      
+
+
+          } catch (e) { alert(e); }
+        });
+         $('div[id^="Satelite_"]').each(function (index) {
+          try {
+            var m = $(this);
+             
+            var lat_val = m.attr('data-lat');
+            var lng_val = m.attr('data-lng');
+            var address = m.attr('data-address');
+            var mylatlng = new google.maps.LatLng(lat_val, lng_val);
+            var options = {
+              center: mylatlng,
+              zoom: 10,
+              mapTypeId: google.maps.MapTypeId.HYBRID
+            };
+            var map = new google.maps.Map(m.get(0), options);
+             var marker = new google.maps.Marker({
+                position: mylatlng,
+                map: map,
+                title: address
+            });
+        // Note: constructed panorama objects have visible: true
+        // set by default.
+      
+
+
+          } catch (e) { alert(e); }
+        });
+      })(jQuery);
+    }
+    function mapInit() {
+      (function ($) {
+        $('div[id^="street_"]').each(function (index) {
+          try {
+            var m = $(this);
+             
+            var lat_val = m.attr('data-lat');
+            var lng_val = m.attr('data-lng');
+ 
+            /*var options = {
+              center: new google.maps.LatLng(lat_val, lng_val),
+              zoom: 10,
+              mapTypeId: google.maps.MapTypeId.StreetViewPanorama
+            };
+            var map = new google.maps.Map(m.get(0), options);*/
+             
+        // Note: constructed panorama objects have visible: true
+        // set by default.
+        var location = lat_val+','+lng_val;
+        var html = '<iframe width="300" height="150" src="https://www.google.com/maps/embed/v1/streetview?key=AIzaSyAY5eN11LgHp6jVQxLAhH0wP815dvlDaJ8&location='+location+'&heading=210&pitch=10&fov=35" allowfullscreen></iframe>'; 
+        $(m).append(html);
+      
+
+
+          } catch (e) { alert(e); }
+        });
+      })(jQuery);
+    }
+ 
+    $(window).load(function(){
+        mapInit();
+        loadMapAPI();
+        $(".pagination li").on("click",function(){
+         location. reload();
+      }); 
+        $("select[name='example1_length'").on("change",function(){
+         location. reload();
+      }); 
+/*      
+  var tableContainer = $(".table-scrollable");
+  var table = $(".table-scrollable table");
+  var fakeContainer = $(".large-table-fake-top-scroll-container-3");
+  var fakeDiv = $(".large-table-fake-top-scroll-container-3 div");
+
+  var tableWidth = table.width();
+  fakeDiv.width(tableWidth);
+  
+  fakeContainer.scroll(function() {
+    tableContainer.scrollLeft(fakeContainer.scrollLeft());
+  });
+  tableContainer.scroll(function() {
+    fakeContainer.scrollLeft(tableContainer.scrollLeft());
+  });*/
+    });
+    $(function(){
+    $(".table-scrollable").scroll(function(){
+        $(".large-table-fake-top-scroll-container-3")
+            .scrollLeft($(".table-scrollable").scrollLeft());
+    });
+    $(".large-table-fake-top-scroll-container-3").scroll(function(){
+        $(".table-scrollable")
+            .scrollLeft($(".large-table-fake-top-scroll-container-3").scrollLeft());
+    });
+});
+</script>
