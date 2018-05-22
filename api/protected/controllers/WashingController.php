@@ -1771,7 +1771,7 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
                       }
 		    }
 		    
-		    if(($wash_now_reschedule == 1) && ((APP_ENV == 'real') || (APP_ENV == ''))){
+		    if(($wash_now_reschedule == 1) && (APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
                     
 
