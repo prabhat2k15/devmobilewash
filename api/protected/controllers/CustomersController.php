@@ -2921,13 +2921,13 @@ WashPricingHistory::model()->updateAll(array('vehicle_price' => $newprice, 'pack
 
 $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 
-$log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name." ".$new_pack_name." ".$log_addon_detail;
+$log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name." ".$cust_vehicle_data->wash_package." ".$log_addon_detail;
 			
 			    $logdata = array(
             'wash_request_id'=> $wash_request_id,
 	    'agent_id'=> $wash_request_exists->agent_id,
 	    'agent_company_id'=> $agent_detail->real_washer_id,
-            'action'=> 'washerchangepack',
+            'action'=> 'customeracceptupgrade',
 	    'addi_detail' => $log_detail,
             'action_date'=> date('Y-m-d H:i:s'));
         Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
@@ -2966,6 +2966,71 @@ if($upgrade_pack == 3){
 //Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
 
 $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+
+$cust_vehicle_data = CustomerDraftVehicle::model()->findByAttributes(array("id"=>$draft_vehicle_id));
+		
+		
+                //$cust_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
+		$log_addon_detail = "Add-ons: ";
+		$log_detail = "";
+
+/* -------- pet hair / lift / addons check --------- */
+
+
+if($cust_vehicle_data->pet_hair){
+$log_addon_detail .= "Extra cleaning, ";
+}
+
+if($cust_vehicle_data->lifted_vehicle){
+$log_addon_detail .= "Lifted, ";
+}
+
+if($cust_vehicle_data->exthandwax_addon){
+
+$log_addon_detail .= "Wax, ";
+
+}
+
+
+if($cust_vehicle_data->extplasticdressing_addon){
+
+$log_addon_detail .= "Dressing, ";
+}
+
+
+if($cust_vehicle_data->extclaybar_addon){
+
+$log_addon_detail .= "Clay bar, ";
+}
+
+if($cust_vehicle_data->waterspotremove_addon){
+
+$log_addon_detail .= "Water spot, ";
+}
+
+if($cust_vehicle_data->upholstery_addon){
+
+$log_addon_detail .= "Upholstery, ";
+}
+
+if($cust_vehicle_data->floormat_addon){
+
+$log_addon_detail .= "Floormat, ";
+}
+
+$log_addon_detail = rtrim($log_addon_detail,', ');
+
+
+$log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name." ".$cust_vehicle_data->wash_package." ".$log_addon_detail;
+			
+			    $logdata = array(
+            'wash_request_id'=> $wash_request_id,
+	    'agent_id'=> $wash_request_exists->agent_id,
+	    'agent_company_id'=> $agent_detail->real_washer_id,
+            'action'=> 'customerrejectupgrade',
+	    'addi_detail' => $log_detail,
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 
 $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 

@@ -1696,6 +1696,12 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'agentbuzz'): ?>
                                                           <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> buzzed customer at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'customeracceptupgrade'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer accepted package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'customerrejectupgrade'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer declined package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
                                                           </div>
@@ -3908,6 +3914,14 @@ if(data.result == 'true'){
       
        if(log.action == 'agentbuzz'){
             contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id +" buzzed customer at "+ log.formatted_action_date+"</p>";
+      }
+      
+       if(log.action == 'customeracceptupgrade'){
+            contents += "<p style='margin-bottom: 10px;'>Customer accepted package/addons "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+      }
+      
+      if(log.action == 'customerrejectupgrade'){
+            contents += "<p style='margin-bottom: 10px;'>Customer declined package/addons "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
       }
       
    });
