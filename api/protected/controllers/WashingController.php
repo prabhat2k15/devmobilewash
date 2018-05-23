@@ -3214,7 +3214,8 @@ try {
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-                     $this->layout = "xmlLayout";
+                     if((APP_ENV == 'real')){
+		     $this->layout = "xmlLayout";
                 
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
@@ -3234,6 +3235,7 @@ try {
 		    }catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
+		}
 
                
                 }
@@ -3255,7 +3257,8 @@ try {
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-                    $this->layout = "xmlLayout";
+                    if((APP_ENV == 'real')){
+		    $this->layout = "xmlLayout";
                    
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
@@ -3275,6 +3278,7 @@ try {
 		      }catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
+		}
 
                    
                 }
@@ -3306,6 +3310,7 @@ try {
                     $alert_type = "soft";
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("wash_complete_push_sent" => 1));
 		    
+		    if((APP_ENV == 'real')){
 		    $this->layout = "xmlLayout";
           
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -3326,6 +3331,7 @@ try {
 		     }catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
+		}
 
                   
                 }
@@ -7873,7 +7879,7 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
 	    
            }
 	   
-	if(($result == 'true') && ($wash_now_canceled == 1) && ((APP_ENV == 'real') || (APP_ENV == ''))){
+	if(($result == 'true') && ($wash_now_canceled == 1) && (APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
                     
 
@@ -12008,7 +12014,7 @@ $fromindex = 0;
 			if($current_mile <= 10){
 				$agent_det =  Agents::model()->findByPk($agid);
 				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer)){
-				  //if(APP_ENV == 'real'){
+				  if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
                    
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -12033,7 +12039,7 @@ $fromindex = 0;
 }
                     
                     
-                    //}
+                    }
 			}
 			}
 			
