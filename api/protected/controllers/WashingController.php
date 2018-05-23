@@ -10748,6 +10748,8 @@ die();
 		$agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
 		$is_scheduled_wash_120 = 0;
 		$scheduled_wash_120_id = 0;
+		$agent_latitude = Yii::app()->request->getParam('agent_latitude');
+		$agent_longitude = Yii::app()->request->getParam('agent_longitude');
 
 		if((count($agent_detail)) && ($agent_detail->block_washer)){
 		    $json = array(
@@ -10776,7 +10778,19 @@ $allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reques
 			$currentDateTime =  date('Y-m-d h:i:s', time());
 			$currentDate =  date('Y-m-d');
 			foreach($allschedwashes as $schedwash){
+			
+			if((is_numeric($agent_latitude)) && (is_numeric($agent_longitude))){
+				
+				$theta = $schedwash['longitude'] - $agent_longitude;
+            $dist = sin(deg2rad($schedwash['latitude'])) * sin(deg2rad($agent_latitude)) +  cos(deg2rad($schedwash['latitude'])) * cos(deg2rad($agent_latitude)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+            //$unit = strtoupper($unit);
 
+	    if($miles > 50) continue;
+			}
+	    
 				$schdDateTime = date('Y-m-d h:i:s', strtotime($schedwash['schedule_date'].' '.$schedwash['schedule_time']));
 				$schdDate = date('Y-m-d', strtotime($schedwash['schedule_date']));
 

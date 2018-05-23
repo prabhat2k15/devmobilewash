@@ -187,12 +187,12 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function washing_getallschedulewashes(agent_id=0, washer_position = '', socket_id = '') {
+function washing_getallschedulewashes(agent_id=0, washer_position = '', agent_latitude = '', agent_longitude = '', socket_id = '') {
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/getallschedulewashes',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&agent_id="+agent_id+"&washer_position="+washer_position
+  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&agent_id="+agent_id+"&washer_position="+washer_position+"&agent_latitude="+agent_latitude+"&agent_longitude="+agent_longitude
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('washing_getnewwashrequest func');
@@ -384,7 +384,7 @@ else{
   
    socket.on('getallschedulewashes', function(data){
       //console.log(data);
-    washing_getallschedulewashes(data.agent_id, data.washer_position, data.socketId);
+    washing_getallschedulewashes(data.agent_id, data.washer_position, data.agent_latitude, data.agent_longitude, data.socketId);
   });
   
    socket.on('updateuserdevice', function(data){

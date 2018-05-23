@@ -2909,14 +2909,15 @@ Vehicle::model()->updateByPk($vehicle_id, array('surge_addon' => 0));
                     Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $updated_packs, 'surge_price_vehicles' => $surge_addon_new, 'coupon_discount' => $coupon_amount));
 $newpriceobj = Washingplans::model()->findByAttributes(array("vehicle_type"=>$cust_vehicle_data->vehicle_type, "title"=>$cust_vehicle_data->wash_package));
 $newprice = 0;
-if(count($newpriceobj)) {
+$newprice = $cust_vehicle_data->package_price;
+/*if(count($newpriceobj)) {
  $newprice = $newpriceobj->price;
 }
 else{
  if($cust_vehicle_data->wash_package == 'Express') $newprice = 19.99;
  if($cust_vehicle_data->wash_package == 'Deluxe') $newprice = 24.99;
  if($cust_vehicle_data->wash_package == 'Premium') $newprice = 59.99;
-}
+}*/
 WashPricingHistory::model()->updateAll(array('vehicle_price' => $newprice, 'package' => $cust_vehicle_data->wash_package, 'pet_hair'=>$cust_vehicle_data->pet_hair, 'lifted_vehicle'=>$cust_vehicle_data->lifted_vehicle, 'exthandwax_addon'=>$cust_vehicle_data->exthandwax_addon, 'extplasticdressing_addon'=>$cust_vehicle_data->extplasticdressing_addon, 'extclaybar_addon'=>$cust_vehicle_data->extclaybar_addon, 'waterspotremove_addon'=>$cust_vehicle_data->waterspotremove_addon, 'upholstery_addon'=>$cust_vehicle_data->upholstery_addon, 'floormat_addon'=>$cust_vehicle_data->floormat_addon, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id="'.$wash_request_id.'" AND vehicle_id="'.$vehicle_id.'"');
 
 $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);

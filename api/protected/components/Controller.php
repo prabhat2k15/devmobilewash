@@ -1,4 +1,6 @@
 <?php
+//error_reporting(E_ALL);
+//ini_set('display_errors', 'On');
 /**
  * Controller is the customized base controller class.
  * All controller classes for this application should extend from this base class.
@@ -58,7 +60,6 @@ return;
 	$total_cars = array();
 
 		if((isset($wash_request_id) && !empty($wash_request_id))){
-
             $wash_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
 
 
@@ -95,7 +96,6 @@ return;
 
 		if(count($total_cars)){
 				foreach($total_cars as $carindex=>$car){
-
 					$vehicle_details = Vehicle::model()->findByAttributes(array("id"=>$car));
                     $vehicle_wash_pricing = WashPricingHistory::model()->findByAttributes(array("vehicle_id"=>$car, "wash_request_id" => $wash_request_id, "status" => 0));
 
@@ -117,6 +117,7 @@ return;
 				      $del_surge_factor = 0;
 				      $prem_surge_factor = 0;
 				      $zipcode_price_factor = 0;
+				      
 
     /* --- Geocode lat long --- */
 
@@ -145,7 +146,6 @@ $addressComponents = $geojsondata->results[0]->address_components;
             }
 
 }
-
 
 			$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D', strtotime($wash_id_check->order_for)))."'", array())->queryAll();
 			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
