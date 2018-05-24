@@ -908,16 +908,6 @@ $last_order_days = "N/A";
 
             $message = "WASH NOW ATTEMPT #000".$washrequestid."- ".date('M d', strtotime($wash_details->created_date))." @ ".date('h:i A', strtotime($wash_details->created_date))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
- try {
-  $sendmessage = $client->account->messages->create(array(
-                'To' =>  '5627817812',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-   }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
 
 try {
 $sendmessage = $client->account->messages->create(array(
@@ -936,17 +926,6 @@ $sendmessage = $client->account->messages->create(array(
                 'Body' => $message,
             ));
 
-	     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-
-            $sendmessage = $client->account->messages->create(array(
-                'To' =>  '3103442534',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
 	     }catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
@@ -1232,16 +1211,6 @@ $last_order_days = "N/A";
 
             $message = "NEW Scheduled Order #000".$washrequestid."- ".date('M d', strtotime($wash_details->schedule_date))." @ ".$wash_details->schedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
-try {
-  $sendmessage = $client->account->messages->create(array(
-                'To' =>  '5627817812',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-   }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
 
 try {
 $sendmessage = $client->account->messages->create(array(
@@ -1256,17 +1225,6 @@ $sendmessage = $client->account->messages->create(array(
 try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '3109999334',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-
-            $sendmessage = $client->account->messages->create(array(
-                'To' =>  '3103442534',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
@@ -1789,15 +1747,6 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
                     
                     $smscontent = "WASH NOW SCHEDULED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")";
 
-		    try {
-		    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '5627817812',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-		     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 
  try {
                     $sendmessage = $client->account->messages->create(array(
@@ -2746,15 +2695,6 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 		    $agent_det =  Agents::model()->findByPk($wrequest_id_check->agent_id);
                     $smscontent = "Washer #".$agent_det->real_washer_id." - ".$agent_det->first_name." ".$agent_det->last_name." dropped the order #".$wrequest_id_check->id;
                     
-		    try {
-		    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '5627817812',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-		     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 
  try {
                     $sendmessage = $client->account->messages->create(array(
@@ -2845,15 +2785,6 @@ try {
 
                     $message = "Order #".$wash_request_id." has been re-scheduled at ".$sched_date." @ ".$reschedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wrequest_id_check->address."\r\n------\r\n".$mobile_receipt;
 
-		    try {
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '5627817812',
-                        'From' => '+13103128070',
-                        'Body' => $message,
-                    ));
-		    }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 
 try {
                     $sendmessage = $client->account->messages->create(array(
@@ -7897,15 +7828,6 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
                     
                     $smscontent = "WASH NOW CANCELED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")";
 
-		    try {
-		    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '5627817812',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-		     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 
  try {
                     $sendmessage = $client->account->messages->create(array(
@@ -9770,15 +9692,7 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
 
  $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 $message2 = "Order #".$id." has been canceled";
-try {
-            $sendmessage = $client->account->messages->create(array(
-                'To' =>  '5627817812',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-	     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
+
 
 try {
 $sendmessage = $client->account->messages->create(array(
@@ -10095,17 +10009,6 @@ $this->layout = "xmlLayout";
 
             $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 $message2 = "Order #".$id." has been canceled";
-
-try {
-            $sendmessage = $client->account->messages->create(array(
-                'To' =>  '5627817812',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-	     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
 
 try {
 $sendmessage = $client->account->messages->create(array(
