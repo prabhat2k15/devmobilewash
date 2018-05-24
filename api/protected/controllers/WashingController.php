@@ -11044,6 +11044,19 @@ die();
 
 					foreach($allagents as $agent){
 						$get_notify = 1;
+						$agent_loc_obj = AgentLocations::model()->findByAttributes(array('agent_id'=>$agent->id));
+						if(count($agent_loc_obj)){
+							$theta = $schedwash->longitude - $agent_loc_obj->longitude;
+							$dist = sin(deg2rad($schedwash->latitude)) * sin(deg2rad($agent_loc_obj->latitude)) +  cos(deg2rad($schedwash->latitude)) * cos(deg2rad($agent_loc_obj->latitude)) * cos(deg2rad($theta));
+							$dist = acos($dist);
+							$dist = rad2deg($dist);
+							$miles = $dist * 60 * 1.1515;
+
+							if($miles > 50) $get_notify = 0;
+						}
+						
+            
+						
 						//$agentallschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id'=>$agent->id, 'is_scheduled' => 1, 'status'=> 0));
 
 						/*foreach($agentallschedwashes as $wash){
@@ -11184,6 +11197,18 @@ $notify_token = '';
 
 					foreach($allagents as $agent){
 						$get_notify = 1;
+						
+						$agent_loc_obj = AgentLocations::model()->findByAttributes(array('agent_id'=>$agent->id));
+						if(count($agent_loc_obj)){
+							$theta = $schedwash->longitude - $agent_loc_obj->longitude;
+							$dist = sin(deg2rad($schedwash->latitude)) * sin(deg2rad($agent_loc_obj->latitude)) +  cos(deg2rad($schedwash->latitude)) * cos(deg2rad($agent_loc_obj->latitude)) * cos(deg2rad($theta));
+							$dist = acos($dist);
+							$dist = rad2deg($dist);
+							$miles = $dist * 60 * 1.1515;
+
+							if($miles > 50) $get_notify = 0;
+						}
+						
 						$agentallschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id'=>$agent->id, 'is_scheduled' => 1, 'status'=> 0));
 
 						foreach($agentallschedwashes as $wash){
