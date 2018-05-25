@@ -47,24 +47,20 @@ if( isset($_GET['day']) && !empty( $_GET['day'] ) ){
   $day = $_GET['day'];
   $_event = $_GET['event'];
 }
-$page_number = 1;
-if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
-if($_GET['type']) $url = ROOT_URL.'/api/index.php?r=site/getallwashrequestsnew2&type='.$_GET['type'];
-else $url = ROOT_URL.'/api/index.php?r=site/getallwashrequestsnew2';
 
+$url = ROOT_URL.'/api/index.php?r=site/getallwashrequestsnew';
 $cust_id = 0;
 $agent_id = 0;
 if(isset($_GET['customer_id'])) $cust_id = $_GET['customer_id'];
 if(isset($_GET['agent_id'])) $agent_id = $_GET['agent_id'];
 $handle = curl_init($url);
-$data = array('day'=>$day,'event'=>$_event, 'filter' => $_GET['filter'], 'page_number' => $page_number, 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('day'=>$day,'event'=>$_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
 curl_close($handle);
 $jsondata = json_decode($result);
-$allorders = $jsondata;
 $s_orders_response = $jsondata->response;
 $s_orders_result_code = $jsondata->result;
 $s_mw_all_orders = $jsondata->wash_requests;
@@ -75,8 +71,6 @@ if($jsondata->pending_wash_count == 1) $pending_order_count = "1 order";
 if($jsondata->pending_wash_count > 1) $pending_order_count = $jsondata->pending_wash_count." orders"; 
 $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_order_count." pending.";
  $cust_avg_order_frequency = $jsondata->cust_avg_order_frequency;
- $total_pages = $jsondata->total_pages;
-
 ?>
 <style>
 .label-complete {
@@ -107,22 +101,6 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     width: 100%;
     height: 100%;
     z-index: 9999999;
-}
-
-.custom-pagination{
-    text-align: center;
-    margin: 10px;
-}
-
-.custom-pagination a{
-   padding: 5px 10px;
-    background: #337ab7;
-    color: #fff;
-    margin-right: 2px; 
-}
-
-.custom-pagination a:hover{
-    text-decoration: none;
 }
 
 .loader {
@@ -339,7 +317,6 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     color: #fff;
     text-decoration: underline;
 }
-
 /*.table-scrollable {
   overflow-x: scroll;
   overflow-y: auto;
@@ -405,7 +382,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 
                                 </div>
                                 <div class="portlet-body">
-                                   
+                                    <p style="margin-bottom: 20px; font-size: 16px;">Limit Orders <select class='order-limit'><option value="200" <?php if($_GET['limit'] == 200) echo "selected"; ?>>200</option><option value="400" <?php if($_GET['limit'] == 400) echo "selected"; ?>>400</option><option value="600" <?php if($_GET['limit'] == 600) echo "selected"; ?>>600</option><option value="800" <?php if($_GET['limit'] == 800) echo "selected"; ?>>800</option><option value="1000" <?php if($_GET['limit'] == 1000) echo "selected"; ?>>1000</option><option value="0" <?php if(!$_GET['limit']) echo "selected"; ?>>none</option></select></p>
                                  <p style="margin-bottom: 20px; font-size: 16px;">Filter Orders <select class='order-filter'><option value="" <?php if(!$_GET['filter']) echo "selected"; ?>>Real Orders</option><option value="testorders" <?php if($_GET['filter'] == 'testorders') echo "selected"; ?>>Test Orders</option></select></p>
                                  
                                  <?php if($s_orders_result_code == 'true'){ ?>
@@ -442,11 +419,9 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                         <!--th>Total Price </th-->
                         <!--th>Transaction ID </th-->
                         <th> Created Date </th>
-                        <?php if($_GET['ajax'] != 'true'): ?>
                                                 <th>Street Map &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                                 <th>Map View</th>
                                                 <th>Satelite View</th>
-                                                <?php endif; ?>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -548,33 +523,13 @@ else echo "N/A"; */
 <td>$<?php echo $order->net_price; ?></td>
  <td><?php echo $order->created_date; ?></td>
  <!-- data-toggle="modal" data-target="#ModalStreet" -->
- <?php if($_GET['ajax'] != 'true'): ?>
 <td><div class="street_view" id="street_<?php echo $ind;?>" style="width: 375px; height: 150px; max-width: 300px;" data-lat="<?php echo $order->latitude;?>" data-lng="<?php echo $order->longitude;?>" data-address="<?php echo $order->address;?>"></div></td>
 <td><div class="street_view" id="map-view_<?php echo $ind;?>" style="width: 375px; height: 150px; max-width: 300px;" data-lat="<?php echo $order->latitude;?>" data-address="<?php echo $order->address;?>" data-lng="<?php echo $order->longitude;?>" ></div></td>
 <td><div class="street_view" id="Satelite_<?php echo $ind;?>" style="width: 375px; height: 150px; max-width: 300px;" data-lat="<?php echo $order->latitude;?>" data-address="<?php echo $order->address;?>" data-lng="<?php echo $order->longitude;?>" ></div></td>
-<?php endif; ?>                
                 </tr>
               <?php } ?>
                                       </tbody>
                                     </table>
-                                    <div class='custom-pagination'>
-                                    <?php 
-                                    $query_strings = '';
-                                    if($_GET['filter']) $query_strings .= "&filter=".$_GET['filter'];
-                                    if($_GET['ajax']) $query_strings .= "&ajax=".$_GET['ajax'];
-                                    if($_GET['day']) $query_strings .= "&day=".$_GET['day'];
-                                    if($_GET['event']) $query_strings .= "&event=".$_GET['event'];
-                                    if($page_number != 1) {
-                                    echo "<a href='".ROOT_URL."/admin-new/all-orders.php?page_number=1".$query_strings."'>&laquo;</a> ";
-                                    
-                                    }
-                                    for($i=$page_number+1, $j=1; $i<=$allorders->total_pages; $i++, $j++){
-                                      echo "<a href='".ROOT_URL."/admin-new/all-orders.php?page_number=".$i.$query_strings."'>".$i."</a> ";  
-                                      if($j==5) break;
-                                    }
-                                    if($page_number != $allorders->total_pages) echo "<a href='".ROOT_URL."/admin-new/all-orders.php?page_number=".$allorders->total_pages.$query_strings."'>&raquo;</a> ";
-                                    ?>
-                                    </div>
                                     <?php  } ?>
                                 </div>
                             </div>
@@ -662,8 +617,9 @@ $.fn.dataTableExt.oSort['nullable-desc'] = function(a,b) {
            dt_table = $('#example1, #example2').dataTable( {
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-"bPaginate": false,
-"aaSorting": []
+
+"aaSorting": [],
+stateSave: true
 
 } );
 
@@ -676,8 +632,8 @@ var params = {};
    params.<?php echo $key; ?> = "<?php echo $value; ?>";
 <?php } ; ?>
 params.key = "Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4";
-params.page_number = <?php if($_GET['page_number']) {echo $_GET['page_number'];} else {echo "1";} ?>;
-//if((!params.limit) || params.limit > 100) params.limit = 100;
+
+if((!params.limit) || params.limit > 100) params.limit = 100;
 
 $(function(){
 $(document).on( 'click', '.delete-order', function(){
@@ -782,7 +738,7 @@ function ajaxorderlist(){
     var upcomingwashes = [];
     var processordeclined_washes = "";
 //console.log(params);
-  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getallwashrequestsnew2", params, function( data ) {
+  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getallwashrequestsnew", params, function( data ) {
     
 if(data.result == 'true'){
 //console.log(data);
@@ -905,7 +861,7 @@ dt_table.fnAddData(upcomingwashes);
  //dt_table.fnDraw();
 }
 
-//console.log(processordeclined_washes);
+console.log(processordeclined_washes);
 if(processordeclined_washes != ''){
     $(".spec-orders").html(processordeclined_washes);
    $(".spec-orders").show();
@@ -925,7 +881,6 @@ var refreshId = setInterval(ajaxorderlist, 60000);
   
 </script>
 <?php endif; ?>
-<?php if($_GET['ajax'] != 'true'): ?>
 <script type="application/javascript">
 /*$(document).ready(function(){
     $('.street_view').on('click', function(){
@@ -997,7 +952,7 @@ function loadMapAPI() {
         });
       })(jQuery);
     }
-   function mapInit() {
+    function mapInit() {
       (function ($) {
         $('div[id^="street_"]').each(function (index) {
           try {
@@ -1037,12 +992,8 @@ function loadMapAPI() {
         $("select[name='example1_length'").on("change",function(){
          location. reload();
       }); 
-    });
-    </script>
-    <?php endif; ?>
-    <script>
-    $(function() {
-  /*var tableContainer = $(".table-scrollable");
+/*      
+  var tableContainer = $(".table-scrollable");
   var table = $(".table-scrollable table");
   var fakeContainer = $(".large-table-fake-top-scroll-container-3");
   var fakeDiv = $(".large-table-fake-top-scroll-container-3 div");
@@ -1056,9 +1007,8 @@ function loadMapAPI() {
   tableContainer.scroll(function() {
     fakeContainer.scrollLeft(tableContainer.scrollLeft());
   });*/
-});
-
-$(function(){
+    });
+    $(function(){
     $(".table-scrollable").scroll(function(){
         $(".large-table-fake-top-scroll-container-3")
             .scrollLeft($(".table-scrollable").scrollLeft());

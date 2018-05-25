@@ -63,7 +63,7 @@
                             </a>
                             <ul class="sub-menu">
                             	<li class="nav-item  <?php if($url == 'all-orders.php' || $newurl_page[0] == 'all-orders.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
-                                    <a href="all-orders.php?filter=&limit=400" class="nav-link ">
+                                    <a href="all-orders.php" class="nav-link ">
                                         <span class="title">App Orders</span>
                                     </a>                                  
                                 </li>                                
