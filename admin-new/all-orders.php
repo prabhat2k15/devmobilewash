@@ -371,7 +371,21 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 }
 .dataTables_paginate{
     height: 28px;
-}   
+}  
+.street_view span {
+	position: absolute;
+	background: #000;
+	width: 150px;
+	opacity: 0.7;
+	color: #fff;
+	border-radius: 6px;
+	padding: 5px;
+	top: 5px;
+	left: 5px;
+}
+.street_view{
+    position: relative;
+}
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -443,7 +457,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                         <!--th>Transaction ID </th-->
                         <th> Created Date </th>
                         <?php if($_GET['ajax'] != 'true'): ?>
-                                                <th>Street Map &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                                <th>Street Map &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                                 <th>Map View</th>
                                                 <th>Satelite View</th>
                                                 <?php endif; ?>
@@ -1018,7 +1032,7 @@ function loadMapAPI() {
         //var location = lat_val+','+lng_val;
         var location = address;
         //var html = '<iframe width="300" height="150" src="https://www.google.com/maps/embed/v1/streetview?key=AIzaSyAY5eN11LgHp6jVQxLAhH0wP815dvlDaJ8&location='+location+'&heading=210&pitch=10&fov=35" allowfullscreen></iframe>'; 
-        var html = '<img width="200" height="150" src="http://maps.googleapis.com/maps/api/streetview?size=300x300&sensor=false&key=AIzaSyAY5eN11LgHp6jVQxLAhH0wP815dvlDaJ8&location='+location+'">'; 
+        var html = '<span>'+location+'</span><img width="100%" height="150" src="http://maps.googleapis.com/maps/api/streetview?size=300x300&sensor=false&key=AIzaSyAY5eN11LgHp6jVQxLAhH0wP815dvlDaJ8&location='+location+'">'; 
         $(m).append(html);
       
 
