@@ -790,5 +790,25 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
         return json_encode($json);
 
     }
+    
+    public function aes256cbc_crypt( $string, $action = 'e', $password = '' ) {
+    if($password != AES256CBC_API_PASS) {
+      echo "Access denied";
+      die();
+    }
+    $output = false;
+    $encrypt_method = "AES-256-CBC";
+    $key = hash( 'sha256', AES256CBC_KEY );
+    $iv = substr( hash( 'sha256', AES256CBC_IV ), 0, 16 );
+ 
+    if( $action == 'e' ) {
+        $output = base64_encode( openssl_encrypt( $string, $encrypt_method, $key, 0, $iv ) );
+    }
+    else if( $action == 'd' ){
+        $output = openssl_decrypt( base64_decode( $string ), $encrypt_method, $key, 0, $iv );
+    }
+ 
+    return $output;
+}
 
 }

@@ -20,6 +20,15 @@ define("PUBLIC_KEY","zwcjr8h49b5j5s96");
 define("PRIVATE_KEY","1d9f980b86df0a4d0e0ce3253970a8ee");
 define("MERCHANT_ACCOUNT_ID","");
 
+//AES-256-CBC keys
+
+define("AES256CBC_PASSPHRASE","buckshotherniadiwangatflamcephalad");
+define("AES256CBC_KEY","C100C17EE98435861499D347578F93970B462B8ECA86744B");
+define("AES256CBC_IV","6877393754561BEA7C8FC5693A6D05BA");
+define("AES256CBC_SALT","928FC69A87CFFF2F");
+define("AES256CBC_STATUS", 0); // 0 => encrypt/decrypt off, 1 => encrypt/decrypt on
+define("AES256CBC_API_PASS","AE22K5O6j15xY3Qg5Oh989n6v63bS8eJ");
+
 /*
 define("ENV","production");//sandbox or production
 define("MERCHANT_ID","74zsnfqy5svgpvjv");

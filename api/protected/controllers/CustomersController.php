@@ -1477,7 +1477,13 @@ echo "Invalid api key";
 die();
 }
 
-		$customerid = Yii::app()->request->getParam('customerid');
+$customerid = Yii::app()->request->getParam('customerid');
+
+if(AES256CBC_STATUS == 1){
+$customerid = $this->aes256cbc_crypt( $customerid, 'd', AES256CBC_API_PASS );
+}
+
+		
 
 		if((isset($customerid) && !empty($customerid))){
 			$customers_id = Customers::model()->findByAttributes(array("id"=>$customerid));
@@ -1526,11 +1532,17 @@ die();
 							);
 						}
 					}
+					
+$cust_id = $customers_id->id;
+if(AES256CBC_STATUS == 1){
+$cust_id = $this->aes256cbc_crypt( $cust_id, 'e', AES256CBC_API_PASS );
+}
+
 
 				$json= array(
 					'result'=> 'true',
 					'response'=> 'Customer details',
-					'customerid' => $customers_id->id,
+					'customerid' => $cust_id,
 					'email' => $customers_id->email,
 					'first_name' => $customers_id->first_name,
 					'last_name' => $customers_id->last_name,
