@@ -1141,14 +1141,14 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 <?php endif; ?>
   <input type="hidden" name="bundle_discs[]" value="<?php echo $veh->bundle_discount; ?>" />
 
-<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="exthandwax <?php if($veh->exthandwax_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="exthandwax" value="12" <?php if($veh->exthandwax_vehicle_fee > 0) echo "checked"; ?>> $12 Full Exterior Hand Wax (Liquid form)</p>
+<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="exthandwax <?php if($veh->exthandwax_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="exthandwax" value="12" <?php if($veh->exthandwax_vehicle_fee > 0) echo "checked"; ?>> $12 Liquid Hand Wax </p>
 
 <input type="hidden" name="exthandwaxes[]" id="exthandwaxes" value="<?php echo $veh->exthandwax_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="extplasticdressing <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extplasticdressing" value="8" <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "checked"; ?>> $8 Dressing of all Exterior Plastics</p>
+<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="extplasticdressing <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extplasticdressing" value="8" <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "checked"; ?>> $8 Exterior Plastic Dressing</p>
 <input type="hidden" name="extplasticdressings[]" id="extplasticdressings" value="<?php echo $veh->extplasticdressing_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px;" class="extclaybar <?php if($veh->extclaybar_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extclaybar" value="<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else{ echo $clay_bar_price;} ?>" <?php if($veh->extclaybar_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else{ echo $clay_bar_price;} ?> Full Exterior Clay Bar</p>
+<p style="margin-top: 20px;" class="extclaybar <?php if($veh->extclaybar_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extclaybar" value="<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else{ echo $clay_bar_price;} ?>" <?php if($veh->extclaybar_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else{ echo $clay_bar_price;} ?> Clay Bar & Paste Wax<!--Clay Bar & Paste Wax--></p>
 <input type="hidden" name="extclaybars[]" id="extclaybars" value="<?php echo $veh->extclaybar_vehicle_fee; ?>" />
 
 <p style="margin-top: 20px;" class="waterspotremove <?php if($veh->waterspotremove_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="waterspotremove" value="30" <?php if($veh->waterspotremove_vehicle_fee > 0) echo "checked"; ?>> $30 Water Spot Removal</p>
@@ -1161,7 +1161,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 <p style="margin-top: 20px; <?php if(($veh->vehicle_washing_package == 'Premium') || ($veh->vehicle_washing_package == 'Express')) echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
 <input type="hidden" name="floormat[]" id="floormat" value="<?php echo $veh->floormat_vehicle_fee; ?>" />
 
-<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Pet Hair Fee</p>
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Extra Cleaning Fee</p>
 <input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo $veh->pet_hair_fee; ?>" />
 
 <p class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
@@ -1278,14 +1278,14 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 <?php endif; ?>
  <input type="hidden" name="bundle_discs[]" value="<?php echo $veh->bundle_discount; ?>" />
 
-<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="exthandwax <?php if($veh->exthandwax_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="exthandwax" value="12" <?php if($veh->exthandwax_vehicle_fee > 0) echo "checked"; ?>> $12 Full Exterior Hand Wax (Liquid form)</p>
+<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="exthandwax <?php if($veh->exthandwax_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="exthandwax" value="12" <?php if($veh->exthandwax_vehicle_fee > 0) echo "checked"; ?>> $12 Liquid Hand Wax<!--Liquid Hand Wax--> (Liquid form)</p>
 
 <input type="hidden" id="exthandwaxes" name="exthandwaxes[]" value="<?php echo $veh->exthandwax_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="extplasticdressing <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extplasticdressing" value="8" <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "checked"; ?>> $8 Dressing of all Exterior Plastics</p>
+<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="extplasticdressing <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extplasticdressing" value="8" <?php if($veh->extplasticdressing_vehicle_fee > 0) echo "checked"; ?>> $8 Exterior Plastic Dressing<!--Exterior Plastic Dressing--></p>
 <input type="hidden" id="extplasticdressings" name="extplasticdressings[]" value="<?php echo $veh->extplasticdressing_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px;" class="extclaybar <?php if($veh->extclaybar_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extclaybar" value="<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else {echo $clay_bar_price;} ?>" <?php if($veh->extclaybar_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else {echo $clay_bar_price;} ?> Full Exterior Clay Bar</p>
+<p style="margin-top: 20px;" class="extclaybar <?php if($veh->extclaybar_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="extclaybar" value="<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else {echo $clay_bar_price;} ?>" <?php if($veh->extclaybar_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->extclaybar_vehicle_fee > 0) {echo $veh->extclaybar_vehicle_fee;} else {echo $clay_bar_price;} ?> Clay Bar & Paste Wax</p>
 <input type="hidden" id="extclaybars" name="extclaybars[]" value="<?php echo $veh->extclaybar_vehicle_fee; ?>" />
 
 <p style="margin-top: 20px;" class="waterspotremove <?php if($veh->waterspotremove_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="waterspotremove" value="30" <?php if($veh->waterspotremove_vehicle_fee > 0) echo "checked"; ?>> $30 Water Spot Removal</p>
@@ -1298,7 +1298,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 <p style="margin-top: 20px; <?php if(($veh->vehicle_washing_package == 'Premium') || ($veh->vehicle_washing_package == 'Express')) echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
 <input type="hidden" name="floormat[]" id="floormat" value="<?php echo $veh->floormat_vehicle_fee; ?>" />
 
-<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Pet Hair Fee</p>
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Extra Cleaning Fee<!--Extra Cleaning Fee--></p>
 <input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo $veh->pet_hair_fee; ?>" />
 
 <p class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
@@ -2183,7 +2183,7 @@ if(car_type == 'E') {
   clay_bar_price = 45;
   floormat_price = 15;
 }
-  $("#"+parentid).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Full Exterior Clay Bar");
+  $("#"+parentid).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Clay Bar & Paste Wax");
   $("#"+parentid).find('.floormat_el').html("<input type='checkbox' id='floormat_el' value='"+floormat_price+"'> $"+floormat_price+" Floor Mat Cleaning");
   });
 
@@ -2242,7 +2242,7 @@ if(car_type == 'E') {
   floormat_price = 15;
 }
 
-  $("#"+parentid).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Full Exterior Clay Bar");
+  $("#"+parentid).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Clay Bar & Paste Wax");
   $("#"+parentid).find('.floormat_el').html("<input type='checkbox' id='floormat_el' value='"+floormat_price+"'> $"+floormat_price+" Floor Mat Cleaning");
 		});
 
@@ -2261,7 +2261,7 @@ first_time_wash = 0;
     content += regular_makes;
     content += "</select><label class='control-label'>Model</label><select name='car_models[]' class='form-control regular-model' style='width: 300px;'>";
     content += regular_models;
-    content += "</select><label class='control-label'>Package</label><select name='car_packs[]' class='form-control regular-pack' style='width: 300px;'><option value='Express'>EXPRESS WASH</option><option value='Deluxe'>DELUXE WASH</option><option value='Premium'>PREMIUM DETAIL</option></select><input type='hidden' id='car_type' name='car_types[]' value='regular'><input type='hidden' id='handle_fee' name='handle_fees[]' value='1'><p style='margin-top: 20px;' class='exthandwax'><input type='checkbox' id='exthandwax' value='12' /> $12 Full Exterior Hand Wax (Liquid form)</p><p style='margin-top: 20px;' class='extplasticdressing'><input type='checkbox' id='extplasticdressing' value='8' /> $8 Dressing of all Exterior Plastics</p><p style='margin-top: 20px;' class='extclaybar'><input type='checkbox' id='extclaybar' value='40' /> $40 Full Exterior Clay Bar</p><p style='margin-top: 20px;' class='waterspotremove'><input type='checkbox' id='waterspotremove' value='30' /> $30 Water Spot Removal</p><p style='margin-top: 20px; display: none;' class='upholstery_el'><input type='checkbox' id='upholstery_el' value='20' /> $20 Upholstery Conditioning</p><p style='margin-top: 20px; display: none;' class='floormat_el'><input type='checkbox' id='floormat_el' value='10' /> $10 Floor Mat Cleaning</p><p class='pet_fee_el' style='margin-top: 20px;'><input type='checkbox' id='pet_fee' value='10' /> $10 Pet Hair Fee</p><p class='lifted_truck_el' style='margin-top: 20px;'><input type='checkbox' id='lifted_truck_fee' value='10' /> $10 Lifted Truck Fee</p><input type='hidden' name='pet_fees[]' id='pet_fees' value='0' /><input type='hidden' name='truck_fees[]' id='truck_fees' value='0' /><input type='hidden' id='exthandwaxes' name='exthandwaxes[]' value='0'><input type='hidden' id='extplasticdressings' name='extplasticdressings[]' value='0'><input type='hidden' id='extclaybars' name='extclaybars[]' value='0'><input type='hidden' id='waterspotremoves' name='waterspotremoves[]' value='0'><input type='hidden' id='upholstery' name='upholstery[]' value='0'><input type='hidden' id='floormat' name='floormat[]' value='0'><input type='hidden' name='car_ids[]' id='car_id' value='0' />";
+    content += "</select><label class='control-label'>Package</label><select name='car_packs[]' class='form-control regular-pack' style='width: 300px;'><option value='Express'>EXPRESS WASH</option><option value='Deluxe'>DELUXE WASH</option><option value='Premium'>PREMIUM DETAIL</option></select><input type='hidden' id='car_type' name='car_types[]' value='regular'><input type='hidden' id='handle_fee' name='handle_fees[]' value='1'><p style='margin-top: 20px;' class='exthandwax'><input type='checkbox' id='exthandwax' value='12' /> $12 Liquid Hand Wax </p><p style='margin-top: 20px;' class='extplasticdressing'><input type='checkbox' id='extplasticdressing' value='8' /> $8 Exterior Plastic Dressing</p><p style='margin-top: 20px;' class='extclaybar'><input type='checkbox' id='extclaybar' value='40' /> $40 Clay Bar & Paste Wax</p><p style='margin-top: 20px;' class='waterspotremove'><input type='checkbox' id='waterspotremove' value='30' /> $30 Water Spot Removal</p><p style='margin-top: 20px; display: none;' class='upholstery_el'><input type='checkbox' id='upholstery_el' value='20' /> $20 Upholstery Conditioning</p><p style='margin-top: 20px; display: none;' class='floormat_el'><input type='checkbox' id='floormat_el' value='10' /> $10 Floor Mat Cleaning</p><p class='pet_fee_el' style='margin-top: 20px;'><input type='checkbox' id='pet_fee' value='10' /> $10 Extra Cleaning Fee</p><p class='lifted_truck_el' style='margin-top: 20px;'><input type='checkbox' id='lifted_truck_fee' value='10' /> $10 Lifted Truck Fee</p><input type='hidden' name='pet_fees[]' id='pet_fees' value='0' /><input type='hidden' name='truck_fees[]' id='truck_fees' value='0' /><input type='hidden' id='exthandwaxes' name='exthandwaxes[]' value='0'><input type='hidden' id='extplasticdressings' name='extplasticdressings[]' value='0'><input type='hidden' id='extclaybars' name='extclaybars[]' value='0'><input type='hidden' id='waterspotremoves' name='waterspotremoves[]' value='0'><input type='hidden' id='upholstery' name='upholstery[]' value='0'><input type='hidden' id='floormat' name='floormat[]' value='0'><input type='hidden' name='car_ids[]' id='car_id' value='0' />";
  if(first_time_wash == 1){
         content += "<div class='first-disc-wrap'><p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' /></div>";
     }
@@ -2304,7 +2304,7 @@ if(car_type == 'E') {
   floormat_price = 15;
 }
 
-  $("#regular-car-box-"+regularindex).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Full Exterior Clay Bar");
+  $("#regular-car-box-"+regularindex).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Clay Bar & Paste Wax");
   $("#regular-car-box-"+regularindex).find('.floormat_el').html("<input type='checkbox' id='floormat_el' value='"+floormat_price+"'> $"+floormat_price+" Floor Mat Cleaning");
 
     return false;
@@ -2320,7 +2320,7 @@ wash_points++;
     content += classic_makes;
     content += "</select><label class='control-label'>Model</label><select name='car_models[]' class='form-control classic-model' style='width: 300px;'>";
     content += classic_models;
-    content += "</select><label class='control-label'>Package</label><select name='car_packs[]' class='form-control classic-pack' style='width: 300px;'><option value='Express'>EXPRESS WASH</option><option value='Deluxe'>DELUXE WASH</option><option value='Premium'>PREMIUM DETAIL</option></select><input type='hidden' id='car_type' name='car_types[]' value='classic'><input type='hidden' id='handle_fee' name='handle_fees[]' value='1'><p style='margin-top: 20px;' class='exthandwax'><input type='checkbox' id='exthandwax' value='12' /> $12 Full Exterior Hand Wax (Liquid form)</p><p style='margin-top: 20px;' class='extplasticdressing'><input type='checkbox' id='extplasticdressing' value='8' /> $8 Dressing of all Exterior Plastics</p><p style='margin-top: 20px;' class='extclaybar'><input type='checkbox' id='extclaybar' value='40' /> $40 Full Exterior Clay Bar</p><p style='margin-top: 20px;' class='waterspotremove'><input type='checkbox' id='waterspotremove' value='30' /> $30 Water Spot Removal</p><p style='margin-top: 20px; display: none;' class='upholstery_el'><input type='checkbox' id='upholstery_el' value='20' /> $20 Upholstery Conditioning</p><p style='margin-top: 20px; display: none;' class='floormat_el'><input type='checkbox' id='floormat_el' value='10' /> $10 Floor Mat Cleaning</p><p style='margin-top: 20px;' class='pet_fee_el'><input type='checkbox' id='pet_fee' value='10' /> $10 Pet Hair Fee</p><p class='lifted_truck_el' style='margin-top: 20px;'><input type='checkbox' id='lifted_truck_fee' value='10' /> $10 Lifted Truck Fee</p><input type='hidden' name='pet_fees[]' id='pet_fees' value='0' /><input type='hidden' name='truck_fees[]' id='truck_fees' value='0' /><input type='hidden' id='exthandwaxes' name='exthandwaxes[]' value='0'><input type='hidden' id='extplasticdressings' name='extplasticdressings[]' value='0'><input type='hidden' id='extclaybars' name='extclaybars[]' value='0'><input type='hidden' id='waterspotremoves' name='waterspotremoves[]' value='0'><input type='hidden' id='upholstery' name='upholstery[]' value='0'><input type='hidden' id='floormat' name='floormat[]' value='0'><input type='hidden' name='car_ids[]' id='car_id' value='0' />";
+    content += "</select><label class='control-label'>Package</label><select name='car_packs[]' class='form-control classic-pack' style='width: 300px;'><option value='Express'>EXPRESS WASH</option><option value='Deluxe'>DELUXE WASH</option><option value='Premium'>PREMIUM DETAIL</option></select><input type='hidden' id='car_type' name='car_types[]' value='classic'><input type='hidden' id='handle_fee' name='handle_fees[]' value='1'><p style='margin-top: 20px;' class='exthandwax'><input type='checkbox' id='exthandwax' value='12' /> $12 Liquid Hand Wax </p><p style='margin-top: 20px;' class='extplasticdressing'><input type='checkbox' id='extplasticdressing' value='8' /> $8 Exterior Plastic Dressing</p><p style='margin-top: 20px;' class='extclaybar'><input type='checkbox' id='extclaybar' value='40' /> $40 Clay Bar & Paste Wax</p><p style='margin-top: 20px;' class='waterspotremove'><input type='checkbox' id='waterspotremove' value='30' /> $30 Water Spot Removal</p><p style='margin-top: 20px; display: none;' class='upholstery_el'><input type='checkbox' id='upholstery_el' value='20' /> $20 Upholstery Conditioning</p><p style='margin-top: 20px; display: none;' class='floormat_el'><input type='checkbox' id='floormat_el' value='10' /> $10 Floor Mat Cleaning</p><p style='margin-top: 20px;' class='pet_fee_el'><input type='checkbox' id='pet_fee' value='10' /> $10 Extra Cleaning Fee</p><p class='lifted_truck_el' style='margin-top: 20px;'><input type='checkbox' id='lifted_truck_fee' value='10' /> $10 Lifted Truck Fee</p><input type='hidden' name='pet_fees[]' id='pet_fees' value='0' /><input type='hidden' name='truck_fees[]' id='truck_fees' value='0' /><input type='hidden' id='exthandwaxes' name='exthandwaxes[]' value='0'><input type='hidden' id='extplasticdressings' name='extplasticdressings[]' value='0'><input type='hidden' id='extclaybars' name='extclaybars[]' value='0'><input type='hidden' id='waterspotremoves' name='waterspotremoves[]' value='0'><input type='hidden' id='upholstery' name='upholstery[]' value='0'><input type='hidden' id='floormat' name='floormat[]' value='0'><input type='hidden' name='car_ids[]' id='car_id' value='0' />";
  if(first_time_wash == 1){
      content += "<div class='first-disc-wrap'><p>$5 First Wash Discount</p><input type='hidden' name='first_discs[]' id='first_discs' value='5' /></div>";
     }
@@ -2362,7 +2362,7 @@ if(car_type == 'E') {
   floormat_price = 15;
 }
 
-  $("#classic-car-box-"+classicindex).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Full Exterior Clay Bar");
+  $("#classic-car-box-"+classicindex).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Clay Bar & Paste Wax");
   $("#classic-car-box-"+classicindex).find('.floormat_el').html("<input type='checkbox' id='floormat_el' value='"+floormat_price+"'> $"+floormat_price+" Floor Mat Cleaning");
 
     return false;
@@ -2831,7 +2831,7 @@ if(car_type == 'E') {
   floormat_price = 15;
 }
 
-  $("#"+parentid).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Full Exterior Clay Bar");
+  $("#"+parentid).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Clay Bar & Paste Wax");
   $("#"+parentid).find('.floormat_el').html("<input type='checkbox' id='floormat_el' value='"+floormat_price+"'> $"+floormat_price+" Floor Mat Cleaning");
 
 });
@@ -2867,7 +2867,7 @@ if(car_type == 'E') {
   floormat_price = 15;
 }
 
-  $("#"+parentid).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Full Exterior Clay Bar");
+  $("#"+parentid).find('.extclaybar').html("<input type='checkbox' id='extclaybar' value='"+clay_bar_price+"'> $"+clay_bar_price+" Clay Bar & Paste Wax");
   $("#"+parentid).find('.floormat_el').html("<input type='checkbox' id='floormat_el' value='"+floormat_price+"'> $"+floormat_price+" Floor Mat Cleaning");
 
 
