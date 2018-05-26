@@ -25,7 +25,7 @@ class Controller extends CController
 
 	/* view particular customer request */
 
-    public function washingkart($wash_request_id, $api_key, $coupon_discount = 0){
+    public function washingkart($wash_request_id, $api_key, $coupon_discount = 0, $api_password = ''){
 
        if($api_key != API_KEY){
 echo "Invalid api key";
@@ -60,6 +60,10 @@ return;
 	$total_cars = array();
 
 		if((isset($wash_request_id) && !empty($wash_request_id))){
+		  
+		  if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
             $wash_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
 
 
@@ -732,7 +736,64 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
 			}
 		}
 
-		$json = array(
+		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
+		  	$json = array(
+            'result'=> $result,
+            'response'=> $response,
+            'id'=> $this->aes256cbc_crypt( $wash_id_check->id, 'e', AES256CBC_API_PASS ),
+            'order_date'=> $wash_id_check->order_for,
+            'address'=> $wash_id_check->address,
+	    'city'=> $wash_id_check->city,
+            'address_type'=> $wash_id_check->address_type,
+            'latitude'=> $wash_id_check->latitude,
+            'longitude'=> $wash_id_check->longitude,
+	    'car_list'=> $wash_id_check->car_list,
+            'customer_id'=> $this->aes256cbc_crypt( $wash_id_check->customer_id, 'e', AES256CBC_API_PASS ),
+            'agent_id'=> $this->aes256cbc_crypt( $wash_id_check->agent_id, 'e', AES256CBC_API_PASS ),
+            'washer_penalty_fee'=> $wash_id_check->washer_penalty_fee,
+            'company_discount'=> $wash_id_check->company_discount,
+			'is_scheduled'=> $wash_id_check->is_scheduled,
+			'schedule_date'=> $wash_id_check->schedule_date,
+			'schedule_time'=> $wash_id_check->schedule_time,
+			'reschedule_date'=> $wash_id_check->reschedule_date,
+			'reschedule_time'=> $wash_id_check->reschedule_time,
+            'total_price'=> number_format($total, 2),
+            'net_price'=> number_format($net_total, 2),
+            'company_total' => number_format($company_total, 2),
+            'agent_total' => number_format($agent_total, 2),
+            'tip_amount' => number_format($tip_amount, 2, '.', ''),
+            'bundle_discount' => number_format($bundle_discount, 2, '.', ''),
+            'fifth_wash_discount' => number_format($fifth_wash_discount, 2, '.', ''),
+            'first_wash_discount' => number_format($first_wash_discount, 2, '.', ''),
+            'coupon_discount' => number_format($coupon_discount, 2, '.', ''),
+            'coupon_code' => $coupon_code,
+            'promo_wash_count' => $promo_wash_count,
+	       'notes' => $wash_id_check->notes,
+			'customer_wash_points' => $wash_id_check->customer_wash_points,
+			'per_car_wash_points' => $wash_id_check->per_car_wash_points,
+			'cancel_fee' => number_format($wash_id_check->cancel_fee, 2, '.', ''),
+			'washer_cancel_fee' => number_format($wash_id_check->washer_cancel_fee, 2, '.', ''),
+			'status' => $wash_id_check->status,
+			'transaction_id' => $wash_id_check->transaction_id,
+            'is_flagged' => $wash_id_check->is_flagged,
+            'meet_washer_outside' => $wash_id_check->meet_washer_outside,
+            'card_no' => $card_no,
+            'card_exp_mo' => $card_exp_mo,
+            'card_exp_yr' => $card_exp_yr,
+            'cardholder_name' => $cardholder_name,
+            'card_img' => $card_img,
+            'washer_late_cancel' => $wash_id_check->washer_late_cancel,
+            'washer_payment_status' => $wash_id_check->washer_payment_status,
+            'total_schedule_rejected' => $wash_id_check->total_schedule_rejected,
+            'wash_now_fee' => number_format($wash_id_check->wash_now_fee, 2),
+	    'wash_later_fee' => number_format($wash_id_check->wash_later_fee, 2),
+	    'payment_type' => $wash_id_check->payment_type,
+	    'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
+            'vehicles' => $vehicles
+        );
+		}
+		else{
+		  	$json = array(
             'result'=> $result,
             'response'=> $response,
             'id'=> $wash_id_check->id,
@@ -786,6 +847,8 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
 	    'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
             'vehicles' => $vehicles
         );
+		}
+	
 
         return json_encode($json);
 

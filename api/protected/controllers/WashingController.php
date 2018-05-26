@@ -544,6 +544,10 @@ die();
         $washplan_id_check = true;
         $result= 'false';
         $response= 'Pass the required parameters';
+	
+	if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
 
         if((isset($customer_id) && !empty($customer_id)) && (isset($car_ids) && !empty($car_ids)) && (isset($package_ids) && !empty($package_ids)) && (isset($address) && !empty($address)) && (isset($address_type) && !empty($address_type)) && (isset($latitude) && !empty($latitude)) && (isset($longitude) && !empty($longitude)) && (isset($estimate_time) && !empty($estimate_time))) {
             $customers_id_check = Customers::model()->findByAttributes(array("id"=>$customer_id));
@@ -1244,6 +1248,9 @@ $sendmessage = $client->account->messages->create(array(
 
 				/* ---------- add schedule info -------------- */
 
+if(AES256CBC_STATUS == 1){
+$washrequestid = $this->aes256cbc_crypt( $washrequestid, 'e', AES256CBC_API_PASS );
+}				
                 $result= 'true';
                 $response= $washrequestid;
             }
@@ -1347,10 +1354,16 @@ $sendmessage = $client->account->messages->create(array(
           $json = array('result'=> $result, 'response'=> 'no eta');
         echo json_encode($json); die();
         }
-
+	
+	
         if((isset($order_id) && intval($order_id) != 0) && (isset($customer_id) && !empty($customer_id)) && (isset($car_ids) && !empty($car_ids)) && (isset($package_ids) && !empty($package_ids)) && (isset($estimate_time) && !empty($estimate_time)))
         {
 
+	
+	if(AES256CBC_STATUS == 1){
+$order_id = $this->aes256cbc_crypt( $order_id, 'd', AES256CBC_API_PASS );
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
 
             $car_ids_array = explode(",", $car_ids);
             foreach($car_ids_array as $cid)
@@ -1552,6 +1565,10 @@ $sendmessage = $client->account->messages->create(array(
 Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kartdata->total_price, 'net_price' => $kartdata->net_price, 'company_total' => $kartdata->company_total, 'agent_total' => $kartdata->agent_total, 'bundle_discount' => $kartdata->bundle_discount, 'first_wash_discount' => $kartdata->first_wash_discount, 'coupon_discount' => $kartdata->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points));
 
 /* ----------- update pricing details end -------------- */
+
+if(AES256CBC_STATUS == 1){
+$washrequestid = $this->aes256cbc_crypt( $washrequestid, 'e', AES256CBC_API_PASS );
+}
                     $result = 'true';
                     $response = $washrequestid;
                 }
@@ -1595,6 +1612,10 @@ Washingrequests::model()->updateByPk($washrequestid, array('total_price' => $kar
         $response = "Pass the required parameters";
 
          if((isset($wash_request_id) && !empty($wash_request_id))){
+		
+		if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 
             $wash_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
 
@@ -2072,6 +2093,11 @@ $customername = ucwords($customername);
         $result = 'false';
         $response = 'Pass the required parameters';
         $json = array();
+	
+	if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 
         $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
         $order_for_date = '';
@@ -3370,6 +3396,11 @@ if(Yii::app()->request->getParam('zipcode')) $zipcode = Yii::app()->request->get
 	$prem_surge_factor = 0;
 	$zipcode_price_factor = 0;
         if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))){
+		
+	if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}	
 
             $customer_id_check = Customers::model()->findByAttributes(array('id'=>$customer_id));
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id, 'customer_id'=> $customer_id));
@@ -3581,7 +3612,13 @@ if(trim($agent_obj->last_name)) $agentlname = strtoupper(substr($agent_obj->last
 else $agentlname = $agent_obj->last_name;
 
                     $agentname = $agent_obj->first_name." ".$agentlname;
-                    $agent_details->id = $agent_id;
+		    if(AES256CBC_STATUS == 1){
+$agent_details->id = $this->aes256cbc_crypt( $agent_id, 'e', AES256CBC_API_PASS );
+}
+else{
+$agent_details->id = $agent_id;
+}
+                    
                     $agent_details->name = $agentname;
                     $agent_details->phone = $agent_obj->phone_number;
                     $agent_details->total_washes = $agent_obj->total_wash;
@@ -3957,6 +3994,12 @@ $feedback_source = Yii::app()->request->getParam('feedback_source');
         $response= 'Pass the required parameters';
 
         if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))) {
+		
+		if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
+
             $customers_id_check = Customers::model()->findByAttributes(array("id"=>$customer_id));
             $washrequest_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id, "customer_id"=> $customer_id));
             $cust_feedback_check = Washingfeedbacks::model()->findByAttributes(array("wash_request_id"=>$wash_request_id));
@@ -4219,6 +4262,12 @@ echo "feedback source: ".$feedback_source."<br>";*/
         $response= 'Pass the required parameters';
 
         if((isset($agent_id) && !empty($agent_id)) && (isset($wash_request_id) && !empty($wash_request_id))) {
+		
+		if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
+
             $agents_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
             $washrequest_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
             $agent_feedback_check = Washingfeedbacks::model()->findByAttributes(array("wash_request_id"=>$wash_request_id));
@@ -4578,6 +4627,10 @@ if($min_diff >= 1){
 
         if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($status) && !empty($status)))
         {
+		
+		if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
             $wash_id_check = Washingrequests::model()->findByAttributes(array("id" => $wash_request_id));
             if(!count($wash_id_check))
             {
@@ -5065,6 +5118,10 @@ die();
         $is_scheduled_wash_120 = 0;
         $scheduled_wash_120_id = 0;
 $pendingwashcount = 0;
+
+if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+}
 		$agentdetails = Agents::model()->findByAttributes(array("id"=>$agent_id));
 
 		if($agentdetails->block_washer){
@@ -5232,8 +5289,29 @@ Washingrequests::model()->updateByPk($agent_has_order->id, array("create_wash_pu
 					$customername = strtolower($customername);
 $customername = ucwords($customername);
 					
+if(AES256CBC_STATUS == 1){
+	$pendingwashrequests[] = array('id'=>$this->aes256cbc_crypt( $agent_has_order->id, 'e', AES256CBC_API_PASS ),
+						'customer_id'=>$this->aes256cbc_crypt( $agent_has_order->customer_id, 'e', AES256CBC_API_PASS ),
+						'customer_name'=>$customername,
+						'customer_email'=>$cust_details->email,
+						'customer_phoneno'=>$cust_details->contact_number,
+						'customer_photo'=>$cust_details->image,
+						'customer_rating' =>$cust_details->rating,
+						'car_list'=>$agent_has_order->car_list,
+						'package_list'=>$agent_has_order->package_list,
+						'address'=>$agent_has_order->address,
+						'address_type'=>$agent_has_order->address_type,
+						'latitude'=>$agent_has_order->latitude,
+						'longitude'=>$agent_has_order->longitude,
+						'payment_type'=>$agent_has_order->payment_type,
+						'nonce'=>$agent_has_order->nonce,
+						'estimate_time'=>$agent_has_order->estimate_time,
+						'status'=>$agent_has_order->status
 
-					$pendingwashrequests[] = array('id'=>$agent_has_order->id,
+					);
+}
+else{
+$pendingwashrequests[] = array('id'=>$agent_has_order->id,
 						'customer_id'=>$agent_has_order->customer_id,
 						'customer_name'=>$customername,
 						'customer_email'=>$cust_details->email,
@@ -5252,6 +5330,8 @@ $customername = ucwords($customername);
 						'status'=>$agent_has_order->status
 
 					);
+}
+					
 			}
 
 			else{
@@ -5382,7 +5462,30 @@ Washingrequests::model()->updateByPk($prequest['id'], array("create_wash_push_se
 					$customername = strtolower($customername);
 $customername = ucwords($customername);
 
-					$pendingwashrequests[] = array('id'=>$prequest['id'],
+if(AES256CBC_STATUS == 1){
+$pendingwashrequests[] = array('id'=>$this->aes256cbc_crypt( $prequest['id'], 'e', AES256CBC_API_PASS ),
+						'customer_id'=>$this->aes256cbc_crypt( $prequest['customer_id'], 'e', AES256CBC_API_PASS ),
+						'customer_name'=>$customername,
+						'customer_email'=>$cust_details->email,
+						'customer_phoneno'=>$cust_details->contact_number,
+						'customer_photo'=>$cust_details->image,
+						'customer_rating' =>$cust_details->rating,
+						'car_list'=>$prequest['car_list'],
+						'package_list'=>$prequest['package_list'],
+						'address'=>$prequest['address'],
+						'address_type'=>$prequest['address_type'],
+						'latitude'=>$prequest['latitude'],
+						'longitude'=>$prequest['longitude'],
+						'payment_type'=>$prequest['payment_type'],
+						'nonce'=>$prequest['nonce'],
+						'estimate_time'=>$prequest['estimate_time'],
+						'status'=>$prequest['status']
+
+
+					);	
+}
+else{
+$pendingwashrequests[] = array('id'=>$prequest['id'],
 						'customer_id'=>$prequest['customer_id'],
 						'customer_name'=>$customername,
 						'customer_email'=>$cust_details->email,
@@ -5401,7 +5504,9 @@ $customername = ucwords($customername);
 						'status'=>$prequest['status']
 
 
-					);
+					);	
+}
+					
 
 
 							   break;
@@ -5450,7 +5555,7 @@ die();
 
     public function actionwashingkart(){
 
-           $kartapiresult = $this->washingkart(Yii::app()->request->getParam('wash_request_id'), Yii::app()->request->getParam('key'), Yii::app()->request->getParam('coupon_discount'));
+           $kartapiresult = $this->washingkart(Yii::app()->request->getParam('wash_request_id'), Yii::app()->request->getParam('key'), Yii::app()->request->getParam('coupon_discount'), Yii::app()->request->getParam('api_password'));
 echo $kartapiresult;
 die();
 
@@ -7431,83 +7536,6 @@ else{
          die();
     }
 
-	public function actionprofiledetails(){
-
-if(Yii::app()->request->getParam('key') != API_KEY){
-echo "Invalid api key";
-die();
-}
-
-		$agent_id = Yii::app()->request->getParam('agent_id');
-
-		if((isset($agent_id) && !empty($agent_id))){
-			$agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
-			if(count($agent_id_check)>0){
-
-
-                    $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $agent_id_check->id));
-
-                    $total_rate = count($agent_feedbacks);
-                    if($total_rate){
-                    $rate = 0;
-                    foreach($agent_feedbacks as $agent_feedback){
-                       $rate += $agent_feedback->agent_ratings;
-                    }
-
-                    $agent_rate =  round($rate/$total_rate);
-                    }
-                    else{
-                    $agent_rate = 0;
-                    }
-
-                   $agent_rate = $agent_id_check->rating;
-
-				$json= array(
-					'result'=> 'true',
-					'response'=> 'Agent details',
-					'id' => $agent_id_check->id,
-                    'first_name' => $agent_id_check->first_name,
-                    'last_name' => $agent_id_check->last_name,
-					'email' => $agent_id_check->email,
-                    'phone_number' => $agent_id_check->phone_number,
-                    'street_address' => $agent_id_check->street_address,
-                    'suite_apt' => $agent_id_check->suite_apt,
-                    'city' => $agent_id_check->city,
-                    'state' => $agent_id_check->state,
-                    'zipcode' => $agent_id_check->zipcode,
-                    'driver_license' => $agent_id_check->driver_license,
-                    'proof_insurance' => $agent_id_check->proof_insurance,
-                    'legally_eligible' => $agent_id_check->legally_eligible,
-                    'own_vehicle' => $agent_id_check->own_vehicle,
-                    'waterless_wash_product' => $agent_id_check->waterless_wash_product,
-                    'operate_area' => $agent_id_check->operate_area,
-                    'work_schedule' => $agent_id_check->work_schedule,
-                    'operating_as' => $agent_id_check->operating_as,
-                    'company_name' => $agent_id_check->company_name,
-                    'wash_experience' => $agent_id_check->wash_experience,
-                    'image' => $agent_id_check->image,
-                    'status' => $agent_id_check->status,
-                    'account_status' => $agent_id_check->account_status,
-                    'total_washes' => $agent_id_check->total_wash,
-                    'rating' => $agent_rate,
-                    'created_date' => $agent_id_check->created_date,
-
-				);
-			}else{
-				$json = array(
-					'result'=> 'false',
-					'response'=> 'Invalid agent'
-				);
-			}
-		}else{
-			$json = array(
-				'result'=> 'false',
-				'response'=> 'Pass the required parameters'
-			);
-		}
-		echo json_encode($json);
-		die();
-	}
 
 
       public function actioncancelwashrequest(){
@@ -7523,12 +7551,16 @@ die();
 	if(Yii::app()->request->getParam('check_wash_status_before_cancel')) $check_wash_status_before_cancel = Yii::app()->request->getParam('check_wash_status_before_cancel');
 	$wash_now_canceled = 0;
 	if(Yii::app()->request->getParam('wash_now_canceled')) $wash_now_canceled = Yii::app()->request->getParam('wash_now_canceled');
+	$api_password = '';
+	if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
         $result= 'false';
         $response= 'Pass the required parameters';
         $json= array();
         if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($status) && !empty($status))){
 
-
+if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );	
+}
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
 
             if(!count($wrequest_id_check)){
@@ -7879,6 +7911,10 @@ die();
         $response= 'Pass the required parameters';
         $json= array();
         if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($status) && !empty($status))){
+		
+		if(AES256CBC_STATUS == 1){
+		$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );	
+		}
              $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
 
             if(!count($wrequest_id_check)){
@@ -9366,10 +9402,17 @@ die();
 		 $admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
         $free_cancel = Yii::app()->request->getParam('free_cancel');
+	$api_password = '';
+	$api_password = Yii::app()->request->getParam('api_password');
         $cancel_price = 0;
 
 		if((isset($id) && !empty($id)) && (isset($customer_id) && !empty($customer_id)) && (isset($fee) && !empty($fee)))
 		{
+			
+			if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
+			$id = $this->aes256cbc_crypt( $id, 'd', AES256CBC_API_PASS );
+			$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+			}
 			$result= 'true';
 			$response=  'here';
             $order_exists = Washingrequests::model()->findByAttributes(array("id"=>$id));
@@ -10653,6 +10696,10 @@ die();
 		$allwashes = array();
 		$agent_id = Yii::app()->request->getParam('agent_id');
 		$washer_position = Yii::app()->request->getParam('washer_position');
+		
+if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+}
 
 		$agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
 		$is_scheduled_wash_120 = 0;
@@ -10833,6 +10880,26 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 					if($agent_id){
 
 					   if (!in_array(-$agent_id, $declinedids)) {
+							
+							if(AES256CBC_STATUS == 1){
+							$allwashes[] = array('id'=>$this->aes256cbc_crypt( $schedwash['id'], 'e', AES256CBC_API_PASS ),
+								'car_list'=>$schedwash['car_list'],
+								'customer_id'=>$this->aes256cbc_crypt( $schedwash['customer_id'], 'e', AES256CBC_API_PASS ),
+								'customer_name'=>$customerName,
+								'package_list'=>$schedwash['package_list'],
+								'address'=>$schedwash['address'],
+								'address_type'=>$schedwash['address_type'],
+								'latitude'=>$schedwash['latitude'],
+								'longitude'=>$schedwash['longitude'],
+								'status'=> $schedwash['status'],
+								'schedule_date'=>$sched_date,
+								'schedule_time'=>$sched_time,
+								'estimate_time' => $washtime,
+								'estimate_time_str' => $washtime_str
+
+							);	
+							}
+							else{
 							$allwashes[] = array('id'=>$schedwash['id'],
 								'car_list'=>$schedwash['car_list'],
 								'customer_id'=>$schedwash['customer_id'],
@@ -10845,13 +10912,33 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 								'status'=> $schedwash['status'],
 								'schedule_date'=>$sched_date,
 								'schedule_time'=>$sched_time,
-'estimate_time' => $washtime,
+								'estimate_time' => $washtime,
 								'estimate_time_str' => $washtime_str
 
-							);
+							);	
+							}
+							
 						}
 					}
 					else{
+						if(AES256CBC_STATUS == 1){
+						$allwashes[] = array('id'=>$this->aes256cbc_crypt( $schedwash['id'], 'e', AES256CBC_API_PASS ),
+							'car_list'=>$schedwash['car_list'],
+							'customer_id'=>$this->aes256cbc_crypt( $schedwash['customer_id'], 'e', AES256CBC_API_PASS ),
+							'customer_name'=>$customerName,
+							'package_list'=>$schedwash['package_list'],
+							'address'=>$schedwash['address'],
+							'address_type'=>$schedwash['address_type'],
+							'latitude'=>$schedwash['latitude'],
+							'longitude'=>$schedwash['longitude'],
+							'status'=> $schedwash['status'],
+							'schedule_date'=>$sched_date,
+								'schedule_time'=>$sched_time,
+							'estimate_time' => $washtime,
+							 'estimate_time_str' => $washtime_str
+						);	
+						}
+						else{
 						$allwashes[] = array('id'=>$schedwash['id'],
 							'car_list'=>$schedwash['car_list'],
 							'customer_id'=>$schedwash['customer_id'],
@@ -10864,9 +10951,11 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 							'status'=> $schedwash['status'],
 							'schedule_date'=>$sched_date,
 								'schedule_time'=>$sched_time,
-'estimate_time' => $washtime,
+							'estimate_time' => $washtime,
 							 'estimate_time_str' => $washtime_str
-						);
+						);	
+						}
+						
 					}
                 //}
 
@@ -11618,6 +11707,11 @@ $distance_mile = '';
 
 
   if(isset($agent_id) && !empty($agent_id) && isset($wash_request_id) && !empty($wash_request_id)){
+	
+	if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 
  $agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
 $wash_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
@@ -11882,6 +11976,10 @@ die();
 }
 
 	$wash_request_id  = Yii::app()->request->getParam('wash_request_id');
+	
+	if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 
     $wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
 
@@ -11994,6 +12092,10 @@ die();
 }
 
 	$wash_request_id  = Yii::app()->request->getParam('wash_request_id');
+	
+		if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 
 	$wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
 
