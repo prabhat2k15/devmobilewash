@@ -843,6 +843,9 @@ die();
 
 		$customers_id = Yii::app()->request->getParam('customer_id');
 		$device_token = Yii::app()->request->getParam('device_token');
+		  if(AES256CBC_STATUS == 1){
+$customers_id = $this->aes256cbc_crypt( $customers_id, 'd', AES256CBC_API_PASS );
+}
 		$model= Customers::model()->findByAttributes(array('id'=>$customers_id));
 		$json= array();
 		if(count($model)>0){
@@ -1177,6 +1180,10 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
         $push_notify = Yii::app()->request->getParam('push_notify');
        $phone_dup_check = Yii::app()->request->getParam('phone_dup_check');
        $online_status = Yii::app()->request->getParam('online_status');
+       
+         if(AES256CBC_STATUS == 1){
+$id = $this->aes256cbc_crypt( $id, 'd', AES256CBC_API_PASS );
+}
 
        if($phone_dup_check == 'true'){
            $customers_phone_exists = Customers::model()->findByAttributes(array("contact_number"=>$contact_number));
@@ -1358,6 +1365,9 @@ Customers::model()->updateByPk($id, array('braintree_id' => $braintree_id, 'fift
 						}
 					}
 
+if(AES256CBC_STATUS == 1){
+$id = $this->aes256cbc_crypt( $id, 'e', AES256CBC_API_PASS );
+}
 					$result= "true";
 					$json = array(
 						'result'=> $result,
@@ -1580,7 +1590,7 @@ $cust_id = $this->aes256cbc_crypt( $cust_id, 'e', AES256CBC_API_PASS );
 		die();
 	}
 
-	public function actiondeletecustomer(){
+	/*public function actiondeletecustomer(){
 
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
@@ -1610,7 +1620,7 @@ die();
 		}
 		echo json_encode($json);
 		exit;
-	}
+	}*/
 
 	public function actionAddLocation(){
 
@@ -1642,6 +1652,10 @@ $wash_request_id  = Yii::app()->request->getParam('wash_request_id');
 			(isset($location_title) && !empty($location_title)) &&
 			(isset($location_address) && !empty($location_address)))
 			 {
+
+			   if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
 
              $customer_check = Customers::model()->findAllByAttributes(array("id"=>$customer_id));
              //$location_limit_check = CustomerLocation::model()->findAllByAttributes(array("customer_id"=>$customer_id));
@@ -1724,6 +1738,10 @@ die();
 		if((isset($customer_id) && !empty($customer_id)))
 			 {
 
+		if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
+
              $customer_check = Customers::model()->findAllByAttributes(array("id"=>$customer_id));
 
              	if(!count($customer_check)){
@@ -1771,6 +1789,10 @@ die();
         $all_locations = new stdClass();
 		if((isset($customer_id) && !empty($customer_id)) && (isset($location_id) && !empty($location_id)))
 			 {
+
+		if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
 
              $customer_check = Customers::model()->findAllByAttributes(array("id"=>$customer_id));
              $loc_check = CustomerLocation::model()->findAllByAttributes(array("id"=>$location_id, "customer_id" => $customer_id));
@@ -1990,6 +2012,11 @@ if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()
             (isset($model_name) && !empty($model_name)) &&
 			(isset($vehicle_image) && !empty($vehicle_image)))
 			 {
+				
+				  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 			 	$customer_exists = Customers::model()->findByAttributes(array("id"=>$customer_id));
 			 	if(count($customer_exists)>0){
 			 		 $qrVehicles = Yii::app()->db->createCommand()
@@ -2412,6 +2439,10 @@ die();
 
 		if((isset($customer_id) && !empty($customer_id)))
 		{
+			
+			  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
 			$customer_exists = Customers::model()->findByAttributes(array("id"=>$customer_id));
 
 			if(count($customer_exists)>0){
@@ -2534,6 +2565,11 @@ die();
 
 		if((isset($customer_id) && !empty($customer_id)) && (isset($vehicle_id) && !empty($vehicle_id)))
 		{
+			
+			  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
+
 			$customer_exists = Customers::model()->findByAttributes(array("id"=>$customer_id));
             $vehicle_exists = Vehicle::model()->findByAttributes(array("id"=>$vehicle_id, "customer_id"=>$customer_id));
               if(!count($customer_exists)){
@@ -2563,14 +2599,25 @@ die();
 					foreach($qrVehicles as $vehicle)
 					{
 						$json['result']='true';
-
-						$vehicles[] = array('id'=>$vehicle['id'],
+if(AES256CBC_STATUS == 1){
+$vehicles[] = array('id'=>$vehicle['id'],
+                        'customer_id'=>$this->aes256cbc_crypt( $vehicle['customer_id'], 'e', AES256CBC_API_PASS ),
+											'vehicle_no'=>$vehicle['vehicle_no'],
+											'brand_name'=>$vehicle['brand_name'],
+											'model_name'=>$vehicle['model_name'],
+											'vehicle_image'=>$siteUrl.'/veh_img/'.$vehicle['vehicle_image'],
+											'vehicle_type'=>$vehicle['vehicle_type']);	
+}
+else{
+$vehicles[] = array('id'=>$vehicle['id'],
                         'customer_id'=>$vehicle['customer_id'],
 											'vehicle_no'=>$vehicle['vehicle_no'],
 											'brand_name'=>$vehicle['brand_name'],
 											'model_name'=>$vehicle['model_name'],
 											'vehicle_image'=>$siteUrl.'/veh_img/'.$vehicle['vehicle_image'],
-											'vehicle_type'=>$vehicle['vehicle_type']);
+											'vehicle_type'=>$vehicle['vehicle_type']);	
+}
+						
 					}
 				}
 
@@ -2630,6 +2677,9 @@ if(Yii::app()->request->getParam('new_pack_name')) $new_pack_name = Yii::app()->
             $damage_pic = "hi";
 //file_put_contents("setvehiclestatus.log",$wash_request_id."+".$vehicle_id."+".$status."+".$eco_friendly."+".$damage_points."\n",FILE_APPEND);
 if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($vehicle_id) && !empty($vehicle_id)) && (isset($status))) {
+	  if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 			$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
             if(!count($wash_request_exists)){
                	$result= 'false';
@@ -3847,6 +3897,9 @@ $exp_surge_factor = 0;
 
 		if((isset($wash_request_id) && !empty($wash_request_id)))
 		{
+			  if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 			$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
             if(!count($wash_request_exists)){
                	$result= 'false';
@@ -4176,6 +4229,9 @@ die();
 			(isset($longitude) && !empty($longitude)) &&
 			(isset($latitude) && !empty($latitude)))
 			 {
+				  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
 			 	$customer_exists = Customers::model()->findByAttributes(array("id"=>$customer_id));
 			 	if(count($customer_exists)>0){
 
@@ -4296,6 +4352,9 @@ die();
               $customerid = Yii::app()->request->getParam('customer_id');
 
               if((isset($customerid) && !empty($customerid))) {
+		  if(AES256CBC_STATUS == 1){
+$customerid = $this->aes256cbc_crypt( $customerid, 'd', AES256CBC_API_PASS );
+}
                   $customers = Customers::model()->findByPk($customerid);
                   if($customers) {
 
@@ -4759,6 +4818,9 @@ die();
             $payment_methods = array();
 
             if((isset($customer_id) && !empty($customer_id))){
+		  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
                  $customer_exists = Customers::model()->findByPk($customer_id);
                 if(!$customer_exists){
                     $response = "Invalid customer id";
@@ -4821,6 +4883,9 @@ $cust_type = Yii::app()->request->getParam('cust_type');
 $admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
 $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+  if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 if($cust_type == 'real') $Bresult = Yii::app()->braintree->deletePaymentMethod_real($token);
 else $Bresult = Yii::app()->braintree->deletePaymentMethod($token);
 
@@ -4857,6 +4922,11 @@ die();
 	        $json= array();
 
 	if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id)) && (isset($promo_code) && !empty($promo_code))){
+		
+		  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 
     $cust_id_check = Customers::model()->findByAttributes(array('id'=> $customer_id));
     $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=> $wash_request_id, 'customer_id'=> $customer_id));
@@ -4954,7 +5024,9 @@ $total_pages = 0;
 	        $json= array();
 
             if((isset($customer_id) && !empty($customer_id))){
-
+  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
             $cust_id_check = Customers::model()->findByAttributes(array('id'=> $customer_id));
                 if(!count($cust_id_check)){
 		            $result= 'false';
@@ -5080,7 +5152,13 @@ $wash_requests[$index]['cancel_fee'] =$wrequest['cancel_fee'];
 	$agentname = strtolower($agentname);
 	$agentname = ucwords($agentname);
         $wash_requests[$index]['agent_name'] = $agentname;
- $wash_requests[$index]['agent_id'] = $agentdata->id;
+   if(AES256CBC_STATUS == 1){
+$wash_requests[$index]['agent_id'] = $this->aes256cbc_crypt( $agentdata->id, 'e', AES256CBC_API_PASS );
+}
+else{
+$wash_requests[$index]['agent_id'] = $agentdata->id;	
+}
+ 
   $wash_requests[$index]['real_washer_id'] = $agentdata->real_washer_id;
         $washfeedbacks =  Washingfeedbacks::model()->findByAttributes(array("customer_id"=>$customer_id, "wash_request_id"=>$wrequest['id']));
         if($washfeedbacks->agent_ratings) $wash_requests[$index]['rating'] = number_format($washfeedbacks->agent_ratings, 2, '.', '');
@@ -5238,7 +5316,10 @@ die();
         $response= 'Pass the required parameters';
 
         if((isset($customer_id) && !empty($customer_id)) && (isset($comments) && !empty($comments))) {
-            $customers_id_check = Customers::model()->findByAttributes(array("id"=>$customer_id));
+              if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
+	    $customers_id_check = Customers::model()->findByAttributes(array("id"=>$customer_id));
 
               $cust_feedback_check = Appfeedbacks::model()->findByAttributes(array("customer_id"=>$customer_id));
             if(!count( $customers_id_check)){
@@ -5598,6 +5679,10 @@ if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()
 			(isset($vehicle_image) && !empty($vehicle_image)))
 			 {
 				
+				  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
+				
 				$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
 			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
 			
@@ -5776,6 +5861,10 @@ $zipcode = '';
 		$vehicle = array();
 		if((isset($vehicle_id) && !empty($vehicle_id)))
 		{
+			
+			  if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 			$vehicle_exists = CustomerDraftVehicle::model()->findByAttributes(array("id"=>$vehicle_id));
 			if(count($vehicle_exists)>0){
 			    $result = 'true';
@@ -6549,7 +6638,10 @@ die();
 	$response= 'Pass the required parameters';
 	$json= array();
 	if((isset($customer_id) && !empty($customer_id)) && (isset($latitude) && !empty($latitude)) && (isset($longitude) && !empty($longitude))){
-		$customer_id = Yii::app()->request->getParam('customer_id');
+		  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
+		
 		$model= Customers::model()->findByAttributes(array('id'=>$customer_id));
 
 		if(!count($model)){
@@ -6608,7 +6700,12 @@ die();
 	$response= 'Pass the required parameters';
 	$json= array();
 	if(isset($customer_id) && !empty($customer_id)){
+		
 		$customer_id = Yii::app()->request->getParam('customer_id');
+		
+		  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
 		$model= Customers::model()->findByAttributes(array('id'=>$customer_id));
 
 		if(!count($model)){
@@ -9015,6 +9112,12 @@ die();
 
       	if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id)) && (isset($agent_id) && !empty($agent_id)))
       	{
+		
+		  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
       		$customer_check = Customers::model()->findByPk($customer_id);
            	$wash_check = Washingrequests::model()->findByPk($wash_request_id);
            	$agent_check = Agents::model()->findByPk($agent_id);
@@ -9166,6 +9269,10 @@ public function actioncustomerupfrontpayment()
       date_default_timezone_set('America/Los_Angeles');
 
       if((isset($customer_id) && !empty($customer_id)) && (isset($total) && !empty($total)) && (isset($company_total) && !empty($company_total))){
+	
+	  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
            $customer_check = Customers::model()->findByPk($customer_id);
 
              /* ------- get nearest agents --------- */
@@ -9496,6 +9603,11 @@ die();
 
             if((isset($customer_id) && !empty($customer_id)) && (isset($agent_id) && !empty($agent_id)) && (isset($washing_request_id) && !empty($washing_request_id)) && (isset($amount) && !empty($amount))){
 
+	      if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+$washing_request_id = $this->aes256cbc_crypt( $washing_request_id, 'd', AES256CBC_API_PASS );
+}
                 $customers = Customers::model()->findByPk($customer_id);
                 $wash_id_check = Washingrequests::model()->findByPk($washing_request_id);
                 $agent_check = Agents::model()->findByPk($agent_id);
@@ -9650,6 +9762,9 @@ die();
 
     if((isset($customer_id) && !empty($customer_id))){
 
+      if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
         $customers = Customers::model()->findByPk($customer_id);
 
 
@@ -9674,6 +9789,20 @@ die();
 						$sched_time = $schedwash->schedule_time;
 					}
 
+					if(AES256CBC_STATUS == 1){
+					$allwashes[] = array('id'=>$this->aes256cbc_crypt( $schedwash->id, 'e', AES256CBC_API_PASS ),
+						'car_list'=>$schedwash->car_list,
+						'package_list'=>$schedwash->package_list,
+						'address'=>$schedwash->address,
+						'address_type'=>$schedwash->address_type,
+						'latitude'=>$schedwash->latitude,
+						'longitude'=>$schedwash->longitude,
+						'status'=> $schedwash->status,
+						'schedule_date'=>$sched_date,
+						'schedule_time'=>$sched_time
+					);	
+					}
+					else{
 					$allwashes[] = array('id'=>$schedwash->id,
 						'car_list'=>$schedwash->car_list,
 						'package_list'=>$schedwash->package_list,
@@ -9684,7 +9813,9 @@ die();
 						'status'=> $schedwash->status,
 						'schedule_date'=>$sched_date,
 						'schedule_time'=>$sched_time
-					);
+					);	
+					}
+					
                 }
             }
             else{
@@ -9751,6 +9882,10 @@ $os_details = Yii::app()->request->getParam('os_details');
 $device_type = Yii::app()->request->getParam('device_type');
 
 if((isset($customer_id) && !empty($customer_id)) && (isset($device_id) && !empty($device_id)) && (isset($device_token) && !empty($device_token))){
+	
+	  if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
 
 $device_exists =  Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE device_id = '$device_id'")->queryAll();
 

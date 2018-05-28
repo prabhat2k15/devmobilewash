@@ -370,6 +370,9 @@ die();
 
 		$agent_id = Yii::app()->request->getParam('agent_id');
 		$device_token = Yii::app()->request->getParam('device_token');
+		if(AES256CBC_STATUS == 1){
+		  $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+		}
 		$model= Agents::model()->findByAttributes(array('id'=>$agent_id));
 		
 		$json= array();
@@ -683,6 +686,9 @@ die();
 	$json= array();
 	if((isset($agent_id) && !empty($agent_id)) && (isset($latitude) && !empty($latitude)) && (isset($longitude) && !empty($longitude))){
 		$agent_id = Yii::app()->request->getParam('agent_id');
+		if(AES256CBC_STATUS == 1){
+		  $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+		}
 		$model= Agents::model()->findByAttributes(array('id'=>$agent_id));
 
 		if(!count($model)){
@@ -743,6 +749,9 @@ die();
 	$json= array();
 	if(isset($agent_id) && !empty($agent_id)){
 		$agent_id = Yii::app()->request->getParam('agent_id');
+		if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+}
 		$model= Agents::model()->findByAttributes(array('id'=>$agent_id));
 
 		if(!count($model)){
@@ -814,6 +823,9 @@ die();
         $response= 'Pass the required parameters';
 
         if((isset($agent_id) && !empty($agent_id)) && (isset($comments) && !empty($comments))) {
+	  		if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+}
             $agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
 
               $agent_feedback_check = Appfeedbacks::model()->findByAttributes(array("agent_id"=>$agent_id));
@@ -1031,6 +1043,9 @@ die();
 		$agent_id = Yii::app()->request->getParam('agent_id');
 
 		if((isset($agent_id) && !empty($agent_id))){
+		  		if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+}
 			$agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
 			if(count($agent_id_check)>0){
 			  
@@ -1069,11 +1084,17 @@ if($bt_result->fundingDetails->routingNumber) $routing_no = $bt_result->fundingD
 }
 }
 
+		if(AES256CBC_STATUS == 1){
+		  $agent_id = $this->aes256cbc_crypt( $agent_id_check->id, 'e', AES256CBC_API_PASS );
+		}
+		else{
+		  $agent_id = $agent_id_check->id;
+		}
 
 				$json= array(
 					'result'=> 'true',
 					'response'=> 'Agent details',
-					'id' => $agent_id_check->id,
+					'id' => $agent_id,
                     'first_name' => $agent_id_check->first_name,
                     'last_name' => $agent_id_check->last_name,
 					'email' => $agent_id_check->email,
@@ -1205,6 +1226,9 @@ $rating_control = Yii::app()->request->getParam('rating_control');
 $insurance_expiration = '';
         $insurance_expiration = Yii::app()->request->getParam('insurance_expiration');
 
+	if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+}
    if($phone_dup_check == 'true'){
            $agent_phone_exists = Agents::model()->findByAttributes(array("phone_number"=>$phone_number));
            $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
@@ -1585,6 +1609,10 @@ $total_pages = 0;
 	        $json= array();
 
             if((isset($agent_id) && !empty($agent_id))){
+	      
+	      if(AES256CBC_STATUS == 1){
+		$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+	      }
 
             $agent_id_check = Agents::model()->findByAttributes(array('id'=> $agent_id));
                 if(!count($agent_id_check)){
@@ -1641,7 +1669,13 @@ $kartdata = json_decode($kartapiresult);
 
                         /* ----- total and discounts end ------- */
 
-                 $wash_requests[$index]['id'] = $wrequest['id'];
+                 if(AES256CBC_STATUS == 1){
+		    $wash_requests[$index]['id'] = $this->aes256cbc_crypt( $wrequest['id'], 'e', AES256CBC_API_PASS );
+		  }
+		  else{
+		    $wash_requests[$index]['id'] = $wrequest['id'];
+		  }
+		 
               $wash_requests[$index]['date'] = $wrequest['order_for'];
               $wash_requests[$index]['address'] = $wrequest['address'];
               $plan_ids =  $wrequest['package_list'];
@@ -1712,7 +1746,13 @@ $customershortname = ucwords($customershortname);
 	
         $wash_requests[$index]['customer_name'] = $customername;
 	$wash_requests[$index]['customer_short_name'] = $customershortname;
-$wash_requests[$index]['customer_id'] = $customerdata->id;
+if(AES256CBC_STATUS == 1){
+		    $wash_requests[$index]['customer_id'] = $this->aes256cbc_crypt( $customerdata->id, 'e', AES256CBC_API_PASS );
+		  }
+		  else{
+		    $wash_requests[$index]['customer_id'] = $customerdata->id;
+		  }
+
         $washfeedbacks =  Washingfeedbacks::model()->findByAttributes(array("agent_id"=>$agent_id, "wash_request_id"=>$wrequest['id']));
         if($washfeedbacks->customer_ratings) $wash_requests[$index]['rating'] = number_format($washfeedbacks->customer_ratings, 2);
         else $wash_requests[$index]['rating'] = $washfeedbacks->customer_ratings;
@@ -1761,6 +1801,12 @@ die();
             $distance_closest_array = array();
             $distance = 0;
             $near_agent = '';
+	    
+	    if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
 
         $check_data = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id, "customer_id"=> $customer_id));
         $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = 'IOS'")->queryAll();
@@ -1917,6 +1963,9 @@ die();
             $distance = 0;
             $near_agent = '';
 
+	    if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
         $check_data = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
         $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = 'IOS'")->queryAll();
 
@@ -5129,7 +5178,10 @@ die();
     $washstarttimes = array();
 
     if((isset($agent_id) && !empty($agent_id))){
-
+      
+if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+}
         $agents = Agents::model()->findByPk($agent_id);
 
 
@@ -5244,7 +5296,30 @@ $min_diff = 0;
 
 $washstarttimes[$key] = $min_diff;
 
-                       $allwashes[] = array('id'=>$schedwash->id,
+if(AES256CBC_STATUS == 1){
+                         $allwashes[] = array('id'=>$this->aes256cbc_crypt( $schedwash->id, 'e', AES256CBC_API_PASS ),
+'customer_id'=>$this->aes256cbc_crypt( $schedwash->customer_id, 'e', AES256CBC_API_PASS ),
+'customer_name'=>$cust_detail->customername,
+'customer_shortname'=>$cust_shortname,
+'customer_phoneno'=>$cust_detail->contact_number,
+'customer_rating'=>$cust_detail->rating,
+                    'car_list'=>$schedwash->car_list,
+                    'package_list'=>$schedwash->package_list,
+                    'address'=>$schedwash->address,
+                    'address_type'=>$schedwash->address_type,
+                    'latitude'=>$schedwash->latitude,
+                    'longitude'=>$schedwash->longitude,
+                    'status'=> $schedwash->status,
+                    'schedule_date'=>$sched_date,
+                    'schedule_time'=>$sched_time,
+'is_startable'=>$is_startable,
+'time_left_to_schedule'=>$min_diff." mins",
+ 'estimate_time' => $washtime,
+'estimate_time_str' => $washtime_str
+                );
+}
+else{
+                         $allwashes[] = array('id'=>$schedwash->id,
 'customer_id'=>$schedwash->customer_id,
 'customer_name'=>$cust_detail->customername,
 'customer_shortname'=>$cust_shortname,
@@ -5264,6 +5339,8 @@ $washstarttimes[$key] = $min_diff;
  'estimate_time' => $washtime,
 'estimate_time_str' => $washtime_str
                 );
+}
+
                 }
                 if(count($allwashes) >0){
                     $response = "all scheduled washes";
@@ -5366,6 +5443,10 @@ $os_details = Yii::app()->request->getParam('os_details');
 $device_type = Yii::app()->request->getParam('device_type');
 
 if((isset($agent_id) && !empty($agent_id)) && (isset($device_id) && !empty($device_id)) && (isset($device_token) && !empty($device_token))){
+  
+  if(AES256CBC_STATUS == 1){
+$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+}
 
 $device_exists =  Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE device_id = '$device_id'")->queryAll();
 

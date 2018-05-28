@@ -6314,7 +6314,9 @@ $response = 'pass the required fields';
 
 
 if((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user_id)) && (isset($device_token) && !empty($device_token))){
-
+  if(AES256CBC_STATUS == 1){
+$user_id = $this->aes256cbc_crypt( $user_id, 'd', AES256CBC_API_PASS );
+}
     $device_check = Yii::app()->db->createCommand("SELECT * FROM ".$user_type."_devices WHERE device_token = '$device_token' AND ".$user_type."_id = '$user_id'")->queryAll();
     
     if($user_type == 'customer') $user_check = Customers::model()->findByPk($user_id);
@@ -6358,8 +6360,15 @@ $response = 'device updated';
 			
 			if(count($is_agent_has_wash)){
 				$cust_detail = Customers::model()->findByPk($is_agent_has_wash[0]['customer_id']);
+			if(AES256CBC_STATUS == 1){
+			$agent_wash_details['wash_id'] = $this->aes256cbc_crypt( $is_agent_has_wash[0]['id'], 'e', AES256CBC_API_PASS );
+			$agent_wash_details['customer_id'] = $this->aes256cbc_crypt( $is_agent_has_wash[0]['customer_id'], 'e', AES256CBC_API_PASS );	
+			}
+			else{
 			$agent_wash_details['wash_id'] = $is_agent_has_wash[0]['id'];
-			$agent_wash_details['customer_id'] = $is_agent_has_wash[0]['customer_id'];
+			$agent_wash_details['customer_id'] = $is_agent_has_wash[0]['customer_id'];	
+			}
+			
 			$agent_wash_details['customer_name'] = $cust_detail->customername;
 			$agent_wash_details['customer_phoneno'] = $cust_detail->contact_number;
 			$agent_wash_details['customer_rating'] = $cust_detail->rating;
@@ -6385,6 +6394,10 @@ $response = 'device updated';
 
 }
 
+  if(AES256CBC_STATUS == 1){
+$user_id = $this->aes256cbc_crypt( $user_id, 'e', AES256CBC_API_PASS );
+$pending_wash_id = $this->aes256cbc_crypt( $pending_wash_id, 'e', AES256CBC_API_PASS );
+}
 
 $json= array(
 				'result'=> $result,

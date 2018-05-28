@@ -326,6 +326,10 @@ die();
 		if((isset($coupon_code) && !empty($coupon_code)) && (isset($customer_id) && !empty($customer_id)) && (isset($car_ids) && !empty($car_ids)) && (isset($pack_names) && !empty($pack_names)))
 			 {
 
+			 if(AES256CBC_STATUS == 1){
+$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+}
+
              $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$coupon_code));
 $coupon_usage = CustomerDiscounts::model()->findByAttributes(array("promo_code"=>$coupon_code, "customer_id" => $customer_id));
 
@@ -453,7 +457,9 @@ die();
  $cust_id = Yii::app()->request->getParam('customer_id');
 $order_cars = Yii::app()->request->getParam('order_cars');
 
-
+if(AES256CBC_STATUS == 1){
+$cust_id = $this->aes256cbc_crypt( $cust_id, 'd', AES256CBC_API_PASS );
+}
 		if((isset($coupon_code) && !empty($coupon_code)))
 			 {
 

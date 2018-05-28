@@ -21,7 +21,12 @@ die();
         $call_id = Yii::app()->request->getParam('tonumber');
         $fromnumber = Yii::app()->request->getParam('fromnumber');
 	$wash_request_id = '';
-	if(Yii::app()->request->getParam('wash_request_id')) $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+	if(Yii::app()->request->getParam('wash_request_id')) {
+	    $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+	     if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
+	}
         $url = $this->callbackurl.$fromnumber;
         $newurl = preg_replace( '/\s+/', '', $url ); 
         $result  = 'false';
