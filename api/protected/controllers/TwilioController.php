@@ -135,10 +135,10 @@ die();
         }
         
 		echo json_encode($data);
-		spl_autoload_register(array(
+		/*spl_autoload_register(array(
                 'YiiBase',
                 'autoload'
-            ));
+            ));*/
         exit;
         
     }
