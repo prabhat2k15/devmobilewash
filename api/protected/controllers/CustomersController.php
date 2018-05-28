@@ -2655,101 +2655,6 @@ if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($vehicle_id) 
 
 Vehicle::model()->updateByPk($vehicle_id, array('upgrade_requested_at' => date('Y-m-d H:i:s')));
 
-/*
-if(!$pet_hair){
-$pet_hair_vehicles_arr = explode(",", $wash_request_exists->pet_hair_vehicles);
-if(($key = array_search($vehicle_id, $pet_hair_vehicles_arr)) !== false) {
-    unset($pet_hair_vehicles_arr[$key]);
-array_values($pet_hair_vehicles_arr);
-}
-$pet_hair_vehicles_new = implode(",", $pet_hair_vehicles_arr);
-$pet_hair_vehicles_new = trim($pet_hair_vehicles_new,",");
-Washingrequests::model()->updateByPk($wash_request_id, array('pet_hair_vehicles' => $pet_hair_vehicles_new));
-}
-
-
-if(!$lifted_vehicle){
-$lifted_vehicles_arr = explode(",", $wash_request_exists->lifted_vehicles);
-if(($key = array_search($vehicle_id, $lifted_vehicles_arr)) !== false) {
-    unset($lifted_vehicles_arr[$key]);
-array_values($lifted_vehicles_arr);
-}
-$lifted_vehicles_new = implode(",", $lifted_vehicles_arr);
-$lifted_vehicles_new = trim($lifted_vehicles_new,",");
-Washingrequests::model()->updateByPk($wash_request_id, array('lifted_vehicles' => $lifted_vehicles_new));
-}
-
-if(!$exthandwax_addon){
-$exthandwax_addon_arr = explode(",", $wash_request_exists->exthandwax_vehicles);
-if(($key = array_search($vehicle_id, $exthandwax_addon_arr)) !== false) {
-    unset($exthandwax_addon_arr[$key]);
-array_values($exthandwax_addon_arr);
-}
-$exthandwax_addon_new = implode(",", $exthandwax_addon_arr);
-$exthandwax_addon_new = trim($exthandwax_addon_new,",");
-Washingrequests::model()->updateByPk($wash_request_id, array('exthandwax_vehicles' => $exthandwax_addon_new));
-}
-
-
-if(!$extplasticdressing_addon){
-$extplasticdressing_addon_arr = explode(",", $wash_request_exists->extplasticdressing_vehicles);
-if(($key = array_search($vehicle_id, $extplasticdressing_addon_arr)) !== false) {
-    unset($extplasticdressing_addon_arr[$key]);
-array_values($extplasticdressing_addon_arr);
-}
-$extplasticdressing_addon_new = implode(",", $extplasticdressing_addon_arr);
-$extplasticdressing_addon_new = trim($extplasticdressing_addon_new,",");
-Washingrequests::model()->updateByPk($wash_request_id, array('extplasticdressing_vehicles' => $extplasticdressing_addon_new));
-}
-
-
-
-if(!$extclaybar_addon){
-$extclaybar_addon_arr = explode(",", $wash_request_exists->extclaybar_vehicles);
-if(($key = array_search($vehicle_id, $extclaybar_addon_arr)) !== false) {
-    unset($extclaybar_addon_arr[$key]);
-array_values($extclaybar_addon_arr);
-}
-$extclaybar_addon_new = implode(",", $extclaybar_addon_arr);
-$extclaybar_addon_new = trim($extclaybar_addon_new,",");
-Washingrequests::model()->updateByPk($wash_request_id, array('extclaybar_vehicles' => $extclaybar_addon_new));
-}
-
-
-if(!$waterspotremove_addon){
-$waterspotremove_addon_arr = explode(",", $wash_request_exists->waterspotremove_vehicles);
-if(($key = array_search($vehicle_id, $waterspotremove_addon_arr)) !== false) {
-    unset($waterspotremove_addon_arr[$key]);
-array_values($waterspotremove_addon_arr);
-}
-$waterspotremove_addon_new = implode(",", $waterspotremove_addon_arr);
-$waterspotremove_addon_new = trim($waterspotremove_addon_new,",");
-Washingrequests::model()->updateByPk($wash_request_id, array('waterspotremove_vehicles' => $waterspotremove_addon_new));
-}
-
-if(!$upholstery_addon){
-$upholstery_addon_arr = explode(",", $wash_request_exists->upholstery_vehicles);
-if(($key = array_search($vehicle_id, $upholstery_addon_arr)) !== false) {
-    unset($upholstery_addon_arr[$key]);
-array_values($upholstery_addon_arr);
-}
-$upholstery_addon_new = implode(",", $upholstery_addon_arr);
-$upholstery_addon_new = trim($upholstery_addon_new,",");
-Washingrequests::model()->updateByPk($wash_request_id, array('upholstery_vehicles' => $upholstery_addon_new));
-}
-
-if(!$floormat_addon){
-$floormat_addon_arr = explode(",", $wash_request_exists->floormat_vehicles);
-if(($key = array_search($vehicle_id, $floormat_addon_arr)) !== false) {
-    unset($floormat_addon_arr[$key]);
-array_values($floormat_addon_arr);
-}
-$floormat_addon_new = implode(",", $floormat_addon_arr);
-$floormat_addon_new = trim($floormat_addon_new,",");
-Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
-}
-
-*/
 
  $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -2803,6 +2708,16 @@ $pet_hair_vehicles_new = trim($pet_hair_vehicles_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('pet_hair_vehicles' => $pet_hair_vehicles_new));
 $log_addon_detail .= "Extra cleaning, ";
 }
+else{
+$pet_hair_vehicles_arr = explode(",", $wash_request_exists->pet_hair_vehicles);
+if(($key = array_search($vehicle_id, $pet_hair_vehicles_arr)) !== false) {
+    unset($pet_hair_vehicles_arr[$key]);
+array_values($pet_hair_vehicles_arr);
+}
+$pet_hair_vehicles_new = implode(",", $pet_hair_vehicles_arr);
+$pet_hair_vehicles_new = trim($pet_hair_vehicles_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('pet_hair_vehicles' => $pet_hair_vehicles_new));	
+}
 
 if($cust_vehicle_data->lifted_vehicle){
 $lifted_vehicles_old = '';
@@ -2813,6 +2728,16 @@ $lifted_vehicles_new = implode(",", $lifted_vehicles_arr);
 $lifted_vehicles_new = trim($lifted_vehicles_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('lifted_vehicles' => $lifted_vehicles_new));
 $log_addon_detail .= "Lifted, ";
+}
+else{
+$lifted_vehicles_arr = explode(",", $wash_request_exists->lifted_vehicles);
+if(($key = array_search($vehicle_id, $lifted_vehicles_arr)) !== false) {
+    unset($lifted_vehicles_arr[$key]);
+array_values($lifted_vehicles_arr);
+}
+$lifted_vehicles_new = implode(",", $lifted_vehicles_arr);
+$lifted_vehicles_new = trim($lifted_vehicles_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('lifted_vehicles' => $lifted_vehicles_new));	
 }
 
 if($cust_vehicle_data->exthandwax_addon){
@@ -2826,6 +2751,16 @@ Washingrequests::model()->updateByPk($wash_request_id, array('exthandwax_vehicle
 $log_addon_detail .= "Wax, ";
 
 }
+else{
+$exthandwax_addon_arr = explode(",", $wash_request_exists->exthandwax_vehicles);
+if(($key = array_search($vehicle_id, $exthandwax_addon_arr)) !== false) {
+    unset($exthandwax_addon_arr[$key]);
+array_values($exthandwax_addon_arr);
+}
+$exthandwax_addon_new = implode(",", $exthandwax_addon_arr);
+$exthandwax_addon_new = trim($exthandwax_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('exthandwax_vehicles' => $exthandwax_addon_new));	
+}
 
 
 if($cust_vehicle_data->extplasticdressing_addon){
@@ -2837,6 +2772,16 @@ $extplasticdressing_addon_new = implode(",", $extplasticdressing_addon_arr);
 $extplasticdressing_addon_new = trim($extplasticdressing_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('extplasticdressing_vehicles' => $extplasticdressing_addon_new));
 $log_addon_detail .= "Dressing, ";
+}
+else{
+$extplasticdressing_addon_arr = explode(",", $wash_request_exists->extplasticdressing_vehicles);
+if(($key = array_search($vehicle_id, $extplasticdressing_addon_arr)) !== false) {
+    unset($extplasticdressing_addon_arr[$key]);
+array_values($extplasticdressing_addon_arr);
+}
+$extplasticdressing_addon_new = implode(",", $extplasticdressing_addon_arr);
+$extplasticdressing_addon_new = trim($extplasticdressing_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('extplasticdressing_vehicles' => $extplasticdressing_addon_new));	
 }
 
 
@@ -2850,6 +2795,16 @@ $extclaybar_addon_new = trim($extclaybar_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('extclaybar_vehicles' => $extclaybar_addon_new));
 $log_addon_detail .= "Clay bar, ";
 }
+else{
+$extclaybar_addon_arr = explode(",", $wash_request_exists->extclaybar_vehicles);
+if(($key = array_search($vehicle_id, $extclaybar_addon_arr)) !== false) {
+    unset($extclaybar_addon_arr[$key]);
+array_values($extclaybar_addon_arr);
+}
+$extclaybar_addon_new = implode(",", $extclaybar_addon_arr);
+$extclaybar_addon_new = trim($extclaybar_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('extclaybar_vehicles' => $extclaybar_addon_new));	
+}
 
 if($cust_vehicle_data->waterspotremove_addon){
 $waterspotremove_addon_old = '';
@@ -2860,6 +2815,16 @@ $waterspotremove_addon_new = implode(",", $waterspotremove_addon_arr);
 $waterspotremove_addon_new = trim($waterspotremove_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('waterspotremove_vehicles' => $waterspotremove_addon_new));
 $log_addon_detail .= "Water spot, ";
+}
+else{
+$waterspotremove_addon_arr = explode(",", $wash_request_exists->waterspotremove_vehicles);
+if(($key = array_search($vehicle_id, $waterspotremove_addon_arr)) !== false) {
+    unset($waterspotremove_addon_arr[$key]);
+array_values($waterspotremove_addon_arr);
+}
+$waterspotremove_addon_new = implode(",", $waterspotremove_addon_arr);
+$waterspotremove_addon_new = trim($waterspotremove_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('waterspotremove_vehicles' => $waterspotremove_addon_new));	
 }
 
 if($cust_vehicle_data->upholstery_addon){
@@ -2872,6 +2837,16 @@ $upholstery_addon_new = trim($upholstery_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('upholstery_vehicles' => $upholstery_addon_new));
 $log_addon_detail .= "Upholstery, ";
 }
+else{
+$upholstery_addon_arr = explode(",", $wash_request_exists->upholstery_vehicles);
+if(($key = array_search($vehicle_id, $upholstery_addon_arr)) !== false) {
+    unset($upholstery_addon_arr[$key]);
+array_values($upholstery_addon_arr);
+}
+$upholstery_addon_new = implode(",", $upholstery_addon_arr);
+$upholstery_addon_new = trim($upholstery_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('upholstery_vehicles' => $upholstery_addon_new));	
+}
 
 if($cust_vehicle_data->floormat_addon){
 $floormat_addon_old = '';
@@ -2882,6 +2857,16 @@ $floormat_addon_new = implode(",", $floormat_addon_arr);
 $floormat_addon_new = trim($floormat_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
 $log_addon_detail .= "Floormat, ";
+}
+else{
+$floormat_addon_arr = explode(",", $wash_request_exists->floormat_vehicles);
+if(($key = array_search($vehicle_id, $floormat_addon_arr)) !== false) {
+    unset($floormat_addon_arr[$key]);
+array_values($floormat_addon_arr);
+}
+$floormat_addon_new = implode(",", $floormat_addon_arr);
+$floormat_addon_new = trim($floormat_addon_new,",");
+Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));	
 }
 
 $log_addon_detail = rtrim($log_addon_detail,', ');
