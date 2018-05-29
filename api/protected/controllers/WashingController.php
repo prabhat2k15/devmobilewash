@@ -2089,12 +2089,14 @@ $customername = ucwords($customername);
         if(Yii::app()->request->getParam('meet_washer_outside')) $meet_washer_outside = Yii::app()->request->getParam('meet_washer_outside');
 	$meet_washer_outside_washend = '';
         if(Yii::app()->request->getParam('meet_washer_outside_washend')) $meet_washer_outside_washend = Yii::app()->request->getParam('meet_washer_outside_washend');
+	$api_password = '';
+        if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
         $result = 'false';
         $response = 'Pass the required parameters';
         $json = array();
 	
-	if(AES256CBC_STATUS == 1){
+	if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }

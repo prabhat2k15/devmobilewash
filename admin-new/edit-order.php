@@ -42,7 +42,7 @@ exit;
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['id'], 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
             $result = curl_exec($handle);
             curl_close($handle);
@@ -100,7 +100,7 @@ if(isset($_POST['payment_method_nonce'])){
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=customers/getlocationbyid");
 curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $getorder->customer_id, "location_id" => $_POST['loc_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $getorder->customer_id, "location_id" => $_POST['loc_id'], 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
 curl_close($handle);
@@ -212,7 +212,7 @@ $address_type = $_POST['address_type'];
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=customers/addlocation");
 curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $getorder->customer_id, "wash_request_id" => $getorder->id, "location_title" => $_POST['address_type'], "location_address" => $full_address, 'actual_latitude'=> $lat, 'actual_longitude' => $long, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $getorder->customer_id, "wash_request_id" => $getorder->id, "location_title" => $_POST['address_type'], "location_address" => $full_address, 'actual_latitude'=> $lat, 'actual_longitude' => $long, 'admin_username' => $jsondata_permission->user_name, 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
 curl_close($handle);
@@ -244,7 +244,7 @@ foreach($_POST['car_makes'] as $ind=>$make){
 if($_POST['car_ids'][$ind] == 0){
 $handle = curl_init(ROOT_URL."/api/index.php?r=customers/addvehicle");
 curl_setopt($handle, CURLOPT_POST, true);
-$data = array('customer_id' => $getorder->customer_id, 'brand_name' => $make, 'model_name' => $_POST['car_models'][$ind], 'car_pack' => $_POST['car_packs'][$ind], 'vehicle_image' => ROOT_URL.'/api/images/veh_img/defimage.png', 'vehicle_build' => $_POST['car_types'][$ind], 'add_log' => 'true', 'admin_username' => $jsondata_permission->user_name, 'wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('customer_id' => $getorder->customer_id, 'brand_name' => $make, 'model_name' => $_POST['car_models'][$ind], 'car_pack' => $_POST['car_packs'][$ind], 'vehicle_image' => ROOT_URL.'/api/images/veh_img/defimage.png', 'vehicle_build' => $_POST['car_types'][$ind], 'add_log' => 'true', 'admin_username' => $jsondata_permission->user_name, 'wash_request_id' => $_GET['id'], 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
@@ -414,7 +414,7 @@ else{
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['id'], 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
             $result = curl_exec($handle);
             curl_close($handle);
@@ -428,7 +428,7 @@ $per_car_wash_points_arr = explode(",", $getorder->per_car_wash_points);
 
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customerid' => $getorder->customer_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customerid' => $getorder->customer_id, 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
@@ -445,7 +445,7 @@ $wash_points = 0;
 
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('agent_id' => $getorder->agent_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('agent_id' => $getorder->agent_id, 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
@@ -1344,7 +1344,7 @@ else{
  if($getorder->customer_id) {
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=customers/getcustomerpaymentmethods");
-$data = array('customer_id' => $getorder->customer_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('customer_id' => $getorder->customer_id, 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -1928,7 +1928,7 @@ $(".cancel-order-ondemand").html('Cancel Order');
         "Ok": function() {
       $( this ).dialog( "close" );
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", { agent_id: "<?php echo $getorder->agent_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", status: 3, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", { agent_id: "<?php echo $getorder->agent_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", status: 3, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'false'){
 
@@ -1958,7 +1958,7 @@ $(".err-text").show();
         "Accept": function() {
       $( this ).dialog( "close" );
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", { vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 5, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", { vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 5, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'false'){
 
@@ -1974,7 +1974,7 @@ $(".err-text").show();
 
                $( this ).dialog( "close" );
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", { vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 3, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", { vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 3, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'false'){
 
@@ -3446,7 +3446,7 @@ var token = $(th).data('token');
 $(this).html('Removing...');
 $(this).removeClass('card-remove');
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/deletecustomerpaymentmethod", { token: token, cust_type: '', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: <?php echo $getorder->id; ?>, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/deletecustomerpaymentmethod", { token: token, cust_type: '', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: <?php echo $getorder->id; ?>, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.success == 1){
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
@@ -3584,7 +3584,7 @@ checkadmineditstatus();
  var ic = setInterval(checkadmineditstatus, 10000);
 
  function checkwashstatus(){
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/washingkart", { wash_request_id: wash_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/washingkart", { wash_request_id: wash_id, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true' && data.status == 2){
 //$('#washer-arrive-dialog').dialog('open');

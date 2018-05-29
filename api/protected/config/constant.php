@@ -26,7 +26,7 @@ define("AES256CBC_PASSPHRASE","buckshotherniadiwangatflamcephalad");
 define("AES256CBC_KEY","C100C17EE98435861499D347578F93970B462B8ECA86744B");
 define("AES256CBC_IV","6877393754561BEA7C8FC5693A6D05BA");
 define("AES256CBC_SALT","928FC69A87CFFF2F");
-define("AES256CBC_STATUS", 0); // 0 => encrypt/decrypt off, 1 => encrypt/decrypt on
+define("AES256CBC_STATUS", 1); // 0 => encrypt/decrypt off, 1 => encrypt/decrypt on
 define("AES256CBC_API_PASS","AE22K5O6j15xY3Qg5Oh989n6v63bS8eJ");
 
 /*

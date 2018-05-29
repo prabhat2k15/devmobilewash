@@ -1041,9 +1041,11 @@ die();
 }
 
 		$agent_id = Yii::app()->request->getParam('agent_id');
+		$api_password = '';
+		if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
 		if((isset($agent_id) && !empty($agent_id))){
-		  		if(AES256CBC_STATUS == 1){
+		  		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 }
 			$agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
@@ -1084,7 +1086,7 @@ if($bt_result->fundingDetails->routingNumber) $routing_no = $bt_result->fundingD
 }
 }
 
-		if(AES256CBC_STATUS == 1){
+		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 		  $agent_id = $this->aes256cbc_crypt( $agent_id_check->id, 'e', AES256CBC_API_PASS );
 		}
 		else{
@@ -1225,8 +1227,10 @@ $rating_control = 0;
 $rating_control = Yii::app()->request->getParam('rating_control');
 $insurance_expiration = '';
         $insurance_expiration = Yii::app()->request->getParam('insurance_expiration');
+	$api_password = '';
+	if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
-	if(AES256CBC_STATUS == 1){
+	if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 }
    if($phone_dup_check == 'true'){

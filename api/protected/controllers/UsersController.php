@@ -419,397 +419,6 @@ die();
 		echo json_encode($json);
 	}
 
-public function actionAppLogin() {
-
-if(Yii::app()->request->getParam('key') != API_KEY){
-echo "Invalid api key";
-die();
-}
-
-        $username = Yii::app()->request->getParam('email');
-        $password = md5(Yii::app()->request->getParam('password'));
-        $device_token = Yii::app()->request->getParam('device_token');
-        $device_type =Yii::app()->request->getParam('mobile_type');
-        $user_type = "";
-        $model = false;
-
-        if((isset($username) && !empty($username)) && (isset($password) && !empty($password)) && (isset($device_token) && !empty($device_token)) && (isset($device_type) && !empty($device_type))){
-                $customer =  Customers::model()->findByAttributes(array('email'=>$username));
-
-
-                $customer_login_status =  Yii::app()->db->createCommand("SELECT * FROM `customers` WHERE `email` = '$username'")->queryAll();
-                $agent_login_status =  Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE `email` = '$username'")->queryAll();
-
-                $agent   =   Agents::model()->findByAttributes(array('email'=>$username));
-
-            if($customer){ $model = $customer; $user_type ="customer"; }
-            else if($agent){ $model = $agent;$user_type ="agent"; }
-
-             if($agent_login_status[0]['device_token']!=$device_token && $agent_login_status[0]['status']=='online')
-             {
-                 $result= "false";
-                $response = "There is no permission for log in with same account on 2 devices";
-                $json = array(
-                    'result'=> $result,
-                    'response'=> $response
-                );
-             }
-             else if(($agent->block_washer) || ($customer->block_client)){
-                $result= "false";
-                $response = "Account error. Please contact MobileWash.";
-                $json = array(
-                    'result'=> $result,
-                    'response'=> $response
-                );
-             }
-             else
-             {
-            if($model){
-
-                //print_r($user_type);die;
-                if($model->password === $password){
-
-                    $user_data = array('usertype'=>$user_type,'user_id'=>$model->id);
-                    if(!empty($device_token)){
-                        $model->device_token = $device_token;
-                        $model->mobile_type = $device_type;
-                        $model->save(false);
-
-                    }
-                    $result= 'true';
-                    $response= 'Successfully logged in';
-                    $json= array(
-                        'result'=> $result,
-                        'response'=> $response,
-                    );
-                    if($user_type == 'customer'){
-                    $online_status= array('online_status' => 'online');
-
-                    /* Comment for online status change */
-
-						//$update_status = Customers::model()->updateAll($online_status,'id=:id',array(':id'=>$model->id));
-
-
-
-                    $latestwash = Washingrequests::model()->findByAttributes(array('customer_id'=>$model->id), array('order'=>'created_date DESC'));
-                     $allschedwashes = Washingrequests::model()->findAllByAttributes(array('customer_id' => $model->id, 'is_scheduled' => 1), array('condition'=>'status = 0 OR status = 1 OR status = 2'));
-
-                      $upcoming_schedule_wash_details = array();
-                     if(count($allschedwashes)){
-
-                         foreach($allschedwashes as $schedwash){
-$sched_date = '';
-$sched_time = '';
-if($schedwash->reschedule_time){
-$sched_date = $schedwash->reschedule_date;
-$sched_time = $schedwash->reschedule_time;
-}
-else{
-$sched_date = $schedwash->schedule_date;
-$sched_time = $schedwash->schedule_time;
-}
-
-if($schedwash->reschedule_time) $scheduledatetime = $schedwash->reschedule_date." ".$schedwash->reschedule_time;
-else $scheduledatetime = $schedwash->schedule_date." ".$schedwash->schedule_time;
-               $to_time = strtotime(date('Y-m-d g:i A'));
-$from_time = strtotime($scheduledatetime);
-$min_diff = -1;
-if($from_time >= $to_time){
-$min_diff = round(($from_time - $to_time) / 60,2);
-}
-
-if($min_diff <= 60 && $min_diff >= 0){
-     $ag_det = Agents::model()->findByPk($schedwash->agent_id);
-   $upcoming_schedule_wash_details['id'] = $schedwash->id;
-   $upcoming_schedule_wash_details['schedule_date'] = $sched_date;
-   $upcoming_schedule_wash_details['schedule_time'] = $sched_time;
-   $upcoming_schedule_wash_details['status'] = $schedwash->status;
-   $upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
-   $upcoming_schedule_wash_details['agent_id'] = $schedwash->agent_id;
-   if(count($ag_det)){
-    $upcoming_schedule_wash_details['agent_name'] = $ag_det->first_name." ".$ag_det->last_name;
-    $upcoming_schedule_wash_details['agent_rating'] = $ag_det->rating;
-    $upcoming_schedule_wash_details['agent_phone'] = $ag_det->phone_number;
-   }
-   break;
-}
-                         }
-                     }
-                        $location_details = Yii::app()->db->createCommand()
-                            ->select('*')
-                            ->from('customer_locations')
-                            ->where("customer_id='".$model->id."'", array())
-                            ->queryAll();
-
-                        $locations = array();
-
-                        if(count($location_details)>0){
-                            foreach($location_details as $sloc){
-                                $locations[]= array(
-                                    'location_title'=> $sloc['location_title'],
-                                    'location_address'=> $sloc['location_address'],
-                                    'actual_longitude'=> $sloc['actual_longitude'],
-                                    'actual_latitude'=> $sloc['actual_latitude'],
-                                    'is_editable'=> $sloc['is_editable']
-                                );
-                            }
-                        }
-
-
-if(($model->first_name != '') && ($model->last_name != '')){
-						$customername = '';
-						$cust_name = explode(" ", trim($model->last_name));
-						$customername = $model->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
-						
-					}
-					else{
-						$customername = '';
-$cust_name = explode(" ", trim($model->customername));
-if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-else $customername = $cust_name[0];	
-					}
-					
-					$customername = strtolower($customername);
-$customername = ucwords($customername);
-
-if($latestwash->id){
-$json= array(
-                            'result'=> $result,
-                            'response'=> $response,
-                            'user_type'=>$user_type,
-                            'customerid' => $model->id,
-                            'email' => $model->email,
-                            'customername' => $customername,
-                            'image' => $model->image,
-                            'contact_number' => $model->contact_number,
-                            'locations' => $locations,
-                            'total_washes' => $model->total_wash,
-'fifth_wash_points' => $model->fifth_wash_points,
-                            'email_alerts'=> $model->email_alerts,
-                            'push_notifications'=> $model->push_notifications,
-'phone_verified'=> $model->phone_verified,
-                            'wash_id'=>$latestwash->id,
-                            'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
-                             );
-}
-else{
-  $json= array(
-                            'result'=> $result,
-                            'response'=> $response,
-                            'user_type'=>$user_type,
-                            'customerid' => $model->id,
-                            'email' => $model->email,
-                            'customername' => $customername,
-                            'image' => $model->image,
-                            'contact_number' => $model->contact_number,
-                            'locations' => $locations,
-'fifth_wash_points' => $model->fifth_wash_points,
-                            'total_washes' => $model->total_wash,
-                            'email_alerts'=> $model->email_alerts,
-                            'push_notifications'=> $model->push_notifications,
-'phone_verified'=> $model->phone_verified,
-'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
-
-                        );
-}
-
-                    }else{
-
-                      $online_status = array('status' => 'online');
-                      /*Comment for online status change */
-		              $update_status = Agents::model()->updateAll($online_status,'id=:id',array(':id'=>$model->id));
-$update_active = Agents::model()->updateAll(array('last_activity' => date("Y-m-d H:i:s")),'id=:id',array(':id'=>$model->id));
-$totalcompletedwashes = Washingrequests::model()->countByAttributes(array("agent_id"=>$model->id, "status" => 4));
-if($model->status == 'online'){
-                    /* ------------- check if agent available for new order -------------*/
-
-                     $isagentbusy = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE agent_id='".$model->id."' AND (status >= 1 AND status <= 3)")->queryAll();
-                    ;
-                    if(!count($isagentbusy)){
-                       Agents::model()->updateAll(array('available_for_new_order' => 1),'id=:id',array(':id'=>$model->id));
-                    }
-
-                    /* ------------- check if agent available for new order end -------------*/
-}
-
-                    $latestwash = Washingrequests::model()->findByAttributes(array('agent_id'=>$model->id), array('order'=>'created_date DESC'));
-                       $allschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id' => $model->id, 'is_scheduled' => 1), array('condition'=>'status = 0 OR status = 1 OR status = 2'));
-
-                      $upcoming_schedule_wash_details = array();
-                      $is_scheduled_wash_120 = 0;
-$min_diff = -1;
-                     if(count($allschedwashes)){
-
-                         foreach($allschedwashes as $schedwash){
-$sched_date = '';
-$sched_time = '';
-if($schedwash->reschedule_time){
-$sched_date = $schedwash->reschedule_date;
-$sched_time = $schedwash->reschedule_time;
-}
-else{
-$sched_date = $schedwash->schedule_date;
-$sched_time = $schedwash->schedule_time;
-}
-
-if($schedwash->reschedule_time) $scheduledatetime = $schedwash->reschedule_date." ".$schedwash->reschedule_time;
-else $scheduledatetime = $schedwash->schedule_date." ".$schedwash->schedule_time;
-
-               $to_time = strtotime(date('Y-m-d g:i A'));
-$from_time = strtotime($scheduledatetime);
-$min_diff = -1;
-if($from_time >= $to_time){
-$min_diff = round(($from_time - $to_time) / 60,2);
-}
-
-if(!$is_scheduled_wash_120){
-    if($min_diff <= 120 && $min_diff >= 0){
-       $is_scheduled_wash_120 = 1;
-    }
-}
-
-if($min_diff <= 60 && $min_diff >= 0){
-     $ct_det = Customers::model()->findByPk($schedwash->customer_id);
-   $upcoming_schedule_wash_details['id'] = $schedwash->id;
-   $upcoming_schedule_wash_details['schedule_date'] = $sched_date;
-   $upcoming_schedule_wash_details['schedule_time'] = $sched_time;
-   $upcoming_schedule_wash_details['status'] = $schedwash->status;
-   $upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
-   $upcoming_schedule_wash_details['agent_id'] = $schedwash->agent_id;
-   if(count($ct_det)){
-    $upcoming_schedule_wash_details['customer_name'] = $ct_det->customername;
-    $upcoming_schedule_wash_details['customer_rating'] = $ct_det->rating;
-    $upcoming_schedule_wash_details['customer_phone'] = $ct_det->contact_number;
-   }
-   break;
-}
-                         }
-                     }
-                        $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" =>$model->id));
-
-                        $total_rate = count($agent_feedbacks);
-                        if($total_rate){
-                            $rate = 0;
-                            foreach($agent_feedbacks as $agent_feedback){
-                                $rate += $agent_feedback->agent_ratings;
-                            }
-
-                            $agent_rate =  round($rate/$total_rate);
-                        }
-                        else{
-                            $agent_rate = 0;
-                        }
-
-$agentlname = '';
-if(trim($model->last_name)) $agentlname = strtoupper(substr($model->last_name, 0, 1)).".";
-else $agentlname = $model->last_name;
-
-                        if($latestwash->id){
-                        $json= array(
-                            'result'=> $result,
-                            'response'=> $response,
-                            'user_type'=>$user_type,
-                            'agentid' => $model->id,
-                            'email' => $model->email,
-                            'first_name' => $model->first_name,
-                            'last_name' => $agentlname,
-                            'image' => $model->image,
-                            'contact_number' => $model->phone_number,
-                            'street_address' => $model->street_address,
-                            'suite_apt' => $model->suite_apt,
-                            'city' => $model->city,
-                            'state' => $model->state,
-                            'zipcode' => $model->zipcode,
-                            'driver_license' => $model->driver_license,
-                            'proof_insurance' => $model->proof_insurance,
-                            'legally_eligible' => $model->legally_eligible,
-                            'own_vehicle' => $model->own_vehicle,
-                            'waterless_wash_product' => $model->waterless_wash_product,
-                            'operate_area' => $model->operate_area,
-                            'work_schedule' => $model->work_schedule,
-                            'operating_as' => $model->operating_as,
-                            'company_name' => $model->company_name,
-                            'wash_experience' => $model->wash_experience,
-                            'account_status' => $model->account_status,
-                            'created_date' => $model->created_date,
-                            'total_washes' => $totalcompletedwashes,
-                            'rating' => number_format($model->rating, 2, '.', ''),
-                            'wash_id'=>$latestwash->id,
-                            'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details,
-                            'is_scheduled_wash_120' => $is_scheduled_wash_120,
-'time_left_to_start' => $min_diff
-                        );
-                        }
-                        else{
-                        $json= array(
-                            'result'=> $result,
-                            'response'=> $response,
-                            'user_type'=>$user_type,
-                            'agentid' => $model->id,
-                            'email' => $model->email,
-                            'first_name' => $model->first_name,
-                            'last_name' => $model->last_name,
-                            'image' => $model->image,
-                            'contact_number' => $model->phone_number,
-                            'street_address' => $model->street_address,
-                            'suite_apt' => $model->suite_apt,
-                            'city' => $model->city,
-                            'state' => $model->state,
-                            'zipcode' => $model->zipcode,
-                            'driver_license' => $model->driver_license,
-                            'proof_insurance' => $model->proof_insurance,
-                            'legally_eligible' => $model->legally_eligible,
-                            'own_vehicle' => $model->own_vehicle,
-                            'waterless_wash_product' => $model->waterless_wash_product,
-                            'operate_area' => $model->operate_area,
-                            'work_schedule' => $model->work_schedule,
-                            'operating_as' => $model->operating_as,
-                            'company_name' => $model->company_name,
-                            'wash_experience' => $model->wash_experience,
-                            'account_status' => $model->account_status,
-                            'created_date' => $model->created_date,
-                            'total_washes' => $totalcompletedwashes,
-                            'rating' => number_format($model->rating, 2, '.', ''),
-                            'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details,
-                            'is_scheduled_wash_120' => $is_scheduled_wash_120,
-'time_left_to_start' => $min_diff
-
-                        );
-                        }
-
-                    }
-
-                }
-                else
-                {
-                    $result= 'false';
-                    $response= 'Wrong password';
-                    $json= array(
-                        'result'=> $result,
-                        'response'=> $response,
-                    );
-                }
-            } else {
-                $result= "false";
-                $response = 'Wrong email';
-                $json = array(
-                    'result'=> $result,
-                    'response'=> $response
-                );
-            }
-        }
-        }
-        else{
-            $json = array(
-                'result'=> 'false',
-                'response'=> 'Pass the required parameters'
-            );
-        }
-
-        echo json_encode($json);
-        die();
-
-    }
 
 
     	/**
@@ -1578,198 +1187,6 @@ $password = $user_check->password;
 		);
 		echo json_encode($json);
 	}
-
-
- public function actionadminschedulewashprocesspayment_old(){
-
-if(Yii::app()->request->getParam('key') != API_KEY){
-echo "Invalid api key";
-die();
-}
-
-      $customer_id = Yii::app()->request->getParam('customer_id');
-      $wash_request_id = Yii::app()->request->getParam('wash_request_id');
-      $agent_id = Yii::app()->request->getParam('agent_id');
-$tip = Yii::app()->request->getParam('tip');
-$spdisc = Yii::app()->request->getParam('spdisc');
-
-      $response = "Pass the required parameters";
-      $result = "false";
-
-      if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id)) && (isset($agent_id) && !empty($agent_id))){
-           $customer_check = Customers::model()->findByPk($customer_id);
-           $wash_check = Washingrequests::model()->findByPk($wash_request_id);
-           $agent_check = Agents::model()->findByPk($agent_id);
-
-           if(!count($customer_check)){
-                    $response = "Invalid customer id";
-                    $result = "false";
-           }
-
-           else if(!count($wash_check)){
-                    $response = "Invalid wash request id";
-                    $result = "false";
-           }
-
-           else if(!count($agent_check)){
-                    $response = "Invalid agent id";
-                    $result = "false";
-           }
-           else{
-               if(!$customer_check->braintree_id){
-                  $json = array(
-                'result'=> 'false',
-                'response'=> 'customer braintree id not found',
-            );
-
-            echo json_encode($json);
-            die();
-
-               }
-                if($customer_check->client_position == 'real') $Bresult = Yii::app()->braintree->getCustomerById_real($customer_check->braintree_id);
-else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintree_id);
-                $token = '';
-                  if(count($Bresult->paymentMethods)){
-                    foreach($Bresult->paymentMethods as $index=>$paymethod){
-                         $payment_methods[$index]['title'] = get_class($paymethod);
-                         if($payment_methods[$index]['title'] == 'Braintree\\CreditCard'){
-                            if($paymethod->isDefault()){
-                                $token = $paymethod->token;
-                                break;
-                            }
-                        }
-
-
-                    }
-                  }
-                else{
-                       $json = array(
-                'result'=> 'false',
-                'response'=> 'No payment methods found'
-            );
-
-            echo json_encode($json);
-            die();
-
-                }
-
-                if(!$token){
-                    $json = array(
-                    'result'=> 'false',
-                    'response'=> 'No default payment method found'
-                    );
-
-                    echo json_encode($json);
-                    die();
-                }
-
-                  if(!$agent_check->bt_submerchant_id){
-                    $json = array(
-                    'result'=> 'false',
-                    'response'=> 'agent braintree id not found'
-                    );
-
-                    echo json_encode($json);
-                    die();
-                }
-
-
-               $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
-curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-$kartresult = curl_exec($handle);
-curl_close($handle);
-$kartdetails = json_decode($kartresult);
-
-
-if($wash_check->schedule_total) {
-
-$company_fee = $wash_check->schedule_company_total;
-$netprice = $wash_check->schedule_total;
-if($spdisc) {
-$company_fee -= $spdisc;
-$netprice -= $spdisc;
-}
-
-if($tip){
-//$company_fee += $tip * .20;
-$netprice += $tip;
-}
-
-$request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'serviceFeeAmount' => $company_fee, 'amount' => $netprice,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
-}
-else  {
-
-$company_fee = $kartdetails->company_total;
-$netprice = $kartdetails->net_price;
-if($spdisc) {
-$company_fee -= $spdisc;
-$netprice -= $spdisc;
-}
-
-if($tip){
-//$company_fee += $tip * .20;
-$netprice += $tip;
-}
-
-$request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'serviceFeeAmount' => $company_fee, 'amount' => $netprice,'paymentMethodToken' => $token];
-}
-                     if($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
-else $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
-                    //print_r($payresult);
-                    //die();
-                    if($payresult['success'] == 1) {
-
-                        //print_r($result);die;
-                        $response = "Payment successful";
-                        $result = "true";
-
-
-                        Washingrequests::model()->updateByPk($wash_request_id, array('transaction_id' => $payresult['transaction_id']));
-
-                      /*  $curr_wash_points =  $customer_check->fifth_wash_points;
-            $order_cars = explode("|", $wash_check->scheduled_cars_info);
-            $total_cars = count($order_cars);
-
-            for($i = 1; $i <= $total_cars; $i++){
-               $curr_wash_points++;
-               if($curr_wash_points >= 5) $curr_wash_points = 0;
-            }
-
-if($curr_wash_points == 0) $curr_wash_points = 'zero';
-
-            $handle = curl_init("https://www.mobilewash.com/api/index.php?r=customers/profileupdate");
-curl_setopt($handle, CURLOPT_POST, true);
-if($customer_check->is_first_wash == 0) $data = array('customerid' => $customer_id, 'fifth_wash_points' => $curr_wash_points, 'is_first_wash' => 1, "key" => API_KEY);
-else $data = array('customerid' => $customer_id, 'fifth_wash_points' => $curr_wash_points, "key" => API_KEY);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-curl_exec($handle);
-curl_close($handle);
-*/
-//$jsondata = json_decode($result);
-
-                    } else {
-                        $result = "false";
-                        $response = $payresult['message'];
-                    }
-
-
-           }
-
-      }
-
-        $json = array(
-                'result'=> $result,
-                'response'=> $response
-            );
-
-        echo json_encode($json);
-        die();
-
- }
 
 
 
@@ -4674,7 +4091,8 @@ die();
 		
 	$digits = 4;
             $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
-           if($phone != '8887776423') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
+           //if($phone != '8887776423') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
+	   $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
             $json    = array();
 
             $this->layout = "xmlLayout";
@@ -4737,12 +4155,23 @@ $min_diff = round(($from_time - $to_time) / 60,2);
 
 if($min_diff <= 60 && $min_diff >= 0){
      $ag_det = Agents::model()->findByPk($schedwash->agent_id);
-   $upcoming_schedule_wash_details['id'] = $schedwash->id;
+   if(AES256CBC_STATUS == 1){
+   $upcoming_schedule_wash_details['id'] = $this->aes256cbc_crypt( $schedwash->id, 'e', AES256CBC_API_PASS );
+   }
+   else{
+	$upcoming_schedule_wash_details['id'] = $schedwash->id;
+   }
    $upcoming_schedule_wash_details['schedule_date'] = $sched_date;
    $upcoming_schedule_wash_details['schedule_time'] = $sched_time;
    $upcoming_schedule_wash_details['status'] = $schedwash->status;
-   $upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
+   if(AES256CBC_STATUS == 1){
+	$upcoming_schedule_wash_details['customer_id'] = $this->aes256cbc_crypt( $schedwash->customer_id, 'e', AES256CBC_API_PASS );
+	$upcoming_schedule_wash_details['agent_id'] = $this->aes256cbc_crypt( $schedwash->agent_id, 'e', AES256CBC_API_PASS );
+   }
+   else{
+	$upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
    $upcoming_schedule_wash_details['agent_id'] = $schedwash->agent_id;
+   }
    if(count($ag_det)){
     $upcoming_schedule_wash_details['agent_name'] = $ag_det->first_name." ".$ag_det->last_name;
     $upcoming_schedule_wash_details['agent_rating'] = $ag_det->rating;
@@ -4788,13 +4217,20 @@ else $customername = $cust_name[0];
 					
 					$customername = strtolower($customername);
 $customername = ucwords($customername);
-
+$cust_id = $model->id;
+  if(AES256CBC_STATUS == 1){
+$cust_id = $this->aes256cbc_crypt( $cust_id, 'e', AES256CBC_API_PASS );
+}
 if($latestwash->id){
+	$latestwashid = $latestwash->id;
+	  if(AES256CBC_STATUS == 1){
+$latestwashid = $this->aes256cbc_crypt( $latestwashid, 'e', AES256CBC_API_PASS );
+}
 $json= array(
                             'result'=> $result,
                             'response'=> $response,
                             'user_type'=>$user_type,
-                            'customerid' => $model->id,
+                            'customerid' => $cust_id,
                             'email' => $model->email,
                             'customername' => $customername,
                             'image' => $model->image,
@@ -4805,7 +4241,7 @@ $json= array(
                             'email_alerts'=> $model->email_alerts,
                             'push_notifications'=> $model->push_notifications,
 'phone_verified'=> $model->phone_verified,
-                            'wash_id'=>$latestwash->id,
+                            'wash_id'=>$latestwashid,
 			    'wash_status'=>$latestwash->status,
 			    'is_scheduled'=>$latestwash->is_scheduled,
                             'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
@@ -4816,7 +4252,7 @@ else{
                             'result'=> $result,
                             'response'=> $response,
                             'user_type'=>$user_type,
-                            'customerid' => $model->id,
+                            'customerid' => $cust_id,
                             'email' => $model->email,
                             'customername' => $customername,
                             'image' => $model->image,
@@ -4839,7 +4275,8 @@ else{
 		      
 		      $digits = 4;
             $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
-           if($phone != '8889995698') $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
+           //if($phone != '8889995698') $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
+	   $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = '$model->id' ")->execute();
             $json    = array();
 
             $this->layout = "xmlLayout";
@@ -4924,12 +4361,24 @@ if(!$is_scheduled_wash_120){
 
 if($min_diff <= 60 && $min_diff >= 0){
      $ct_det = Customers::model()->findByPk($schedwash->customer_id);
-   $upcoming_schedule_wash_details['id'] = $schedwash->id;
+     if(AES256CBC_STATUS == 1){
+   $upcoming_schedule_wash_details['id'] = $this->aes256cbc_crypt( $schedwash->id, 'e', AES256CBC_API_PASS );
+   }
+   else{
+	$upcoming_schedule_wash_details['id'] = $schedwash->id;
+   }
    $upcoming_schedule_wash_details['schedule_date'] = $sched_date;
    $upcoming_schedule_wash_details['schedule_time'] = $sched_time;
    $upcoming_schedule_wash_details['status'] = $schedwash->status;
-   $upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
+    if(AES256CBC_STATUS == 1){
+	$upcoming_schedule_wash_details['customer_id'] = $this->aes256cbc_crypt( $schedwash->customer_id, 'e', AES256CBC_API_PASS );
+	$upcoming_schedule_wash_details['agent_id'] = $this->aes256cbc_crypt( $schedwash->agent_id, 'e', AES256CBC_API_PASS );
+   }
+   else{
+	$upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
    $upcoming_schedule_wash_details['agent_id'] = $schedwash->agent_id;
+   }
+
    if(count($ct_det)){
     $upcoming_schedule_wash_details['customer_name'] = $ct_det->customername;
     $upcoming_schedule_wash_details['customer_rating'] = $ct_det->rating;
@@ -4957,13 +4406,20 @@ if($min_diff <= 60 && $min_diff >= 0){
 $agentlname = '';
 if(trim($model->last_name)) $agentlname = strtoupper(substr($model->last_name, 0, 1)).".";
 else $agentlname = $model->last_name;
-
+$agt_id = $model->id;
+  if(AES256CBC_STATUS == 1){
+$agt_id = $this->aes256cbc_crypt( $agt_id, 'e', AES256CBC_API_PASS );
+}
                         if($latestwash->id){
+					$latestwashid = $latestwash->id;
+	  if(AES256CBC_STATUS == 1){
+$latestwashid = $this->aes256cbc_crypt( $latestwashid, 'e', AES256CBC_API_PASS );
+}
                         $json= array(
                             'result'=> $result,
                             'response'=> $response,
                             'user_type'=>$user_type,
-                            'agentid' => $model->id,
+                            'agentid' => $agt_id,
                             'email' => $model->email,
                             'first_name' => $model->first_name,
                             'last_name' => $agentlname,
@@ -4988,7 +4444,7 @@ else $agentlname = $model->last_name;
                             'created_date' => $model->created_date,
                             'total_washes' => $totalcompletedwashes,
                             'rating' => number_format($model->rating, 2, '.', ''),
-                            'wash_id'=>$latestwash->id,
+                            'wash_id'=>$latestwashid,
 			    'wash_status'=>$latestwash->status,
 			    'is_scheduled'=>$latestwash->is_scheduled,
                             'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details,
@@ -5001,7 +4457,7 @@ else $agentlname = $model->last_name;
                             'result'=> $result,
                             'response'=> $response,
                             'user_type'=>$user_type,
-                            'agentid' => $model->id,
+                            'agentid' => $agt_id,
                             'email' => $model->email,
                             'first_name' => $model->first_name,
                             'last_name' => $model->last_name,
@@ -5119,12 +4575,24 @@ $min_diff = round(($from_time - $to_time) / 60,2);
 
 if($min_diff <= 60 && $min_diff >= 0){
      $ag_det = Agents::model()->findByPk($schedwash->agent_id);
-   $upcoming_schedule_wash_details['id'] = $schedwash->id;
+    if(AES256CBC_STATUS == 1){
+   $upcoming_schedule_wash_details['id'] = $this->aes256cbc_crypt( $schedwash->id, 'e', AES256CBC_API_PASS );
+   }
+   else{
+	$upcoming_schedule_wash_details['id'] = $schedwash->id;
+   }
    $upcoming_schedule_wash_details['schedule_date'] = $sched_date;
    $upcoming_schedule_wash_details['schedule_time'] = $sched_time;
    $upcoming_schedule_wash_details['status'] = $schedwash->status;
-   $upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
+    if(AES256CBC_STATUS == 1){
+	$upcoming_schedule_wash_details['customer_id'] = $this->aes256cbc_crypt( $schedwash->customer_id, 'e', AES256CBC_API_PASS );
+	$upcoming_schedule_wash_details['agent_id'] = $this->aes256cbc_crypt( $schedwash->agent_id, 'e', AES256CBC_API_PASS );
+   }
+   else{
+	$upcoming_schedule_wash_details['customer_id'] = $schedwash->customer_id;
    $upcoming_schedule_wash_details['agent_id'] = $schedwash->agent_id;
+   }
+
    if(count($ag_det)){
     $upcoming_schedule_wash_details['agent_name'] = $ag_det->first_name." ".$ag_det->last_name;
     $upcoming_schedule_wash_details['agent_rating'] = $ag_det->rating;
@@ -5156,8 +4624,15 @@ if($min_diff <= 60 && $min_diff >= 0){
 
 $customername = '';
 
+  if(AES256CBC_STATUS == 1){
+$customerid = $this->aes256cbc_crypt( $customerid, 'e', AES256CBC_API_PASS );
+}
 
 if($latestwash->id){
+	$latestwashid = $latestwash->id;
+	  if(AES256CBC_STATUS == 1){
+$latestwashid = $this->aes256cbc_crypt( $latestwashid, 'e', AES256CBC_API_PASS );
+}
 $json= array(
                         'result'=> $result,
                         'response'=> $response,
@@ -5175,7 +4650,7 @@ $json= array(
                         'email_alerts'=> 0,
                         'push_notifications'=> 0,
 			'phone_verified'=> 0,
-                        'wash_id'=>$latestwash->id,
+                        'wash_id'=>$latestwashid,
 			'wash_status'=>$latestwash->status,
 			    'is_scheduled'=>$latestwash->is_scheduled,
                         'upcoming_schedule_wash_details' => $upcoming_schedule_wash_details
@@ -5234,6 +4709,9 @@ die();
         $sortcode = Yii::app()->request->getParam('verify_code');
 	$user_type = Yii::app()->request->getParam('user_type');
 	$device_token = Yii::app()->request->getParam('device_token');
+	  if(AES256CBC_STATUS == 1){
+$userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
+}
         if($user_type == 'customer') $model=new Customers;
 	else $model=new Agents;
         if($user_type == 'customer') $matchcode = Customers::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$userid));

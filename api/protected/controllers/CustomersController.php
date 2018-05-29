@@ -1488,8 +1488,10 @@ die();
 }
 
 $customerid = Yii::app()->request->getParam('customerid');
+$api_password = '';
+if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
-if(AES256CBC_STATUS == 1){
+if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $customerid = $this->aes256cbc_crypt( $customerid, 'd', AES256CBC_API_PASS );
 }
 
@@ -1544,7 +1546,7 @@ $customerid = $this->aes256cbc_crypt( $customerid, 'd', AES256CBC_API_PASS );
 					}
 					
 $cust_id = $customers_id->id;
-if(AES256CBC_STATUS == 1){
+if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $cust_id = $this->aes256cbc_crypt( $cust_id, 'e', AES256CBC_API_PASS );
 }
 
@@ -1641,6 +1643,8 @@ die();
 		$admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
 $wash_request_id  = Yii::app()->request->getParam('wash_request_id');
+$api_password = '';
+if(Yii::app()->request->getParam('api_password')) $api_password  = Yii::app()->request->getParam('api_password');
 		if($location_title){
 		    $location_title = strtolower($location_title);
 		    $location_title = ucfirst($location_title);
@@ -1653,7 +1657,7 @@ $wash_request_id  = Yii::app()->request->getParam('wash_request_id');
 			(isset($location_address) && !empty($location_address)))
 			 {
 
-			   if(AES256CBC_STATUS == 1){
+			   if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 }
 
@@ -1786,11 +1790,13 @@ die();
 		$response= 'Pass the required parameters';
         $customer_id = Yii::app()->request->getParam('customer_id');
         $location_id = Yii::app()->request->getParam('location_id');
+	$api_password = '';
+	if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
         $all_locations = new stdClass();
 		if((isset($customer_id) && !empty($customer_id)) && (isset($location_id) && !empty($location_id)))
 			 {
 
-		if(AES256CBC_STATUS == 1){
+		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 }
 
@@ -2005,6 +2011,8 @@ $upholstery_addon = 0;
 if(Yii::app()->request->getParam('upholstery_addon')) $upholstery_addon = Yii::app()->request->getParam('upholstery_addon');
 $floormat_addon = 0;
 if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()->request->getParam('floormat_addon');
+$api_password = '';
+if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
 			$vehicle = array();
 			if((isset($customer_id) && !empty($customer_id)) &&
@@ -2013,7 +2021,7 @@ if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()
 			(isset($vehicle_image) && !empty($vehicle_image)))
 			 {
 				
-				  if(AES256CBC_STATUS == 1){
+				  if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
@@ -2674,10 +2682,12 @@ if(Yii::app()->request->getParam('new_pack_name')) $new_pack_name = Yii::app()->
         $remove_vehicle_from_kart = Yii::app()->request->getParam('remove_vehicle_from_kart');
         $new_vehicle_confirm = Yii::app()->request->getParam('new_vehicle_confirm');
         $draft_vehicle_id = Yii::app()->request->getParam('draft_vehicle_id');
+	$api_password = '';
+if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
             $damage_pic = "hi";
 //file_put_contents("setvehiclestatus.log",$wash_request_id."+".$vehicle_id."+".$status."+".$eco_friendly."+".$damage_points."\n",FILE_APPEND);
 if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($vehicle_id) && !empty($vehicle_id)) && (isset($status))) {
-	  if(AES256CBC_STATUS == 1){
+	  if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
 			$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
@@ -4813,12 +4823,14 @@ die();
 }
 
             $customer_id = Yii::app()->request->getParam('customer_id');
+	     $api_password = '';
+	     if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
                $response = "Pass the required parameters";
             $result = "false";
             $payment_methods = array();
 
             if((isset($customer_id) && !empty($customer_id))){
-		  if(AES256CBC_STATUS == 1){
+		  if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 }
                  $customer_exists = Customers::model()->findByPk($customer_id);
@@ -4883,7 +4895,9 @@ $cust_type = Yii::app()->request->getParam('cust_type');
 $admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
 $wash_request_id = Yii::app()->request->getParam('wash_request_id');
-  if(AES256CBC_STATUS == 1){
+$api_password = '';
+if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
+  if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
 if($cust_type == 'real') $Bresult = Yii::app()->braintree->deletePaymentMethod_real($token);
