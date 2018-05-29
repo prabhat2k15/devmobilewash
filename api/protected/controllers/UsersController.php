@@ -1294,7 +1294,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintre
 
 
                $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -2683,7 +2683,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
            else{
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=washing/cancelwashrequest");
-            $data = array('wash_request_id' => $wash_request_id, 'status' => $status, "key" => API_KEY);
+            $data = array('wash_request_id' => $wash_request_id, 'status' => $status, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -2693,7 +2693,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
             if($jsondata->result == 'false'){
                 if($jsondata->response == 'you cannot cancel wash until paying $10'){
                      $handle = curl_init(ROOT_URL."/api/index.php?r=customers/CustomerCancelWashPayment");
-            $data = array('customer_id' => $wash_id_check->customer_id, 'agent_id' => $wash_id_check->agent_id, 'wash_request_id' => $wash_request_id, 'amount' => 15, 'wash_position' => APP_ENV, "key" => API_KEY);
+            $data = array('customer_id' => $wash_id_check->customer_id, 'agent_id' => $wash_id_check->agent_id, 'wash_request_id' => $wash_request_id, 'amount' => 15, 'wash_position' => APP_ENV, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -2806,7 +2806,7 @@ die();
 
 
                $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_request_id, 'api_password' => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -3266,8 +3266,8 @@ if($curr_wash_points == 0) $curr_wash_points = 'zero';
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=customers/profileupdate");
 curl_setopt($handle, CURLOPT_POST, true);
-if($customer_check->is_first_wash == 0) $data = array('customerid' => $customer_id, 'fifth_wash_points' => $curr_wash_points, 'is_first_wash' => 1, "key" => API_KEY);
-else $data = array('customerid' => $customer_id, 'fifth_wash_points' => $curr_wash_points, "key" => API_KEY);
+if($customer_check->is_first_wash == 0) $data = array('customerid' => $customer_id, 'fifth_wash_points' => $curr_wash_points, 'is_first_wash' => 1, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+else $data = array('customerid' => $customer_id, 'fifth_wash_points' => $curr_wash_points, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 curl_exec($handle);
@@ -3350,7 +3350,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintre
 					}
 					else{
 						
-					$kartapiresult = $this->washingkart($wash->id, API_KEY);
+					$kartapiresult = $this->washingkart($wash->id, API_KEY, 0, AES256CBC_API_PASS);
 					$kartdata = json_decode($kartapiresult);
 					if($kartdata->net_price != $transaction_check['amount']){
 						
@@ -3398,7 +3398,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintre
                            if($wash->washer_payment_status == 2){
 
                                                                $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash->id, "key" => API_KEY);
+$data = array('wash_request_id' => $wash->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -3479,7 +3479,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
                     /* ------- kart details ----------- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -3789,7 +3789,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
                     /* ------- kart details ----------- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

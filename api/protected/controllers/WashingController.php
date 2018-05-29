@@ -765,7 +765,7 @@ Washingrequests::model()->updateByPk($washrequestid, array('surge_price_vehicles
 
     /* ------- kart details ----------- */
 
-$kartapiresult = $this->washingkart($washrequestid, API_KEY);
+$kartapiresult = $this->washingkart($washrequestid, API_KEY, 0, AES256CBC_API_PASS);
 $kartdata = json_decode($kartapiresult);
 
 /* ------- kart details end ----------- */
@@ -1481,7 +1481,7 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
                     WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$washrequestid.'"');
 
                     $wash_details = Washingrequests::model()->findByPk($washrequestid);
-                    $kartapiresult = $this->washingkart($washrequestid, API_KEY);
+                    $kartapiresult = $this->washingkart($washrequestid, API_KEY, 0, AES256CBC_API_PASS);
                     $kartdata = json_decode($kartapiresult);
                     if($wash_details->net_price != $kartdata->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$washrequestid);
                     else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$washrequestid.'"');
@@ -1677,7 +1677,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 		WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
 
                     $wash_details = Washingrequests::model()->findByPk($wash_request_id);
-                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY);
+                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
                     $kartdata = json_decode($kartapiresult);
                     if($wash_details->net_price != $kartdata->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
                     else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$wash_request_id.'"');
@@ -2985,7 +2985,7 @@ try {
 
                      WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
 
-                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY);
+                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
                     $kartdetails = json_decode($kartapiresult);
 
                     if($wrequest_id_check->net_price != $kartdetails->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
@@ -3989,6 +3989,8 @@ $tip_amount = 0;
 $tip_amount = Yii::app()->request->getParam('tip_amount');
 $feedback_source = '';
 $feedback_source = Yii::app()->request->getParam('feedback_source');
+$api_password = '';
+$api_password = Yii::app()->request->getParam('api_password');
         $json = array();
         $car_id_check = true;
         $washrequest_id_check = true;
@@ -3997,7 +3999,7 @@ $feedback_source = Yii::app()->request->getParam('feedback_source');
 
         if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))) {
 		
-		if(AES256CBC_STATUS == 1){
+		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
@@ -4205,7 +4207,7 @@ else $logcomment = $comments;
 
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 	
-	$kartapiresult = $this->washingkart($wash_request_id, API_KEY);
+	$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
         $kartdetails = json_decode($kartapiresult);
 		    
 	/* ----------- update pricing details -------------- */
@@ -4250,6 +4252,8 @@ die();
         $ratings = Yii::app()->request->getParam('ratings');
         $feedback_source = '';
 $feedback_source = Yii::app()->request->getParam('feedback_source');
+  $api_password = '';
+if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
 /*echo "agent id: ".$agent_id."<br>";
 echo "wash id: ".$wash_request_id."<br>";
@@ -4265,7 +4269,7 @@ echo "feedback source: ".$feedback_source."<br>";*/
 
         if((isset($agent_id) && !empty($agent_id)) && (isset($wash_request_id) && !empty($wash_request_id))) {
 		
-		if(AES256CBC_STATUS == 1){
+		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
@@ -4503,7 +4507,7 @@ foreach($pendingrequests as $wrequest){
    /* ------- get nearest agents --------- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-$data = array('wash_request_id' => $wrequest['id'], "key" => API_KEY);
+$data = array('wash_request_id' => $wrequest['id'], "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -4686,7 +4690,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                 {
                     /* ------- get nearest agents --------- */
         			$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-        			$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
+        			$data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
         			curl_setopt($handle, CURLOPT_POST, true);
         			curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         			curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -5989,7 +5993,7 @@ echo "Invalid api key";
 
                     /* ------- kart details ----------- */
 
-	$kartapiresult = $this->washingkart($wash_request_id, API_KEY);
+	$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
 $kartdata = json_decode($kartapiresult);
 
 /* ------- kart details end ----------- */
@@ -7214,7 +7218,7 @@ $inspectiondetails_arr[$ind]['inspect_img'] = $inspectdet->damage_pic;
               /* ------- get nearest agents --------- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-$data = array('wash_request_id' => $wash_request_id, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -7443,7 +7447,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_check->braintree_id
                                 if($voidresult['success'] == 1) {
 
                                    $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_check->id, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_check->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -7483,7 +7487,7 @@ else{
                 else{
 
                      $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_check->id, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_check->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -8030,7 +8034,7 @@ $pendingwasharr[$ind]['customer_name'] = $cust_details->customername;
                       /* ------- get nearest agents --------- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-$data = array('wash_request_id' => $pwash['id'], "key" => API_KEY);
+$data = array('wash_request_id' => $pwash['id'], "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -9433,7 +9437,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
 
              /* ------- kart details ----------- */
              
-             $kartapiresult = $this->washingkart($id, API_KEY);
+             $kartapiresult = $this->washingkart($id, API_KEY, 0, AES256CBC_API_PASS);
             $kartdata = json_decode($kartapiresult);
 
 /* ------- kart details end ----------- */
@@ -11870,7 +11874,7 @@ die();
                     if($min_diff >= 30){
 
                         $handle = curl_init(ROOT_URL."/api/index.php?r=washing/customerfeedback");
-            $data = array('customer_id' => $wash->customer_id, 'wash_request_id' => $wash->id, 'comments' => '', 'ratings' => '5.00', 'feedback_source' => 'cron', "key" => API_KEY);
+            $data = array('customer_id' => $wash->customer_id, 'wash_request_id' => $wash->id, 'comments' => '', 'ratings' => '5.00', 'feedback_source' => 'cron', "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -11879,7 +11883,7 @@ die();
 
 
              $handle = curl_init(ROOT_URL."/api/index.php?r=customers/customerpayment");
-            $data = array('customer_id' => $wash->customer_id, 'agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, "key" => API_KEY);
+            $data = array('customer_id' => $wash->customer_id, 'agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -11889,7 +11893,7 @@ die();
 
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=washing/agentfeedback");
-            $data = array('agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, 'comments' => '', 'ratings' => '5.00', 'feedback_source' => 'cron', "key" => API_KEY);
+            $data = array('agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, 'comments' => '', 'ratings' => '5.00', 'feedback_source' => 'cron', "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -11925,7 +11929,7 @@ die();
             /* ------- get nearest agents --------- */
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-            $data = array('wash_request_id' => $wash->id, "key" => API_KEY, 'ignore_offline' => 1);
+            $data = array('wash_request_id' => $wash->id, "key" => API_KEY, "api_password" => AES256CBC_API_PASS, 'ignore_offline' => 1);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -11994,7 +11998,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
             /* ------- get nearest agents --------- */
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-            $data = array('wash_request_id' => $wash_request_id, "key" => API_KEY, 'ignore_offline' => 1);
+            $data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, 'ignore_offline' => 1);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

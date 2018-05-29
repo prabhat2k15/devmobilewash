@@ -1180,8 +1180,10 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
         $push_notify = Yii::app()->request->getParam('push_notify');
        $phone_dup_check = Yii::app()->request->getParam('phone_dup_check');
        $online_status = Yii::app()->request->getParam('online_status');
+       $api_password = '';
+       if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
        
-         if(AES256CBC_STATUS == 1){
+         if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $id = $this->aes256cbc_crypt( $id, 'd', AES256CBC_API_PASS );
 }
 
@@ -1365,7 +1367,7 @@ Customers::model()->updateByPk($id, array('braintree_id' => $braintree_id, 'fift
 						}
 					}
 
-if(AES256CBC_STATUS == 1){
+if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $id = $this->aes256cbc_crypt( $id, 'e', AES256CBC_API_PASS );
 }
 					$result= "true";
@@ -5084,7 +5086,7 @@ $total_pages = ceil($total_entries / $limit);
                         //var_dump($jsondata);
 */
 
-$kartapiresult = $this->washingkart($wrequest['id'], 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$kartapiresult = $this->washingkart($wrequest['id'], 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 0, AES256CBC_API_PASS);
 $kartdata = json_decode($kartapiresult);
 
                         /* ----- total and discounts end ------- */
@@ -9114,6 +9116,8 @@ die();
 		$agent_id = Yii::app()->request->getParam('agent_id');
 		$deviceData = '';
 		if(Yii::app()->request->getParam('deviceData')) $deviceData = Yii::app()->request->getParam('deviceData');
+		$api_password = '';
+		if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
 		$amount = 0;
 		$amount = Yii::app()->request->getParam('amount');
@@ -9127,7 +9131,7 @@ die();
       	if((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id)) && (isset($agent_id) && !empty($agent_id)))
       	{
 		
-		  if(AES256CBC_STATUS == 1){
+		  if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
@@ -9221,7 +9225,7 @@ if(is_array($Bresult)){
 				curl_close($handle);
 				$kartdetails = json_decode($kartresult);*/
 
-				$kartapiresult = $this->washingkart($wash_request_id, 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+				$kartapiresult = $this->washingkart($wash_request_id, 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 0, AES256CBC_API_PASS);
 $kartdetails = json_decode($kartapiresult);
 
 				if($wash_check->transaction_id)
@@ -9496,7 +9500,7 @@ $min_diff = round(($current_time - $last_edit_time) / 60,2);
 
 		/* ------- get nearest agents --------- */
 		$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-		$data = array('cust_lat' => $latitude, 'cust_lng' => $longitude, "key" => API_KEY);
+		$data = array('cust_lat' => $latitude, 'cust_lng' => $longitude, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 		curl_setopt($handle, CURLOPT_POST, true);
 		curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -9614,10 +9618,12 @@ die();
             $response = "Pass the required parameters";
             $result = "false";
             $payment_type = '';
+	    $api_password = '';
+	    if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
             if((isset($customer_id) && !empty($customer_id)) && (isset($agent_id) && !empty($agent_id)) && (isset($washing_request_id) && !empty($washing_request_id)) && (isset($amount) && !empty($amount))){
 
-	      if(AES256CBC_STATUS == 1){
+	      if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 $washing_request_id = $this->aes256cbc_crypt( $washing_request_id, 'd', AES256CBC_API_PASS );

@@ -1667,7 +1667,7 @@ exit;*/
                         $jsondata = json_decode($kartapiresult);
                         //var_dump($jsondata);*/
                         
-                        $kartapiresult = $this->washingkart($wrequest['id'], 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+                        $kartapiresult = $this->washingkart($wrequest['id'], 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 0, AES256CBC_API_PASS);
 $kartdata = json_decode($kartapiresult);
 
 
@@ -1962,6 +1962,8 @@ die();
         $cust_lng = Yii::app()->request->getParam('cust_lng');
         $ignore_offline = 0;
         $ignore_offline = Yii::app()->request->getParam('ignore_offline');
+	 $api_password = '';
+	 $api_password = Yii::app()->request->getParam('api_password');
           $result= 'false';
 	        $response= 'Pass the required parameters';
               $distance_array = array();
@@ -1969,7 +1971,7 @@ die();
             $distance = 0;
             $near_agent = '';
 
-	    if(AES256CBC_STATUS == 1){
+	    if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
         $check_data = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
