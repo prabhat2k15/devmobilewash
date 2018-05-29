@@ -5374,7 +5374,7 @@ $pendingwashrequests[] = array('id'=>$agent_has_order->id,
 						  /* ------- check if agent is nearest -------- */
 
 							$handle = curl_init(ROOT_URL."/api/index.php?r=agents/isagentnearest");
-							$data = array("customer_id"=>$prequest['customer_id'], "wash_request_id"=>$prequest['id'], "agent_id"=>$agent_id, "key" => API_KEY);
+							$data = array("customer_id"=>$prequest['customer_id'], "wash_request_id"=>$prequest['id'], "agent_id"=>$agent_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
 							curl_setopt($handle, CURLOPT_POST, true);
 							curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 							curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

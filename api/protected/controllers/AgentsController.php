@@ -1799,6 +1799,8 @@ die();
         $agent_id = Yii::app()->request->getParam('agent_id');
         $customer_id = Yii::app()->request->getParam('customer_id');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+	$api_password = '';
+	if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
           $result= 'false';
 	        $response= 'Pass the required parameters';
               $distance_array = array();
@@ -1806,7 +1808,7 @@ die();
             $distance = 0;
             $near_agent = '';
 	    
-	    if(AES256CBC_STATUS == 1){
+	     if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );

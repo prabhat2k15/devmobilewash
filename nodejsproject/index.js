@@ -59,7 +59,7 @@ request.post({
 //getpendingwashesdetailstimer = setTimeout(getpendingwashesdetails, 5000);
 }
 
-function washing_currentwashondemandalert(wash_request_id=0, socket_id = '') {
+function washing_currentwashondemandalert(wash_request_id='', socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/currentwashondemandalert',
@@ -71,7 +71,7 @@ request.post({
 });
 }
 
-function washing_currentwashschedulealert(wash_request_id=0) {
+function washing_currentwashschedulealert(wash_request_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/currentwashschedulealert',
@@ -83,7 +83,7 @@ request.post({
 });
 }
 
-function washing_washingkart(wash_request_id=0, socket_id = '') {
+function washing_washingkart(wash_request_id='', socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/washingkart',
@@ -102,7 +102,7 @@ request.post({
 });
 }
 
-function washing_checkwashrequeststatus(wash_request_id=0, customer_id=0, socket_id = '') {
+function washing_checkwashrequeststatus(wash_request_id='', customer_id='', socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/checkwashrequeststatus',
@@ -163,7 +163,7 @@ request.post({
 //getclientsbystatustimer = setTimeout(getclientsbystatus, 5000);
 }
 
-function washing_getnewwashrequest(agent_id=0, socket_id = '') {
+function washing_getnewwashrequest(agent_id='', socket_id = '') {
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -187,7 +187,7 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function washing_getallschedulewashes(agent_id=0, washer_position = '', agent_latitude = '', agent_longitude = '', socket_id = '') {
+function washing_getallschedulewashes(agent_id='', washer_position = '', agent_latitude = '', agent_longitude = '', socket_id = '') {
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -211,7 +211,7 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function site_updatedevicestatus(user_type='', user_id=0, device_token='', socket_id = '') {
+function site_updatedevicestatus(user_type='', user_id='', device_token='', socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=site/updatedevicestatus',
@@ -233,7 +233,7 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function agents_updateagentlocations(agent_id=0, latitude=0, longitude=0, socket_id = '') {
+function agents_updateagentlocations(agent_id='', latitude=0, longitude=0, socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=agents/updateagentlocations',
@@ -246,7 +246,7 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function customers_updatecustomerlocations(customer_id=0, latitude=0, longitude=0, socket_id = '') {
+function customers_updatecustomerlocations(customer_id='', latitude=0, longitude=0, socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/updatecustomerlocations',
@@ -259,7 +259,7 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function customers_getclienttoken(customer_id=0, socket_id = '') {
+function customers_getclienttoken(customer_id='', socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/getClientToken',
@@ -280,7 +280,7 @@ request.post({
 
 }
 
-function customers_addcustomerpaymentmethod(customer_id=0, nonce = '', socket_id = '') {
+function customers_addcustomerpaymentmethod(customer_id='', nonce = '', socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/addcustomerpaymentmethod',
@@ -301,7 +301,7 @@ request.post({
 
 }
 
-function customers_getcustomerpaymentmethods(customer_id=0, socket_id = '') {
+function customers_getcustomerpaymentmethods(customer_id='', socket_id = '') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/getcustomerpaymentmethods',
