@@ -9709,7 +9709,7 @@ $message .= "<table style='width: 100%; border-collapse: collapse; border-bottom
 							<td style='padding-bottom: 15px;'>
 							<p style='font-size: 20px; margin: 0;'><strong>Cancellation Fee</strong></p>
 							</td>
-							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 20px; margin: 0; font-weight: bold;'>$".number_format($fee,2)."</p></td>
+							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 20px; margin: 0; font-weight: bold;'>$".number_format($fee, 2)."</p></td>
 							</tr></table>";
 
 					$message .= "</table>";
@@ -9876,7 +9876,7 @@ $message .="<tr>
 <tr>
 <td><p style='font-size: 20px; margin: 0; font-weight: bold;'>".$vehicle->brand_name." ".$vehicle->model_name."</p></td>
 <td style='text-align: right;'>
-<p style='font-size: 20px; margin: 0; font-weight: bold;'>+$0</p>
+<p style='font-size: 20px; margin: 0; font-weight: bold;'>+$0.00</p>
 </td>
 </tr>
 <tr>
@@ -10024,7 +10024,7 @@ $message .= "<table style='width: 100%; border-collapse: collapse; border-bottom
 							<td style='padding-bottom: 15px;'>
 							<p style='font-size: 20px; margin: 0;'><strong>Cancellation Fee</strong></p>
 							</td>
-							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 20px; margin: 0; font-weight: bold;'>$0</p></td>
+							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 20px; margin: 0; font-weight: bold;'>$0.00</p></td>
 							</tr></table>";
 
 					$message .= "</table>";
