@@ -589,7 +589,7 @@ socketId = socket.io.engine.id;
 });
   
 </script>
-<script src="js/geoxml3.js"></script>
+
 <script>
       var script = '<script type="text/javascript" src="js/markerclusterer';
       if (document.location.search.indexOf('compiled') !== -1) {
