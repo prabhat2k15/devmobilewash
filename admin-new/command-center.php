@@ -1818,9 +1818,9 @@ function drawMap(data) {
         var rows = data['rows'];
 fusiondata = data['rows'];
         for (var i in rows) {
-
+console.log(rows);
             var newCoordinates = [];
-
+console.log(rows[i][4]);
               newCoordinates = constructNewCoordinates(rows[i][10]['geometry']);
               
               	      var areacolor = "#076ee1";

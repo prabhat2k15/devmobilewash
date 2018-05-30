@@ -1679,7 +1679,7 @@ $kartdata = json_decode($kartapiresult);
 		  else{
 		    $wash_requests[$index]['id'] = $wrequest['id'];
 		  }
-		 
+		 $wash_requests[$index]['org_id'] = $wrequest['id']; 
               $wash_requests[$index]['date'] = $wrequest['order_for'];
               $wash_requests[$index]['address'] = $wrequest['address'];
               $plan_ids =  $wrequest['package_list'];

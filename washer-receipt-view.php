@@ -2,7 +2,7 @@
 require_once('api/protected/config/constant.php');
 ini_set("date.timezone", "America/Los_Angeles");
 
-$order_id = $_GET['orderid'];
+
 
 /* --- washing kart call --- */
 
@@ -16,7 +16,7 @@ curl_close($handle);
 $kartdata = json_decode($result);
 
 /* --- washing kart call end --- */
-
+$order_id = $kartdata->org_id;
 
 ?>
 <html>

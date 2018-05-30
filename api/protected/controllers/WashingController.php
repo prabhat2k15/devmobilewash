@@ -3945,6 +3945,7 @@ $hours = floor($wash_time / 60);
                 'customer_details' => $customer_details,
 		 'draft_vehicle_id'=> $draft_vehicle_id,
             'new_vehicle_confirm' => $new_vehicle_confirm,
+	    'upgrade_requested_at' => $wrequest_id_check->upgrade_requested_at,
             'vehicles' => $vehicles,
 	    'no_washer_cancel' => $wrequest_id_check->no_washer_cancel,
 	    'order_address' => $wrequest_id_check->address

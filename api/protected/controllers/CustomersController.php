@@ -2715,8 +2715,8 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 	
 //Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => $pet_hair, 'lifted_vehicle' => $lifted_vehicle, 'new_pack_name' => $new_pack_name, 'exthandwax_addon' => $exthandwax_addon, 'extplasticdressing_addon' => $extplasticdressing_addon, 'extclaybar_addon' => $extclaybar_addon, 'waterspotremove_addon' => $waterspotremove_addon, 'upholstery_addon' => $upholstery_addon, 'floormat_addon' => $floormat_addon));
 
-Vehicle::model()->updateByPk($vehicle_id, array('upgrade_requested_at' => date('Y-m-d H:i:s')));
-
+//Vehicle::model()->updateByPk($vehicle_id, array('upgrade_requested_at' => date('Y-m-d H:i:s')));
+Washingrequests::model()->updateByPk($wash_request_id, array('upgrade_requested_at' => date('Y-m-d H:i:s')));
 
  $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -3128,6 +3128,8 @@ $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE
 		
 		if($edit_vehicle == 1){
 			
+			Washingrequests::model()->updateByPk($wash_request_id, array('upgrade_requested_at' => date('Y-m-d H:i:s')));
+			
 			$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 			/* --- notification call --- */
@@ -3438,6 +3440,8 @@ $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, '
                    Washingrequests::model()->updateByPk($wash_request_id, array('new_vehicle_confirm' => $new_vehicle_confirm));
 
                    if($new_vehicle_confirm == 1){
+			
+			Washingrequests::model()->updateByPk($wash_request_id, array('upgrade_requested_at' => date('Y-m-d H:i:s')));
 
                      /* --- notification call --- */
 		     
@@ -5091,7 +5095,13 @@ $kartdata = json_decode($kartapiresult);
 
                         /* ----- total and discounts end ------- */
 
-$wash_requests[$index]['id'] = $wrequest['id'];
+			 if(AES256CBC_STATUS == 1){
+$wash_requests[$index]['id'] = $this->aes256cbc_crypt( $wrequest['id'], 'e', AES256CBC_API_PASS );
+			 }
+			 else{
+			$wash_requests[$index]['id'] = $wrequest['id'];	
+			 }
+			 $wash_requests[$index]['org_id'] = $wrequest['id'];	
               $wash_requests[$index]['date'] = $wrequest['order_for'];
               $wash_requests[$index]['address'] = $wrequest['address'];
 
@@ -8968,6 +8978,8 @@ die();
             $nonce = Yii::app()->request->getParam('nonce');
             $deviceData = '';
 	    if(Yii::app()->request->getParam('deviceData')) $deviceData = Yii::app()->request->getParam('deviceData');
+	    $api_password = '';
+	    if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
             $payment_method_token = Yii::app()->request->getParam('payment_method_token');
 		$payment_methods = array();
             $response = "Pass the required parameters";
@@ -8975,7 +8987,10 @@ die();
             $payment_type = '';
 
             if((isset($customer_id) && !empty($customer_id)) && (isset($nonce) && !empty($nonce))){
-
+		
+		  if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
+			$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+		}
                 $customers = Customers::model()->findByPk($customer_id);
 
                 if(!$customers){

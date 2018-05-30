@@ -737,10 +737,13 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
 		}
 
 		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
+		  $agt_id = $wash_id_check->agent_id;
+		  if($agt_id) $agt_id = $this->aes256cbc_crypt( $wash_id_check->agent_id, 'e', AES256CBC_API_PASS );
 		  	$json = array(
             'result'=> $result,
             'response'=> $response,
             'id'=> $this->aes256cbc_crypt( $wash_id_check->id, 'e', AES256CBC_API_PASS ),
+	    'org_id'=> $wash_id_check->id,
             'order_date'=> $wash_id_check->order_for,
             'address'=> $wash_id_check->address,
 	    'city'=> $wash_id_check->city,
@@ -749,7 +752,7 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
             'longitude'=> $wash_id_check->longitude,
 	    'car_list'=> $wash_id_check->car_list,
             'customer_id'=> $this->aes256cbc_crypt( $wash_id_check->customer_id, 'e', AES256CBC_API_PASS ),
-            'agent_id'=> $this->aes256cbc_crypt( $wash_id_check->agent_id, 'e', AES256CBC_API_PASS ),
+            'agent_id'=> $agt_id,
             'washer_penalty_fee'=> $wash_id_check->washer_penalty_fee,
             'company_discount'=> $wash_id_check->company_discount,
 			'is_scheduled'=> $wash_id_check->is_scheduled,
@@ -797,6 +800,7 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
             'result'=> $result,
             'response'=> $response,
             'id'=> $wash_id_check->id,
+	    'org_id'=> $wash_id_check->id,
             'order_date'=> $wash_id_check->order_for,
             'address'=> $wash_id_check->address,
 	    'city'=> $wash_id_check->city,
