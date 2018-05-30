@@ -589,6 +589,7 @@ socketId = socket.io.engine.id;
 });
   
 </script>
+<script src="js/geoxml3.js"></script>
 <script>
       var script = '<script type="text/javascript" src="js/markerclusterer';
       if (document.location.search.indexOf('compiled') !== -1) {
@@ -1545,16 +1546,15 @@ strokeColor: "#076ee1",
   layer.setMap(map);
 */
 
-  var script = document.createElement('script');
+ // Initialize JSONP request
+        var script = document.createElement('script');
         var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
         url.push('sql=');
-        //var query = 'SELECT * FROM ' + '1KGA8BqTBlI6Rvv1sQACLdhDHa-7DmvoizGUCcbQr';
-var query = "SELECT * FROM " + "1Ck5Bulp_3881RFZqDRNb5yl-HgHnwA-p9Vv2JB-k WHERE MW_COVERAGE_AREA = 'true'";
+        var query = "SELECT * FROM " + "1Ck5Bulp_3881RFZqDRNb5yl-HgHnwA-p9Vv2JB-k WHERE MW_COVERAGE_AREA = 'true'";
         var encodedQuery = encodeURIComponent(query);
         url.push(encodedQuery);
         url.push('&callback=drawMap');
-         url.push('&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA');
-
+        url.push('&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA');
         script.src = url.join('');
         var body = document.getElementsByTagName('body')[0];
         body.appendChild(script);
@@ -1813,14 +1813,18 @@ return false;
 
 });
 
+
 function drawMap(data) {
+    
+    //var myParser = new geoXML3.parser({map: map});
+
          //console.log(data);
         var rows = data['rows'];
 fusiondata = data['rows'];
         for (var i in rows) {
-console.log(rows);
+
             var newCoordinates = [];
-console.log(rows[i][4]);
+
               newCoordinates = constructNewCoordinates(rows[i][10]['geometry']);
               
               	      var areacolor = "#076ee1";
@@ -1894,7 +1898,8 @@ if (this.zipcolor == 'red') {
         }
       }
 
-      function constructNewCoordinates(polygon) {
+       function constructNewCoordinates(polygon) {
+          
         var newCoordinates = [];
         var coordinates = polygon['coordinates'][0];
         for (var i in coordinates) {
