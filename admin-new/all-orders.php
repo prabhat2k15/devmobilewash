@@ -84,11 +84,11 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 }
 
 .label-pending {
-    background-color: red !important;
+    background-color: #DCAD53 !important;
 }
 
 .label-process {
-    background-color: #FF8C00 !important;
+    background-color: #D0792B !important;
 }
 
 .label-enroute {

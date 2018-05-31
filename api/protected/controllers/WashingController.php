@@ -4191,7 +4191,7 @@ if($fb_id) $message .= "<p><b>Facebook/Instagram handle:</b> ".$fb_id."</p>";
 $to = Vargas::Obj()->getAdminToEmail();
 $from = Vargas::Obj()->getAdminFromEmail();
 
-if(!$washrequest_id_check->is_feedback_sent) Vargas::Obj()->SendMail($to,$from,$message,"Customer Feedback - Order #0000".$wash_request_id, 'mail-receipt');
+if((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5)) Vargas::Obj()->SendMail($to,$from,$message,"Customer Feedback - Order #0000".$wash_request_id, 'mail-receipt');
 
 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
 Washingrequests::model()->updateByPk($wash_request_id, array('tip_amount' => $tip_amount));
@@ -11858,7 +11858,7 @@ echo "Invalid api key";
 die();
 }
 
-       $allwashes = Washingrequests::model()->findAll(array("condition"=>"is_feedback_sent = 0 AND status = 4"));
+       /*$allwashes = Washingrequests::model()->findAll(array("condition"=>"is_feedback_sent = 0 AND status = 4"));
 
          if(count($allwashes)){
                foreach($allwashes as $wash){
@@ -11908,7 +11908,7 @@ die();
                     }
             }
 
-         }
+         }*/
 
    }
 
