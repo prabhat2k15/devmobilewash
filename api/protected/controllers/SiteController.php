@@ -6929,6 +6929,20 @@ die();
    );
 }
 
+
+public function actiondistancecheck(){
+	$origin_lat = Yii::app()->request->getParam('origin_lat');
+	$origin_long = Yii::app()->request->getParam('origin_long');
+	$dest_lat = Yii::app()->request->getParam('dest_lat');
+	$dest_long = Yii::app()->request->getParam('dest_long');
+$theta = $origin_long - $dest_long;
+            $dist = sin(deg2rad($origin_lat)) * sin(deg2rad($dest_lat)) +  cos(deg2rad($origin_lat)) * cos(deg2rad($dest_lat)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+            //$unit = strtoupper($unit);
+	    echo $miles;
+}
     
     
 }

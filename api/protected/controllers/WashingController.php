@@ -10751,7 +10751,7 @@ $allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reques
             $miles = $dist * 60 * 1.1515;
             //$unit = strtoupper($unit);
 
-	    if($miles > 50) continue;
+	    if($miles > 40) continue;
 			}
 	    
 				$schdDateTime = date('Y-m-d h:i:s', strtotime($schedwash['schedule_date'].' '.$schedwash['schedule_time']));
@@ -11051,7 +11051,7 @@ die();
 							$dist = rad2deg($dist);
 							$miles = $dist * 60 * 1.1515;
 
-							if($miles > 50) $get_notify = 0;
+							if($miles > 40) $get_notify = 0;
 						}
 						
             
@@ -11205,7 +11205,7 @@ $notify_token = '';
 							$dist = rad2deg($dist);
 							$miles = $dist * 60 * 1.1515;
 
-							if($miles > 50) $get_notify = 0;
+							if($miles > 40) $get_notify = 0;
 						}
 						
 						$agentallschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id'=>$agent->id, 'is_scheduled' => 1, 'status'=> 0));
@@ -12138,6 +12138,6 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 
 
        }
-
+       
 
 }
