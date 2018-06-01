@@ -12019,6 +12019,10 @@ $fromindex = 0;
 //echo $agid." ".$nearagentdis." ";
                         $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agid."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
+$mins_since_last_use = 0;
+
+$mins_since_last_use = round((time() - strtotime($agentdevices[0]['last_used'])) / 60,2);
+
                      $current_mile = round($nearagentdis);
                      
                         if($current_mile < 1) $current_mile = 1;
@@ -12046,7 +12050,7 @@ $fromindex = 0;
 						
 			if($current_mile <= 10){
 				$agent_det =  Agents::model()->findByPk($agid);
-				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer)){
+				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer) && ($mins_since_last_use < 10080)){
 				  if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
                    

@@ -5701,7 +5701,27 @@ if($num_of_30_days_segment) $final_avg_care_rating = $avg_care_rating / $num_of_
 
 		echo json_encode($json); die();
     }
+    
+    
+
+    public function actioncheckinactivewashers(){
+
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
 
 
+    
+$washers_exists = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE (DATEDIFF(CURDATE(), last_activity) >= 30) AND block_washer = 0")->queryAll();
+
+ 
+  if(count($washers_exists)){
+    foreach($washers_exists as $washer){
+      Agents::model()->updateByPk($washer['id'], array("block_washer" => 1));
+    }
+  }
+
+    }
 
 }
