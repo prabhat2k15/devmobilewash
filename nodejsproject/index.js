@@ -322,6 +322,28 @@ request.post({
 
 }
 
+function washing_getwash30secondtimer(wash_request_id='', socket_id = '') {
+//console.log(agent_id);
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded'},
+  url:     'http://www.devmobilewash.com/api/index.php?r=washing/wash30secondtimer',
+  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&wash_request_id="+wash_request_id
+}, function(error, response, body){
+            try
+       {
+         
+         if(socket_id) io.sockets.connected[socket_id].emit('washing_wash30secondtimer_'+wash_request_id, JSON.parse(body));
+  else io.emit('washing_wash30secondtimer_'+wash_request_id, JSON.parse(body));
+       }
+       catch(err)
+       {
+
+       }     
+            
+});
+//getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
+}
+
 io.on('connection', function(socket){
 console.log(socket.handshake.query.auth_token);
 //connectedusers.push(socket.id);
@@ -415,6 +437,11 @@ else{
    socket.on('getcustomerpaymentmethods', function(data){
       //console.log(data);
     customers_getcustomerpaymentmethods(data.customer_id, data.socketId);
+  });
+   
+     socket.on('getwash30secondtimer', function(data){
+      //console.log(data);
+    washing_getwash30secondtimer(data.wash_request_id, data.socketId);
   });
    
 

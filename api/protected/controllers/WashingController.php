@@ -3767,7 +3767,7 @@ $cust_exists = Customers::model()->findByAttributes(array("id"=>$wash_request_ex
 
                 foreach($car_arr as $ind=>$carid){
 
-
+$wash_time = 0;
                    $cardata = Vehicle::model()->findByAttributes(array("id"=>$carid));
 
 if($cardata->vehicle_type != 'S' && $cardata->vehicle_type != 'M' && $cardata->vehicle_type != 'L' && $cardata->vehicle_type != 'E'){
@@ -12136,6 +12136,49 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 		Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 1));
         }
 
+
+       }
+       
+       
+             public function actionwash30secondtimer() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$result = 'false';
+$response = 'enter wash id';
+	$wash_request_id  = Yii::app()->request->getParam('wash_request_id');
+	
+		if(AES256CBC_STATUS == 1){
+$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+}
+
+
+	$wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
+$time_left = 0;
+	if(!count($wash_id_check)){
+	$result = 'false';
+	$response = 'invalid wash id';
+	}
+	else{
+		$result = 'true';
+		$response = 'wash 30 second time';
+		
+		$timer_start_point = 30;
+		$time_left = $timer_start_point - (time() - strtotime($wash_id_check->upgrade_requested_at));
+		if($time_left < 0) $time_left = 0;
+		
+	}
+  
+  $json = array(
+            'result'=> $result,
+            'response'=> $response,
+	    'time_left' => $time_left
+        );
+
+        echo json_encode($json); die();
 
        }
        
