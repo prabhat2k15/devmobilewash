@@ -329,6 +329,7 @@ request.post({
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/wash30secondtimer',
   body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&wash_request_id="+wash_request_id
 }, function(error, response, body){
+  //console.log("inside 30 timer"+JSON.parse(body));
             try
        {
          

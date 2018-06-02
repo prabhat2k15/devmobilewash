@@ -584,7 +584,7 @@ socketId = socket.io.engine.id;
     socket.emit('get_agentsbystatus',{socketId:socketId});
     socket.emit('get_clientsbystatus',{socketId:socketId});
     
-    }, 5000);
+    }, 60000);
   
 });
   
