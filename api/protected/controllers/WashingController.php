@@ -4637,7 +4637,10 @@ if($min_diff >= 1){
 		
 		if(AES256CBC_STATUS == 1){
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+$status = $this->aes256cbc_crypt( $status, 'd', AES256CBC_API_PASS );
 }
+$status = -1 * abs($status);
+
             $wash_id_check = Washingrequests::model()->findByAttributes(array("id" => $wash_request_id));
             if(!count($wash_id_check))
             {
