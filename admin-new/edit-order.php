@@ -966,7 +966,7 @@ display: none;
                                                         <div class="form-group">
                                                              <label class="control-label" style="margin-top: 0;">Re-Schedule Date</label>
 
-                                                        <input type="text" name="reschedule_date" id="reschedule_date" style="width: 300px;" class="form-control date-picker" value="" />
+                                                        <input type="text" name="reschedule_date" id="reschedule_date" style="width: 300px;" class="form-control date-picker" value="" autocomplete="off" />
 
                                                         </div>
                                                      </div>
@@ -975,7 +975,7 @@ display: none;
                                                         <div class="form-group">
                                                              <label class="control-label">Re-Schedule Time</label>
 
-                                                            <input type="text" name="reschedule_time" id="reschedule_time" style="width: 300px;" class="form-control timepicker timepicker-default" value="" />
+                                                            <input type="text" name="reschedule_time" id="reschedule_time" style="width: 300px;" class="form-control timepicker timepicker-default" value="" autocomplete="off" />
 
                                                        </div>
                                                      </div>
