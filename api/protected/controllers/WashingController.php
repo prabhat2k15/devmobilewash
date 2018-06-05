@@ -1355,8 +1355,8 @@ $washrequestid = $this->aes256cbc_crypt( $washrequestid, 'e', AES256CBC_API_PASS
         echo json_encode($json); die();
         }
 	
-	
-        if((isset($order_id) && intval($order_id) != 0) && (isset($customer_id) && !empty($customer_id)) && (isset($car_ids) && !empty($car_ids)) && (isset($package_ids) && !empty($package_ids)) && (isset($estimate_time) && !empty($estimate_time)))
+	// && intval($order_id) != 0
+        if((isset($order_id)) && (isset($customer_id) && !empty($customer_id)) && (isset($car_ids) && !empty($car_ids)) && (isset($package_ids) && !empty($package_ids)) && (isset($estimate_time) && !empty($estimate_time)))
         {
 
 	

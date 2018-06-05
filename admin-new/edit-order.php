@@ -1727,6 +1727,17 @@ if($savedroplogdata->result == 'true'):?>
                                                              <p style="margin-top: 20px;"><input type="button" class="send_washer_push" value="Send" /></p>
                                                              <p class="status-text">Push sent</p>
                                                        </div>
+
+                                                       <div class="form-group">
+                                                             <label class="control-label">Customer Note</label>
+                                                           <textarea name="notes" id="cst_notes" style="width: 313px; height: 100px;" class="form-control"><?php echo $custdetails->customer_notes;?></textarea>
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                             <p style="margin-top: 20px;"><input type="button" value="save" id="customer_note"/></p>
+                                                       </div>
+
                                                         <?php if(count($getorder->vehicles) > 0 && ($getorder->status > 0)): ?>
                                                        <div class="form-group" style="display: block; clear: both; margin-bottom: 60px;">
                                                       
@@ -1804,6 +1815,18 @@ if($savedroplogdata->result == 'true'):?>
 <script>
 var current_vehicle_id;
   $( function() {
+
+    $('#customer_note').on('click', function(){
+          var notes = $('#cst_notes').val();
+          
+          $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/NotesUpdate", { customer_id: "<?php echo $getorder->customer_id; ?>",notes : notes, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+}
+      });
+      });
+
     $( "#cancel-order-pop" ).dialog({
       resizable: false,
  autoOpen: false,

@@ -1563,7 +1563,7 @@ $cust_id = $this->aes256cbc_crypt( $cust_id, 'e', AES256CBC_API_PASS );
 					'customername' => $customers_id->customername,
 					'image' => $customers_id->image,
 					'contact_number' => $customers_id->contact_number,
-'how_hear_mw' => $customers_id->how_hear_mw,
+                    'how_hear_mw' => $customers_id->how_hear_mw,
                     'email_alerts' => $customers_id->email_alerts,
                     'push_notifications' => $customers_id->push_notifications,
 					'phone_verified'=> $customers_id->phone_verified,
@@ -1574,9 +1574,9 @@ $cust_id = $this->aes256cbc_crypt( $cust_id, 'e', AES256CBC_API_PASS );
 					'rating'=> $customers_id->rating,
                     'customer_locations'=> $locations,
                     'customer_vehicles'=> $vehicles,
-		    'last_used_device' => $clientdevices,
-                   'is_schedule_popup_shown'=> $customers_id->is_schedule_popup_shown
-
+		            'last_used_device' => $clientdevices,
+                    'is_schedule_popup_shown'=> $customers_id->is_schedule_popup_shown,
+                    'customer_notes'=> $customers_id->notes,
 				);
 			}else{
 				$json = array(
@@ -6375,7 +6375,8 @@ die();
 'how_hear_mw'=> $customerdetail['how_hear_mw'],
                 'image'=> $image,
                 'hours_opt_check' => $customerdetail['hours_opt_check'],
-                'block_client' => $customerdetail['block_client']
+                'block_client' => $customerdetail['block_client'],
+                'notes'=>$customerdetail['notes'],
             );
              echo json_encode($json);
              exit;
@@ -6410,6 +6411,7 @@ die();
 $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
 $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
 $block_client = Yii::app()->request->getParam('block_client');
+$notes = Yii::app()->request->getParam('notes');
 
 $contact_number = preg_replace('/\D/', '', $contact_number);
 
@@ -6443,7 +6445,7 @@ else{
          $online_status = $customers_exists->online_status;
      }
 
-     $data = array('customername'=> $customername,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client);
+     $data = array('customername'=> $customername,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes);
         //$data = array_filter($data);
 
         if($account_status == 0 || $account_status == 1)
@@ -6455,6 +6457,31 @@ else{
 $result = 'true';
 $response = 'updated successfully';
 }
+
+                $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+
+         echo json_encode($json);
+         die();
+
+    }
+
+public function actionNotesUpdate(){
+if(Yii::app()->request->getParam('key') != API_KEY){
+    echo "Invalid api key";
+    die();
+}
+        $notes = Yii::app()->request->getParam('notes');
+        $id = Yii::app()->request->getParam('customer_id');
+        
+        if(!empty($id) && !empty($notes)){
+            $data = array("notes" => $notes);
+            $update_agents = Customers::model()->updateAll($data,'id=:id',array(':id'=>$id));
+            $result = 'true';
+            $response = 'updated successfully';
+        }
 
                 $json = array(
                 'result'=> $result,
