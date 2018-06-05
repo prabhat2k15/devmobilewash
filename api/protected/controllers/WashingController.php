@@ -2097,7 +2097,7 @@ $customername = ucwords($customername);
         $json = array();
 	
 	if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
-$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+if($agent_id) $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
 
@@ -2667,6 +2667,8 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 
                 if(Yii::app()->request->getParam('washer_drop_job') == 1)
                 {
+			
+			
 			
 			Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0, "is_washer_assigned_push_sent" => 0));
 			
@@ -3582,6 +3584,11 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 		// upgrade started
 		if($upgrade_pack==11){
 		Vehicle::model()->updateByPk($vehicle_id, array("upgrade_pack" => $upgrade_pack));	
+		}
+		
+		// upgrade canceled
+		if($upgrade_pack=='zero'){
+		Vehicle::model()->updateByPk($vehicle_id, array("upgrade_pack" => 0));	
 		}
 
                 $wrequest_obj = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id, 'customer_id'=> $customer_id));
