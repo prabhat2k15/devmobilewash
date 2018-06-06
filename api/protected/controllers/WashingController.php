@@ -2653,7 +2653,8 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 	    
 	    Washingrequests::model()->updateByPk($wash_request_id, array("is_washer_assigned_push_sent" => 1));
 		}
-
+            $get_data = Yii::app()->db->createCommand("SELECT count(*) as count FROM activity_logs WHERE agent_id = ".$agent_id." AND agent_company_id = ".$agent_detail->real_washer_id." AND action = 'savejob' AND wash_request_id = ".$wash_request_id)->queryAll();
+                    if($get_data[0]['count'] == 0){
                     $washeractionlogdata = array(
                         'agent_id'=> $agent_id,
                         'wash_request_id'=> $wash_request_id,
@@ -2662,7 +2663,7 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                         'action_date'=> date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
-
+                    }
                 }
 
                 if(Yii::app()->request->getParam('washer_drop_job') == 1)
@@ -4798,6 +4799,14 @@ $status = -1 * abs($status);
 
                     //else Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => $status_text, 'order_temp_assigned' => 0 ));
                }
+                 $agent_detail = Agents::model()->findByAttributes(array("id"=>$wash_id_check->agent_reject_ids));
+            $washeractionlogdata = array(
+            'wash_request_id'=> $wash_request_id,
+            'action'=> 'cancelorderwasher',
+            'agent_id'=> $wash_id_check->agent_reject_ids,
+            'agent_company_id'=> $agent_detail->real_washer_id,
+            'action_date'=> date('Y-m-d H:i:s'));
+            Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
             }
         }
 

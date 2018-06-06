@@ -1541,9 +1541,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php foreach($savedroplogdata->logs as $log): ?>
                                                           <?php if($log->action == 'savejob'): ?>
                                                           <?php if($log->admin_username): ?>
-                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> assigned #<?php echo $log->agent_company_id; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> Saved #<?php echo $log->agent_company_id; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php else: ?>
-                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> assigned <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">                            #<?php echo $log->agent_company_id; ?> Saved <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'dropjob'): ?>
@@ -1708,7 +1708,7 @@ if($savedroplogdata->result == 'true'):?>
                                                         </div>
                                                         <?php endif; ?>
                                                         <div class="form-group">
-                                                             <label class="control-label">Notes</label>
+                                                             <label class="control-label">Order Notes</label>
                                                            <textarea name="notes" id="notes" style="width: 313px; height: 277px;" class="form-control"><?php echo $getorder->notes; ?></textarea>
                                                         </div>
 
@@ -1729,7 +1729,7 @@ if($savedroplogdata->result == 'true'):?>
                                                        </div>
 
                                                        <div class="form-group">
-                                                             <label class="control-label">Customer Note</label>
+                                                             <label class="control-label">Customer Notes</label>
                                                            <textarea name="notes" id="cst_notes" style="width: 313px; height: 100px;" class="form-control"><?php echo $custdetails->customer_notes;?></textarea>
                                                         </div>
 
