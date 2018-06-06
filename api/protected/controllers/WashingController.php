@@ -12126,23 +12126,38 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 		$message = $pushmsg[0]['message'];
 		
 		foreach($allagents as $agent){
-			$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-			foreach($agentdevices as $agdevice){
+			
+			$get_notify = 1;
+						$agent_loc_obj = AgentLocations::model()->findByAttributes(array('agent_id'=>$agent->id));
+						if(count($agent_loc_obj)){
+							$theta = $wash_id_check->longitude - $agent_loc_obj->longitude;
+							$dist = sin(deg2rad($wash_id_check->latitude)) * sin(deg2rad($agent_loc_obj->latitude)) +  cos(deg2rad($wash_id_check->latitude)) * cos(deg2rad($agent_loc_obj->latitude)) * cos(deg2rad($theta));
+							$dist = acos($dist);
+							$dist = rad2deg($dist);
+							$miles = $dist * 60 * 1.1515;
 
-				$device_type = strtolower($agdevice['device_type']);
-				$notify_token = $agdevice['device_token'];
-				$alert_type = "schedule";
+							if($miles > 40) $get_notify = 0;
+						}
+			
+			if($get_notify){			
+				$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+				foreach($agentdevices as $agdevice){
 
-				$notify_msg = urlencode($message);
+					$device_type = strtolower($agdevice['device_type']);
+					$notify_token = $agdevice['device_token'];
+					$alert_type = "schedule";
 
-				$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+					$notify_msg = urlencode($message);
+
+					$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
 								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-				$ch = curl_init();
-				curl_setopt($ch,CURLOPT_URL,$notifyurl);
-				curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+					$ch = curl_init();
+					curl_setopt($ch,CURLOPT_URL,$notifyurl);
+					curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
-				if($notify_msg) $notifyresult = curl_exec($ch);
-				curl_close($ch);
+					if($notify_msg) $notifyresult = curl_exec($ch);
+					curl_close($ch);
+				}
 			}
 		}
 		
