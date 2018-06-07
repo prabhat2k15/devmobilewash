@@ -6943,6 +6943,122 @@ $theta = $origin_long - $dest_long;
             //$unit = strtoupper($unit);
 	    echo $miles;
 }
+
+
+      public function actionchecknewmobilewashreviews()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
+$result = 'false';
+$response = 'no reviews';
+
+$YELP_API_KEY = "6wdTOt8MCVehCgOUlAKUIJmn2lz8Y49VTTMNRJOfthpe_puknst-lq1qLUbAChdHmKKwu46yHi5ha-jaHg5U6ROk-Vj3VddIsd3s8j-D65kfrrYBDUKtMLsY6IQXW3Yx";
+
+
+ 
+        $curl = curl_init();
+
+        $url = "https://api.yelp.com/v3/businesses/mobilewash-los-angeles/reviews";
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,  // Capture response.
+            CURLOPT_ENCODING => "",  // Accept gzip/deflate/whatever.
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "authorization: Bearer " . $YELP_API_KEY,
+                "cache-control: no-cache",
+            ),
+        ));
+        $response = curl_exec($curl);
+      
+        curl_close($curl);
+    $yelp_reviews = json_decode($response);
+    
+if(count($yelp_reviews->reviews)){
+    foreach($yelp_reviews->reviews as $yreview){
+        if($yreview->rating == 5){
+            $review_check = Yii::app()->db->createCommand("SELECT * FROM `mobilewash_reviews` WHERE review_org_id = '".$yreview->id."'")->queryAll();
+            if(!count($review_check)) Yii::app()->db->createCommand("INSERT INTO `mobilewash_reviews` (`review_org_id`, `reviewer_name`, `reviewer_location`, `reviewer_photo`, `review`, `rating`, `review_date`, `review_url`, `review_source`) VALUES ('".$yreview->id."', '".$yreview->user->name."', '', '".$yreview->user->image_url."', '".$yreview->text."', '".$yreview->rating."', '".$yreview->time_created."', '".$yreview->url."', 'yelp'); ")->execute();
+        }
+        
+       
+    }
+}
+
+    $curl = curl_init();
+
+        $url = "https://api.appfigures.com/v2/reviews?client_key=f2c8c8f3be574cff9e0936846ba30c66";
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,  // Capture response.
+            CURLOPT_ENCODING => "",  // Accept gzip/deflate/whatever.
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+             CURLOPT_HTTPHEADER => array(
+                "Authorization: Basic " . base64_encode("mobilewash8@gmail.com:86102931"),
+                "cache-control: no-cache",
+            ),
+        ));
+        $response = curl_exec($curl);
+      
+        curl_close($curl);
+    $app_reviews = json_decode($response);
+    
+    if(count($app_reviews->reviews)){
+    foreach($app_reviews->reviews as $appreview){
+        if(($appreview->stars == 5) && ($appreview->store == 'apple')){
+            $app_review_escaped = str_replace("'","\'",$appreview->review);
+            $review_check = Yii::app()->db->createCommand("SELECT * FROM `mobilewash_reviews` WHERE review_org_id = '".$appreview->id."'")->queryAll();
+            if(!count($review_check)) Yii::app()->db->createCommand("INSERT INTO `mobilewash_reviews` (`review_org_id`, `reviewer_name`, `reviewer_location`, `reviewer_photo`, `review`, `rating`, `review_date`, `review_url`, `review_source`) VALUES ('".$appreview->id."', '".$appreview->author."', '', '', '".$app_review_escaped."', '".$appreview->stars."', '".date('Y-m-d H:i:s', strtotime($appreview->date))."', '', '".$appreview->store."'); ")->execute();
+        }
+        
+       
+    }
+}
+          
+        $result = 'true';
+                $response = 'reviews added';
+               
+               $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+            echo json_encode($json);
+            die();
+
+       
+    }
+    
+        public function actiongetallmobilewashreviews()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+	
+		$all_reviews = Yii::app()->db->createCommand("SELECT * FROM `mobilewash_reviews` ORDER BY review_date DESC LIMIT 5")->queryAll();
+		
+			$result = 'true';
+			$response = 'all reviews';
+			 $json = array(
+                'result'=> $result,
+                'response'=> $response,
+		'all_reviews' => $all_reviews
+            );
+			 echo json_encode($json);
+            die();
+		
+   
+    }
     
     
 }

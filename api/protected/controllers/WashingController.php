@@ -5191,11 +5191,22 @@ $min_diff = 0;
 $min_diff = round(($from_time - $to_time) / 60,2);
 
 $declinedids = explode(",",$pdrequest->agent_reject_ids);
+$miles = 0;
+$agent_loc_obj = AgentLocations::model()->findByAttributes(array('agent_id'=>$agent_id));
+						if(count($agent_loc_obj)){
+							$theta = $pdrequest->longitude - $agent_loc_obj->longitude;
+							$dist = sin(deg2rad($pdrequest->latitude)) * sin(deg2rad($agent_loc_obj->latitude)) +  cos(deg2rad($pdrequest->latitude)) * cos(deg2rad($agent_loc_obj->latitude)) * cos(deg2rad($theta));
+							$dist = acos($dist);
+							$dist = rad2deg($dist);
+							$miles = $dist * 60 * 1.1515;
+
+							
+						}
 
 if($agent_id){
 if (!in_array(-$agent_id, $declinedids)) {
 //if(($min_diff > 0) && ($agents_id_check->hours_opt_check == $cust_id_check->hours_opt_check)) $pendingwashcount++;
-if($min_diff > 0) $pendingwashcount++;
+if(($min_diff > 0) && ($miles <= 40)) $pendingwashcount++;
 }
 }
 }
