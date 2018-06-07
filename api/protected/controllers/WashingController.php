@@ -5268,12 +5268,13 @@ if(!$agent_has_order->create_wash_push_sent){
 
             if((count($agentdevices)) && (!$agentdetails->block_washer))
             {
-                foreach($agentdevices as $agdevice)
-                {
+		
+		
+		
                     //$message =  "You have a new scheduled wash request.";
                     //echo $agentdetails['mobile_type'];
-                    $device_type = strtolower($agdevice['device_type']);
-                    $notify_token = $agdevice['device_token'];
+                    $device_type = strtolower($agentdevices[0]['device_type']);
+                    $notify_token = $agentdevices[0]['device_token'];
                     $alert_type = "strong";
                     $notify_msg = urlencode($message);
 
@@ -5285,7 +5286,7 @@ if(!$agent_has_order->create_wash_push_sent){
 
                     if($notify_msg) $notifyresult = curl_exec($ch);
                     curl_close($ch);
-                }
+                
             }
 
 								
@@ -5430,6 +5431,7 @@ $pendingwashrequests[] = array('id'=>$agent_has_order->id,
 				  $response= 'wash request found';
 
 if(!$prequest['create_wash_push_sent']){
+	
 
 				  /* --- notification call --- */
 				  
@@ -5438,16 +5440,17 @@ if(!$prequest['create_wash_push_sent']){
 				  
 				     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agents_id_check->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-            if((count($agentdevices)) && (!$agentdetails->block_washer))
+
+	    if((count($agentdevices)) && (!$agentdetails->block_washer))
             {
-                foreach($agentdevices as $agdevice)
-                {
+               
                     //$message =  "You have a new scheduled wash request.";
                     //echo $agentdetails['mobile_type'];
-                    $device_type = strtolower($agdevice['device_type']);
-                    $notify_token = $agdevice['device_token'];
+                    $device_type = strtolower($agentdevices[0]['device_type']);
+                    $notify_token = $agentdevices[0]['device_token'];
                     $alert_type = "strong";
-                    $notify_msg = urlencode($message);
+                    //$notify_msg = urlencode($message." status: ".$prequest['create_wash_push_sent']." token: ".$agentdevices[0]['device_token']." type: ".$agentdevices[0]['device_type']." agent id: ".$agentdevices[0]['agent_id']);
+$notify_msg = urlencode($message);
 
                     $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
                     //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
@@ -5457,7 +5460,7 @@ if(!$prequest['create_wash_push_sent']){
 
                     if($notify_msg) $notifyresult = curl_exec($ch);
                     curl_close($ch);
-                }
+               
             }
 
 						
