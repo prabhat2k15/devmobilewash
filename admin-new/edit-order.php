@@ -1716,8 +1716,18 @@ if($savedroplogdata->result == 'true'):?>
                                                         <div class="form-group">
                                                              <p style="margin-top: 20px;"><input type="button" class="note_update" value="Save" /></p>
                                                        </div>
+                                                                
+                                                        <div class="form-group">
+                                                             <label class="control-label">Customer Notes</label>
+                                                           <textarea name="notes" id="cst_notes" style="width: 313px; height: 100px;" class="form-control"><?php echo $custdetails->customer_notes;?></textarea>
+                                                        </div>
 
- <div class="form-group">
+
+                                                        <div class="form-group">
+                                                             <p style="margin-top: 20px;"><input type="button" value="Save" id="customer_note"/></p>
+                                                       </div>
+
+                                                        <div class="form-group">
                                                              <label class="control-label">Washer Push Notification</label>
                                                            <textarea name="washer_push_msg" id="washer_push_msg" style="width: 313px; height: 100px;" class="form-control"></textarea>
                                                         </div>
@@ -1728,15 +1738,7 @@ if($savedroplogdata->result == 'true'):?>
                                                              <p class="status-text">Push sent</p>
                                                        </div>
 
-                                                       <div class="form-group">
-                                                             <label class="control-label">Customer Notes</label>
-                                                           <textarea name="notes" id="cst_notes" style="width: 313px; height: 100px;" class="form-control"><?php echo $custdetails->customer_notes;?></textarea>
-                                                        </div>
-
-
-                                                        <div class="form-group">
-                                                             <p style="margin-top: 20px;"><input type="button" value="save" id="customer_note"/></p>
-                                                       </div>
+                                                       
 
                                                         <?php if(count($getorder->vehicles) > 0 && ($getorder->status > 0)): ?>
                                                        <div class="form-group" style="display: block; clear: both; margin-bottom: 60px;">
