@@ -5723,5 +5723,41 @@ $washers_exists = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE (D
   }
 
     }
+    
+  public function actionNotesUpdate(){
+if(Yii::app()->request->getParam('key') != API_KEY){
+    echo "Invalid api key";
+    die();
+}
+        $notes = Yii::app()->request->getParam('notes');
+        $id = Yii::app()->request->getParam('customer_id');
+        $admin_command = Yii::app()->request->getParam('admin_command');
+        $admin_username = Yii::app()->request->getParam('admin_username');
+        $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+        
+        if(!empty($id) && !empty($notes)){
+            $data = array("notes" => $notes);
+            Agents::model()->updateByPk($id, $data);
+            $result = 'true';
+            $response = 'updated successfully';
+            if($admin_command == 'save-wash-note'){
+                 $washeractionlogdata = array(
+                        'wash_request_id'=> $wash_request_id,
+                        'admin_username' => $admin_username,
+                        'action'=> 'savewashnote',
+                        'action_date'=> date('Y-m-d H:i:s'));
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                }
+        }
+        
 
+                $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+
+         echo json_encode($json);
+         die();
+
+    }
 }

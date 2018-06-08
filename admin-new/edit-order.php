@@ -1558,6 +1558,12 @@ if($savedroplogdata->result == 'true'):?>
                                                             <?php if($log->action == 'savenote'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added note at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'savecustomernote'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added Customers note at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'savewashnote'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added washer note at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           <?php if($log->action == 'editorder'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> edited order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
@@ -1728,6 +1734,16 @@ if($savedroplogdata->result == 'true'):?>
                                                        </div>
 
                                                         <div class="form-group">
+                                                             <label class="control-label">Wahser Notes</label>
+                                                           <textarea name="notes" id="was_notes" style="width: 313px; height: 100px;" class="form-control"><?php echo $getorder->notes;?></textarea>
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                             <p style="margin-top: 20px;"><input type="button" value="Save" id="washer_note"/></p>
+                                                       </div>
+                                                                
+                                                        <div class="form-group">
                                                              <label class="control-label">Washer Push Notification</label>
                                                            <textarea name="washer_push_msg" id="washer_push_msg" style="width: 313px; height: 100px;" class="form-control"></textarea>
                                                         </div>
@@ -1818,10 +1834,21 @@ if($savedroplogdata->result == 'true'):?>
 var current_vehicle_id;
   $( function() {
 
+   $('#washer_note').on('click', function(){
+          var notes = $('#was_notes').val();
+          
+          $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=agents/NotesUpdate", { customer_id: "<?php echo $getorder->agent_id; ?>",admin_command: 'save-wash-note', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>",notes : notes, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+}
+      });
+      });
+      
     $('#customer_note').on('click', function(){
           var notes = $('#cst_notes').val();
           
-          $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/NotesUpdate", { customer_id: "<?php echo $getorder->customer_id; ?>",notes : notes, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+          $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=customers/NotesUpdate", { customer_id: "<?php echo $getorder->customer_id; ?>",admin_command: 'save-customer-note', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>",notes : notes, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
@@ -3744,6 +3771,14 @@ if(data.result == 'true'){
           contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" added note at "+log.formatted_action_date+"</p>";  
       } 
       
+       if(log.action == 'savecustomernote'){
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" added Customers note at "+log.formatted_action_date+"</p>";  
+      } 
+       
+       if(log.action == 'savewashnote'){
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" added washer note at "+log.formatted_action_date+"</p>";  
+      } 
+       
        if(log.action == 'editorder'){
           contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" edited order at "+log.formatted_action_date+"</p>";  
       } 
