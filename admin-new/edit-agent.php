@@ -61,22 +61,91 @@ $jsondata_permission = json_decode($result_permission);
 <?php include('navigation-employee.php') ?>
 <?php endif; ?>
 <?php
+$err = '';
+ $handle = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
+            curl_setopt($handle, CURLOPT_POST, true);
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('agent_id' => $_GET['id'], 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+            $result = curl_exec($handle);
+            curl_close($handle);
+            $profiledetail = json_decode($result);
+	    
+function getImageSizeKeepAspectRatio( $imageUrl, $maxWidth, $maxHeight)
+{
+	$imageDimensions = getimagesize($imageUrl);
+	$imageWidth = $imageDimensions[0];
+	$imageHeight = $imageDimensions[1];
+	$imageSize['width'] = $imageWidth;
+	$imageSize['height'] = $imageHeight;
+	if($imageWidth > $maxWidth || $imageHeight > $maxHeight)
+	{
+		if ( $imageWidth > $imageHeight ) {
+	    	$imageSize['height'] = floor(($imageHeight/$imageWidth)*$maxWidth);
+  			$imageSize['width']  = $maxWidth;
+		} else {
+			$imageSize['width']  = floor(($imageWidth/$imageHeight)*$maxHeight);
+			$imageSize['height'] = $maxHeight;
+		}
+	}
+	return $imageSize;
+}
     if(isset($_POST['edit-agent-submit'])){
-
 
         if(!empty($_FILES['image']['tmp_name']))
             {
+		
+	$image_info = getimagesize($_FILES["image"]["tmp_name"]);
+$image_width = $image_info[0];
+$image_height = $image_info[1];
+$size = $_FILES['image']['size'];
 
-                $profile_pic = $_FILES['image']['tmp_name'];
+$new_dimension = getImageSizeKeepAspectRatio($_FILES["image"]["tmp_name"], "200", "200");
+
+ $profile_pic = $_FILES['image']['tmp_name'];
                 $profile_pic_type = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
-                $picname = $_GET['id']."_".$md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/'.$picname);
-                $profileimg = ROOT_URL.'/api/images/agent_img/'.$picname;
+                 $picname = $_GET['id']."_".$md5.".".$profile_pic_type;
+                
+if($image_width != $image_height){
+    $err = "Please upload a square size image<br>";
+    $profileimg = $profiledetail->image;
+   
+}
+else{
+if($size > 20000){
+
+$resize_image = ROOT_WEBFOLDER.'/public_html/api/images/agent_img/'.$picname; 
+
+
+list( $width,$height ) = getimagesize( $_FILES["image"]["tmp_name"] );
+
+$thumb = imagecreatetruecolor( $new_dimension['width'], $new_dimension['height'] );
+
+	if ($image_info['mime'] == 'image/jpeg')
+        			$source = imagecreatefromjpeg($_FILES["image"]["tmp_name"]);
+
+    		elseif ($image_info['mime'] == 'image/gif')
+        			$source = imagecreatefromgif($_FILES["image"]["tmp_name"]);
+
+   		elseif ($image_info['mime'] == 'image/png')
+        			$source = imagecreatefrompng($_FILES["image"]["tmp_name"]);
+        			
+
+imagecopyresized($thumb, $source, 0, 0, 0, 0, $new_dimension['width'], $new_dimension['height'], $width, $height);
+
+imagejpeg( $thumb, $resize_image, 90 );
+}
+else{
+move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/'.$picname);
+}
+$profileimg = ROOT_URL.'/api/images/agent_img/'.$picname;
+            }
+
+
             }
             else
             {
-                $profileimg = '';
+                $profileimg = $profiledetail->image;
             }
 
             // END PRFILE IMAGE //
@@ -263,6 +332,10 @@ $jsondata_permission = json_decode($result_permission);
 
             $response = $jsondata->response;
             $result_code = $jsondata->result;
+	    
+	    if($result_code == 'false'){
+                $err .= $response."<br>";
+            }
 
          
     }
@@ -316,10 +389,10 @@ a:hover{
                     <!-- END PAGE HEADER-->
                     <form action="" class="form-horizontal" method="post" enctype="multipart/form-data">
                                                     <div class="form-body" style="padding: 10px 0px 0px 20px;">
-                                                     <?php if($result_code == "false"){
-                                                     echo "<p style='padding: 10px; background: red; color: #fff;'><?php echo $response; ?></p>";
+                                                     <?php if(!empty($err)){
+                                                     echo "<p style='padding: 10px; background: red; color: #fff;'>".$err."</p>";
                                                     } ?>
-<?php if($result_code == "true" && $response == 'Profile updated'){ 
+<?php if((!empty($_POST)) && (empty($err))){ 
 echo "<p style='padding: 10px; background: green; color: #fff;'>Update successful</p>";
                                                     } ?>
                                                         <h3 class="form-section" style="margin: 30px 0; padding-bottom: 5px; border-bottom: 1px solid #e7ecf1;">Personal Info</h3>
