@@ -61,21 +61,91 @@ $jsondata_permission = json_decode($result_permission);
 <?php include('navigation-employee.php') ?>
 <?php endif; ?>
 <?php
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
+curl_setopt($handle_data, CURLOPT_POST, true);
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customerid' => $_GET['customerID'], 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle_data);
+curl_close($handle_data);
+$custdetails = json_decode($result);
 $err = '';
+function getImageSizeKeepAspectRatio( $imageUrl, $maxWidth, $maxHeight)
+{
+	$imageDimensions = getimagesize($imageUrl);
+	$imageWidth = $imageDimensions[0];
+	$imageHeight = $imageDimensions[1];
+	$imageSize['width'] = $imageWidth;
+	$imageSize['height'] = $imageHeight;
+	if($imageWidth > $maxWidth || $imageHeight > $maxHeight)
+	{
+		if ( $imageWidth > $imageHeight ) {
+	    	$imageSize['height'] = floor(($imageHeight/$imageWidth)*$maxWidth);
+  			$imageSize['width']  = $maxWidth;
+		} else {
+			$imageSize['width']  = floor(($imageWidth/$imageHeight)*$maxHeight);
+			$imageSize['height'] = $maxHeight;
+		}
+	}
+	return $imageSize;
+}
     if(isset($_POST['hidden'])){
 
             if(!empty($_FILES['image']['tmp_name']))
             {
-                $profile_pic = $_FILES['image']['tmp_name'];
+                
+                 $image_info = getimagesize($_FILES["image"]["tmp_name"]);
+$image_width = $image_info[0];
+$image_height = $image_info[1];
+$size = $_FILES['image']['size'];
+
+$new_dimension = getImageSizeKeepAspectRatio($_FILES["image"]["tmp_name"], "200", "200");
+
+ $profile_pic = $_FILES['image']['tmp_name'];
                 $profile_pic_type = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                 $md5 = md5(uniqid(rand(), true));
                 $picname = $_POST['id']."_".$md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/cust_img/'.$picname);
-                $profileimg = ROOT_URL.'/api/images/cust_img/'.$picname;
+                
+if($image_width != $image_height){
+    $err = "Please upload a square size image<br>";
+    $profileimg = $custdetails->image;
+   
+}
+else{
+if($size > 20000){
+
+$resize_image = ROOT_WEBFOLDER.'/public_html/api/images/cust_img/'.$picname; 
+
+
+list( $width,$height ) = getimagesize( $_FILES["image"]["tmp_name"] );
+
+$thumb = imagecreatetruecolor( $new_dimension['width'], $new_dimension['height'] );
+
+	if ($image_info['mime'] == 'image/jpeg')
+        			$source = imagecreatefromjpeg($_FILES["image"]["tmp_name"]);
+
+    		elseif ($image_info['mime'] == 'image/gif')
+        			$source = imagecreatefromgif($_FILES["image"]["tmp_name"]);
+
+   		elseif ($image_info['mime'] == 'image/png')
+        			$source = imagecreatefrompng($_FILES["image"]["tmp_name"]);
+        			
+
+imagecopyresized($thumb, $source, 0, 0, 0, 0, $new_dimension['width'], $new_dimension['height'], $width, $height);
+
+imagejpeg( $thumb, $resize_image, 90 );
+}
+else{
+move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/cust_img/'.$picname);
+}
+$profileimg = ROOT_URL.'/api/images/cust_img/'.$picname;
+            }
+               
+                
+                
             }
             else
             {
-                $profileimg = '';
+                $profileimg = $custdetails->image;
             }
 
             // END PROFILE IMAGE //
@@ -123,11 +193,11 @@ $err = '';
 
             if($response == "updated successfully" && $result_code == "true"){
                 ?>
-            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-customer.php?customerID=<?php echo $id; ?>&cnf=done"</script>
+           
             <?php
             }
             if($result_code == 'false'){
-                $err = $response;
+                $err .= $response."<br>";
             }
     }
 
@@ -200,7 +270,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
                     <!-- END PAGE TITLE-->
                     <!-- END PAGE HEADER-->
                     <div class="row">
-                        <?php if(!empty($_GET['cnf'])){ ?>
+                        <?php if((!empty($_POST)) && (empty($err))){ ?>
                         <div class="col-md-12">
                             <p style="background-color: rgb(255, 255, 255); height: 34px; padding: 6px 0px 0px 10px; color: green;">SAVE SUCCESSFULLY</p>
                         </div>
@@ -209,7 +279,9 @@ $how_hear_mw = $jsondata->how_hear_mw;
                         <div class="col-md-12">
                             <p style="background-color: rgb(255, 255, 255); height: 34px; padding: 6px 0px 0px 10px; color: red;"><?php echo $err; ?></p>
                         </div>
-                        <?php } ?>
+                        <?php }
+                        
+                        ?>
                         <div class="col-md-12">
                             <!-- BEGIN PROFILE SIDEBAR -->
                             <div class="profile-sidebar">

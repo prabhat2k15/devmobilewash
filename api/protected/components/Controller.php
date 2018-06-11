@@ -725,7 +725,8 @@ if(!count($total_cars)){
 else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transaction_id);
 
                     if($Bresult['transaction_id']){
-                       $card_no = $Bresult['card_no'];
+                       if($Bresult['card_no_last4']) $card_no = "************".$Bresult['card_no_last4'];
+		       else $card_no = '';
                        $card_exp_mo = $Bresult['exp_mo'];
                         $card_exp_yr = $Bresult['exp_yr'];
                          $cardholder_name = $Bresult['cardholder_name'];
