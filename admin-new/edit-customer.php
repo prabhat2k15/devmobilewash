@@ -28,6 +28,7 @@ $jsondata_permission = json_decode($result_permission);
         <link href="assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
+        <link href="css/croppie.css" rel="stylesheet" type="text/css" />
         <!-- BEGIN THEME LAYOUT STYLES -->
         <script>
 
@@ -69,89 +70,26 @@ $result = curl_exec($handle_data);
 curl_close($handle_data);
 $custdetails = json_decode($result);
 $err = '';
-function getImageSizeKeepAspectRatio( $imageUrl, $maxWidth, $maxHeight)
-{
-	$imageDimensions = getimagesize($imageUrl);
-	$imageWidth = $imageDimensions[0];
-	$imageHeight = $imageDimensions[1];
-	$imageSize['width'] = $imageWidth;
-	$imageSize['height'] = $imageHeight;
-	if($imageWidth > $maxWidth || $imageHeight > $maxHeight)
-	{
-		if ( $imageWidth > $imageHeight ) {
-	    	$imageSize['height'] = floor(($imageHeight/$imageWidth)*$maxWidth);
-  			$imageSize['width']  = $maxWidth;
-		} else {
-			$imageSize['width']  = floor(($imageWidth/$imageHeight)*$maxHeight);
-			$imageSize['height'] = $maxHeight;
-		}
-	}
-	return $imageSize;
-}
+
     if(isset($_POST['hidden'])){
+        
+        if(!empty($_POST['custnewpic'])){
 
-            if(!empty($_FILES['image']['tmp_name']))
-            {
-                
-                 $image_info = getimagesize($_FILES["image"]["tmp_name"]);
-$image_width = $image_info[0];
-$image_height = $image_info[1];
-$size = $_FILES['image']['size'];
+$data = $_POST['custnewpic'];
 
-$new_dimension = getImageSizeKeepAspectRatio($_FILES["image"]["tmp_name"], "200", "200");
-
- $profile_pic = $_FILES['image']['tmp_name'];
-                $profile_pic_type = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $md5 = md5(uniqid(rand(), true));
-                $picname = $_POST['id']."_".$md5.".".$profile_pic_type;
-                
-if($image_width != $image_height){
-    $err = "Please upload a square size image<br>";
-    $profileimg = $custdetails->image;
-   
-}
-else{
-if($size > 20000){
-
-$resize_image = ROOT_WEBFOLDER.'/public_html/api/images/cust_img/'.$picname; 
-
-
-list( $width,$height ) = getimagesize( $_FILES["image"]["tmp_name"] );
-
-$thumb = imagecreatetruecolor( $new_dimension['width'], $new_dimension['height'] );
-
-	if ($image_info['mime'] == 'image/jpeg')
-        			$source = imagecreatefromjpeg($_FILES["image"]["tmp_name"]);
-
-    		elseif ($image_info['mime'] == 'image/gif')
-        			$source = imagecreatefromgif($_FILES["image"]["tmp_name"]);
-
-   		elseif ($image_info['mime'] == 'image/png')
-        			$source = imagecreatefrompng($_FILES["image"]["tmp_name"]);
-        			
-
-imagecopyresized($thumb, $source, 0, 0, 0, 0, $new_dimension['width'], $new_dimension['height'], $width, $height);
-
-imagejpeg( $thumb, $resize_image, 90 );
-}
-else{
-move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/cust_img/'.$picname);
-}
+$data = str_replace('data:image/jpeg;base64,', '', $data);
+$data = str_replace(' ', '+', $data);
+$data = base64_decode($data);
+$md5 = md5(uniqid(rand(), true));
+$picname = $_POST['id']."_".$md5.".jpg";
+file_put_contents(ROOT_WEBFOLDER.'/public_html/api/images/cust_img/'.$picname, $data);
 $profileimg = ROOT_URL.'/api/images/cust_img/'.$picname;
-            }
-               
-                
-                
-            }
-            else
-            {
-                $profileimg = $custdetails->image;
-            }
+}
+else{
+  $profileimg = $custdetails->image;  
+}
 
-            // END PROFILE IMAGE //
-
-
-
+   
             $id = $_POST['id'];
             $customername = $_POST['customername'];
             $email = $_POST['email'];
@@ -255,6 +193,40 @@ $how_hear_mw = $jsondata->how_hear_mw;
 .green{
 	background-color: green !important;
     border-color: green;
+}
+
+#cust-image-crop{
+    display: none;
+     width: 300px; 
+      height: 300px;
+      margin-bottom: 55px;
+     
+}
+
+.profile-userpic img {
+    float: none;
+    margin: 0 auto;
+    width: 200px;
+    height: 200px;
+    -webkit-border-radius: 50%!important;
+    -moz-border-radius: 50%!important;
+    border-radius: 50%!important;
+    box-shadow: 0 0 5px #ccc;
+}
+
+.crop-result{
+    color: rgb(255, 255, 255);
+    background-color: rgb(50, 197, 210);
+    border: 1px solid rgb(50, 197, 210);
+    padding: 6px 7px 7px 6px;
+    border-radius: 3px;
+    margin-top: 20px;
+    display: block;
+    width: 75px;
+    text-align: center;
+    text-decoration: none !important;
+    color: #fff;
+    display: none;
 }
 </style>
 <div class="page-content-wrapper">
@@ -448,18 +420,10 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                                     <div class="tab-pane" id="tab_1_2">
 
                                                             <div class="form-group">
-                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                    <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-                                                                        <img src="<?php echo $image; ?>" alt="" /> </div>
-                                                                    <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"> </div>
-                                                                    <div>
-                                                                        <span class="btn default btn-file">
-                                                                            <span class="fileinput-new"> Select image </span>
-                                                                            <span class="fileinput-exists"> Change </span>
-                                                                            <input type="file" name="image" value="<?php echo $image; ?>" /> </span>
-                                                                        <a href="javascript:;" class="btn default fileinput-exists" data-dismiss="fileinput"> Remove </a>
-                                                                    </div>
-                                                                </div>
+                                                                <div id="cust-image-crop"></div>
+                                                                <input type="file" id="upload-custpic" value="Choose a file" accept="image/*" />
+                                                                <a href="javascript:void(0)" class="crop-result">Crop</a>
+                                                                <input type="hidden" class="custnewpic" name="custnewpic" />
                                                             </div>
 
                                                     </div>
@@ -550,3 +514,58 @@ $how_hear_mw = $jsondata->how_hear_mw;
         <script src="assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
         <script src="assets/global/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-markdown/lib/markdown.js" type="text/javascript"></script>
+        <script src="js/croppie.js" type="text/javascript"></script>
+        <script>
+            
+           	function custprofilepicupload() {
+		var $uploadCrop;
+
+		function readFile(input) {
+ 			if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+					//$('.upload-demo').addClass('ready');
+					$('#cust-image-crop').show();
+                                        $('.crop-result').css('display', 'block');
+	            	$uploadCrop.croppie('bind', {
+	            		url: e.target.result
+	            	}).then(function(){
+	            		//console.log('jQuery bind complete');
+	            	});
+	            	
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	        else {
+		        alert("Sorry - you're browser doesn't support the FileReader API");
+		    }
+		}
+
+		$uploadCrop = $('#cust-image-crop').croppie({
+			viewport: {
+				width: 200,
+				height: 200,
+				type: 'circle'
+			},
+			enableExif: false
+		});
+
+		$('#upload-custpic').on('change', function () { readFile(this); });
+		$('.crop-result').on('click', function (ev) {
+			$uploadCrop.croppie('result', {
+				type: 'canvas',
+				size: 'viewport',
+				circle: false,
+				quality: .9,
+				format: 'jpeg'
+			}).then(function (resp) {
+				$('.profile-sidebar .profile-userpic img').attr('src', resp);
+				$('.custnewpic').val(resp);
+			});
+		});
+	}
+	
+	custprofilepicupload();
+        </script>
