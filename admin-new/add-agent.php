@@ -15,6 +15,7 @@
         <link href="assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
+	<link href="css/croppie.css" rel="stylesheet" type="text/css" />
         <!-- BEGIN THEME LAYOUT STYLES -->
         <script>
 
@@ -44,20 +45,22 @@
 <?php include('right-sidebar.php') ?>
 <?php
     if(isset($_POST['hidden'])){
+	
+		        if(!empty($_POST['agentnewpic'])){
 
-        if(!empty($_FILES['image']['tmp_name']))
-            {
-                $profile_pic = $_FILES['image']['tmp_name'];
-                $profile_pic_type = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $md5 = md5(uniqid(rand(), true));
-                $picname = $md5.".".$profile_pic_type;
-                move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/'.$picname);
-                $profileimg = ROOT_URL.'/api/images/agent_img/'.$picname;
-            }
-            else
-            {
-                $profileimg = '';
-            }
+$data = $_POST['agentnewpic'];
+
+$data = str_replace('data:image/jpeg;base64,', '', $data);
+$data = str_replace(' ', '+', $data);
+$data = base64_decode($data);
+$md5 = md5(uniqid(rand(), true));
+$picname = $md5.".jpg";
+file_put_contents(ROOT_WEBFOLDER.'/public_html/api/images/agent_img/'.$picname, $data);
+$profileimg = ROOT_URL.'/api/images/agent_img/'.$picname;
+}
+else{
+  $profileimg = '';  
+}
 
             // END PRFILE IMAGE //
 
@@ -270,6 +273,40 @@
 a:hover{
 	color: #fff !important;
 	text-decoration: none !important;
+}
+
+#agent-image-crop{
+    display: none;
+     width: 300px; 
+      height: 300px;
+      margin-bottom: 55px;
+     
+}
+
+#image_pic {
+
+    width: 200px;
+    height: 200px;
+    -webkit-border-radius: 50%!important;
+    -moz-border-radius: 50%!important;
+    border-radius: 50%!important;
+    box-shadow: 0 0 5px #ccc;
+    margin-bottom: 10px;
+}
+
+.crop-result{
+    color: rgb(255, 255, 255);
+    background-color: rgb(50, 197, 210);
+    border: 1px solid rgb(50, 197, 210);
+    padding: 6px 7px 7px 6px;
+    border-radius: 3px;
+    margin-top: 20px;
+    display: block;
+    width: 75px;
+    text-align: center;
+    text-decoration: none !important;
+    color: #fff;
+    display: none;
 }
 </style>
 <div class="page-content-wrapper">
@@ -655,6 +692,8 @@ a:hover{
                                                         <h3 class="form-section"  style="margin: 30px 0; padding-bottom: 5px; border-bottom: 1px solid #e7ecf1;">Upload</h3>
                                                         <!--/row-->
                                                         <div class="row" style="padding: 0px 0px 0px 15px;">
+							    <div id="agent-image-crop"></div>
+							    <a href="javascript:void(0)" class="crop-result">Crop</a>
                                             <div class="form-group" style="display: inline ! important;">
                                                                 <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
                                                                     <img id="driver_license_pic" class="driver_license_img" src="images/image_icon.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' />
@@ -668,8 +707,9 @@ a:hover{
                                                                     <img id="business_license_pic" class="business_license_img" src="images/image_icon.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' /> <a class="business_license_pic_link image-upload-btn" href="#" onclick="chooseFile('#business_license'); return false;">Business License</a> <input type="file" name="business_license" id="business_license" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadbusiness_license(event)" />
                                                                 </div>
                                                                 <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
-                                                                    <img id="image_pic" class="image_img" src="images/image_icon.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' /> <a class="image_pic_link image-upload-btn" href="#" onclick="chooseFile('#image'); return false;">Profile Pic</a> <input type="file" name="image" id="image" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadimage(event)" />
-                                                                </div>
+                                                                    <img id="image_pic" class="image_img" src="images/image_icon.png" /> <a class="image_pic_link image-upload-btn" href="#" onclick="chooseFile('#image'); return false;">Profile Pic</a> <input type="file" name="image" id="image" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadimage(event)" />
+                                                                <input type="hidden" class="agentnewpic" name="agentnewpic" />
+								</div>
 
 
                                             </div>
@@ -783,3 +823,58 @@ function chooseFile(fileid) {
         <script src="assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
         <script src="assets/global/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-markdown/lib/markdown.js" type="text/javascript"></script>
+	<script src="js/croppie.js" type="text/javascript"></script>
+        <script>
+            
+           	function custprofilepicupload() {
+		var $uploadCrop;
+
+		function readFile(input) {
+ 			if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+					//$('.upload-demo').addClass('ready');
+					$('#agent-image-crop').show();
+                                        $('.crop-result').css('display', 'block');
+	            	$uploadCrop.croppie('bind', {
+	            		url: e.target.result
+	            	}).then(function(){
+	            		//console.log('jQuery bind complete');
+	            	});
+	            	
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	        else {
+		        alert("Sorry - you're browser doesn't support the FileReader API");
+		    }
+		}
+
+		$uploadCrop = $('#agent-image-crop').croppie({
+			viewport: {
+				width: 200,
+				height: 200,
+				type: 'circle'
+			},
+			enableExif: false
+		});
+
+		$('#image').on('change', function () { readFile(this); });
+		$('.crop-result').on('click', function (ev) {
+			$uploadCrop.croppie('result', {
+				type: 'canvas',
+				size: 'viewport',
+				circle: false,
+				quality: .9,
+				format: 'jpeg'
+			}).then(function (resp) {
+				$('#image_pic').attr('src', resp);
+				$('.agentnewpic').val(resp);
+			});
+		});
+	}
+	
+	custprofilepicupload();
+        </script>

@@ -28,6 +28,7 @@ $jsondata_permission = json_decode($result_permission);
         <link href="assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
+	<link href="css/croppie.css" rel="stylesheet" type="text/css" />
         <!-- BEGIN THEME LAYOUT STYLES -->
         <script>
 
@@ -70,83 +71,24 @@ $err = '';
             curl_close($handle);
             $profiledetail = json_decode($result);
 	    
-function getImageSizeKeepAspectRatio( $imageUrl, $maxWidth, $maxHeight)
-{
-	$imageDimensions = getimagesize($imageUrl);
-	$imageWidth = $imageDimensions[0];
-	$imageHeight = $imageDimensions[1];
-	$imageSize['width'] = $imageWidth;
-	$imageSize['height'] = $imageHeight;
-	if($imageWidth > $maxWidth || $imageHeight > $maxHeight)
-	{
-		if ( $imageWidth > $imageHeight ) {
-	    	$imageSize['height'] = floor(($imageHeight/$imageWidth)*$maxWidth);
-  			$imageSize['width']  = $maxWidth;
-		} else {
-			$imageSize['width']  = floor(($imageWidth/$imageHeight)*$maxHeight);
-			$imageSize['height'] = $maxHeight;
-		}
-	}
-	return $imageSize;
-}
+
     if(isset($_POST['edit-agent-submit'])){
+	
+	        if(!empty($_POST['agentnewpic'])){
 
-        if(!empty($_FILES['image']['tmp_name']))
-            {
-		
-	$image_info = getimagesize($_FILES["image"]["tmp_name"]);
-$image_width = $image_info[0];
-$image_height = $image_info[1];
-$size = $_FILES['image']['size'];
+$data = $_POST['agentnewpic'];
 
-$new_dimension = getImageSizeKeepAspectRatio($_FILES["image"]["tmp_name"], "200", "200");
-
- $profile_pic = $_FILES['image']['tmp_name'];
-                $profile_pic_type = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $md5 = md5(uniqid(rand(), true));
-                 $picname = $_GET['id']."_".$md5.".".$profile_pic_type;
-                
-if($image_width != $image_height){
-    $err = "Please upload a square size image<br>";
-    $profileimg = $profiledetail->image;
-   
-}
-else{
-if($size > 20000){
-
-$resize_image = ROOT_WEBFOLDER.'/public_html/api/images/agent_img/'.$picname; 
-
-
-list( $width,$height ) = getimagesize( $_FILES["image"]["tmp_name"] );
-
-$thumb = imagecreatetruecolor( $new_dimension['width'], $new_dimension['height'] );
-
-	if ($image_info['mime'] == 'image/jpeg')
-        			$source = imagecreatefromjpeg($_FILES["image"]["tmp_name"]);
-
-    		elseif ($image_info['mime'] == 'image/gif')
-        			$source = imagecreatefromgif($_FILES["image"]["tmp_name"]);
-
-   		elseif ($image_info['mime'] == 'image/png')
-        			$source = imagecreatefrompng($_FILES["image"]["tmp_name"]);
-        			
-
-imagecopyresized($thumb, $source, 0, 0, 0, 0, $new_dimension['width'], $new_dimension['height'], $width, $height);
-
-imagejpeg( $thumb, $resize_image, 90 );
-}
-else{
-move_uploaded_file($profile_pic, ROOT_WEBFOLDER.'/public_html/api/images/agent_img/'.$picname);
-}
+$data = str_replace('data:image/jpeg;base64,', '', $data);
+$data = str_replace(' ', '+', $data);
+$data = base64_decode($data);
+$md5 = md5(uniqid(rand(), true));
+$picname = $_GET['id']."_".$md5.".jpg";
+file_put_contents(ROOT_WEBFOLDER.'/public_html/api/images/agent_img/'.$picname, $data);
 $profileimg = ROOT_URL.'/api/images/agent_img/'.$picname;
-            }
-
-
-            }
-            else
-            {
-                $profileimg = $profiledetail->image;
-            }
+}
+else{
+  $profileimg = $profiledetail->image;  
+}
 
             // END PRFILE IMAGE //
 
@@ -373,6 +315,40 @@ $profileimg = ROOT_URL.'/api/images/agent_img/'.$picname;
 a:hover{
 	color: #fff !important;
 	text-decoration: none !important;
+}
+
+#agent-image-crop{
+    display: none;
+     width: 300px; 
+      height: 300px;
+      margin-bottom: 55px;
+     
+}
+
+#image_pic {
+
+    width: 200px;
+    height: 200px;
+    -webkit-border-radius: 50%!important;
+    -moz-border-radius: 50%!important;
+    border-radius: 50%!important;
+    box-shadow: 0 0 5px #ccc;
+    margin-bottom: 10px;
+}
+
+.crop-result{
+    color: rgb(255, 255, 255);
+    background-color: rgb(50, 197, 210);
+    border: 1px solid rgb(50, 197, 210);
+    padding: 6px 7px 7px 6px;
+    border-radius: 3px;
+    margin-top: 20px;
+    display: block;
+    width: 75px;
+    text-align: center;
+    text-decoration: none !important;
+    color: #fff;
+    display: none;
 }
 </style>
 <div class="page-content-wrapper">
@@ -825,6 +801,8 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>Update successfu
                                                         <h3 class="form-section"  style="margin: 30px 0; padding-bottom: 5px; border-bottom: 1px solid #e7ecf1;">Upload</h3>
                                                         <!--/row-->
                                                         <div class="row" style="padding: 0px 0px 0px 15px;">
+							    <div id="agent-image-crop"></div>
+							    <a href="javascript:void(0)" class="crop-result">Crop</a>
                                             <div class="form-group" style="display: inline ! important;">
                                                                 <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
                                                                     <img id="driver_license_pic" class="driver_license_img" src="images/image_icon.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' />
@@ -839,7 +817,8 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>Update successfu
                                                                 </div>
                                                                 <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
                                                                     <img id="image_pic" class="image_img" src="<?php if($profiledetail->image) {echo $profiledetail->image;} else{echo "images/image_icon.png";} ?>" style='display: block; width: 200px; height: auto; cursor: pointer;' /> <a class="image_pic_link image-upload-btn" href="#" onclick="chooseFile('#image'); return false;">Profile Pic</a> <input type="file" name="image" id="image" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadimage(event)" />
-                                                                </div>
+								    <input type="hidden" class="agentnewpic" name="agentnewpic" />
+								</div>
 
 
                                             </div>
@@ -955,3 +934,58 @@ function chooseFile(fileid) {
         <script src="assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js" type="text/javascript"></script>
         <script src="assets/global/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-markdown/lib/markdown.js" type="text/javascript"></script>
+	<script src="js/croppie.js" type="text/javascript"></script>
+        <script>
+            
+           	function custprofilepicupload() {
+		var $uploadCrop;
+
+		function readFile(input) {
+ 			if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+					//$('.upload-demo').addClass('ready');
+					$('#agent-image-crop').show();
+                                        $('.crop-result').css('display', 'block');
+	            	$uploadCrop.croppie('bind', {
+	            		url: e.target.result
+	            	}).then(function(){
+	            		//console.log('jQuery bind complete');
+	            	});
+	            	
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	        else {
+		        alert("Sorry - you're browser doesn't support the FileReader API");
+		    }
+		}
+
+		$uploadCrop = $('#agent-image-crop').croppie({
+			viewport: {
+				width: 200,
+				height: 200,
+				type: 'circle'
+			},
+			enableExif: false
+		});
+
+		$('#image').on('change', function () { readFile(this); });
+		$('.crop-result').on('click', function (ev) {
+			$uploadCrop.croppie('result', {
+				type: 'canvas',
+				size: 'viewport',
+				circle: false,
+				quality: .9,
+				format: 'jpeg'
+			}).then(function (resp) {
+				$('#image_pic').attr('src', resp);
+				$('.agentnewpic').val(resp);
+			});
+		});
+	}
+	
+	custprofilepicupload();
+        </script>
