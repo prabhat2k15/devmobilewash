@@ -7,12 +7,13 @@ ini_set("date.timezone", "America/Los_Angeles");
 /* --- washing kart call --- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $_GET['orderid'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('wash_request_id' => $_GET['orderid'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'coupon_discount' => 0, 'api_password' => '', 'show_payment_method' => 'true');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
 curl_close($handle);
+
 $kartdata = json_decode($result);
 $per_car_wash_points_arr = explode(",", $kartdata->per_car_wash_points);
 /* --- washing kart call end --- */
@@ -580,7 +581,7 @@ margin: 0;
 </tr>
 </table>
 <div class="addi-details">
-<?php if($kartdata->transaction_id && $kartdata->card_no): ?>
+<?php if($kartdata->card_no): ?>
    <h3>Payment Method</h3>
    <p style="font-size: 14px;"><span style="display: block; float: left;"><img style="width: 24px; vertical-align: bottom; margin-right: 5px;" src="<?php echo $kartdata->card_img; ?>" /> <?php echo $kartdata->card_no; ?> <span style="margin-left: 5px;">(exp. <?php echo $kartdata->card_exp_mo."/".$kartdata->card_exp_yr; ?>)</span></span><span style="display: block; float: right;"><?php echo $kartdata->cardholder_name; ?></span>
  <div class="clear"></div>

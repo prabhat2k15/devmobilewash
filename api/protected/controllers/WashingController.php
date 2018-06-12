@@ -5592,7 +5592,7 @@ die();
 
     public function actionwashingkart(){
 
-           $kartapiresult = $this->washingkart(Yii::app()->request->getParam('wash_request_id'), Yii::app()->request->getParam('key'), Yii::app()->request->getParam('coupon_discount'), Yii::app()->request->getParam('api_password'));
+           $kartapiresult = $this->washingkart(Yii::app()->request->getParam('wash_request_id'), Yii::app()->request->getParam('key'), Yii::app()->request->getParam('coupon_discount'), Yii::app()->request->getParam('api_password'), Yii::app()->request->getParam('show_payment_method'));
 echo $kartapiresult;
 die();
 

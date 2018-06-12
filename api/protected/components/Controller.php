@@ -25,7 +25,7 @@ class Controller extends CController
 
 	/* view particular customer request */
 
-    public function washingkart($wash_request_id, $api_key, $coupon_discount = 0, $api_password = ''){
+    public function washingkart($wash_request_id, $api_key, $coupon_discount = 0, $api_password = '', $show_payment_method=''){
 
        if($api_key != API_KEY){
 echo "Invalid api key";
@@ -733,6 +733,30 @@ else $Bresult = Yii::app()->braintree->getTransactionById($wash_id_check->transa
                          $card_img = $Bresult['cardtype_img'];
                     }
                 }
+		else{
+		  if($show_payment_method == 'true'){
+		    
+		      if($cust_details->client_position == 'real') $Bresult = Yii::app()->braintree->getCustomerById_real($cust_details->braintree_id);
+else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_id);
+                //var_dump($Bresult);
+                if(count($Bresult->paymentMethods)){
+                 
+                  foreach($Bresult->paymentMethods as $index=>$paymethod){
+		     if($paymethod->isDefault()){
+			
+			$card_no = "************".$paymethod->last4;
+                       $card_exp_mo = $paymethod->expirationMonth;
+                        $card_exp_yr = $paymethod->expirationYear;
+                         if($paymethod->cardholderName) $cardholder_name = $paymethod->cardholderName;
+			 else $cardholder_name = '';
+                         $card_img = $paymethod->imageUrl;
+			 break;
+		     }
+                   
+                  }
+                }
+		  }
+		}
 
 			}
 		}
