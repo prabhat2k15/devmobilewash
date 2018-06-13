@@ -3435,153 +3435,8 @@ $nearagentsdetails = json_decode($output);*/
                 $response= 'Invalid wash request id';
             }
 
-/* else if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled) && ($nearagentsdetails->result == 'false')){
-
-
-$wash_time = strtotime($wrequest_id_check->created_date);
-$now_time = time();
-$time_diff = round(abs($now_time - $wash_time) / 60,2);
-
-
-if($time_diff > 1){
-
-    $result= 'false';
-                $response= 'No washer online within 20 miles';
-
-if($wrequest_id_check->transaction_id){
-   if($customer_id_check->client_position == 'real') Yii::app()->braintree->void_real($wrequest_id_check->transaction_id);
-   else Yii::app()->braintree->void($wrequest_id_check->transaction_id);
-}
-
- Washingrequests::model()->updateByPk($wash_request_id, array( 'status' => 5, 'no_washer_cancel' => 1));
-
-$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
-
-
-
-						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '22' ")->queryAll();
-						$message = $pushmsg[0]['message'];
-
-						foreach( $clientdevices as $ctdevice){
-
-							//echo $agentdetails['mobile_type'];
-							$device_type = strtolower($ctdevice['device_type']);
-							$notify_token = $ctdevice['device_token'];
-								$alert_type = "schedule";
-							$notify_msg = urlencode($message);
-
-							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-							$ch = curl_init();
-							curl_setopt($ch,CURLOPT_URL,$notifyurl);
-							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
-							if($notify_msg) $notifyresult = curl_exec($ch);
-							curl_close($ch);
-						}
-
-
-}
-else{
- $result= 'false';
-                $response= 'searching washer';
-}
-
-
-
-            }
-
-             else if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled) && ($wrequest_id_check->is_two_loops_reject)){
-                $result= 'false';
-                $response= 'no washers available';
-
-                if($wrequest_id_check->transaction_id){
-   if($customer_id_check->client_position == 'real') Yii::app()->braintree->void_real($wrequest_id_check->transaction_id);
-   else Yii::app()->braintree->void($wrequest_id_check->transaction_id);
-}
-
- Washingrequests::model()->updateByPk($wash_request_id, array( 'status' => 5, 'no_washer_cancel' => 1));
-
-$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ")->queryAll();
-
-
-						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '22' ")->queryAll();
-						$message = $pushmsg[0]['message'];
-
-						foreach( $clientdevices as $ctdevice){
-
-							//echo $agentdetails['mobile_type'];
-							$device_type = strtolower($ctdevice['device_type']);
-							$notify_token = $ctdevice['device_token'];
-								$alert_type = "schedule";
-							$notify_msg = urlencode($message);
-
-							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-							$ch = curl_init();
-							curl_setopt($ch,CURLOPT_URL,$notifyurl);
-							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
-							if($notify_msg) $notifyresult = curl_exec($ch);
-							curl_close($ch);
-						}
-
-            } */
-
-
             else{
-                /*if((!$wrequest_id_check->status) && (!$wrequest_id_check->agent_id) && (!$wrequest_id_check->is_scheduled)){
-                 if(strtotime($wrequest_id_check->wash_begin) > 0) $wash_time = strtotime($wrequest_id_check->wash_begin);
-                 else $wash_time = strtotime($wrequest_id_check->created_date);
-$now_time = time();
-$time_diff = round(abs($now_time - $wash_time) / 60,2);
 
-if($time_diff >= 10){
-    $result= 'false';
-                $response= 'no washers available';
-
-
-                if($wrequest_id_check->transaction_id){
-   if($customer_id_check->client_position == 'real') Yii::app()->braintree->void_real($wrequest_id_check->transaction_id);
-   else Yii::app()->braintree->void($wrequest_id_check->transaction_id);
-}
-
- Washingrequests::model()->updateByPk($wash_request_id, array( 'status' => 5, 'no_washer_cancel' => 1));
-
-$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-
-						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '22' ")->queryAll();
-						$message = $pushmsg[0]['message'];
-
-						foreach( $clientdevices as $ctdevice){
-
-							//echo $agentdetails['mobile_type'];
-							$device_type = strtolower($ctdevice['device_type']);
-							$notify_token = $ctdevice['device_token'];
-								$alert_type = "schedule";
-							$notify_msg = urlencode($message);
-
-							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-							file_put_contents("washing_notificaiton.log","order id ".$wrequest_id_check->id." - "."customer id ".$ctdevice['customer_id']." "."device id ".$ctdevice['id']." ".$notifyurl." source: checkwashrequeststatus<br><br>",FILE_APPEND);
-						
-							$ch = curl_init();
-							curl_setopt($ch,CURLOPT_URL,$notifyurl);
-							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
-							if($notify_msg) $notifyresult = curl_exec($ch);
-							curl_close($ch);
-						}
-
-  $json= array(
-                'result'=> $result,
-                'response'=> $response,
-		'no_washer_cancel' => 1
-            );
-        echo json_encode($json);
-        die();
-
-}
-}*/
 		// upgrade started
 		if($upgrade_pack==11){
 		Vehicle::model()->updateByPk($vehicle_id, array("upgrade_pack" => $upgrade_pack));	
@@ -3639,8 +3494,11 @@ $agent_details->id = $agent_id;
 
                     $cust_loc_obj = CustomerLocation::model()->findByAttributes(array('customer_id'=>$customer_id));
 
-                    $customer_details->latitude = $wrequest_obj->latitude;
+                    $customer_details->name = $customer_id_check->customername;
+		    $customer_details->photo = $customer_id_check->image;
+		    $customer_details->latitude = $wrequest_obj->latitude;
                     $customer_details->longitude = $wrequest_obj->longitude;
+		    
 
                     $car_ids = $wrequest_obj->car_list;
                     $car_ids = explode(",", $car_ids);
