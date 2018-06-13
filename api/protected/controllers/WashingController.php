@@ -3956,7 +3956,9 @@ $hours = floor($wash_time / 60);
 	    'upgrade_requested_at' => $wrequest_id_check->upgrade_requested_at,
             'vehicles' => $vehicles,
 	    'no_washer_cancel' => $wrequest_id_check->no_washer_cancel,
-	    'order_address' => $wrequest_id_check->address
+	    'order_address' => $wrequest_id_check->address,
+	    'latitude' => $wrequest_id_check->latitude,
+	    'longitude' => $wrequest_id_check->longitude
             );
         }
         else{
@@ -5333,6 +5335,7 @@ if(AES256CBC_STATUS == 1){
 						'customer_phoneno'=>$cust_details->contact_number,
 						'customer_photo'=>$cust_details->image,
 						'customer_rating' =>$cust_details->rating,
+						
 						'car_list'=>$agent_has_order->car_list,
 						'package_list'=>$agent_has_order->package_list,
 						'address'=>$agent_has_order->address,

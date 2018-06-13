@@ -91,6 +91,8 @@ else{
 
    
             $id = $_POST['id'];
+            $firstname = $_POST['firstname'];
+            $lastname = $_POST['lastname'];
             $customername = $_POST['customername'];
             $email = $_POST['email'];
             $password = '';
@@ -115,7 +117,7 @@ else{
 
             // COLLECT POST VALUE //
 
-            $data = array('id'=> strip_tags($_GET['customerID']),'customername'=> strip_tags($customername),'email'=> strip_tags($email),'contact_number'=> strip_tags($contact_number),'email_alerts'=> strip_tags($email_alerts),'push_notifications'=> strip_tags($push_notifications),'total_wash'=> strip_tags($total_wash),'time_zone'=> strip_tags($time_zone),'account_status'=> strip_tags($account_status),'created_date'=> strip_tags($created_date),'updated_date'=> strip_tags($updated_date),'online_status'=> strip_tags($online_status),'rating'=> strip_tags($rating),'image'=> strip_tags($profileimg), 'password'=> strip_tags($password), 'how_hear_mw'=> strip_tags($_POST['how_hear_mw']), 'hours_opt_check' => strip_tags($hours_opt_check), 'block_client' => strip_tags($block_client), 'notes' => strip_tags($notes), 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('id'=> strip_tags($_GET['customerID']),'firstname' => $firstname, 'lastname' => $lastname, 'customername'=> strip_tags($customername),'email'=> strip_tags($email),'contact_number'=> strip_tags($contact_number),'email_alerts'=> strip_tags($email_alerts),'push_notifications'=> strip_tags($push_notifications),'total_wash'=> strip_tags($total_wash),'time_zone'=> strip_tags($time_zone),'account_status'=> strip_tags($account_status),'created_date'=> strip_tags($created_date),'updated_date'=> strip_tags($updated_date),'online_status'=> strip_tags($online_status),'rating'=> strip_tags($rating),'image'=> strip_tags($profileimg), 'password'=> strip_tags($password), 'how_hear_mw'=> strip_tags($_POST['how_hear_mw']), 'hours_opt_check' => strip_tags($hours_opt_check), 'block_client' => strip_tags($block_client), 'notes' => strip_tags($notes), 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
             // END COLLECT POST VALUE //
 
@@ -152,6 +154,8 @@ else{
 
             $id = $jsondata->id;
             $customername = $jsondata->customername;
+            $firstname = $jsondata->first_name;
+            $lastname = $jsondata->last_name;
             $email = $jsondata->email;
             $contact_number = $jsondata->contact_number;
             $email_alerts = $jsondata->email_alerts;
@@ -364,8 +368,14 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                                     <div class="tab-pane active" id="tab_1_1">
 
                                                             <div class="form-group">
-                                                                <label class="control-label">Customer Name<span style="color: red;">*</span></label>
-                                                                <input type="text" name="customername" class="form-control" value="<?php echo $customername; ?>" required /> </div>
+                                                                <label class="control-label">First Name<span style="color: red;">*</span></label>
+                                                                <input type="text" name="firstname" class="form-control" value="<?php echo $firstname; ?>" required /> </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label">Last Name<span style="color: red;">*</span></label>
+                                                                <input type="text" name="lastname" class="form-control" value="<?php echo $lastname; ?>" required /> </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label">Full Name</label>
+                                                                <input type="text" name="customername" class="form-control" value="<?php echo $customername; ?>" /> </div>
 
                                                             <div class="form-group">
                                                                 <label class="control-label">Email<span style="color: red;">*</span></label>

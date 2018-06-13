@@ -6360,6 +6360,8 @@ die();
         $image = $customerdetail['image'];
              $json = array(
                 'id'=> $id,
+		'first_name'=> $customerdetail['first_name'],
+		'last_name'=> $customerdetail['last_name'],
                 'customername'=> $customername,
                 'email'=> $email,
                 'contact_number'=> $contact_number,
@@ -6394,6 +6396,8 @@ die();
 
         $id = Yii::app()->request->getParam('id');
         $customername = Yii::app()->request->getParam('customername');
+	$firstname = Yii::app()->request->getParam('firstname');
+	$lastname = Yii::app()->request->getParam('lastname');
         $email = Yii::app()->request->getParam('email');
         $contact_number = Yii::app()->request->getParam('contact_number');
         $email_alerts = Yii::app()->request->getParam('email_alerts');
@@ -6445,7 +6449,7 @@ else{
          $online_status = $customers_exists->online_status;
      }
 
-     $data = array('customername'=> $customername,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes);
+     $data = array('first_name' => $firstname, 'last_name' => $lastname, 'customername'=> $firstname." ".$lastname,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes);
         //$data = array_filter($data);
 
         if($account_status == 0 || $account_status == 1)
