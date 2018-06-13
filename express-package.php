@@ -82,7 +82,9 @@ padding: 0;
 </head>
 <body>
 <div class="deluxe-pop">
+    <?php if(!$_GET['hidebanner']): ?>
 <img src="images/quickest-ribbon.png" class="popular-ribbon">
+    <?php endif; ?>
          <div class="heading">
 <img src="images/express-icon-large.png" alt="" width="111">
 <h3 style="display: inline-block;">Express Wash</h3>
