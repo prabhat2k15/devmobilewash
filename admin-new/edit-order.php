@@ -1,5 +1,5 @@
 <?php
-  require_once('../api/protected/vendors/braintree/lib/Braintree.php');
+require_once('../api/protected/vendors/braintree/lib/Braintree.php');
 include('header.php');
 
 /*Braintree_Configuration::environment('production');
@@ -258,10 +258,11 @@ $car_id = $_POST['car_ids'][$ind];
 
 $car_ids .= $car_id.",";
 $car_packs .=  $_POST['car_packs'][$ind].",";
-
+$pet_hair_vehicles_custom = 0.00;
 if($_POST['pet_fees'][$ind] != 0) {
     $pet_hair_vehicles .=  $car_id.",";
     $addon_detail .= 'Extra Cleaning, ';
+    $pet_hair_vehicles_custom = $_POST['pet_fees'][0];
 }
 if($_POST['truck_fees'][$ind] != 0) {
     $lifted_vehicles .=  $car_id.",";
@@ -353,7 +354,7 @@ curl_close($handle);
 }
 
 
-$data = array("wash_request_id" => $_GET['id'], "car_ids" => $car_ids, "car_packs" => $car_packs, "pet_hair_vehicles" => $pet_hair_vehicles, "lifted_vehicles" => $lifted_vehicles, "exthandwax_vehicles" => $exthandwax_vehicles, "extplasticdressing_vehicles" => $extplasticdressing_vehicles, "extclaybar_vehicles" => $extclaybar_vehicles, "waterspotremove_vehicles" => $waterspotremove_vehicles, "upholstery_vehicles" => $upholstery_vehicles, "floormat_vehicles" => $floormat_vehicles, "fifthwash_vehicles" => $fifthwash_vehicles, "tip_amount" => $_POST['ctip'], "full_address" => $full_address, "address_type" => $address_type, "lat" => $lat, "lng" => $long, "admin_command" => "update-order", 'promo_code' => $_POST['promo_code'], "admin_username" => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("wash_request_id" => $_GET['id'], "car_ids" => $car_ids, "car_packs" => $car_packs, "pet_hair_vehicles" => $pet_hair_vehicles, "pet_hair_vehicles_custom"=> $pet_hair_vehicles_custom, "lifted_vehicles" => $lifted_vehicles, "exthandwax_vehicles" => $exthandwax_vehicles, "extplasticdressing_vehicles" => $extplasticdressing_vehicles, "extclaybar_vehicles" => $extclaybar_vehicles, "waterspotremove_vehicles" => $waterspotremove_vehicles, "upholstery_vehicles" => $upholstery_vehicles, "floormat_vehicles" => $floormat_vehicles, "fifthwash_vehicles" => $fifthwash_vehicles, "tip_amount" => $_POST['ctip'], "full_address" => $full_address, "address_type" => $address_type, "lat" => $lat, "lng" => $long, "admin_command" => "update-order", 'promo_code' => $_POST['promo_code'], "admin_username" => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
 //print_r($data);
   $handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatewashadmin");
@@ -1161,8 +1162,8 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 <p style="margin-top: 20px; <?php if(($veh->vehicle_washing_package == 'Premium') || ($veh->vehicle_washing_package == 'Express')) echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
 <input type="hidden" name="floormat[]" id="floormat" value="<?php echo $veh->floormat_vehicle_fee; ?>" />
 
-<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Extra Cleaning Fee</p>
-<input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo $veh->pet_hair_fee; ?>" />
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $<input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo ($veh->pet_hair_fee > 0)? $veh->pet_hair_fee:'10'; ?>" /> Extra Cleaning Fee</p>
+
 
 <p class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
 <input type="hidden" name="truck_fees[]" id="truck_fees" value="<?php echo $veh->lifted_vehicle_fee; ?>" />
@@ -1298,8 +1299,8 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 <p style="margin-top: 20px; <?php if(($veh->vehicle_washing_package == 'Premium') || ($veh->vehicle_washing_package == 'Express')) echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
 <input type="hidden" name="floormat[]" id="floormat" value="<?php echo $veh->floormat_vehicle_fee; ?>" />
 
-<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $10 Extra Cleaning Fee<!--Extra Cleaning Fee--></p>
-<input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo $veh->pet_hair_fee; ?>" />
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $<input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo ($veh->pet_hair_fee > 0)? $veh->pet_hair_fee:'10'; ?>" /> Extra Cleaning Fee<!--Extra Cleaning Fee--></p>
+
 
 <p class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
 <input type="hidden" id="truck_fees" name="truck_fees[]" value="<?php echo $veh->lifted_vehicle_fee; ?>" />

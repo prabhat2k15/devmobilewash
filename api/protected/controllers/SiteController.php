@@ -2453,6 +2453,7 @@ $order_for_date = '';
 $car_ids = Yii::app()->request->getParam('car_ids');
 $car_packs = Yii::app()->request->getParam('car_packs');
 $pet_hair_vehicles = Yii::app()->request->getParam('pet_hair_vehicles');
+$pet_hair_vehicles_custom = Yii::app()->request->getParam('pet_hair_vehicles_custom');
 $lifted_vehicles = Yii::app()->request->getParam('lifted_vehicles');
 $exthandwax_vehicles = Yii::app()->request->getParam('exthandwax_vehicles');
 $extplasticdressing_vehicles = Yii::app()->request->getParam('extplasticdressing_vehicles');
@@ -2649,7 +2650,7 @@ if($admin_command == 'update-order'){
        $fifthwash_vehicles = '';
     }
 
-    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
+    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
 
      $washeractionlogdata = array(
 

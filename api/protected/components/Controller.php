@@ -94,6 +94,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                 $floormat_vehicles_arr = explode(",",$wash_id_check->floormat_vehicles);
                 $surge_vehicles_arr = explode(",",$wash_id_check->surge_price_vehicles);
 				$fifth_vehicles_arr = explode(",",$wash_id_check->fifth_wash_vehicles);
+                $pet_hair_vehicles_custom_amount = $wash_id_check->pet_hair_vehicles_custom_amount;
 
                 if($wash_id_check->coupon_discount) $coupon_discount = $wash_id_check->coupon_discount;
                 if($wash_id_check->coupon_code) $coupon_code = $wash_id_check->coupon_code;
@@ -289,16 +290,25 @@ $addressComponents = $geojsondata->results[0]->address_components;
                     $upholstery_vehicle = 0;
                     $floormat_vehicle = 0;
 					if (in_array($car, $pet_hair_arr)){
-					    if(count($vehicle_wash_pricing)){
-                         	$total += $vehicle_wash_pricing->pet_hair;
-						$total_pet_lift_fee += $vehicle_wash_pricing->pet_hair;
+					    if(count($vehicle_wash_pricing) || $pet_hair_vehicles_custom_amount > 0){
+                        if($pet_hair_vehicles_custom_amount > 0){
+					    		$total += $pet_hair_vehicles_custom_amount;
+								$total_pet_lift_fee += $pet_hair_vehicles_custom_amount;
 
 
-							$agent_total += $vehicle_wash_pricing->pet_hair * .80;
-							$company_total += $vehicle_wash_pricing->pet_hair * .20;
+								$agent_total += $pet_hair_vehicles_custom_amount * .80;
+								$company_total += $pet_hair_vehicles_custom_amount * .20;
+								$pet_hair = $pet_hair_vehicles_custom_amount;
+					    	}else{
+                         		$total += $vehicle_wash_pricing->pet_hair;
+								$total_pet_lift_fee += $vehicle_wash_pricing->pet_hair;
 
 
-						$pet_hair = $vehicle_wash_pricing->pet_hair;
+								$agent_total += $vehicle_wash_pricing->pet_hair * .80;
+								$company_total += $vehicle_wash_pricing->pet_hair * .20;
+
+								$pet_hair = $vehicle_wash_pricing->pet_hair;
+							}
 					    }
                         else{
                           	$total += 10;
@@ -564,26 +574,27 @@ if((count($total_cars) > 1) && ($carindex==0) && ($wash_id_check->coupon_discoun
 						'vehicle_washing_price_agent'=> $veh_price_agent,
 						'safe_handling_fee' => number_format($safe_handle_fee, 2, '.', ''),
 						'pet_hair_fee' => number_format($pet_hair, 2, '.', ''),
-'pet_hair_fee_agent' => number_format($pet_hair * .8, 2, '.', ''),
-						'lifted_vehicle_fee' => number_format($lift_vehicle, 2, '.', ''),
-'lifted_vehicle_fee_agent' => number_format($lift_vehicle * .8, 2, '.', ''),
-'exthandwax_vehicle_fee' => number_format($exthandwax_vehicle, 2, '.', ''),
-'exthandwax_vehicle_fee_agent' => number_format($exthandwax_vehicle * .8, 2, '.', ''),
-'extplasticdressing_vehicle_fee' => number_format($extplasticdressing_vehicle, 2, '.', ''),
-'extplasticdressing_vehicle_fee_agent' => number_format($extplasticdressing_vehicle * .8, 2, '.', ''),
-'extclaybar_vehicle_fee' => number_format($extclaybar_vehicle, 2, '.', ''),
-'extclaybar_vehicle_fee_agent' => number_format($extclaybar_vehicle * .8, 2, '.', ''),
-'waterspotremove_vehicle_fee' => number_format($waterspotremove_vehicle, 2, '.', ''),
-'waterspotremove_vehicle_fee_agent' => number_format($waterspotremove_vehicle * .8, 2, '.', ''),
-'upholstery_vehicle_fee' => number_format($upholstery_vehicle, 2, '.', ''),
-'upholstery_vehicle_fee_agent' => number_format($upholstery_vehicle * .8, 2, '.', ''),
-'floormat_vehicle_fee' => number_format($floormat_vehicle, 2, '.', ''),
-'floormat_vehicle_fee_agent' => number_format($floormat_vehicle * .8, 2, '.', ''),
-'surge_vehicle_fee' => number_format($surge_vehicle, 2, '.', ''),
-'surge_vehicle_fee_agent' => number_format($surge_vehicle * .8, 2, '.', ''),
-'bundle_discount' => number_format($bundle_disc, 2, '.', ''),
-'bundle_discount_agent' => number_format($agent_bundle_disc, 2, '.', ''),
-						'fifth_wash_discount' => number_format($fifth_wash_disc, 2, '.', '')
+                        'pet_hair_fee_agent' => number_format($pet_hair * .8, 2, '.', ''),
+                        'lifted_vehicle_fee' => number_format($lift_vehicle, 2, '.', ''),
+                        'lifted_vehicle_fee_agent' => number_format($lift_vehicle * .8, 2, '.', ''),
+                        'exthandwax_vehicle_fee' => number_format($exthandwax_vehicle, 2, '.', ''),
+                        'exthandwax_vehicle_fee_agent' => number_format($exthandwax_vehicle * .8, 2, '.', ''),
+                        'extplasticdressing_vehicle_fee' => number_format($extplasticdressing_vehicle, 2, '.', ''),
+                        'extplasticdressing_vehicle_fee_agent' => number_format($extplasticdressing_vehicle * .8, 2, '.', ''),
+                        'extclaybar_vehicle_fee' => number_format($extclaybar_vehicle, 2, '.', ''),
+                        'extclaybar_vehicle_fee_agent' => number_format($extclaybar_vehicle * .8, 2, '.', ''),
+                        'waterspotremove_vehicle_fee' => number_format($waterspotremove_vehicle, 2, '.', ''),
+                        'waterspotremove_vehicle_fee_agent' => number_format($waterspotremove_vehicle * .8, 2, '.', ''),
+                        'upholstery_vehicle_fee' => number_format($upholstery_vehicle, 2, '.', ''),
+                        'upholstery_vehicle_fee_agent' => number_format($upholstery_vehicle * .8, 2, '.', ''),
+                        'floormat_vehicle_fee' => number_format($floormat_vehicle, 2, '.', ''),
+                        'floormat_vehicle_fee_agent' => number_format($floormat_vehicle * .8, 2, '.', ''),
+                        'surge_vehicle_fee' => number_format($surge_vehicle, 2, '.', ''),
+                        'surge_vehicle_fee_agent' => number_format($surge_vehicle * .8, 2, '.', ''),
+                        'bundle_discount' => number_format($bundle_disc, 2, '.', ''),
+                        'bundle_discount_agent' => number_format($agent_bundle_disc, 2, '.', ''),
+                        'fifth_wash_discount' => number_format($fifth_wash_disc, 2, '.', ''),
+                        'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount
 					);
 
 
@@ -768,14 +779,14 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
             'result'=> $result,
             'response'=> $response,
             'id'=> $this->aes256cbc_crypt( $wash_id_check->id, 'e', AES256CBC_API_PASS ),
-	    'org_id'=> $wash_id_check->id,
+	        'org_id'=> $wash_id_check->id,
             'order_date'=> $wash_id_check->order_for,
             'address'=> $wash_id_check->address,
-	    'city'=> $wash_id_check->city,
+	        'city'=> $wash_id_check->city,
             'address_type'=> $wash_id_check->address_type,
             'latitude'=> $wash_id_check->latitude,
             'longitude'=> $wash_id_check->longitude,
-	    'car_list'=> $wash_id_check->car_list,
+	        'car_list'=> $wash_id_check->car_list,
             'customer_id'=> $this->aes256cbc_crypt( $wash_id_check->customer_id, 'e', AES256CBC_API_PASS ),
             'agent_id'=> $agt_id,
             'washer_penalty_fee'=> $wash_id_check->washer_penalty_fee,
@@ -814,10 +825,11 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
             'washer_payment_status' => $wash_id_check->washer_payment_status,
             'total_schedule_rejected' => $wash_id_check->total_schedule_rejected,
             'wash_now_fee' => number_format($wash_id_check->wash_now_fee, 2),
-	    'wash_later_fee' => number_format($wash_id_check->wash_later_fee, 2),
-	    'payment_type' => $wash_id_check->payment_type,
-	    'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
-            'vehicles' => $vehicles
+	        'wash_later_fee' => number_format($wash_id_check->wash_later_fee, 2),
+	        'payment_type' => $wash_id_check->payment_type,
+	        'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
+            'vehicles' => $vehicles,
+            'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount
         );
 		}
 		else{
@@ -825,14 +837,14 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
             'result'=> $result,
             'response'=> $response,
             'id'=> $wash_id_check->id,
-	    'org_id'=> $wash_id_check->id,
+	        'org_id'=> $wash_id_check->id,
             'order_date'=> $wash_id_check->order_for,
             'address'=> $wash_id_check->address,
-	    'city'=> $wash_id_check->city,
+	        'city'=> $wash_id_check->city,
             'address_type'=> $wash_id_check->address_type,
             'latitude'=> $wash_id_check->latitude,
             'longitude'=> $wash_id_check->longitude,
-	    'car_list'=> $wash_id_check->car_list,
+	        'car_list'=> $wash_id_check->car_list,
             'customer_id'=> $wash_id_check->customer_id,
             'agent_id'=> $wash_id_check->agent_id,
             'washer_penalty_fee'=> $wash_id_check->washer_penalty_fee,
@@ -871,10 +883,11 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
             'washer_payment_status' => $wash_id_check->washer_payment_status,
             'total_schedule_rejected' => $wash_id_check->total_schedule_rejected,
             'wash_now_fee' => number_format($wash_id_check->wash_now_fee, 2),
-	    'wash_later_fee' => number_format($wash_id_check->wash_later_fee, 2),
-	    'payment_type' => $wash_id_check->payment_type,
-	    'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
-            'vehicles' => $vehicles
+	        'wash_later_fee' => number_format($wash_id_check->wash_later_fee, 2),
+	        'payment_type' => $wash_id_check->payment_type,
+	        'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
+            'vehicles' => $vehicles,
+            'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount
         );
 		}
 	
