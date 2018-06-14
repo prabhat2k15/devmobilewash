@@ -1162,7 +1162,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 <p style="margin-top: 20px; <?php if(($veh->vehicle_washing_package == 'Premium') || ($veh->vehicle_washing_package == 'Express')) echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
 <input type="hidden" name="floormat[]" id="floormat" value="<?php echo $veh->floormat_vehicle_fee; ?>" />
 
-<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $<input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo ($veh->pet_hair_fee > 0)? $veh->pet_hair_fee:'10'; ?>" /> Extra Cleaning Fee</p>
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $<input type="text" id="pet_fees" name="pet_fees[]" class="custom_pet_fees" value="<?php echo ($veh->pet_hair_fee > 0)? $veh->pet_hair_fee:'10'; ?>" onkeypress="return isNumberKey(event)" min="0" /> Extra Cleaning Fee</p>
 
 
 <p class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
@@ -1299,7 +1299,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 <p style="margin-top: 20px; <?php if(($veh->vehicle_washing_package == 'Premium') || ($veh->vehicle_washing_package == 'Express')) echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
 <input type="hidden" name="floormat[]" id="floormat" value="<?php echo $veh->floormat_vehicle_fee; ?>" />
 
-<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $<input type="hidden" id="pet_fees" name="pet_fees[]" value="<?php echo ($veh->pet_hair_fee > 0)? $veh->pet_hair_fee:'10'; ?>" /> Extra Cleaning Fee<!--Extra Cleaning Fee--></p>
+<p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $<input type="text" id="pet_fees" class="custom_pet_fees" min="0" name="pet_fees[]" value="<?php echo ($veh->pet_hair_fee > 0)? $veh->pet_hair_fee:'10'; ?>" onkeypress="return isNumberKey(event)"/> Extra Cleaning Fee<!--Extra Cleaning Fee--></p>
 
 
 <p class="lifted_truck_el <?php if($veh->lifted_vehicle_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="lifted_truck_fee" value="10" <?php if($veh->lifted_vehicle_fee > 0) echo "checked"; ?>> $10 Lifted Truck Fee</p>
@@ -2073,6 +2073,16 @@ wash_points = 0;
 }
 
 console.log('wash point '+ wash_points);
+
+function isNumberKey(evt) {
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    } else {
+        return true;
+    }      
+}
+    
 $(function(){
 initial_pay_token = $("#pay_method_token").val();
  $(".cust_locations li input").click(function(){
@@ -2526,6 +2536,30 @@ wash_points++;
    return false;
 });
 
+$("body").on('focusout', '.custom_pet_fees', function(){
+    var val = $(this).val();
+    if(val > 10 || (val > 0 && val < 10)){
+      if(confirm('Are you sure you want to change extra cleaning fee amount to ( '+val+' )? ')){
+          return true;
+      }else{
+        $(this).val(10);
+
+      }
+    }
+    if(val < 0){
+      val = val.replace("-", "");
+      $(this).val(val);
+    }
+});
+
+$('.custom_pet_fees').keypress(function (e) {
+  if (e.which == 13) {
+    return false;    //<---- Add this line
+  }else{
+    return true;
+  }
+});
+    
 $( "#phone-order-form" ).on( "change", ".regular-pack, .classic-pack", function() {
   $(this).parent().find('.ispackagechanged').val(1);  
  if($(this).val() == 'Express'){
