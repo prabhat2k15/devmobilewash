@@ -1228,6 +1228,9 @@ $rating_control = Yii::app()->request->getParam('rating_control');
 $insurance_expiration = '';
         $insurance_expiration = Yii::app()->request->getParam('insurance_expiration');
 	$api_password = '';
+	$force_logout = 0;
+	if($block_washer == 1) $force_logout = 1;
+	
 	if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
 	if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
@@ -1406,6 +1409,7 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
                 
                 if(!is_numeric($block_washer)){
                     $block_washer = $model->block_washer;
+		    
                 }
 
                 if(!is_numeric($rating_control)){
@@ -1509,6 +1513,7 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 'hours_opt_check' => $hours_opt_check,
 'rating_control' => $rating_control,
 'bt_submerchant_id' => $bt_submerchant_id,
+'forced_logout' => $force_logout,
 					'updated_date'=> date('Y-m-d h:i:s')
 				);
 

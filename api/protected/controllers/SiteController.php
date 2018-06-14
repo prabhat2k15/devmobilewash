@@ -7048,6 +7048,42 @@ if(count($yelp_reviews->reviews)){
        
     }
     
+          public function actionaddyelpreviews()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+$result = 'false';
+$response = 'no reviews';
+$yelp_reviews = Yii::app()->request->getParam('reviews');
+  $yelp_reviews = json_decode($yelp_reviews); 
+if(count($yelp_reviews)){
+    foreach($yelp_reviews as $yreview){
+        if($yreview->rating == 5){
+            $review_check = Yii::app()->db->createCommand("SELECT * FROM `mobilewash_reviews` WHERE review_org_id = '".$yreview->reviewid."'")->queryAll();
+            if(!count($review_check)) Yii::app()->db->createCommand("INSERT INTO `mobilewash_reviews` (`review_org_id`, `reviewer_name`, `reviewer_location`, `reviewer_photo`, `review`, `rating`, `review_date`, `review_url`, `review_source`) VALUES ('".$yreview->reviewid."', '".$yreview->username."', '".$yreview->userlocation."', '".$yreview->userpic."', '".$yreview->review."', '".$yreview->rating."', '".$yreview->reviewdate."', '', 'yelp'); ")->execute();
+        }
+        
+       
+    }
+}
+
+        
+        $result = 'true';
+                $response = 'reviews added';
+               
+               $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+            echo json_encode($json);
+            die();
+
+       
+    }
+    
         public function actiongetallmobilewashreviews()
     {
 
