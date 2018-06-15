@@ -351,6 +351,15 @@ a:hover{
     display: none;
 }
 </style>
+<?php 
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/getwashersavedroplog");
+            curl_setopt($handle, CURLOPT_POST, true);
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+            $result = curl_exec($handle);
+            curl_close($handle);
+            $savedroplogdata = json_decode($result);
+?>
 <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
                 <div class="page-content" id="main">
@@ -571,7 +580,22 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>Update successfu
 
                                                         </div>
                                                         </div>
-                                                        
+                                                        <?php 
+                                                            if($savedroplogdata->result == 'true'){?>
+                                                             <div class="row">
+                                                               <div class="col-md-12">
+                                                                <div class="form-group" style="display: block; margin-top: 25px;">
+                                                                    <div class="activity-logs">
+                                                                        <?php foreach($savedroplogdata->logs as $log){ ?>
+                                                                            <?php if($log->action == 'edit_Agent'): ?>
+                                                                                <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added customer note at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                            <?php endif; ?>
+                                                                        <?php } ?>
+                                                                    </div>
+                                                                </div>
+                                                               </div>
+                                                             </div>
+                                                           <?php } ?>
                                                         <div class="row">
 
   <div class="col-md-6">

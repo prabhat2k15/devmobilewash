@@ -6495,6 +6495,13 @@ if(Yii::app()->request->getParam('key') != API_KEY){
                         'action'=> 'savecustomernote',
                         'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                
+                $washeractionlogdata = array(
+                        'wash_request_id'=> $id,
+                        'admin_username' => $admin_username,
+                        'action'=> 'edit_customer',
+                        'action_date'=> date('Y-m-d H:i:s'));
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 }
         }
         

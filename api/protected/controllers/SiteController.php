@@ -2674,6 +2674,16 @@ if($admin_command == 'update-order'){
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                     }
 
+                    if($tip_amount > 0){
+                        $washeractionlogdata = array(
+                        'wash_request_id'=> $wash_request_id,
+                        'admin_username' => $admin_username,
+                        'action'=> 'tipamount',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                    }
+    
                     WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
 
                     $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
