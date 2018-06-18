@@ -233,14 +233,6 @@ $how_hear_mw = $jsondata->how_hear_mw;
     display: none;
 }
 </style>
-$handle = curl_init(ROOT_URL."/api/index.php?r=site/getwashersavedroplog");
-            curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['customerID'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
-            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-            $result = curl_exec($handle);
-            curl_close($handle);
-            $savedroplogdata = json_decode($result);
-?>
 <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
                 <div class="page-content" id="main">
@@ -425,18 +417,6 @@ $handle = curl_init(ROOT_URL."/api/index.php?r=site/getwashersavedroplog");
                                                                 </select>
 
                                                             </div>
-                                                        <?php 
-                                                            if($savedroplogdata->result == 'true'){?>
-                                                                <div class="form-group" style="display: block; margin-top: 25px;">
-                                                                    <div class="activity-logs">
-                                                                        <?php foreach($savedroplogdata->logs as $log){ ?>
-                                                                            <?php if($log->action == 'edit_customer'): ?>
-                                                                                <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added customer note at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
-                                                                            <?php endif; ?>
-                                                                        <?php } ?>
-                                                                    </div>
-                                                                </div>
-                                                           <?php } ?>
                                                             <div class="form-group">
                                                                 <label class="control-label">Customer Note</label>
                                                                 <textarea name="notes" placeholder="Write Notes" id="notes" class="form-control"><?php echo $notes;?></textarea>

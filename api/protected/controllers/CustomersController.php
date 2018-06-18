@@ -6482,9 +6482,9 @@ if(Yii::app()->request->getParam('key') != API_KEY){
         $admin_command = Yii::app()->request->getParam('admin_command');
         $admin_username = Yii::app()->request->getParam('admin_username');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
-        
+        $date = date('Y-m-d H:i:s');
         if(!empty($id) && !empty($notes)){
-            $data = array("notes" => $notes);
+            $data = array("notes" => $notes." (".$admin_username." added at ".$date.")");
             $update_agents = Customers::model()->updateAll($data,'id=:id',array(':id'=>$id));
             $result = 'true';
             $response = 'updated successfully';
@@ -6493,15 +6493,15 @@ if(Yii::app()->request->getParam('key') != API_KEY){
                         'wash_request_id'=> $wash_request_id,
                         'admin_username' => $admin_username,
                         'action'=> 'savecustomernote',
-                        'action_date'=> date('Y-m-d H:i:s'));
+                        'action_date'=> $date);
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 
-                $washeractionlogdata = array(
+                /*$washeractionlogdata = array(
                         'wash_request_id'=> $id,
                         'admin_username' => $admin_username,
                         'action'=> 'edit_customer',
                         'action_date'=> date('Y-m-d H:i:s'));
-                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);*/
                 }
         }
         

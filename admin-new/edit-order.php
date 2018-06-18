@@ -51,6 +51,16 @@ $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
 $getorder_result_code = $jsondata->result;
 $getorder = $jsondata;
 
+
+$handle = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
+            curl_setopt($handle, CURLOPT_POST, true);
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('agent_id' => $getorder->agent_id, 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+            $result = curl_exec($handle);
+            curl_close($handle);
+            $profiledetail = json_decode($result);
+
+
 $handle = curl_init(ROOT_URL."/api/index.php?r=vehicles/vehiclemakes");
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
@@ -1557,7 +1567,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> re-scheduled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                             <?php if($log->action == 'savenote'): ?>
-                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added note at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added order note at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'savecustomernote'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added Customers note at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1739,7 +1749,7 @@ if($savedroplogdata->result == 'true'):?>
 
                                                         <div class="form-group">
                                                              <label class="control-label">Wahser Notes</label>
-                                                           <textarea name="notes" id="was_notes" style="width: 313px; height: 100px;" class="form-control"><?php echo $getorder->notes;?></textarea>
+                                                           <textarea name="notes" id="was_notes" style="width: 313px; height: 100px;" class="form-control"><?php echo $profiledetail->notes;?></textarea>
                                                         </div>
 
 
@@ -3806,7 +3816,7 @@ if(data.result == 'true'){
       } 
       
         if(log.action == 'savenote'){
-          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" added note at "+log.formatted_action_date+"</p>";  
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" added order note at "+log.formatted_action_date+"</p>";  
       } 
       
        if(log.action == 'savecustomernote'){
