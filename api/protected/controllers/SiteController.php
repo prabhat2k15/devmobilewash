@@ -7118,4 +7118,25 @@ die();
     }
     
     
+           public function actioncodetest()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+ $cust_id = Yii::app()->request->getParam('customer_id');
+	
+		//$pendingwashcheck =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position != 'real' AND status <= 3 AND customer_id=:customer_id", 'params'  => array(':customer_id' => $customer_id), 'order' => 'created_date desc'));
+		//WashPricingHistory::model()->updateAll(array('status'=>5), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
+		//WashPricingHistory::model()->deleteAll("wash_request_id = :wash_request_id", array(':wash_request_id' => $wash_request_id));
+	//print_r($pendingwashcheck);
+	
+	$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
+	print_r($clientdevices);	
+   
+    }
+    
+    
 }

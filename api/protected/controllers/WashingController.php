@@ -65,11 +65,6 @@ die();
         if(isset($vehicle_make) && !empty($vehicle_make) && isset($vehicle_model) && !empty($vehicle_model)){
 
 if($vehicle_build == 'classic'){
-/*$vehicle_exists = Yii::app()->db->createCommand()
-                ->select('*')
-                ->from('all_classic_vehicles')
-                ->where("make='".$vehicle_make."' AND model='".$vehicle_model."'", array())
-                ->queryAll();*/
 		
 		$vehicle_exists = Yii::app()->db->createCommand('SELECT * FROM all_classic_vehicles WHERE make = :make AND model= :model')
            ->bindValue(':make', $vehicle_make, PDO::PARAM_STR)
@@ -77,11 +72,6 @@ if($vehicle_build == 'classic'){
            ->queryAll();
 }
 else{
-/*$vehicle_exists = Yii::app()->db->createCommand()
-                ->select('*')
-                ->from('all_vehicles')
-                ->where("make='".$vehicle_make."' AND model='".$vehicle_model."'", array())
-                ->queryAll();*/
 		
 		$vehicle_exists = Yii::app()->db->createCommand('SELECT * FROM all_vehicles WHERE make = :make AND model= :model')
            ->bindValue(':make', $vehicle_make, PDO::PARAM_STR)
@@ -99,12 +89,6 @@ $vehicle_type = $vehicle_exists[0]['type'];
 
                 $result = 'true';
                 $response = 'Plans';
-
-                /*$allplans = Yii::app()->db->createCommand()
-                    ->select('*')
-                    ->from('washing_plans')
-                    ->where("vehicle_type='".$vehicle_type."'", array())
-                    ->queryAll(); */
 		    
 		    $allplans = Yii::app()->db->createCommand('SELECT * FROM washing_plans WHERE vehicle_type = :vehicle_type')
            ->bindValue(':vehicle_type', $vehicle_type, PDO::PARAM_STR)
@@ -280,8 +264,10 @@ die();
 				$vehicle_exists = Vehicle::model()->findByAttributes(array("id"=>trim($vehicle)));
 				
 				if(count($vehicle_exists) && ($vehicle_exists->vehicle_type)){
-					$vehplan = Yii::app()->db->createCommand()->select('*')->from('washing_plans')->where("vehicle_type='".$vehicle_exists->vehicle_type."'", array())->queryAll();
-				
+					//$vehplan = Yii::app()->db->createCommand()->select('*')->from('washing_plans')->where("vehicle_type='".$vehicle_exists->vehicle_type."'", array())->queryAll();
+				$vehplan = Yii::app()->db->createCommand('SELECT * FROM washing_plans WHERE vehicle_type = :vehicle_type')
+           ->bindValue(':vehicle_type', $vehicle_exists->vehicle_type, PDO::PARAM_STR)
+           ->queryAll();
 					
 			if((count($loc_check)) && (count($zipcodeprice))){
 			 $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$loc_check->zipcode));
@@ -426,8 +412,13 @@ die();
         $result= 'false';
         $response= 'Pass the required parameters';
 
-        $update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration='$duration', wash_time='$wash_time', price='$price', description='$description' WHERE id = '$id' ")->execute();
-
+$update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration=:duration, wash_time=:wash_time, price=:price, description=:description WHERE id = :id")
+           ->bindValue(':duration', $duration, PDO::PARAM_STR)
+	   ->bindValue(':wash_time', $wash_time, PDO::PARAM_STR)
+	   ->bindValue(':price', $price, PDO::PARAM_STR)
+	   ->bindValue(':description', $description, PDO::PARAM_STR)
+	   ->bindValue(':id', $id, PDO::PARAM_STR)
+           ->execute();
 
                 $response = 'update success';
                 $result = 'true';
@@ -566,9 +557,10 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
         if((isset($customer_id) && !empty($customer_id)) && (isset($car_ids) && !empty($car_ids)) && (isset($package_ids) && !empty($package_ids)) && (isset($address) && !empty($address)) && (isset($address_type) && !empty($address_type)) && (isset($latitude) && !empty($latitude)) && (isset($longitude) && !empty($longitude)) && (isset($estimate_time) && !empty($estimate_time))) {
             $customers_id_check = Customers::model()->findByAttributes(array("id"=>$customer_id));
 
-            if($customers_id_check->client_position == 'real') $pendingwashcheck =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position = 'real' AND status <= 3 AND customer_id=".$customer_id), array('order' => 'created_date desc'));
-else $pendingwashcheck =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position != 'real' AND status <= 3 AND customer_id=".$customer_id), array('order' => 'created_date desc'));
-            $car_ids_array = explode(",", $car_ids);
+            if($customers_id_check->client_position == 'real') $pendingwashcheck =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position = 'real' AND status <= 3 AND customer_id=:customer_id", 'params'  => array(':customer_id' => $customer_id), 'order' => 'created_date desc'));
+		else $pendingwashcheck =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position != 'real' AND status <= 3 AND customer_id=:customer_id", 'params'  => array(':customer_id' => $customer_id), 'order' => 'created_date desc'));
+		
+	    $car_ids_array = explode(",", $car_ids);
             foreach($car_ids_array as $cid) {
                 $car_id_exists = Vehicle::model()->findByAttributes(array("id"=>$cid));
                 if(!count( $car_id_exists)){
@@ -1450,8 +1442,14 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
                                                     'package_list'=> $package_ids,
                                                     'estimate_time'=> $estimate_time));
 
-                $update_washing_request = Yii::app()->db->createCommand("UPDATE washing_requests SET car_list='" . $car_ids . "', package_list='" . $package_ids . "', estimate_time='" . $estimate_time . "', updated_date=now() WHERE id = '$order_id'")->execute();
-                if($update_washing_request)
+                
+		$update_washing_request = Yii::app()->db->createCommand("UPDATE washing_requests SET car_list=:car_list, package_list=:package_list, estimate_time=:estimate_time, updated_date=now() WHERE id = :id")
+           ->bindValue(':car_list', $car_ids, PDO::PARAM_STR)
+	   ->bindValue(':package_list', $package_ids, PDO::PARAM_STR)
+	   ->bindValue(':estimate_time', $estimate_time, PDO::PARAM_STR)
+	   ->bindValue(':id', $order_id, PDO::PARAM_STR)
+           ->execute();
+		if($update_washing_request)
                 {
 
 
@@ -1492,14 +1490,14 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
                                                                         ));
                     $car_arr = explode(",", $car_ids);
                     $car_packs = explode(",", $package_ids);
-                    WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$washrequestid.'"');
+                    //WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$washrequestid.'"');
+		    WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$washrequestid));
 
                     $wash_details = Washingrequests::model()->findByPk($washrequestid);
                     $kartapiresult = $this->washingkart($washrequestid, API_KEY, 0, AES256CBC_API_PASS);
                     $kartdata = json_decode($kartapiresult);
                     if($wash_details->net_price != $kartdata->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$washrequestid);
-                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$washrequestid.'"');
-
+                    else WashPricingHistory::model()->updateAll(array('status'=>0), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$washrequestid));
                     foreach($kartdata->vehicles as $ind=>$car)
                     {
                        $veh_detail = Vehicle::model()->findByPk($car->id);
@@ -1688,13 +1686,13 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date));
 		}
                 
-		WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
+WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
 
                     $wash_details = Washingrequests::model()->findByPk($wash_request_id);
                     $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
                     $kartdata = json_decode($kartapiresult);
-                    if($wash_details->net_price != $kartdata->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
-                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$wash_request_id.'"');
+                    if($wash_details->net_price != $kartdata->net_price) WashPricingHistory::model()->deleteAll("wash_request_id = :wash_request_id", array(':wash_request_id' => $wash_request_id));
+                    else WashPricingHistory::model()->updateAll(array('status'=>0), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
 		    
 		    foreach($kartdata->vehicles as $ind=>$car)
                     {
@@ -1950,7 +1948,7 @@ die();
                 $response= 'Latest wash request details';
                /* $wrequest_id_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer_id), array('order'=>'created_date DESC')); */
 
- $wrequest_id_check =  Washingrequests::model()->findAll(array("condition"=>"status < 4 AND customer_id=".$customer_id), array('order' => 'created_date desc'));
+ $wrequest_id_check = Washingrequests::model()->findAll(array("condition"=>"status < 4 AND customer_id=:customer_id", 'params'  => array(':customer_id' => $customer_id), 'order' => 'created_date desc'));
 
                 $customer_id_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("customer_id" => $customer_id));
 
@@ -2228,8 +2226,8 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
             $device_type = strtolower($cust_details->mobile_type);
             $alert_type = "default";
 
-            $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$cust_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-            $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '10' ")->queryAll();
+            $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
+	    $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '10' ")->queryAll();
 							$message = $pushmsg[0]['message'];
 
             if(count($clientdevices))
@@ -2499,8 +2497,10 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 
                 //echo "currentwashtotalscheduletime ".$currentwashtotalscheduletime."<br>";
                 //echo "currentwashbasescheduletime ".$currentwashbasescheduletime."<br>";
-                $agenttakenwashes = Washingrequests::model()->findAll(array("condition"=>"agent_id =" . $agent_id." AND status = 0 AND is_scheduled = 1"));
-                if(count($agenttakenwashes))
+        
+                $agenttakenwashes = Washingrequests::model()->findAll(array("condition"=>"agent_id = :agent_id AND status = 0 AND is_scheduled = 1", 'params'  => array(':agent_id' => $agent_id)));
+		
+		if(count($agenttakenwashes))
                 {
                     foreach($agenttakenwashes as $agtwash)
                     {
@@ -2641,8 +2641,7 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '23' ")->queryAll();
                     $message = $pushmsg[0]['message'];
 
-                     $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$washrequestmodel->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-
+              $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $washrequestmodel->customer_id, PDO::PARAM_STR)->queryAll();
             if(count($clientdevices))
             {
                 foreach($clientdevices as $ctdevice)
