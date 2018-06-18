@@ -65,18 +65,28 @@ die();
         if(isset($vehicle_make) && !empty($vehicle_make) && isset($vehicle_model) && !empty($vehicle_model)){
 
 if($vehicle_build == 'classic'){
-$vehicle_exists = Yii::app()->db->createCommand()
+/*$vehicle_exists = Yii::app()->db->createCommand()
                 ->select('*')
                 ->from('all_classic_vehicles')
                 ->where("make='".$vehicle_make."' AND model='".$vehicle_model."'", array())
-                ->queryAll();
+                ->queryAll();*/
+		
+		$vehicle_exists = Yii::app()->db->createCommand('SELECT * FROM all_classic_vehicles WHERE make = :make AND model= :model')
+           ->bindValue(':make', $vehicle_make, PDO::PARAM_STR)
+	   ->bindValue(':model', $vehicle_model, PDO::PARAM_STR)
+           ->queryAll();
 }
 else{
-$vehicle_exists = Yii::app()->db->createCommand()
+/*$vehicle_exists = Yii::app()->db->createCommand()
                 ->select('*')
                 ->from('all_vehicles')
                 ->where("make='".$vehicle_make."' AND model='".$vehicle_model."'", array())
-                ->queryAll();
+                ->queryAll();*/
+		
+		$vehicle_exists = Yii::app()->db->createCommand('SELECT * FROM all_vehicles WHERE make = :make AND model= :model')
+           ->bindValue(':make', $vehicle_make, PDO::PARAM_STR)
+	   ->bindValue(':model', $vehicle_model, PDO::PARAM_STR)
+           ->queryAll();
 }
 
 
@@ -90,11 +100,15 @@ $vehicle_type = $vehicle_exists[0]['type'];
                 $result = 'true';
                 $response = 'Plans';
 
-                $allplans = Yii::app()->db->createCommand()
+                /*$allplans = Yii::app()->db->createCommand()
                     ->select('*')
                     ->from('washing_plans')
                     ->where("vehicle_type='".$vehicle_type."'", array())
-                    ->queryAll();
+                    ->queryAll(); */
+		    
+		    $allplans = Yii::app()->db->createCommand('SELECT * FROM washing_plans WHERE vehicle_type = :vehicle_type')
+           ->bindValue(':vehicle_type', $vehicle_type, PDO::PARAM_STR)
+           ->queryAll();
 
 
                    /* $surgeprice = Yii::app()->db->createCommand()
