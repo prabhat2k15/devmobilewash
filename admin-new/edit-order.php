@@ -1748,7 +1748,7 @@ if($savedroplogdata->result == 'true'):?>
                                                        </div>
 
                                                         <div class="form-group">
-                                                             <label class="control-label">Wahser Notes</label>
+                                                             <label class="control-label">Washer Notes</label>
                                                            <textarea name="notes" id="was_notes" style="width: 313px; height: 100px;" class="form-control"><?php echo $profiledetail->notes;?></textarea>
                                                         </div>
 

@@ -575,7 +575,7 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>Update successfu
 
   <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label class="control-label col-md-3">Washer Note</label>
+                                                                    <label class="control-label col-md-3">Washer Notes</label>
                                                                     <div class="col-md-9">
 <textarea name="washer_note" style="height: 85px;" class="form-control"><?php echo $profiledetail->notes; ?></textarea>
                                                                         </div>
