@@ -147,7 +147,7 @@ if(!is_numeric($premium_amount)){
 				);
 
 
-				  $resUpdate = Yii::app()->db->createCommand()->update('coupon_codes', $coupondata,"id='".$coupon_id."'");
+				  $resUpdate = Yii::app()->db->createCommand()->update('coupon_codes', $coupondata, 'id=:id', array(':id'=>$coupon_id));
 
                     	$result= 'true';
 		$response= 'Promo updated successfully';
@@ -667,7 +667,7 @@ if(!$premium_wash_count){
 				);
 
 
-				  $resUpdate = Yii::app()->db->createCommand()->update('vip_coupon_codes', $coupondata,"fullcode='".$coupon_code."'");
+				  $resUpdate = Yii::app()->db->createCommand()->update('vip_coupon_codes', $coupondata, 'fullcode=:fullcode', array(':fullcode'=>$coupon_code));
 
                     	$result= 'true';
 		$response= 'Promo updated successfully';

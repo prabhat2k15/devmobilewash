@@ -10279,7 +10279,7 @@ die();
 				$status_qr = '';
 			}
 
-			$order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '$day'$status_qr";
+			$order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= :day".$status_qr;
 		}
 		/* END */
 
@@ -10306,12 +10306,12 @@ die();
 //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
   if($filter == 'testorders'){
-    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->queryAll();
-else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
+    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->bindValue(':day', $day, PDO::PARAM_STR)->queryAll();
+else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->bindValue(':day', $day, PDO::PARAM_STR)->queryAll();
   }
   else{
-    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->queryAll();
-else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
+    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->bindValue(':day', $day, PDO::PARAM_STR)->queryAll();
+else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->bindValue(':day', $day, PDO::PARAM_STR)->queryAll();
   }
 
    //print_r($qrRequests);
@@ -10497,7 +10497,7 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 //if(!$agent_detail->hours_opt_check) $allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 0 AND w.wash_request_position = '".$washer_position."' AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->queryAll();
 //else $allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '".$washer_position."' AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->queryAll();
 
-$allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".$washer_position."' AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->queryAll();
+$allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = :washer_position AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->bindValue(':washer_position', $washer_position, PDO::PARAM_STR)->queryAll();
 
 //print_r($allschedwashes);
 		if(count($allschedwashes)){
@@ -11389,9 +11389,9 @@ $vehicle_type = '';
         $vehicle_type = Yii::app()->request->getParam('vehicle_type');
 
 if($package && $vehicle_type){
-if($package == 'Express') $expaddons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = '".$package."' AND vehicle_type = '".$vehicle_type."'")->queryAll();
-if($package == 'Deluxe') $deladdons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = '".$package."' AND vehicle_type = '".$vehicle_type."'")->queryAll();
-if($package == 'Premium') $premaddons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = '".$package."' AND vehicle_type = '".$vehicle_type."'")->queryAll();
+if($package == 'Express') $expaddons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = :package AND vehicle_type = :vehicle_type")->bindValue(':package', $package, PDO::PARAM_STR)->bindValue(':vehicle_type', $vehicle_type, PDO::PARAM_STR)->queryAll();
+if($package == 'Deluxe') $deladdons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = :package AND vehicle_type = :vehicle_type")->bindValue(':package', $package, PDO::PARAM_STR)->bindValue(':vehicle_type', $vehicle_type, PDO::PARAM_STR)->queryAll();
+if($package == 'Premium') $premaddons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = :package AND vehicle_type = :vehicle_type")->bindValue(':package', $package, PDO::PARAM_STR)->bindValue(':vehicle_type', $vehicle_type, PDO::PARAM_STR)->queryAll();
 }
 else{
 $expaddons = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE package = 'Express'")->queryAll();
@@ -11600,7 +11600,12 @@ die();
 
 
          for($i = 1, $j=0; $i <= count($prices_arr); $i++, $j++){
-Yii::app()->db->createCommand("UPDATE washing_plans_addons SET fulltitle='".$fulltitles_arr[$j]."', description='".$descs_arr[$j]."', wash_time='".$wash_times_arr[$j]."', price='".$prices_arr[$j]."' WHERE id = '$i'")->execute();
+Yii::app()->db->createCommand("UPDATE washing_plans_addons SET fulltitle=:fulltitle, description=:description, wash_time=:wash_time, price=:price WHERE id = '$i'")
+->bindValue(':fulltitle', $fulltitles_arr[$j], PDO::PARAM_STR)
+->bindValue(':description', $descs_arr[$j], PDO::PARAM_STR)
+->bindValue(':wash_time', $wash_times_arr[$j], PDO::PARAM_STR)
+->bindValue(':price', $prices_arr[$j], PDO::PARAM_STR)
+->execute();
 
 }
 

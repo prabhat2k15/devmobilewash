@@ -935,7 +935,7 @@ display: none;
 <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">Address<span style="color: red;">*</span></label>
-                                                            <input type="text" name="caddress" id="caddress" style="width: 300px;" class="form-control" value="<?php echo $getorder->address." (".$getorder->address_type.")"; ?>" readonly required />
+                                                            <input type="text" name="caddress2" id="caddress2" style="width: 300px;" class="form-control" value="<?php echo $getorder->address." (".$getorder->address_type.")"; ?>" readonly required />
                                                         </div>
                                                      </div>
                                                       <div class="col-md-6">
@@ -1026,7 +1026,7 @@ endforeach; ?>
   <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">Address<span style="color: red;">*</span></label>
-                                                            <input type="text" name="caddress" id="caddress" style="width: 300px;" class="form-control" value="" required <?php if($first_loc_id) echo "disabled"; ?> />
+                                                            <input type="text" name="caddress" id="caddress" style="width: 300px;" class="form-control" required="" <?php if($first_loc_id) echo "disabled"; ?>>
                                                         </div>
                                                      </div>
                                                      <div class="col-md-6">

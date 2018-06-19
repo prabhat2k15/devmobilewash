@@ -433,7 +433,7 @@ die();
 }
 
 		$id = Yii::app()->request->getParam('id');
-		$message =  Yii::app()->db->createCommand("SELECT * FROM messages WHERE id='$id' ")->queryAll();
+		$message =  Yii::app()->db->createCommand("SELECT * FROM messages WHERE id=:id ")->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();
 		
         $to = $message[0]['to'];
         $phone = $message[0]['phone'];
