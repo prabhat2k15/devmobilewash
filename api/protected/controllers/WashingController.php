@@ -2666,8 +2666,14 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 	    
 	    Washingrequests::model()->updateByPk($wash_request_id, array("is_washer_assigned_push_sent" => 1));
 		}
-            $get_data = Yii::app()->db->createCommand("SELECT count(*) as count FROM activity_logs WHERE agent_id = ".$agent_id." AND agent_company_id = ".$agent_detail->real_washer_id." AND action = 'savejob' AND wash_request_id = ".$wash_request_id)->queryAll();
-                    if($get_data[0]['count'] == 0){
+            
+	     $get_data = Yii::app()->db->createCommand("SELECT count(*) as count FROM activity_logs WHERE agent_id = :agent_id AND agent_company_id = :agent_company_id AND action = 'savejob' AND wash_request_id = :wash_request_id")
+	     ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+	     ->bindValue(':agent_company_id', $agent_detail->real_washer_id, PDO::PARAM_STR)
+	     ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+	     ->queryAll();
+	        
+		    if($get_data[0]['count'] == 0){
                     $washeractionlogdata = array(
                         'agent_id'=> $agent_id,
                         'wash_request_id'=> $wash_request_id,
@@ -2693,8 +2699,8 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
                     $cust_details = Customers::model()->findByAttributes(array('id' => $washrequestmodel->customer_id));
 
-                        $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$washrequestmodel->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-
+$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $washrequestmodel->customer_id, PDO::PARAM_STR)->queryAll();
+	
             if(count($clientdevices))
             {
                 foreach($clientdevices as $ctdevice)
@@ -2999,13 +3005,13 @@ try {
                     $washrequestmodel->complete_order = date("Y-m-d H:i:s");
                     $resUpdate = $washrequestmodel->save(false);
 
-                     WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
+		     WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
 
                     $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
                     $kartdetails = json_decode($kartapiresult);
 
-                    if($wrequest_id_check->net_price != $kartdetails->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
-                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$wash_request_id.'"');
+                    if($wrequest_id_check->net_price != $kartdetails->net_price) WashPricingHistory::model()->deleteAll("wash_request_id = :wash_request_id", array(':wash_request_id' => $wash_request_id));
+                    else WashPricingHistory::model()->updateAll(array('status'=>0), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
 
                     /* ----------- update pricing details -------------- */
 					$washrequestmodel->total_price = $kartdetails->total_price;
@@ -3156,8 +3162,8 @@ try {
                 $device_type = strtolower($cust_details->mobile_type);
                 $alert_type = "default";
 		
-		    $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$cust_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-
+$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
+	
             if(count($clientdevices))
             {
                 foreach($clientdevices as $ctdevice)
@@ -3336,8 +3342,8 @@ try {
                     $agent_details = Agents::model()->findByAttributes(array('id'=>$agent_id));
                     $notify_token2 = '';
 		    
-		     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-
+$agentdevices = Yii::app()->db->createCommand('SELECT * FROM agent_devices WHERE agent_id = :agent_id ORDER BY last_used DESC LIMIT 1')->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
+	
             if((count($agentdevices)) && (!$agent_details->block_washer))
             {
                 foreach($agentdevices as $agdevice)
@@ -4188,8 +4194,9 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                 $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $agent_id));
                 $total_rate = count($agent_feedbacks);
 		
-		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$agent_id." AND action = 'dropjob'")->queryAll();
-                if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
+		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob'")->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
+                
+		if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
                 if($total_rate){
                     $rate = 50;
                     foreach($agent_feedbacks as $ind=>$agent_feedback){
@@ -4704,7 +4711,7 @@ $status = -1 * abs($status);
         if(!empty($wash_request_id))
         {
        // $washid =  Yii::app()->db->createCommand("SELECT customer_id FROM `washing_requests` WHERE `id` = '$wash_request_id'")->queryAll();
-	   $wash_request_details = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE `id` = '$wash_request_id'")->queryAll();
+	   $wash_request_details = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE `id` = :id")->bindValue(':id', $wash_request_id, PDO::PARAM_STR)->queryAll();
        $customer_id = $wash_request_details[0]['customer_id'];
        $washing_status = $wash_request_details[0]['status'];
        if($washing_status == 5 || $washing_status == 6)
@@ -4718,7 +4725,7 @@ $status = -1 * abs($status);
         }
         else
         {
-        $customers_request =  Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status IN ('4', '5', '6') AND `customer_id` = '$customer_id'")->queryAll();
+        $customers_request =  Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status IN ('4', '5', '6') AND `customer_id` = :customer_id")->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->queryAll();
         if(!empty($customers_request))
         {
 
@@ -4893,7 +4900,7 @@ $status = -1 * abs($status);
         {
 
             // NEW CUSTOMER
-            $new_customer =  Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE `id` = '$wash_request_id'")->queryAll();
+            $new_customer =  Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE `id` = :id")->bindValue(':id', $wash_request_id, PDO::PARAM_STR)->queryAll();
             $car_details = array();
             $package_name = array();
             foreach($wash_request_details as $request_details)
@@ -5473,174 +5480,6 @@ die();
 
     }
 
-    public function actionwashingkartbeforewashcreate(){
-
-if(Yii::app()->request->getParam('key') != API_KEY){
-echo "Invalid api key";
-die();
-}
-
-        $customer_id = Yii::app()->request->getParam('customer_id');
-        $car_ids = Yii::app()->request->getParam('car_ids');
-        $pack_names = Yii::app()->request->getParam('pack_names');
-        $coupon_discount = 0;
-        if(Yii::app()->request->getParam('coupon_discount')) $coupon_discount = Yii::app()->request->getParam('coupon_discount');
-        $json = array();
-        $result= 'false';
-        $response= 'Pass the required parameters';
-        $total = 0;
-        $net_total = 0;
-        $bundle_discount = 0;
-        $fifth_wash_discount = 0;
-        $first_wash_discount = 0;
-        $vehicles = array();
-        $veh_price = 0;
-        $safe_handle_fee = 1;
-        $agent_total = 0;
-        $company_total = 0;
-        $promo_wash_count = 0;
-        $total_discount = 0;
-
-         if((isset($customer_id) && !empty($customer_id)) && (isset($car_ids) && !empty($car_ids)) && (isset($pack_names) && !empty($pack_names))){
-
-
-                $result= 'true';
-        $response= 'kart details';
-
-                 /* --------- Get total price ------------- */
-
-                 $total_cars = explode(",",$car_ids);
-                 $total_packs = explode(",",$pack_names);
-
-                  foreach($total_cars as $carindex=>$car){
-
-                     $vehicle_details = Vehicle::model()->findByAttributes(array("id"=>$car));
-
-                     $washing_plan_express = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Express"));
-                    if(count($washing_plan_express)) $expr_price = $washing_plan_express->price;
-                    else $expr_price = "19.99";
-
-                     $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
-                    if(count($washing_plan_deluxe)) $delx_price = $washing_plan_deluxe->price;
-                    else $delx_price = "24.99";
-
-                    $washing_plan_prem = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Premium"));
-                    if(count($washing_plan_prem)) $prem_price = $washing_plan_prem->price;
-                    else $prem_price = "59.99";
-
-                  if($total_packs[$carindex] == 'Express') {
-                       $total += $expr_price;
-                       $veh_price = $expr_price;
-                       $safe_handle_fee = $washing_plan_express->handling_fee;
-                   }
-
-                  if($total_packs[$carindex] == 'Deluxe') {
-                       $total += $delx_price;
-                       $veh_price = $delx_price;
-                       $safe_handle_fee = $washing_plan_deluxe->handling_fee;
-
-                   }
-                   if($total_packs[$carindex] == 'Premium') {
-                       $total += $prem_price;
-                       $veh_price = $prem_price;
-                       $safe_handle_fee = $washing_plan_prem->handling_fee;
-                   }
-
-                   //safe handling fee
-                   $total++;
-
-                   $vehicles[] = array('id'=>$vehicle_details->id,
-											'vehicle_no'=>$vehicle_details->vehicle_no,
-											'brand_name'=>$vehicle_details->brand_name,
-											'model_name'=>$vehicle_details->model_name,
-											'vehicle_image'=>$vehicle_details->vehicle_image,
-											'vehicle_type'=>$vehicle_details->vehicle_type,
-                                            'vehicle_washing_package' => $total_packs[$carindex],
-                                            'vehicle_washing_price'=> $veh_price,
-                                            'safe_handling_fee' => $safe_handle_fee
-                                            );
-
-                  }
-
-                 /* --------- Get total price end ------------- */
-
-
-
-
-                 /* ------------ bundle discount ------- */
-
-                 if(count($total_cars) >= 2) $bundle_discount = count($total_cars) * 1;
-
-                /* ------------ bundle discount end ------- */
-
-
-                 /* ------------ fifth wash discount ------- */
-
-                    $cust_details = Customers::model()->findByAttributes(array("id"=>$customer_id));
-
-                    $promo_wash_count = $cust_details->fifth_wash_points;
-
-                    if($promo_wash_count == 5) {
-                        $fifth_wash_discount = 5;
-
-                    }
-
-                 /* ------------ fifth wash discount end ------- */
-
-
-                 /* ------------ first wash discount ------- */
-
-                  $new_customer =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE customer_id=".$customer_id)->execute();
-
-                 if($new_customer == 0){
-
-                     //$first_wash_discount = 5;
-                 }
-
-                  /* ------------ first wash discount end ------- */
-
-                  /* -------- total discount ---------- */
-
-                  $total_discount = $bundle_discount + $fifth_wash_discount + $first_wash_discount + $coupon_discount;
-
-                  /* -------- total discount end ---------- */
-
-                  /* ---- net price ------ */
-
-                    $net_total = $total - $bundle_discount -  $fifth_wash_discount - $first_wash_discount - $coupon_discount;
-
-                 /* ---- net price end ------ */
-
-                   /* ----------- calculate agent and company total ----------- */
-
-                       $agent_total = round(($net_total - count($total_cars)) * .8, 2);
-                       $company_total = round(($net_total - count($total_cars)) * .2, 2);
-                       $company_total += count($total_cars);
-
-                 /* ----------- calculate agent and company total end ----------- */
-
-
-         }
-
-           $json = array(
-            'result'=> $result,
-            'response'=> $response,
-            'total_price'=> $total,
-            'net_price'=> $net_total,
-            'company_total' => $company_total,
-            'agent_total' => $agent_total,
-            'total_discount' => $total_discount,
-            'bundle_discount' => $bundle_discount,
-            'fifth_wash_discount' => $fifth_wash_discount,
-            'first_wash_discount' => $first_wash_discount,
-            'coupon_discount' => $coupon_discount,
-            'promo_wash_count' => $promo_wash_count,
-            'vehicles' => $vehicles
-        );
-
-        echo json_encode($json); die();
-
-    }
 
   public function actionvieworder(){
 
@@ -5670,7 +5509,7 @@ $customer_id = Yii::app()->request->getParam('customer_id');
 				$status_qr = '';
 			}
 
-			$order_day = " AND DATE_FORMAT(a.created_date,'%Y-%m-%d')= '$day'$status_qr";
+			$order_day = " AND DATE_FORMAT(a.created_date,'%Y-%m-%d')= :day".$status_qr;
 		}
 		/* END */
         $total_order =  Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id AND a.status NOT IN (5,6)")->queryAll();
@@ -5679,7 +5518,10 @@ $customer_id = Yii::app()->request->getParam('customer_id');
 
 
 if($customer_id){
-$customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.status, a.washer_payment_status, a.total_price, a.net_price, a.address_type, a.bundle_discount, a.fifth_wash_discount, a.first_wash_discount, a.address, a.coupon_discount, a.customer_id, a.agent_id, a.created_date, a.car_list, a.package_list, a.estimate_time, a.wash_request_position, b.customername, c.first_name, c.last_name, c.street_address, c.city, c.state FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE a.customer_id = ".$customer_id." AND a.status NOT IN (5,6)$order_day ORDER BY a.id DESC")->queryAll();
+$customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.status, a.washer_payment_status, a.total_price, a.net_price, a.address_type, a.bundle_discount, a.fifth_wash_discount, a.first_wash_discount, a.address, a.coupon_discount, a.customer_id, a.agent_id, a.created_date, a.car_list, a.package_list, a.estimate_time, a.wash_request_position, b.customername, c.first_name, c.last_name, c.street_address, c.city, c.state FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE a.customer_id = :customer_id AND a.status NOT IN (5,6)$order_day ORDER BY a.id DESC")
+->bindValue(':day', $day, PDO::PARAM_STR)
+->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
+->queryAll();
 }
 else{
 $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.status, a.washer_payment_status, a.total_price, a.net_price, a.address_type, a.bundle_discount, a.fifth_wash_discount, a.first_wash_discount, a.address, a.coupon_discount, a.customer_id, a.agent_id, a.created_date, a.car_list, a.package_list, a.estimate_time, a.wash_request_position, b.customername, c.first_name, c.last_name, c.street_address, c.city, c.state FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE a.status NOT IN (5,6)$order_day ORDER BY a.id DESC")->queryAll();
@@ -5782,15 +5624,15 @@ die();
         if(!empty($status))
         {
             //$update_password = Customers::model()->updateAll(array('status'=>$status),'id=:id',array(':id'=>$orderid));
-            $update_status = Yii::app()->db->createCommand("UPDATE washing_requests SET status='$status' WHERE id = '$orderid' ")->queryAll();
+            $update_status = Yii::app()->db->createCommand("UPDATE washing_requests SET status=:status WHERE id = :id")->bindValue(':status', $status, PDO::PARAM_STR)->bindValue(':id', $orderid, PDO::PARAM_STR)->queryAll();
             $value = $status;
         }
         elseif(!empty($clientname))
         {
 
-            $customer =  Yii::app()->db->createCommand("SELECT customer_id FROM washing_requests WHERE id = '$orderid' ")->queryAll();
+            $customer =  Yii::app()->db->createCommand("SELECT customer_id FROM washing_requests WHERE id = :id")->bindValue(':id', $orderid, PDO::PARAM_STR)->queryAll();
             $customerid = $customer[0]['customer_id'];
-            $update_customer = Yii::app()->db->createCommand("UPDATE customers SET customername='$clientname' WHERE id = '$customerid' ")->queryAll();
+            $update_customer = Yii::app()->db->createCommand("UPDATE customers SET customername=:customername WHERE id = :id")->bindValue(':customername', $clientname, PDO::PARAM_STR)->bindValue(':id', $customerid, PDO::PARAM_STR)->queryAll();
             $value = $firstname;
         }
        /* elseif(!empty($agentname))
@@ -7186,7 +7028,7 @@ echo "Invalid api key";
 die();
 }
         $orderid = Yii::app()->request->getParam('orderid');
-        $order =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE id in ".'('. ($orderid) .") ")->queryAll();
+        $order =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE id in (:id) ")->bindValue(':id', $orderid, PDO::PARAM_STR)->queryAll();
 
         $pending = array();
         $processing = array();
@@ -8236,14 +8078,17 @@ die();
 		if(!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))){
 			$last_month = Yii::app()->request->getParam('start');
 			$curr_month = Yii::app()->request->getParam('end');
-			$order_month = " WHERE ( DATE_FORMAT(schedule_date,'%Y-%m')>= '$last_month' AND DATE_FORMAT(schedule_date,'%Y-%m')<= '$curr_month')";
+			$order_month = " WHERE ( DATE_FORMAT(schedule_date,'%Y-%m')>= :last_month AND DATE_FORMAT(schedule_date,'%Y-%m')<= :curr_month)";
 		}
 		/* Post END */
 		//$path = '/home/devmobilewash/public_html/api/protected/controllers/test.php';
 		/* Phone Orders */
 		$phone_orders = array();
 
-		$orders_exists =  Yii::app()->db->createCommand("SELECT * FROM phone_orders$order_month ORDER BY schedule_date DESC")->queryAll();
+		$orders_exists =  Yii::app()->db->createCommand("SELECT * FROM phone_orders$order_month ORDER BY schedule_date DESC")
+		->bindValue(':last_month', $last_month, PDO::PARAM_STR)
+		->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
+		->queryAll();
 
 		if(count($orders_exists)>0){
 			$result= 'true';
@@ -8330,7 +8175,7 @@ die();
         if(!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))){
             $last_month = Yii::app()->request->getParam('start');
             $curr_month = Yii::app()->request->getParam('end');
-            $order_month = " AND ( DATE_FORMAT(a.order_for,'%Y-%m')>= '$last_month' AND DATE_FORMAT(a.order_for,'%Y-%m')<= '$curr_month')";
+            $order_month = " AND ( DATE_FORMAT(a.order_for,'%Y-%m')>= :last_month AND DATE_FORMAT(a.order_for,'%Y-%m')<= :curr_month)";
         }
         /* Post END */
 
@@ -8339,7 +8184,10 @@ die();
 
         $count = $total_order[0]['countid'];
 
-        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")->queryAll();
+        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")
+	->bindValue(':last_month', $last_month, PDO::PARAM_STR)
+	->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
+	->queryAll();
 
         /* END */
         if(!empty($customers_order)){
@@ -8694,10 +8542,13 @@ die();
 		if(!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))){
 			$last_month = Yii::app()->request->getParam('start');
 			$curr_month = Yii::app()->request->getParam('end');
-			$order_month = " AND ( DATE_FORMAT(schedule_date,'%Y-%m')>= '$last_month' AND DATE_FORMAT(schedule_date,'%Y-%m')<= '$curr_month')";
+			$order_month = " AND ( DATE_FORMAT(schedule_date,'%Y-%m')>= :last_month AND DATE_FORMAT(schedule_date,'%Y-%m')<= :curr_month)";
 		}
 		/* Post END */
-        $customers_order =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE is_scheduled = 1 AND (status !=5 && status !=6)$order_month ORDER BY schedule_date DESC")->queryAll();
+        $customers_order =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE is_scheduled = 1 AND (status !=5 && status !=6)$order_month ORDER BY schedule_date DESC")
+	->bindValue(':last_month', $last_month, PDO::PARAM_STR)
+	->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
+	->queryAll();
 
 		/* END */
 
@@ -8833,9 +8684,9 @@ die();
 		if(!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))){
 			$last_month = Yii::app()->request->getParam('start');
 			$curr_month = Yii::app()->request->getParam('end');
-			$order_month = " AND ( DATE_FORMAT(a.schedule_date,'%Y-%m')>= '$last_month' AND DATE_FORMAT(a.schedule_date,'%Y-%m')<= '$curr_month')";
-			$order_month_phone = " WHERE ( DATE_FORMAT(schedule_date,'%Y-%m')>= '$last_month' AND DATE_FORMAT(schedule_date,'%Y-%m')<= '$curr_month')";
-			$order_month_sch = " AND ( DATE_FORMAT(schedule_date,'%Y-%m')>= '$last_month' AND DATE_FORMAT(schedule_date,'%Y-%m')<= '$curr_month')";
+			$order_month = " AND ( DATE_FORMAT(a.schedule_date,'%Y-%m')>= :last_month AND DATE_FORMAT(a.schedule_date,'%Y-%m')<= :curr_month)";
+			$order_month_phone = " WHERE ( DATE_FORMAT(schedule_date,'%Y-%m')>= :last_month AND DATE_FORMAT(schedule_date,'%Y-%m')<= :curr_month)";
+			$order_month_sch = " AND ( DATE_FORMAT(schedule_date,'%Y-%m')>= :last_month AND DATE_FORMAT(schedule_date,'%Y-%m')<= :curr_month)";
 		}
 		/* Post END */
 
@@ -8846,14 +8697,20 @@ die();
 
         $count = $total_order[0]['countid'];
 
-        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.status, a.schedule_date FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE a.status NOT IN (5,6)$order_month")->queryAll();
+        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.status, a.schedule_date FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE a.status NOT IN (5,6)$order_month")
+	->bindValue(':last_month', $last_month, PDO::PARAM_STR)
+	->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
+	->queryAll();
 
 		/* END */
 
 
 		/* Phone Orders */
 		$phone_orders = array();
-		$orders_exists =  Yii::app()->db->createCommand("SELECT * FROM phone_orders$order_month_phone ORDER BY schedule_date DESC")->queryAll();
+		$orders_exists =  Yii::app()->db->createCommand("SELECT * FROM phone_orders$order_month_phone ORDER BY schedule_date DESC")
+		->bindValue(':last_month', $last_month, PDO::PARAM_STR)
+	->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
+		->queryAll();
 		if(count($orders_exists)>0){
 			$result= 'true';
 		    $response= 'all orders';
@@ -8885,7 +8742,10 @@ die();
         }
 		/* END */
 		/* SCHEDULE ORDERS */
-		$schedule_order =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE is_scheduled = 1 AND (status !=5 && status !=6) $order_month_sch ORDER BY schedule_date DESC")->queryAll();
+		$schedule_order =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE is_scheduled = 1 AND (status !=5 && status !=6) $order_month_sch ORDER BY schedule_date DESC")
+		->bindValue(':last_month', $last_month, PDO::PARAM_STR)
+	->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
+		->queryAll();
 
 		if(!empty($schedule_order)){
 			foreach($schedule_order as $orderbyschdule){

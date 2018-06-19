@@ -210,23 +210,16 @@ else{ ?>
 
 }
 
-if(($vehicle->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)){ ?>
+if($vehicle->bundle_discount > 0){ ?>
 <tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
 </td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$0.20</p></td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$<?php echo number_format($vehicle->bundle_discount*.20, 2); ?></p></td>
 </tr>
 <?php }
 
-if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)){ ?>
-<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$0.20</p></td>
-</tr>
-<?php } ?>
+?>
 
 </table>
 
@@ -431,23 +424,15 @@ if($vehicle->fifth_wash_discount > 0){ ?>
 </tr>
 <?php }
 
-if(($vehicle->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)){ ?>
+if($vehicle->bundle_discount > 0){ ?>
 <tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
 </td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$1.00</p></td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$<?php echo number_format($vehicle->bundle_discount, 2); ?></p></td>
 </tr>
 <?php }
-
-if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)){  ?>
-<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$1.00</p></td>
-</tr>
-<?php } ?>
+ ?>
 
 </table>
 
@@ -619,12 +604,12 @@ if($vehicle->extplasticdressing_vehicle_fee_agent > 0){ ?>
 <?php } ?>
 
 
-<?php if(count($kartdata->vehicles) > 1){ ?>
+<?php if($vehicle->extplasticdressing_vehicle_fee_agent > 0){ ?>
 <tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
 </td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$<?php echo number_format(round(1*.80, 2), 2); ?></p></td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$<?php echo number_format($vehicle->bundle_discount_agent, 2); ?></p></td>
 </tr>
 <?php } ?>
 
