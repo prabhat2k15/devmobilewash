@@ -48,82 +48,6 @@ class SiteController extends Controller
 		}
 	}
 
-	/**
-	 * Displays the contact page
-	 */
-	/*public function actionContact()
-	{
-
-if(Yii::app()->request->getParam('key') != API_KEY){
-echo "Invalid api key";
-die();
-}
-		$model=new ContactForm;
-		if(isset($_POST['ContactForm']))
-		{
-			$model->attributes=$_POST['ContactForm'];
-			if($model->validate())
-			{
-				$name='=?UTF-8?B?'.base64_encode($model->name).'?=';
-				$subject='=?UTF-8?B?'.base64_encode($model->subject).'?=';
-				$headers="From: $name <{$model->email}>\r\n".
-					"Reply-To: {$model->email}\r\n".
-					"MIME-Version: 1.0\r\n".
-					"Content-Type: text/plain; charset=UTF-8";
-
-				mail(Yii::app()->params['adminEmail'],$subject,$model->body,$headers);
-				Yii::app()->user->setFlash('contact','Thank you for contacting us. We will respond to you as soon as possible.');
-				$this->refresh();
-			}
-		}
-		$this->render('contact',array('model'=>$model));
-	} */
-
-	/**
-	 * Displays the login page
-	 */
-	public function actionLogin()
-	{
-
-if(Yii::app()->request->getParam('key') != API_KEY){
-echo "Invalid api key";
-die();
-}
-		$model=new LoginForm;
-
-		// if it is ajax validation request
-		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
-		}
-
-		// collect user input data
-		if(isset($_POST['LoginForm']))
-		{
-			$model->attributes=$_POST['LoginForm'];
-			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->login())
-				$this->redirect(Yii::app()->user->returnUrl);
-		}
-		// display the login form
-		$this->render('login',array('model'=>$model));
-	}
-
-	/**
-	 * Logs out the current user and redirect to homepage.
-	 */
-	public function actionLogout()
-	{
-
-if(Yii::app()->request->getParam('key') != API_KEY){
-echo "Invalid api key";
-die();
-}
-
-Yii::app()->user->logout();
-		$this->redirect(Yii::app()->homeUrl);
-	}
 
      public function actionGetCMS()
     {
@@ -134,7 +58,7 @@ die();
 }
 
          $id = Yii::app()->request->getParam('id');
-         $getcms =  Yii::app()->db->createCommand("SELECT * FROM cms WHERE id = '$id' ")->queryAll();
+         $getcms =  Yii::app()->db->createCommand("SELECT * FROM cms WHERE id = :id ")->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();
 
          $title = $getcms[0]['title'];
          $content = $getcms[0]['content'];
@@ -182,7 +106,7 @@ die();
 }
 
         $id = Yii::app()->request->getParam('id');
-         $sitesettings =  Yii::app()->db->createCommand("SELECT * FROM cms WHERE id = '$id' ")->queryAll();
+         $sitesettings =  Yii::app()->db->createCommand("SELECT * FROM cms WHERE id = :id ")->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();
 
          $title = $sitesettings[0]['title'];
          $content = stripslashes($sitesettings[0]['content']);
@@ -260,7 +184,7 @@ die();
 }
 
         $id = Yii::app()->request->getParam('id');
-         $sitesettings =  Yii::app()->db->createCommand("SELECT * FROM cms WHERE id = '$id' ")->queryAll();
+         $sitesettings =  Yii::app()->db->createCommand("SELECT * FROM cms WHERE id = :id ")->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();
 
          $title = $sitesettings[0]['title'];
          $content = stripslashes($sitesettings[0]['content']);
@@ -1202,7 +1126,7 @@ $receivers = $letter_check->receivers;
 				);
 
 
-				   $resUpdate = Yii::app()->db->createCommand()->update('newsletters', $data,"id='".$id."'");
+				   $resUpdate = Yii::app()->db->createCommand()->update('newsletters', $data,"id=:id", array(":id" => $id));
 
                     	$result= 'true';
 		$response= 'Newsletter updated successfully';
@@ -1468,7 +1392,7 @@ die();
 		if((isset($id) && !empty($id)))
 			 {
 
-             $msg_check = Yii::app()->db->createCommand()->select('*')->from('push_messages')->where('id='.$id)->queryAll();
+             $msg_check = Yii::app()->db->createCommand()->select('*')->from('push_messages')->where('id=:id', array(":id" => $id))->queryAll();
 
              	if(!count($msg_check)){
                    	$result= 'false';
@@ -1520,7 +1444,7 @@ die();
 
 			 {
 
- $msg_check = Yii::app()->db->createCommand()->select('*')->from('push_messages')->where('id='.$id)->queryAll();
+ $msg_check = Yii::app()->db->createCommand()->select('*')->from('push_messages')->where('id=:id', array(":id" => $id))->queryAll();
 
              	if(!count($msg_check)){
                    	$result= 'false';
@@ -1544,7 +1468,7 @@ $message = $msg_check->message;
 				);
 
 
-				   $resUpdate = Yii::app()->db->createCommand()->update('push_messages', $data,"id='".$id."'");
+				   $resUpdate = Yii::app()->db->createCommand()->update('push_messages', $data,"id=:id", array(":id" => $id));
 
                     	$result= 'true';
 		$response= 'push message updated successfully';
@@ -1579,7 +1503,7 @@ die();
 
 			 {
 
-$promo_check = Yii::app()->db->createCommand()->select('*')->from('promo_popups')->where('id='.$id)->queryAll();
+$promo_check = Yii::app()->db->createCommand()->select('*')->from('promo_popups')->where('id=:id', array(":id" => $id))->queryAll();
 
              	if(!count($promo_check)){
                    	$result= 'false';
@@ -1603,7 +1527,7 @@ $promo_status = $promo_check[0]['promo_status'];
 				);
 
 
-				   $resUpdate = Yii::app()->db->createCommand()->update('promo_popups', $data,"id='".$id."'");
+				   $resUpdate = Yii::app()->db->createCommand()->update('promo_popups', $data,"id=:id", array(":id" => $id));
 
                     	$result= 'true';
 		$response= 'promo updated successfully';
@@ -1673,7 +1597,7 @@ die();
 		if((isset($id) && !empty($id)))
 			 {
 
-             $pop_check = Yii::app()->db->createCommand()->select('*')->from('promo_popups')->where('id='.$id)->queryAll();
+             $pop_check = Yii::app()->db->createCommand()->select('*')->from('promo_popups')->where('id=:id', array(":id" => $id))->queryAll();
 
              	if(!count($pop_check)){
                    	$result= 'false';
@@ -1719,7 +1643,7 @@ die();
 		if((isset($id) && !empty($id)))
 			 {
 
-            $setting_check = Yii::app()->db->createCommand()->select('*')->from('discount_settings')->where('id='.$id)->queryAll();
+            $setting_check = Yii::app()->db->createCommand()->select('*')->from('discount_settings')->where('id=:id', array(":id" => $id))->queryAll();
 
              	if(!count($setting_check)){
                    	$result= 'false';
@@ -1767,7 +1691,7 @@ die();
 
 			 {
 
-$setting_check = Yii::app()->db->createCommand()->select('*')->from('discount_settings')->where('id='.$id)->queryAll();
+$setting_check = Yii::app()->db->createCommand()->select('*')->from('discount_settings')->where('id=:id', array(":id" => $id))->queryAll();
 
              	if(!count($setting_check)){
                    	$result= 'false';
@@ -1787,7 +1711,7 @@ $first_wash_discount = $setting_check[0]['first_wash_discount'];
 				);
 
 
-				   $resUpdate = Yii::app()->db->createCommand()->update('discount_settings', $data,"id='".$id."'");
+				   $resUpdate = Yii::app()->db->createCommand()->update('discount_settings', $data,"id=:id", array(":id" =>$id));
 
                     	$result= 'true';
 		$response= 'settings updated successfully';
@@ -2684,13 +2608,13 @@ if($admin_command == 'update-order'){
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                     }
     
-                    WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
+                    WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id=:wash_request_id', array(":wash_request_id" => $wash_request_id));
 
                     $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
                     $kartdetails = json_decode($kartapiresult);
 
                     if($wrequest_id_check->net_price != $kartdetails->net_price) {
-                        WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
+                        WashPricingHistory::model()->deleteAll("wash_request_id=:wash_request_id", array(":wash_request_id" => $wash_request_id));
                         /* ----------- update pricing details -------------- */
 
                         $cust_details = Customers::model()->findByAttributes(array('id'=>$wrequest_id_check->customer_id));
@@ -2698,7 +2622,7 @@ if($admin_command == 'update-order'){
 
                         /* ----------- update pricing details end -------------- */
                     }
-                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$wash_request_id.'"');
+                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id=:wash_request_id', array(":wash_request_id" => $wash_request_id));
 
                      foreach($kartdetails->vehicles as $car){
                         if($wrequest_id_check->net_price != $kartdetails->net_price){
@@ -2735,15 +2659,15 @@ $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
       $washrequestmodel->complete_order = date("Y-m-d H:i:s");
                     $resUpdate = $washrequestmodel->save(false);
 
-                    WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id="'.$wash_request_id.'"');
+                    WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id=:wash_request_id', array(":wash_request_id" => $wash_request_id));
 
 
 
 					 $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
                     $kartdetails = json_decode($kartapiresult);
 
-                    if($wrequest_id_check->net_price != $kartdetails->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id);
-                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id="'.$wash_request_id.'"');
+                    if($wrequest_id_check->net_price != $kartdetails->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=:wash_request_id", array(":wash_request_id" => $wash_request_id));
+                    else WashPricingHistory::model()->updateAll(array('status'=>0),'wash_request_id=:wash_request_id', array(":wash_request_id" => $wash_request_id));
 
                     /* ----------- update pricing details -------------- */
 
@@ -2752,7 +2676,7 @@ $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
 
 					/* ----------- update pricing details end -------------- */
 
-					$all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_requests')->where("customer_id = ".$wrequest_id_check->customer_id." AND status = 4 AND id != ".$wash_request_id, array())->queryAll();
+					$all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_requests')->where("customer_id = ".$wrequest_id_check->customer_id." AND status = 4 AND id != :wash_request_id", array(":wash_request_id" => $wash_request_id))->queryAll();
 
 if(count($all_washes)){
     $totalpoints = 0;
@@ -2913,7 +2837,9 @@ die();
 		$allwashes = array();
 $wash_request_id = Yii::app()->request->getParam('wash_request_id');
 
-$alllogs =  Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id=".$wash_request_id)->queryAll();
+$alllogs =  Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id=:wash_request_id")
+->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+->queryAll();
 $alllogs_new = [];
 
 			if(count($alllogs)){
@@ -2961,7 +2887,7 @@ die();
 
 			 {
 
-$item_check = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where('id='.$id)->queryAll();
+$item_check = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where('id=:id', array(":id" => $id))->queryAll();
 
              	if(!count($item_check)){
                    	$result= 'false';
@@ -2989,7 +2915,7 @@ $premium_price = $item_check[0]['premium'];
 				);
 
 
-				   $resUpdate = Yii::app()->db->createCommand()->update('surge_pricing', $data,"id='".$id."'");
+				   $resUpdate = Yii::app()->db->createCommand()->update('surge_pricing', $data,"id=:id", array(":id" => $id));
 
                     	$result= 'true';
 		$response= 'update successful';
@@ -3056,7 +2982,7 @@ die();
 
 			 {
 
-$item_check = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where('id='.$id)->queryAll();
+$item_check = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where('id=:id', array(":id" => $id))->queryAll();
 
              	if(!count($item_check)){
                    	$result= 'false';
@@ -3089,7 +3015,7 @@ $price_unit = $item_check[0]['price_unit'];
 				);
 
 
-				   $resUpdate = Yii::app()->db->createCommand()->update('zipcode_pricing', $data,"id='".$id."'");
+				   $resUpdate = Yii::app()->db->createCommand()->update('zipcode_pricing', $data,"id=:id", array(":id" => $id));
 
                     	$result= 'true';
 		$response= 'update successful';
@@ -3128,7 +3054,7 @@ die();
 
 			 {
 
-$item_check = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where('id='.$id)->queryAll();
+$item_check = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where('id=:id', array(":id" =>$id))->queryAll();
 
              	if(!count($item_check)){
                    	$result= 'false';
@@ -3159,7 +3085,7 @@ $new_zips = trim($new_zips);
 				);
 
 
-				   $resUpdate = Yii::app()->db->createCommand()->update('zipcode_pricing', $data,"id='".$id."'");
+				   $resUpdate = Yii::app()->db->createCommand()->update('zipcode_pricing', $data,"id=:id", array(":id" => $id));
 
                     	$result= 'true';
 		$response= 'update successful';

@@ -1052,7 +1052,7 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 			$agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
 			if(count($agent_id_check)>0){
 			  
-$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = :agent_id ORDER BY last_used DESC LIMIT 1")->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
 
 
                     $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $agent_id_check->id));
@@ -1631,10 +1631,14 @@ $total_pages = 0;
 	            }
                 else{
 
-			$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE agent_id='".$agent_id."' AND ((status='4' OR status='5' OR status='6')) order by created_date desc")->queryAll();
+			$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE agent_id=:agent_id AND ((status='4' OR status='5' OR status='6')) order by created_date desc")
+			->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+			->queryAll();
               $total_entries = $all_wash_requests_count[0]['count'];
 	      
-	      $all_wash_requests_count2 =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id='".$agent_id."' AND action='dropjob' order by action_date desc")->queryAll();
+	      $all_wash_requests_count2 =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id=:agent_id AND action='dropjob' order by action_date desc")
+	      ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+	      ->queryAll();
               $total_entries2 = $all_wash_requests_count2[0]['count'];
 	      
 	      $total_entries += $total_entries2; 
@@ -1648,7 +1652,7 @@ $total_pages = ceil($total_entries / $limit);
              $all_wash_requests = Yii::app()->db->createCommand()
 			->select('*')
 			->from('washing_requests')
-			->where("agent_id='".$agent_id."' AND ((status='4' OR status='5' OR status='6'))", array())
+			->where("agent_id=:agent_id AND ((status='4' OR status='5' OR status='6'))", array(":agent_id" => $agent_id))
 			->limit($limit)
 			->offset(($page-1) * $limit)
 			->order(array('created_date desc'))
@@ -3130,13 +3134,13 @@ $page_number = 1;
           $limit_str = " LIMIT ".$limit." OFFSET ".$offset;
       }
       
-      if($search_area == "Washer Name") $agent_query = "(first_name LIKE '%$query%' OR last_name LIKE '%$query%') ";
-     if($search_area == "Washer Phone") $agent_query = "(phone_number LIKE '%$query%') ";
+      if($search_area == "Washer Name") $agent_query = "(first_name LIKE :query OR last_name LIKE :query) ";
+     if($search_area == "Washer Phone") $agent_query = "(phone_number LIKE :query) ";
        if($query){
         
-             $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE ".$agent_query."ORDER BY id DESC".$limit_str)->queryAll();
+             $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE ".$agent_query."ORDER BY id DESC".$limit_str)->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
          
-             $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE ".$agent_query."ORDER BY id DESC")->queryAll();
+             $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE ".$agent_query."ORDER BY id DESC")->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
 $total_count = $total_rows[0]['countid'];
 if($total_count > 0) $total_pages = ceil($total_count / $limit);
        }
@@ -3391,7 +3395,9 @@ die();
 
           $digits = 4;
             $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
-           $update_response = Yii::app()->db->createCommand("UPDATE pre_registered_washers SET phone_verify_code='$randum_number' WHERE id = '$agentid' ")->execute();
+           $update_response = Yii::app()->db->createCommand("UPDATE pre_registered_washers SET phone_verify_code='$randum_number' WHERE id = :id ")
+	   ->bindValue(':id', $agentid, PDO::PARAM_STR)
+	   ->execute();
            $result  = 'false';
             $json    = array();
 
@@ -3466,7 +3472,10 @@ die();
         $matchcode = PreRegWashers::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$agentid));
         if(!empty($matchcode)){
             if($matchcode->phone_verified != 1){
-            $update_response = Yii::app()->db->createCommand("UPDATE pre_registered_washers SET phone_verified='1' WHERE id = '$agentid' AND phone_verify_code = '$sortcode' ")->execute();
+            $update_response = Yii::app()->db->createCommand("UPDATE pre_registered_washers SET phone_verified='1' WHERE id = :id AND phone_verify_code = :phone_verify_code ")
+	    ->bindValue(':id', $agentid, PDO::PARAM_STR)
+	    ->bindValue(':phone_verify_code', $sortcode, PDO::PARAM_STR)
+	    ->execute();
             $data = array(
                 'result' => 'true',
                 'response' => 'Congratulation, Your phone is verified.'
@@ -3521,7 +3530,7 @@ die();
 
           $digits = 4;
             $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
-           $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = '$washerid' ")->execute();
+           $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = :id ")->bindValue(':id', $washerid, PDO::PARAM_STR)->execute();
            $result  = 'false';
             $json    = array();
 
@@ -3596,7 +3605,10 @@ die();
         $matchcode = Agents::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$washerid));
         if(!empty($matchcode)){
             if($matchcode->phone_verified != 1){
-            $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1' WHERE id = '$washerid' AND phone_verify_code = '$sortcode' ")->execute();
+            $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1' WHERE id = :id AND phone_verify_code = :phone_verify_code ")
+	    ->bindValue(':id', $washerid, PDO::PARAM_STR)
+	    ->bindValue(':phone_verify_code', $sortcode, PDO::PARAM_STR)
+	    ->execute();
             $data = array(
                 'result' => 'true',
                 'response' => 'Congratulation, Your phone is verified.'
@@ -4390,7 +4402,7 @@ die();
 		$agentsid = Yii::app()->request->getParam('agentID');
 		$washingid = Yii::app()->request->getParam('washingid');
 		$agentsdetail = Agents::model()->findByAttributes(array("id"=>$agentsid));
-		$lastorder =  Yii::app()->db->createCommand("SELECT created_date, complete_order FROM washing_requests WHERE agent_id = '$agentsid' AND status = '4' ORDER BY id DESC LIMIT 0,1")->queryAll();
+		$lastorder =  Yii::app()->db->createCommand("SELECT created_date, complete_order FROM washing_requests WHERE agent_id = :agent_id AND status = '4' ORDER BY id DESC LIMIT 0,1")->bindValue(':agent_id', $agentsid, PDO::PARAM_STR)->queryAll();
 		$image = $agentsdetail->image;
 		$lastactive = $agentsdetail->last_active;
 		$lastlogin = explode(" ", $lastactive);
@@ -4703,7 +4715,7 @@ die();
 $agent_id_check = Yii::app()->db->createCommand()
 						->select('*')
 						->from('active_washers')
-						->where("id='".$washer_id."'", array())
+						->where("id=:id", array(":id" => $washer_id))
 						->queryAll();
 
 			if(count($agent_id_check)>0){
@@ -5205,8 +5217,8 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
         }
         else{
             $allschedwashes = Washingrequests::model()->findAllByAttributes(array('agent_id' => $agent_id, 'is_scheduled' => 1, 'status' => 0),array('order' => 'id desc'));
-             $has_workinprogress_wash = Washingrequests::model()->findAll(array("condition"=>"status > 0 AND status <= 3 AND agent_id=".$agent_id), array('order' => 'created_date desc'));
-            if(count($allschedwashes)){
+            $has_workinprogress_wash =  Washingrequests::model()->findAll(array("condition"=>"status > 0 AND status <= 3 AND agent_id=:agent_id", 'params'  => array(':agent_id' => $agent_id), 'order' => 'created_date desc'));
+	    if(count($allschedwashes)){
                 
                 foreach($allschedwashes as $key=>$schedwash){
 $sched_date = '';
@@ -5462,10 +5474,17 @@ if((isset($agent_id) && !empty($agent_id)) && (isset($device_id) && !empty($devi
 $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 }
 
-$device_exists =  Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE device_id = '$device_id'")->queryAll();
+$device_exists =  Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE device_id = :device_id")->bindValue(':device_id', $device_id, PDO::PARAM_STR)->queryAll();
 
         if(count($device_exists)>0){
-Yii::app()->db->createCommand("UPDATE agent_devices SET agent_id='$agent_id', device_token='$device_token', device_name='$device_name', os_details='$os_details', device_type='$device_type', last_used='".date("Y-m-d H:i:s")."' WHERE device_id = '$device_id'")->execute();
+Yii::app()->db->createCommand("UPDATE agent_devices SET agent_id=:agent_id, device_token=:device_token, device_name=:device_name, os_details=:os_details, device_type=:device_type, last_used='".date("Y-m-d H:i:s")."' WHERE device_id = :device_id")
+->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+->bindValue(':device_token', $device_token, PDO::PARAM_STR)
+->bindValue(':device_name', $device_name, PDO::PARAM_STR)
+->bindValue(':os_details', $os_details, PDO::PARAM_STR)
+->bindValue(':device_type', $device_type, PDO::PARAM_STR)
+->bindValue(':device_id', $device_id, PDO::PARAM_STR)
+->execute();
 $result= 'true';
 $response= 'device updated';
 }
