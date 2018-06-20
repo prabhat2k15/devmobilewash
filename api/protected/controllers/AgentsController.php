@@ -5759,8 +5759,8 @@ if(Yii::app()->request->getParam('key') != API_KEY){
                         'admin_username' => $admin_username,
                         'action'=> 'edit_Agent',
                         'action_date'=> date('Y-m-d H:i:s'));
-                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
-                }*/
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);*/
+                }
         }
         
 
