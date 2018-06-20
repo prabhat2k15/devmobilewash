@@ -409,7 +409,7 @@ die();
 
            $customerID = Yii::app()->request->getParam('code');
            $email = Yii::app()->request->getParam('email');
-           $customerDetail =  Yii::app()->db->createCommand("SELECT * FROM customers WHERE md5(id) = '$customerID' ")->queryAll();
+           $customerDetail =  Yii::app()->db->createCommand("SELECT * FROM customers WHERE md5(id) = :customer_id ")->bindValue(':customer_id', $customerID, PDO::PARAM_STR)->queryAll();
 $customers_email_exists = Customers::model()->findByAttributes(array("email"=>$email));
            if(!empty($customerDetail))
            {
@@ -558,7 +558,7 @@ else $customername = $cust_name[0];
 	** Post Required: emailid, customername, image, device_token, mobile_type
 	*/
 
-    public function actionfacebooklogin(){
+    /* public function actionfacebooklogin(){
 
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
@@ -578,7 +578,7 @@ $login_type = 'facebook';
 
 		$json = array();
 		 $upcoming_schedule_wash_details = array();
-         /* -------- check for hours of operation -------- */
+        
 
         date_default_timezone_set('America/Los_Angeles');
         $current_day = strtolower(date('l'));
@@ -832,7 +832,7 @@ else $customername2 = $cust_name[0];
 
 		echo json_encode($json);
 		die;
-   	}
+   	}*/
 
 	public function actionlogout(){
 
@@ -862,7 +862,10 @@ $customers_id = $this->aes256cbc_crypt( $customers_id, 'd', AES256CBC_API_PASS )
 			$online_status= array('online_status' => 'offline', 'forced_logout' => 0);
 
 			    $update_status = Customers::model()->updateAll($online_status,'id=:id',array(':id'=>$customers_id));
-			    Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline' WHERE customer_id = '$customers_id' AND device_token = '$device_token'")->execute();
+			    Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline' WHERE customer_id = :customer_id AND device_token = :device_token")
+			    ->bindValue(':customer_id', $customers_id, PDO::PARAM_STR)
+			    ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
+			    ->execute();
 			}
 		}else{
 			$result= 'false';
@@ -1503,13 +1506,10 @@ $customerid = $this->aes256cbc_crypt( $customerid, 'd', AES256CBC_API_PASS );
 			$customers_id = Customers::model()->findByAttributes(array("id"=>$customerid));
 			if(count($customers_id)>0){
 				
-				$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$customerid."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+				$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1")->bindValue(':customer_id', $customerid, PDO::PARAM_STR)->queryAll();
+						
+						$location_details = Yii::app()->db->createCommand("SELECT * FROM customer_locations WHERE customer_id = :customer_id")->bindValue(':customer_id', $customerid, PDO::PARAM_STR)->queryAll();
 
-              $location_details = Yii::app()->db->createCommand()
-						->select('*')
-						->from('customer_locations')
-						->where("customer_id='".$customerid."'", array())
-						->queryAll();
 
 					$locations = array();
 
@@ -1527,11 +1527,9 @@ $customerid = $this->aes256cbc_crypt( $customerid, 'd', AES256CBC_API_PASS );
 						}
 					}
 
-                    $vehicle_details = Yii::app()->db->createCommand()
-						->select('*')
-						->from('customer_vehicals')
-						->where("customer_id='".$customerid."'", array())
-						->queryAll();
+						
+			$vehicle_details = Yii::app()->db->createCommand("SELECT * FROM customer_vehicals WHERE customer_id = :customer_id")->bindValue(':customer_id', $customerid, PDO::PARAM_STR)->queryAll();
+
 
 					$vehicles = array();
 
@@ -2029,10 +2027,8 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 }
 			 	$customer_exists = Customers::model()->findByAttributes(array("id"=>$customer_id));
 			 	if(count($customer_exists)>0){
-			 		 $qrVehicles = Yii::app()->db->createCommand()
-							->select('*')->from('customer_vehicals')
-							->where("customer_id='".$customer_id."'",array())
-							->queryAll();
+			 				
+					$qrVehicles = Yii::app()->db->createCommand('SELECT * FROM customer_vehicals WHERE customer_id = :customer_id')->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->queryAll();
 					/*if(count($qrVehicles) >= 5){
 						$response = 'Vehicle limit excceded. You can add upto 5 vehicles.';
 					}
@@ -2060,18 +2056,18 @@ $directorypath1 = realpath(Yii::app()->basePath . '/../images/veh_img');
 $vehicle_check = '';
 
 if($vehicle_build == 'classic'){
-$vehicle_check = Yii::app()->db->createCommand()
-                ->select('*')
-                ->from('all_classic_vehicles')
-                ->where("make='".$brand_name."' AND model='".$model_name."'", array())
-                ->queryAll();
+
+		$vehicle_check = Yii::app()->db->createCommand('SELECT * FROM all_classic_vehicles WHERE make = :make AND model= :model')
+		->bindValue(':make', $brand_name, PDO::PARAM_STR)
+		->bindValue(':model', $model_name, PDO::PARAM_STR)
+		->queryAll();
 }
 else{
-$vehicle_check = Yii::app()->db->createCommand()
-                ->select('*')
-                ->from('all_vehicles')
-                ->where("make='".$brand_name."' AND model='".$model_name."'", array())
-                ->queryAll();
+		
+		$vehicle_check = Yii::app()->db->createCommand('SELECT * FROM all_vehicles WHERE make = :make AND model= :model')
+		->bindValue(':make', $brand_name, PDO::PARAM_STR)
+		->bindValue(':model', $model_name, PDO::PARAM_STR)
+		->queryAll();
 }
 
  if(count($vehicle_check)>0){
@@ -2409,7 +2405,7 @@ if(Yii::app()->request->getParam('vehicle_build')) $vehicle_build = Yii::app()->
 						);
 
 					$resUpdate = Yii::app()->db->createCommand()->
-					update('customer_vehicals',$vehicle,"id='".$vehicle_id."'");
+					update('customer_vehicals',$vehicle,"id=:id", array(":id" => $vehicle_id));
 					$vehicle['id'] = $vehicle_id;
 					if($resUpdate){
 						$result= 'true';
@@ -2463,7 +2459,7 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 
 				$qrVehicles = Yii::app()->db->createCommand()
 				->select('*')->from('customer_vehicals')
-				->where("customer_id='".$customer_id."' AND hide_vehicle = 0",array())
+				->where("customer_id=:customer_id AND hide_vehicle = 0",array(":customer_id" => $customer_id))
 ->order("id DESC")
 				->queryAll();
 
@@ -2601,7 +2597,7 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 
 				$qrVehicles = Yii::app()->db->createCommand()
 				->select('*')->from('customer_vehicals')
-				->where("customer_id='".$customer_id."' AND id='".$vehicle_id."'",array())
+				->where("customer_id=:customer_id AND id=:id",array(":customer_id" => $customer_id, ":id" => $vehicle_id))
 				->queryAll();
 
 				if(count($qrVehicles)>0){
@@ -2977,7 +2973,7 @@ else{
  if($cust_vehicle_data->wash_package == 'Deluxe') $newprice = 24.99;
  if($cust_vehicle_data->wash_package == 'Premium') $newprice = 59.99;
 }*/
-WashPricingHistory::model()->updateAll(array('vehicle_price' => $newprice, 'package' => $cust_vehicle_data->wash_package, 'pet_hair'=>$cust_vehicle_data->pet_hair, 'lifted_vehicle'=>$cust_vehicle_data->lifted_vehicle, 'exthandwax_addon'=>$cust_vehicle_data->exthandwax_addon, 'extplasticdressing_addon'=>$cust_vehicle_data->extplasticdressing_addon, 'extclaybar_addon'=>$cust_vehicle_data->extclaybar_addon, 'waterspotremove_addon'=>$cust_vehicle_data->waterspotremove_addon, 'upholstery_addon'=>$cust_vehicle_data->upholstery_addon, 'floormat_addon'=>$cust_vehicle_data->floormat_addon, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id="'.$wash_request_id.'" AND vehicle_id="'.$vehicle_id.'"');
+WashPricingHistory::model()->updateAll(array('vehicle_price' => $newprice, 'package' => $cust_vehicle_data->wash_package, 'pet_hair'=>$cust_vehicle_data->pet_hair, 'lifted_vehicle'=>$cust_vehicle_data->lifted_vehicle, 'exthandwax_addon'=>$cust_vehicle_data->exthandwax_addon, 'extplasticdressing_addon'=>$cust_vehicle_data->extplasticdressing_addon, 'extclaybar_addon'=>$cust_vehicle_data->extclaybar_addon, 'waterspotremove_addon'=>$cust_vehicle_data->waterspotremove_addon, 'upholstery_addon'=>$cust_vehicle_data->upholstery_addon, 'floormat_addon'=>$cust_vehicle_data->floormat_addon, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id=:wash_request_id AND vehicle_id=:vehicle_id', array(":wash_request_id" => $wash_request_id, ":vehicle_id" => $vehicle_id));
 
 $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 
@@ -3175,7 +3171,7 @@ $vehicle_check = Yii::app()->db->createCommand()
                 ->queryAll();
 }
 
-                    WashPricingHistory::model()->updateAll(array('vehicle_price' => $draft_vehicle_exists->package_price, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id="'.$wash_request_id.'" AND vehicle_id="'.$vehicle_id.'"');
+                    WashPricingHistory::model()->updateAll(array('vehicle_price' => $draft_vehicle_exists->package_price, 'last_updated' => date("Y-m-d H:i:s")),'wash_request_id=:wash_request_id AND vehicle_id=:vehicle_id', array(":wash_request_id" =>$wash_request_id, ":vehicle_id" => $vehicle_id));
                    Vehicle::model()->updateByPk($vehicle_id, array("vehicle_source_id" => $vehicle_check[0]['id'], "brand_name" => $draft_vehicle_exists->brand_name, "model_name" => $draft_vehicle_exists->model_name, "vehicle_type" => $draft_vehicle_exists->vehicle_type, "vehicle_category" => $draft_vehicle_exists->vehicle_category, "vehicle_build" => $draft_vehicle_exists->vehicle_build, "vehicle_image" => $draft_vehicle_exists->vehicle_image));
                  
 		 $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
@@ -3390,7 +3386,7 @@ $floormat_addon_new = trim($floormat_addon_new,",");
 Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
 }
 
-WashPricingHistory::model()->deleteAll("wash_request_id=".$wash_request_id." AND vehicle_id=".$vehicle_id);
+WashPricingHistory::model()->deleteAll("wash_request_id=:wash_request_id AND vehicle_id=:vehicle_id", array(":wash_request_id" =>$wash_request_id, ":vehicle_id" =>$vehicle_id));
 
 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wash_request_exists->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -5055,7 +5051,9 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
                 else{
 
                 //$all_wash_requests = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE customer_id='".$customer_id."'")->queryAll();
-$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE customer_id='".$customer_id."' AND ((status='4' OR status='5' OR status='6') AND no_washer_cancel = 0) order by created_date desc")->queryAll();
+$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE customer_id=:customer_id AND ((status='4' OR status='5' OR status='6') AND no_washer_cancel = 0) order by created_date desc")
+->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
+->queryAll();
               $total_entries = $all_wash_requests_count[0]['count'];
 
 if($total_entries) {
@@ -5067,7 +5065,7 @@ $total_pages = ceil($total_entries / $limit);
                 $all_wash_requests = Yii::app()->db->createCommand()
 			->select('*')
 			->from('washing_requests')
-			->where("customer_id='".$customer_id."' AND ((status='4' OR status='5' OR status='6') AND no_washer_cancel = 0)", array())
+			->where("customer_id=:customer_id AND ((status='4' OR status='5' OR status='6') AND no_washer_cancel = 0)", array(":customer_id" => $customer_id))
 ->limit($limit)
 ->offset(($page-1) * $limit)
 ->order(array('created_date desc'))
@@ -5265,7 +5263,7 @@ die();
                 $all_orders = Yii::app()->db->createCommand()
 			->select('*')
 			->from('schedule_orders')
-			->where("customer_id='".$customer_id."'", array())
+			->where("customer_id=:customer_id", array(':customer_id' => $customer_id))
 ->order(array('created_date desc'))
 ->queryAll();
 
@@ -6161,7 +6159,7 @@ die();
 				$siteUrl = Yii::app()->getBaseUrl(true);
 
                    //unlink($vehicle_exists->vehicle_image);
-                  CustomerDraftVehicle::model()->deleteAll("id='".$vehicle_id."'");
+                  CustomerDraftVehicle::model()->deleteAll("id=:id", array(":id" => $vehicle_id));
 
 			}
 
@@ -6267,13 +6265,13 @@ $page_number = 1;
           $limit_str = " LIMIT ".$limit." OFFSET ".$offset;
       }
       
-      if($search_area == "Customer Name") $cust_query = "(customername LIKE '%$query%') ";
-if($search_area == "Customer Email") $cust_query = "(email LIKE '%$query%') ";
-if($search_area == "Customer Phone") $cust_query = "(contact_number LIKE '%$query%') ";
+      if($search_area == "Customer Name") $cust_query = "(customername LIKE :query) ";
+if($search_area == "Customer Email") $cust_query = "(email LIKE :query) ";
+if($search_area == "Customer Phone") $cust_query = "(contact_number LIKE :query) ";
 
 if($query){
- $customers = Yii::app()->db->createCommand("SELECT * FROM customers WHERE ".$cust_query."ORDER BY id DESC".$limit_str)->queryAll();
-  $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE ".$cust_query."ORDER BY id DESC")->queryAll();
+ $customers = Yii::app()->db->createCommand("SELECT * FROM customers WHERE ".$cust_query."ORDER BY id DESC".$limit_str)->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
+  $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE ".$cust_query."ORDER BY id DESC")->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
  $total_count = $total_rows[0]['countid'];
  if($total_count > 0) $total_pages = ceil($total_count / $limit);
 }
@@ -7695,7 +7693,7 @@ die();
 }
 
          $client_id = Yii::app()->request->getParam('clientid');
-         $prewaher = Yii::app()->db->createCommand("SELECT * FROM `pre_registered_clients` WHERE id = '$client_id' ")->queryAll();
+         $prewaher = Yii::app()->db->createCommand("SELECT * FROM `pre_registered_clients` WHERE id = :id ")->bindValue(':id', $client_id, PDO::PARAM_STR)->queryAll();
          $first_name = $prewaher[0]['first_name'];
          $last_name = $prewaher[0]['last_name'];
          $email = $prewaher[0]['email'];
@@ -7707,7 +7705,7 @@ die();
 
          $insertuser = Yii::app()->db->createCommand("INSERT INTO `customers` (`customername`, `email`, `created_date`) VALUES ('$name', '$email', '$register_date') ")->execute();
          $insertid = Yii::app()->db->getLastInsertID();
-         $update_user = Yii::app()->db->createCommand("UPDATE pre_registered_clients SET trash_status='1' WHERE id = '$client_id' ")->execute();
+         $update_user = Yii::app()->db->createCommand("UPDATE pre_registered_clients SET trash_status='1' WHERE id = :id ")->bindValue(':id', $client_id, PDO::PARAM_STR)->execute();
                     $from = Vargas::Obj()->getAdminFromEmail();
                     $subject = 'MobileWash.com - Set New Password';
                     $reporttxt = ROOT_URL.'/set-password.php?action=clrp&id='.$insertid;
@@ -8766,7 +8764,10 @@ die();
         $id = Yii::app()->request->getParam('id');
         $password = Yii::app()->request->getParam('password');
         $password = md5($password);
-        $checkpassword =  Yii::app()->db->createCommand("SELECT * FROM customers WHERE password = '$password' AND id = '$id' ")->queryAll();
+        $checkpassword =  Yii::app()->db->createCommand("SELECT * FROM customers WHERE password = :password AND id = :id ")
+	->bindValue(':password', $password, PDO::PARAM_STR)
+	->bindValue(':id', $id, PDO::PARAM_STR)
+	->queryAll();
 
            if(!empty($checkpassword)){
                $result = 'true';
@@ -8817,7 +8818,9 @@ die();
 		$orderday = floor($orderdiff/(60*60*24));
 		$completeorderday = floor($ordercompletediff/(60*60*24));
 
-		$customertotal =  Yii::app()->db->createCommand("SELECT net_price FROM washing_requests WHERE customer_id = '$customerID' ")->queryAll();
+		$customertotal =  Yii::app()->db->createCommand("SELECT net_price FROM washing_requests WHERE customer_id = :customer_id ")
+		->bindValue(':customer_id', $customerID, PDO::PARAM_STR)
+		->queryAll();
 		$totalprice = '';
 		foreach($customertotal as $toatl){
 			$totalprice += $toatl['net_price'];
@@ -8913,7 +8916,9 @@ die();
 
           $digits = 4;
             $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
-           $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = '$customerid' ")->execute();
+           $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = :id ")
+	   ->bindValue(':id', $customerid, PDO::PARAM_STR)
+	   ->execute();
            $result  = 'false';
             $json    = array();
 
@@ -8988,7 +8993,10 @@ die();
         $matchcode = Customers::model()->findByAttributes(array("phone_verify_code"=>$sortcode,"id"=>$customerid));
         if(!empty($matchcode)){
             if($matchcode->phone_verified != 1){
-            $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1' WHERE id = '$customerid' AND phone_verify_code = '$sortcode' ")->execute();
+            $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1' WHERE id = :id AND phone_verify_code = :phone_verify_code ")
+	    ->bindValue(':id', $customerid, PDO::PARAM_STR)
+	    ->bindValue(':phone_verify_code', $sortcode, PDO::PARAM_STR)
+	    ->execute();
             $data = array(
                 'result' => 'true',
                 'response' => 'Congratulations, Your phone is verified.'
@@ -9972,10 +9980,19 @@ if((isset($customer_id) && !empty($customer_id)) && (isset($device_id) && !empty
 $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 }
 
-$device_exists =  Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE device_id = '$device_id'")->queryAll();
+$device_exists =  Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE device_id = :device_id")
+->bindValue(':device_id', $device_id, PDO::PARAM_STR)
+->queryAll();
 
         if(count($device_exists)>0){
-Yii::app()->db->createCommand("UPDATE customer_devices SET customer_id='$customer_id', device_token='$device_token', device_name='$device_name', os_details='$os_details', device_type='$device_type', last_used='".date("Y-m-d H:i:s")."' WHERE device_id = '$device_id'")->execute();
+Yii::app()->db->createCommand("UPDATE customer_devices SET customer_id=:customer_id, device_token=:device_token, device_name=:device_name, os_details=:os_details, device_type=:device_type, last_used='".date("Y-m-d H:i:s")."' WHERE device_id = :device_id")
+->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
+->bindValue(':device_token', $device_token, PDO::PARAM_STR)
+->bindValue(':device_name', $device_name, PDO::PARAM_STR)
+->bindValue(':os_details', $os_details, PDO::PARAM_STR)
+->bindValue(':device_type', $device_type, PDO::PARAM_STR)
+->bindValue(':device_id', $device_id, PDO::PARAM_STR)
+->execute();
 $result= 'true';
 $response= 'device updated';
 }
@@ -10393,7 +10410,9 @@ $fb_id = Yii::app()->request->getParam('fb_id');
 
             else{
 
-                $cust_feedback_check =  Yii::app()->db->createCommand("SELECT * FROM `mobilewasher_service_feedbacks` WHERE `wash_request_id` = ".$wash_request_id)->queryAll();
+                $cust_feedback_check =  Yii::app()->db->createCommand("SELECT * FROM `mobilewasher_service_feedbacks` WHERE `wash_request_id` = :wash_request_id")
+		->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+		->queryAll();
 
                  $customers_id_check = Customers::model()->findByAttributes(array("id"=>$washrequest_id_check->customer_id));
 
@@ -10426,7 +10445,12 @@ $fb_id = Yii::app()->request->getParam('fb_id');
                     }
 
 
-                     Yii::app()->db->createCommand("UPDATE mobilewasher_service_feedbacks SET comments='$comments', ratings = '$ratings', social_id = '$fb_id' WHERE wash_request_id = '$wash_request_id' ")->execute();
+                     Yii::app()->db->createCommand("UPDATE mobilewasher_service_feedbacks SET comments=:comments, ratings = :ratings, social_id = :social_id WHERE wash_request_id = :wash_request_id ")
+		     ->bindValue(':comments', $comments, PDO::PARAM_STR)
+		     ->bindValue(':ratings', $ratings, PDO::PARAM_STR)
+		     ->bindValue(':social_id', $fb_id, PDO::PARAM_STR)
+		     ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+		     ->execute();
 
                 }
 

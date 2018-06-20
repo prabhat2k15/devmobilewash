@@ -389,13 +389,12 @@ die();
 				
 				 Agents::model()->updateByPk($agent_id, array('forced_logout' => 0));
 
-$criteria = new CDbCriteria;
-$criteria->addCondition( "order_temp_assigned=$agent_id") ; // $wall_ids = array ( 1, 2, 3, 4 );
-$criteria->addCondition('status=0');
+Yii::app()->db->createCommand("UPDATE agent_devices SET device_status='offline' WHERE agent_id = :agent_id AND device_token = :device_token")
+->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+->bindValue(':device_token', $device_token, PDO::PARAM_STR)
+->execute();
 
-Yii::app()->db->createCommand("UPDATE agent_devices SET device_status='offline' WHERE agent_id = '$agent_id' AND device_token = '$device_token'")->execute();
-
- Washingrequests::model()->updateAll(array('order_temp_assigned' => 0),$criteria);
+ Washingrequests::model()->updateAll(array('order_temp_assigned' => 0), 'order_temp_assigned=:agent_id AND status = 0', array(':agent_id'=>$agent_id));
 			}
 		}else{
 			$result= 'false';
@@ -631,7 +630,9 @@ die();
 }
 
            $agentID = Yii::app()->request->getParam('code');
-           $agentDetail =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE md5(id) = '$agentID' ")->queryAll();
+           $agentDetail =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE md5(id) = :id ")
+	   ->bindValue(':id', $agentID, PDO::PARAM_STR)
+	   ->queryAll();
 
            if(!empty($agentDetail))
            {
