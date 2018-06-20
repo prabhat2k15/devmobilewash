@@ -1720,7 +1720,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer declined package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'tipamount'): ?>
-                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> edited tip amount at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> edited tip amount tip amount from <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
@@ -4033,7 +4033,7 @@ if(data.result == 'true'){
             contents += "<p style='margin-bottom: 10px;'>Customer declined package/addons "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
       }
       if(log.action == 'tipamount'){
-      contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" edited tip amount at "+log.formatted_action_date+"</p>";
+      contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" edited tip amount from "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
       }
    });
    

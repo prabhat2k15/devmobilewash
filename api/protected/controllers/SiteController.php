@@ -2599,9 +2599,17 @@ if($admin_command == 'update-order'){
                     }
 
                     if($tip_amount > 0){
+                        $old_tip_amount = Yii::app()->db->createCommand("SELECT tip_amount FROM washing_requests WHERE id = ".$wash_request_id." LIMIT 1" )->queryAll();
+                        $old_amount = 0.00;
+                        if(count($old_tip_amount) > 0){
+                            $old_amount = $old_tip_amount[0]['tip_amount'];
+                        }
+
+
                         $washeractionlogdata = array(
                         'wash_request_id'=> $wash_request_id,
                         'admin_username' => $admin_username,
+                        'addi_detail' => '$'.number_format($old_amount,2).' to $'.number_format($old_amount,2),
                         'action'=> 'tipamount',
                         'action_date'=> date('Y-m-d H:i:s'));
 
