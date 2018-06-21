@@ -621,7 +621,7 @@ die();
 
     }
 
-public function actionsearchagentsclients() {
+/*public function actionsearchagentsclients() {
 
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
@@ -673,7 +673,7 @@ $json= array(
 'clients' => $clients_arr
 			);
 		echo json_encode($json);
-}
+}*/
 
  public function actionDeleteAdminUser(){
 
@@ -767,9 +767,26 @@ die();
         $company_permission = Yii::app()->request->getParam('company_permission');
         if(!empty($password)){
             $password = md5($password);
-        $update_user = Yii::app()->db->createCommand("UPDATE users SET email='$email', username = '$username', password = '$password', users_type = '$account_type', client_action = '$client_pemission', washer_action = '$washer_permission', company_action = '$company_permission' WHERE id = '$id' ")->execute();
+        $update_user = Yii::app()->db->createCommand("UPDATE users SET email=:email, username = :username, password = :password, users_type = :users_type, client_action = :client_action, washer_action = :washer_action, company_action = :company_action WHERE id = :id ")
+	->bindValue(':email', $email, PDO::PARAM_STR)
+	->bindValue(':username', $username, PDO::PARAM_STR)
+	->bindValue(':password', $password, PDO::PARAM_STR)
+	->bindValue(':users_type', $account_type, PDO::PARAM_STR)
+	->bindValue(':client_action', $client_pemission, PDO::PARAM_STR)
+	->bindValue(':washer_action', $washer_permission, PDO::PARAM_STR)
+	->bindValue(':company_action', $company_permission, PDO::PARAM_STR)
+	->bindValue(':id', $id, PDO::PARAM_STR)
+	->execute();
         }else{
-            $update_user = Yii::app()->db->createCommand("UPDATE users SET email='$email', username = '$username', users_type = '$account_type', client_action = '$client_pemission', washer_action = '$washer_permission', company_action = '$company_permission' WHERE id = '$id' ")->execute();
+            $update_user = Yii::app()->db->createCommand("UPDATE users SET email=:email, username = :username, users_type = :users_type, client_action = :client_action, washer_action = :washer_action, company_action = :company_action WHERE id = :id ")
+	    ->bindValue(':email', $email, PDO::PARAM_STR)
+	->bindValue(':username', $username, PDO::PARAM_STR)
+	->bindValue(':users_type', $account_type, PDO::PARAM_STR)
+	->bindValue(':client_action', $client_pemission, PDO::PARAM_STR)
+	->bindValue(':washer_action', $washer_permission, PDO::PARAM_STR)
+	->bindValue(':company_action', $company_permission, PDO::PARAM_STR)
+	->bindValue(':id', $id, PDO::PARAM_STR)
+	    ->execute();
         }
 
 $json= array(
@@ -814,7 +831,7 @@ die();
 }
 
         $user_token = Yii::app()->request->getParam('user_token');
-        $userdetail =  Yii::app()->db->createCommand("SELECT * FROM users WHERE device_token = '$user_token'")->queryAll();
+        $userdetail =  Yii::app()->db->createCommand("SELECT * FROM users WHERE device_token = :device_token")->bindValue(':device_token', $user_token, PDO::PARAM_STR)->queryAll();
 
 if(count($userdetail)){
 

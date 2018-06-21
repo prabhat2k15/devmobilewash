@@ -2599,7 +2599,9 @@ if($admin_command == 'update-order'){
                     }
 
                     if($tip_amount > 0){
-                        $old_tip_amount = Yii::app()->db->createCommand("SELECT tip_amount FROM washing_requests WHERE id = ".$wash_request_id." LIMIT 1" )->queryAll();
+                        $old_tip_amount = Yii::app()->db->createCommand("SELECT tip_amount FROM washing_requests WHERE id = :id LIMIT 1" )
+			->bindValue(':id', $wash_request_id, PDO::PARAM_STR)
+			->queryAll();
                         $old_amount = 0.00;
                         if(count($old_tip_amount) > 0){
                             $old_amount = $old_tip_amount[0]['tip_amount'];
@@ -3242,7 +3244,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 				$status_qr = '';
 			}
 
-			$order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '$day'$status_qr";
+			$order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '".$day."'".$status_qr;
 		}
 		/* END */
 
@@ -3272,8 +3274,8 @@ $agent_query = '';
  $total_days_diff = 0;
  $completed_orders = 0;
 
-if($customer_id > 0) $cust_query = "w.customer_id=".$customer_id." AND ";
-if($agent_id > 0) $agent_query = "w.agent_id=".$agent_id." AND ";
+if($customer_id > 0) $cust_query = "w.customer_id=:customer_id AND ";
+if($agent_id > 0) $agent_query = "w.agent_id=:agent_id AND ";
 
 if($customer_id > 0){
     $cust_check = Customers::model()->findByPk($customer_id);
@@ -3284,12 +3286,12 @@ if($customer_id > 0){
 
   if($filter == 'testorders'){
 
-    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->queryAll();
-else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
+    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
+else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
   }
   else{
-    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->queryAll();
-else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
+    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
+else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
   }
 
    //print_r($qrRequests);
@@ -3701,7 +3703,8 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
 				$status_qr = '';
 			}
 
-			$order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '$day'$status_qr";
+			$order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')='".$day."'".$status_qr;
+			
 		}
 		/* END */
 
@@ -3741,8 +3744,8 @@ $agent_query = '';
 	$limit = 20;
 	$offset = ($page_number -1) * $limit;
 
-if($customer_id > 0) $cust_query = "w.customer_id=".$customer_id." AND ";
-if($agent_id > 0) $agent_query = "w.agent_id=".$agent_id." AND ";
+if($customer_id > 0) $cust_query = "w.customer_id=:customer_id AND ";
+if($agent_id > 0) $agent_query = "w.agent_id=:agent_id AND ";
 
 if($customer_id > 0){
     $cust_check = Customers::model()->findByPk($customer_id);
@@ -3753,15 +3756,31 @@ if($customer_id > 0){
 
   if($filter == 'testorders'){
 
-  $total_rows =  Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day)->queryAll();
+  $total_rows =  Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day)
+  ->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
+  ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+  ->queryAll();
 
-    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit." OFFSET ".$offset)
+
+    ->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
+->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+    ->queryAll();
 
   }
   else{
-    $total_rows =  Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day)->queryAll();
 
-    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+    $total_rows =  Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day)
+
+    ->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
+->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+    ->queryAll();
+$total_rows[0]['countid'] = 10;
+    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit." OFFSET ".$offset)
+
+        ->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
+->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+    ->queryAll();
 
   }
   
@@ -4154,7 +4173,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
             } else {
                 $status_qr = '';
             }
-            $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '$day'$status_qr";
+            $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= :day".$status_qr;
         }
         /* END */
 
@@ -4463,9 +4482,9 @@ $query = Yii::app()->request->getParam('query');
 
 if(!$search_area) $search_area = "Order Number";
 
-if($search_area == "Order Number") $order_query = "(id LIKE '%$query%') ";
-if($search_area == "Created Date") $order_query = "(created_date LIKE '%$query%') ";
-if($search_area == "Scheduled Date") $order_query = "(order_for LIKE '%$query%' AND is_scheduled = 1) ";
+if($search_area == "Order Number") $order_query = "(id LIKE :query) ";
+if($search_area == "Created Date") $order_query = "(created_date LIKE :query) ";
+if($search_area == "Scheduled Date") $order_query = "(order_for LIKE :query AND is_scheduled = 1) ";
 if($search_area == "On-Demand") $order_query = "(is_scheduled = 0) ";
 if($search_area == "Scheduled") $order_query = "(is_scheduled = 1) ";
 
@@ -4474,8 +4493,8 @@ if($search_area == "Scheduled") $order_query = "(is_scheduled = 1) ";
 
 
 if($query){
-    $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE ".$order_query."ORDER BY id DESC".$limit_str)->queryAll();
- $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM washing_requests WHERE ".$order_query."ORDER BY id DESC")->queryAll();
+    $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE ".$order_query."ORDER BY id DESC".$limit_str)->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
+ $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM washing_requests WHERE ".$order_query."ORDER BY id DESC")->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
  $total_count = $total_rows[0]['countid'];
  if($total_count > 0) $total_pages = ceil($total_count / $limit);
 
@@ -4998,7 +5017,7 @@ die();
 		$response= 'No washer found';
 			     }
 			     else{
-                      $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                      $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = :agent_id ORDER BY last_used DESC LIMIT 1")->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
          if((count($agentdevices)) && (!$agent_check->block_washer))
             {
                 foreach($agentdevices as $agdevice)
@@ -5696,7 +5715,7 @@ die();
       $response = 'Error in sending notification';
         if(count($cust_id_check)){
 
-                         $customerdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                         $customerdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1")->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->queryAll();
 
 						foreach($customerdevices as $ctdevice){
 
@@ -5745,7 +5764,7 @@ die();
       $response = 'Error in sending notification';
         if((count($agent_id_check)) && (!$agent_id_check->block_washer)){
 
-                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = :agent_id ORDER BY last_used DESC LIMIT 1")->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
                         foreach($agentdevices as $agdevice){
 
 						    $device_type = strtolower($agdevice['device_type']);
@@ -6201,7 +6220,7 @@ $to  = Yii::app()->request->getParam('to');
 			$all_washes =  Yii::app()->db->createCommand()
 						->select('agent_id')
 						->from('washing_requests')
-						->where("(order_for >= '".$from." 00:00:00' AND order_for <= '".$to." 23:59:00') AND status = 4 AND agent_id != 0")
+						->where("(order_for >= :from 00:00:00' AND order_for <= :to 23:59:00') AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
 						->queryAll();
 
 if(count($all_washes) > 0){
@@ -6263,7 +6282,11 @@ if((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user
   if(AES256CBC_STATUS == 1){
 $user_id = $this->aes256cbc_crypt( $user_id, 'd', AES256CBC_API_PASS );
 }
-    $device_check = Yii::app()->db->createCommand("SELECT * FROM ".$user_type."_devices WHERE device_token = '$device_token' AND ".$user_type."_id = '$user_id'")->queryAll();
+    $device_check = Yii::app()->db->createCommand("SELECT * FROM :user_type_devices WHERE device_token = :device_token AND :user_type_id = :user_id")
+    ->bindValue(':user_type', $user_type, PDO::PARAM_STR)
+    ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
+    ->bindValue(':user_id', $user_id, PDO::PARAM_STR)
+    ->queryAll();
     
     if($user_type == 'customer') $user_check = Customers::model()->findByPk($user_id);
 	if($user_type == 'agent') $user_check = Agents::model()->findByPk($user_id);
@@ -6284,7 +6307,11 @@ $user_id = $this->aes256cbc_crypt( $user_id, 'd', AES256CBC_API_PASS );
                 $result = 'true';
 $response = 'device updated';
 
-                 Yii::app()->db->createCommand("UPDATE ".$user_type."_devices SET device_status='online', last_used='".date("Y-m-d H:i:s")."' WHERE device_token = '$device_token' AND ".$user_type."_id = '$user_id'")->execute();
+                 Yii::app()->db->createCommand("UPDATE :user_type_devices SET device_status='online', last_used='".date("Y-m-d H:i:s")."' WHERE device_token = :device_token AND :user_type_id = :user_id")
+		 ->bindValue(':user_type', $user_type, PDO::PARAM_STR)
+    ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
+    ->bindValue(':user_id', $user_id, PDO::PARAM_STR)
+		 ->execute();
 
             
 		if($user_type == 'customer'){
@@ -6294,7 +6321,7 @@ $response = 'device updated';
 			$user_photo = $user_check->image;
 			$user_name = $user_check->customername;
 			
-			$pending_wash_id_check = Washingrequests::model()->findAll(array("condition"=>"status <= 3 AND customer_id=".$user_id), array('order' => 'created_date desc'));
+			$pending_wash_id_check =  Washingrequests::model()->findAll(array("condition"=>"status <= 3 AND customer_id=:customer_id", 'params'  => array(':customer_id' => $user_id), 'order' => 'created_date desc'));
 			if(count($pending_wash_id_check)){
 				$pending_wash_id = $pending_wash_id_check[0]->id;
 				$is_scheduled = $pending_wash_id_check[0]->is_scheduled;
@@ -6526,7 +6553,12 @@ die();
         if((!empty($city)) && (!empty($id)))
         {
 
-            Yii::app()->db->createCommand("UPDATE `coverage_area_cities` SET `city`='".$city."',`state`='".$state."',`citypage_url`='".$citypage_url."' WHERE `id` = ".$id)->execute();
+            Yii::app()->db->createCommand("UPDATE `coverage_area_cities` SET `city`=:city,`state`=:state,`citypage_url`=:citypage_url WHERE `id` = :id")
+	    ->bindValue(':id', $id, PDO::PARAM_STR)
+	    ->bindValue(':city', $city, PDO::PARAM_STR)
+	    ->bindValue(':state', $state, PDO::PARAM_STR)
+	    ->bindValue(':citypage_url', $citypage_url, PDO::PARAM_STR)
+	    ->execute();
         $result = 'true';
                 $response = 'city updated';
                 $result = 'true';
@@ -6566,7 +6598,7 @@ die();
         if(!empty($id))
         {
 		
-		$city_exists = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` WHERE id = ".$id)->queryAll();
+		$city_exists = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` WHERE id = :id")->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();
 		if(!count($city_exists)){
 			$result = 'false';
 			$response = 'Invalid city id';
@@ -6621,7 +6653,7 @@ die();
         if(!empty($id))
         {
 		
-		$city_exists = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` WHERE id = ".$id)->queryAll();
+		$city_exists = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` WHERE id = :id")->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();
 		if(!count($city_exists)){
 			$result = 'false';
 			$response = 'Invalid city id';
@@ -6633,7 +6665,7 @@ die();
             die();
 		}
 		
-			Yii::app()->db->createCommand("DELETE FROM `coverage_area_cities` WHERE id = ".$id)->execute();
+			Yii::app()->db->createCommand("DELETE FROM `coverage_area_cities` WHERE id = :id")->bindValue(':id', $id, PDO::PARAM_STR)->execute();
 			$result = 'true';
 			$response = 'city deleted';
 			$result = 'true';
@@ -6673,9 +6705,9 @@ die();
 		$where = '';
 		if(Yii::app()->request->getParam('county') != ""){
 		    $countyName = Yii::app()->request->getParam('county');
-            $where = "where county='$countyName'";
+            $where = "where county=:county";
         }
-		$all_cities = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` $where ORDER BY city ASC")->queryAll();
+		$all_cities = Yii::app()->db->createCommand("SELECT * FROM `coverage_area_cities` $where ORDER BY city ASC")->bindValue(':county', $countyName, PDO::PARAM_STR)->queryAll();
 		
 			$result = 'true';
 			$response = 'all cities';
@@ -6800,7 +6832,10 @@ $to  = Yii::app()->request->getParam('to');
 			$result= 'false';
 			$response= 'nothing found';
 			
-			$all_washes =  Yii::app()->db->createCommand("SELECT city,COUNT(*) FROM washing_requests WHERE (order_for >= '".$from." 00:00:00' AND order_for <= '".$to." 23:59:00') AND status = 4 GROUP BY city ORDER BY count(*) DESC")->queryAll();
+			$all_washes =  Yii::app()->db->createCommand("SELECT city,COUNT(*) FROM washing_requests WHERE (order_for >= :from 00:00:00' AND order_for <= :to 23:59:00') AND status = 4 GROUP BY city ORDER BY count(*) DESC")
+			->bindValue(':from', $from, PDO::PARAM_STR)
+			->bindValue(':to', $to, PDO::PARAM_STR)
+			->queryAll();
 						
 if(count($all_washes) > 0){
     $result= 'true';
@@ -6835,7 +6870,9 @@ die();
 			$result= 'false';
 			$response= 'nothing found';
 			
-			$all_washes =  Yii::app()->db->createCommand("SELECT id, latitude, longitude FROM washing_requests WHERE status = ".$status)->queryAll();
+			$all_washes =  Yii::app()->db->createCommand("SELECT id, latitude, longitude FROM washing_requests WHERE status = :status")
+			->bindValue(':status', $status, PDO::PARAM_STR)
+			->queryAll();
 				
 			//print_r($all_washes);
 						
