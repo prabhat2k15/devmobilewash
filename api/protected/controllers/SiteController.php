@@ -2563,6 +2563,18 @@ $message = str_replace("[ORDER_ID]","#".$wash_request_id, $message);
 }
 
 if($admin_command == 'update-order'){
+    
+    $old_amount = 0.00;
+    if($tip_amount > 0){
+        $old_tip_amount = Yii::app()->db->createCommand("SELECT tip_amount FROM washing_requests WHERE id = :id LIMIT 1" )
+        ->bindValue(':id', $wash_request_id, PDO::PARAM_STR)
+        ->queryAll();
+        
+        if($old_tip_amount[0]['tip_amount']){
+            $old_amount = $old_tip_amount[0]['tip_amount'];
+        }
+    }
+    
     if($promo_code){
        if (strpos($car_packs, 'Premium') !== false) {
         $coupon_amount = number_format($coupon_check->premium_amount, 2, '.', '');
@@ -2599,19 +2611,10 @@ if($admin_command == 'update-order'){
                     }
 
                     if($tip_amount > 0){
-                        $old_tip_amount = Yii::app()->db->createCommand("SELECT tip_amount FROM washing_requests WHERE id = :id LIMIT 1" )
-			->bindValue(':id', $wash_request_id, PDO::PARAM_STR)
-			->queryAll();
-                        $old_amount = 0.00;
-                        if(count($old_tip_amount) > 0){
-                            $old_amount = $old_tip_amount[0]['tip_amount'];
-                        }
-
-
                         $washeractionlogdata = array(
                         'wash_request_id'=> $wash_request_id,
                         'admin_username' => $admin_username,
-                        'addi_detail' => '$'.number_format($old_amount,2).' to $'.number_format($old_amount,2),
+                        'addi_detail' => '$'.number_format($old_amount,2).' to $'.number_format($tip_amount,2),
                         'action'=> 'tipamount',
                         'action_date'=> date('Y-m-d H:i:s'));
 

@@ -950,7 +950,7 @@ display: none;
  <div class="col-md-6">
                                                         <div class="form-group">
  <label class="control-label">Tip Amount</label>
-                                                     <input type="text" name="ctip" id="ctip" style="width: 300px;" class="form-control" value="<?php if($getorder->tip_amount > 0) {echo $getorder->tip_amount;} else{echo 0;} ?>" />
+                                                     <input type="text" name="ctip" id="ctip" style="width: 300px;" class="form-control custom_tip_amount" value="<?php if($getorder->tip_amount > 0) {echo $getorder->tip_amount;} else{echo 0;} ?>" onkeypress="return isNumberKey(event)" min="0" />
 
                                                         </div>
                                                      </div>
@@ -1720,7 +1720,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer declined package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'tipamount'): ?>
-                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> edited tip amount tip amount from <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> edited tip amount from <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
@@ -2565,7 +2565,7 @@ $("body").on('focusout', '.custom_pet_fees', function(){
     }
 });
 
-$('.custom_pet_fees').keypress(function (e) {
+$('.custom_pet_fees, .custom_tip_amount').keypress(function (e) {
   if (e.which == 13) {
     return false;    //<---- Add this line
   }else{
