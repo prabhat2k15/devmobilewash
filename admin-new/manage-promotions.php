@@ -90,6 +90,7 @@ $all_coupons = $jsondata->coupons;
                                                 <th> Promo ID </th>
                                                 <th> Status </th>
                                                 <th> Code </th>
+                                                <th> Express Discount </th>
                                                 <th> Deluxe Discount </th>
 <th> Premium Discount </th>
                                                 <th> Uses </th>
@@ -113,6 +114,10 @@ $all_coupons = $jsondata->coupons;
                     <span class="label label-sm label-offline">Disabled</span>
                     <?php } ?></td>
                     <td><?php echo $coupon->coupon_code; ?></td>
+                    <td><?php if($coupon->discount_unit == 'usd'){ echo "$"; }
+                    echo $coupon->express_amount;
+                    if($coupon->discount_unit == 'percent') { echo "%"; }
+                    ?></td>
                     <td><?php if($coupon->discount_unit == 'usd'){ echo "$"; }
                     echo $coupon->deluxe_amount;
                     if($coupon->discount_unit == 'percent') { echo "%"; }

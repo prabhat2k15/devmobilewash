@@ -6,7 +6,7 @@ $couponid = $_GET['couponid'];
 if(isset($_POST['updatecoupon-form-submit'])){
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=coupons/editcoupon");
-        $data = array("id"=> $_GET['couponid'], "coupon_name"=>$_POST['coupon_name'], "coupon_code"=>$_POST['coupon_code'], "deluxe_amount"=>$_POST['discount_deluxe'], "premium_amount"=>$_POST['discount_premium'], "discount_unit"=>$_POST['discount_unit'], "coupon_status"=>$_POST['coupon_status'], "usage_limit"=>$_POST['coupon_use_limit'], "expire_date"=>$_POST['expire_date'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array("id"=> $_GET['couponid'], "coupon_name"=>$_POST['coupon_name'], "coupon_code"=>$_POST['coupon_code'], "express_amount"=>$_POST['discount_express'], "deluxe_amount"=>$_POST['discount_deluxe'], "premium_amount"=>$_POST['discount_premium'], "discount_unit"=>$_POST['discount_unit'], "coupon_status"=>$_POST['coupon_status'], "usage_limit"=>$_POST['coupon_use_limit'], "expire_date"=>$_POST['expire_date'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -123,13 +123,19 @@ $coupon_details = $jsondata->coupon_details;
                                                                  </div>
                                                                 </div>
                                                                 <div class="row">
-                                                        <div class="col-md-3 col-sm-12">
+								    <div class="col-md-2 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">Discount Express<span style="color: red;">*</span></label>
+                                                                <input type="text" class="form-control" name="discount_express" value="<?php echo $coupon_details->express_amount; ?>" required />
+                                                            </div>
+                                                            </div>
+                                                        <div class="col-md-2 col-sm-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Discount Deluxe<span style="color: red;">*</span></label>
                                                                 <input type="text" class="form-control" name="discount_deluxe" value="<?php echo $coupon_details->deluxe_amount; ?>" required />
                                                             </div>
                                                             </div>
-                                                            <div class="col-md-3 col-sm-12">
+                                                            <div class="col-md-2 col-sm-12">
                                                             <div class="form-group">
                                                                 <label class="control-label">Discount Premium<span style="color: red;">*</span></label>
                                                                 <input type="text" class="form-control" name="discount_premium" value="<?php echo $coupon_details->premium_amount; ?>" required />

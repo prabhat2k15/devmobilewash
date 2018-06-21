@@ -17,6 +17,7 @@ die();
 
         $coupon_name = Yii::app()->request->getParam('coupon_name');
 		$coupon_code = Yii::app()->request->getParam('coupon_code');
+		$express_amount = Yii::app()->request->getParam('express_amount');
 		$deluxe_amount = Yii::app()->request->getParam('deluxe_amount');
 $premium_amount = Yii::app()->request->getParam('premium_amount');
 		$discount_unit = Yii::app()->request->getParam('discount_unit');
@@ -27,6 +28,7 @@ $usage_limit = Yii::app()->request->getParam('usage_limit');
 
 		if((isset($coupon_name) && !empty($coupon_name)) &&
 			(isset($coupon_code) && !empty($coupon_code)) &&
+			(is_numeric($express_amount)) &&
 			(is_numeric($deluxe_amount)) &&
 (is_numeric($premium_amount)) &&
 			(isset($discount_unit) && !empty($discount_unit)) &&
@@ -44,6 +46,7 @@ $usage_limit = Yii::app()->request->getParam('usage_limit');
                    $coupondata= array(
 					'coupon_name'=> $coupon_name,
 					'coupon_code'=> $coupon_code,
+					'express_amount'=> $express_amount,
 					'deluxe_amount'=> $deluxe_amount,
 'premium_amount'=> $premium_amount,
 					'discount_unit'=> $discount_unit,
@@ -82,6 +85,7 @@ die();
         $coupon_id = Yii::app()->request->getParam('id');
         $coupon_name = Yii::app()->request->getParam('coupon_name');
 		$coupon_code = Yii::app()->request->getParam('coupon_code');
+		$express_amount = Yii::app()->request->getParam('express_amount');
 		$deluxe_amount = Yii::app()->request->getParam('deluxe_amount');
 $premium_amount = Yii::app()->request->getParam('premium_amount');
 		$discount_unit = Yii::app()->request->getParam('discount_unit');
@@ -108,6 +112,10 @@ $usage_limit = Yii::app()->request->getParam('usage_limit');
 
                 if(!$coupon_code){
                   $coupon_code = $coupon_check->coupon_code;
+                }
+		
+		if(!is_numeric($express_amount)){
+                  $express_amount = $coupon_check->express_amount;
                 }
 
                 if(!is_numeric($deluxe_amount)){
@@ -138,6 +146,7 @@ if(!is_numeric($premium_amount)){
                    $coupondata= array(
 					'coupon_name'=> $coupon_name,
 					'coupon_code'=> $coupon_code,
+					'express_amount'=> $express_amount,
 					'deluxe_amount'=> $deluxe_amount,
 'premium_amount'=> $premium_amount,
 					'discount_unit'=> $discount_unit,
@@ -189,6 +198,7 @@ die();
                    $coupondata= array(
 					'coupon_name'=> $coupon_check->coupon_name,
 					'coupon_code'=> $coupon_check->coupon_code,
+					'express_amount'=> $coupon_check->express_amount,
 					'deluxe_amount'=> $coupon_check->deluxe_amount,
 'premium_amount'=> $coupon_check->premium_amount,
 					'discount_unit'=> $coupon_check->discount_unit,
@@ -286,6 +296,7 @@ die();
                 $all_coupons[$ind]['id'] = $coupon['id'];
                $all_coupons[$ind]['coupon_name'] = $coupon['coupon_name'];
                $all_coupons[$ind]['coupon_code'] = $coupon['coupon_code'];
+	       $all_coupons[$ind]['express_amount'] = $coupon['express_amount'];
                $all_coupons[$ind]['deluxe_amount'] = $coupon['deluxe_amount'];
 $all_coupons[$ind]['premium_amount'] = $coupon['premium_amount'];
                $all_coupons[$ind]['discount_unit'] = $coupon['discount_unit'];

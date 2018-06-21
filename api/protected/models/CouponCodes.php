@@ -21,8 +21,8 @@ class CouponCodes extends CActiveRecord
 	public function rules()
 	{
 		return array(
-			array('coupon_name, coupon_code, deluxe_amount, premium_amount, discount_unit, coupon_status, usage_limit, expire_date', 'required'),
-			array('id, coupon_name, coupon_code, deluxe_amount, premium_amount, discount_unit, coupon_status, usage_limit, expire_date', 'safe', 'on'=>'search'),
+			array('coupon_name, coupon_code, express_amount, deluxe_amount, premium_amount, discount_unit, coupon_status, usage_limit, expire_date', 'required'),
+			array('id, coupon_name, coupon_code, express_amount, deluxe_amount, premium_amount, discount_unit, coupon_status, usage_limit, expire_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -46,6 +46,7 @@ class CouponCodes extends CActiveRecord
 			'id' => 'ID',
 			'coupon_name' => 'Coupon Name',
 			'coupon_code' => 'Coupon Code',
+			'express_amount' => 'Express Amount',
 			'deluxe_amount' => 'Deluxe Amount',
 'premium_amount' => 'Premium Amount',
 			'discount_unit'=>'Discount Unit',
@@ -64,6 +65,7 @@ class CouponCodes extends CActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('coupon_name',$this->coupon_name,true);
 		$criteria->compare('coupon_code',$this->coupon_code,true);
+		$criteria->compare('express_amount',$this->express_amount,true);
 		$criteria->compare('deluxe_amount',$this->deluxe_amount,true);
 $criteria->compare('premium_amount',$this->premium_amount,true);
 		$criteria->compare('discount_unit',$this->discount_unit,true);

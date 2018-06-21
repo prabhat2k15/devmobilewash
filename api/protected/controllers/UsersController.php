@@ -1190,7 +1190,7 @@ $password = $user_check->password;
 				);
 
 
-				   $resUpdate = Yii::app()->db->createCommand()->update('users', $data,"id='".$id."'");
+				   $resUpdate = Yii::app()->db->createCommand()->update('users', $data,"id=:id", array(":id" => $id));
 
                     	$result= 'true';
 		$response= 'User updated successfully';
@@ -1387,7 +1387,7 @@ else{
                        // Washingrequests::model()->updateByPk($wash_request_id, array('transaction_id' => $payresult['transaction_id'], 'payment_type' => 'Credit Card', 'status' => 4, 'escrow_status' => $payresult['escrow_status'], 'company_discount' => $spdisc, 'schedule_total' => $netprice, 'schedule_company_total' => $company_fee, 'washer_payment_status' => 1, 'is_feedback_sent' => 1));
  Washingrequests::model()->updateByPk($wash_request_id, array('transaction_id' => $payresult['transaction_id'], 'failed_transaction_id' => '', 'escrow_status' => $payresult['escrow_status'], 'company_discount' => $spdisc, 'washer_payment_status' => 0, 'fifth_wash_discount' => 0, 'fifth_wash_vehicles' => '', 'per_car_wash_points' => ''));
 
-				$all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_requests')->where("customer_id = ".$wash_check->customer_id." AND status = 4 AND id != ".$wash_request_id, array())->queryAll();
+				$all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_requests')->where("customer_id = ".$wash_check->customer_id." AND status = 4 AND id != :id", array(":id" => $wash_request_id))->queryAll();
 
 if(count($all_washes)){
     $totalpoints = 0;
@@ -2372,7 +2372,7 @@ die();
         $getmobilewash_socketurl = "http://209.95.41.20:3000";
 
 		if((isset($device_type) && !empty($device_type)) && (isset($app_version) && !empty($app_version))){
-		       $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = '".strtoupper($device_type)."'")->queryAll();
+		       $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = :device_type")->bindValue(':device_type', strtoupper($device_type), PDO::PARAM_STR)->queryAll();
 		       
 		       /*if(($app_version == '2.0.1') && ($device_type == 'IOS')){
 		             $result= "true";
@@ -2626,8 +2626,26 @@ $android_wash_later_fee = $app_settings[1]['wash_later_fee'];
 
 
 
-      Yii::app()->db->createCommand("UPDATE app_settings SET version_check='".$ios_version_check."', app_version='".$ios_version."', app_link='".$ios_app_link."', customer_ondemand_wait_time='".$ios_order_wait_time."', max_order_rotate_time='".$ios_order_rotate_time."', washer_search_radius='".$ios_washer_search_radius."', wash_now_fee = '".$ios_wash_now_fee."', wash_later_fee = '".$ios_wash_later_fee."' WHERE id = '1' ")->execute();
-      Yii::app()->db->createCommand("UPDATE app_settings SET version_check='".$android_version_check."', app_version='".$android_version."', app_link='".$android_app_link."', customer_ondemand_wait_time='".$android_order_wait_time."', max_order_rotate_time='".$android_order_rotate_time."', washer_search_radius='".$android_washer_search_radius."', wash_now_fee = '".$android_wash_now_fee."', wash_later_fee = '".$android_wash_later_fee."' WHERE id = '2' ")->execute();
+      Yii::app()->db->createCommand("UPDATE app_settings SET version_check=:ios_version_check, app_version=:ios_version, app_link=:ios_app_link, customer_ondemand_wait_time=:ios_order_wait_time, max_order_rotate_time=:ios_order_rotate_time, washer_search_radius=:ios_washer_search_radius, wash_now_fee = :ios_wash_now_fee, wash_later_fee = :ios_wash_later_fee WHERE id = '1' ")
+      ->bindValue(':ios_version_check', $ios_version_check, PDO::PARAM_STR)
+      ->bindValue(':ios_version', $ios_version, PDO::PARAM_STR)
+      ->bindValue(':ios_app_link', $ios_app_link, PDO::PARAM_STR)
+      ->bindValue(':ios_order_wait_time', $ios_order_wait_time, PDO::PARAM_STR)
+      ->bindValue(':ios_order_rotate_time', $ios_order_rotate_time, PDO::PARAM_STR)
+      ->bindValue(':ios_washer_search_radius', $ios_washer_search_radius, PDO::PARAM_STR)
+      ->bindValue(':ios_wash_now_fee', $ios_wash_now_fee, PDO::PARAM_STR)
+      ->bindValue(':ios_wash_later_fee', $ios_wash_later_fee, PDO::PARAM_STR)
+      ->execute();
+      Yii::app()->db->createCommand("UPDATE app_settings SET version_check=:android_version_check, app_version=:android_version, app_link=:android_app_link, customer_ondemand_wait_time=:android_order_wait_time, max_order_rotate_time=:android_order_rotate_time, washer_search_radius=:android_washer_search_radius, wash_now_fee = :android_wash_now_fee, wash_later_fee = :android_wash_later_fee WHERE id = '2' ")
+      ->bindValue(':android_version_check', $android_version_check, PDO::PARAM_STR)
+      ->bindValue(':android_version', $android_version, PDO::PARAM_STR)
+      ->bindValue(':android_app_link', $android_app_link, PDO::PARAM_STR)
+      ->bindValue(':android_order_wait_time', $android_order_wait_time, PDO::PARAM_STR)
+      ->bindValue(':android_order_rotate_time', $android_order_rotate_time, PDO::PARAM_STR)
+      ->bindValue(':android_washer_search_radius', $android_washer_search_radius, PDO::PARAM_STR)
+      ->bindValue(':android_wash_now_fee', $android_wash_now_fee, PDO::PARAM_STR)
+      ->bindValue(':android_wash_later_fee', $android_wash_later_fee, PDO::PARAM_STR)
+      ->execute();
 
 
             $result = 'true';
@@ -4736,8 +4754,8 @@ $userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
         
         
 
-                if($user_type == 'customer') $customer_login_status =  Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id='".$userid."' AND device_status = 'online'")->queryAll();
-                if($user_type == 'agent') $agent_login_status =  Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id='".$userid."' AND device_status = 'online'")->queryAll();
+                if($user_type == 'customer') $customer_login_status =  Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id=:user_id AND device_status = 'online'")->bindValue(':user_id', $userid, PDO::PARAM_STR)->queryAll();
+                if($user_type == 'agent') $agent_login_status =  Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id=:user_id AND device_status = 'online'")->bindValue(':user_id', $userid, PDO::PARAM_STR)->queryAll();
 
             
               if(count($customer_login_status))
@@ -4766,8 +4784,8 @@ $userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
          
 	
         if(!empty($matchcode)){
-            if($user_type == 'customer') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', forced_logout= 0 WHERE id = '$userid' AND phone_verify_code = '$sortcode' ")->execute();
-	    else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0 WHERE id = '$userid' AND phone_verify_code = '$sortcode' ")->execute();
+            if($user_type == 'customer') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
+	    else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
             
 	    $data = array(
                 'result' => 'true',
