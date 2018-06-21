@@ -1722,6 +1722,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'tipamount'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> edited tip amount from <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'customertipamount'): ?>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_id; ?> edited tip amount from <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
                                                           </div>
@@ -4035,6 +4038,9 @@ if(data.result == 'true'){
       if(log.action == 'tipamount'){
       contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" edited tip amount from "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
       }
+      if($log.action == 'customertipamount'){
+        contents += "<p style='margin-bottom: 10px;'># "+log.agent_id+" edited tip amount from "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
+       }
    });
    
    $(".activity-logs").html(contents);

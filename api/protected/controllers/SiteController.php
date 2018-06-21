@@ -2588,15 +2588,7 @@ if($admin_command == 'update-order'){
 
     Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
 
-     $washeractionlogdata = array(
-
-                        'wash_request_id'=> $wash_request_id,
-
-                        'admin_username' => $admin_username,
-                        'action'=> 'editorder',
-                        'action_date'=> date('Y-m-d H:i:s'));
-
-                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+     
 
                     if($wrequest_id_check->address != $full_address){
                         $washeractionlogdata = array(
@@ -2610,12 +2602,22 @@ if($admin_command == 'update-order'){
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                     }
 
-                    if($tip_amount > 0){
+                    if($tip_amount != $old_amount){
                         $washeractionlogdata = array(
                         'wash_request_id'=> $wash_request_id,
                         'admin_username' => $admin_username,
                         'addi_detail' => '$'.number_format($old_amount,2).' to $'.number_format($tip_amount,2),
                         'action'=> 'tipamount',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                    }else{
+                        $washeractionlogdata = array(
+
+                        'wash_request_id'=> $wash_request_id,
+
+                        'admin_username' => $admin_username,
+                        'action'=> 'editorder',
                         'action_date'=> date('Y-m-d H:i:s'));
 
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);

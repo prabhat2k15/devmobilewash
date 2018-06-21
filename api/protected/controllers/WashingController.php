@@ -4082,7 +4082,17 @@ if((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings,
 
 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
 Washingrequests::model()->updateByPk($wash_request_id, array('tip_amount' => $tip_amount));
+if(Yii::app()->request->getParam('tip_amount') != $washrequest_id_check->tip_amount){
+    $washeractionlogdata = array(
+        'wash_request_id'=> $wash_request_id,
+        //'admin_username' => $admin_username,
+        'agent_id'=> $washrequest_id_check->agent_id,
+        'addi_detail' => '$'.number_format($washrequest_id_check->tip_amount,2).' to $'.number_format($tip_amount,2),
+        'action'=> 'customertipamount',
+        'action_date'=> date('Y-m-d H:i:s'));
 
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+}
 if(is_numeric($ratings)) $logcomment = $comments." (Ratings: ".$ratings.")";
 else $logcomment = $comments;
 			
