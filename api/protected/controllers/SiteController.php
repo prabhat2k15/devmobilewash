@@ -2391,6 +2391,7 @@ $tip_amount  = Yii::app()->request->getParam('tip_amount');
 $admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
 $full_address  = Yii::app()->request->getParam('full_address');
+$city  = Yii::app()->request->getParam('city');
 $lat  = Yii::app()->request->getParam('lat');
 $lng  = Yii::app()->request->getParam('lng');
 $address_type = Yii::app()->request->getParam('address_type');
@@ -2459,6 +2460,10 @@ $response = 'wash request updated';
 
                 	if(!$full_address){
                    $full_address = $wrequest_id_check->address;
+                }
+		
+			if(!$city){
+                   $city = $wrequest_id_check->city;
                 }
 
 	if(!$address_type){
@@ -2586,7 +2591,7 @@ if($admin_command == 'update-order'){
        $fifthwash_vehicles = '';
     }
 
-    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
+    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'city' => $city, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
 
      
 
@@ -6287,8 +6292,12 @@ if((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user
   if(AES256CBC_STATUS == 1){
 $user_id = $this->aes256cbc_crypt( $user_id, 'd', AES256CBC_API_PASS );
 }
-    $device_check = Yii::app()->db->createCommand("SELECT * FROM :user_type_devices WHERE device_token = :device_token AND :user_type_id = :user_id")
-    ->bindValue(':user_type', $user_type, PDO::PARAM_STR)
+
+if($user_type == 'customer') $user_type = 'customer';
+elseif ($user_type == 'agent') $user_type = 'agent';
+else $user_type = 'agent';
+
+    $device_check = Yii::app()->db->createCommand("SELECT * FROM ".$user_type."_devices WHERE device_token = :device_token AND ".$user_type."_id = :user_id")
     ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
     ->bindValue(':user_id', $user_id, PDO::PARAM_STR)
     ->queryAll();
@@ -6312,8 +6321,7 @@ $user_id = $this->aes256cbc_crypt( $user_id, 'd', AES256CBC_API_PASS );
                 $result = 'true';
 $response = 'device updated';
 
-                 Yii::app()->db->createCommand("UPDATE :user_type_devices SET device_status='online', last_used='".date("Y-m-d H:i:s")."' WHERE device_token = :device_token AND :user_type_id = :user_id")
-		 ->bindValue(':user_type', $user_type, PDO::PARAM_STR)
+                 Yii::app()->db->createCommand("UPDATE ".$user_type."_devices SET device_status='online', last_used='".date("Y-m-d H:i:s")."' WHERE device_token = :device_token AND ".$user_type."_id = :user_id")
     ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
     ->bindValue(':user_id', $user_id, PDO::PARAM_STR)
 		 ->execute();
@@ -7094,7 +7102,7 @@ die();
     }
     
     
-           public function actioncodetest()
+          /* public function actioncodetest()
     {
 
 if(Yii::app()->request->getParam('key') != API_KEY){
@@ -7112,7 +7120,7 @@ die();
 	$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
 	print_r($clientdevices);	
    
-    }
+    }*/
     
     
 }

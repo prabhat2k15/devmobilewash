@@ -372,6 +372,7 @@ $coupon_usage = CustomerDiscounts::model()->findByAttributes(array("promo_code"=
                  $total_cars = explode(",",$car_ids);
                  $total_packs = explode(",",$pack_names);
 
+$express_found = 0;
 $deluxe_found = 0;
 $prem_found = 0;
 $fee_check = 0;
@@ -380,13 +381,25 @@ $fee_check = 0;
 
                      $vehicle_details = Vehicle::model()->findByAttributes(array("id"=>$car));
 
-                      $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
+                      $washing_plan_express = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Express"));
+                    if(count($washing_plan_express)) $expr_price = $washing_plan_express->price;
+                    else $expr_price = "19.99";
+		    
+		      $washing_plan_deluxe = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Deluxe"));
                     if(count($washing_plan_deluxe)) $delx_price = $washing_plan_deluxe->price;
                     else $delx_price = "24.99";
 
                     $washing_plan_prem = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_details->vehicle_type, "title"=>"Premium"));
                     if(count($washing_plan_prem)) $prem_price = $washing_plan_prem->price;
                     else $prem_price = "59.99";
+		    
+		     if($total_packs[$carindex] == 'Express') {
+                       $total += $expr_price;
+                       $veh_price = $expr_price;
+                       $safe_handle_fee = $washing_plan_express->handling_fee;
+			$express_found = 1;
+
+                   }
 
                    if($total_packs[$carindex] == 'Deluxe') {
                        $total += $delx_price;
@@ -433,7 +446,8 @@ else{
 $result= 'true';
 
 if($prem_found) $response = number_format($coupon_check->premium_amount, 2);
-else $response = number_format($coupon_check->deluxe_amount, 2);
+elseif($deluxe_found) $response = number_format($coupon_check->deluxe_amount, 2);
+else $response = number_format($coupon_check->express_amount, 2);
 
 }
 

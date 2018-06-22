@@ -1824,6 +1824,7 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
                            $all_locations->id = $loc->id;
                             $all_locations->title = $loc->location_title;
                             $all_locations->address = $loc->location_address;
+			    $all_locations->city = $loc->city;
                             $all_locations->lat = $loc->actual_latitude;
                             $all_locations->lng = $loc->actual_longitude;
                         }
