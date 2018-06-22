@@ -4855,10 +4855,13 @@ else $Bresult = Yii::app()->braintree->getCustomerById($braintree_id);
                   foreach($Bresult->paymentMethods as $index=>$paymethod){
 			$cardholder_name = '';
 			if($paymethod->cardholderName) $cardholder_name = $paymethod->cardholderName;
+                    $explode_mask = explode('******', $paymethod->maskedNumber);
+                    $countstr = strlen($explode_mask[0])+6;
+                    $last4_show = str_repeat("*",$countstr).$paymethod->last4;
                      $payment_methods[$index]['title'] = get_class($paymethod);
                      if($payment_methods[$index]['title'] == 'Braintree\\CreditCard'){
                          $payment_methods[$index]['title'] = 'Credit Card';
-                          $payment_methods[$index]['payment_method_details'] = array("expirationMonth"=>$paymethod->expirationMonth, "expirationYear"=>$paymethod->expirationYear, "bin"=>$paymethod->bin, "last4"=>$paymethod->last4, "maskedNumber"=>$paymethod->maskedNumber, "cardType"=>$paymethod->cardType, "token"=>$paymethod->token, "cardname"=>$cardholder_name, "cardimg"=>$paymethod->imageUrl, "isDefault" => $paymethod->isDefault());
+                          $payment_methods[$index]['payment_method_details'] = array("expirationMonth"=>$paymethod->expirationMonth, "expirationYear"=>$paymethod->expirationYear, "bin"=>$paymethod->bin, "last4"=>$paymethod->last4, "maskedNumber"=>$paymethod->maskedNumber, "cardType"=>$paymethod->cardType, "last4_show" => $last4_show, "token"=>$paymethod->token, "cardname"=>$cardholder_name, "cardimg"=>$paymethod->imageUrl, "isDefault" => $paymethod->isDefault());
                      }
 
                       if($payment_methods[$index]['title'] == 'Braintree\\PayPalAccount'){
