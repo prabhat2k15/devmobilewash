@@ -212,6 +212,12 @@ margin: 0;
 
 }
 
+.cardholdername, .cardholdername a{
+    pointer-events: none;
+    text-decoration: none;
+    color: #000;
+}
+
 </style>
 </head>
 <body>
@@ -583,7 +589,7 @@ margin: 0;
 <div class="addi-details">
 <?php if($kartdata->card_no): ?>
    <h3>Payment Method</h3>
-   <p style="font-size: 14px;"><span style="display: block; float: left;"><img style="width: 24px; vertical-align: bottom; margin-right: 5px;" src="<?php echo $kartdata->card_img; ?>" /> <?php echo $kartdata->card_no; ?> <span style="margin-left: 5px;">(exp. <?php echo $kartdata->card_exp_mo."/".$kartdata->card_exp_yr; ?>)</span></span><span style="display: block; float: right;"><?php echo $kartdata->cardholder_name; ?></span>
+   <p style="font-size: 14px;"><span style="display: block; float: left;"><img style="width: 24px; vertical-align: bottom; margin-right: 5px;" src="<?php echo $kartdata->card_img; ?>" /> <?php echo $kartdata->card_no; ?> <span style="margin-left: 5px;">(exp. <?php echo $kartdata->card_exp_mo."/".$kartdata->card_exp_yr; ?>)</span></span><span class="cardholdername" style="display: block; float: right;"><?php echo $kartdata->cardholder_name; ?></span>
  <div class="clear"></div>
 </p>
 <?php endif; ?>

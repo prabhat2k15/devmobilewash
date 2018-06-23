@@ -3134,13 +3134,22 @@ $page_number = 1;
           $limit_str = " LIMIT ".$limit." OFFSET ".$offset;
       }
       
-      if($search_area == "Washer Name") $agent_query = "(first_name LIKE :query OR last_name LIKE :query) ";
+      if($search_area == "Washer Name") {
+	$query_arr = explode(" ", $query);
+	$query = join("', '", $query_arr);
+
+	if(count($query_arr) > 1) $agent_query = "(first_name IN ('$query') OR last_name IN ('$query')) ";
+	else $agent_query = "(first_name LIKE :query OR last_name LIKE :query) ";
+      }
      if($search_area == "Washer Phone") $agent_query = "(phone_number LIKE :query) ";
        if($query){
         
-             $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE ".$agent_query."ORDER BY id DESC".$limit_str)->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
+             if(($search_area == "Washer Name") && (count($query_arr) > 1)) $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE ".$agent_query."ORDER BY id DESC".$limit_str)->queryAll();
+	     else $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE ".$agent_query."ORDER BY id DESC".$limit_str)->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
          
-             $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE ".$agent_query."ORDER BY id DESC")->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
+             if(($search_area == "Washer Name") && (count($query_arr) > 1)) $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE ".$agent_query."ORDER BY id DESC")->queryAll();
+else $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE ".$agent_query."ORDER BY id DESC")->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
+
 $total_count = $total_rows[0]['countid'];
 if($total_count > 0) $total_pages = ceil($total_count / $limit);
        }
