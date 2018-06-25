@@ -703,7 +703,10 @@ $coupondata= array(
                 $model->attributes= $coupondata;
                 $model->save(false);
 }
-
+/*Check Old tip value*/
+$old_amount = 0.00;
+$old_tip_amount = Yii::app()->db->createCommand("SELECT tip_amount FROM washing_requests WHERE id = :id LIMIT 1" )->bindValue(':id', $washrequestid, PDO::PARAM_STR)->queryAll();
+                    
 /* ---------- insert addons / others -------------- */
 
 $fifth_disc = 0;
@@ -711,6 +714,21 @@ $fifth_disc = 0;
 
                         Washingrequests::model()->updateByPk($washrequestid, array('city' => $order_city, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee, 'wash_later_fee' => $wash_later_fee));
 
+if($old_tip_amount[0]['tip_amount']){
+    $old_amount = $old_tip_amount[0]['tip_amount'];
+}
+if($tip_amount != $old_amount){
+    $washeractionlogdata = array(
+        'wash_request_id'=> $washrequestid,
+        //'admin_username' => $admin_username,
+        //'agent_id'=> $customer_id,
+        'addi_detail' => '$'.number_format($tip_amount,2),
+        'action'=> 'customeraddtipamount',
+        'action_date'=> date('Y-m-d H:i:s'));
+
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+}
+                    
 $car_arr = explode(",",$car_ids);
 $car_packs = explode(",",$package_ids);
 $wash_details = Washingrequests::model()->findByPk($washrequestid);
