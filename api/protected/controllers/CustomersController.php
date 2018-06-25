@@ -2704,7 +2704,43 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                 }
                 else{
 
+ if(Yii::app()->request->getParam('reinspect_opt') == 1){
+	
+	$cust_vehicle_data = Vehicle::model()->findByAttributes(array("id"=>$vehicle_id));
+	$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 
+$log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name;
+			
+	$logdata = array(
+            'wash_request_id'=> $wash_request_id,
+	    'agent_id'=> $wash_request_exists->agent_id,
+	    'agent_company_id'=> $agent_detail->real_washer_id,
+            'action'=> 'agentreinspectopt',
+	    'addi_detail' => $log_detail,
+            'action_date'=> date('Y-m-d H:i:s'));
+	
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+	
+ }
+ 
+ if(Yii::app()->request->getParam('no_damage_opt') == 1){
+	
+	$cust_vehicle_data = Vehicle::model()->findByAttributes(array("id"=>$vehicle_id));
+	$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+
+$log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name;
+			
+	$logdata = array(
+            'wash_request_id'=> $wash_request_id,
+	    'agent_id'=> $wash_request_exists->agent_id,
+	    'agent_company_id'=> $agent_detail->real_washer_id,
+            'action'=> 'agentnodamageopt',
+	    'addi_detail' => $log_detail,
+            'action_date'=> date('Y-m-d H:i:s'));
+	
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+	
+ }
 
                 /* ------------ upgrade pack ------------- */
 

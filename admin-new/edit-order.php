@@ -1726,6 +1726,12 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'customertipamount'): ?>
                                                           <p style="margin-bottom: 10px;">#<?php echo $log->agent_id; ?> edited tip amount from <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'agentreinspectopt'): ?>
+                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_id; ?> choose reinspect for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'agentnodamageopt'): ?>
+                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_id; ?> choose no damage for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
                                                           </div>
@@ -4042,6 +4048,16 @@ if(data.result == 'true'){
       if($log.action == 'customertipamount'){
         contents += "<p style='margin-bottom: 10px;'># "+log.agent_id+" edited tip amount from "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
        }
+       
+       if($log.action == 'agentreinspectopt'){
+        contents += "<p style='margin-bottom: 10px;'>Washer # "+log.agent_id+" choose reinspect for "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
+       }
+       
+       if($log.action == 'agentnodamageopt'){
+        contents += "<p style='margin-bottom: 10px;'>Washer # "+log.agent_id+" choose no damage for "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
+       }
+       
+
    });
    
    $(".activity-logs").html(contents);
