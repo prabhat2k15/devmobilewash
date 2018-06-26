@@ -1622,7 +1622,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> released order from fraud at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'startjob'): ?>
-                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> started job at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> accepted request at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'arrivejob'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> arrived at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1634,7 +1634,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> completed order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerstartjob'): ?>
-                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> started job at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> accepted request at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerarrivejob'): ?>
                                                           <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> arrived at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -3901,7 +3901,7 @@ if(data.result == 'true'){
       }
 
       if(log.action == 'startjob'){
-          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" started job at "+log.formatted_action_date+"</p>";
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" accepted request at "+log.formatted_action_date+"</p>";
       }
 
       if(log.action == 'arrivejob'){
@@ -3917,7 +3917,7 @@ if(data.result == 'true'){
       }
 
       if(log.action == 'washerstartjob'){
-            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" started job at "+log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" accepted request at "+log.formatted_action_date+"</p>";
       }
 
       if(log.action == 'washerarrivejob'){
