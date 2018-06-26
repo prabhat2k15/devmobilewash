@@ -2135,17 +2135,20 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
         $order_for_date = '';
 
         if($meet_washer_outside) {
-	Washingrequests::model()->updateByPk($wash_request_id, array("meet_washer_outside" => $meet_washer_outside));
-	
-                        $logdata= array(
-                            'agent_id'=> $agent_id,
-                            'wash_request_id'=> $wash_request_id,
-                            'agent_company_id'=> $agent_detail->real_washer_id,
-                            'action'=> 'meetwasherbeforeinspect',
-			    'addi_detail'=> $meet_washer_outside,
-                            'action_date'=> date('Y-m-d H:i:s'));
+	$old_meet_washer_outside = Yii::app()->db->createCommand("SELECT meet_washer_outside FROM washing_requests WHERE id = :id LIMIT 1" )->bindValue(':id', $wash_request_id, PDO::PARAM_STR)->queryAll();
+        if($meet_washer_outside != $old_meet_washer_outside[0]['meet_washer_outside']){
+            Washingrequests::model()->updateByPk($wash_request_id, array("meet_washer_outside" => $meet_washer_outside));
 
-                        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+            $logdata= array(
+                'agent_id'=> $agent_id,
+                'wash_request_id'=> $wash_request_id,
+                'agent_company_id'=> $agent_detail->real_washer_id,
+                'action'=> 'meetwasherbeforeinspect',
+                'addi_detail'=> $meet_washer_outside,
+                'action_date'=> date('Y-m-d H:i:s'));
+
+            Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+        }
 	}
 	
 	if($meet_washer_outside_washend) {
