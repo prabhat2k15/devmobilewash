@@ -2583,9 +2583,10 @@ if($admin_command == 'update-order'){
     if($promo_code){
        if (strpos($car_packs, 'Premium') !== false) {
         $coupon_amount = number_format($coupon_check->premium_amount, 2, '.', '');
-       }
-       else{
+       }elseif(strpos($car_packs, 'Deluxe') !== false){
         $coupon_amount = number_format($coupon_check->deluxe_amount, 2, '.', '');
+       }elseif(strpos($car_packs, 'Express') !== false){
+        $coupon_amount = number_format($coupon_check->express_amount, 2, '.', '');
        }
 
        $fifthwash_vehicles = '';
