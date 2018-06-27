@@ -3216,7 +3216,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-                     if((APP_ENV == 'real')){
+                     if((APP_ENV == 'real') && ($cust_details->sms_control)){
 		     $this->layout = "xmlLayout";
                 
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -3259,7 +3259,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-                    if((APP_ENV == 'real')){
+                    if((APP_ENV == 'real') && ($cust_details->sms_control)){
 		    $this->layout = "xmlLayout";
                    
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -3312,7 +3312,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                     $alert_type = "soft";
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("wash_complete_push_sent" => 1));
 		    
-		    if((APP_ENV == 'real')){
+		    if((APP_ENV == 'real') && ($cust_details->sms_control)){
 		    $this->layout = "xmlLayout";
           
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');

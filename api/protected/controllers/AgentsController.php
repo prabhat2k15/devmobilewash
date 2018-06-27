@@ -5809,4 +5809,66 @@ if(Yii::app()->request->getParam('key') != API_KEY){
          die();
 
     }
+    
+    
+       public function actionexcessratedwasherscheck(){
+
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
+
+
+    
+$all_washers = Agents::model()->findAll(array("condition"=>"rating > 5"));
+
+if(count($all_washers)){
+  foreach($all_washers as $washer){
+    
+    /* ------------ calculate agent average feedback ---------------- */
+
+		$washer_total_dropjobs = 0;
+                $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $washer->id));
+                $total_rate = count($agent_feedbacks);
+		
+		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob'")->bindValue(':agent_id', $washer->id, PDO::PARAM_STR)->queryAll();
+                
+		if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
+                if($total_rate){
+                    $rate = 50;
+                    foreach($agent_feedbacks as $ind=>$agent_feedback){
+                
+				if(!is_numeric($agent_feedback->customer_ratings)) $rate += 5;
+				else $rate += $agent_feedback->customer_ratings;
+			
+                    }
+
+                     if($washer_total_dropjobs) {
+			//echo "rate: ".$rate."<br>total drops: ".$washer_total_dropjobs."<br>total rate: ".$total_rate."<br>";
+			$agent_rate =  ($rate + $washer_total_dropjobs) / ($total_rate + 10 + $washer_total_dropjobs);
+			
+		}
+		    else $agent_rate =  $rate/($total_rate + 10);
+                    
+		    $agent_rate = number_format($agent_rate, 2, '.', '');
+
+                }
+                else{
+                    $agent_rate = 5.00;
+
+                }
+
+               
+                $agentmodel = new Agents;
+                //if($agent_rate < 3.5) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
+                $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$washer->id));
+
+                /* ------------ calculate agent average feedback end ---------------- */
+		
+    
+  }
+}
+
+ 
+    }
 }
