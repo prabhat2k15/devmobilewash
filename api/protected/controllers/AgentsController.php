@@ -1140,6 +1140,7 @@ if($bt_result->fundingDetails->routingNumber) $routing_no = $bt_result->fundingD
 'block_washer' => $agent_id_check->block_washer,
 'hours_opt_check' => $agent_id_check->hours_opt_check,
 'rating_control' => $agent_id_check->rating_control,
+'sms_control' => $agent_id_check->sms_control,
 'last_used_device' => $agentdevices
 
 				);
@@ -1226,6 +1227,8 @@ $hours_opt_check = '';
 $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
 $rating_control = 0;
 $rating_control = Yii::app()->request->getParam('rating_control');
+$rating_control = 0;
+$sms_control = Yii::app()->request->getParam('sms_control');
 $insurance_expiration = '';
         $insurance_expiration = Yii::app()->request->getParam('insurance_expiration');
 	$api_password = '';
@@ -1416,6 +1419,10 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
                 if(!is_numeric($rating_control)){
                     $rating_control = $model->rating_control;
                 }
+		
+		if(!is_numeric($sms_control)){
+                    $sms_control = $model->sms_control;
+                }
 
                  if($account_status == ''){
                     $account_status = $model->account_status;
@@ -1513,6 +1520,7 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 'notes' => $notes,
 'hours_opt_check' => $hours_opt_check,
 'rating_control' => $rating_control,
+'sms_control' => $sms_control,
 'bt_submerchant_id' => $bt_submerchant_id,
 'forced_logout' => $force_logout,
 					'updated_date'=> date('Y-m-d h:i:s')

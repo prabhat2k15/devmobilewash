@@ -110,6 +110,7 @@ else{
             $online_status = $_POST['online_status'];
             $rating = $_POST['rating'];
              $hours_opt_check = $_POST['hours_opt_check'];
+             $sms_control = $_POST['sms_control'];
              $block_client = $_POST['block_client'];
              $notes = $_POST['notes'];
 
@@ -117,7 +118,7 @@ else{
 
             // COLLECT POST VALUE //
 
-            $data = array('id'=> strip_tags($_GET['customerID']),'firstname' => $firstname, 'lastname' => $lastname, 'customername'=> strip_tags($customername),'email'=> strip_tags($email),'contact_number'=> strip_tags($contact_number),'email_alerts'=> strip_tags($email_alerts),'push_notifications'=> strip_tags($push_notifications),'total_wash'=> strip_tags($total_wash),'time_zone'=> strip_tags($time_zone),'account_status'=> strip_tags($account_status),'created_date'=> strip_tags($created_date),'updated_date'=> strip_tags($updated_date),'online_status'=> strip_tags($online_status),'rating'=> strip_tags($rating),'image'=> strip_tags($profileimg), 'password'=> strip_tags($password), 'how_hear_mw'=> strip_tags($_POST['how_hear_mw']), 'hours_opt_check' => strip_tags($hours_opt_check), 'block_client' => strip_tags($block_client), 'notes' => strip_tags($notes), 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('id'=> strip_tags($_GET['customerID']),'firstname' => $firstname, 'lastname' => $lastname, 'customername'=> strip_tags($customername),'email'=> strip_tags($email),'contact_number'=> strip_tags($contact_number),'email_alerts'=> strip_tags($email_alerts),'push_notifications'=> strip_tags($push_notifications),'total_wash'=> strip_tags($total_wash),'time_zone'=> strip_tags($time_zone),'account_status'=> strip_tags($account_status),'created_date'=> strip_tags($created_date),'updated_date'=> strip_tags($updated_date),'online_status'=> strip_tags($online_status),'rating'=> strip_tags($rating),'image'=> strip_tags($profileimg), 'password'=> strip_tags($password), 'how_hear_mw'=> strip_tags($_POST['how_hear_mw']), 'hours_opt_check' => strip_tags($hours_opt_check), 'sms_control' => strip_tags($sms_control), 'block_client' => strip_tags($block_client), 'notes' => strip_tags($notes), 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
             // END COLLECT POST VALUE //
 
@@ -170,6 +171,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
             $rating = $jsondata->rating;
             $image = $jsondata->image;
              $hours_opt_check = $jsondata->hours_opt_check;
+             $sms_control = $jsondata->sms_control;
              $block_client = $jsondata->block_client;
              $notes = $jsondata->notes;
 
@@ -414,6 +416,14 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                                                 <select name="block_client" class="form-control">
                                                                     <option value="0" <?php if($block_client == 0) echo "selected"; ?>>No</option>
                                                                     <option value="1" <?php if($block_client == 1) echo "selected"; ?>>Yes</option>
+                                                                </select>
+
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="control-label">SMS</label>
+                                                                <select name="sms_control" class="form-control">
+                                                                    <option value="1" <?php if($sms_control == 1) echo "selected"; ?>>ON</option>
+                                                                    <option value="0" <?php if($sms_control == 0) echo "selected"; ?>>OFF</option>
                                                                 </select>
 
                                                             </div>

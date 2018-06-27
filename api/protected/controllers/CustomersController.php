@@ -6396,6 +6396,7 @@ die();
         $online_status = $customerdetail['online_status'];
         $rating = $customerdetail['rating'];
         $image = $customerdetail['image'];
+	$sms_control = $customerdetail['sms_control'];
              $json = array(
                 'id'=> $id,
 		'first_name'=> $customerdetail['first_name'],
@@ -6415,6 +6416,7 @@ die();
 'how_hear_mw'=> $customerdetail['how_hear_mw'],
                 'image'=> $image,
                 'hours_opt_check' => $customerdetail['hours_opt_check'],
+		'sms_control' => $customerdetail['sms_control'],
                 'block_client' => $customerdetail['block_client'],
                 'notes'=>$customerdetail['notes'],
             );
@@ -6452,6 +6454,7 @@ die();
         $image = Yii::app()->request->getParam('image');
 $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
 $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
+$sms_control = Yii::app()->request->getParam('sms_control');
 $block_client = Yii::app()->request->getParam('block_client');
 $notes = Yii::app()->request->getParam('notes');
 
@@ -6487,7 +6490,7 @@ else{
          $online_status = $customers_exists->online_status;
      }
 
-     $data = array('first_name' => $firstname, 'last_name' => $lastname, 'customername'=> $firstname." ".$lastname,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes);
+     $data = array('first_name' => $firstname, 'last_name' => $lastname, 'customername'=> $firstname." ".$lastname,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes, 'sms_control' => $sms_control);
         //$data = array_filter($data);
 
         if($account_status == 0 || $account_status == 1)

@@ -7571,7 +7571,7 @@ if($wrequest_id_check->coupon_code){
 		
 $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
 $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_check->customer_id));
- if((APP_ENV == 'real') && (!$agent_detail->block_washer)){
+ if((APP_ENV == 'real') && (!$agent_detail->block_washer) && ($agent_detail->sms_control)){
  $this->layout = "xmlLayout";
 
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -9559,7 +9559,7 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-	       if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer)){
+	       if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
               try {
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
@@ -9875,7 +9875,7 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-            if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer)){
+            if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
              try{
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
@@ -11854,7 +11854,7 @@ $mins_since_last_use = round((time() - strtotime($agentdevices[0]['last_used']))
 						
 			if($current_mile <= 10){
 				$agent_det =  Agents::model()->findByPk($agid);
-				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer) && ($mins_since_last_use < 10080)){
+				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer) && ($agent_det->sms_control) && ($mins_since_last_use < 10080)){
 				  if((APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
                    

@@ -5871,7 +5871,7 @@ die();
     $agent_id_check = Agents::model()->findByPk($agent_id);
       $result = 'false';
       $response = 'Error in sending SMS';
-        if((count($agent_id_check)) && (!$agent_id_check->block_washer)){
+        if((count($agent_id_check)) && (!$agent_id_check->block_washer) && ($agent_id_check->sms_control)){
 
                     $this->layout = "xmlLayout";
             spl_autoload_unregister(array(
