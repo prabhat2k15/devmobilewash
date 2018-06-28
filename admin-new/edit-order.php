@@ -4046,21 +4046,21 @@ if(data.result == 'true'){
             contents += "<p style='margin-bottom: 10px;'>Customer declined package/addons "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
       }
       if(log.action == 'tipamount'){
-      contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" edited tip amount from "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
+      contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" edited tip amount from "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
       }
-      if($log.action == 'customertipamount'){
-        contents += "<p style='margin-bottom: 10px;'>Customer edited tip amount from "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
+      if(log.action == 'customertipamount'){
+        contents += "<p style='margin-bottom: 10px;'>Customer edited tip amount from "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
        }
-       if($log.action == 'customeraddtipamount'){
-        contents += "<p style='margin-bottom: 10px;'>Customer added "+ $log.addi_detail+" tip amount at "+log.formatted_action_date+"</p>";
-       }
-       
-       if($log.action == 'agentreinspectopt'){
-        contents += "<p style='margin-bottom: 10px;'>Washer # "+log.agent_id+" choose reinspect for "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
+       if(log.action == 'customeraddtipamount'){
+        contents += "<p style='margin-bottom: 10px;'>Customer added "+ log.addi_detail+" tip amount at "+log.formatted_action_date+"</p>";
        }
        
-       if($log.action == 'agentnodamageopt'){
-        contents += "<p style='margin-bottom: 10px;'>Washer # "+log.agent_id+" choose no damage for "+ $log.addi_detail+" at "+log.formatted_action_date+"</p>";
+       if(log.action == 'agentreinspectopt'){
+        contents += "<p style='margin-bottom: 10px;'>Washer # "+log.agent_id+" choose reinspect for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
+       }
+       
+       if(log.action == 'agentnodamageopt'){
+        contents += "<p style='margin-bottom: 10px;'>Washer # "+log.agent_id+" choose no damage for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
        }
        
 
