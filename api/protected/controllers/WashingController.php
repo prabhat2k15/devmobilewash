@@ -1626,6 +1626,8 @@ $washrequestid = $this->aes256cbc_crypt( $washrequestid, 'e', AES256CBC_API_PASS
         $status = Yii::app()->request->getParam('status');
         $address = Yii::app()->request->getParam('address');
 	$order_city = Yii::app()->request->getParam('order_city');
+	$order_state = Yii::app()->request->getParam('order_state');
+	$order_zipcode = Yii::app()->request->getParam('order_zipcode');
         $address_type = Yii::app()->request->getParam('address_type');
         $latitude = Yii::app()->request->getParam('latitude');
         $longitude = Yii::app()->request->getParam('longitude');
@@ -1668,6 +1670,14 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 	    if(!$order_city){
                $order_city =  $wash_id_check->city;
             }
+	    	    
+	    if(!$order_state){
+               $order_state =  $wash_id_check->state;
+            }
+	    
+	    if(!$order_zipcode){
+               $order_zipcode =  $wash_id_check->zipcode;
+            }
 
             if(!$address_type){
                $address_type =  $wash_id_check->address_type;
@@ -1698,12 +1708,12 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
             $order_for_date = date("Y-m-d H:i:s", strtotime($schedule_date." ".$schedule_time));
 
                 if($ondemand_10_min_cancel_schedule == 1) {
-			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
-			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
+			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
+			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date, 'order_temp_assigned' => 0, 'agent_reject_ids' => '', 'all_reject_ids' => '', 'is_two_loops_reject' => 0, 'no_washer_cancel' => 0));
 		}
 		else {
-			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date));
-			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date));
+			if($is_rescheduled == 1) Washingrequests::model()->updateByPk($wash_request_id, array('reschedule_date' => $schedule_date, 'reschedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date));
+			else Washingrequests::model()->updateByPk($wash_request_id, array('schedule_date' => $schedule_date, 'schedule_time' => $schedule_time, 'status' => $status, 'address' => $address, 'city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'address_type' => $address_type, 'latitude' => $latitude, 'longitude' => $longitude, 'is_scheduled' => 1, 'is_create_schedulewash_push_sent' => 0, 'wash_now_fee' => 0, 'wash_later_fee' => $wash_later_fee, 'order_for' => $order_for_date));
 		}
                 
 WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
@@ -10696,6 +10706,8 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 								'address'=>$schedwash['address'],
 								'address_type'=>$schedwash['address_type'],
 								'city'=>$schedwash['city'],
+								'state'=>$schedwash['state'],
+								'zipcode'=>$schedwash['zipcode'],
 								'latitude'=>$schedwash['latitude'],
 								'longitude'=>$schedwash['longitude'],
 								'status'=> $schedwash['status'],
@@ -10715,6 +10727,8 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 								'address'=>$schedwash['address'],
 								'address_type'=>$schedwash['address_type'],
 								'city'=>$schedwash['city'],
+								'state'=>$schedwash['state'],
+								'zipcode'=>$schedwash['zipcode'],
 								'latitude'=>$schedwash['latitude'],
 								'longitude'=>$schedwash['longitude'],
 								'status'=> $schedwash['status'],
@@ -10740,6 +10754,8 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 							'latitude'=>$schedwash['latitude'],
 							'longitude'=>$schedwash['longitude'],
 							'city'=>$schedwash['city'],
+							'state'=>$schedwash['state'],
+							'zipcode'=>$schedwash['zipcode'],
 							'status'=> $schedwash['status'],
 							'schedule_date'=>$sched_date,
 								'schedule_time'=>$sched_time,
@@ -10756,6 +10772,8 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 							'address'=>$schedwash['address'],
 							'address_type'=>$schedwash['address_type'],
 							'city'=>$schedwash['city'],
+							'state'=>$schedwash['state'],
+							'zipcode'=>$schedwash['zipcode'],
 							'latitude'=>$schedwash['latitude'],
 							'longitude'=>$schedwash['longitude'],
 							'status'=> $schedwash['status'],

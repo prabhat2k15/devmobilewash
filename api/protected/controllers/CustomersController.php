@@ -1520,6 +1520,8 @@ $customerid = $this->aes256cbc_crypt( $customerid, 'd', AES256CBC_API_PASS );
 								'location_title'=> $sloc['location_title'],
 								'location_address'=> $sloc['location_address'],
 								'city'=> $sloc['city'],
+								'zipcode'=> $sloc['zipcode'],
+								'state' => $sloc['state'],
 								'actual_longitude'=> $sloc['actual_longitude'],
 								'actual_latitude'=> $sloc['actual_latitude'],
 								'is_editable'=> $sloc['is_editable']
@@ -1639,6 +1641,7 @@ die();
 		$actual_longitude = Yii::app()->request->getParam('actual_longitude');
 		$actual_latitude = Yii::app()->request->getParam('actual_latitude');
 		$city = Yii::app()->request->getParam('city');
+		$state = Yii::app()->request->getParam('state');
 		$zipcode = Yii::app()->request->getParam('zipcode');
 		$admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
@@ -1680,6 +1683,7 @@ if(!count($cust_address_check)){
 					'actual_longitude'=> $actual_longitude,
 					'actual_latitude'=> $actual_latitude,
 					'city'=> $city,
+					'state'=> $state,
 					'zipcode'=> $zipcode
 				);
 
@@ -1699,7 +1703,7 @@ else{
         }
     }
 
-  CustomerLocation::model()->updateByPk($location_id, array( 'location_address' => $location_address, 'city'=> $city, 'zipcode'=> $zipcode, 'actual_longitude' => $actual_longitude, 'actual_latitude' => $actual_latitude ));
+  CustomerLocation::model()->updateByPk($location_id, array( 'location_address' => $location_address, 'city'=> $city, 'state'=> $state, 'zipcode'=> $zipcode, 'actual_longitude' => $actual_longitude, 'actual_latitude' => $actual_latitude ));
 }
 
                     	$result= 'true';
@@ -1825,6 +1829,8 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
                             $all_locations->title = $loc->location_title;
                             $all_locations->address = $loc->location_address;
 			    $all_locations->city = $loc->city;
+			    $all_locations->state = $loc->state;
+			    $all_locations->zipcode = $loc->zipcode;
                             $all_locations->lat = $loc->actual_latitude;
                             $all_locations->lng = $loc->actual_longitude;
                         }
