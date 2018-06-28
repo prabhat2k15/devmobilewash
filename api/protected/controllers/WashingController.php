@@ -476,6 +476,8 @@ die();
         $package_ids = Yii::app()->request->getParam('package_names');
         $address = Yii::app()->request->getParam('address');
 	$order_city = Yii::app()->request->getParam('order_city');
+	$order_state = Yii::app()->request->getParam('order_state');
+	$order_zipcode = Yii::app()->request->getParam('order_zipcode');
         $address_type = Yii::app()->request->getParam('address_type');
         $latitude = Yii::app()->request->getParam('latitude');
         $longitude = Yii::app()->request->getParam('longitude');
@@ -712,7 +714,7 @@ $old_tip_amount = Yii::app()->db->createCommand("SELECT tip_amount FROM washing_
 $fifth_disc = 0;
          if($fifth_wash_vehicles) $fifth_disc = 5;
 
-                        Washingrequests::model()->updateByPk($washrequestid, array('city' => $order_city, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee, 'wash_later_fee' => $wash_later_fee));
+                        Washingrequests::model()->updateByPk($washrequestid, array('city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee, 'wash_later_fee' => $wash_later_fee));
 
 if($old_tip_amount[0]['tip_amount']){
     $old_amount = $old_tip_amount[0]['tip_amount'];
@@ -3609,16 +3611,18 @@ file_put_contents("washing_one_min_notificaiton.log","order id ".$wrequest_id_ch
 
                /* ------------- Checek agent arrival distance end ---------- */
                  }
+		 
                   $mins = 0;
                   $to_time = strtotime("now");
                 $from_time = strtotime($wrequest_id_check->wash_begin);
                 $mins = round(abs($to_time - $from_time) / 60,2);
 
-
-
                  $to_time = strtotime("now");
-                $from_time = strtotime($wrequest_id_check->complete_order);
-                $feedback_time_check = round(abs($to_time - $from_time) / 60,2);
+                
+		if(($wrequest_id_check->status == 5) || ($wrequest_id_check->status == 6)) $from_time = strtotime($wrequest_id_check->order_canceled_at);
+		else $from_time = strtotime($wrequest_id_check->complete_order);
+                
+		$feedback_time_check = round(abs($to_time - $from_time) / 60,2);
 
                 if(($feedback_time_check >= 30) && ($wrequest_id_check->is_feedback_sent == 1)){
                    $feedback_5mins_passed = 1;
@@ -7380,7 +7384,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
                     }
 
-                      $data= array('status' => $status);
+                      $data= array('status' => $status, 'order_canceled_at' => date("Y-m-d H:i:s"));
                 $washrequestmodel = new Washingrequests;
                 $washrequestmodel->attributes= $data;
 
@@ -7515,7 +7519,7 @@ if($wrequest_id_check->coupon_code){
 
 
                    $custmodel = Customers::model()->findByPk($wrequest_id_check->customer_id);
-                $data= array('status' => $status,'customer_wash_points' => $custmodel->fifth_wash_points);
+                $data= array('status' => $status, 'order_canceled_at' => date("Y-m-d H:i:s"), 'customer_wash_points' => $custmodel->fifth_wash_points);
                 $washrequestmodel = new Washingrequests;
                 $washrequestmodel->attributes= $data;
 
@@ -9281,8 +9285,8 @@ else $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['t
                         $result = 'true';
                         $response = 'Order canceled';
                         $cancel_price =  $fee;
-                         if(($order_exists->status > 1) && ($order_exists->status <= 3)) Washingrequests::model()->updateByPk($id, array('status'=>5, 'cancel_fee' => $fee, 'washer_cancel_fee' => $fee-5));
-			 else Washingrequests::model()->updateByPk($id, array('status'=>5, 'cancel_fee' => $fee));
+                         if(($order_exists->status > 1) && ($order_exists->status <= 3)) Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'washer_cancel_fee' => $fee-5));
+			 else Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee));
 
                                     if($order_exists->transaction_id) {
                  if($order_exists->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($order_exists->transaction_id);
@@ -9600,7 +9604,7 @@ else $cancelvoid = Yii::app()->braintree->void($cancelresult['transaction_id']);
                   $result = 'true';
                         $response = 'Order canceled';
                         $cancel_price = 0;
-                         Washingrequests::model()->updateByPk($id, array('status'=>5, 'cancel_fee' => 0));
+                         Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => 0));
 
                          if($order_exists->transaction_id) {
                  if($order_exists->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($order_exists->transaction_id);

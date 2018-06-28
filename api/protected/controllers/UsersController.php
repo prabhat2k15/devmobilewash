@@ -2703,7 +2703,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
                     }
 
-                      $data= array('status' => $status, 'cancel_fee' => 0, 'washer_cancel_fee' => 0);
+                      $data= array('status' => $status, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => 0, 'washer_cancel_fee' => 0);
                 $washrequestmodel = new Washingrequests;
                 $washrequestmodel->attributes= $data;
 

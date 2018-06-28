@@ -9846,9 +9846,9 @@ $washing_request_id = $this->aes256cbc_crypt( $washing_request_id, 'd', AES256CB
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
                     }
 
-                      if(($wash_id_check->status >= 1) && ($wash_id_check->status <= 3)) $data= array('status' => 5, 'cancel_fee' => $amount, 'washer_cancel_fee' => $amount-5);
+                      if(($wash_id_check->status >= 1) && ($wash_id_check->status <= 3)) $data= array('status' => 5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $amount, 'washer_cancel_fee' => $amount-5);
                       else {
-                       $data= array('status' => 5, 'cancel_fee' => $amount);
+                       $data= array('status' => 5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $amount);
                       }
                 $washrequestmodel = new Washingrequests;
                 $washrequestmodel->attributes= $data;
