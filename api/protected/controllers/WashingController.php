@@ -4117,7 +4117,7 @@ if((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings,
 
 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
 Washingrequests::model()->updateByPk($wash_request_id, array('tip_amount' => $tip_amount));
-if(Yii::app()->request->getParam('tip_amount') != $washrequest_id_check->tip_amount){
+if(number_format($tip_amount,2) != number_format($washrequest_id_check->tip_amount,2)){
     $washeractionlogdata = array(
         'wash_request_id'=> $wash_request_id,
         //'admin_username' => $admin_username,
