@@ -1329,7 +1329,7 @@ $.each( clientdata.processing_orders, function( index, client ){
 jQuery(function($) {
     // Asynchronously Load the map API
     var script = document.createElement('script');
-    script.src = "https://maps.googleapis.com/maps/api/js?v=3.23&libraries=geometry&sensor=true&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA&callback=initialize";
+    script.src = "https://maps.googleapis.com/maps/api/js?v=3.23&libraries=geometry&sensor=true&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y&callback=initialize";
     document.body.appendChild(script);
     //console.log(markers[0][0]);
 });
@@ -1554,7 +1554,7 @@ strokeColor: "#076ee1",
         var encodedQuery = encodeURIComponent(query);
         url.push(encodedQuery);
         url.push('&callback=drawMap');
-        url.push('&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA');
+        url.push('&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y');
         script.src = url.join('');
         var body = document.getElementsByTagName('body')[0];
         body.appendChild(script);

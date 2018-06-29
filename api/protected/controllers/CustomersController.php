@@ -4217,8 +4217,8 @@ die();
         $dest_lat =Yii::app()->request->getParam('dest_lat');
         $dest_long =Yii::app()->request->getParam('dest_long');
 
-        $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$source_lat.",".$source_long."&destinations=".$dest_lat.",".$dest_long."&mode=driving&language=en-EN&sensor=false&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
-       // $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=Ahmedabad&destinations=mumbai&mode=driving&language=en-EN&sensor=false&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+        $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$source_lat.",".$source_long."&destinations=".$dest_lat.",".$dest_long."&mode=driving&language=en-EN&sensor=false&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
+       // $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=Ahmedabad&destinations=mumbai&mode=driving&language=en-EN&sensor=false&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
        // echo $geourl;die;
         $ch = curl_init();
 
@@ -4302,7 +4302,7 @@ $now = time();
 $dept_time = date(strtotime('+5 minutes', $now));
 
       //echo "customer locations: ".$latitude.",".$longitude."<br>";
-    $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$loc['latitude'].",".$loc['longitude']."&destinations=".$latitude.",".$longitude."&mode=driving&traffic_model=best_guess&departure_time=".$dept_time."&language=en-EN&sensor=false&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+    $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$loc['latitude'].",".$loc['longitude']."&destinations=".$latitude.",".$longitude."&mode=driving&traffic_model=best_guess&departure_time=".$dept_time."&language=en-EN&sensor=false&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
 
     $ch = curl_init();
 
@@ -4342,7 +4342,7 @@ if(count($distance_array)) {
           /* --- Google Distance call --- */
 
       //echo "customer locations: ".$latitude.",".$longitude."<br>";
-    $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$nearest_agent_details['latitude'].",".$nearest_agent_details['longitude']."&destinations=".$latitude.",".$longitude."&mode=driving&traffic_model=best_guess&departure_time=".$dept_time."&language=en-EN&sensor=false&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+    $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$nearest_agent_details['latitude'].",".$nearest_agent_details['longitude']."&destinations=".$latitude.",".$longitude."&mode=driving&traffic_model=best_guess&departure_time=".$dept_time."&language=en-EN&sensor=false&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
 
     $ch = curl_init();
 

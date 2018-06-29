@@ -133,7 +133,7 @@ $address_temp = $_POST['caddress'].", ".$_POST['ccity'].", ".$_POST['cstate']." 
 
 
 
- $geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($address_temp)."&sensor=true&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+ $geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($address_temp)."&sensor=true&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
     $ch = curl_init();
      $zip = '';
 	curl_setopt($ch,CURLOPT_URL,$geourl);
@@ -197,7 +197,7 @@ $city = $_POST['ccity'];
 
     /* --- Geocode lat long --- */
 
-    $geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$encode_address."&sensor=true&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+    $geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$encode_address."&sensor=true&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
     $ch = curl_init();
 
 	curl_setopt($ch,CURLOPT_URL,$geourl);

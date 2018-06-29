@@ -622,7 +622,7 @@ $customer_total_wash = count($totalwash_arr);
 
     /* --- Geocode lat long --- */
 
-    $geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$encode_address."&sensor=true&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+    $geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$encode_address."&sensor=true&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
     $ch = curl_init();
 
 	curl_setopt($ch,CURLOPT_URL,$geourl);
@@ -3568,7 +3568,7 @@ $agent_details->id = $agent_id;
                        /* --- Google Distance call --- */
 
       //echo "customer locations: ".$latitude.",".$longitude."<br>";
-    $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$agent_loc_obj->latitude.",".$agent_loc_obj->longitude."&destinations=".$wrequest_obj->latitude.",".$wrequest_obj->longitude."&mode=driving&language=en-EN&sensor=false&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+    $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$agent_loc_obj->latitude.",".$agent_loc_obj->longitude."&destinations=".$wrequest_obj->latitude.",".$wrequest_obj->longitude."&mode=driving&language=en-EN&sensor=false&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
 
     $ch = curl_init();
 
@@ -11562,7 +11562,7 @@ $dept_time = date(strtotime('+5 minutes', $now));
 
   $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".
 $agent_loc->latitude.",".
-$agent_loc->longitude."&destinations=".$wash_id_check->latitude.",".$wash_id_check->longitude."&mode=driving&traffic_model=best_guess&departure_time=".$dept_time."&language=en-EN&sensor=false&key=AIzaSyCuokwB88pjRfuNHVc9ktCUqDuuquOMLwA";
+$agent_loc->longitude."&destinations=".$wash_id_check->latitude.",".$wash_id_check->longitude."&mode=driving&traffic_model=best_guess&departure_time=".$dept_time."&language=en-EN&sensor=false&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
 
     $ch = curl_init();
 
