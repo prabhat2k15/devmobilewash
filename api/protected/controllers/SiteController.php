@@ -2392,6 +2392,8 @@ $admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
 $full_address  = Yii::app()->request->getParam('full_address');
 $city  = Yii::app()->request->getParam('city');
+$state  = Yii::app()->request->getParam('state');
+$zipcode  = Yii::app()->request->getParam('zipcode');
 $lat  = Yii::app()->request->getParam('lat');
 $lng  = Yii::app()->request->getParam('lng');
 $address_type = Yii::app()->request->getParam('address_type');
@@ -2464,6 +2466,14 @@ $response = 'wash request updated';
 		
 			if(!$city){
                    $city = $wrequest_id_check->city;
+                }
+		
+			if(!$state){
+                   $state = $wrequest_id_check->state;
+                }
+		
+			if(!$zipcode){
+                   $zipcode = $wrequest_id_check->zipcode;
                 }
 
 	if(!$address_type){
@@ -2592,7 +2602,7 @@ if($admin_command == 'update-order'){
        $fifthwash_vehicles = '';
     }
 
-    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'city' => $city, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
+    Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'city' => $city, 'state' => $state, 'zipcode' => $zipcode, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
 
      
 
