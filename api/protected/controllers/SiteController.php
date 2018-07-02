@@ -1,6 +1,10 @@
 <?php
 //error_reporting(E_ALL);
 //ini_set('display_errors', 'On');
+require ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio-php-master/Twilio/autoload.php';
+	// Use the REST API Client to make requests to the Twilio REST API
+use Twilio\Rest\Client;
+
 class SiteController extends Controller
 {
 	/**
@@ -7113,6 +7117,37 @@ die();
     }
     
     
+            public function actionlookuptest()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$phone_num = Yii::app()->request->getParam('phone');
+	
+
+
+// Your Account SID and Auth Token from twilio.com/console
+$sid = TWILIO_SID;
+$token = TWILIO_AUTH_TOKEN;
+$twilio = new Client($sid, $token);
+
+$phone_number = $twilio->lookups->v1->phoneNumbers("9098023158")
+                                    ->fetch(array("type" => "carrier"));
+
+print_r($phone_number);
+echo "test<br>";
+//print_r($phone_number->carrier['type']);
+echo "<br>".$phone_number->carrier['type'];
+
+
+		
+   
+    }
+    
+    
           /* public function actioncodetest()
     {
 
@@ -7132,6 +7167,99 @@ die();
 	print_r($clientdevices);	
    
     }*/
+	  
+	           public function actioncheckcustomervoipnumbers()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$offset = 0;
+$offset = Yii::app()->request->getParam('offset');
+
+		
+		$all_customers = Yii::app()->db->createCommand("SELECT * FROM customers ORDER BY id ASC LIMIT 10 OFFSET ".$offset)->queryAll();
+
+if(count($all_customers)){
+    foreach($all_customers as $customer){
+     
+$sid = TWILIO_SID;
+$token = TWILIO_AUTH_TOKEN;
+$twilio = new Client($sid, $token);
+try { 
+$phone_number = $twilio->lookups->v1->phoneNumbers($customer['contact_number'])
+                                    ->fetch(array("type" => "carrier"));
+				    if(count($phone_number)) {
+		if($phone_number->carrier['type'] == 'voip') Customers::model()->updateByPk($customer['id'], array("is_voip_number" => 1));		
+	}
+				     }catch (Twilio\Exceptions\RestException $e) {
+            //echo  $e;
+} 
+
+        
+
+
+
+	
+	echo "customer id: ".$customer['id']." | phone: ".$customer['contact_number']." | type: ".$phone_number->carrier['type'];
+        echo "<br>";
+	
+    }
+}
+else{
+    echo "nothing found";
+}
+   
+    }
+    
+    
+    	           public function actioncheckwashervoipnumbers()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$offset = 0;
+$offset = Yii::app()->request->getParam('offset');
+
+		
+		$all_agents = Yii::app()->db->createCommand("SELECT * FROM agents ORDER BY id ASC LIMIT 10 OFFSET ".$offset)->queryAll();
+
+if(count($all_agents)){
+    foreach($all_agents as $agent){
+     
+$sid = TWILIO_SID;
+$token = TWILIO_AUTH_TOKEN;
+$twilio = new Client($sid, $token);
+try { 
+$phone_number = $twilio->lookups->v1->phoneNumbers($agent['phone_number'])
+                                    ->fetch(array("type" => "carrier"));
+				    if(count($phone_number)) {
+		if($phone_number->carrier['type'] == 'voip') Agents::model()->updateByPk($agent['id'], array("is_voip_number" => 1));		
+	}
+				     }catch (Twilio\Exceptions\RestException $e) {
+            //echo  $e;
+} 
+
+        
+
+
+
+	
+	echo "agent id: ".$agent['id']." | phone: ".$agent['phone_number']." | type: ".$phone_number->carrier['type'];
+        echo "<br>";
+	
+    }
+}
+else{
+    echo "nothing found";
+}
+   
+    }
     
     
 }

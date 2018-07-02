@@ -1,5 +1,8 @@
 <?php
 
+require ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio-php-master/Twilio/autoload.php';
+use Twilio\Rest\Client;
+
 class AgentsController extends Controller{
     
   protected $pccountSid = TWILIO_SID;
@@ -5603,6 +5606,24 @@ $response = 'please enter phone number';
             $json    = array();
 
 if((isset($num) && !empty($num))){
+  
+  $sid = TWILIO_SID;
+$token = TWILIO_AUTH_TOKEN;
+$twilio = new Client($sid, $token);
+
+$phone_number_check = $twilio->lookups->v1->phoneNumbers($num)->fetch(array("type" => "carrier"));
+
+if($phone_number_check->carrier['type'] == 'voip'){
+	$result= "false";
+        $response = "MobileWash no longer allows VOIP numbers, please enter a valid mobile number to continue";
+        $json = array(
+		'result'=> $result,
+                'response'=> $response
+		);
+	echo json_encode($json);
+        die();
+}
+
 
   $agents_phone_exists = PreRegWashers::model()->findByAttributes(array("phone"=>$num));
 			

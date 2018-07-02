@@ -3,6 +3,9 @@
 //error_reporting(E_ALL);
 //ini_set('display_errors', 'On');
 
+require ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio-php-master/Twilio/autoload.php';
+use Twilio\Rest\Client;
+
 class UsersController extends Controller{
 	public function actionIndex(){
 		$this->render('index');
@@ -4529,6 +4532,24 @@ $latestwashid = $this->aes256cbc_crypt( $latestwashid, 'e', AES256CBC_API_PASS )
                 
                 
             } else {
+		
+		$sid = TWILIO_SID;
+$token = TWILIO_AUTH_TOKEN;
+$twilio = new Client($sid, $token);
+
+$phone_number_check = $twilio->lookups->v1->phoneNumbers($phone)->fetch(array("type" => "carrier"));
+
+if($phone_number_check->carrier['type'] == 'voip'){
+	$result= "false";
+        $response = "MobileWash no longer allows VOIP numbers, please enter a valid mobile number to continue";
+        $json = array(
+		'result'=> $result,
+                'response'=> $response
+		);
+	echo json_encode($json);
+        die();
+}
+				    
 			$customerdata= array(
 					
 				'contact_number'=> $phone,
