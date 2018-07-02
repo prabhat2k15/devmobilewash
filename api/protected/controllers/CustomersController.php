@@ -2136,11 +2136,12 @@ $vehicle_source_id = 0;
                             if($add_log == 'true'){
 				$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
 				$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
-			
+			$agent_company_id = 0;
+			if(count($agent_detail)) $agent_company_id = $agent_detail->real_washer_id;
 			    $logdata = array(
             'wash_request_id'=> $wash_request_id,
 	    'agent_id'=> $wash_request_exists->agent_id,
-	    'agent_company_id'=> $agent_detail->real_washer_id,
+	    'agent_company_id'=> $agent_company_id,
             'action'=> 'adminaddcar',
 	    'addi_detail' => $brand_name." ".$model_name." ".$car_pack,
 	    'admin_username' => $admin_username,
