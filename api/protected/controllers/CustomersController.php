@@ -1348,6 +1348,25 @@ else $result = Yii::app()->braintree->updateCustomer($model->braintree_id, array
 
 if($fifth_wash_points == 'zero') $fifth_wash_points = 0;
 
+/* --- campaign monitor subscribe -- */
+
+if((!$is_first_wash) && ($email) && (APP_ENV == 'real')){
+	$curl = curl_init();
+	 $url = "https://2f94ab1c39b710b2357f88158452c58a:x@api.createsend.com/api/v3.2/subscribers/616802d8a601cf1078b314335b206b7a.json";
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode(array('EmailAddress' => $email, 'Name' => $customername, "ConsentToTrack" => "Yes"))
+      
+        ));
+       
+       curl_exec($curl);
+      
+        curl_close($curl);
+}
+/* --- campaign monitor subscribe end -- */
+
 Customers::model()->updateByPk($id, array('braintree_id' => $braintree_id, 'fifth_wash_points' => $fifth_wash_points, 'is_first_wash' => $is_first_wash, 'device_token' => $device_token));
 
                 $location_details = Yii::app()->db->createCommand()
@@ -6496,7 +6515,22 @@ else{
       if(!$online_status){
          $online_status = $customers_exists->online_status;
      }
+     
 
+     if(($block_client == 1) && (APP_ENV == 'real')){
+	 $curl = curl_init();
+	  $url = "https://2f94ab1c39b710b2357f88158452c58a:x@api.createsend.com/api/v3.2/subscribers/616802d8a601cf1078b314335b206b7a.json?email=".$email;
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "DELETE",
+            
+        ));
+        curl_exec($curl);
+      
+        curl_close($curl);
+     }
+     
      $data = array('first_name' => $firstname, 'last_name' => $lastname, 'customername'=> $firstname." ".$lastname,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes, 'sms_control' => $sms_control);
         //$data = array_filter($data);
 
