@@ -12011,7 +12011,7 @@ $time_left = 0;
 		$result = 'true';
 		$response = 'wash 30 second time';
 		
-		$timer_start_point = 30;
+		$timer_start_point = 33;
 		$time_left = $timer_start_point - (time() - strtotime($wash_id_check->upgrade_requested_at));
 		if($time_left < 0) $time_left = 0;
 		

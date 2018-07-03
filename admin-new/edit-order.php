@@ -1176,7 +1176,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 
 <input type="hidden" name="upholstery[]" id="upholstery" value="<?php echo $veh->upholstery_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px; <?php if(($veh->vehicle_washing_package == 'Premium') || ($veh->vehicle_washing_package == 'Express')) echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
+<p style="margin-top: 20px; <?php if(($veh->vehicle_washing_package == 'Express')) echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
 <input type="hidden" name="floormat[]" id="floormat" value="<?php echo $veh->floormat_vehicle_fee; ?>" />
 
 <p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $<input type="text" id="pet_fees" name="pet_fees[]" class="custom_pet_fees" value="<?php echo ($veh->pet_hair_fee > 0)? $veh->pet_hair_fee:'10'; ?>" onkeypress="return isNumberKey(event)" min="0" /> Extra Cleaning Fee</p>
@@ -1313,7 +1313,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 
 <input type="hidden" name="upholstery[]" id="upholstery" value="<?php echo $veh->upholstery_vehicle_fee; ?>" />
 
-<p style="margin-top: 20px; <?php if(($veh->vehicle_washing_package == 'Premium') || ($veh->vehicle_washing_package == 'Express')) echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
+<p style="margin-top: 20px; <?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="floormat_el <?php if($veh->floormat_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="floormat_el" value="<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?>" <?php if($veh->floormat_vehicle_fee > 0) echo "checked"; ?>> $<?php if($veh->floormat_vehicle_fee > 0) {echo $veh->floormat_vehicle_fee;} else{ echo $floormat_price;} ?> Floor Mat Cleaning</p>
 <input type="hidden" name="floormat[]" id="floormat" value="<?php echo $veh->floormat_vehicle_fee; ?>" />
 
 <p style="<?php if($veh->vehicle_washing_package == 'Express') echo 'display: none;'; ?>" class="pet_fee_el <?php if($veh->pet_hair_fee > 0) echo "addon-checked"; ?>" style="margin-top: 20px;"><input type="checkbox" id="pet_fee" value="10" <?php if($veh->pet_hair_fee > 0) echo "checked"; ?>> $<input type="text" id="pet_fees" class="custom_pet_fees" min="0" name="pet_fees[]" value="<?php echo ($veh->pet_hair_fee > 0)? $veh->pet_hair_fee:'10'; ?>" onkeypress="return isNumberKey(event)"/> Extra Cleaning Fee<!--Extra Cleaning Fee--></p>
@@ -2659,12 +2659,12 @@ $(this).parent().find('#extplasticdressings').val(0);
 $(this).parent().find('.upholstery_el input[type=checkbox]').prop( "checked", false );
 	$(this).parent().find('.upholstery_el span').removeClass( "checked");
 $(this).parent().find('#upholstery').val(0);
-$(this).parent().find('.floormat_el input[type=checkbox]').prop( "checked", false );
+/*$(this).parent().find('.floormat_el input[type=checkbox]').prop( "checked", false );
 	$(this).parent().find('.floormat_el span').removeClass( "checked");
-$(this).parent().find('#floormat').val(0);
+$(this).parent().find('#floormat').val(0);*/
 
-$(this).parent().find('.exthandwax, .extplasticdressing, .upholstery_el, .floormat_el').removeClass('addon-checked');
-$(this).parent().find('.exthandwax, .extplasticdressing, .upholstery_el, .floormat_el').hide();
+$(this).parent().find('.exthandwax, .extplasticdressing, .upholstery_el').removeClass('addon-checked');
+$(this).parent().find('.exthandwax, .extplasticdressing, .upholstery_el').hide();
 
 first_dis = $(this).parent().find('#first_discs').val();
 fifth_dis = $(this).parent().find('#fifth_discs').val();
