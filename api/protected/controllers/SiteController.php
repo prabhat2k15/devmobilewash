@@ -2622,7 +2622,7 @@ if($admin_command == 'update-order'){
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                     }
 
-                    if($tip_amount != $old_amount){
+                    if(number_format($tip_amount,2) != number_format($old_amount,2)){
                         $washeractionlogdata = array(
                         'wash_request_id'=> $wash_request_id,
                         'admin_username' => $admin_username,
