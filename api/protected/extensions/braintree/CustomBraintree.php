@@ -1520,6 +1520,48 @@ Braintree_Configuration::environment('production');
 
 
     }
+    
+        public function searchsettletransactionsbyorderid($order_id)
+    {
+$all_transactions = array();
+
+        try {
+            $collection = Braintree_Transaction::search([
+  Braintree_TransactionSearch::orderId()->is($order_id),
+   /*Braintree_TransactionSearch::status()->in(
+    [
+      Braintree_Transaction::SETTLED
+    ]
+  )*/
+]);
+     if(count($collection)){
+        $ind = 0;
+        foreach($collection as $transaction) {
+    $all_transactions[$ind]['id'] = $transaction->id;
+    $all_transactions[$ind]['status'] = $transaction->status;
+    $ind++;
+}
+        return (array(
+                'success' => 1,
+                'all_transactions' => $all_transactions,
+            ));
+        }
+        else{
+          return (array(
+                'success' => 0,
+                'all_transactions' => 0,
+            ));  
+        }
+            
+        } catch (Exception $e) {
+            return (array(
+                'success' => 0,
+                'message' => "error in search"
+            ));
+        }
+
+
+    }
 
     public function createCard($data)
     {

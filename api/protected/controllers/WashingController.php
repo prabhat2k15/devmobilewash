@@ -12027,5 +12027,39 @@ $time_left = 0;
 
        }
        
+       
+        public function actionpendingpaymentwashsettledtidcheck() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
+
+$pendingwashes =  Washingrequests::model()->findAll(array("condition"=>"status = 4 AND washer_payment_status != 1 AND washer_payment_status != 3"));
+
+if(count($pendingwashes)){
+	foreach($pendingwashes as $wash){
+		
+	
+	
+		$Bresult = Yii::app()->braintree->searchsettletransactionsbyorderid($wash['id']);
+		
+		if($Bresult['success'] == 1){
+			
+			//echo count($Bresult['all_transactions']);
+		foreach($Bresult['all_transactions'] as $transaction){
+			
+			//print_r($transaction);
+			echo $transaction['id']." ".$transaction['status']."<br>";
+		}	
+		}
+		//print_r($Bresult);
+		echo "id: ".$wash['id']." tid: ".$wash['transaction_id']." status: ".$wash['status']." washer paystatus: ".$wash['washer_payment_status']."<br><br><br>";
+		
+	}
+}
+
+       }
+       
 
 }
