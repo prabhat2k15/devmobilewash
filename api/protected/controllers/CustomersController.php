@@ -4,6 +4,9 @@
 //Yii::import('application.vendors.*');
 //require_once('braintree/lib/Braintree.php');
 
+require ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio-php-master/Twilio/autoload.php';
+use Twilio\Rest\Client;
+
 class CustomersController extends Controller{
 
 	protected $pccountSid = TWILIO_SID;
@@ -1183,6 +1186,7 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
         $push_notify = Yii::app()->request->getParam('push_notify');
        $phone_dup_check = Yii::app()->request->getParam('phone_dup_check');
        $online_status = Yii::app()->request->getParam('online_status');
+       $is_voip_number = Yii::app()->request->getParam('is_voip_number');
        $api_password = '';
        if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
        
@@ -1190,7 +1194,8 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
 $id = $this->aes256cbc_crypt( $id, 'd', AES256CBC_API_PASS );
 }
 
-       if($phone_dup_check == 'true'){
+       //if($phone_dup_check == 'true'){
+       if($contact_number){
            $customers_phone_exists = Customers::model()->findByAttributes(array("contact_number"=>$contact_number));
            $cust_detail = Customers::model()->findByAttributes(array("id"=>$id));
 
@@ -1203,10 +1208,29 @@ $id = $this->aes256cbc_crypt( $id, 'd', AES256CBC_API_PASS );
 
 				echo json_encode($json); die();
            }
+	   
+	  $sid = TWILIO_SID;
+$token = TWILIO_AUTH_TOKEN;
+$twilio = new Client($sid, $token);
+try { 
+$phone_number_check = $twilio->lookups->v1->phoneNumbers($contact_number)->fetch(array("type" => "carrier"));
+
+if($phone_number_check->carrier['type'] == 'voip'){
+	$result= "false";
+        $response = "MobileWash no longer allows VOIP numbers, please enter a valid mobile number to continue";
+        $json = array(
+		'result'=> $result,
+                'response'=> $response
+		);
+	echo json_encode($json);
+        die();
+}
+} catch (Twilio\Exceptions\RestException $e) {
+            //echo  $e;
+}  
        }
-
-
-
+       
+       
 		if(isset($id) && !empty($id)){
 			$model  =  Customers::model()->findByAttributes(array('id'=>$id));
 			if(count($model)>0){
@@ -1278,6 +1302,10 @@ $fifth_wash_points = $model->fifth_wash_points;
 
 if(empty($is_first_wash)){
                     $is_first_wash = $model->is_first_wash;
+                }
+		
+		if(!is_numeric($is_voip_number)){
+                    $is_voip_number = $model->is_voip_number;
                 }
 
 if(empty($device_token)){
@@ -1367,7 +1395,7 @@ if((!$is_first_wash) && ($email) && (APP_ENV == 'real')){
 }
 /* --- campaign monitor subscribe end -- */
 
-Customers::model()->updateByPk($id, array('braintree_id' => $braintree_id, 'fifth_wash_points' => $fifth_wash_points, 'is_first_wash' => $is_first_wash, 'device_token' => $device_token));
+Customers::model()->updateByPk($id, array('braintree_id' => $braintree_id, 'fifth_wash_points' => $fifth_wash_points, 'is_first_wash' => $is_first_wash, 'device_token' => $device_token, 'is_voip_number' => $is_voip_number));
 
                 $location_details = Yii::app()->db->createCommand()
 						->select('*')
@@ -6524,6 +6552,21 @@ else{
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => "DELETE",
+            
+        ));
+        curl_exec($curl);
+      
+        curl_close($curl);
+     }
+     
+     if((!$block_client) && ($customers_exists->block_client == 1) && (APP_ENV == 'real')){
+	 $curl = curl_init();
+	  $url = "https://2f94ab1c39b710b2357f88158452c58a:x@api.createsend.com/api/v3.2/subscribers/616802d8a601cf1078b314335b206b7a.json?email=".$email;
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST => "PUT",
+	    CURLOPT_POSTFIELDS => json_encode(array("Resubscribe" => true, "ConsentToTrack" => "Yes"))
             
         ));
         curl_exec($curl);

@@ -1234,6 +1234,7 @@ $rating_control = 0;
 $sms_control = Yii::app()->request->getParam('sms_control');
 $insurance_expiration = '';
         $insurance_expiration = Yii::app()->request->getParam('insurance_expiration');
+	$is_voip_number = Yii::app()->request->getParam('is_voip_number');
 	$api_password = '';
 	$force_logout = 0;
 	if($block_washer == 1) $force_logout = 1;
@@ -1243,7 +1244,8 @@ $insurance_expiration = '';
 	if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 }
-   if($phone_dup_check == 'true'){
+   //if($phone_dup_check == 'true'){
+   if($phone_number){
            $agent_phone_exists = Agents::model()->findByAttributes(array("phone_number"=>$phone_number));
            $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
 
@@ -1256,6 +1258,28 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 
 				echo json_encode($json); die();
            }
+	   
+$sid = TWILIO_SID;
+$token = TWILIO_AUTH_TOKEN;
+$twilio = new Client($sid, $token);
+try { 
+$phone_number_check = $twilio->lookups->v1->phoneNumbers($phone_number)->fetch(array("type" => "carrier"));
+
+if($phone_number_check->carrier['type'] == 'voip'){
+	$result= "false";
+        $response = "MobileWash no longer allows VOIP numbers, please enter a valid mobile number to continue";
+        $json = array(
+		'result'=> $result,
+                'response'=> $response
+		);
+	echo json_encode($json);
+        die();
+}
+} catch (Twilio\Exceptions\RestException $e) {
+            //echo  $e;
+}
+	   
+	   
        }
        
 
@@ -1426,6 +1450,10 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 		if(!is_numeric($sms_control)){
                     $sms_control = $model->sms_control;
                 }
+		
+		if(!is_numeric($is_voip_number)){
+                    $is_voip_number = $model->is_voip_number;
+                }
 
                  if($account_status == ''){
                     $account_status = $model->account_status;
@@ -1526,6 +1554,7 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 'sms_control' => $sms_control,
 'bt_submerchant_id' => $bt_submerchant_id,
 'forced_logout' => $force_logout,
+'is_voip_number' => $is_voip_number,
 					'updated_date'=> date('Y-m-d h:i:s')
 				);
 

@@ -3426,10 +3426,14 @@ else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintre
 						if($payresult['success'] == 1) {
 							Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id'=>''));
 
-						}	
+						}
+						else{
+							Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id'=>$payresult['transaction_id']));
+						}
 					}
 				}	
 				}
+			   
 
                            }
 
@@ -4112,6 +4116,22 @@ die();
                     'response'=> $response
                 );
              }
+	     else if($model->is_voip_number){
+		$user_id = $model->id;
+		if(AES256CBC_STATUS == 1){
+			$user_id = $this->aes256cbc_crypt( $user_id, 'e', AES256CBC_API_PASS );
+		}
+                $result= "false";
+                $response = "MobileWash no longer allows VOIP numbers, please enter a valid mobile number to continue";
+                $json = array(
+                    'result'=> $result,
+                    'response'=> $response,
+		    'is_voip_number' => 1,
+		    'user_type' => $user_type,
+		    'user_id' => $user_id
+		    
+                );
+             }
              else
              {
             if($model){
@@ -4536,7 +4556,7 @@ $latestwashid = $this->aes256cbc_crypt( $latestwashid, 'e', AES256CBC_API_PASS )
 		$sid = TWILIO_SID;
 $token = TWILIO_AUTH_TOKEN;
 $twilio = new Client($sid, $token);
-
+try { 
 $phone_number_check = $twilio->lookups->v1->phoneNumbers($phone)->fetch(array("type" => "carrier"));
 
 if($phone_number_check->carrier['type'] == 'voip'){
@@ -4549,6 +4569,9 @@ if($phone_number_check->carrier['type'] == 'voip'){
 	echo json_encode($json);
         die();
 }
+} catch (Twilio\Exceptions\RestException $e) {
+            //echo  $e;
+} 
 				    
 			$customerdata= array(
 					
