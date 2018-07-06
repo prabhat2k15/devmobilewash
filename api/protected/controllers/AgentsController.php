@@ -1232,6 +1232,7 @@ $rating_control = 0;
 $rating_control = Yii::app()->request->getParam('rating_control');
 $rating_control = 0;
 $sms_control = Yii::app()->request->getParam('sms_control');
+$admin_edit = Yii::app()->request->getParam('admin_edit');
 $insurance_expiration = '';
         $insurance_expiration = Yii::app()->request->getParam('insurance_expiration');
 	$is_voip_number = Yii::app()->request->getParam('is_voip_number');
@@ -1279,7 +1280,7 @@ if($phone_number_check->carrier['type'] == 'voip'){
             //echo  $e;
 }
 	
-	
+	if(!$admin_edit){
 	$digits = 4;
             $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
            $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = '$agent_id' ")->execute();
@@ -1309,7 +1310,8 @@ if($phone_number_check->carrier['type'] == 'voip'){
              }
  catch (Services_Twilio_RestException $e) {
             //echo  $e;
-}   
+}
+   }
 	   
        }
        
@@ -1588,6 +1590,8 @@ if($phone_number_check->carrier['type'] == 'voip'){
 'is_voip_number' => $is_voip_number,
 					'updated_date'=> date('Y-m-d h:i:s')
 				);
+				
+				if($admin_edit == 1) $data['phone_number'] = $phone_number;
 
                 Agents::model()->updateByPk($agent_id, $data);
 

@@ -5003,9 +5003,16 @@ $userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
          
 	
         if(!empty($matchcode)){
-            if($user_type == 'customer') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', is_voip_number = 0, contact_number = :phone, forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
-	    else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0, is_voip_number = 0, phone_number = :phone WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
+            if($user_type == 'customer') {
+		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', is_voip_number = 0, contact_number = :phone, forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
+		else $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
+		
+	    }
+	    else {
+		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0, is_voip_number = 0, phone_number = :phone WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
+		else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
             
+		}
 	    $data = array(
                 'result' => 'true',
                 'response' => 'Congratulations, Your phone is verified.'

@@ -1528,11 +1528,11 @@ $all_transactions = array();
         try {
             $collection = Braintree_Transaction::search([
   Braintree_TransactionSearch::orderId()->is($order_id),
-   /*Braintree_TransactionSearch::status()->in(
+   Braintree_TransactionSearch::status()->in(
     [
       Braintree_Transaction::SETTLED
     ]
-  )*/
+  )
 ]);
      if(count($collection)){
         $ind = 0;
