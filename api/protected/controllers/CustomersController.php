@@ -1227,7 +1227,39 @@ if($phone_number_check->carrier['type'] == 'voip'){
 }
 } catch (Twilio\Exceptions\RestException $e) {
             //echo  $e;
-}  
+}
+
+
+	$digits = 4;
+            $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
+           $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verify_code='$randum_number' WHERE id = '$id' ")->execute();
+            $json    = array();
+
+            $this->layout = "xmlLayout";
+          
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = $randum_number." is your MobileWash verification code";
+             try {
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  $contact_number,
+                'From' => '+13106834902',
+                'Body' => $message,
+            ));
+	    
+             }
+ catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
        }
        
        
@@ -1355,7 +1387,7 @@ $customershortname = ucwords($customershortname);
 					
 					'email'=>$email,
 					'image'=> $image,
-                    'contact_number'=> $contact_number,
+                    //'contact_number'=> $contact_number,
 'how_hear_mw'=> $how_hear_mw,
                     'email_alerts'=> $email_alerts,
                     'push_notifications'=> $push_notify,
@@ -1395,7 +1427,7 @@ if((!$is_first_wash) && ($email) && (APP_ENV == 'real')){
 }
 /* --- campaign monitor subscribe end -- */
 
-Customers::model()->updateByPk($id, array('braintree_id' => $braintree_id, 'fifth_wash_points' => $fifth_wash_points, 'is_first_wash' => $is_first_wash, 'device_token' => $device_token, 'is_voip_number' => $is_voip_number));
+Customers::model()->updateByPk($id, array('braintree_id' => $braintree_id, 'fifth_wash_points' => $fifth_wash_points, 'is_first_wash' => $is_first_wash, 'device_token' => $device_token));
 
                 $location_details = Yii::app()->db->createCommand()
 						->select('*')

@@ -4074,6 +4074,7 @@ die();
         $phone = Yii::app()->request->getParam('phone');
 	$send_verify_code = '';
 	$send_verify_code = Yii::app()->request->getParam('send_verify_code');
+	
         $user_type = "";
         $model = false;
 
@@ -4134,6 +4135,10 @@ die();
              }
              else
              {
+		
+		if($phone_update_request){
+			
+		}
             if($model){
 
                    
@@ -4957,6 +4962,7 @@ die();
         $sortcode = Yii::app()->request->getParam('verify_code');
 	$user_type = Yii::app()->request->getParam('user_type');
 	$device_token = Yii::app()->request->getParam('device_token');
+	$phone = Yii::app()->request->getParam('phone');
 	  if(AES256CBC_STATUS == 1){
 $userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
 }
@@ -4997,8 +5003,8 @@ $userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
          
 	
         if(!empty($matchcode)){
-            if($user_type == 'customer') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
-	    else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
+            if($user_type == 'customer') $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', is_voip_number = 0, contact_number = :phone, forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
+	    else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0, is_voip_number = 0, phone_number = :phone WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
             
 	    $data = array(
                 'result' => 'true',

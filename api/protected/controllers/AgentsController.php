@@ -1278,7 +1278,38 @@ if($phone_number_check->carrier['type'] == 'voip'){
 } catch (Twilio\Exceptions\RestException $e) {
             //echo  $e;
 }
-	   
+	
+	
+	$digits = 4;
+            $randum_number = rand(pow(10, $digits-1), pow(10, $digits)-1);
+           $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verify_code='$randum_number' WHERE id = '$agent_id' ")->execute();
+            $json    = array();
+
+            $this->layout = "xmlLayout";
+          
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = $randum_number." is your MobileWash verification code";
+             try {
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  $phone_number,
+                'From' => '+13106834902',
+                'Body' => $message,
+            ));
+	    
+             }
+ catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}   
 	   
        }
        
@@ -1519,7 +1550,7 @@ if($phone_number_check->carrier['type'] == 'voip'){
                     'last_name'=>$last_name,
 					'email'=>$email,
 					'image'=> $image,
-                    'phone_number'=> $phone_number,
+                    //'phone_number'=> $phone_number,
                     'date_of_birth'=> $date_of_birth,
                     'street_address'=> $street_address,
                     'suite_apt'=> $suite_apt,
