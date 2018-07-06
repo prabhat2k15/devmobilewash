@@ -3300,11 +3300,13 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                 if(($status == WASHREQUEST_STATUS_AGENTARRIVED_CONFIRMED_BYCLIENT) && (!$wrequest_id_check->inspect_begin_push_sent))
                 {
 					$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '13' ")->queryAll();
+                    if(count($pushmsg) > 0){
 					$notify_msg = $pushmsg[0]['message'];
 
                     //$notify_msg = "Agent begins car inspection process.";
                     $alert_type = "strong";
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("inspect_begin_push_sent" => 1, 'fifth_wash_vehicles' => '', 'fifth_wash_discount' => 0));
+                    }
                     $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
                         $washeractionlogdata= array(
                             'agent_id'=> $wrequest_id_check->agent_id,
@@ -3528,7 +3530,7 @@ $agentlname = '';
 if(trim($agent_obj->last_name)) $agentlname = strtoupper(substr($agent_obj->last_name, 0, 1)).".";
 else $agentlname = $agent_obj->last_name;
 
-                    $agentname = $agent_obj->first_name." ".$agentlname;
+                    $agentname = $agent_obj->first_name;//." ".$agentlname;
 		    if(AES256CBC_STATUS == 1){
 $agent_details->id = $this->aes256cbc_crypt( $agent_id, 'e', AES256CBC_API_PASS );
 }

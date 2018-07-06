@@ -2731,6 +2731,74 @@ $vehicles[] = array('id'=>$vehicle['id'],
 
     }
 
+    public function actionAcceptnotification(){
+
+    	if(Yii::app()->request->getParam('key') != API_KEY){
+			echo "Invalid api key";
+			die();
+		}
+
+		$brand_name = Yii::app()->request->getParam('brand_name');
+		$model_name = Yii::app()->request->getParam('model_name');
+		$new_vehicle_confirm = Yii::app()->request->getParam('new_vehicle_confirm');
+		$wash_request_id = Yii::app()->request->getParam('wash_request_id');
+		
+		$result= 'false';
+		$response= 'Pass the required parameters';
+		
+		if((isset($wash_request_id) && !empty($brand_name)) && (isset($model_name) && !empty($new_vehicle_confirm))) {
+			if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
+			$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+			}
+
+			$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
+
+	    	if($new_vehicle_confirm > 0){
+				$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '6' ")->queryAll();
+				$notify_msg = $pushmsg[0]['message'];
+
+				$notify_msg = str_replace("[BRAND_NAME]",$brand_name, $notify_msg);
+				$notify_msg = str_replace("[MODEL_NAME]",$model_name, $notify_msg);
+			 }
+
+			 $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+			$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+			
+			if((count($agentdevices)) && (!$agent_detail->block_washer))
+			{
+				foreach($agentdevices as $agdevice)
+				{
+
+					$device_type = strtolower($agdevice['device_type']);
+					$notify_token = $agdevice['device_token'];
+					$alert_type = "strong";
+					
+					$notify_msg = urlencode($notify_msg);
+
+					$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+					//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+					$ch = curl_init();
+					curl_setopt($ch,CURLOPT_URL,$notifyurl);
+					curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+					if($notify_msg) $notifyresult = curl_exec($ch);
+					curl_close($ch);
+
+					$result = 'true';
+					$response= 'action is completed!';
+				}
+			}
+		}
+
+			$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+		echo json_encode($json);
+
+    }
+    
+    
     		public function actionsetvehiclestatus(){
 
 if(Yii::app()->request->getParam('key') != API_KEY){
@@ -3893,7 +3961,7 @@ Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles'
 
 /* -------- pet hair / lift / addons check end --------- */
 
-if(!$new_vehicle_confirm){
+if($new_vehicle_confirm > 0){
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '6' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
 
