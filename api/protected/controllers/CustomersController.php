@@ -2738,27 +2738,28 @@ $vehicles[] = array('id'=>$vehicle['id'],
 			die();
 		}
 
-		$brand_name = Yii::app()->request->getParam('brand_name');
-		$model_name = Yii::app()->request->getParam('model_name');
+		/*$brand_name = Yii::app()->request->getParam('brand_name');
+		$model_name = Yii::app()->request->getParam('model_name');*/
 		$new_vehicle_confirm = Yii::app()->request->getParam('new_vehicle_confirm');
 		$wash_request_id = Yii::app()->request->getParam('wash_request_id');
+		$vehicle_id = Yii::app()->request->getParam('vehicle_id');
 		
 		$result= 'false';
 		$response= 'Pass the required parameters';
 		
-		if((isset($wash_request_id) && !empty($brand_name)) && (isset($model_name) && !empty($new_vehicle_confirm))) {
+		if((isset($wash_request_id)) && !empty($new_vehicle_confirm) && (isset($vehicle_id) && !empty($vehicle_id))) {
 			if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 			$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 			}
 
 			$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
-
+			$vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, 'customer_id'=>$wash_request_exists->customer_id));
 	    	if($new_vehicle_confirm > 0){
 				$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '6' ")->queryAll();
 				$notify_msg = $pushmsg[0]['message'];
 
-				$notify_msg = str_replace("[BRAND_NAME]",$brand_name, $notify_msg);
-				$notify_msg = str_replace("[MODEL_NAME]",$model_name, $notify_msg);
+				$notify_msg = str_replace("[BRAND_NAME]",$vehicle_details->brand_name, $notify_msg);
+				$notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_msg);
 			 }
 
 			 $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
@@ -2798,6 +2799,57 @@ $vehicles[] = array('id'=>$vehicle['id'],
 
     }
     
+    public function actioninspectingvehicle(){
+
+    if(Yii::app()->request->getParam('key') != API_KEY){
+		echo "Invalid api key";
+		die();
+	}	
+	
+	$result= 'false';
+	$response= 'Pass the required parameters';
+
+	$customer_id = Yii::app()->request->getParam('customer_id');
+
+	if(!empty($customer_id) && isset($customer_id)){
+		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
+		$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+		}
+    	$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+						/* --- notification call --- */
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '39' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+
+						foreach( $clientdevices as $ctdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($ctdevice['device_type']);
+							$notify_token = $ctdevice['device_token'];
+								$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+				$result= 'true';
+				$response= 'notification sent';
+		}
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+		echo json_encode($json);
+
+    }
     
     		public function actionsetvehiclestatus(){
 
