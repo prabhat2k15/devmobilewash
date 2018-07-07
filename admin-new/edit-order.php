@@ -1498,8 +1498,16 @@ $first_card_type = ''; ?>
                                                              <?php if($getorder->status == 2) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-busy'>2 - Washer Arrived</span></p>"; ?>
                                                              <?php if($getorder->status == 3) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-busy'>3 - Processing</span></p>"; ?>
                                                              <?php if($getorder->status == 4) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-online'>4 - Completed</span></p>"; ?>
-                                                             <?php if($getorder->status == 5) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>5 - Client Canceled</span></p>"; ?>
-                                                             <?php if($getorder->status == 6) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>6 - Washer Canceled</span></p>"; ?>
+                                                             <?php if($getorder->status == 5) {
+                                                              if($getorder->company_cancel == 1) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>MobileWash Canceled</span></p>";
+                                                              else echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>5 - Client Canceled</span></p>";
+                                                             }
+                                                              ?>
+                                                             <?php if($getorder->status == 6) {
+                                                              if($getorder->company_cancel == 1) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>MobileWash Canceled</span></p>";
+                                                              else echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>6 - Washer Canceled</span></p>";
+                                                              }
+                                                               ?>
 
                                                         </div>
 
@@ -1919,7 +1927,7 @@ $(".cancel-order").html('Cancel Order');
           $( this ).dialog( "close" );
 $(".cancel-order").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/cancelscheduleorder", { customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", fee: 15, free_cancel: true, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/cancelscheduleorder", { customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", fee: 15, free_cancel: true, company_cancel: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
@@ -1984,7 +1992,7 @@ $(".cancel-order-ondemand").html('Cancel Order');
       $( this ).dialog( "close" );
 $(".cancel-order-ondemand").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: 5, free_cancel: 'yes', admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: 5, free_cancel: 'yes', admin_username: "<?php echo $jsondata_permission->user_name; ?>", company_cancel: 1, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";

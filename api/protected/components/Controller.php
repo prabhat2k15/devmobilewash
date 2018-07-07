@@ -831,7 +831,8 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
 	        'payment_type' => $wash_id_check->payment_type,
 	        'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
             'vehicles' => $vehicles,
-            'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount
+            'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount,
+	    'company_cancel' => $wash_id_check->company_cancel
         );
 		}
 		else{
@@ -891,7 +892,8 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
 	        'payment_type' => $wash_id_check->payment_type,
 	        'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
             'vehicles' => $vehicles,
-            'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount
+            'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount,
+	    'company_cancel' => $wash_id_check->company_cancel
         );
 		}
 	

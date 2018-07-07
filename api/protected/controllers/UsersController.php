@@ -2680,6 +2680,8 @@ die();
        $free_cancel = Yii::app()->request->getParam('free_cancel');
        $admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
+$company_cancel = 0;
+if($company_cancel) $company_cancel  = Yii::app()->request->getParam('company_cancel');
 
        $wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
 
@@ -2706,7 +2708,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
                     }
 
-                      $data= array('status' => $status, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => 0, 'washer_cancel_fee' => 0);
+                      $data= array('status' => $status, 'company_cancel' => $company_cancel, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => 0, 'washer_cancel_fee' => 0);
                 $washrequestmodel = new Washingrequests;
                 $washrequestmodel->attributes= $data;
 
@@ -2721,7 +2723,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
            else{
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=washing/cancelwashrequest");
-            $data = array('wash_request_id' => $wash_request_id, 'status' => $status, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+            $data = array('wash_request_id' => $wash_request_id, 'status' => $status, 'company_cancel' => $company_cancel, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -2731,7 +2733,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
             if($jsondata->result == 'false'){
                 if($jsondata->response == 'you cannot cancel wash until paying $10'){
                      $handle = curl_init(ROOT_URL."/api/index.php?r=customers/CustomerCancelWashPayment");
-            $data = array('customer_id' => $wash_id_check->customer_id, 'agent_id' => $wash_id_check->agent_id, 'wash_request_id' => $wash_request_id, 'amount' => 15, 'wash_position' => APP_ENV, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+            $data = array('customer_id' => $wash_id_check->customer_id, 'agent_id' => $wash_id_check->agent_id, 'company_cancel' => $company_cancel, 'wash_request_id' => $wash_request_id, 'amount' => 15, 'wash_position' => APP_ENV, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

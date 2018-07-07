@@ -9222,6 +9222,8 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
         $free_cancel = Yii::app()->request->getParam('free_cancel');
 	$api_password = '';
 	$api_password = Yii::app()->request->getParam('api_password');
+	$company_cancel = 0;
+	if(Yii::app()->request->getParam('company_cancel')) $company_cancel = Yii::app()->request->getParam('company_cancel');
         $cancel_price = 0;
 
 		if((isset($id) && !empty($id)) && (isset($customer_id) && !empty($customer_id)) && (isset($fee) && !empty($fee)))
@@ -9297,8 +9299,8 @@ else $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['t
                         $result = 'true';
                         $response = 'Order canceled';
                         $cancel_price =  $fee;
-                         if(($order_exists->status > 1) && ($order_exists->status <= 3)) Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'washer_cancel_fee' => $fee-5));
-			 else Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee));
+                         if(($order_exists->status > 1) && ($order_exists->status <= 3)) Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $fee-5));
+			 else Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee));
 
                                     if($order_exists->transaction_id) {
                  if($order_exists->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($order_exists->transaction_id);
@@ -9616,7 +9618,7 @@ else $cancelvoid = Yii::app()->braintree->void($cancelresult['transaction_id']);
                   $result = 'true';
                         $response = 'Order canceled';
                         $cancel_price = 0;
-                         Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => 0));
+                         Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => 0));
 
                          if($order_exists->transaction_id) {
                  if($order_exists->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($order_exists->transaction_id);
