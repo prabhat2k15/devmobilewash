@@ -3872,7 +3872,8 @@ $hours = floor($wash_time / 60);
 	    'no_washer_cancel' => $wrequest_id_check->no_washer_cancel,
 	    'order_address' => $wrequest_id_check->address,
 	    'latitude' => $wrequest_id_check->latitude,
-	    'longitude' => $wrequest_id_check->longitude
+	    'longitude' => $wrequest_id_check->longitude,
+	    'company_cancel' => $wrequest_id_check->company_cancel
             );
         }
         else{
