@@ -2681,7 +2681,7 @@ die();
        $admin_username = '';
 $admin_username  = Yii::app()->request->getParam('admin_username');
 $company_cancel = 0;
-if($company_cancel) $company_cancel  = Yii::app()->request->getParam('company_cancel');
+if(Yii::app()->request->getParam('company_cancel')) $company_cancel  = Yii::app()->request->getParam('company_cancel');
 
        $wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
 
