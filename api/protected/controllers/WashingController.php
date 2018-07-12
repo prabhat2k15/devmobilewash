@@ -4188,6 +4188,7 @@ die();
         $ratings = Yii::app()->request->getParam('ratings');
         $feedback_source = '';
 $feedback_source = Yii::app()->request->getParam('feedback_source');
+$simulate_rating = Yii::app()->request->getParam('simulate_rating');
   $api_password = '';
 if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 
@@ -4234,7 +4235,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 			    'addi_detail' => $comments,
                             'action_date'=> date('Y-m-d H:i:s'));
 
-                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                        if(!$simulate_rating) Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 			
 			  /* ------------ calculate agent average feedback ---------------- */
 
@@ -4245,6 +4246,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob'")->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
                 
 		if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
+		if($simulate_rating) $washer_total_dropjobs += 1;
                 if($total_rate){
                     $rate = 50;
                     foreach($agent_feedbacks as $ind=>$agent_feedback){
@@ -4272,7 +4274,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                
                 $agentmodel = new Agents;
                 //if($agent_rate < 3.5) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
-                $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$agent_id));
+                if(!$simulate_rating) $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$agent_id));
 
                 /* ------------ calculate agent average feedback end ---------------- */
 }
@@ -4419,7 +4421,8 @@ if($feedback_source != 'dropjob'){
             'result'=> $result,
             'response'=> $response,
             'total'=> $total,
-            'vehicles'=>$vehicles
+            'vehicles'=>$vehicles,
+	    'rating' => $agent_rate
 
         );
 
@@ -11830,7 +11833,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
             /* ------- get nearest agents --------- */
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-            $data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+            $data = array('wash_request_id' => $wash_request_id, 'ignore_offline' => 2, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
