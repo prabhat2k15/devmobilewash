@@ -3917,6 +3917,8 @@ $feedback_source = '';
 $feedback_source = Yii::app()->request->getParam('feedback_source');
 $api_password = '';
 $api_password = Yii::app()->request->getParam('api_password');
+$cancel_feedback = Yii::app()->request->getParam('cancel_feedback');
+
         $json = array();
         $car_id_check = true;
         $washrequest_id_check = true;
@@ -3960,7 +3962,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
                         'customer_ratings'=> $ratings,
                     );
 
-                    Yii::app()->db->createCommand()->insert('washing_feedbacks', $washfeedbackdata);
+                    if(!$cancel_feedback) Yii::app()->db->createCommand()->insert('washing_feedbacks', $washfeedbackdata);
 
                  /* ------------ calculate agent average feedback ---------------- */
 
@@ -4006,7 +4008,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
                     $washfeedbackmodel = new Washingfeedbacks;
 
                     $washfeedbackmodel->attributes= $washfeedbackdata;
-                    $washfeedbackmodel->updateAll($washfeedbackdata, 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
+                    if(!$cancel_feedback) $washfeedbackmodel->updateAll($washfeedbackdata, 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
 
 
 
@@ -4131,7 +4133,7 @@ if(number_format($tip_amount,2) != number_format($washrequest_id_check->tip_amou
 
         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 }
-if(is_numeric($ratings)) $logcomment = $comments." (Ratings: ".$ratings.")";
+if(is_numeric($ratings) && (!$cancel_feedback)) $logcomment = $comments." (Ratings: ".$ratings.")";
 else $logcomment = $comments;
 			
  $washeractionlogdata= array(
@@ -4191,6 +4193,7 @@ $feedback_source = Yii::app()->request->getParam('feedback_source');
 $simulate_rating = Yii::app()->request->getParam('simulate_rating');
   $api_password = '';
 if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
+$cancel_feedback = Yii::app()->request->getParam('cancel_feedback');
 
 /*echo "agent id: ".$agent_id."<br>";
 echo "wash id: ".$wash_request_id."<br>";
@@ -4290,7 +4293,7 @@ if($feedback_source != 'dropjob'){
                         'agent_ratings'=> $ratings,
                     );
 
-                    Yii::app()->db->createCommand()->insert('washing_feedbacks', $washfeedbackdata);
+                    if(!$cancel_feedback) Yii::app()->db->createCommand()->insert('washing_feedbacks', $washfeedbackdata);
 		    
 
                      /* ------------ calculate customer average feedback ---------------- */
@@ -4330,7 +4333,7 @@ if($feedback_source != 'dropjob'){
                     $washfeedbackmodel = new Washingfeedbacks;
 
                     $washfeedbackmodel->attributes= $washfeedbackdata;
-                    $washfeedbackmodel->updateAll($washfeedbackdata, 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
+                    if(!$cancel_feedback) $washfeedbackmodel->updateAll($washfeedbackdata, 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
 		    
 
                        /* ------------ calculate customer average feedback ---------------- */
@@ -4361,7 +4364,7 @@ if($feedback_source != 'dropjob'){
                 }
 		
 		if($agent_id){
-			if(is_numeric($ratings)) $logcomment = $comments." (Ratings: ".$ratings.")";
+			if(is_numeric($ratings) && (!$cancel_feedback)) $logcomment = $comments." (Ratings: ".$ratings.")";
 			else $logcomment = $comments;
 			$washeractionlogdata= array(
                             'agent_id'=> $agent_id,

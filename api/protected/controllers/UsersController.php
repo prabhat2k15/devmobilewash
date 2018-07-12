@@ -200,7 +200,7 @@ $toatlorder_real =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM
         // Get Agent Online/Offline Status
         $agent_online = Agents::model()->countByAttributes(array("status"=>'online', "available_for_new_order"=>1));
 $agent_busy = Agents::model()->countByAttributes(array("status"=>'online', "available_for_new_order"=>0));
-        $agent_offline = Agents::model()->countByAttributes(array("status"=>'offline'));
+        $agent_offline = Agents::model()->countByAttributes(array("status"=>'offline', 'block_washer' => 0));
         // Get Pending Orders
         $pending_orders = Washingrequests::model()->countByAttributes(array("status"=>'0', "is_scheduled"=>'0'));
 $sched_orders = Washingrequests::model()->countByAttributes(array("status"=>'0', "is_scheduled"=>'1', 'wash_request_position' => APP_ENV));

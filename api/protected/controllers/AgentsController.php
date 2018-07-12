@@ -2177,7 +2177,7 @@ die();
 }
 
          $agent_online = Agents::model()->findAllByAttributes(array("status"=>'online', "available_for_new_order"=>1));
-         $agent_offline = Agents::model()->findAllByAttributes(array("status"=>'offline'));
+         $agent_offline = Agents::model()->findAllByAttributes(array("status"=>'offline', 'block_washer' => 0));
          $logs = Yii::app()->db->createCommand()
             ->select('*')
             ->from('washing_requests')  //Your Table name
