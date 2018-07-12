@@ -2752,7 +2752,7 @@ $vehicles[] = array('id'=>$vehicle['id'],
 			$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 			}
 
-			$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
+			/*$wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
 			$vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, 'customer_id'=>$wash_request_exists->customer_id));
 	    	if($new_vehicle_confirm > 0){
 				$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '6' ")->queryAll();
@@ -2785,10 +2785,10 @@ $vehicles[] = array('id'=>$vehicle['id'],
 					if($notify_msg) $notifyresult = curl_exec($ch);
 					curl_close($ch);
 
+				}
+			}*/
 					$result = 'true';
 					$response= 'action is completed!';
-				}
-			}
 		}
 
 			$json= array(
@@ -3234,8 +3234,15 @@ $log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name.
 	$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 						/* --- notification call --- */
-
-						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '35' ")->queryAll();
+                        $notification_code = '';
+						//didn't start the wash
+						if($status == 0){
+							$notification_code = 35;
+						}elseif($status == 5){
+							//wash has start then
+							$notification_code = 40;
+						}
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '$notification_code' ")->queryAll();
 						$message = $pushmsg[0]['message'];
 
 						if(!$agent_detail->block_washer){
@@ -3334,8 +3341,15 @@ $log_detail = $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name.
 $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wash_request_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 						/* --- notification call --- */
-
-						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '36' ")->queryAll();
+                        $notification_code = '';
+						//didn't start the wash
+						if($status == 0){
+							$notification_code = 36;
+						}elseif($status == 5){
+							//wash has start then
+							$notification_code = 41;
+						}
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '$notification_code' ")->queryAll();
 						$message = $pushmsg[0]['message'];
 
 						if(!$agent_detail->block_washer){
@@ -4013,7 +4027,7 @@ Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles'
 
 /* -------- pet hair / lift / addons check end --------- */
 
-if($new_vehicle_confirm > 0){
+if($upgrade_pack == 0){
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '6' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
 

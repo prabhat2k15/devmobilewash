@@ -1500,7 +1500,7 @@ $first_card_type = ''; ?>
                                                              <?php if($getorder->status == 4) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-online'>4 - Completed</span></p>"; ?>
                                                              <?php if($getorder->status == 5) {
                                                               if($getorder->company_cancel == 1) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>MobileWash Canceled</span></p>";
-                                                              else echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>5 - Client Canceled</span></p>";
+                                                              else echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>5 - Customer Canceled</span></p>";
                                                              }
                                                               ?>
                                                              <?php if($getorder->status == 6) {
