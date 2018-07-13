@@ -6096,7 +6096,8 @@ die();
 
                 if(($wrequest_id_check->agent_id != $agent_id) && ($result != 'false')) {
                     $old_agent_id = $wrequest_id_check->agent_id;
-		    Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0));
+		    if((!$wrequest_id_check->status) && (!$wrequest_id_check->is_scheduled)) Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0, 'status' => 1));
+		else Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0));
 
                     $result = 'true';
                     $response = "Washer updated successfully";
