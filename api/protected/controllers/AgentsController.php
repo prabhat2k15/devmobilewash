@@ -2123,7 +2123,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                     /* ------- check if agent is available for new order -------- */
 
                    if($ignore_offline == 1) $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND block_washer=0")->queryAll();
-                   elseif ($ignore_offline == 2) $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND available_for_new_order = 0 AND block_washer=0")->queryAll();
+                   elseif ($ignore_offline == 2) $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND available_for_new_order = 0 AND status = 'offline' AND block_washer=0")->queryAll();
 		   else $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND available_for_new_order = 1 AND block_washer=0")->queryAll();
                  /* ------- check if agent is available for new order end -------- */
 

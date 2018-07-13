@@ -16,6 +16,7 @@
 $response = '';
 $result_code = '';
 if(isset($_POST['notify-form-submit'])){
+    if($_POST['receiver_type'] == 'agents'){
 $handle = curl_init(ROOT_URL."/api/index.php?r=users/adminnotify");
 		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 curl_setopt($handle, CURLOPT_POST, true);
@@ -26,7 +27,20 @@ curl_close($handle);
 $jsondata = json_decode($result);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
+}
 
+    if($_POST['receiver_type'] == 'clients'){
+$handle = curl_init(ROOT_URL."/api/index.php?r=site/adminaddschedulenotify");
+		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+curl_setopt($handle, CURLOPT_POST, true);
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle);
+curl_close($handle);
+$jsondata = json_decode($result);
+$response = $jsondata->response;
+$result_code = $jsondata->result;
+}
 }
 ?>
 <!-- BEGIN CONTENT -->
@@ -64,9 +78,9 @@ $result_code = $jsondata->result;
                                                 <label class="control-label col-md-3">Receiver Type</label>
                                                 <div class="col-md-3">
                                                     <select class="form-control input-medium" name="receiver_type">
-                                                       <option value="agents">Agents</option>
-            <option value="clients">Clients</option>
-            <option value="all" selected="">All</option>
+                                                       <option value="agents">Washers</option>
+            <option value="clients">Customers</option>
+            <!--<option value="all" selected="">All</option>-->
                                                     </select>
                                                 </div>
                                             </div>

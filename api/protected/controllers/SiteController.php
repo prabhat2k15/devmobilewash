@@ -5359,16 +5359,15 @@ die();
 		$msg = Yii::app()->request->getParam('msg');
 		$receiver_type = Yii::app()->request->getParam('receiver_type');
         $receiver_ids = Yii::app()->request->getParam('receiver_ids');
-        $schedule_date = Yii::app()->request->getParam('schedule_date');
-        $schedule_time = Yii::app()->request->getParam('schedule_time');
+        
 
-		if((isset($msg) && !empty($msg)) && (isset($receiver_type) && !empty($receiver_type)) && (isset($schedule_date) && !empty($schedule_date)) && (isset($schedule_time) && !empty($schedule_time))){
+		if((isset($msg) && !empty($msg)) && (isset($receiver_type) && !empty($receiver_type))){
 
             $data = array(
                         'notification_type'=> $receiver_type,
-                        'receiver_ids' => $receiver_ids,
+                        'receiver_ids' => '',
                         'notification_msg' => $msg,
-                        'schedule_date' => date('Y-m-d H:i:s', strtotime($schedule_date." ".$schedule_time)),
+                        'schedule_date' => date('Y-m-d H:i:s'),
                         'created_date' => date('Y-m-d H:i:s'),
                         'status'=> 0);
 
