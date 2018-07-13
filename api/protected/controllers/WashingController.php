@@ -4118,7 +4118,7 @@ if($fb_id) $message .= "<p><b>Facebook/Instagram handle:</b> ".$fb_id."</p>";
 $to = Vargas::Obj()->getAdminToEmail();
 $from = Vargas::Obj()->getAdminFromEmail();
 
-if((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5)) Vargas::Obj()->SendMail($to,$from,$message,"Customer Feedback - Order #0000".$wash_request_id, 'mail-receipt');
+if((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5) || (!empty($comments))) Vargas::Obj()->SendMail($to,$from,$message,"Customer Feedback - Order #0000".$wash_request_id, 'mail-receipt');
 
 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
 Washingrequests::model()->updateByPk($wash_request_id, array('tip_amount' => $tip_amount));

@@ -2129,7 +2129,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 
 
 
-                   if(count($isavailable)){
+                   if(count($isavailable) > 0){
                        $distance_array[$loc['agent_id']] = $miles;
                    }
 
