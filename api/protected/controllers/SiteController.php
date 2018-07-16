@@ -2872,7 +2872,7 @@ die();
 		$allwashes = array();
 $wash_request_id = Yii::app()->request->getParam('wash_request_id');
 
-$alllogs =  Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id=:wash_request_id")
+$alllogs =  Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id=:wash_request_id ORDER BY id ASC")
 ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
 ->queryAll();
 $alllogs_new = [];

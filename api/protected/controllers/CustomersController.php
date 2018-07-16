@@ -6948,9 +6948,13 @@ $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
 $to = Vargas::Obj()->getAdminToEmail();
 
 
-$message = "<h3>Dear ".$first_name." ".$last_name.",</h3>";
-$message .= "<p>Thank you for registering with Mobile Wash! Our app is coming soon, but we'd love to service you today! Call <strong>(888)209-5585</strong> and we'll send you a mobile detailer.</p>";
+/*$message = "<h3>Dear ".$first_name." ".$last_name.",</h3>";
+$message .= "<p>Thank you for registering with Mobile Wash! Our app is coming soon, but we'd love to service you today! Call <strong>(888)209-5585</strong> and we'll send you a mobile detailer.</p>";*/
 
+$message .= "<h3>Dear ".$name.",</h3>";
+/*Our app is coming soon, but we'd love to service you today!*/
+$message .= "<p>Thank you for registering with MobileWash! We'll be coming to your area soon, please follow us on Instagram, Facebook, and Twitter @getmobilewash for expansion announcements. Stay tuned!</p>";
+            
                $message .= "<p style='height: 0px;'>&nbsp;</p>
                <p><b>Kind Regards,</b></p>
                <p style='margin-bottom: 0;'><b>The Mobilewash Team</b></p>
@@ -6958,7 +6962,7 @@ $message .= "<p>Thank you for registering with Mobile Wash! Our app is coming so
                <p style='margin-top: 5px;'>support@mobilewash.com</p>";
 
 
-//Vargas::Obj()->SendMail($email,$from,$message, "Thank you for your pre-registration with MobileWash");
+Vargas::Obj()->SendMail($email,$from,$message, "Thank you for your pre-registration with MobileWash");
 
 $msg = '';
 $msg = "Registration Date: ".date("Y-m-d H:i:s")."<br>";
