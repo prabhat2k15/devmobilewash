@@ -908,7 +908,7 @@ $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
 
                     $mobile_receipt .= "Washes: ".$customer_total_wash."\r\n";
 
-                    if((APP_ENV == 'real')){
+                    if((APP_ENV == '') || (APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
           
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -1221,7 +1221,7 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
 					$from = Vargas::Obj()->getAdminFromEmail();
 					Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
 
-                   if((APP_ENV == 'real')){
+                   if((APP_ENV == '') || (APP_ENV == 'real')){
 
                     $this->layout = "xmlLayout";
    
@@ -1813,7 +1813,8 @@ WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:was
                       }
 		    }
 		    
-		    if(($wash_now_reschedule == 1) && (APP_ENV == 'real')){
+		    //if(($wash_now_reschedule == 1) && (APP_ENV == 'real')){
+		    if(($wash_now_reschedule == 1)){
                     $this->layout = "xmlLayout";
                     
 
@@ -2794,7 +2795,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                  $washrequestmodel->total_schedule_rejected = $washrequestmodel->total_schedule_rejected + 1;
                     $washrequestmodel->save(false);
 
-                    if(APP_ENV == 'real'){
+                    if((APP_ENV == '') || APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
                     
 
@@ -2897,7 +2898,7 @@ try {
 					$from = Vargas::Obj()->getAdminFromEmail();
 					//Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
 
-                    if((APP_ENV == 'real')){
+                    if((APP_ENV == '') || (APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
                     
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -3281,7 +3282,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-                     if((APP_ENV == 'real') && ($cust_details->sms_control)){
+                     if(((APP_ENV == '') || (APP_ENV == 'real')) && ($cust_details->sms_control)){
 		     $this->layout = "xmlLayout";
                 
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -3324,7 +3325,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-                    if((APP_ENV == 'real') && ($cust_details->sms_control)){
+                    if(((APP_ENV == '') || (APP_ENV == 'real')) && ($cust_details->sms_control)){
 		    $this->layout = "xmlLayout";
                    
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -3379,7 +3380,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                     $alert_type = "soft";
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("wash_complete_push_sent" => 1));
 		    
-		    if((APP_ENV == 'real') && ($cust_details->sms_control)){
+		    if(((APP_ENV == '') || (APP_ENV == 'real')) && ($cust_details->sms_control)){
 		    $this->layout = "xmlLayout";
           
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -7647,7 +7648,7 @@ if($wrequest_id_check->coupon_code){
 		
 $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
 $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_check->customer_id));
- if((APP_ENV == 'real') && (!$agent_detail->block_washer) && ($agent_detail->sms_control)){
+ if(((APP_ENV == '') || (APP_ENV == 'real')) && (!$agent_detail->block_washer) && ($agent_detail->sms_control)){
  $this->layout = "xmlLayout";
 
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -7702,7 +7703,8 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
 	    
            }
 	   
-	if(($result == 'true') && ($wash_now_canceled == 1) && (APP_ENV == 'real')){
+	//if(($result == 'true') && ($wash_now_canceled == 1) && (APP_ENV == 'real')){
+	if(($result == 'true') && ($wash_now_canceled == 1)){
                     $this->layout = "xmlLayout";
                     
 
@@ -9611,7 +9613,7 @@ Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt
 
 Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_sent' => 1));
 
-  if((APP_ENV == 'real')){
+  if((APP_ENV == '') || (APP_ENV == 'real')){
 
  $this->layout = "xmlLayout";
 
@@ -9937,7 +9939,7 @@ Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt
 
 Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_sent' => 1));
 
-if((APP_ENV == 'real')){
+if((APP_ENV == '') || (APP_ENV == 'real')){
 
 $this->layout = "xmlLayout";
 
@@ -11972,7 +11974,7 @@ $mins_since_last_use = round((time() - strtotime($agentdevices[0]['last_used']))
 			if($current_mile <= 10){
 				$agent_det =  Agents::model()->findByPk($agid);
 				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer) && ($agent_det->sms_control) && ($mins_since_last_use < 10080)){
-				  if((APP_ENV == 'real')){
+				  if((APP_ENV == '') || (APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
                    
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');

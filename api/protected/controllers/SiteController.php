@@ -7283,14 +7283,15 @@ die();
 }
 
           
-	  $allclients = Customers::model()->findAllByAttributes(array('is_pushmsg_pending'=> 1));
+	  //$allclients = Customers::model()->findAllByAttributes(array('is_pushmsg_pending'=> 1));
+	  $allclients = Yii::app()->db->createCommand('SELECT * FROM customers WHERE is_pushmsg_pending = 1 ORDER BY total_wash DESC LIMIT 2000')->queryAll();
 	  $pendingjob = Yii::app()->db->createCommand('SELECT * FROM scheduled_notifications WHERE status = 0 ORDER BY id DESC LIMIT 1')->queryAll();
 	
 
 	 if(count($allclients) && count($pendingjob)){ 
 		foreach($allclients as $client){
 
-			$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $client->id, PDO::PARAM_STR)->queryAll();
+			$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $client['id'], PDO::PARAM_STR)->queryAll();
 	
 			if(count($clientdevices)){
 				
@@ -7314,7 +7315,7 @@ die();
                             /* --- notification call end --- */
 			}
 			
-			Customers::model()->updateByPk($client->id, array("is_pushmsg_pending" => 0));
+			Customers::model()->updateByPk($client['id'], array("is_pushmsg_pending" => 0));
 		}
 	}
 	else{
