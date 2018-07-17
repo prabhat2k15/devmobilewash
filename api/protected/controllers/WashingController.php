@@ -4190,14 +4190,16 @@ if(number_format($tip_amount,2) != number_format($washrequest_id_check->tip_amou
 if(is_numeric($ratings) && (!$cancel_feedback)) $logcomment = $comments." (Ratings: ".$ratings.")";
 else $logcomment = $comments;
 			
- $washeractionlogdata= array(
+            if(Yii::app()->request->getParam('comments') != ''){
+ 					$washeractionlogdata= array(
                             'agent_id'=> $washrequest_id_check->agent_id,
                             'wash_request_id'=> $wash_request_id,
                             'action'=> 'customerfeedback',
-			    'addi_detail' => $logcomment,
+			    			'addi_detail' => $logcomment,
                             'action_date'=> date('Y-m-d H:i:s'));
 
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+            }
 	
 	$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
         $kartdetails = json_decode($kartapiresult);
@@ -4420,15 +4422,17 @@ if($feedback_source != 'dropjob'){
 		if($agent_id){
 			if(is_numeric($ratings) && (!$cancel_feedback)) $logcomment = $comments." (Ratings: ".$ratings.")";
 			else $logcomment = $comments;
-			$washeractionlogdata= array(
+			if(Yii::app()->request->getParam('comments') != ''){
+					$washeractionlogdata= array(
                             'agent_id'=> $agent_id,
                             'wash_request_id'=> $wash_request_id,
                             'agent_company_id'=> $agents_id_check->real_washer_id,
                             'action'=> 'agentfeedback',
-			    'addi_detail' => $logcomment,
+			    			'addi_detail' => $logcomment,
                             'action_date'=> date('Y-m-d H:i:s'));
 
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                    }
 		}
 	    }
 
