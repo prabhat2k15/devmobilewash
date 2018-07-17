@@ -296,6 +296,18 @@ font-size: 24px !important;
 <?php endforeach; ?>
 
 </table>
+<?php if($kartdata->transaction_fee > 0): ?>
+<table class="discount-details">
+
+<tr>
+<td><p>Transaction Fee</p></td>
+<td class="rightalign" style="vertical-align: top; min-width: 90px;">
+<p class="price">-$<?php echo $kartdata->transaction_fee; ?></p>
+</td>
+</tr>
+
+</table>
+<?php endif; ?>
 <?php if($kartdata->wash_now_fee > 0): ?>
 <table class="discount-details">
 

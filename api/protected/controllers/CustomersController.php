@@ -9494,7 +9494,7 @@ die();
 
 		$company_total = 0;
 		$company_total = Yii::app()->request->getParam('company_total');
-
+$transaction_fee = 0;
 		$response = "Pass the required parameters";
 		$result = "false";
 
@@ -9604,7 +9604,12 @@ $kartdetails = json_decode($kartapiresult);
 				    else $voidresult = Yii::app()->braintree->void($wash_check->transaction_id);
 				}
 
-				if($amount > 0) $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $company_total, 'amount' => str_replace(",", "", $amount), 'paymentMethodToken' => $token, 'deviceData' => $deviceData];
+				if($amount > 0) {
+					$transaction_fee = ($amount * 0.029) + .30;
+					$company_total += $transaction_fee;
+					$company_total = number_format($company_total, 2);
+					$request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $company_total, 'amount' => str_replace(",", "", $amount), 'paymentMethodToken' => $token, 'deviceData' => $deviceData];
+				}
 				else $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => str_replace(",", "", $kartdetails->net_price), 'paymentMethodToken' => $token, 'deviceData' => $deviceData];
 
                 if($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
@@ -9650,7 +9655,7 @@ public function actioncustomerupfrontpayment()
      $token = Yii::app()->request->getParam('payment_token');
      $deviceData = '';
      if(Yii::app()->request->getParam('deviceData')) $deviceData = Yii::app()->request->getParam('deviceData');
-
+$transaction_fee = 0;
       $response = "Pass the required parameters";
       $result = "false";
       $tid = '';
@@ -9794,6 +9799,11 @@ $min_diff = round(($current_time - $last_edit_time) / 60,2);
 
                  $company_total = preg_replace("/[^0-9\.]/", "",$company_total);
                  $company_total = number_format($company_total, 2, '.', '');
+		 
+		 $transaction_fee = ($total * 0.029) + .30;
+		$company_total += $transaction_fee;
+		
+		$company_total = number_format($company_total, 2);
 
              //$request_data = ['merchantAccountId' => 'al_davi_instant_4pjkk25r', 'serviceFeeAmount' => $company_total, 'amount' => $total,'paymentMethodToken' => $token];
              if($customer_check->client_position == 'real'){

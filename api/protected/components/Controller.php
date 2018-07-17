@@ -52,6 +52,7 @@ return;
         $promo_wash_count = 0;
 		$total_pet_lift_fee = 0;
         $tip_amount = 0;
+	$transaction_fee = 0;
         $card_no = '';
         $card_exp_mo = '';
         $card_exp_yr = '';
@@ -712,15 +713,23 @@ if($first_wash_discount && $bundle_discount) $bundle_discount -= 1;
 					else $company_total -= $coupon_discount;
 				}
 
+/* -- braintree transaction fee  -- */
 
-				$agent_total = round($agent_total, 2);
+$transaction_fee = ($net_total * 0.029) + .30;
+$agent_total -= $transaction_fee;
+$company_total += $transaction_fee;
+
+/* -- braintree transaction fee end -- */
+
+				 $agent_total = round($agent_total, 2);
 				$company_total = round($company_total, 2);
 
 if(!count($total_cars)){
    $total = 0;
    $net_total = 0;
    $agent_total = 0;
-   $company_total = 0;  
+   $company_total = 0;
+   $transaction_fee = 0;
 }
 
 				//$company_total = round(($net_total - count($total_cars)) * .2, 2);
@@ -814,6 +823,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
             'net_price'=> number_format($net_total, 2),
             'company_total' => number_format($company_total, 2),
             'agent_total' => number_format($agent_total, 2),
+	    'transaction_fee' => number_format($transaction_fee, 2),
             'tip_amount' => number_format($tip_amount, 2, '.', ''),
             'bundle_discount' => number_format($bundle_discount, 2, '.', ''),
             'fifth_wash_discount' => number_format($fifth_wash_discount, 2, '.', ''),
@@ -876,6 +886,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
             'net_price'=> number_format($net_total, 2),
             'company_total' => number_format($company_total, 2),
             'agent_total' => number_format($agent_total, 2),
+	    'transaction_fee' => number_format($transaction_fee, 2),
             'tip_amount' => number_format($tip_amount, 2, '.', ''),
             'bundle_discount' => number_format($bundle_discount, 2, '.', ''),
             'fifth_wash_discount' => number_format($fifth_wash_discount, 2, '.', ''),

@@ -228,7 +228,19 @@ if($vehicle->bundle_discount > 0){ ?>
 
 <?php } ?>
 </table>
-<?php
+<?php if($kartdata->transaction_fee > 0){ ?>
+<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
+
+<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Transaction Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$<?php echo $kartdata->transaction_fee; ?></p>
+</td>
+</tr>
+
+</table>
+<?php }
+
 if($kartdata->wash_now_fee > 0){ ?>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
 <tr>
@@ -620,8 +632,19 @@ if($vehicle->extplasticdressing_vehicle_fee_agent > 0){ ?>
 
 <?php } ?>
 </table>
+<?php if($kartdata->transaction_fee > 0){ ?>
+<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
 
-<?php if($kartdata->wash_now_fee > 0){ ?>
+<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Transaction Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>-$<?php echo $kartdata->transaction_fee; ?></p>
+</td>
+</tr>
+
+</table>
+<?php }
+if($kartdata->wash_now_fee > 0){ ?>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
 
 <tr>

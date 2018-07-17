@@ -3986,6 +3986,19 @@ $message_agent .= "</table>
 }
 $message_agent .= "</table>";
 
+if($kartdata->transaction_fee > 0){
+$message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$message_agent .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Transaction Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>-$".$kartdata->transaction_fee."</p>
+</td>
+</tr>";
+
+$message_agent .= "</table>";
+}
+
 if($kartdata->wash_now_fee > 0){
 $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
