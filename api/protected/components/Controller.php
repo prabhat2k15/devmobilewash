@@ -715,9 +715,11 @@ if($first_wash_discount && $bundle_discount) $bundle_discount -= 1;
 
 /* -- braintree transaction fee  -- */
 
-$transaction_fee = ($net_total * 0.029) + .30;
+if($wash_id_check->inc_transaction_fee){
+  $transaction_fee = ($net_total * 0.029) + .30;
 $agent_total -= $transaction_fee;
-$company_total += $transaction_fee;
+$company_total += $transaction_fee; 
+}
 
 /* -- braintree transaction fee end -- */
 
