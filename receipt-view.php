@@ -341,7 +341,7 @@ margin: 0;
 </tr>
 <?php endif; ?>
 <tr>
-<td><p style="color: #ccc;">Safe Handling Fee</p></td>
+<td><p style="color: #ccc;">Service Fee</p></td>
 <td class="rightalign"><p>-</p></td>
 </tr>
 <?php if($vehicle->fifth_wash_discount > 0): ?>
@@ -509,7 +509,7 @@ margin: 0;
 </tr>
 <?php endif; ?>
 <tr>
-<td><p style="color: #ccc;">Safe Handling Fee</p></td>
+<td><p style="color: #ccc;">Service Fee</p></td>
 <td class="rightalign"><p>+$1.00</p></td>
 </tr>
 <?php if($vehicle->fifth_wash_discount > 0): ?>

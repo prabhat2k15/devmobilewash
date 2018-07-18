@@ -1989,7 +1989,7 @@ $customer_check = Customers::model()->findByPk($customer_id);
 						<td style='text-align: right;'></td>
 						</tr>
 						<tr>
-						<td><p style='font-size: 18px; margin: 0;'>Handling Fee</p></td>
+						<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 						<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".($wash_details->vip_coupon_code != '' ? '0' : '1.00')."</p></td>
 						</tr>
 						";
@@ -3655,7 +3655,7 @@ $message .= "<tr>
 }
 
 $message .="<tr>
-<td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->safe_handling_fee."</p></td>
 </tr>";
 

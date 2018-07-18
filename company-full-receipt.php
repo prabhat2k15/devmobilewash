@@ -186,7 +186,7 @@ if($vehicle->extplasticdressing_vehicle_fee > 0){ ?>
 <?php } ?>
 
 <tr>
-<td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$1.00</p></td>
 </tr>
 
@@ -414,7 +414,7 @@ if($vehicle->extplasticdressing_vehicle_fee > 0){ ?>
 <?php } ?>
 
 <tr>
-<td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$<?php echo $vehicle->safe_handling_fee; ?></p></td>
 </tr>
 

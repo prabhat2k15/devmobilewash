@@ -288,7 +288,7 @@ margin: 0;
 </tr>
 <?php endif; ?>
 <tr>
-<td><p style="color: #ccc;">Safe Handling Fee</p></td>
+<td><p style="color: #ccc;">Service Fee</p></td>
 <td class="rightalign"><p>-</p></td>
 </tr>
 <?php if($vehicle->pet_hair_fee > 0): ?>
@@ -440,7 +440,7 @@ echo number_format($vehicle->extclaybar_vehicle_fee*.20, 2); ?></p></td>
 </tr>
 <?php endif; ?>
 <tr>
-<td><p style="color: #ccc;">Safe Handling Fee</p></td>
+<td><p style="color: #ccc;">Service Fee</p></td>
 <td class="rightalign"><p>+$1.00</p></td>
 </tr>
 <?php if($vehicle->pet_hair_fee > 0): ?>

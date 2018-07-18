@@ -1112,7 +1112,7 @@ $mobile_receipt .= "Floormat $".$vehicle->floormat_vehicle_fee."\r\n";
 }
 
 $message .="<tr>
-<td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->safe_handling_fee."</p></td>
 </tr>";
 
@@ -6199,7 +6199,7 @@ $message .= "<tr>
 }
 
 $message .="<tr>
-<td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->safe_handling_fee."</p></td>
 </tr>";
 
@@ -6631,7 +6631,7 @@ $com_message .= "<tr>
 }
 
 $com_message .= "<tr>
-<td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$1.00</p></td>
 </tr>";
 
@@ -6905,7 +6905,7 @@ $com_message .= "<tr>
 }
 
 $com_message .= "<tr>
-<td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->safe_handling_fee."</p></td>
 </tr>";
 
@@ -9770,7 +9770,7 @@ $message .= "<tr>
 }
 
 $message .="<tr>
-<td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
 </tr>";
 
@@ -10096,7 +10096,7 @@ $message .= "<tr>
 }
 
 $message .="<tr>
-<td><p style='font-size: 18px; margin: 0;'>Safe Handling Fee</p></td>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
 </tr>";
 if($vehicle->pet_hair_fee > 0){
