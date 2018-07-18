@@ -1659,7 +1659,7 @@ $washrequestid = $this->aes256cbc_crypt( $washrequestid, 'e', AES256CBC_API_PASS
 	$wash_now_reschedule = 0;
 	if(Yii::app()->request->getParam('wash_now_reschedule')) $wash_now_reschedule = Yii::app()->request->getParam('wash_now_reschedule');
 	$wash_later_fee = 0;
-	
+	$mobile_receipt = '';
 
         $json = array();
 
@@ -1811,8 +1811,95 @@ WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:was
 
                       /* --------- car pricing save end --------- */
                       }
+		      
+		      $mobile_receipt .= $car->brand_name." ".$car->model_name."\r\n".$car->vehicle_washing_package." $".$car->vehicle_washing_price."\r\nHandling $1.00\r\n";
+
+     if($car->surge_vehicle_fee > 0){
+$mobile_receipt .= "Surge $".$car->surge_vehicle_fee."\r\n";
+}
+if($car->extclaybar_vehicle_fee > 0){
+
+$mobile_receipt .= "Clay $".$car->extclaybar_vehicle_fee."\r\n";
+}
+if($car->waterspotremove_vehicle_fee > 0){
+
+$mobile_receipt .= "Spot $".$car->waterspotremove_vehicle_fee."\r\n";
+}
+if($car->exthandwax_vehicle_fee > 0){
+
+$mobile_receipt .= "Wax $".$car->exthandwax_vehicle_fee."\r\n";
+}
+
+if($car->pet_hair_fee > 0){
+
+$mobile_receipt .= "Extra Cleaning $".$car->pet_hair_fee."\r\n";
+}
+if($car->lifted_vehicle_fee > 0){
+
+$mobile_receipt .= "Lifted $".$car->lifted_vehicle_fee."\r\n";
+}
+
+if($car->extplasticdressing_vehicle_fee > 0){
+
+$mobile_receipt .= "Dressing $".$car->extplasticdressing_vehicle_fee."\r\n";
+}
+
+if($car->upholstery_vehicle_fee > 0){
+
+$mobile_receipt .= "Upholstery $".$car->upholstery_vehicle_fee."\r\n";
+}
+
+if($car->floormat_vehicle_fee > 0){
+
+$mobile_receipt .= "Floormat $".$car->floormat_vehicle_fee."\r\n";
+}
+
+
+if(($ind == 0) && ($kartdata->coupon_discount > 0)){
+
+$mobile_receipt .= "Promo: ".$kartdata->coupon_code." -$".number_format($kartdata->coupon_discount, 2)."\r\n";
+}
+
+
+if($car->fifth_wash_discount > 0){
+
+$mobile_receipt .= "5th -$".number_format($car->fifth_wash_discount, 2)."\r\n";
+}
+
+if(($car->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)){
+
+$mobile_receipt .= "Bundle -$1.00\r\n";
+}
+
+if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)){
+
+$mobile_receipt .= "Bundle -$1.00\r\n";
+}
+
+ $mobile_receipt .= "------\r\n";
 		    }
 		    
+		   
+		    
+		    if($kartdata->tip_amount > 0){
+
+$mobile_receipt .= "Tip $".number_format($kartdata->tip_amount, 2)."\r\n";
+						}
+						
+			if($kartdata->wash_now_fee > 0){
+
+$mobile_receipt .= "Wash Now $".number_format($kartdata->wash_now_fee, 2)."\r\n";
+						}
+						
+			if($kartdata->wash_later_fee > 0){
+
+$mobile_receipt .= "Wash Later $".number_format($kartdata->wash_later_fee, 2)."\r\n";
+						}
+
+
+                     $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
+
+                    
 		    //if(($wash_now_reschedule == 1) && (APP_ENV == 'real')){
 		    if(($wash_now_reschedule == 1)){
                     $this->layout = "xmlLayout";
@@ -1830,7 +1917,7 @@ WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:was
 		    $wash_details = Washingrequests::model()->findByPk($wash_request_id);
 		    $customers_id_check = Customers::model()->findByAttributes(array("id"=>$wash_details->customer_id));
                     
-                    $smscontent = "WASH NOW SCHEDULED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")";
+                    $smscontent = "WASH NOW SCHEDULED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")\r\n------\r\n".$mobile_receipt;
 
 
  try {
@@ -2228,6 +2315,8 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
          if($washer_ondemand_job_accept == 1)
         {
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+	    $cust_detail = Customers::model()->findByPk($wrequest_id_check->customer_id);
+	    $mobile_receipt = '';
             if($wrequest_id_check->status != 0){
                $json = array('result'=> 'false',
                         'response'=> 'Request is already canceled by customer');
@@ -2242,6 +2331,133 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                         $json = array('result' => $result, 'response' => $response);
                         echo json_encode($json);die();
                     }
+		    
+		    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+$kartdata = json_decode($kartapiresult);
+
+foreach($kartdata->vehicles as $ind=>$vehicle){
+$mobile_receipt .= $vehicle->brand_name." ".$vehicle->model_name."\r\n".$vehicle->vehicle_washing_package." $".$vehicle->vehicle_washing_price."\r\nHandling $1.00\r\n";
+
+     if($vehicle->surge_vehicle_fee > 0){
+$mobile_receipt .= "Surge $".$vehicle->surge_vehicle_fee."\r\n";
+}
+if($vehicle->extclaybar_vehicle_fee > 0){
+
+$mobile_receipt .= "Clay $".$vehicle->extclaybar_vehicle_fee."\r\n";
+}
+if($vehicle->waterspotremove_vehicle_fee > 0){
+
+$mobile_receipt .= "Spot $".$vehicle->waterspotremove_vehicle_fee."\r\n";
+}
+if($vehicle->exthandwax_vehicle_fee > 0){
+
+$mobile_receipt .= "Wax $".$vehicle->exthandwax_vehicle_fee."\r\n";
+}
+
+if($vehicle->pet_hair_fee > 0){
+
+$mobile_receipt .= "Extra Cleaning $".$vehicle->pet_hair_fee."\r\n";
+}
+if($vehicle->lifted_vehicle_fee > 0){
+
+$mobile_receipt .= "Lifted $".$vehicle->lifted_vehicle_fee."\r\n";
+}
+
+if($vehicle->extplasticdressing_vehicle_fee > 0){
+
+$mobile_receipt .= "Dressing $".$vehicle->extplasticdressing_vehicle_fee."\r\n";
+}
+
+if($vehicle->upholstery_vehicle_fee > 0){
+
+$mobile_receipt .= "Upholstery $".$vehicle->upholstery_vehicle_fee."\r\n";
+}
+
+if($vehicle->floormat_vehicle_fee > 0){
+
+$mobile_receipt .= "Floormat $".$vehicle->floormat_vehicle_fee."\r\n";
+}
+
+if(($ind == 0) && ($kartdata->coupon_discount > 0)){
+
+$mobile_receipt .= "Promo: ".$kartdata->coupon_code." -$".number_format($kartdata->coupon_discount, 2)."\r\n";
+}
+
+
+if($vehicle->fifth_wash_discount > 0){
+
+$mobile_receipt .= "5th -$".number_format($vehicle->fifth_wash_discount, 2)."\r\n";
+}
+
+if(($vehicle->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)){
+
+$mobile_receipt .= "Bundle -$1.00\r\n";
+}
+
+if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)){
+
+$mobile_receipt .= "Bundle -$1.00\r\n";
+}
+ $mobile_receipt .= "------\r\n";	
+}
+
+if($kartdata->tip_amount > 0){
+	$mobile_receipt .= "Tip $".number_format($kartdata->tip_amount, 2)."\r\n";
+}
+
+if($kartdata->wash_now_fee > 0){
+	$mobile_receipt .= "Wash Now $".number_format($kartdata->wash_now_fee, 2)."\r\n";
+}
+
+if($kartdata->wash_later_fee > 0){
+	$mobile_receipt .= "Wash Later $".number_format($kartdata->wash_later_fee, 2)."\r\n";
+}
+
+
+                     $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
+
+                    
+		require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
+            $client = new Services_Twilio($account_sid, $auth_token);
+	    
+	     $message = "WASH NOW TAKEN #000".$wrequest_id_check->id."- ".date('M d', strtotime($wrequest_id_check->created_date))." @ ".date('h:i A', strtotime($wrequest_id_check->created_date))."\r\n".$cust_detail->customername."\r\n".$cust_detail->contact_number."\r\n".$wrequest_id_check->address." (".$wrequest_id_check->address_type.")\r\nWasher Name: ".$agent_detail->first_name." ".$agent_detail->last_name."\r\nWasher Badge #".$agent_detail->real_washer_id."\r\n------\r\n".$mobile_receipt;
+
+
+try {
+$sendmessage = $client->account->messages->create(array(
+                'To' =>  '8183313631',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+ }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+try {
+$sendmessage = $client->account->messages->create(array(
+                'To' =>  '3109999334',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+	     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+try {
+$sendmessage = $client->account->messages->create(array(
+                'To' =>  '5622467300',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+	     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
 
         }
 
@@ -6223,6 +6439,19 @@ $message_agent .= "</table>
 }
 $message_agent .= "</table>";
 
+if($kartdata->transaction_fee > 0){
+$message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$message_agent .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Transaction Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>-$".number_format($kartdata->transaction_fee, 2)."</p>
+</td>
+</tr>";
+
+$message_agent .= "</table>";
+}
+
 if($kartdata->wash_now_fee > 0){
 $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
@@ -6473,6 +6702,19 @@ if($kartdata->coupon_discount > 0){
 $com_message .= "</table>";
 }
 
+
+if($kartdata->transaction_fee > 0){
+$com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$com_message .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Transaction Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->transaction_fee, 2)."</p>
+</td>
+</tr>";
+
+$com_message .= "</table>";
+}
 
 if($kartdata->wash_now_fee > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
@@ -6904,6 +7146,19 @@ $com_message .= "</table>
 
 }
 $com_message .= "</table>";
+
+if($kartdata->transaction_fee > 0){
+$com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
+
+$com_message .= "<tr>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Transaction Fee</p></td>
+<td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
+<p style='font-size: 18px; margin: 0;'>+$".number_format($kartdata->transaction_fee, 2)."</p>
+</td>
+</tr>";
+
+$com_message .= "</table>";
+}
 
 if($kartdata->wash_now_fee > 0){
 $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
