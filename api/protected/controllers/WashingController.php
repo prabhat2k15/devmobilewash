@@ -7670,6 +7670,7 @@ die();
 	$check_wash_status_before_cancel = 0;
 	if(Yii::app()->request->getParam('check_wash_status_before_cancel')) $check_wash_status_before_cancel = Yii::app()->request->getParam('check_wash_status_before_cancel');
 	$wash_now_canceled = 0;
+    $action_log=0;
 	if(Yii::app()->request->getParam('wash_now_canceled')) $wash_now_canceled = Yii::app()->request->getParam('wash_now_canceled');
 	$api_password = '';
 	if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
@@ -7751,11 +7752,14 @@ if(!count($is_cust_has_order)){
   }
 
   if($status == 5){
+      if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
             'action'=> 'cancelorderclient',
             'action_date'=> date('Y-m-d H:i:s'));
         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+          $action_log = 1;
+      }
   }
 
    if($status == 6){
@@ -7789,11 +7793,14 @@ if($wrequest_id_check->coupon_code){
   }
 
   if($status == 5){
+      if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
             'action'=> 'cancelorderclient',
             'action_date'=> date('Y-m-d H:i:s'));
         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+          $action_log =1;
+      }
   }
 
    if($status == 6){
@@ -7883,11 +7890,14 @@ if($wrequest_id_check->coupon_code){
   }
 
   if($status == 5){
+      if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
             'action'=> 'cancelorderclient',
             'action_date'=> date('Y-m-d H:i:s'));
         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+          $action_log = 1;
+      }
   }
 
    if($status == 6){
