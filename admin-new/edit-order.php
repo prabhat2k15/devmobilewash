@@ -3417,8 +3417,9 @@ $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/updatewashadmin", { res
 //console.log(data);
 if(data.result == 'true'){
     $(th).addClass('reschedule_update');
-$(th).val('Save');
-updateactivitylogs();
+//$(th).val('Save');
+//updateactivitylogs();
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
 $(".err-text").html(data.response);

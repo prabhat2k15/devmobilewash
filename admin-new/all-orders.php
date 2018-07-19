@@ -81,6 +81,10 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     background-color: #DCAD53 !important;
 }
 
+.label-fraud {
+    background-color: #f44336 !important;
+}
+
 .label-process {
     background-color: #D0792B !important;
 }
@@ -458,7 +462,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 <?php endif; ?>
                     </td>
 <td><?php 
-if(($order->payment_status == 'Declined') || ($order->payment_status == 'Check Fraud')) echo"<span class='label label-sm label-pending'>".$order->payment_status."</span><br><br>";
+if(($order->payment_status == 'Declined') || ($order->payment_status == 'Check Fraud')) echo"<span class='label label-sm label-fraud'>".$order->payment_status."</span><br><br>";
 else echo $order->payment_status; ?>
 <?php if($order->payment_type == 'free'): ?>
 <span class="label label-sm label-complete">Free Wash</span>
@@ -793,7 +797,7 @@ $.each(data.wash_requests, function( index, value ) {
       
        var payment_status_str = '';
 if((value.payment_status == 'Declined') || (value.payment_status == 'Check Fraud')){
-payment_status_str += "<span class='label label-sm label-pending'>"+value.payment_status+"</span><br><br>";
+payment_status_str += "<span class='label label-sm label-fraud'>"+value.payment_status+"</span><br><br>";
 
       }
       else payment_status_str += value.payment_status;

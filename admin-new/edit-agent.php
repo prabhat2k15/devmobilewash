@@ -399,7 +399,7 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>Update successfu
                                                                 <div class="form-group">
                                                                     <label class="control-label col-md-3">Email</label>
                                                                     <div class="col-md-9">
-                                                                        <input type="email" value="<?php echo $profiledetail->email; ?>" name="email" class="form-control" disabled />
+                                                                        <input type="email" value="<?php echo $profiledetail->email; ?>" name="email" class="form-control" />
                                                                     </div>
                                                                 </div>
                                                             </div>
