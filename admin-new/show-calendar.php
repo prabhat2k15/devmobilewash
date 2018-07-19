@@ -159,7 +159,7 @@ $(document).ready(function() {
 							$('.cal-overlay').css('display','none');
 						}
 						else{
-							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,title6,titledec,colordec,titletotalcars,colortotalcars,titleExp,titleDlx,titlePre,colorExp,colorDlx,colorPre,titleCC,colorCC,titleTa,titleondemandcompleted, titleschedulecompleted, titleaddoncompleted, colorTa,color6, colorschedulecompleted, colorondemandcompleted, coloraddoncompleted, schedulecanceledtitle, schedulecanceledcolor, ondemandcanceledtitle, ondemandcanceledcolor;
+							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,title6,titledec,colordec,titletotalcars,colortotalcars,titleExp,titleDlx,titlePre,colorExp,colorDlx,colorPre,titleCC,colorCC,titleTa,titleondemandcompleted, titleschedulecompleted, titleaddoncompleted, colorTa,color6, colorschedulecompleted, colorondemandcompleted, coloraddoncompleted, schedulecanceledtitle, schedulecanceledcolor, ondemandcanceledtitle, ondemandcanceledcolor, new_customer;
 							$.each( doc.order, function(index, value ) {
 							    
 								var _viewAll = ['1'];
@@ -183,8 +183,20 @@ $(document).ready(function() {
                                 var total_cars = Object.keys(value.total_cars).length;
 								var home_ord = Object.keys(value.home).length;
 								var work_ord = Object.keys(value.work).length;
+								var new_customer = Object.keys(value.new_customer).length;
 								
-								
+                                if(value.new_customer.count > 0){
+									titledec = value.new_customer.count+' New Customer';
+									colordec = value.new_customer.color;
+									events.push({
+										eventtitle: 'New Customer',
+										title:titledec,
+										description:'a',
+										start:index,
+										color:colordec
+									});
+								}
+                                
 								if(declined > 1  ){
 									titledec = value.declined.count+' Declined Orders';
 									colordec = value.declined.color;
@@ -569,7 +581,7 @@ $(document).ready(function() {
 			eventOrder: "description"
 		});
 		
-		 var _html = '<div class="center" style="width: 70%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span style="color: #fff;">Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #8b9d9e; background: #8b9d9e;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #eb1350; background: #eb1350;"><span>Declined</span></div><div id="express" style="border: 1px solid #2490d7; background: #2490d7;"><span>Express</span></div><div id="deluxe" style="border: 1px solid #2490d7; background: #2490d7;"><span>Deluxe</span></div><div id="premium" style="border: 1px solid #2490d7; background: #2490d7;"><span>Premium</span></div><div id="tip" style="border: 1px solid #f28fba; background: #f28fba; color: #fff;"><span>Tip</span></div><div id="addoncompleted" style="border: 1px solid #87CEFA; background: #87CEFA; color: #fff;"><span>Add-Ons</span></div><div id="ondemandcompleted" style="border: 1px solid #008080; background: #008080; color: #fff;"><span>On-Demand</span></div><div id="schedulecompleted" style="border: 1px solid #0000ff; background: #0000ff; color: #fff;"><span>Scheduled</span></div>	</div>';
+		 var _html = '<div class="center" style="width: 70%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span style="color: #fff;">Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #8b9d9e; background: #8b9d9e;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #eb1350; background: #eb1350;"><span>Declined</span></div><div id="express" style="border: 1px solid #2490d7; background: #2490d7;"><span>Express</span></div><div id="deluxe" style="border: 1px solid #2490d7; background: #2490d7;"><span>Deluxe</span></div><div id="premium" style="border: 1px solid #2490d7; background: #2490d7;"><span>Premium</span></div><div id="tip" style="border: 1px solid #f28fba; background: #f28fba; color: #fff;"><span>Tip</span></div><div id="addoncompleted" style="border: 1px solid #87CEFA; background: #87CEFA; color: #fff;"><span>Add-Ons</span></div><div id="ondemandcompleted" style="border: 1px solid #008080; background: #008080; color: #fff;"><span>On-Demand</span></div><div id="schedulecompleted" style="border: 1px solid #0000ff; background: #0000ff; color: #fff;"><span>Scheduled</span></div><div id="new_customer" style="border: 1px solid #3fcfb6; background: #3fcfb6; color: #fff;"><span>New Customer</span></div>	</div>';
 
 				$('.fc-left').append(_html);
 				

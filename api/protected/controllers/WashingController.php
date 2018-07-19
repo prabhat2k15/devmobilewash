@@ -8659,7 +8659,7 @@ die();
 
         $count = $total_order[0]['countid'];
 
-        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")
+        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")
 	->bindValue(':last_month', $last_month, PDO::PARAM_STR)
 	->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
 	->queryAll();
@@ -8743,7 +8743,8 @@ die();
 			"extclaybar_vehicles" => $orderbycustomer['extclaybar_vehicles'],
 			"waterspotremove_vehicles" => $orderbycustomer['waterspotremove_vehicles'],
 			"upholstery_vehicles" => $orderbycustomer['upholstery_vehicles'],
-			"floormat_vehicles" => $orderbycustomer['floormat_vehicles']
+			"floormat_vehicles" => $orderbycustomer['floormat_vehicles'],
+            "total_wash" => $orderbycustomer['total_wash']
                     );
                 }
             }
@@ -8757,6 +8758,10 @@ die();
                         $data[$value['start']][trim($package)][] = 1;
                     }
                 }*/
+                
+                if($value['total_wash'] == 1){
+                    $data[$value['start']]['new_customer'][] = 1;
+                }
                 
                 if($value['address_type'] == 'Home'){
                     $data[$value['start']]['home'][] = $value['address_type'];
@@ -8983,6 +8988,14 @@ die();
                 }
                 if(count($val['work'])>0){
                     $dt[$key]['work']['count']= count($val['work']);
+                }
+                
+                if(count($val['new_customer']) > 0){
+                    $dt[$key]['new_customer']['color'] = '#3fcfb6';
+                    $dt[$key]['new_customer']['count'] = count($val['new_customer']);
+                }else{
+                    $dt[$key]['new_customer']['color'] = '';
+                    $dt[$key]['new_customer']['count'] = '';
                 }
                 
                 /*if(count($val['tip_amount'])>0){

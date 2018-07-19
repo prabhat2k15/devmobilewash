@@ -1967,7 +1967,7 @@ $(".cancel-order").html('Cancel Order');
       resizable: false,
  autoOpen: false,
       height: "auto",
-      width: 505,
+      width: 465,
       modal: true,
       buttons: {
         "Customer Cancel (fee)": function() {
