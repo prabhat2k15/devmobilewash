@@ -5711,7 +5711,7 @@ if((isset($wash_request_id) && !empty($wash_request_id))){
                 $result = 'true';
 $response = 'wash request uncanceled';
 
-                  Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "washer_late_cancel" => 0, "no_washer_cancel" => 0, "company_cancel" => 0));
+                  Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "washer_late_cancel" => 0, "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
 				 $washeractionlogdata = array(
 
                         'wash_request_id'=> $wash_request_id,

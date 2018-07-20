@@ -5814,9 +5814,19 @@ if(count($washer_detail)) {
 		 $jsonpending['agent_name'] = $washer_detail->first_name." ".$washer_detail->last_name;
 		 $jsonpending['agent_phone'] = $washer_detail->phone_number;
 		 }
-$jsonpending['schedule_date'] = date('m-d-Y',strtotime($schedorder->schedule_date));
-$jsonpending['schedule_time'] = $schedorder->schedule_time;
-				 $scheduleorders[$key] = $jsonpending;
+$jsonpending['schedule_date'] = date('m-d-Y',strtotime($schedorder->order_for));
+$jsonpending['schedule_time'] = date('h:i A',strtotime($schedorder->order_for));
+$datediff = (strtotime($schedorder->order_for)) - (strtotime(date("Y-m-d")));
+ $difference = floor($datediff/(60*60*24));
+ if($difference==0)
+ {
+   $jsonpending['order_for'] = 'today';
+ }
+ else{
+	$jsonpending['order_for'] = 'later';
+ }
+
+$scheduleorders[$key] = $jsonpending;
 
 		}
 

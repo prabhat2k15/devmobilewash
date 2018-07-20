@@ -965,6 +965,10 @@ if (client['agent_id'] != 0) {
     pin_image = 'images/order-pin-yellow.png';
 }
 
+if (client['order_for'] == 'later') {
+     pin_image = 'images/pin-pink.png';
+}
+
  var order_date = new Date(client['created_date']);
 
 
@@ -1253,6 +1257,11 @@ var pin_image = 'images/pending-order-pin.png';
 if (client['agent_id'] != 0) {
     pin_image = 'images/order-pin-yellow.png';
 }
+
+if (client['order_for'] == 'later') {
+     pin_image = 'images/pin-pink.png';
+}
+
  var order_date = new Date(client['created_date']);
  //console.log("order date "+order_date);
 
