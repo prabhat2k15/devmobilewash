@@ -774,6 +774,12 @@ display: none;
 .red-border{
     border: 2px solid red;
 }
+.ui-dialog-titlebar-close{
+	padding: 0;
+	color: #000;
+	height: 25px !important;
+    width:25px !important;
+}
 </style>
 <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
@@ -2102,7 +2108,7 @@ $(".err-text").show();
         }
       }
     });
-
+$('.ui-dialog-titlebar-close').html('X');
   } );
   </script>
 
