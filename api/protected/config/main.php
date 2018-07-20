@@ -38,7 +38,7 @@ return array(
 			'emulatePrepare' => true,
 			'username' => 'devmobil_mwuser',
 			'password' => 'XUS9Qf9bwJ%&',
-			'charset' => 'utf8',
+			'charset' => 'utf8mb4',
 		),
 		'braintree' => array(
             'class'=>'application.extensions.braintree.CustomBraintree',

@@ -965,7 +965,7 @@ if (client['agent_id'] != 0) {
     pin_image = 'images/order-pin-yellow.png';
 }
 
-if (client['order_for'] == 'later') {
+if (client['order_for'] == 'tomorrow') {
      pin_image = 'images/pin-pink.png';
 }
 
@@ -1258,7 +1258,7 @@ if (client['agent_id'] != 0) {
     pin_image = 'images/order-pin-yellow.png';
 }
 
-if (client['order_for'] == 'later') {
+if (client['order_for'] == 'tomorrow') {
      pin_image = 'images/pin-pink.png';
 }
 

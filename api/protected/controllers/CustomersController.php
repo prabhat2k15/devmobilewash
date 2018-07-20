@@ -5818,12 +5818,12 @@ $jsonpending['schedule_date'] = date('m-d-Y',strtotime($schedorder->order_for));
 $jsonpending['schedule_time'] = date('h:i A',strtotime($schedorder->order_for));
 $datediff = (strtotime($schedorder->order_for)) - (strtotime(date("Y-m-d")));
  $difference = floor($datediff/(60*60*24));
- if($difference==0)
+ if($difference > 0)
  {
-   $jsonpending['order_for'] = 'today';
+   $jsonpending['order_for'] = 'tomorrow';
  }
  else{
-	$jsonpending['order_for'] = 'later';
+	$jsonpending['order_for'] = 'today';
  }
 
 $scheduleorders[$key] = $jsonpending;

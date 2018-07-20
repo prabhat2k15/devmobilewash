@@ -3731,11 +3731,38 @@ checkadmineditstatus();
 
  var ic = setInterval(checkadmineditstatus, 10000);
 
- function checkwashstatus(){
+
+ $("#order_status").change(function(e){
+     if($("#detailer").val() == 0){
+       if(($(this).val() == 1) || ($(this).val() == 2) || ($(this).val() == 3) || ($(this).val() == 6)){
+      alert('Please select a washer first');
+     $(this).val(0);
+     return false;
+  }
+     }
+
+
+ });
+
+
+
+});
+
+</script>
+
+<?php if($getorder->status != 1): ?>
+<script>
+  $(function(){
+    var wash_id = "<?php echo $getorder->id; ?>";
+var admin_id = "<?php echo $jsondata_permission->user_id; ?>";
+var customer_id = "<?php echo $getorder->customer_id; ?>";
+
+   function checkwashstatus(){
 $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/washingkart", { wash_request_id: wash_id, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
-if(data.result == 'true' && data.status == 2){
+if((data.result == 'true') && (data.status == 1) && (data.is_scheduled == 1)){
 //$('#washer-arrive-dialog').dialog('open');
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $_GET['id']; ?>";
 }
 
 if(data.result == 'true' && data.status == 3){
@@ -3758,25 +3785,10 @@ if(veh.status == 2){
 checkwashstatus();
 
  var ic2 = setInterval(checkwashstatus, 5000);
-
- $("#order_status").change(function(e){
-     if($("#detailer").val() == 0){
-       if(($(this).val() == 1) || ($(this).val() == 2) || ($(this).val() == 3) || ($(this).val() == 6)){
-      alert('Please select a washer first');
-     $(this).val(0);
-     return false;
-  }
-     }
-
-
- });
-
-
-
 });
 
-
 </script>
+ <?php endif; ?> 
        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script>
   $( function() {
