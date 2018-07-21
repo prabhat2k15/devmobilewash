@@ -250,7 +250,7 @@ $pricingdata = json_decode($result);
                                                 </div>
                                             </div>
                                             <div class="portlet-body">
-                                                <div class="tab-content">
+                                                <div class="tab-content" style="overflow: auto;">
                                                     <!-- PERSONAL INFO TAB -->
                                                     <div class="tab-pane active" id="tab_1_1">
 
@@ -261,9 +261,11 @@ $pricingdata = json_decode($result);
     <th>Title</th>
     <th>Duration</th>
     <th>Wash Time</th>
-    <th>Price</th>
+    <th>Tier 1 Price <span style="color: #076ee1;">(Blue)</span></th>
+    <th>Tier 2 Price <span style="color: #f4d942;">(Yellow)</span></th>
+    <th>Tier 3 Price <span style="color: #ff5722;">(Red)</span></th>
     <th>Handling Fee</th>
-    <th>Description</th>
+    <th style="min-width: 200px;">Description</th>
     <th>Vehicle Type</th>
 </tr>
 <?php foreach($pricingdata->plans as $plan): ?>
@@ -272,6 +274,8 @@ $pricingdata = json_decode($result);
 <td><input type="text" value="<?php echo $plan->duration; ?>" name="duration[]" required /></td>
 <td><input type="text" value="<?php echo $plan->wash_time; ?>" name="wash_time[]" required /></td>
 <td><input type="text" value="<?php echo $plan->price; ?>" name="price[]" required /></td>
+<td><input type="text" value="<?php echo $plan->price; ?>" name="price2[]" required /></td>
+<td><input type="text" value="<?php echo $plan->price; ?>" name="price3[]" required /></td>
 <td><?php echo $plan->handling_fee; ?></td>
 <td><textarea name="description[]" style="width: 100%; height: 100px;"><?php echo $plan->description; ?></textarea></td>
 <td><?php echo $plan->vehicle_type; ?></td>
