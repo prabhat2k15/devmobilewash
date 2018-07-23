@@ -2116,8 +2116,8 @@ foreach($times_arr as $time){
 $time_detail = explode(",",$time);
 //if($time_detail[1] == 'inactive') continue;
 $start = strtotime($current_date." ".$time_detail[0]);
-$end = strtotime($current_date." ".$time_detail[0]." +14 minutes");
-//echo $start." ".$end."<br>";
+$end = strtotime($current_date." ".$time_detail[0]." +14 minutes 59 seconds");
+//echo $start." ".$end." ".date('h:i:s A', $start)." ".date('h:i:s A', $end)."<br>";
 
 if(time() >= $start && time() <= $end) {
   $wash_now_fee = $time_detail[2];
