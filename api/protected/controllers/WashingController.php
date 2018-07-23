@@ -56,6 +56,7 @@ die();
         $vehicle_type = '';
         $result= 'false';
         $response= 'Pass the required parameters';
+	$coveragezipcheck = 0;
 	$app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
 	if(count($app_settings)){
 		//if(is_numeric($app_settings[0]['wash_now_fee'])) $wash_now_fee = $app_settings[0]['wash_now_fee'];
@@ -102,13 +103,13 @@ $vehicle_type = $vehicle_exists[0]['type'];
                     ->queryAll(); */
 
 		    	$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
-			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
+			//$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
 			
 		   
-		   if(($zipcode) && (count($zipcodeprice))){
+		   if($zipcode){
 		
 			   $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$zipcode));
-			   if(count($coveragezipcheck)){
+			   /*if(count($coveragezipcheck)){
 			      
 			      if($coveragezipcheck->zip_color == 'yellow'){
 				 $zipcode_price_factor = $zipcodeprice[0]['yellow']; 
@@ -128,14 +129,14 @@ $vehicle_type = $vehicle_exists[0]['type'];
 				$prem_surge_factor += $zipcode_price_factor; 	
 			}
 			
-			   }
+			   }*/
 			
 		   }
 		   else{
 		   if($location_id) $loc_check = CustomerLocation::model()->findByPk($location_id);
-			if((count($loc_check)) && (count($zipcodeprice))){
+			if(count($loc_check)){
 			    $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$loc_check->zipcode));
-			   if(count($coveragezipcheck)){
+			   /*if(count($coveragezipcheck)){
 			      
 			      if($coveragezipcheck->zip_color == 'yellow'){
 				 $zipcode_price_factor = $zipcodeprice[0]['yellow']; 
@@ -154,7 +155,7 @@ $vehicle_type = $vehicle_exists[0]['type'];
 				$del_surge_factor += $zipcode_price_factor;
 				$prem_surge_factor += $zipcode_price_factor; 	
 			}
-			   }
+			   }*/
 			}
 		}
                         
@@ -170,13 +171,25 @@ $vehicle_type = $vehicle_exists[0]['type'];
                     $planDetails['description'] = preg_split('/\r\n|[\r\n]/', $planDetails['description']);
                     unset($planDetails['id']);
 		    
-		      if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+		      /*if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+			
 			$planDetails['price'] += $zipcode_price_factor;
                          $planDetails['price'] = (string) $planDetails['price'];	
-			 }
-
+			 }*/
+		      
+		      if(count($coveragezipcheck)){
+			 if($coveragezipcheck->zip_color == 'yellow'){
+				 $planDetails['price'] = $planDetails['tier2_price'];
+			      }
+			      
+			      if($coveragezipcheck->zip_color == 'red'){
+				 $planDetails['price'] = $planDetails['tier3_price'];
+			      }
+			      	
+			}
+			
                     if($planDetails['title'] == "Express") {
-                       
+			
 			 $planDetails['price'] = $planDetails['price'] + ($planDetails['price'] * ($exp_surge_factor / 100));
 			 $planDetails['price'] = number_format($planDetails['price'], 2);
                         $express_plan[] = $planDetails;
@@ -407,15 +420,19 @@ die();
            	$duration  = Yii::app()->request->getParam('duration');
         $wash_time = Yii::app()->request->getParam('wash_time');
         $price = Yii::app()->request->getParam('price');
+	$price2 = Yii::app()->request->getParam('price2');
+	$price3 = Yii::app()->request->getParam('price3');
         $description = Yii::app()->request->getParam('description');
 
         $result= 'false';
         $response= 'Pass the required parameters';
 
-$update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration=:duration, wash_time=:wash_time, price=:price, description=:description WHERE id = :id")
+$update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration=:duration, wash_time=:wash_time, price=:price, tier2_price=:price2, tier3_price=:price3, description=:description WHERE id = :id")
            ->bindValue(':duration', $duration, PDO::PARAM_STR)
 	   ->bindValue(':wash_time', $wash_time, PDO::PARAM_STR)
 	   ->bindValue(':price', $price, PDO::PARAM_STR)
+	   ->bindValue(':price2', $price2, PDO::PARAM_STR)
+	   ->bindValue(':price3', $price3, PDO::PARAM_STR)
 	   ->bindValue(':description', $description, PDO::PARAM_STR)
 	   ->bindValue(':id', $id, PDO::PARAM_STR)
            ->execute();
