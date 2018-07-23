@@ -3548,7 +3548,7 @@ $vehicle_check = Yii::app()->db->createCommand()
                         }
                     }
 
-                    Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $new_packs, 'car_list' => $new_cars, 'coupon_discount' => $coupon_amount));
+                    Washingrequests::model()->updateByPk($wash_request_id, array('package_list' => $new_packs, 'car_list' => $new_cars, 'coupon_discount' => $coupon_amount, 'fifth_wash_discount' => 0, 'fifth_wash_vehicles' => ''));
 
                     if($cust_vehicle_data->pet_hair){
 $pet_hair_vehicles_arr = explode(",", $wash_request_exists->pet_hair_vehicles);
@@ -4163,6 +4163,7 @@ $exp_surge_factor = 0;
 	$del_surge_factor = 0;
 	$prem_surge_factor = 0;
 	$zipcode_price_factor = 0;
+	$coveragezipcheck = 0;
 
 		if((isset($wash_request_id) && !empty($wash_request_id)))
 		{
@@ -4178,12 +4179,12 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
             else{
 		
 		$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
-			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
+			//$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
 			
-			if(($zipcode) && (count($zipcodeprice))){
+			if($zipcode){
 		
 			$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$zipcode));
-			   if(count($coveragezipcheck)){
+			   /*if(count($coveragezipcheck)){
 			      
 			      if($coveragezipcheck->zip_color == 'yellow'){
 				 $zipcode_price_factor = $zipcodeprice[0]['yellow']; 
@@ -4203,7 +4204,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 				$prem_surge_factor += $zipcode_price_factor; 	
 			}
 			
-			   }
+			   }*/
 			
 		   }
 		   
@@ -4234,14 +4235,26 @@ $veh_type = $cardata->vehicle_type;
 if($cardata->upgrade_pack == 1) {
 $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"=>$veh_type, "title"=>$cardata->new_pack_name));
                     if(count($washing_plan_det)) {
-                      if($cardata->new_pack_name == 'Express') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($exp_surge_factor / 100));
-		      if($cardata->new_pack_name == 'Deluxe') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($del_surge_factor / 100));
-		      if($cardata->new_pack_name == 'Premium') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($prem_surge_factor / 100));
+			 $wash_price = $washing_plan_det->price;
+			 if(count($coveragezipcheck)){
+			            
+			      if($coveragezipcheck->zip_color == 'yellow'){
+				 $wash_price = $washing_plan_det->tier2_price; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == 'red'){
+				 $wash_price = $washing_plan_det->tier3_price; 
+			      }
+			}
+			
+                      if($cardata->new_pack_name == 'Express') $wash_price = $wash_price + ($wash_price * ($exp_surge_factor / 100));
+		      if($cardata->new_pack_name == 'Deluxe') $wash_price = $wash_price + ($wash_price * ($del_surge_factor / 100));
+		      if($cardata->new_pack_name == 'Premium') $wash_price = $wash_price + ($wash_price * ($prem_surge_factor / 100));
 		      
-		      if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+		      /*if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
 			$wash_price += $zipcode_price_factor;
                          $wash_price = (string) $wash_price;	
-			 }
+			 }*/
 			 
 		      $wash_price = number_format($wash_price, 2);
 
@@ -4252,14 +4265,26 @@ $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"
 else{
 $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"=>$veh_type, "title"=>$pack_arr[$ind]));
                     if(count($washing_plan_det)) {
-                      if($pack_arr[$ind] == 'Express') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($exp_surge_factor / 100));
-		      if($pack_arr[$ind] == 'Deluxe') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($del_surge_factor / 100));
-		      if($pack_arr[$ind] == 'Premium') $wash_price = $washing_plan_det->price + ($washing_plan_det->price * ($prem_surge_factor / 100));
+			 $wash_price = $washing_plan_det->price;
+			 if(count($coveragezipcheck)){
+			            
+			      if($coveragezipcheck->zip_color == 'yellow'){
+				 $wash_price = $washing_plan_det->tier2_price; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == 'red'){
+				 $wash_price = $washing_plan_det->tier3_price; 
+			      }
+			}
+			
+                      if($pack_arr[$ind] == 'Express') $wash_price = $wash_price + ($wash_price * ($exp_surge_factor / 100));
+		      if($pack_arr[$ind] == 'Deluxe') $wash_price = $wash_price + ($wash_price * ($del_surge_factor / 100));
+		      if($pack_arr[$ind] == 'Premium') $wash_price = $wash_price + ($wash_price * ($prem_surge_factor / 100));
 		      
-		      if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+		      /*if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
 			$wash_price += $zipcode_price_factor;
                          $wash_price = (string) $wash_price;	
-			}
+			}*/
 			 
 		      $wash_price = number_format($wash_price, 2);
 
@@ -5960,6 +5985,7 @@ $upholstery_addon = 0;
 if(Yii::app()->request->getParam('upholstery_addon')) $upholstery_addon = Yii::app()->request->getParam('upholstery_addon');
 $floormat_addon = 0;
 if(Yii::app()->request->getParam('floormat_addon')) $floormat_addon = Yii::app()->request->getParam('floormat_addon');
+$coveragezipcheck = 0;
 
 			if(Yii::app()->request->getParam('vehicle_type')) $vehicle_type = Yii::app()->request->getParam('vehicle_type');
 			$vehicle = array();
@@ -5978,12 +6004,12 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 }
 				
 				$surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
-			$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
+			//$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
 			
-			if(($zipcode) && (count($zipcodeprice))){
+			if($zipcode){
 		
 			   $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$zipcode));
-			   if(count($coveragezipcheck)){
+			   /*if(count($coveragezipcheck)){
 			      
 			      if($coveragezipcheck->zip_color == 'yellow'){
 				 $zipcode_price_factor = $zipcodeprice[0]['yellow']; 
@@ -6003,7 +6029,7 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 				$prem_surge_factor += $zipcode_price_factor; 	
 			}
 			
-			   }
+			   }*/
 			
 		   }
 		   
@@ -6041,14 +6067,26 @@ $directorypath1 = realpath(Yii::app()->basePath . '/../images/veh_img');
 
   $washplan_id_exists = Washingplans::model()->findByAttributes(array("title"=>$wash_package, "vehicle_type" => $vehicle_type));
 if(count( $washplan_id_exists)){
-  if($wash_package == 'Express') $package_price = $washplan_id_exists->price + ($washplan_id_exists->price * ($exp_surge_factor / 100));
-		      if($wash_package == 'Deluxe') $package_price = $washplan_id_exists->price + ($washplan_id_exists->price * ($del_surge_factor / 100));
-		      if($wash_package == 'Premium') $package_price = $washplan_id_exists->price + ($washplan_id_exists->price * ($prem_surge_factor / 100));
+	$package_price = $washplan_id_exists->price;
 		      
-		       if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+		      if(count($coveragezipcheck)){
+			            
+			      if($coveragezipcheck->zip_color == 'yellow'){
+				 $package_price = $washplan_id_exists->tier2_price; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == 'red'){
+				 $package_price = $washplan_id_exists->tier3_price; 
+			      }
+			}
+  if($wash_package == 'Express') $package_price = $package_price + ($package_price * ($exp_surge_factor / 100));
+		      if($wash_package == 'Deluxe') $package_price = $package_price + ($package_price * ($del_surge_factor / 100));
+		      if($wash_package == 'Premium') $package_price = $package_price + ($package_price * ($prem_surge_factor / 100));
+		      
+		       /*if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
 			$package_price += $zipcode_price_factor;
                          $package_price = (string) $package_price;	
-			 }
+			 }*/
 			 
 		      $package_price = number_format($package_price, 2);
 
@@ -6151,7 +6189,7 @@ $zipcode = '';
 	$del_surge_factor = 0;
 	$prem_surge_factor = 0;
 	$zipcode_price_factor = 0;
-
+$coveragezipcheck = 0;
 		$vehicle = array();
 		if((isset($vehicle_id) && !empty($vehicle_id)))
 		{
@@ -6168,12 +6206,12 @@ $cust_exists = Customers::model()->findByAttributes(array("id"=>$vehicle_exists-
 $wash_request_exists = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
 
    $surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='".strtolower(date('D'))."'", array())->queryAll();
-$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
+//$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
 
-if(($zipcode) && (count($zipcodeprice))){
+if($zipcode){
 		
 		   $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$zipcode));
-			   if(count($coveragezipcheck)){
+			   /*if(count($coveragezipcheck)){
 			      
 			      if($coveragezipcheck->zip_color == 'yellow'){
 				 $zipcode_price_factor = $zipcodeprice[0]['yellow']; 
@@ -6193,7 +6231,7 @@ if(($zipcode) && (count($zipcodeprice))){
 				$prem_surge_factor += $zipcode_price_factor; 	
 			}
 			
-			   }
+			   }*/
 			
 		   }
 		   
@@ -6204,13 +6242,31 @@ if(($zipcode) && (count($zipcodeprice))){
 
 $wash_price = 0;
  $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"=>$vehicle_exists->vehicle_type, "title"=>$vehicle_exists->wash_package));
-                    if($vehicle_exists->package_price) $wash_price = $vehicle_exists->package_price;
-                    else $wash_price = $washing_plan_det->price;
+                    if($vehicle_exists->package_price) {
+			$wash_price = $vehicle_exists->package_price;
+			
+		    }
+                    else {
+			$wash_price = $washing_plan_det->price;
+		}
+		
+		if(count($coveragezipcheck)){
+			            
+			      if($coveragezipcheck->zip_color == 'yellow'){
+				 $wash_price = $washing_plan_det->tier2_price; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == 'red'){
+				 $wash_price = $washing_plan_det->tier3_price; 
+			      }
+		}
 		    
-		    if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
+		    
+		    
+		    /*if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
 			$wash_price += $zipcode_price_factor;
                          $wash_price = (string) $wash_price;	
-			 }
+			 }*/
 
 if($vehicle_exists->wash_package == 'Express'){
    
