@@ -2379,6 +2379,8 @@ die();
 $response = 'Enter wash request id';
 $order_for_date = '';
 $car_ids = Yii::app()->request->getParam('car_ids');
+$car_ids_new = $car_ids;
+$car_ids_org = Yii::app()->request->getParam('car_ids_org');
 $car_packs = Yii::app()->request->getParam('car_packs');
 $pet_hair_vehicles = Yii::app()->request->getParam('pet_hair_vehicles');
 $pet_hair_vehicles_custom = Yii::app()->request->getParam('pet_hair_vehicles_custom');
@@ -2688,6 +2690,9 @@ if($admin_command == 'update-order'){
 }
 
 if($status == WASHREQUEST_STATUS_COMPLETEWASH){
+	
+$car_ids_org_arr = explode(",",$car_ids_org);
+$car_ids_new_arr = explode(",",$car_ids_new);
 
 $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
 
@@ -2707,12 +2712,15 @@ $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
                     /* ----------- update pricing details -------------- */
 
       			    $cust_details = Customers::model()->findByAttributes(array('id'=>$wrequest_id_check->customer_id));
-                    Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total, 'bundle_discount' => $kartdetails->bundle_discount, 'first_wash_discount' => $kartdetails->first_wash_discount, 'coupon_discount' => $kartdetails->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points, 'fifth_wash_discount' => 0, 'fifth_wash_vehicles' => '', 'per_car_wash_points' => '', "washer_late_cancel" => 0, "no_washer_cancel" => 0));
+                     if(count($car_ids_org_arr) != count($car_ids_new_arr)) Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total, 'bundle_discount' => $kartdetails->bundle_discount, 'first_wash_discount' => $kartdetails->first_wash_discount, 'coupon_discount' => $kartdetails->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points, 'fifth_wash_discount' => 0, 'fifth_wash_vehicles' => '', 'per_car_wash_points' => '', "washer_late_cancel" => 0, "no_washer_cancel" => 0));
+		else Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total, 'bundle_discount' => $kartdetails->bundle_discount, 'first_wash_discount' => $kartdetails->first_wash_discount, 'coupon_discount' => $kartdetails->coupon_discount, 'customer_wash_points' => $cust_details->fifth_wash_points, "washer_late_cancel" => 0, "no_washer_cancel" => 0));
 
+		    
 					/* ----------- update pricing details end -------------- */
 
 					$all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_requests')->where("customer_id = ".$wrequest_id_check->customer_id." AND status = 4 AND id != :wash_request_id", array(":wash_request_id" => $wash_request_id))->queryAll();
 
+if(count($car_ids_org_arr) != count($car_ids_new_arr)){
 if(count($all_washes)){
     $totalpoints = 0;
     $current_fifth_points = 0;
@@ -2724,6 +2732,7 @@ if(count($all_washes)){
     $current_fifth_points = $totalpoints % 5;
     if($current_fifth_points == 0) $current_fifth_points = 5;
   Customers::model()->updateByPk($wrequest_id_check->customer_id, array("fifth_wash_points" => $current_fifth_points));
+}
 }
 
                     $car_ids = $wrequest_id_check->car_list;
@@ -2779,7 +2788,10 @@ if(count($all_washes)){
                         $vehiclemodel = new Vehicle;
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car->id));
 
-                /* ------ 5th wash check ------- */
+                if(count($car_ids_org_arr) != count($car_ids_new_arr)){
+		
+		/* ------ 5th wash check ------- */
+		
                     $current_points = $cust_detail->fifth_wash_points;
 if($current_points == 5){
 $new_points = 1;
@@ -2825,7 +2837,7 @@ Washingrequests::model()->updateByPk($wash_request_id, array('customer_wash_poin
 
                $curr_wash_points++;
                if($curr_wash_points >= 5) $curr_wash_points = 0;
-
+		    }
                     }
 
                    $cust_id = $wrequest_id_check->customer_id;
