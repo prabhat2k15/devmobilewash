@@ -5160,6 +5160,12 @@ die();
 		$response = "nothing found";
 		$result = "false";
          $nonreturncust_arr = [];
+	 $nonreturncust_arr_30 = [];
+	 $nonreturncust_arr_60 = [];
+	 $nonreturncust_arr_90 = [];
+	 $ind30 = 0;
+	 $ind60 = 0;
+	 $ind90 = 0;
 $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning' => 1),array('order'=>'id ASC'));
 
 			if(count($all_customers)){
@@ -5168,13 +5174,58 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 				$result = "true";
                 foreach($all_customers as $ind=>$customer){
                      $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer->id, 'status' => 4),array('order'=>'id DESC'));
-                    $nonreturncust_arr[$ind]['id'] = $customer->id;
-                    $nonreturncust_arr[$ind]['name'] = $customer->customername;
-                    $nonreturncust_arr[$ind]['email'] = $customer->email;
-                    $nonreturncust_arr[$ind]['phone'] = $customer->contact_number;
-                    $nonreturncust_arr[$ind]['total_wash'] = $customer->total_wash;
-                    if(count($last_wash)) $nonreturncust_arr[$ind]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
-                    else $nonreturncust_arr[$ind]['last_order'] = "N/A";
+		     if(count($last_wash)){
+			$current_time = strtotime(date('Y-m-d H:i:s'));
+
+			$create_time = strtotime($last_wash->order_for);
+			$min_diff = 0;
+			if($current_time > $create_time){
+				$min_diff = round(($current_time - $create_time) / 60,2);
+			}
+
+			// 30 days or more inactive
+			if(($min_diff >= 43200) && ($min_diff < 86400)){
+
+			$nonreturncust_arr_30[$ind30]['id'] = $customer->id;
+			$nonreturncust_arr_30[$ind30]['name'] = $customer->customername;
+			$nonreturncust_arr_30[$ind30]['email'] = $customer->email;
+			$nonreturncust_arr_30[$ind30]['phone'] = $customer->contact_number;
+			$nonreturncust_arr_30[$ind30]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr_30[$ind30]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
+			
+			$ind30++;
+
+			}
+			
+			// 60 days or more inactive
+			if(($min_diff >= 86400) && ($min_diff < 129600)){
+
+			$nonreturncust_arr_60[$ind60]['id'] = $customer->id;
+			$nonreturncust_arr_60[$ind60]['name'] = $customer->customername;
+			$nonreturncust_arr_60[$ind60]['email'] = $customer->email;
+			$nonreturncust_arr_60[$ind60]['phone'] = $customer->contact_number;
+			$nonreturncust_arr_60[$ind60]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr_60[$ind60]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
+			
+			$ind60++;
+
+			}
+			
+			// 90 days or more inactive
+			if($min_diff >= 129600){
+
+			$nonreturncust_arr_90[$ind90]['id'] = $customer->id;
+			$nonreturncust_arr_90[$ind90]['name'] = $customer->customername;
+			$nonreturncust_arr_90[$ind90]['email'] = $customer->email;
+			$nonreturncust_arr_90[$ind90]['phone'] = $customer->contact_number;
+			$nonreturncust_arr_90[$ind90]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr_90[$ind90]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
+			
+			$ind90++;
+
+			}
+		     }
+            
                 }
 
 			}
@@ -5184,7 +5235,9 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
        $json = array(
 			'result'=> $result,
 			'response'=> $response,
-			'allcustomers' => $nonreturncust_arr
+			'nonreturncusts_30' => $nonreturncust_arr_30,
+			'nonreturncusts_60' => $nonreturncust_arr_60,
+			'nonreturncusts_90' => $nonreturncust_arr_90
 		);
 
 		echo json_encode($json);

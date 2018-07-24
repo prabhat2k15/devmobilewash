@@ -20,7 +20,7 @@ $jsondata_permission = json_decode($result_permission);
 var table;
         $(document).ready(function(){
 
-           table = $('#example1').dataTable( {
+           table = $('#example1, #example2, #example3').dataTable( {
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
 } );
@@ -171,18 +171,27 @@ cursor: pointer !important;
                         <div class="col-md-12">
                             <!-- BEGIN EXAMPLE TABLE PORTLET-->
                             <div class="portlet light bordered">
-                                <div class="portlet-title">
-
-                                    <div class="caption font-dark">
-                                        <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> Non-Returning Customers</span>
-                                    </div>
-                                    <div class="actions">
-                                         <i class="icon-calendar"></i>&nbsp;
-                                         <span id="servertime" style="font-weight: 300 !important;"></span>&nbsp;
-                                    </div>
-                                </div>
+                                
+                                <div class="portlet-title tabbable-line">
+                                                <div class="caption caption-md">
+                                                    <i class="icon-globe theme-font hide"></i>
+                                                    <span class="caption-subject bold uppercase"> Non-Returning Customers</span>
+                                                </div>
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active">
+                                                        <a href="#tab_1_1" data-toggle="tab">30 Days</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#tab_1_2" data-toggle="tab">60 Days</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#tab_1_3" data-toggle="tab">90 Days</a>
+                                                    </li>
+                                                </ul>
+                                  </div>
                                 <div class="portlet-body">
+                                 <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_1_1">
 
 									<table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                     <!--table class="table table-striped table-bordered table-hover table-checkable order-column"-->
@@ -201,9 +210,9 @@ cursor: pointer !important;
                                         <tbody>
                                         <?php
                                      
-                                        if(count($allcustomers->allcustomers)){
+                                        if(count($allcustomers->nonreturncusts_30)){
 
-                                            foreach($allcustomers->allcustomers as $customer){
+                                            foreach($allcustomers->nonreturncusts_30 as $customer){
 
                                         ?>
                                             <tr class="odd gradeX">
@@ -229,7 +238,104 @@ else echo $customer->total_wash;?> </td>
                                         ?>
                                         </tbody>
                                     </table>
+                                 </div>
+                                    <div class="tab-pane" id="tab_1_2">
+                                       									<table class="table table-striped table-bordered table-hover table-checkable order-column" id="example2">
+                                    <!--table class="table table-striped table-bordered table-hover table-checkable order-column"-->
+                                        <thead>
+                                            <tr>
+
+<th> ID </th>
+   <th> Customer Name </th>
+<th> Email </th>
+<th> Phone </th>
+<th> Washes </th>
+<th> Last Order </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                     
+                                        if(count($allcustomers->nonreturncusts_60)){
+
+                                            foreach($allcustomers->nonreturncusts_60 as $customer){
+
+                                        ?>
+                                            <tr class="odd gradeX">
+ <td> <?php echo $customer->id; ?> </td>
+ <td> <?php echo $customer->name; ?> </td>
+<td> <?php echo $customer->email; ?> </td>
+<td> <?php echo $customer->phone; ?> </td>
+ <td> <?php
+if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
+else echo $customer->total_wash;?> </td>
+
+ <td> <?php echo $customer->last_order; ?> </td>
+
+
+                                            </tr>
+
+                                        <?php
+
+                                            }
+                                            }
+
+
+                                        ?>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                      <div class="tab-pane" id="tab_1_3">
+                                       									<table class="table table-striped table-bordered table-hover table-checkable order-column" id="example3">
+                                    <!--table class="table table-striped table-bordered table-hover table-checkable order-column"-->
+                                        <thead>
+                                            <tr>
+
+<th> ID </th>
+   <th> Customer Name </th>
+<th> Email </th>
+<th> Phone </th>
+<th> Washes </th>
+<th> Last Order </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php
+                                     
+                                        if(count($allcustomers->nonreturncusts_90)){
+
+                                            foreach($allcustomers->nonreturncusts_90 as $customer){
+
+                                        ?>
+                                            <tr class="odd gradeX">
+ <td> <?php echo $customer->id; ?> </td>
+ <td> <?php echo $customer->name; ?> </td>
+<td> <?php echo $customer->email; ?> </td>
+<td> <?php echo $customer->phone; ?> </td>
+ <td> <?php
+if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
+else echo $customer->total_wash;?> </td>
+
+ <td> <?php echo $customer->last_order; ?> </td>
+
+
+                                            </tr>
+
+                                        <?php
+
+                                            }
+                                            }
+
+
+                                        ?>
+                                        </tbody>
+                                    </table>
+                                    </div>
                                 </div>
+                                 
+                                </div><!-- body end-->
                             </div>
                             <!-- END EXAMPLE TABLE PORTLET-->
                             <div class="clear"></div>
