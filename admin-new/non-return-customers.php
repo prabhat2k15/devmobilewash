@@ -175,7 +175,7 @@ cursor: pointer !important;
                                 <div class="portlet-title tabbable-line">
                                                 <div class="caption caption-md">
                                                     <i class="icon-globe theme-font hide"></i>
-                                                    <span class="caption-subject bold uppercase"> Non-Returning Customers</span>
+                                                    <span class="caption-subject bold uppercase" style="color: #000"> Non-Returning Customers</span> <a style="margin-left: 20px;" target="_blank" href="#">Download CSV</a>
                                                 </div>
                                                 <ul class="nav nav-tabs">
                                                     <li class="active">
