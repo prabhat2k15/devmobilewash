@@ -175,7 +175,7 @@ cursor: pointer !important;
                                 <div class="portlet-title tabbable-line">
                                                 <div class="caption caption-md">
                                                     <i class="icon-globe theme-font hide"></i>
-                                                    <span class="caption-subject bold uppercase" style="color: #000"> Non-Returning Customers</span> <a style="margin-left: 20px;" target="_blank" href="#">Download CSV</a>
+                                                    <span class="caption-subject bold uppercase" style="color: #000"> Non-Returning Customers</span> <a style="margin-left: 20px;" target="_blank" class="csv-link" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/nonreturncustscsvexport&range=30&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4">Download CSV</a>
                                                 </div>
                                                 <ul class="nav nav-tabs">
                                                     <li class="active">
@@ -350,6 +350,22 @@ else echo $customer->total_wash;?> </td>
             </div>
             <!-- END CONTENT -->
             <?php include('footer.php') ?>
+            <script>
+               $(function(){
+                  $(".nav-tabs a").click(function(){
+                     
+                     if ($(this).text() == '30 Days') {
+                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/nonreturncustscsvexport&range=30&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
+                     }
+                     if ($(this).text() == '60 Days') {
+                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/nonreturncustscsvexport&range=60&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
+                     }
+                     if ($(this).text() == '90 Days') {
+                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/nonreturncustscsvexport&range=90&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
+                     }
+                  });
+                  });
+            </script>
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->

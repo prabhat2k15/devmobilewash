@@ -7027,6 +7027,87 @@ die();
    );
 }
 
+      public function actionnonreturncustscsvexport(){
+        if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+ $nonreturncust_arr = [];
+
+	 $index = 0;
+	 
+$range = Yii::app()->request->getParam('range');
+
+$all_customers = Customers::model()->findAllByAttributes(array('is_non_returning' => 1),array('order'=>'id ASC'));
+
+if(count($all_customers)){
+
+                foreach($all_customers as $customer){
+                     $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer->id, 'status' => 4),array('order'=>'id DESC'));
+		     if(count($last_wash)){
+			$current_time = strtotime(date('Y-m-d H:i:s'));
+
+			$create_time = strtotime($last_wash->order_for);
+			$min_diff = 0;
+			if($current_time > $create_time){
+				$min_diff = round(($current_time - $create_time) / 60,2);
+			}
+
+			
+			if(($range == 30) && ($min_diff >= 43200) && ($min_diff < 86400)){
+
+			$nonreturncust_arr[$index]['id'] = $customer->id;
+			$nonreturncust_arr[$index]['customername'] = $customer->customername;
+			$nonreturncust_arr[$index]['email'] = $customer->email;
+			$nonreturncust_arr[$index]['phone'] = $customer->contact_number;
+			$nonreturncust_arr[$index]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr[$index]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
+			
+			$index++;
+
+			}
+			
+			if(($range == 60) && ($min_diff >= 86400) && ($min_diff < 129600)){
+
+			$nonreturncust_arr[$index]['id'] = $customer->id;
+			$nonreturncust_arr[$index]['customername'] = $customer->customername;
+			$nonreturncust_arr[$index]['email'] = $customer->email;
+			$nonreturncust_arr[$index]['phone'] = $customer->contact_number;
+			$nonreturncust_arr[$index]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr[$index]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
+			
+			$index++;
+
+			}
+			
+			if(($range == 90) && ($min_diff >= 129600)){
+
+			$nonreturncust_arr[$index]['id'] = $customer->id;
+			$nonreturncust_arr[$index]['customername'] = $customer->customername;
+			$nonreturncust_arr[$index]['email'] = $customer->email;
+			$nonreturncust_arr[$index]['phone'] = $customer->contact_number;
+			$nonreturncust_arr[$index]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr[$index]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
+			
+			$index++;
+
+			}
+		}
+		}
+}
+
+  CsvExport::export(
+    $nonreturncust_arr, // a CActiveRecord array OR any CModel array
+    array('id'=>array('raw'),'customername'=>array('text'), 'email'=>array('text'), 'phone'=>array('text'), 'total_wash'=>array('text'), 'last_order'=>array('text')),
+    true, // boolPrintRows
+    'inactivecustomers-'.$range.'days--'.date('Y-m-d-H-i-s').".csv",
+    ","
+   );
+  
+
+}
+
 
 public function actiondistancecheck(){
 	$origin_lat = Yii::app()->request->getParam('origin_lat');
