@@ -277,6 +277,11 @@
                                         <span class="title">Non Returning Customers</span>
                                     </a>
                                 </li>
+				<li class="nav-item  <?php if($url == 'inactive-customers.php' || $newurl_page[0] == 'inactive-customers.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="inactive-customers.php" class="nav-link ">
+                                        <span class="title">Inactive Customers</span>
+                                    </a>
+                                </li>
                                 <li class="nav-item  <?php if($url == 'feedbacks.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="feedbacks.php" class="nav-link ">
                                         <span class="title">Feedbacks</span>

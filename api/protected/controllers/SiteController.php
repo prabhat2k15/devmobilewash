@@ -3311,8 +3311,8 @@ $agent_query = '';
  $total_days_diff = 0;
  $completed_orders = 0;
 
-if($customer_id > 0) $cust_query = "w.customer_id=:customer_id AND ";
-if($agent_id > 0) $agent_query = "w.agent_id=:agent_id AND ";
+if($customer_id > 0) $cust_query = "w.customer_id=".$customer_id." AND ";
+if($agent_id > 0) $agent_query = "w.agent_id=".$agent_id." AND ";
 
 if($customer_id > 0){
     $cust_check = Customers::model()->findByPk($customer_id);
@@ -3323,12 +3323,12 @@ if($customer_id > 0){
 
   if($filter == 'testorders'){
 
-    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
-else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
+    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->queryAll();
+else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
   }
   else{
-    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
-else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
+    if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->queryAll();
+else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
   }
 
    //print_r($qrRequests);
@@ -5246,6 +5246,97 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 }
 
 
+	    public function actiongetinactivecustomers() {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$response = "nothing found";
+		$result = "false";
+	 $inactivecust_arr_5 = [];
+	 $inactivecust_arr_10 = [];
+	 $inactivecust_arr_15 = [];
+	 $ind5 = 0;
+	 $ind10 = 0;
+	 $ind15 = 0;
+$all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0, 'is_first_wash' => 0),array('order'=>'id ASC'));
+
+			if(count($all_customers)){
+
+				$response = "inactive customers";
+				$result = "true";
+                foreach($all_customers as $ind=>$customer){
+                     
+			$current_time = strtotime(date('Y-m-d H:i:s'));
+
+			$create_time = strtotime($customer->updated_date);
+			$min_diff = 0;
+			if($current_time > $create_time){
+				$min_diff = round(($current_time - $create_time) / 60,2);
+			}
+
+			// 5 days or more inactive
+			if(($min_diff >= 7200) && ($min_diff < 14400)){
+
+			$nonreturncust_arr_5[$ind5]['id'] = $customer->id;
+			$nonreturncust_arr_5[$ind5]['name'] = $customer->customername;
+			$nonreturncust_arr_5[$ind5]['email'] = $customer->email;
+			$nonreturncust_arr_5[$ind5]['phone'] = $customer->contact_number;
+			$nonreturncust_arr_5[$ind5]['total_wash'] = $customer->total_wash;
+			
+			$ind5++;
+
+			}
+			
+			// 10 days or more inactive
+			if(($min_diff >= 14400) && ($min_diff < 21600)){
+
+			$nonreturncust_arr_10[$ind10]['id'] = $customer->id;
+			$nonreturncust_arr_10[$ind10]['name'] = $customer->customername;
+			$nonreturncust_arr_10[$ind10]['email'] = $customer->email;
+			$nonreturncust_arr_10[$ind10]['phone'] = $customer->contact_number;
+			$nonreturncust_arr_10[$ind10]['total_wash'] = $customer->total_wash;
+			
+			$ind10++;
+
+			}
+			
+			// 15 days or more inactive
+			if($min_diff >= 21600){
+
+			$nonreturncust_arr_15[$ind15]['id'] = $customer->id;
+			$nonreturncust_arr_15[$ind15]['name'] = $customer->customername;
+			$nonreturncust_arr_15[$ind15]['email'] = $customer->email;
+			$nonreturncust_arr_15[$ind15]['phone'] = $customer->contact_number;
+			$nonreturncust_arr_15[$ind15]['total_wash'] = $customer->total_wash;
+			
+			$ind15++;
+
+			}
+		    
+            
+                }
+
+			}
+
+
+
+       $json = array(
+			'result'=> $result,
+			'response'=> $response,
+			'nonreturncusts_5' => $nonreturncust_arr_5,
+			'nonreturncusts_10' => $nonreturncust_arr_10,
+			'nonreturncusts_15' => $nonreturncust_arr_15
+		);
+
+		echo json_encode($json);
+		die();
+
+}
+
+
 public function actionwashfraudcheck() {
 
 if(Yii::app()->request->getParam('key') != API_KEY_CRON){
@@ -7100,6 +7191,85 @@ if(count($all_customers)){
   CsvExport::export(
     $nonreturncust_arr, // a CActiveRecord array OR any CModel array
     array('id'=>array('raw'),'customername'=>array('text'), 'email'=>array('text'), 'phone'=>array('text'), 'total_wash'=>array('text'), 'last_order'=>array('text')),
+    true, // boolPrintRows
+    'nonreturncustomers-'.$range.'days--'.date('Y-m-d-H-i-s').".csv",
+    ","
+   );
+  
+
+}
+
+
+      public function actioninactivecustscsvexport(){
+        if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+ $inactivecust_arr = [];
+
+	 $index = 0;
+	 
+$range = Yii::app()->request->getParam('range');
+
+$all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0, 'is_first_wash' => 0),array('order'=>'id ASC'));
+
+if(count($all_customers)){
+
+              foreach($all_customers as $ind=>$customer){
+                     
+			$current_time = strtotime(date('Y-m-d H:i:s'));
+
+			$create_time = strtotime($customer->updated_date);
+			$min_diff = 0;
+			if($current_time > $create_time){
+				$min_diff = round(($current_time - $create_time) / 60,2);
+			}
+
+			// 5 days or more inactive
+			if(($range == 5) && ($min_diff >= 7200) && ($min_diff < 14400)){
+
+			$inactivecust_arr[$index]['id'] = $customer->id;
+			$inactivecust_arr[$index]['customername'] = $customer->customername;
+			$inactivecust_arr[$index]['email'] = $customer->email;
+			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
+			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
+			
+			$index++;
+
+			}
+			
+			// 10 days or more inactive
+			if(($range == 10) && ($min_diff >= 14400) && ($min_diff < 21600)){
+
+			$inactivecust_arr[$index]['id'] = $customer->id;
+			$inactivecust_arr[$index]['customername'] = $customer->customername;
+			$inactivecust_arr[$index]['email'] = $customer->email;
+			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
+			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
+			
+			$index++;
+
+			}
+			
+			// 15 days or more inactive
+			if(($range == 15) && ($min_diff >= 21600)){
+
+			$inactivecust_arr[$index]['id'] = $customer->id;
+			$inactivecust_arr[$index]['customername'] = $customer->customername;
+			$inactivecust_arr[$index]['email'] = $customer->email;
+			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
+			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
+			
+			$index++;
+
+			}
+		}
+		}
+
+  CsvExport::export(
+    $inactivecust_arr, // a CActiveRecord array OR any CModel array
+    array('id'=>array('raw'),'customername'=>array('text'), 'email'=>array('text'), 'phone'=>array('text')),
     true, // boolPrintRows
     'inactivecustomers-'.$range.'days--'.date('Y-m-d-H-i-s').".csv",
     ","
