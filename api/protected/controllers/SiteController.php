@@ -3239,6 +3239,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 		if(!empty(Yii::app()->request->getParam('day')) && !empty(Yii::app()->request->getParam('event'))){
 			$day = Yii::app()->request->getParam('day');
 			$event = Yii::app()->request->getParam('event');
+			
 			$status_qr = '';
 			if($event == 'pending'){
 				$status = 0;
@@ -3276,6 +3277,9 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 			}
 			elseif($event == 'ondemandcanceled'){
 				$status_qr=" AND w.is_scheduled = 0 AND (w.status=5 || w.status=6)";
+			}
+			elseif($event == 'newcustomer'){
+				$status_qr=" AND c.total_wash = 0 AND (w.status!=5 && w.status!=6)";
 			}
 			else {
 				$status_qr = '';
@@ -5271,7 +5275,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
                      
 			$current_time = strtotime(date('Y-m-d H:i:s'));
 
-			$create_time = strtotime($customer->updated_date);
+			$create_time = strtotime($customer->created_date);
 			$min_diff = 0;
 			if($current_time > $create_time){
 				$min_diff = round(($current_time - $create_time) / 60,2);
@@ -7220,7 +7224,7 @@ if(count($all_customers)){
                      
 			$current_time = strtotime(date('Y-m-d H:i:s'));
 
-			$create_time = strtotime($customer->updated_date);
+			$create_time = strtotime($customer->created_date);
 			$min_diff = 0;
 			if($current_time > $create_time){
 				$min_diff = round(($current_time - $create_time) / 60,2);

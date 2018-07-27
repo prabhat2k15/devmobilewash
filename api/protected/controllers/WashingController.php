@@ -8812,7 +8812,7 @@ die();
                     }
                 }*/
                 
-                if($value['total_wash'] == 1){
+                if(($value['total_wash'] == 0) && ($value['title'] != 'Canceled')){
                     $data[$value['start']]['new_customer'][] = 1;
                 }
                 

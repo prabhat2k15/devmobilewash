@@ -290,6 +290,60 @@ $response = 'No vehicle makes found';
 		echo json_encode($json);
 		die();
 	}
+	
+	    public function actiongetallmodernvehicles(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+
+        $result= 'false';
+		$response= 'none';
+
+        $all_vehicles = Yii::app()->db->createCommand()->select('*')->from('all_vehicles')->order('id ASC')->queryAll();
+
+        if(count($all_vehicles)>0){
+           $result= 'true';
+		    $response= 'all vehicles';
+        }
+
+        	$json= array(
+			'result'=> $result,
+			'response'=> $response,
+            'all_vehicles'=> $all_vehicles
+		);
+		echo json_encode($json);
+
+    }
+    
+    	    public function actiongetallclassicvehicles(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+
+        $result= 'false';
+		$response= 'none';
+
+        $all_vehicles = Yii::app()->db->createCommand()->select('*')->from('all_classic_vehicles')->order('id ASC')->queryAll();
+
+        if(count($all_vehicles)>0){
+           $result= 'true';
+		    $response= 'all vehicles';
+        }
+
+        	$json= array(
+			'result'=> $result,
+			'response'=> $response,
+            'all_vehicles'=> $all_vehicles
+		);
+		echo json_encode($json);
+
+    }
 
 
 public function actionAddVehicle()

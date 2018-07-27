@@ -189,7 +189,7 @@ $(document).ready(function() {
 									titledec = value.new_customer.count+' New Customer';
 									colordec = value.new_customer.color;
 									events.push({
-										eventtitle: 'New Customer',
+										eventtitle: 'newcustomer',
 										title:titledec,
 										description:'a',
 										start:index,
