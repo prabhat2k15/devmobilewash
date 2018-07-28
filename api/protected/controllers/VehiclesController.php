@@ -581,6 +581,101 @@ if(count($veh_detail) > 0){
 	}
 	
 	
+	public function actiongetvehiclebyid()
+	{
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$id = Yii::app()->request->getParam('id');
+$build = Yii::app()->request->getParam('build');
+
+			$result= 'false';
+			$response= 'pass required parameters';
+			
+						
+		if($build == 'regular'){
+		$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
+		}
+						
+		if($build == 'classic'){
+		$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_classic_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
+		}
+						
+
+if(count($veh_detail) > 0){
+    $result= 'true';
+	$response= 'vehicle detail';
+	
+}
+else{
+$result= 'false';
+$response= 'invalid vehicle';	
+}
+
+						
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+			'vehicle' => $veh_detail
+		);
+		echo json_encode($json);
+	}
+	
+	
+			public function actionupdatevehiclebyid()
+	{
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$id = Yii::app()->request->getParam('id');
+$make = Yii::app()->request->getParam('make');
+$model = Yii::app()->request->getParam('model');
+$type = Yii::app()->request->getParam('type');
+$cat = Yii::app()->request->getParam('cat');
+$build = Yii::app()->request->getParam('build');
+
+			$result= 'false';
+			$response= 'pass required parameters';
+			
+						
+						if($build == 'regular'){
+		$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
+		}
+						
+		if($build == 'classic'){
+		$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_classic_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
+		}
+
+if(count($veh_detail) > 0){
+    $result= 'true';
+			$response= 'update successful';
+	
+	$data = array('make'=>$make, 'model'=>$model, 'type'=>$type, 'category'=>$cat);
+	if($build == 'regular') $resUpdate = Yii::app()->db->createCommand()->update('all_vehicles',$data,"id='".$veh_detail[0]['id']."'");		
+	if($build == 'classic') $resUpdate = Yii::app()->db->createCommand()->update('all_classic_vehicles',$data,"id='".$veh_detail[0]['id']."'");		
+
+ 
+}
+else{
+$result= 'false';
+$response= 'invalid vehicle';	
+}
+
+						
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+		);
+		echo json_encode($json);
+	}
+	
+	
 	
 			public function actionupdatecustomervehsourceid()
 	{

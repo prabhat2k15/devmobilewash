@@ -107,9 +107,19 @@
                                         <span class="title">Zipcode Pricing</span>
                                     </a>
                                 </li>
-								<li class="nav-item <?php if($url == 'add-vehicle.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
+				<li class="nav-item <?php if($url == 'add-vehicle.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
                                     <a href="add-vehicle.php" class="nav-link ">
                                         <span class="title">Add New Vehicle</span>
+                                    </a>
+                                </li>
+				<li class="nav-item <?php if($url == 'modern-vehicles.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
+                                    <a href="modern-vehicles.php" class="nav-link ">
+                                        <span class="title">Modern Vehicles</span>
+                                    </a>
+                                </li>
+				<li class="nav-item <?php if($url == 'classic-vehicles.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
+                                    <a href="classic-vehicles.php" class="nav-link ">
+                                        <span class="title">Classic Vehicles</span>
                                     </a>
                                 </li>
                                 <li class="nav-item <?php if($url == 'manage-promotions.php' || $newurl_page[0] == 'manage-promotions.php' || $newurl[1] == 'add-coupon.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_promotions_display; ?>">
