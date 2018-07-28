@@ -3279,7 +3279,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 				$status_qr=" AND w.is_scheduled = 0 AND (w.status=5 || w.status=6)";
 			}
 			elseif($event == 'newcustomer'){
-				$status_qr=" AND c.total_wash = 0 AND (w.status!=5 && w.status!=6)";
+				$status_qr=" AND c.total_wash = 0";
 			}
 			else {
 				$status_qr = '';
