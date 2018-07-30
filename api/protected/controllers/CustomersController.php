@@ -6544,6 +6544,7 @@ if(!empty($custlocation->location_address)){
 $json['user_type'] =  $customername->login_type;
 			$json['email'] =  $customername->email;
 $json['phone'] = $customername->contact_number;
+$json['rating'] = $customername->rating;
 $json['device_type'] = $customername->mobile_type;
 $json['phone_verify_code'] = $customername->phone_verify_code;
 $json['wash_points'] =  $customername->fifth_wash_points;

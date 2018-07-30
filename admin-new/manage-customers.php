@@ -226,6 +226,7 @@ cursor: pointer !important;
 <th> User Type </th>
    <th> Customer Name </th>
 <th> Email </th>
+<th> Rating </th>
 <th> Orders </th>
 <th> Points </th>
 <th> Phone </th>
@@ -279,6 +280,7 @@ $address = 'N/A';
 <td> <?php echo $responseagents->user_type; ?> </td>
  <td> <?php echo $responseagents->name; ?> </td>
 <td> <?php echo $responseagents->email; ?> </td>
+<td> <?php echo $responseagents->rating; ?> </td>
  <td> <?php 
 if($responseagents->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$responseagents->id."'>".$responseagents->total_wash."</a>";
 else echo $responseagents->total_wash; 
