@@ -676,6 +676,56 @@ $response= 'invalid vehicle';
 	}
 	
 	
+	public function actiondeletevehicle(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+         $result= 'false';
+		$response= 'Please provide vehicle id';
+
+		$id = Yii::app()->request->getParam('id');
+$build = Yii::app()->request->getParam('build');
+
+
+		if((isset($id) && !empty($id)))
+		{
+
+	    	if($build == 'regular'){
+			$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
+		}
+						
+		if($build == 'classic'){
+			$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_classic_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
+		}
+		
+		if(!count($veh_detail)){
+			$response = "Invalid vehicle id";
+		}
+
+
+           else{
+				$response = "vehicle deleted";
+                $result = 'true';
+if($build == 'regular') Yii::app()->db->createCommand("DELETE FROM all_vehicles WHERE id = ".$id)->execute();
+if($build == 'classic') Yii::app()->db->createCommand("DELETE FROM all_classic_vehicles WHERE id = ".$id)->execute();
+                  
+		}
+
+		}
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+
+		echo json_encode($json);
+
+    }
+	
+	
 	
 			public function actionupdatecustomervehsourceid()
 	{

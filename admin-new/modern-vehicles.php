@@ -130,11 +130,11 @@ $(document).on( 'click', '.delete-car', function(){
 var th = $(this);
 id = $(this).data('id');
 carname = $(this).data('carname');
-//console.log(zip);
+
 var r = confirm('Are you sure you want to delete '+carname+'?');
-/*if (r == true) {
+if (r == true) {
 $(th).html('Deleting...');
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/deletevehicle", {id: id, build: 'modern', key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/deletevehicle", {id: id, build: 'regular', key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
 if(data.result == 'true'){
 window.location.href="<?php echo ROOT_URL; ?>/admin-new/modern-vehicles.php?action=delete-success&nid="+id;
 }
@@ -144,7 +144,7 @@ window.location.href="<?php echo ROOT_URL; ?>/admin-new/modern-vehicles.php?acti
 
 });
    
-} */
+}
 return false;
 });
 });

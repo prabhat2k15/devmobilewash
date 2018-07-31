@@ -6633,6 +6633,7 @@ if(!empty($custlocation->location_address)){
             $json['name'] =  $customername['customername'];
 $json['user_type'] =  $customername['login_type'];
 			$json['email'] =  $customername['email'];
+			$json['rating'] =  $customername['rating'];
 $json['phone'] = $customername['contact_number'];
 $json['device_type'] = $customername['mobile_type'];
 $json['phone_verify_code'] = $customername['phone_verify_code'];

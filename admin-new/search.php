@@ -160,6 +160,7 @@ if(($_GET['search_area'] == 'Washer Name') || ($_GET['search_area'] == 'Washer P
 <th> User Type </th>
    <th> Customer Name </th>
 <th> Email </th>
+<th> Rating </th>
 <th> Orders </th>
 <th> Points </th>
 <th> Phone </th>
@@ -188,6 +189,7 @@ $address = 'N/A';
 <td> <?php echo $customer->user_type; ?> </td>
  <td> <a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $customer->id; ?>"><?php echo $customer->name; ?></a> </td>
 <td> <?php echo $customer->email; ?> </td>
+<td> <?php echo $customer->rating; ?> </td>
  <td> <?php 
 if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
 else echo $customer->total_wash; 
