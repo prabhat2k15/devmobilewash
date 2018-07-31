@@ -5289,6 +5289,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			$nonreturncust_arr_5[$ind5]['email'] = $customer->email;
 			$nonreturncust_arr_5[$ind5]['phone'] = $customer->contact_number;
 			$nonreturncust_arr_5[$ind5]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr_5[$ind5]['updated_date'] = date('Y-m-d h:i A', strtotime($customer->updated_date));
 			
 			$ind5++;
 
@@ -5302,6 +5303,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			$nonreturncust_arr_10[$ind10]['email'] = $customer->email;
 			$nonreturncust_arr_10[$ind10]['phone'] = $customer->contact_number;
 			$nonreturncust_arr_10[$ind10]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr_10[$ind10]['updated_date'] = date('Y-m-d h:i A', strtotime($customer->updated_date));
 			
 			$ind10++;
 
@@ -5315,6 +5317,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			$nonreturncust_arr_15[$ind15]['email'] = $customer->email;
 			$nonreturncust_arr_15[$ind15]['phone'] = $customer->contact_number;
 			$nonreturncust_arr_15[$ind15]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr_15[$ind15]['updated_date'] = date('Y-m-d h:i A', strtotime($customer->updated_date));
 			
 			$ind15++;
 
@@ -7238,6 +7241,7 @@ if(count($all_customers)){
 			$inactivecust_arr[$index]['email'] = $customer->email;
 			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
 			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
+			$inactivecust_arr[$index]['last_activity'] = date('Y-m-d h:s A', strtotime($customer->updated_date));
 			
 			$index++;
 
@@ -7251,6 +7255,7 @@ if(count($all_customers)){
 			$inactivecust_arr[$index]['email'] = $customer->email;
 			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
 			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
+			$inactivecust_arr[$index]['last_activity'] = date('Y-m-d h:s A', strtotime($customer->updated_date));
 			
 			$index++;
 
@@ -7264,6 +7269,7 @@ if(count($all_customers)){
 			$inactivecust_arr[$index]['email'] = $customer->email;
 			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
 			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
+			$inactivecust_arr[$index]['last_activity'] = date('Y-m-d h:s A', strtotime($customer->updated_date));
 			
 			$index++;
 
@@ -7273,7 +7279,7 @@ if(count($all_customers)){
 
   CsvExport::export(
     $inactivecust_arr, // a CActiveRecord array OR any CModel array
-    array('id'=>array('raw'),'customername'=>array('text'), 'email'=>array('text'), 'phone'=>array('text')),
+    array('id'=>array('raw'),'customername'=>array('text'), 'email'=>array('text'), 'phone'=>array('text'), 'last_activity'=>array('text')),
     true, // boolPrintRows
     'inactivecustomers-'.$range.'days--'.date('Y-m-d-H-i-s').".csv",
     ","

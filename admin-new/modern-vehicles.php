@@ -70,6 +70,12 @@ $all_vehicles = $jsondata->all_vehicles;
                                          <i class="icon-calendar"></i>&nbsp;
                                          <span id="servertime" style="font-weight: 300 !important;"></span>&nbsp;
                                     </div>
+                                    <?php if($_GET['action'] == 'delete-success'): ?>
+<p style="text-align: left; clear: both; background: green; color: #fff; padding: 10px;"><span style="display: block; float: left;">Vehicle #<?php echo $_GET['nid']; ?> deleted successfully</span><a href="/admin-new/modern-vehicles.php" style="color: #fff; text-align: right; display: block; float: right;">X</a><span style="display: block; clear: both;"></span></p>
+<?php endif; ?>
+<?php if($_GET['action'] == 'delete-error'): ?>
+<p style="text-align: left; clear: both; background: #d40000; color: #fff; padding: 10px;"><span style="display: block; float: left;">Error in deleting vehicle. Please try again.</span><a href="/admin-new/modern-vehicles.php" style="color: #fff; text-align: right; display: block; float: right;">X</a><span style="display: block; clear: both;"></span></p>
+<?php endif; ?>
                                 </div>
                                 <div class="portlet-body">
                                  <?php if(count($all_vehicles) > 0){ ?>
@@ -89,7 +95,7 @@ $all_vehicles = $jsondata->all_vehicles;
 
                    <?php foreach($all_vehicles as $vehicle){ ?>
                 <tr class="odd gradeX">
-                    <td><a href="edit-vehicle.php?id=<?php echo $vehicle->id; ?>&build=regular">Edit</a></td>
+                    <td><a href="edit-vehicle.php?id=<?php echo $vehicle->id; ?>&build=regular" style="margin-right: 10px;">Edit</a> <a class='delete-car' href="#" data-id="<?php echo $vehicle->id; ?>" data-carname="<?php echo $vehicle->make." ".$vehicle->model; ?>">Delete</a></td>
                    
                     <td><?php echo $vehicle->id; ?></td>
                    <td><?php echo $vehicle->make; ?></td>
@@ -118,6 +124,31 @@ $all_vehicles = $jsondata->all_vehicles;
             }
             </style>
             <?php include('footer.php') ?>
+            <script>
+$(function(){
+$(document).on( 'click', '.delete-car', function(){
+var th = $(this);
+id = $(this).data('id');
+carname = $(this).data('carname');
+//console.log(zip);
+var r = confirm('Are you sure you want to delete '+carname+'?');
+/*if (r == true) {
+$(th).html('Deleting...');
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/deletevehicle", {id: id, build: 'modern', key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+if(data.result == 'true'){
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/modern-vehicles.php?action=delete-success&nid="+id;
+}
+if(data.result == 'false'){
+window.location.href="<?php echo ROOT_URL; ?>/admin-new/modern-vehicles.php?action=delete-error";
+}
+
+});
+   
+} */
+return false;
+});
+});
+</script>
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->

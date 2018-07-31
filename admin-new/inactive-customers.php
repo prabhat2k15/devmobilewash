@@ -202,6 +202,7 @@ cursor: pointer !important;
    <th> Customer Name </th>
 <th> Email </th>
 <th> Phone </th>
+<th> Last Activity </th>
 
 
                                             </tr>
@@ -219,6 +220,7 @@ cursor: pointer !important;
  <td> <?php echo $customer->name; ?> </td>
 <td> <?php echo $customer->email; ?> </td>
 <td> <?php echo $customer->phone; ?> </td>
+<td> <?php echo $customer->updated_date; ?> </td>
 
                                             </tr>
 
@@ -242,6 +244,7 @@ cursor: pointer !important;
    <th> Customer Name </th>
 <th> Email </th>
 <th> Phone </th>
+<th> Last Activity </th>
 
                                             </tr>
                                         </thead>
@@ -258,6 +261,7 @@ cursor: pointer !important;
  <td> <?php echo $customer->name; ?> </td>
 <td> <?php echo $customer->email; ?> </td>
 <td> <?php echo $customer->phone; ?> </td>
+<td> <?php echo $customer->updated_date; ?> </td>
                                             </tr>
 
                                         <?php
@@ -280,6 +284,7 @@ cursor: pointer !important;
    <th> Customer Name </th>
 <th> Email </th>
 <th> Phone </th>
+<th> Last Activity </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -295,6 +300,7 @@ cursor: pointer !important;
  <td> <?php echo $customer->name; ?> </td>
 <td> <?php echo $customer->email; ?> </td>
 <td> <?php echo $customer->phone; ?> </td>
+<td> <?php echo $customer->updated_date; ?> </td>
 
                                             </tr>
 
