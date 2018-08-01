@@ -4315,7 +4315,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
 
                
                 $agentmodel = new Agents;
-                //if($agent_rate < 3.5) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
+                if($agent_rate < 3) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1, "forced_logout" => 1), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
                 $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
 
                 /* ------------ calculate agent average feedback end ---------------- */
@@ -4601,7 +4601,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 
                
                 $agentmodel = new Agents;
-                //if($agent_rate < 3.5) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
+                if($agent_rate < 3) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1, 'forced_logout' => 1), 'id=:id', array(':id'=>$washrequest_id_check->agent_id));
                 if(!$simulate_rating) $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$agent_id));
 
                 /* ------------ calculate agent average feedback end ---------------- */
