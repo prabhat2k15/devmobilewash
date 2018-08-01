@@ -6291,7 +6291,7 @@ die();
 		       }
 		      
 
-			        $washeractionlogdata = array(
+			        /*$washeractionlogdata = array(
                         'agent_id'=> $agent_id,
                         'wash_request_id'=> $wash_request_id,
                         'agent_company_id'=> $agent_check->real_washer_id,
@@ -6299,7 +6299,7 @@ die();
                         'action'=> 'savejob',
                         'action_date'=> date('Y-m-d H:i:s'));
 
-                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);*/
                 }
 
             }

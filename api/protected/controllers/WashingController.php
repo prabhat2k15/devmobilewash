@@ -12502,7 +12502,38 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 
        }
        
+ 
+public function actionwash30secondrunning() {
+
+ if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$result = 'false';
+$response = 'Right now no washer';
+//$washer_id = 91;
+    $wash_id_check = Yii::app()->db->createCommand("SELECT order_temp_assigned FROM washing_requests WHERE status = 0 AND order_temp_assigned != 0 ORDER BY id DESC LIMIT 1")->queryAll();
+    
+    if(count($wash_id_check) > 0){
+    
+        $result = 'true';
+        $response = 'get washer 30 second request';
+        
+        $washer_id = $wash_id_check[0]['order_temp_assigned'];
+    }
+  
+  $json = array(
+            'result' => $result,
+            'washer_id'=> $washer_id,
+            'response'=> $response,
+        );
+
+        echo json_encode($json); 
+        die;
+}
        
+    
              public function actionwash30secondtimer() {
 
  if(Yii::app()->request->getParam('key') != API_KEY){

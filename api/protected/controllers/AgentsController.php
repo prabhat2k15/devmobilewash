@@ -3721,7 +3721,56 @@ die();
         }
     }
 
+public function actionWasherupdate(){
+		if(Yii::app()->request->getParam('key') != API_KEY){
+		echo "Invalid api key";
+		die();
+		}    	
 
+		$first_name = Yii::app()->request->getParam('first_name');
+        $last_name = Yii::app()->request->getParam('last_name');
+        $email = Yii::app()->request->getParam('email');
+        $phone_number = Yii::app()->request->getParam('phone_number');
+        $agent_id = Yii::app()->request->getParam('washer_id');
+
+        	if(AES256CBC_STATUS == 1){
+				$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+			}
+
+        $upadtearray = array();
+        if($first_name != ''){
+        	$upadtearray['first_name'] = $firstname;
+        }
+        if($last_name != ''){
+        	$upadtearray['last_name'] = $last_name;
+        }
+        if($email != ''){
+        	$upadtearray['email'] = $email;
+        }
+        if($phone_number != ''){
+        	$upadtearray['phone_number'] = $phone_number;
+        }
+        if(count($upadtearray) > 0){
+        	$update_agents = Agents::model()->updateAll($upadtearray,'id=:id',array(':id'=>$agent_id));
+        }
+        //if($update_agents){
+        	$result = 'true';
+            $response = $upadtearray;
+        /*}
+        else{
+        	$result = 'false';
+            $response = 'Some thing worng';
+                
+        }*/
+         $json = array(
+                'result'=> $result,
+                'response'=> $response
+            );
+
+         echo json_encode($json);
+         die();
+
+    }
 
 
 public function actionprewasherupdate(){

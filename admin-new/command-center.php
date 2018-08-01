@@ -587,7 +587,38 @@ socketId = socket.io.engine.id;
     }, 60000);
   
 });
-  
+$(window).load(function(){
+    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/wash30secondrunning", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+            $.each(markers, function(i, marker) {
+
+                if(marker.category == 'onlineagents'){
+                    //console.log(marker);
+                    //alert(data.washer_id);
+                    if(marker.id == data.washer_id) {
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                    }
+                }
+
+            });
+    });
+});
+setInterval(function(){
+    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/wash30secondrunning", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+            $.each(markers, function(i, marker) {
+
+                if(marker.category == 'onlineagents'){
+                    //console.log(marker);
+                    //alert(data.washer_id);
+                    if(marker.id == data.washer_id) {
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                    }else{
+                        marker.setAnimation(null);
+                    }
+                }
+
+            });
+    });
+}, 60000);
 </script>
 
 <script>
