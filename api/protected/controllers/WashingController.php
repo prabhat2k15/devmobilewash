@@ -12611,6 +12611,63 @@ if(count($pendingwashes)){
 }
 
        }
-       
+ 
+     public function actionarrivednotification(){
+       	
+		if(Yii::app()->request->getParam('key') != API_KEY){
+			echo "Invalid api key";
+			die();
+		}       	
+
+		$result= 'false';
+	$response= 'Pass the required parameters';
+
+	$washer_request_id = Yii::app()->request->getParam('washer_request_id');
+	
+	if(!empty($washer_request_id) && isset($washer_request_id)){
+		
+		if((AES256CBC_STATUS == 1)){
+		$washer_request_id = $this->aes256cbc_crypt( $washer_request_id, 'd', AES256CBC_API_PASS );
+		}
+
+		$wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$washer_request_id));
+		
+    	$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+
+						/* --- notification call --- */
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '42' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+						
+						foreach( $clientdevices as $ctdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($ctdevice['device_type']);
+							$notify_token = $ctdevice['device_token'];
+								$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+				$result= 'true';
+				$response= 'notification sent';
+		}
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+		echo json_encode($json);
+
+}
+
 
 }
