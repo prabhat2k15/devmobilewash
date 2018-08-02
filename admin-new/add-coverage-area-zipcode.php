@@ -51,7 +51,7 @@ $client->addScope('http://www.googleapis.com/auth/fusiontables');
 if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
 //echo print_r($_SESSION['access_token']);
   $client->setAccessToken($_SESSION['access_token']);
-  $tableId = '1Ck5Bulp_3881RFZqDRNb5yl-HgHnwA-p9Vv2JB-k';
+  $tableId = '1ECb-guhoNwEE3leCYpBbdRcpXVhTHcbraYX9yt54';
         $ft = new Google_Service_Fusiontables($client);
 
  $result = $ft->query->sql("SELECT ROWID, ZIPCODE FROM $tableId");

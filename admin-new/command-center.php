@@ -1590,7 +1590,7 @@ strokeColor: "#076ee1",
         var script = document.createElement('script');
         var url = ['https://www.googleapis.com/fusiontables/v1/query?'];
         url.push('sql=');
-        var query = "SELECT * FROM " + "1Ck5Bulp_3881RFZqDRNb5yl-HgHnwA-p9Vv2JB-k WHERE MW_COVERAGE_AREA = 'true'";
+        var query = "SELECT * FROM " + "1ECb-guhoNwEE3leCYpBbdRcpXVhTHcbraYX9yt54 WHERE MW_COVERAGE_AREA = 'true'";
         var encodedQuery = encodeURIComponent(query);
         url.push(encodedQuery);
         url.push('&callback=drawMap');

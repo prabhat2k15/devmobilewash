@@ -14,7 +14,7 @@ if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
 $zip = $_GET['zipcode'];
 $row_ids = array();
   $client->setAccessToken($_SESSION['access_token']);
-$tableId = '1Ck5Bulp_3881RFZqDRNb5yl-HgHnwA-p9Vv2JB-k';
+$tableId = '1ECb-guhoNwEE3leCYpBbdRcpXVhTHcbraYX9yt54';
         $ft = new Google_Service_Fusiontables($client);
 
 	
