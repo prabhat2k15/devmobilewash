@@ -939,7 +939,7 @@ $mobile_receipt .= "Wash Now $".number_format($wash_now_fee, 2)."\r\n";
 
 if($wash_later_fee > 0){
 
-$mobile_receipt .= "Wash Later $".number_format($wash_later_fee, 2)."\r\n";
+$mobile_receipt .= "Surge Fee $".number_format($wash_later_fee, 2)."\r\n";
 }
 
 
@@ -1224,7 +1224,7 @@ $mobile_receipt .= "Wash Now $".number_format($wash_now_fee, 2)."\r\n";
 
 if($wash_later_fee > 0){
 
-$mobile_receipt .= "Wash Later $".number_format($wash_later_fee, 2)."\r\n";
+$mobile_receipt .= "Surge Fee $".number_format($wash_later_fee, 2)."\r\n";
 }
 
 if($wash_details->vip_coupon_code){
@@ -1941,7 +1941,7 @@ $mobile_receipt .= "Wash Now $".number_format($kartdata->wash_now_fee, 2)."\r\n"
 						
 			if($kartdata->wash_later_fee > 0){
 
-$mobile_receipt .= "Wash Later $".number_format($kartdata->wash_later_fee, 2)."\r\n";
+$mobile_receipt .= "Surge Fee $".number_format($kartdata->wash_later_fee, 2)."\r\n";
 						}
 
 
@@ -2459,7 +2459,7 @@ if($kartdata->wash_now_fee > 0){
 }
 
 if($kartdata->wash_later_fee > 0){
-	$mobile_receipt .= "Wash Later $".number_format($kartdata->wash_later_fee, 2)."\r\n";
+	$mobile_receipt .= "Surge Fee $".number_format($kartdata->wash_later_fee, 2)."\r\n";
 }
 
 
@@ -8128,7 +8128,7 @@ if($kartdata->wash_now_fee > 0){
 }
 
 if($kartdata->wash_later_fee > 0){
-	$mobile_receipt .= "Wash Later $".number_format($kartdata->wash_later_fee, 2)."\r\n";
+	$mobile_receipt .= "Surge Fee $".number_format($kartdata->wash_later_fee, 2)."\r\n";
 }
 
 
