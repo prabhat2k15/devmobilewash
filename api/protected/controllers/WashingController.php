@@ -7825,7 +7825,7 @@ if(!count($is_cust_has_order)){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
 
-  if($status == 5){
+  if($status == 5 && $wrequest_id_check->status != 5){
       if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
@@ -7866,7 +7866,7 @@ if($wrequest_id_check->coupon_code){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
 
-  if($status == 5){
+  if($status == 5 && $wrequest_id_check->status != 5){
       if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
@@ -7963,7 +7963,7 @@ if($wrequest_id_check->coupon_code){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
 
-  if($status == 5){
+  if($status == 5 && $wrequest_id_check->status != 5){
       if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
@@ -8950,7 +8950,7 @@ die();
                 }
                 if(count($val['pending'])>0){
                     $dt[$key]['pending']['count']= count($val['pending']);
-                    $dt[$key]['pending']['color']= '#f6a635';
+                    $dt[$key]['pending']['color']= '#f6d235';
                 }
                 if(count($val['complete'])>0){
                     $dt[$key]['complete']['count']= count($val['complete']);
@@ -8970,7 +8970,7 @@ die();
                 }
                 if(count($val['processing'])>0){
                     $dt[$key]['processing']['count']= count($val['processing']);
-                    $dt[$key]['processing']['color']= '#e67418';
+                    $dt[$key]['processing']['color']= '#f6c235';
                 }
                 if(count($val['Express'])>0){
                     $dt[$key]['Express']['count']= count($val['Express']);

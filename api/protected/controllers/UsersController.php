@@ -636,7 +636,7 @@ die();
 
     }
 
-/*public function actionsearchagentsclients() {
+public function actionsearchagentsclients() {
 
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
@@ -688,7 +688,7 @@ $json= array(
 'clients' => $clients_arr
 			);
 		echo json_encode($json);
-}*/
+}
 
  public function actionDeleteAdminUser(){
 

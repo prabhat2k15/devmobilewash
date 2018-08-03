@@ -2518,15 +2518,18 @@ $response = 'wash request updated';
 
 
 if($admin_command == 'save-note'){
+$date = date('Y-m-d H:i:s');
  $washeractionlogdata = array(
 
                         'wash_request_id'=> $wash_request_id,
 
                         'admin_username' => $admin_username,
                         'action'=> 'savenote',
-                        'action_date'=> date('Y-m-d H:i:s'));
+                        'action_date'=> $date);
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                    $notes = $notes." (".$admin_username." added at ".$date.")";
+                    Washingrequests::model()->updateByPk($wash_request_id, array("notes" => $notes));
 }
 
 	if($admin_command == 'save-status'){
