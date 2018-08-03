@@ -937,7 +937,7 @@ $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
 
                     $mobile_receipt .= "Washes: ".$customer_total_wash."\r\n";
 
-                    if((APP_ENV == '') || (APP_ENV == 'real')){
+                    if((APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
           
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -1250,7 +1250,7 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
 					$from = Vargas::Obj()->getAdminFromEmail();
 					Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
 
-                   if((APP_ENV == '') || (APP_ENV == 'real')){
+                   if((APP_ENV == 'real')){
 
                     $this->layout = "xmlLayout";
    
@@ -1929,8 +1929,8 @@ $mobile_receipt .= "Wash Later $".number_format($kartdata->wash_later_fee, 2)."\
                      $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
 
                     
-		    //if(($wash_now_reschedule == 1) && (APP_ENV == 'real')){
-		    if(($wash_now_reschedule == 1)){
+		    if(($wash_now_reschedule == 1) && (APP_ENV == 'real')){
+		    //if(($wash_now_reschedule == 1)){
                     $this->layout = "xmlLayout";
                     
 
@@ -3040,7 +3040,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                  $washrequestmodel->total_schedule_rejected = $washrequestmodel->total_schedule_rejected + 1;
                     $washrequestmodel->save(false);
 
-                    if((APP_ENV == '') || APP_ENV == 'real'){
+                    if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
                     
 
@@ -3143,7 +3143,7 @@ try {
 					$from = Vargas::Obj()->getAdminFromEmail();
 					//Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
 
-                    if((APP_ENV == '') || (APP_ENV == 'real')){
+                    if((APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
                     
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -3527,7 +3527,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-                     if(((APP_ENV == '') || (APP_ENV == 'real')) && ($cust_details->sms_control)){
+                     if(((APP_ENV == 'real')) && ($cust_details->sms_control)){
 		     $this->layout = "xmlLayout";
                 
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -3570,7 +3570,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-                    if(((APP_ENV == '') || (APP_ENV == 'real')) && ($cust_details->sms_control)){
+                    if(((APP_ENV == 'real')) && ($cust_details->sms_control)){
 		    $this->layout = "xmlLayout";
                    
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -3625,7 +3625,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                     $alert_type = "soft";
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("wash_complete_push_sent" => 1));
 		    
-		    if(((APP_ENV == '') || (APP_ENV == 'real')) && ($cust_details->sms_control)){
+		    if(((APP_ENV == 'real')) && ($cust_details->sms_control)){
 		    $this->layout = "xmlLayout";
           
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -7970,7 +7970,7 @@ if($wrequest_id_check->coupon_code){
 		
 $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
 $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_check->customer_id));
- if(((APP_ENV == '') || (APP_ENV == 'real')) && (!$agent_detail->block_washer) && ($agent_detail->sms_control)){
+ if(((APP_ENV == 'real')) && (!$agent_detail->block_washer) && ($agent_detail->sms_control)){
  $this->layout = "xmlLayout";
 
             //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -8025,8 +8025,8 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
 	    
            }
 	   
-	//if(($result == 'true') && ($wash_now_canceled == 1) && (APP_ENV == 'real')){
-	if(($result == 'true') && ($wash_now_canceled == 1)){
+	if(($result == 'true') && ($wash_now_canceled == 1) && (APP_ENV == 'real')){
+	//if(($result == 'true') && ($wash_now_canceled == 1)){
 		 $mobile_receipt = '';
 		 
 		  $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
@@ -10034,7 +10034,7 @@ Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt
 
 Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_sent' => 1));
 
-  if((APP_ENV == '') || (APP_ENV == 'real')){
+  if((APP_ENV == 'real')){
 
  $this->layout = "xmlLayout";
 
@@ -10360,7 +10360,7 @@ Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt
 
 Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_sent' => 1));
 
-if((APP_ENV == '') || (APP_ENV == 'real')){
+if((APP_ENV == 'real')){
 
 $this->layout = "xmlLayout";
 
@@ -12395,7 +12395,7 @@ $mins_since_last_use = round((time() - strtotime($agentdevices[0]['last_used']))
 			if($current_mile <= 10){
 				$agent_det =  Agents::model()->findByPk($agid);
 				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer) && ($agent_det->sms_control) && ($mins_since_last_use < 10080)){
-				  if((APP_ENV == '') || (APP_ENV == 'real')){
+				  if((APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
                    
                     //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
@@ -12669,5 +12669,61 @@ if(count($pendingwashes)){
 
 }
 
+    public function actioncompletnotification(){
+       	
+		if(Yii::app()->request->getParam('key') != API_KEY){
+			echo "Invalid api key";
+			die();
+		}       	
+
+		$result= 'false';
+	$response= 'Pass the required parameters';
+
+	$washer_request_id = Yii::app()->request->getParam('washer_request_id');
+	
+	if(!empty($washer_request_id) && isset($washer_request_id)){
+		
+		if((AES256CBC_STATUS == 1)){
+		$washer_request_id = $this->aes256cbc_crypt( $washer_request_id, 'd', AES256CBC_API_PASS );
+		}
+
+		$wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$washer_request_id));
+		
+    	$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+
+						/* --- notification call --- */
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '43' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+						
+						foreach( $clientdevices as $ctdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($ctdevice['device_type']);
+							$notify_token = $ctdevice['device_token'];
+								$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+				$result= 'true';
+				$response= 'notification sent';
+		}
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+		echo json_encode($json);
+
+}
 
 }

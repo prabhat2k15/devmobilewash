@@ -11,14 +11,30 @@
         <link href="assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
+<style type="text/css">
+.customer span, .customer input,.washer span, .washer input{
+    display: inline-block;
+    /*vertical-align: top;*/
+    padding: 0px !important;
+}
+.customer, .washer{
+    display: none;
+}
+</style>
 <?php include('right-sidebar.php') ?>
 <?php
 $response = '';
 $result_code = '';
 if(isset($_POST['notify-form-submit'])){
-    if($_POST['receiver_type'] == 'agents'){
+        
 $handle = curl_init(ROOT_URL."/api/index.php?r=users/adminnotify");
-		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+if($_POST['receiver_type'] == 'agents'){
+    $data['selecter'] = $_POST['selecter'];
+}
+elseif($_POST['receiver_type'] == 'clients'){
+    $data['selecter'] = $_POST['selecter'];
+}
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -27,11 +43,14 @@ curl_close($handle);
 $jsondata = json_decode($result);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
-}
 
-    if($_POST['receiver_type'] == 'clients'){
+
+    if($_POST['receiver_type'] == 'all-clients' || $_POST['receiver_type'] == 'clients'){
 $handle = curl_init(ROOT_URL."/api/index.php?r=site/adminaddschedulenotify");
-		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+elseif($_POST['receiver_type'] == 'clients'){
+    $data['receiver_ids'] = $_POST['selecter'];
+}
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -77,11 +96,17 @@ $result_code = $jsondata->result;
                                             <div class="form-group">
                                                 <label class="control-label col-md-3">Receiver Type</label>
                                                 <div class="col-md-3">
-                                                    <select class="form-control input-medium" name="receiver_type">
+                                                    <select class="form-control input-medium" name="receiver_type" id="receiver_type">
+                                                       <option value="all-agents">All Washers</option>
+                                                       <option value="All-clients">All Customers</option>
                                                        <option value="agents">Washers</option>
-            <option value="clients">Customers</option>
-            <!--<option value="all" selected="">All</option>-->
+                                                       <option value="clients">Customers</option>
+                                                       <!--<option value="all" selected="">All</option>-->
                                                     </select>
+                                                </div>
+                                                <div class="col-md-4 customer">
+                                                <span class="control-label">ID#:</span>
+                                                    <input type="text" class="form-control input-medium" name="selecter" >
                                                 </div>
                                             </div>
 
@@ -117,3 +142,15 @@ $result_code = $jsondata->result;
         <script src="assets/global/plugins/bootstrap-markdown/lib/markdown.js" type="text/javascript"></script>
         <script src="./assets/global/plugins/bootstrap-markdown/js/bootstrap-markdown.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
+<script type="text/javascript">
+$('#receiver_type').on('change', function(){
+    var val = $(this).val();
+    if(val == 'agents'){
+        $('.customer').show();
+    }else if(val == 'clients'){
+        $('.customer').show();
+    }else{
+        $('.customer').hide();
+    }
+});
+</script>

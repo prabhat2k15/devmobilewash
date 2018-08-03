@@ -436,14 +436,22 @@ die();
 
 		$msg = Yii::app()->request->getParam('msg');
 		$receiver_type = Yii::app()->request->getParam('receiver_type');
+        $selecter = Yii::app()->request->getParam('selecter');
 
 		if((isset($msg) && !empty($msg)) && (isset($receiver_type) && !empty($receiver_type))){
+
           $allagents =  Yii::app()->db->createCommand()->select('*')->from('agent_devices')->queryAll();
           $allclients = Yii::app()->db->createCommand()->select('*')->from('customer_devices')->queryAll();
 
-          if($receiver_type == 'agents'){
 
+          if($receiver_type == 'all-agents' || $receiver_type == 'agents'){
+            if($receiver_type == 'agents'){   
+                $allagents = explode(',', $selecter);
+            }
         foreach($allagents as $agent){
+            if($receiver_type == 'agents'){
+                $agent = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+            }
 		
 		$agent_detail = Agents::model()->findByPk($agent['agent_id']);
 
@@ -471,10 +479,14 @@ die();
         }
         }
 
-         if($receiver_type == 'clients'){
-
+         if($receiver_type == 'all-clients' || $receiver_type == 'clients'){
+            if($receiver_type == 'clients'){   
+                $allclients = explode(',', $selecter);
+            }
         foreach($allclients as $client){
-
+                if($receiver_type == 'clients'){
+                    $client = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$client."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                }
                         /* --- notification call --- */
 
                             //echo $agentdetails['mobile_type'];
