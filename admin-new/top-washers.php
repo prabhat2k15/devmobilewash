@@ -18,14 +18,14 @@ if($_GET['from']){
  $from = $_GET['from'];   
 }
 else{
-  $from = "2017-09-12";  
+  $from = "2017-01-01";  
 }
 
 if($_GET['to']){
  $to = $_GET['to'];   
 }
 else{
-  $to = "2017-12-31";  
+  $to = date('Y-m-d');  
 }
 
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=site/gettopmostwashers");

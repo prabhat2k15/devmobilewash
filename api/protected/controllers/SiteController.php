@@ -6421,7 +6421,7 @@ $to  = Yii::app()->request->getParam('to');
 			$all_washes =  Yii::app()->db->createCommand()
 						->select('agent_id')
 						->from('washing_requests')
-						->where("(order_for >= :from 00:00:00' AND order_for <= :to 23:59:00') AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
+						->where("(order_for >= :from AND order_for <= :to) AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
 						->queryAll();
 
 if(count($all_washes) > 0){
