@@ -931,6 +931,16 @@ if($tip_amount){
 
 $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
 						}
+						
+if($wash_now_fee > 0){
+
+$mobile_receipt .= "Wash Now $".number_format($wash_now_fee, 2)."\r\n";
+}
+
+if($wash_later_fee > 0){
+
+$mobile_receipt .= "Wash Later $".number_format($wash_later_fee, 2)."\r\n";
+}
 
 
                      $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
@@ -1207,6 +1217,15 @@ if($tip_amount){
 $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
 						}
 
+if($wash_now_fee > 0){
+
+$mobile_receipt .= "Wash Now $".number_format($wash_now_fee, 2)."\r\n";
+}
+
+if($wash_later_fee > 0){
+
+$mobile_receipt .= "Wash Later $".number_format($wash_later_fee, 2)."\r\n";
+}
 
 if($wash_details->vip_coupon_code){
 
@@ -2361,7 +2380,8 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                         echo json_encode($json);die();
                     }
 		    
-		    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+if(!$wrequest_id_check->is_scheduled){
+$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
 $kartdata = json_decode($kartapiresult);
 
 foreach($kartdata->vehicles as $ind=>$vehicle){
@@ -2487,6 +2507,7 @@ $sendmessage = $client->account->messages->create(array(
 	     }catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
+	}
 
         }
 

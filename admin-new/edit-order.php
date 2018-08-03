@@ -1654,7 +1654,14 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> completed order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerstartjob'): ?>
+                                                          <?php if($getorder->is_scheduled == 1): ?>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> tapped Drive Now at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          
+                                                          <?php else: ?>
                                                           <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> accepted request at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          
+                                                          <?php endif; ?>
+                                                          
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerarrivejob'): ?>
                                                           <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> arrived at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -3969,7 +3976,12 @@ if(data.result == 'true'){
       }
 
       if(log.action == 'washerstartjob'){
+            <?php if($getorder->is_scheduled == 1): ?>
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" tapped Drive Now at "+log.formatted_action_date+"</p>";
+            <?php else: ?>
             contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" accepted request at "+log.formatted_action_date+"</p>";
+            <?php endif; ?>
+            
       }
 
       if(log.action == 'washerarrivejob'){
