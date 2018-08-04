@@ -12223,7 +12223,7 @@ echo "Invalid api key";
 die();
 }
 
-       /*$allwashes = Washingrequests::model()->findAll(array("condition"=>"is_feedback_sent = 0 AND status = 4"));
+      /* $allwashes = Washingrequests::model()->findAll(array("condition"=>"is_feedback_sent = 0 AND status = 4"));
 
          if(count($allwashes)){
                foreach($allwashes as $wash){
