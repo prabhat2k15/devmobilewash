@@ -2002,6 +2002,16 @@ try {
 
                    
                     }
+		    
+		    if(($wash_now_reschedule == 1)){
+			 $logdata = array(
+                        
+                        'wash_request_id'=> $wash_request_id,
+                        'action'=> 'clientwashnowschedule',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+		    }
 
 
 		    
@@ -12223,7 +12233,7 @@ echo "Invalid api key";
 die();
 }
 
-      /* $allwashes = Washingrequests::model()->findAll(array("condition"=>"is_feedback_sent = 0 AND status = 4"));
+       $allwashes = Washingrequests::model()->findAll(array("condition"=>"is_feedback_sent = 0 AND status = 4"));
 
          if(count($allwashes)){
                foreach($allwashes as $wash){
@@ -12273,7 +12283,7 @@ die();
                     }
             }
 
-         }*/
+         }
 
    }
 

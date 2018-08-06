@@ -1762,6 +1762,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'agentnodamageopt'): ?>
                                                           <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_id; ?> choose no damage for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'clientwashnowschedule'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer changed Wash Now to Scheduled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
                                                           </div>
@@ -4127,6 +4130,9 @@ if(data.result == 'true'){
         contents += "<p style='margin-bottom: 10px;'>Washer # "+log.agent_id+" choose no damage for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
        }
        
+       if(log.action == 'clientwashnowschedule'){
+        contents += "<p style='margin-bottom: 10px;'>Customer changed Wash Now to Scheduled at "+log.formatted_action_date+"</p>";
+       }
 
    });
    
