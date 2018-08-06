@@ -4720,7 +4720,8 @@ if($feedback_source != 'dropjob'){
                 }
 		
 		if($agent_id){
-			if(is_numeric($ratings) && (!$cancel_feedback)) $logcomment = $comments." (Ratings: ".$ratings.")";
+            // && (!$cancel_feedback)
+			if(is_numeric($ratings)) $logcomment = $comments." (Rating: ".$ratings.")";
 			else $logcomment = $comments;
 			if(Yii::app()->request->getParam('comments') != ''){
 					$washeractionlogdata= array(

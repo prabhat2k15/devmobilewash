@@ -190,6 +190,7 @@ $address = 'N/A';
  <td> <a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $customer->id; ?>"><?php echo $customer->name; ?></a> </td>
 <td> <?php echo $customer->email; ?> </td>
 <td> <?php echo $customer->rating; ?> </td>
+<td> <?php echo $customer->care_rating; ?> </td>
  <td> <?php 
 if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
 else echo $customer->total_wash; 
@@ -248,6 +249,7 @@ else echo $customer->total_wash;
                                                 <th> City </th>
 <th> Insurance Exp. Date </th>
                                                 <th> Rating </th>
+                                                <th> CARE Rating </th>
 <th> Washes </th>
  <th> BT Submerchant ID </th>
                                                 <th> Status </th>
