@@ -2085,11 +2085,14 @@ die();
 if(Yii::app()->request->getParam('timezone')){
 date_default_timezone_set(Yii::app()->request->getParam('timezone'));
 }
+else{
+date_default_timezone_set('America/Los_Angeles');
+}
  			  
 		$result= 'false';
 		$response= 'Fill up required fields';
 		$wash_now_fee = 0;
-		$wash_unavailable = 0;
+		$wash_unavailable = 1;
 
 $times = '';
 $current_date_time = date('Y-m-d H:i:s');
@@ -2121,6 +2124,7 @@ $end = strtotime($current_date." ".$time_detail[0]." +14 minutes 59 seconds");
 
 if(time() >= $start && time() <= $end) {
   $wash_now_fee = $time_detail[2];
+  $wash_unavailable = 0;
   if($time_detail[1] == 'inactive') $wash_unavailable = 1;
   break;
 } 
@@ -7655,6 +7659,44 @@ die();
 
  
 	}
+	
+	
+	   	           public function actionfixcustnameparts()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$offset = 0;
+$offset = Yii::app()->request->getParam('offset');
+$updateentry = 0;
+$updateentry = Yii::app()->request->getParam('updateentry');
+
+		
+		$all_custs = Yii::app()->db->createCommand("SELECT * FROM customers WHERE (first_name = '' OR last_name = '') AND customername != '' ORDER BY id ASC LIMIT 100")->queryAll();
+
+if(count($all_custs)){
+    foreach($all_custs as $cust){
+
+$custname_parts = explode(" ",$cust['customername'], 2);
+   	   
+
+
+	echo "cust id: ".$cust['id']." | fullname: ".$cust['customername']." | firstname: ".$cust['first_name']." | lastname: ".$cust['last_name'];
+        echo "<br>";
+	echo "cust id: ".$cust['id']." | fullname: ".$cust['customername']." | firstname: ".trim($custname_parts[0]," ")." | lastname: ".trim($custname_parts[1]," ");
+	echo "<br><br>";
+	if(($updateentry == 1) && (count($custname_parts) > 0)) Customers::model()->updateByPk($cust['id'], array("first_name" => trim($custname_parts[0]," "), "last_name" => trim($custname_parts[1]," ")));
+	
+    }
+}
+else{
+    echo "nothing found";
+}
+   
+    }
     
     
 }
