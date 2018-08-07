@@ -975,7 +975,7 @@ $last_order_days = "N/A";
 }
  
 
-            $message = "WASH NOW ATTEMPT #000".$washrequestid."- ".date('M d', strtotime($wash_details->created_date))." @ ".date('h:i A', strtotime($wash_details->created_date))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
+            $message = "WASH NOW ATTEMPT #000".$washrequestid."- ".date('M d', strtotime($wash_details->created_date))." @ ".date('h:i A', strtotime($wash_details->created_date))."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
 
 try {
@@ -1043,7 +1043,7 @@ $mobile_receipt = '';
 					<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Your order is scheduled for ".$sched_date." @ ".$wash_details->schedule_time."</p>
 					<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$address."</p>";
 					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>".$customers_id_check->customername."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$washrequestid."</td></tr>
+					<tr><td><strong>".$customers_id_check->first_name." ".$customers_id_check->last_name."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$washrequestid."</td></tr>
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
@@ -1298,7 +1298,7 @@ $last_order_days = "N/A";
 }
 
 
-            $message = "NEW Scheduled Order #000".$washrequestid."- ".date('M d', strtotime($wash_details->schedule_date))." @ ".$wash_details->schedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
+            $message = "NEW Scheduled Order #000".$washrequestid."- ".date('M d', strtotime($wash_details->schedule_date))." @ ".$wash_details->schedule_time."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
 
 try {
@@ -1965,7 +1965,7 @@ $mobile_receipt .= "Surge Fee $".number_format($kartdata->wash_later_fee, 2)."\r
 		    $wash_details = Washingrequests::model()->findByPk($wash_request_id);
 		    $customers_id_check = Customers::model()->findByAttributes(array("id"=>$wash_details->customer_id));
                     
-                    $smscontent = "WASH NOW SCHEDULED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")\r\n------\r\n".$mobile_receipt;
+                    $smscontent = "WASH NOW SCHEDULED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")\r\n------\r\n".$mobile_receipt;
 
 
  try {
@@ -2251,7 +2251,7 @@ $customername = ucwords($customername);
             'response'=> $response,
             'wash_details' => $wash_details,
             'name' => $customername,
-            'fullname' => trim($cust_id_check->customername),
+            'fullname' => $cust_id_check->first_name." ".$cust_id_check->last_name,
             'image' => $cust_id_check->image,
             'email' => $cust_id_check->email,
             'rating' => $customer_rate,
@@ -2483,7 +2483,7 @@ if($kartdata->wash_later_fee > 0){
             $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 	    
-	     $message = "WASH NOW TAKEN #000".$wrequest_id_check->id."- ".date('M d', strtotime($wrequest_id_check->created_date))." @ ".date('h:i A', strtotime($wrequest_id_check->created_date))."\r\n".$cust_detail->customername."\r\n".$cust_detail->contact_number."\r\n".$wrequest_id_check->address." (".$wrequest_id_check->address_type.")\r\nWasher Name: ".$agent_detail->first_name." ".$agent_detail->last_name."\r\nWasher Badge #".$agent_detail->real_washer_id."\r\n------\r\n".$mobile_receipt;
+	     $message = "WASH NOW TAKEN #000".$wrequest_id_check->id."- ".date('M d', strtotime($wrequest_id_check->created_date))." @ ".date('h:i A', strtotime($wrequest_id_check->created_date))."\r\n".$cust_detail->first_name." ".$cust_detail->last_name."\r\n".$cust_detail->contact_number."\r\n".$wrequest_id_check->address." (".$wrequest_id_check->address_type.")\r\nWasher Name: ".$agent_detail->first_name." ".$agent_detail->last_name."\r\nWasher Badge #".$agent_detail->real_washer_id."\r\n------\r\n".$mobile_receipt;
 
 
 try {
@@ -3152,7 +3152,7 @@ try {
 					<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Your order has been re-scheduled for ".$sched_date." @ ".$reschedule_time."</p>
 					<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$wrequest_id_check->address."</p>";
 					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>".$customers_id_check->customername."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$wash_request_id."</td></tr>
+					<tr><td><strong>".$customers_id_check->first_name." ".$customers_id_check->last_name."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$wash_request_id."</td></tr>
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
@@ -3186,7 +3186,7 @@ try {
                     $auth_token = TWILIO_AUTH_TOKEN;
                     $client = new Services_Twilio($account_sid, $auth_token);
 
-                    $message = "Order #".$wash_request_id." has been re-scheduled at ".$sched_date." @ ".$reschedule_time."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wrequest_id_check->address."\r\n------\r\n".$mobile_receipt;
+                    $message = "Order #".$wash_request_id." has been re-scheduled at ".$sched_date." @ ".$reschedule_time."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$wrequest_id_check->address."\r\n------\r\n".$mobile_receipt;
 
 
 try {
@@ -3878,7 +3878,7 @@ $agent_details->id = $agent_id;
 
                     $cust_loc_obj = CustomerLocation::model()->findByAttributes(array('customer_id'=>$customer_id));
 
-                    $customer_details->name = $customer_id_check->customername;
+                    $customer_details->name = $customer_id_check->first_name." ".$customer_id_check->last_name;
 		    $customer_details->photo = $customer_id_check->image;
 		    $customer_details->latitude = $wrequest_obj->latitude;
                     $customer_details->longitude = $wrequest_obj->longitude;
@@ -4461,7 +4461,7 @@ if($washrequest_id_check->agent_id) $agent_detail = Agents::model()->findByAttri
 $message = "<div class='block-content' style='background: #fff; text-align: left;'>
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer Feedback</h2>
 <p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000".$wash_request_id."</p>
-<p><b>Customer Name:</b> ".$customers_id_check->customername."</p>
+<p><b>Customer Name:</b> ".$customers_id_check->first_name." ".$customers_id_check->last_name."</p>
 <p><b>Customer Email:</b> ".$customers_id_check->email."</p>
 <p><b>Rating by Customer:</b> ".number_format($ratings, 2, '.', '')."</p>
 <p><b>Comments:</b> ".$comments."</p>";
@@ -6167,7 +6167,7 @@ $kartdata = json_decode($kartapiresult);
 					<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Your order is placed at ".$wash_id_check->address."</p>";
 
 $message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>".$customer_id_check->customername."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$wash_id_check->id."</td></tr>
+					<tr><td><strong>".$customer_id_check->first_name." ".$customer_id_check->last_name."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$wash_id_check->id."</td></tr>
 					</table>";
 
                   if($kartdata->status == 5){
@@ -8160,7 +8160,7 @@ if($kartdata->wash_later_fee > 0){
 		    $wash_details = Washingrequests::model()->findByPk($wash_request_id);
 		    $customers_id_check = Customers::model()->findByAttributes(array("id"=>$wash_details->customer_id));
                     
-                    $smscontent = "WASH NOW CANCELED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->customername."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")\r\n------\r\n".$mobile_receipt;
+                    $smscontent = "WASH NOW CANCELED #000".$wash_request_id."- ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$wash_details->address."\r\n (".$wash_details->address_type.")\r\n------\r\n".$mobile_receipt;
 
 
  try {
@@ -8333,7 +8333,7 @@ die();
 $cust_details = Customers::model()->findByAttributes(array('id'=>$pwash['customer_id']));
                      $pendingwasharr[$ind]['id'] = $pwash['id'];
                      $pendingwasharr[$ind]['customer_id'] = $pwash['customer_id'];
-$pendingwasharr[$ind]['customer_name'] = $cust_details->customername;
+$pendingwasharr[$ind]['customer_name'] = $cust_details->first_name." ".$cust_details->last_name;
                      $pendingwasharr[$ind]['address'] = $pwash['address'];
                      $pendingwasharr[$ind]['latitude'] = $pwash['latitude'];
                      $pendingwasharr[$ind]['longitude'] = $pwash['longitude'];
@@ -9519,7 +9519,7 @@ $vip_membership = $coupon_check->package_name;
 				$order_details['id'] = $order_det->id;
 				$order_details['agent_id'] = $order_det->agent_id;
 				$order_details['customer_id'] = $order_det->customer_id;
-				$order_details['name'] = $cust_exists->customername;
+				$order_details['name'] = $cust_exists->first_name." ".$cust_exists->last_name;
 				$order_details['car_list'] = $order_det->car_list;
 				$order_details['package_list'] = $order_det->package_list;
 				$order_details['address'] = $order_det->address;
@@ -9811,7 +9811,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($braintree_id);
                             else $cancelresult = Yii::app()->braintree->transactToSubMerchant($request_data);
                 }
 		else{
-			$request_data = ['amount' => $fee,'paymentMethodToken' => $paymethod->token, 'customer' => ['firstName' =>$cust_exists->customername,],'billing' => ['firstName' => $cust_exists->customername]];
+			$request_data = ['amount' => $fee,'paymentMethodToken' => $paymethod->token, 'customer' => ['firstName' =>$cust_exists->first_name." ".$cust_exists->last_name,],'billing' => ['firstName' => $cust_exists->first_name." ".$cust_exists->last_name]];
 
 			if($cust_exists->client_position == 'real') $cancelresult = Yii::app()->braintree->sale_real($request_data);
 			else $cancelresult = Yii::app()->braintree->sale($request_data);	
@@ -9885,7 +9885,7 @@ $sched_time = $order_exists->schedule_time;
 					else $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Scheduled order for ".$sched_date." @ ".$sched_time."</p>";
 					$message .= "<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$order_exists->address."</p>";
 					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>Client Name:</strong> ".$cust_exists->customername."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
+					<tr><td><strong>Client Name:</strong> ".$cust_exists->first_name." ".$cust_exists->last_name."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
@@ -10079,7 +10079,7 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
             $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
- $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
+ $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->first_name." ".$cust_exists->last_name."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 $message2 = "Order #".$id." has been canceled";
 
 
@@ -10213,7 +10213,7 @@ $sched_time = $order_exists->schedule_time;
 					else $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Scheduled order for ".$sched_date." @ ".$sched_time."</p>";
 					$message .= "<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$order_exists->address."</p>";
 					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>Client Name:</strong> ".$cust_exists->customername."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
+					<tr><td><strong>Client Name:</strong> ".$cust_exists->first_name." ".$cust_exists->last_name."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
@@ -10406,7 +10406,7 @@ $this->layout = "xmlLayout";
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
-            $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->customername."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
+            $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->first_name." ".$cust_exists->last_name."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
 $message2 = "Order #".$id." has been canceled";
 
 try {
@@ -10713,7 +10713,7 @@ if($min_diff >= 0){
     }
    $pendingwashrequests_upcoming[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -10749,7 +10749,7 @@ if($min_diff >= 0){
 if($min_diff < 0){
      $pendingwashrequests_nonupcoming[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -10784,7 +10784,7 @@ if($min_diff < 0){
 }
 				$pendingwashrequests[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -10978,7 +10978,7 @@ $payment_status = 'Released';
 
 				$pendingwashrequests[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -11143,11 +11143,11 @@ if(($min_diff < 0) && ($min_diff <= -1440)){
 
 					if(!empty($schedwash['customer_id'])){
 						$customer = Yii::app()->db->createCommand()->setFetchMode(PDO::FETCH_OBJ)
-							 ->select('customername')
+							 ->select('customername, first_name, last_name')
 							 ->from('customers')
 							 ->where("id =".$schedwash['customer_id'])
 							 ->queryAll();
-						$customerName = $customer[0]->customername;
+						$customerName = $customer[0]->first_name." ".$customer[0]->last_name;
 					}
 					$washtime = 0;
 					$washtime_str = '';
@@ -11833,10 +11833,11 @@ $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id =
                 }*/
    
    $customers_details = Customers::model()->findByPk($schedwash->customer_id);
-   $cust_name = explode(" ", trim($customers_details->customername));
+   $cust_firstname = $customers_details->first_name;
+   /*$cust_name = explode(" ", trim($customers_details->customername));
 					
                     $cust_firstname = '';
-                    $cust_firstname = $cust_name[0];
+                    $cust_firstname = $cust_name[0];*/
 		    
    $from = Vargas::Obj()->getAdminFromEmail();
    
@@ -11903,15 +11904,15 @@ echo $min_diff." mins #".$schedwash->id."<br>";
 if($min_diff >= 180){
 
 $custdetail = Customers::model()->findByPk($schedwash->customer_id);
-$cname = explode(" ",$custdetail->customername);
-
+//$cname = explode(" ",$custdetail->customername);
+$cname = $custdetail->first_name;
 
 $from = Vargas::Obj()->getAdminFromEmail();
 
 $message = "<div class='block-content' style='background: #fff; text-align: left;'>
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer Feedback</h2>
 <p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000".$schedwash->id."</p>
-<p style='text-align:center;font-size: 24px;margin-top: 25px;'>Hello ".$cname[0]."</p>
+<p style='text-align:center;font-size: 24px;margin-top: 25px;'>Hello ".$cname."</p>
 <h2 style='text-align:center;font-size: 24px;line-height: normal;'>How was your experience with our<br>MobileWasher?</h2>
 <p style='text-align:center;line-height: 24px;margin-top: 25px;'>We would like to make sure that you always have a great experience. Please help us make it the best service possible by letting us know how we did today.</p>
 <p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='".ROOT_URL."/customer-feedback.php?order_id=".$schedwash->id."'>LEAVE FEEDBACK</a></p>

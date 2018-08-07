@@ -552,7 +552,7 @@ die();
 
             $check_already_customer = Customers::model()->findByAttributes(array('email'=>$email));
 
-            if(count($check_already_customer) > 0) $name = $check_already_customer->customername;
+            if(count($check_already_customer) > 0) $name = $check_already_customer->first_name." ".$check_already_customer->last_name;
 
             $data = array(
 					'name'=> $name,
@@ -674,7 +674,7 @@ $agents_arr[$key]['status'] = $agent['status'];
 if(count($findclients)){
 foreach($findclients as $key=>$client){
 $clients_arr[$key]['id'] = $client['id'];
-$clients_arr[$key]['name'] = $client['customername'];
+$clients_arr[$key]['name'] = $client['first_name']." ".$client['last_name'];
 }
 }
 
@@ -1979,7 +1979,7 @@ $customer_check = Customers::model()->findByPk($customer_id);
 					<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Your order is scheduled for ".$sched_date." @ ".$wash_details->schedule_time."</p>
 					<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$wash_details->address."</p>";
 					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>".$customer_check->customername."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$wash_request_id."</td></tr>
+					<tr><td><strong>".$customer_check->first_name." ".$customer_check->last_name."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$wash_request_id."</td></tr>
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
@@ -3586,7 +3586,7 @@ $kartdata = json_decode($kartresult);
 					<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Your order is placed at ".$wash_id_check->address."</p>";
 
 $message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>".$customer_id_check->customername."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$wash_id_check->id."</td></tr>
+					<tr><td><strong>".$customer_id_check->first_name." ".$customer_id_check->last_name."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$wash_id_check->id."</td></tr>
 					</table>";
 
                   if($kartdata->status == 5){
@@ -4500,7 +4500,7 @@ if($min_diff <= 60 && $min_diff >= 0){
    }
 
    if(count($ct_det)){
-    $upcoming_schedule_wash_details['customer_name'] = $ct_det->customername;
+    $upcoming_schedule_wash_details['customer_name'] = $ct_det->first_name." ".$ct_det->last_name;
     $upcoming_schedule_wash_details['customer_rating'] = $ct_det->rating;
     $upcoming_schedule_wash_details['customer_phone'] = $ct_det->contact_number;
    }
@@ -5376,7 +5376,7 @@ if($min_diff <= 60 && $min_diff >= 0){
    }
 
    if(count($ct_det)){
-    $upcoming_schedule_wash_details['customer_name'] = $ct_det->customername;
+    $upcoming_schedule_wash_details['customer_name'] = $ct_det->first_name." ".$ct_det->last_name;
     $upcoming_schedule_wash_details['customer_rating'] = $ct_det->rating;
     $upcoming_schedule_wash_details['customer_phone'] = $ct_det->contact_number;
    }

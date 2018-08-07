@@ -1814,7 +1814,7 @@ $kartdata = json_decode($kartapiresult);
         $wash_requests[$index]['inspection_details'] = $inspect_details;
         $wash_requests[$index]['total'] =$total;
         $customerdata =  Customers::model()->findByAttributes(array("id"=>$wrequest['customer_id']));
-        $customername = $customerdata->customername;
+        $customername = $customerdata->first_name." ".$customerdata->last_name;
 	
 	if(($customerdata->first_name != '') && ($customerdata->last_name != '')){
 	$customershortname = '';
@@ -4678,7 +4678,7 @@ $online_clients = Customers::model()->findAllByAttributes(array("online_status"=
                  $key = 'onlineclient_'.$client->id;
 				 $jsononlineclient = array();
 $jsononlineclient['id'] =  $client->id;
-				  $jsononlineclient['customername'] =  $client ->customername;
+				  $jsononlineclient['customername'] =  $client->first_name." ".$client->last_name;
 				  $jsononlineclient['email'] =  $client ->email;
 				  $jsononlineclient['contact_number'] =  $client ->contact_number;
 				  $jsononlineclient['image'] =  $client ->image;
@@ -4722,7 +4722,7 @@ $jsononlineclient['id'] =  $client->id;
 				 $jsonpending = array();
 $jsonpending['id'] =  $customers_detail ->id;
 $jsonpending['wash_request_id'] =  $pendings_orders ->id;
-				 $jsonpending['customername'] =  $customers_detail ->customername;
+				 $jsonpending['customername'] =  $customers_detail->first_name." ".$customers_detail->last_name;
 				 $jsonpending['email'] =  $customers_detail ->email;
 				 $jsonpending['contact_number'] =  $customers_detail ->contact_number;
 				 $jsonpending['image'] =  $customers_detail ->image;
@@ -4768,7 +4768,7 @@ $jsonpending['created_date'] = $pendings_orders->created_date;
                  $key = 'processing_order_'.$process_orders['id'];
 				 $jsonprocessing = array();
 $jsonprocessing['id'] =  $customers_detail ->id;
-				 $jsonprocessing['customername'] =  $customers_detail ->customername;
+				 $jsonprocessing['customername'] =  $customers_detail->first_name." ".$customers_detail->last_name;
 				 $jsonprocessing['email'] =  $customers_detail ->email;
 				 $jsonprocessing['contact_number'] =  $customers_detail ->contact_number;
 				 $jsonprocessing['image'] =  $customers_detail ->image;
@@ -5498,7 +5498,7 @@ $washstarttimes[$key] = $min_diff;
 if(AES256CBC_STATUS == 1){
                          $allwashes[] = array('id'=>$this->aes256cbc_crypt( $schedwash->id, 'e', AES256CBC_API_PASS ),
 'customer_id'=>$this->aes256cbc_crypt( $schedwash->customer_id, 'e', AES256CBC_API_PASS ),
-'customer_name'=>$cust_detail->customername,
+'customer_name'=>$cust_detail->first_name." ".$cust_detail->last_name,
 'customer_shortname'=>$cust_shortname,
 'customer_phoneno'=>$cust_detail->contact_number,
 'customer_rating'=>$cust_detail->rating,
@@ -5520,7 +5520,7 @@ if(AES256CBC_STATUS == 1){
 else{
                          $allwashes[] = array('id'=>$schedwash->id,
 'customer_id'=>$schedwash->customer_id,
-'customer_name'=>$cust_detail->customername,
+'customer_name'=>$cust_detail->first_name." ".$cust_detail->last_name,
 'customer_shortname'=>$cust_shortname,
 'customer_phoneno'=>$cust_detail->contact_number,
 'customer_rating'=>$cust_detail->rating,

@@ -149,7 +149,7 @@ else if(count($customers_phone_exists)>0){
 					$customers_details= Customers::model()->findByAttributes(array('id'=> $customerid));
 					$customername = '';	$password = ''; $email = ''; $image = '';
 					if(count($customers_details)>0){
-						$customername = $customers_details->customername;
+						$customername = $customers_details->first_name." ".$customers_details->last_name;
 						$email = $customers_details->email;
 						$image = $customers_details->image;
 					}
@@ -900,7 +900,7 @@ die();
 			if((count($model)>0) && ($model->device_token != '')){
 			$result= 'true';
 					$response= 'success';
-					$customer_name = $model->customername;
+					$customer_name = $model->first_name." ".$model->last_name;
 
 			}else{
 				$result= 'false';
@@ -941,7 +941,7 @@ die();
 					$reporttxt = ROOT_URL.'/reset-password.php?action=clrp&token='.$token.'&id='.$customers_email_exists->id;
                     $message = "";
 
-                    $message .= "<p style='font-size: 20px;'>Dear ".$customers_email_exists->customername.",</p>";
+                    $message .= "<p style='font-size: 20px;'>Dear ".$customers_email_exists->first_name." ".$customers_email_exists->last_name.",</p>";
                     $message .= "<p>You requested to reset your MobileWash password information. To complete the request, please click the link below.</p>";
                     $message .= "<p><a href='".$reporttxt."' style='color: #016fd0;'>Reset Password Now</a></p>";
                     $message .= "<p>If this was a mistake or you did not authorize this request you may disregard this email.</p>";
@@ -1402,7 +1402,7 @@ $customershortname = ucwords($customershortname);
 if($model->braintree_id && $customername){
 
 if($model->client_position == 'real') $result = Yii::app()->braintree->updateCustomer_real($model->braintree_id, array('firstName' => $customername));
-else $result = Yii::app()->braintree->updateCustomer($model->braintree_id, array('firstName' => $model->customername));
+else $result = Yii::app()->braintree->updateCustomer($model->braintree_id, array('firstName' => $model->first_name." ".$model->last_name));
 
 }
 
@@ -1639,7 +1639,7 @@ $cust_id = $this->aes256cbc_crypt( $cust_id, 'e', AES256CBC_API_PASS );
 					'email' => $customers_id->email,
 					'first_name' => $customers_id->first_name,
 					'last_name' => $customers_id->last_name,
-					'customername' => $customers_id->customername,
+					'customername' => $customers_id->first_name." ".$customers_id->last_name,
 					'image' => $customers_id->image,
 					'contact_number' => $customers_id->contact_number,
                     'how_hear_mw' => $customers_id->how_hear_mw,
@@ -4659,12 +4659,12 @@ $customerid = $this->aes256cbc_crypt( $customerid, 'd', AES256CBC_API_PASS );
 else $result = Yii::app()->braintree->createClientTokencustom();
                       } else {
                           if($customers->client_position == 'real') {
-                            if (!filter_var($customers->email, FILTER_VALIDATE_EMAIL)) $result = Yii::app()->braintree->createCustomer_real(array('firstName' => $customers->customername, 'company' => '-'));
-                            else $result = Yii::app()->braintree->createCustomer_real(array('firstName' => $customers->customername, 'company' => '-', 'email' => $customers->email));
+                            if (!filter_var($customers->email, FILTER_VALIDATE_EMAIL)) $result = Yii::app()->braintree->createCustomer_real(array('firstName' => $customers->first_name." ".$customers->last_name, 'company' => '-'));
+                            else $result = Yii::app()->braintree->createCustomer_real(array('firstName' => $customers->first_name." ".$customers->last_name, 'company' => '-', 'email' => $customers->email));
                           }
                           else {
-                            if (!filter_var($customers->email, FILTER_VALIDATE_EMAIL)) $result = Yii::app()->braintree->createCustomer(array('firstName' => $customers->customername, 'company' => '-'));
-                            else $result = Yii::app()->braintree->createCustomer(array('firstName' => $customers->customername, 'company' => '-', 'email' => $customers->email));
+                            if (!filter_var($customers->email, FILTER_VALIDATE_EMAIL)) $result = Yii::app()->braintree->createCustomer(array('firstName' => $customers->first_name." ".$customers->last_name, 'company' => '-'));
+                            else $result = Yii::app()->braintree->createCustomer(array('firstName' => $customers->first_name." ".$customers->last_name, 'company' => '-', 'email' => $customers->email));
                           }
                           if($result['success']!=0){
                               $customer_id = $result['customer_id'];
@@ -5663,7 +5663,7 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 
 $message = "<div class='block-content' style='background: #fff; text-align: left;'>
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer App Feedback</h2>
-<p><b>Customer Name:</b> ".$customers_id_check->customername."</p>
+<p><b>Customer Name:</b> ".$customers_id_check->first_name." ".$customers_id_check->last_name."</p>
 <p><b>Customer Email:</b> ".$customers_id_check->email."</p>
 <p><b>Comments:</b> ".$comments."</p>";
 
@@ -5729,7 +5729,7 @@ die();
                  $key = 'onlineclient_'.$client->id;
 				 $jsononlineclient = array();
 $jsononlineclient['id'] =  $client->id;
-				  $jsononlineclient['customername'] =  $client ->customername;
+				  $jsononlineclient['customername'] =  $client ->first_name." ".$client ->last_name;
 				  $jsononlineclient['email'] =  $client ->email;
 				  $jsononlineclient['contact_number'] =  $client ->contact_number;
 				  $jsononlineclient['image'] =  $client ->image;
@@ -5774,7 +5774,7 @@ if($pendings_orders->agent_id) $washer_detail = Agents::model()->findByPk($pendi
 				 $jsonpending = array();
 $jsonpending['id'] =  $customers_detail ->id;
 $jsonpending['wash_request_id'] =  $pendings_orders ->id;
-				 $jsonpending['customername'] =  $customers_detail ->customername;
+				 $jsonpending['customername'] =  $customers_detail ->first_name." ".$customers_detail ->last_name;
 				 $jsonpending['email'] =  $customers_detail ->email;
 				 $jsonpending['contact_number'] =  $customers_detail ->contact_number;
 				 $jsonpending['image'] =  $customers_detail ->image;
@@ -5824,7 +5824,7 @@ if($schedorder->agent_id) $washer_detail = Agents::model()->findByPk($schedorder
 				 $jsonpending = array();
 $jsonpending['id'] =  $customers_detail ->id;
 $jsonpending['wash_request_id'] = $schedorder->id;
-				 $jsonpending['customername'] =  $customers_detail ->customername;
+				 $jsonpending['customername'] =  $customers_detail ->first_name." ".$customers_detail ->last_name;
 				 $jsonpending['email'] =  $customers_detail ->email;
 				 $jsonpending['contact_number'] =  $customers_detail ->contact_number;
 				 $jsonpending['image'] =  $customers_detail ->image;
@@ -5891,7 +5891,7 @@ $scheduleorders[$key] = $jsonpending;
 				 $jsonprocessing = array();
 $jsonprocessing['id'] =  $customers_detail ->id;
 $jsonprocessing['wash_request_id'] =  $process_orders['id'];
-				 $jsonprocessing['customername'] =  $customers_detail ->customername;
+				 $jsonprocessing['customername'] =  $customers_detail ->first_name." ".$customers_detail ->last_name;
 				 $jsonprocessing['email'] =  $customers_detail ->email;
 				 $jsonprocessing['contact_number'] =  $customers_detail ->contact_number;
 				 $jsonprocessing['image'] =  $customers_detail ->image;
@@ -6540,7 +6540,7 @@ if(!empty($custlocation->location_address)){
 
 			$json = array();
 			$json['id'] =  $customername->id;
-            $json['name'] =  $customername->customername;
+            $json['name'] =  $customername->first_name." ".$customername->last_name;
 $json['user_type'] =  $customername->login_type;
 			$json['email'] =  $customername->email;
 $json['phone'] = $customername->contact_number;
@@ -6630,7 +6630,7 @@ if(!empty($custlocation->location_address)){
 
 			$json = array();
 			$json['id'] =  $customername['id'];
-            $json['name'] =  $customername['customername'];
+            $json['name'] =  $customername['first_name']." ".$customername['last_name'];
 $json['user_type'] =  $customername['login_type'];
 			$json['email'] =  $customername['email'];
 			$json['rating'] =  $customername['rating'];
@@ -6668,7 +6668,7 @@ die();
         $customerID = Yii::app()->request->getParam('customerID');
         $customerdetail = Customers::model()->findByAttributes(array("id"=>$customerID));
         $id = $customerdetail['id'];
-        $customername = $customerdetail['customername'];
+        $customername = $customerdetail['first_name']." ".$customerdetail['last_name'];
         $email = $customerdetail['email'];
         $contact_number = $customerdetail['contact_number'];
         $email_alerts = $customerdetail['email_alerts'];
@@ -8681,7 +8681,7 @@ die();
 
              $long= $client_loc->actual_longitude;
              $lat= $client_loc->actual_latitude;
-             $customer_name = $customername['customername'];
+             $customer_name = $customername['first_name']." ".$customername['last_name'];
              $name = explode(" ", $customer_name);
              $key = 'customer_'.$customername['id'];
              $json = array();
@@ -8807,7 +8807,7 @@ die();
 
              $long= $client_loc->actual_longitude;
              $lat= $client_loc->actual_latitude;
-             $customer_name = $customername['customername'];
+             $customer_name = $customername['first_name']." ".$customername['last_name'];
              $name = explode(" ", $customer_name);
              $key = 'customer_'.$customername['id'];
              $json = array();
@@ -8937,7 +8937,7 @@ die();
 
              $long= $client_loc->actual_longitude;
              $lat= $client_loc->actual_latitude;
-             $customer_name = $customername['customername'];
+             $customer_name = $customername['first_name']." ".$customername['last_name'];
              $name = explode(" ", $customer_name);
              $key = 'customer_'.$customername['id'];
              $json = array();
@@ -9088,7 +9088,7 @@ die();
 
              $long= $client_loc->actual_longitude;
              $lat= $client_loc->actual_latitude;
-             $customer_name = $customername['customername'];
+             $customer_name = $customername['first_name']." ".$customername['last_name'];
              $name = explode(" ", $customer_name);
              $key = 'customer_'.$customername['id'];
              $json = array();
@@ -10841,7 +10841,7 @@ $fb_id = Yii::app()->request->getParam('fb_id');
 $message = "<div class='block-content' style='background: #fff; text-align: left;'>
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer Feedback</h2>
 <p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000".$wash_request_id."</p>
-<p><b>Customer Name:</b> ".$customers_id_check->customername."</p>
+<p><b>Customer Name:</b> ".$customers_id_check->first_name." ".$customers_id_check->last_name."</p>
 <p><b>Customer Email:</b> ".$customers_id_check->email."</p>
 <p><b>Rating by Customer:</b> ".$ratings."</p>
 <p><b>Comments:</b> ".$comments."</p>

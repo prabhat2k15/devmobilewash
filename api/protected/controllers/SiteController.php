@@ -3496,7 +3496,7 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
     }
    $pendingwashrequests_flashing[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -3544,7 +3544,7 @@ if($min_diff >= 0){
     }
    $pendingwashrequests_upcoming[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -3585,7 +3585,7 @@ if($min_diff >= 0){
 if(($min_diff < 0) && ($wrequest['status'] > 0)){
      $pendingwashrequests_nonupcoming[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -3626,7 +3626,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 
 				$pendingwashrequests[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -3990,7 +3990,7 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
     }
    $pendingwashrequests_flashing[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -4038,7 +4038,7 @@ if($min_diff >= 0){
     }
    $pendingwashrequests_upcoming[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -4079,7 +4079,7 @@ if($min_diff >= 0){
 if(($min_diff < 0) && ($wrequest['status'] > 0)){
      $pendingwashrequests_nonupcoming[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -4120,7 +4120,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 
 				$pendingwashrequests[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -4413,7 +4413,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
                 $pendingwashrequests[] = array(
                     'id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                     'agent_details'=> $agent_info,
@@ -4640,7 +4640,7 @@ $payment_status = 'Released';
     }
    $pendingwashrequests_upcoming[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -4677,7 +4677,7 @@ $payment_status = 'Released';
 if($min_diff < 0){
      $pendingwashrequests_nonupcoming[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -4714,7 +4714,7 @@ if($min_diff < 0){
 
 				$pendingwashrequests[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
-                    'customer_name'=>$cust_details->customername,
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
                     'customer_phoneno'=>$cust_details->contact_number,
                      'agent_details'=> $agent_info,
@@ -5198,7 +5198,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 			if(($min_diff >= 43200) && ($min_diff < 86400)){
 
 			$nonreturncust_arr_30[$ind30]['id'] = $customer->id;
-			$nonreturncust_arr_30[$ind30]['name'] = $customer->customername;
+			$nonreturncust_arr_30[$ind30]['name'] = $customer->first_name." ".$customer->last_name;
 			$nonreturncust_arr_30[$ind30]['email'] = $customer->email;
 			$nonreturncust_arr_30[$ind30]['phone'] = $customer->contact_number;
 			$nonreturncust_arr_30[$ind30]['total_wash'] = $customer->total_wash;
@@ -5212,7 +5212,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 			if(($min_diff >= 86400) && ($min_diff < 129600)){
 
 			$nonreturncust_arr_60[$ind60]['id'] = $customer->id;
-			$nonreturncust_arr_60[$ind60]['name'] = $customer->customername;
+			$nonreturncust_arr_60[$ind60]['name'] = $customer->first_name." ".$customer->last_name;
 			$nonreturncust_arr_60[$ind60]['email'] = $customer->email;
 			$nonreturncust_arr_60[$ind60]['phone'] = $customer->contact_number;
 			$nonreturncust_arr_60[$ind60]['total_wash'] = $customer->total_wash;
@@ -5226,7 +5226,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 			if($min_diff >= 129600){
 
 			$nonreturncust_arr_90[$ind90]['id'] = $customer->id;
-			$nonreturncust_arr_90[$ind90]['name'] = $customer->customername;
+			$nonreturncust_arr_90[$ind90]['name'] = $customer->first_name." ".$customer->last_name;
 			$nonreturncust_arr_90[$ind90]['email'] = $customer->email;
 			$nonreturncust_arr_90[$ind90]['phone'] = $customer->contact_number;
 			$nonreturncust_arr_90[$ind90]['total_wash'] = $customer->total_wash;
@@ -5292,7 +5292,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			if(($min_diff >= 7200) && ($min_diff < 14400)){
 
 			$nonreturncust_arr_5[$ind5]['id'] = $customer->id;
-			$nonreturncust_arr_5[$ind5]['name'] = $customer->customername;
+			$nonreturncust_arr_5[$ind5]['name'] = $customer->first_name." ".$customer->last_name;
 			$nonreturncust_arr_5[$ind5]['email'] = $customer->email;
 			$nonreturncust_arr_5[$ind5]['phone'] = $customer->contact_number;
 			$nonreturncust_arr_5[$ind5]['total_wash'] = $customer->total_wash;
@@ -5306,7 +5306,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			if(($min_diff >= 14400) && ($min_diff < 21600)){
 
 			$nonreturncust_arr_10[$ind10]['id'] = $customer->id;
-			$nonreturncust_arr_10[$ind10]['name'] = $customer->customername;
+			$nonreturncust_arr_10[$ind10]['name'] = $customer->first_name." ".$customer->last_name;
 			$nonreturncust_arr_10[$ind10]['email'] = $customer->email;
 			$nonreturncust_arr_10[$ind10]['phone'] = $customer->contact_number;
 			$nonreturncust_arr_10[$ind10]['total_wash'] = $customer->total_wash;
@@ -5320,7 +5320,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			if($min_diff >= 21600){
 
 			$nonreturncust_arr_15[$ind15]['id'] = $customer->id;
-			$nonreturncust_arr_15[$ind15]['name'] = $customer->customername;
+			$nonreturncust_arr_15[$ind15]['name'] = $customer->first_name." ".$customer->last_name;
 			$nonreturncust_arr_15[$ind15]['email'] = $customer->email;
 			$nonreturncust_arr_15[$ind15]['phone'] = $customer->contact_number;
 			$nonreturncust_arr_15[$ind15]['total_wash'] = $customer->total_wash;
@@ -5387,7 +5387,7 @@ $cust_detail = Customers::model()->findByPk($wash['customer_id']);
 
   /* ------- strange email check --------- */
 
-$cust_name_arr = explode(" ", $cust_detail->customername);
+$cust_name_arr = explode(" ", $cust_detail->first_name." ".$cust_detail->last_name);
 $good_email = 0;
 foreach($cust_name_arr as $custnamechunk){
     $strpos = stripos($cust_detail->email, $custnamechunk);
@@ -5411,7 +5411,7 @@ if(count($Bresult->paymentMethods)){
                   foreach($Bresult->paymentMethods as $index=>$paymethod){
                      $payment_methods[$index]['title'] = get_class($paymethod);
                      if($paymethod->isDefault()){
-                     $cust_name_arr = explode(" ", $cust_detail->customername);
+                     $cust_name_arr = explode(" ", $cust_detail->first_name." ".$cust_detail->last_name);
 
                      foreach($cust_name_arr as $custnamechunk){
                         $strpos = stripos($paymethod->cardholderName, $custnamechunk);
@@ -6530,7 +6530,7 @@ $response = 'device updated';
 			else $response = 'online';
 			
 			$user_photo = $user_check->image;
-			$user_name = $user_check->customername;
+			$user_name = $user_check->first_name." ".$user_check->last_name;
 			
 			$pending_wash_id_check =  Washingrequests::model()->findAll(array("condition"=>"status <= 3 AND customer_id=:customer_id", 'params'  => array(':customer_id' => $user_id), 'order' => 'created_date desc'));
 			if(count($pending_wash_id_check)){
@@ -6560,7 +6560,7 @@ $response = 'device updated';
 			$agent_wash_details['customer_id'] = $is_agent_has_wash[0]['customer_id'];	
 			}
 			
-			$agent_wash_details['customer_name'] = $cust_detail->customername;
+			$agent_wash_details['customer_name'] = $cust_detail->first_name." ".$cust_detail->last_name;
 			$agent_wash_details['customer_phoneno'] = $cust_detail->contact_number;
 			$agent_wash_details['customer_rating'] = $cust_detail->rating;
 			$agent_wash_details['address'] = $is_agent_has_wash[0]['address'];
@@ -7163,7 +7163,7 @@ if(count($all_customers)){
 			if(($range == 30) && ($min_diff >= 43200) && ($min_diff < 86400)){
 
 			$nonreturncust_arr[$index]['id'] = $customer->id;
-			$nonreturncust_arr[$index]['customername'] = $customer->customername;
+			$nonreturncust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
 			$nonreturncust_arr[$index]['email'] = $customer->email;
 			$nonreturncust_arr[$index]['phone'] = $customer->contact_number;
 			$nonreturncust_arr[$index]['total_wash'] = $customer->total_wash;
@@ -7176,7 +7176,7 @@ if(count($all_customers)){
 			if(($range == 60) && ($min_diff >= 86400) && ($min_diff < 129600)){
 
 			$nonreturncust_arr[$index]['id'] = $customer->id;
-			$nonreturncust_arr[$index]['customername'] = $customer->customername;
+			$nonreturncust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
 			$nonreturncust_arr[$index]['email'] = $customer->email;
 			$nonreturncust_arr[$index]['phone'] = $customer->contact_number;
 			$nonreturncust_arr[$index]['total_wash'] = $customer->total_wash;
@@ -7189,7 +7189,7 @@ if(count($all_customers)){
 			if(($range == 90) && ($min_diff >= 129600)){
 
 			$nonreturncust_arr[$index]['id'] = $customer->id;
-			$nonreturncust_arr[$index]['customername'] = $customer->customername;
+			$nonreturncust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
 			$nonreturncust_arr[$index]['email'] = $customer->email;
 			$nonreturncust_arr[$index]['phone'] = $customer->contact_number;
 			$nonreturncust_arr[$index]['total_wash'] = $customer->total_wash;
@@ -7244,7 +7244,7 @@ if(count($all_customers)){
 			if(($range == 5) && ($min_diff >= 7200) && ($min_diff < 14400)){
 
 			$inactivecust_arr[$index]['id'] = $customer->id;
-			$inactivecust_arr[$index]['customername'] = $customer->customername;
+			$inactivecust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
 			$inactivecust_arr[$index]['email'] = $customer->email;
 			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
 			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
@@ -7258,7 +7258,7 @@ if(count($all_customers)){
 			if(($range == 10) && ($min_diff >= 14400) && ($min_diff < 21600)){
 
 			$inactivecust_arr[$index]['id'] = $customer->id;
-			$inactivecust_arr[$index]['customername'] = $customer->customername;
+			$inactivecust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
 			$inactivecust_arr[$index]['email'] = $customer->email;
 			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
 			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
@@ -7272,7 +7272,7 @@ if(count($all_customers)){
 			if(($range == 15) && ($min_diff >= 21600)){
 
 			$inactivecust_arr[$index]['id'] = $customer->id;
-			$inactivecust_arr[$index]['customername'] = $customer->customername;
+			$inactivecust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
 			$inactivecust_arr[$index]['email'] = $customer->email;
 			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
 			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
