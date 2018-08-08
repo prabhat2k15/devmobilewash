@@ -1680,7 +1680,7 @@ die();
 }
 
            	$agent_id = Yii::app()->request->getParam('agent_id');
-$limit = 10;
+$limit = 5;
 if(Yii::app()->request->getParam('limit')) $limit = Yii::app()->request->getParam('limit');
 $page = 1;
 if(Yii::app()->request->getParam('page')) $page = Yii::app()->request->getParam('page');
