@@ -2371,6 +2371,10 @@ die();
 
 		$device_type = Yii::app()->request->getParam('device_type');
 		$app_version = Yii::app()->request->getParam('app_version');
+		$user_id = Yii::app()->request->getParam('user_id');
+		$user_type = Yii::app()->request->getParam('user_type');
+		$user_phone = Yii::app()->request->getParam('user_phone');
+		$device_unique_id = Yii::app()->request->getParam('device_unique_id');
         $response = "Pass the required parameters";
         $result = "false";
         $mobilewash_domain = "https://www.mobilewash.com";
@@ -2387,6 +2391,8 @@ die();
         $getmobilewash_socketurl = "http://209.95.41.20:3000";
 
 		if((isset($device_type) && !empty($device_type)) && (isset($app_version) && !empty($app_version))){
+		
+			
 		       $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = :device_type")->bindValue(':device_type', strtoupper($device_type), PDO::PARAM_STR)->queryAll();
 		       
 		       /*if(($app_version == '2.0.1') && ($device_type == 'IOS')){
@@ -2439,6 +2445,37 @@ die();
 
                 }
                 else{
+			
+		if(($user_type) && ($user_id) && ($user_phone)){
+				$use_phone = 0;
+				if(is_numeric($user_id)){
+				$use_phone = 1; 	
+				}
+			if((AES256CBC_STATUS == 1) && (!$use_phone)){
+				$user_id = $this->aes256cbc_crypt( $user_id, 'd', AES256CBC_API_PASS );
+			}
+
+				if($user_type == 'customer') {
+					if($use_phone) $user_check = Customers::model()->findByAttributes(array('contact_number'=>$user_phone));
+					else $user_check = Customers::model()->findByPk($user_id);
+				}
+				if($user_type == 'agent') {
+					if($use_phone) $user_check = Agents::model()->findByAttributes(array('phone_number'=>$user_phone));
+					else $user_check = Agents::model()->findByPk($user_id);
+				}
+				
+				if(count($user_check) && ($user_check->current_app_version != $app_version)){
+					 $json = array(
+						'result'=> 'false',
+						'response'=> 'version not matched',
+						'current_app_version' => $user_check->current_app_version
+                
+					);
+					 echo json_encode($json);
+					die();
+				}
+			}	
+			
                    $result= "true";
                 $response = "Latest version of App installed";
 
@@ -5019,6 +5056,7 @@ die();
         $sortcode = Yii::app()->request->getParam('verify_code');
 	$user_type = Yii::app()->request->getParam('user_type');
 	$device_token = Yii::app()->request->getParam('device_token');
+	$app_version = Yii::app()->request->getParam('app_version');
 	$phone = Yii::app()->request->getParam('phone');
 	  if(AES256CBC_STATUS == 1){
 $userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
@@ -5061,13 +5099,13 @@ $userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
 	
         if(!empty($matchcode)){
             if($user_type == 'customer') {
-		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', is_voip_number = 0, contact_number = :phone, forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
-		else $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
+		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', is_voip_number = 0, current_app_version = '".$app_version."', contact_number = :phone, forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
+		else $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', current_app_version = '".$app_version."', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
 		
 	    }
 	    else {
-		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0, is_voip_number = 0, phone_number = :phone WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
-		else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
+		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0, current_app_version = '".$app_version."', is_voip_number = 0, phone_number = :phone WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
+		else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', current_app_version = '".$app_version."', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
             
 		}
 	    $data = array(
