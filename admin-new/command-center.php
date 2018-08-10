@@ -298,6 +298,14 @@ background: rgba(74, 145, 251, 0.8);
 background: rgba(138, 138, 138, 0.8);
 }
 
+.search-cc .search-autocomplete-box ul li.agent-busy, .search-cc .search-autocomplete-box ul li.agent-progress, .search-cc .search-autocomplete-box ul li.client-progress{
+background: #f69944;
+}
+
+.search-cc .search-autocomplete-box ul li.agent-pending{
+background: #ff3c37;   
+}
+    
 .search-cc .search-autocomplete-box ul li a{
 display: block;
 color: #fff;
@@ -1717,15 +1725,32 @@ search_data += "<ul>";
 
 if(data.agents.length){
 $.each(data.agents, function( ind, agt ) {
-if(agt['status'] == 'offline') search_data += "<li class='agent-offline' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";
-else search_data += "<li class='agent' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";
+if(agt['pending_orders'] > 1 && agt['status'] == 'online'){
+    search_data += "<li class='agent-pending' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";   
+}else if(agt['processing_orders'] > 1 && agt['status'] == 'online'){
+    search_data += "<li class='agent-progress' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";   
+}else if(agt['available_for_new_order'] == 0 && agt['status'] == 'online'){
+    search_data += "<li class='agent-busy' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";
+}else if(agt['available_for_new_order'] == 1 && agt['status'] == 'online'){
+    search_data += "<li class='agent' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";
+}else if(agt['status'] == 'offline' && agr['block_washer'] == 0){
+    search_data += "<li class='agent-offline' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";    
+}else{
+    search_data += "<li class='agent' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";    
+}
 
 });
 }
 
 if(data.clients.length){
 $.each(data.clients, function( ind2, clt ) {
- search_data += "<li class='client' id='"+clt['id']+"'><a href='#'>"+clt['name']+"</a></li>";
+    if(clt['status'] == 'offline'){
+        search_data += "<li class='agent-offline' id='"+clt['id']+"'><a href='#'>"+clt['name']+"</a></li>";
+    }else if(clt['status'] == 'online' && clt['processing_orders'] > 0){
+        search_data += "<li class='client-progress' id='"+clt['id']+"'><a href='#'>"+clt['name']+"</a></li>";
+    }else{
+        search_data += "<li class='client' id='"+clt['id']+"'><a href='#'>"+clt['name']+"</a></li>";
+    }
 
 });
 }

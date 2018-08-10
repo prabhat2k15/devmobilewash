@@ -651,9 +651,11 @@ $agents_arr = array();
 $clients_arr = array();
 
 $q = new CDbCriteria();
-$q->addcondition("(CONCAT(first_name, ' ', last_name) LIKE '%".$search_query."%')");
+$q->addcondition("(first_name LIKE '".$search_query."%')");
+$q->addcondition("(last_name LIKE '".$search_query."%')");
 $q2 = new CDbCriteria();
-$q2->addcondition("(customername LIKE '%".$search_query."%') AND online_status = 'online'");
+// AND online_status = 'online'
+$q2->addcondition("(customername LIKE '".$search_query."%')");
 
 $findagents = Agents::model()->findAll( $q );
 $findclients = Customers::model()->findAll( $q2 );
@@ -665,16 +667,27 @@ $response = 'search results';
 
 if(count($findagents)){
 foreach($findagents as $key=>$agent){
+$pending_orders = Washingrequests::model()->countByAttributes(array("status"=>'0', "is_scheduled"=>'0','agent_id'=>$agent_id));
+$processing_order_res =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE status >= 1 AND status <= 3 AND agent_id  = '".$agent['id']."'")->queryAll();
+   $processing_orders = $processing_order_res[0]['count'];
 $agents_arr[$key]['id'] = $agent['id'];
 $agents_arr[$key]['name'] = $agent['first_name']." ".$agent['last_name'];
 $agents_arr[$key]['status'] = $agent['status'];
+$agents_arr[$key]['available_for_new_order'] = $agent['available_for_new_order'];
+$agents_arr[$key]['block_washer'] = $agent['block_washer'];
+$agents_arr[$key]['pending_orders'] = $pending_orders;
+$agents_arr[$key]['processing_orders'] = $pending_orders;
 }
 }
 
 if(count($findclients)){
 foreach($findclients as $key=>$client){
+$processing_order_res =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE status >= 1 AND status <= 3 AND customer_id = '".$client['id']."'")->queryAll()
+;   $processing_orders = $processing_order_res[0]['count'];
 $clients_arr[$key]['id'] = $client['id'];
 $clients_arr[$key]['name'] = $client['first_name']." ".$client['last_name'];
+$clients_arr[$key]['status'] = $client['online_status'];
+$clients_arr[$key]['processing_orders'] = $client['processing_orders'];
 }
 }
 
