@@ -6464,6 +6464,61 @@ $i++;
 	}
 	
 	
+		    		public function actiongettopmostcustomers()
+	{
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$from  = Yii::app()->request->getParam('from');
+$to  = Yii::app()->request->getParam('to');
+
+			$result= 'false';
+			$response= 'nothing found';
+			$cust_ids = array();
+			$topcusts_arr = array();
+			$topcusts_det_arr = array();
+			$all_washes =  Yii::app()->db->createCommand()
+						->select('customer_id')
+						->from('washing_requests')
+						->where("(order_for >= :from AND order_for <= :to) AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
+						->queryAll();
+
+if(count($all_washes) > 0){
+    $result= 'true';
+			$response= 'topmost customers';
+			
+
+foreach($all_washes as $wash){
+$cust_ids[] = $wash['customer_id'];	
+}
+
+$topcusts_arr = array_count_values($cust_ids);
+arsort($topcusts_arr);
+$i = 0;
+foreach($topcusts_arr as $key=>$cust){
+	$cust_det = Customers::model()->findByPk($key);
+	$topcusts_det_arr[$i]['id'] = $key;
+	
+	$topcusts_det_arr[$i]['name'] = $cust_det->first_name." ".$cust_det->last_name;
+	$topcusts_det_arr[$i]['total_washes'] = $cust;
+$i++;	
+}
+
+}
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+			'top_customers' => $topcusts_det_arr
+		);
+		echo json_encode($json);
+	}
+	
+	
 	
     public function actionupdatedevicestatus(){
 
