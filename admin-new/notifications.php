@@ -48,6 +48,7 @@ $result_code = $jsondata->result;
     if($_POST['receiver_type'] == 'all-clients' || $_POST['receiver_type'] == 'clients'){
 $handle = curl_init(ROOT_URL."/api/index.php?r=site/adminaddschedulenotify");
         $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+    }
 elseif($_POST['receiver_type'] == 'clients'){
     $data['receiver_ids'] = $_POST['selecter'];
 }
@@ -60,7 +61,7 @@ $jsondata = json_decode($result);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
 }
-}
+
 ?>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">

@@ -501,7 +501,7 @@ else echo number_format($vehicle->fifth_wash_discount, 2); ?></p></td>
 <?php if($kartdata->wash_later_fee > 0): ?>
 <table class="discount-details">
 <tr>
-<td><p>Wash Later Fee</p></td>
+<td><p>Surge Fee</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
 <p class="price">+$<?php echo number_format($kartdata->wash_later_fee*.25, 2); ?></p>
 </td>

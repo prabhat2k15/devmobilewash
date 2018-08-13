@@ -3455,7 +3455,16 @@ $customername = ucwords($customername);
 $payment_status = '';
 $submerchant_id = '';
 $transaction_status = '';
+$washer_payment_status = '';
 
+if(($wrequest['status'] == 4) && (!$wrequest['washer_payment_status'])){
+$end = time();
+$start = strtotime($wrequest['order_for']);
+
+$days_between = ceil(abs($end - $start) / 86400);
+//echo $wrequest['id']." ".$days_between."<br>"; 
+if($days_between > 1 ) $washer_payment_status = 'pending';
+}
 if($wrequest['failed_transaction_id']){
   $payment_status = 'Declined';
 }
@@ -3530,7 +3539,8 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 					'wash_request_position'=>$wrequest['wash_request_position'],
 					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
-'min_diff' => $min_diff
+'min_diff' => $min_diff,
+'washer_pay_status' => $washer_payment_status
                 );
 
 }
@@ -3578,7 +3588,8 @@ if($min_diff >= 0){
 					'wash_request_position'=>$wrequest['wash_request_position'],
 					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
-'min_diff' => $min_diff
+'min_diff' => $min_diff,
+'washer_pay_status' => $washer_payment_status
                 );
 
 }
@@ -3619,7 +3630,8 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 					'wash_request_position'=>$wrequest['wash_request_position'],
 					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
-'min_diff' => $min_diff
+'min_diff' => $min_diff,
+'washer_pay_status' => $washer_payment_status
                 );
 
 }
@@ -3658,7 +3670,8 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 					'wash_request_position'=>$wrequest['wash_request_position'],
 					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
-'min_diff' => $min_diff
+'min_diff' => $min_diff,
+'washer_pay_status' => $washer_payment_status
                 );
 
 

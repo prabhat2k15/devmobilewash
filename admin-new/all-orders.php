@@ -754,6 +754,9 @@ $.each(data.wash_requests, function( index, value ) {
     if(value.payment_status == 'Declined'){
       processordeclined_washes += "<p>#"+value.id+" Processor declined order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
+    if(value.washer_pay_status == 'pending'){
+      processordeclined_washes += "<p>#"+value.id+" Payment non-settled order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+    }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
      if((value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
@@ -857,7 +860,7 @@ dt_table.fnAddData(upcomingwashes);
  //dt_table.fnDraw();
 }
 
-console.log(processordeclined_washes);
+//console.log(processordeclined_washes);
 if(processordeclined_washes != ''){
     $(".spec-orders").html(processordeclined_washes);
    $(".spec-orders").show();

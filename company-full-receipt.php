@@ -255,7 +255,7 @@ if($kartdata->wash_now_fee > 0){ ?>
 if($kartdata->wash_later_fee > 0){ ?>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
 <tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Surge Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
 <p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_later_fee*.25, 2), 2); ?></p>
 </td>
@@ -469,7 +469,7 @@ if($kartdata->wash_later_fee > 0){ ?>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
 
 <tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Surge Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
 <p style='font-size: 18px; margin: 0;'>+$<?php echo number_format($kartdata->wash_later_fee, 2); ?></p>
 </td>
@@ -660,7 +660,7 @@ if($kartdata->wash_later_fee > 0){ ?>
 <table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>
 
 <tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Later Fee</p></td>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Surge Fee</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
 <p style='font-size: 18px; margin: 0;'>+$<?php echo number_format(round($kartdata->wash_later_fee*.75, 2), 2); ?></p>
 </td>
