@@ -1598,6 +1598,7 @@ $customerid = $this->aes256cbc_crypt( $customerid, 'd', AES256CBC_API_PASS );
                             'location_id'=> $sloc['id'],
 								'location_title'=> $sloc['location_title'],
 								'location_address'=> $sloc['location_address'],
+								'street_name'=> $sloc['street_name'],
 								'city'=> $sloc['city'],
 								'zipcode'=> $sloc['zipcode'],
 								'state' => $sloc['state'],

@@ -1121,7 +1121,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 }
 ?>
 <div class='regular-car-box' id='regular-car-box-<?php echo $ind+1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
-<img style="width: 170px; clear: both; display: block; margin-top: 20px;" src="<?php echo $veh->vehicle_image; ?>" alt="" />
+<img style="width: 170px; clear: both; display: block; margin-top: 20px;" src="<?php if(strpos($veh->vehicle_image, ROOT_URL) !== false) {echo $veh->vehicle_image; } else{echo ROOT_URL."/api/images/veh_img/".$veh->vehicle_image; } ?>" alt="" />
 <p style="margin-top: 20px;">Eco friendly waterless wash: <?php if($veh->eco_friendly == 1) {echo "Yes";} else {echo "No";} ?></p>
 <label class='control-label'>Make</label>
 <input type="text" name='car_makes[]' class='form-control regular-make' style='width: 300px; border: 0;' readonly value="<?php echo $veh->brand_name; ?>" />
@@ -1255,7 +1255,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 }
 ?>
 <div class='classic-car-box' id='classic-car-box-<?php echo $ind+1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
-<img style="width: 170px; clear: both; display: block; margin-top: 20px;" src="<?php echo $veh->vehicle_image; ?>" alt="" />
+<img style="width: 170px; clear: both; display: block; margin-top: 20px;" src="<?php if(strpos($veh->vehicle_image, ROOT_URL) !== false) {echo $veh->vehicle_image; } else{echo ROOT_URL."/api/images/veh_img/".$veh->vehicle_image; } ?>" alt="" />
 <p style="margin-top: 20px;">Eco friendly waterless wash: <?php if($veh->eco_friendly == 1) {echo "Yes";} else {echo "No";} ?></p>
 <label class='control-label'>Make</label>
 <input type="text" name='car_makes[]' class='form-control classic-make' style='width: 300px; border: 0;' readonly value="<?php echo $veh->brand_name; ?>" />
