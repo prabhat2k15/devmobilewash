@@ -616,7 +616,7 @@ if($vehicle->extplasticdressing_vehicle_fee_agent > 0){ ?>
 <?php } ?>
 
 
-<?php if($vehicle->extplasticdressing_vehicle_fee_agent > 0){ ?>
+<?php if($vehicle->bundle_discount_agent > 0){ ?>
 <tr>
 <td>
 <p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
