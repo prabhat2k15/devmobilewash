@@ -3257,8 +3257,9 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 				$status = 4;
 				$status_qr = ' AND w.status="'.$status.'"';
 			} elseif($event == 'processing'){
-				$status = 2;
-				$status_qr = ' AND (w.status >=1 && w.status <=3)';
+				$status = 3;
+				//$status_qr = ' AND (w.status >=1 && w.status <=3)';
+                $status_qr = ' AND (w.status = 3)';
 			} elseif($event == 'canceled'){
 				$status_qr = ' AND (w.status=5 || w.status=6)';
 			} elseif($event == 'declined'){
