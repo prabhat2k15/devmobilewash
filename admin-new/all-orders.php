@@ -245,6 +245,43 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 }
 
 
+ @-webkit-keyframes glowing5 {
+  0% { background-color: #fff; }
+  20% { background-color: #2714ff;  }
+  40% { background-color: #fff; }
+  60% { background-color: #2714ff;  }
+  80% { background-color: #fff; }
+  100% { background-color: #fff; }
+}
+
+@-moz-keyframes glowing5 {
+  0% { background-color: #fff; }
+  20% { background-color: #2714ff;  }
+  40% { background-color: #fff; }
+  60% { background-color: #2714ff;  }
+  80% { background-color: #fff; }
+  100% { background-color: #fff; }
+}
+
+@-o-keyframes glowing5 {
+ 0% { background-color: #fff; }
+  20% { background-color: #2714ff;  }
+  40% { background-color: #fff; }
+  60% { background-color: #2714ff;  }
+  80% { background-color: #fff; }
+  100% { background-color: #fff; }
+}
+
+@keyframes glowing5 {
+  0% { background-color: #fff; }
+  20% { background-color: #2714ff;  }
+  40% { background-color: #fff; }
+  60% { background-color: #2714ff;  }
+  80% { background-color: #fff; }
+  100% { background-color: #fff; }
+}
+
+
   .flashrow{
    -webkit-animation: glowing 1500ms infinite;
         -moz-animation: glowing 1500ms infinite;
@@ -289,6 +326,18 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 }
 
 .flashrowdeclinednotarrive td{
+    border: 0 !important;
+
+}
+
+  .flashrowchangedpack{
+   -webkit-animation: glowing5 1500ms infinite;
+        -moz-animation: glowing5 1500ms infinite;
+        -o-animation: glowing5 1500ms infinite;
+        animation: glowing5 1500ms infinite;
+}
+
+.flashrowchangedpack td{
     border: 0 !important;
 
 }
@@ -757,12 +806,19 @@ $.each(data.wash_requests, function( index, value ) {
     if(value.washer_pay_status == 'pending'){
       processordeclined_washes += "<p>#"+value.id+" Payment non-settled order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
+    if(value.washer_change_pack > 0){
+      processordeclined_washes += "<p>#"+value.id+" upgraded package/changed addons order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+    }
+    if(value.admin_submit_for_settle == 1){
+      processordeclined_washes += "<p>#"+value.id+" BT custom payment order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+    }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
      if((value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
      if((value.min_diff < 0) && (value.status == 1)) upcomingwashes["DT_RowClass"] = "flashrownotarrive";
      if(value.payment_status == 'Declined') upcomingwashes["DT_RowClass"] = "flashrowdeclined";
      if((value.min_diff <= 30) && (value.status == 0) && (value.payment_status == 'Declined')) upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
+     if(value.washer_change_pack > 0) upcomingwashes["DT_RowClass"] = "flashrowchangedpack";
 
       upcomingwashes.push("<a href='edit-order.php?id="+value.id+"' class='appt-edit-order' data-id='"+value.id+"' style='margin-right: 7px;'>Edit</a>");
       upcomingwashes.push(value.id);

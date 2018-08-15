@@ -3456,6 +3456,7 @@ $payment_status = '';
 $submerchant_id = '';
 $transaction_status = '';
 $washer_payment_status = '';
+$washer_change_pack = 0;
 
 if(($wrequest['status'] == 4) && (!$wrequest['washer_payment_status'])){
 $end = time();
@@ -3487,6 +3488,10 @@ if($payresult['success'] == 1) {
 $transaction_status = $payresult['status'];
 }*/
 
+if(($wrequest['status'] >=1) && ($wrequest['status'] <= 3)){
+	$total_rows =  Yii::app()->db->createCommand("SELECT COUNT(*) as total FROM activity_logs WHERE action = 'customeracceptupgrade' AND wash_request_id = ".$wrequest['id'])->queryAll();
+	$washer_change_pack = $total_rows[0]['total'];
+}
  }
 }
 
@@ -3540,7 +3545,9 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff,
-'washer_pay_status' => $washer_payment_status
+'washer_pay_status' => $washer_payment_status,
+'admin_submit_for_settle'=>$wrequest['admin_submit_for_settle'],
+'washer_change_pack' => $washer_change_pack
                 );
 
 }
@@ -3589,7 +3596,9 @@ if($min_diff >= 0){
 					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff,
-'washer_pay_status' => $washer_payment_status
+'washer_pay_status' => $washer_payment_status,
+'admin_submit_for_settle'=>$wrequest['admin_submit_for_settle'],
+'washer_change_pack' => $washer_change_pack
                 );
 
 }
@@ -3631,7 +3640,9 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff,
-'washer_pay_status' => $washer_payment_status
+'washer_pay_status' => $washer_payment_status,
+'admin_submit_for_settle'=>$wrequest['admin_submit_for_settle'],
+'washer_change_pack' => $washer_change_pack
                 );
 
 }
@@ -3671,7 +3682,9 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 					'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff,
-'washer_pay_status' => $washer_payment_status
+'washer_pay_status' => $washer_payment_status,
+'admin_submit_for_settle'=>$wrequest['admin_submit_for_settle'],
+'washer_change_pack' => $washer_change_pack
                 );
 
 
