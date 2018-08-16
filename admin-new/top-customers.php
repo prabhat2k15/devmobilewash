@@ -99,6 +99,8 @@ $customers_data = json_decode($result);
                                             <tr>
 						<th> ID </th>
                                                 <th> Name </th>
+						<th> Phone </th>
+						<th> Email </th>
                                                 <th> Total Washes </th>
                                             </tr>
                                         </thead>
@@ -107,6 +109,8 @@ $customers_data = json_decode($result);
 <tr>
     <td><?php echo $cust->id; ?></td>
     <td><?php echo $cust->name; ?></td>
+    <td><?php echo $cust->phone; ?></td>
+    <td><?php echo $cust->email; ?></td>
     <td><?php echo $cust->total_washes; ?></td>
 </tr>
 <?php endforeach; ?>

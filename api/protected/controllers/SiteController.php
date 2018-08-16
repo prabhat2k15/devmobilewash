@@ -3350,6 +3350,14 @@ else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reque
             foreach($qrRequests as $ind=> $wrequest)
             {
 
+	if($event == 'blueorders'){
+		$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
+	
+		if(count($coveragezipcheck)){
+			$zipcolor = $coveragezipcheck->zip_color;
+			if(($zipcolor != '') || ($zipcolor != 'blue')) continue;
+		}	
+	}    
 
 if($wrequest['is_scheduled']){
                  if($wrequest['reschedule_time']) $scheduledatetime = $wrequest['reschedule_date']." ".$wrequest['reschedule_time'];
@@ -6530,6 +6538,8 @@ foreach($topcusts_arr as $key=>$cust){
 	$topcusts_det_arr[$i]['id'] = $key;
 	
 	$topcusts_det_arr[$i]['name'] = $cust_det->first_name." ".$cust_det->last_name;
+	$topcusts_det_arr[$i]['email'] = $cust_det->email;
+	$topcusts_det_arr[$i]['phone'] = $cust_det->contact_number;
 	$topcusts_det_arr[$i]['total_washes'] = $cust;
 $i++;	
 }
