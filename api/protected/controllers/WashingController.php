@@ -8750,7 +8750,7 @@ die();
 
         $count = $total_order[0]['countid'];
 
-        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")
+        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")
 	->bindValue(':last_month', $last_month, PDO::PARAM_STR)
 	->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
 	->queryAll();
@@ -8766,6 +8766,15 @@ die();
                 $created_date = $orderbycustomer['order_for'];
                 $wash_request_position = $orderbycustomer['wash_request_position'];
                 $color='';
+		$zipcolor = '';
+		
+if($orderbycustomer['zipcode']) {
+	$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$orderbycustomer['zipcode']));
+	
+	if(count($coveragezipcheck)){
+		$zipcolor = $coveragezipcheck->zip_color;
+	}
+}
 
                 if($orderstatus == 4)
                 {
@@ -8835,7 +8844,8 @@ die();
 			"waterspotremove_vehicles" => $orderbycustomer['waterspotremove_vehicles'],
 			"upholstery_vehicles" => $orderbycustomer['upholstery_vehicles'],
 			"floormat_vehicles" => $orderbycustomer['floormat_vehicles'],
-            "total_wash" => $orderbycustomer['total_wash']
+            "total_wash" => $orderbycustomer['total_wash'],
+	    "zip_color" => $zipcolor
                     );
                 }
             }
@@ -8852,6 +8862,18 @@ die();
                 
                 if(($value['total_wash'] == 0)){
                     $data[$value['start']]['new_customer'][] = 1;
+                }
+		
+		if((($value['zip_color'] == '') || ($value['zip_color'] == 'blue'))){
+                    $data[$value['start']]['zip_blue'][] = 1;
+                }
+		
+		if(($value['zip_color'] == 'yellow')){
+                    $data[$value['start']]['zip_yellow'][] = 1;
+                }
+		
+		if(($value['zip_color'] == 'red')){
+                    $data[$value['start']]['zip_red'][] = 1;
                 }
                 
                 if($value['address_type'] == 'Home'){
@@ -8948,6 +8970,12 @@ die();
 		$dt[$key]['schedulecompleted']['color']= '';
 		$dt[$key]['ondemandcompleted']['color']= '';
 		$dt[$key]['addoncompleted']['color']= '';
+		$dt[$key]['zipblue']['color']= '';
+		$dt[$key]['zipblue']['count']= 0;
+		$dt[$key]['zipyellow']['color']= '';
+		$dt[$key]['zipyellow']['count']= 0;
+		$dt[$key]['zipred']['color']= '';
+		$dt[$key]['zipred']['count']= 0;
 		$addonscompleted = 0;
                 //print_r($val);
                 if(count($val['declined'])>0){
@@ -9018,6 +9046,21 @@ die();
 		if(count($val['ondemandcompleted'])>0){
                     $dt[$key]['ondemandcompleted']['count']= count($val['ondemandcompleted']);
                     $dt[$key]['ondemandcompleted']['color']= '#008080';
+                }
+		
+		if(count($val['zip_blue'])>0){
+                    $dt[$key]['zipblue']['count']= count($val['zip_blue']);
+                    $dt[$key]['zipblue']['color']= '#63dffb';
+                }
+		
+		if(count($val['zip_yellow'])>0){
+                    $dt[$key]['zipyellow']['count']= count($val['zip_yellow']);
+                    $dt[$key]['zipyellow']['color']= '#d8c200';
+                }
+		
+		if(count($val['zip_red'])>0){
+                    $dt[$key]['zipred']['count']= count($val['zip_red']);
+                    $dt[$key]['zipred']['color']= '#FF0000';
                 }
 		
 		

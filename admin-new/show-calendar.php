@@ -184,6 +184,9 @@ $(document).ready(function() {
 								var home_ord = Object.keys(value.home).length;
 								var work_ord = Object.keys(value.work).length;
 								var new_customer = Object.keys(value.new_customer).length;
+								var zipblue = value.zipblue.count;
+								var zipyellow = value.zipyellow.count;
+								var zipred = value.zipred.count;
 								
                                 if(value.new_customer.count > 0){
 									titledec = value.new_customer.count+' New Customer';
@@ -420,6 +423,45 @@ $(document).ready(function() {
 										
 									});
 								//}
+								
+								if(zipblue > 0){
+									
+									titlezipblue = value.zipblue.count+' Blue Orders';
+									colorzipblue = value.zipblue.color;
+									events.push({
+										eventtitle: 'blueorders',
+										title:titlezipblue,
+										description:'r',
+										start:index,
+										color:colorzipblue,
+									});
+								}
+								
+								if(zipyellow > 0){
+									
+									titlezipyellow = value.zipyellow.count+' Yellow Orders';
+									colorzipyellow = value.zipyellow.color;
+									events.push({
+										eventtitle: 'yelloworders',
+										title:titlezipyellow,
+										description:'s',
+										start:index,
+										color:colorzipyellow,
+									});
+								}
+								
+								if(zipred > 0){
+									
+									titlezipred = value.zipred.count+' Red Orders';
+									colorzipred = value.zipred.color;
+									events.push({
+										eventtitle: 'redorders',
+										title:titlezipred,
+										description:'t',
+										start:index,
+										color:colorzipred,
+									});
+								}
                                  if(total_cars >= 1  ){
 								   /*	titletotalcars = value.total_cars.count+' Vehicles';
 									colortotalcars = "#000000";
