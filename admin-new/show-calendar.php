@@ -426,7 +426,7 @@ $(document).ready(function() {
 								
 								if(zipblue > 0){
 									
-									titlezipblue = value.zipblue.count+' Blue Orders';
+									titlezipblue = value.zipblue.count+' Blue Zone Orders';
 									colorzipblue = value.zipblue.color;
 									events.push({
 										eventtitle: 'blueorders',
@@ -439,7 +439,7 @@ $(document).ready(function() {
 								
 								if(zipyellow > 0){
 									
-									titlezipyellow = value.zipyellow.count+' Yellow Orders';
+									titlezipyellow = value.zipyellow.count+' Yellow Zone Orders';
 									colorzipyellow = value.zipyellow.color;
 									events.push({
 										eventtitle: 'yelloworders',
@@ -452,7 +452,7 @@ $(document).ready(function() {
 								
 								if(zipred > 0){
 									
-									titlezipred = value.zipred.count+' Red Orders';
+									titlezipred = value.zipred.count+' Red Zone Orders';
 									colorzipred = value.zipred.color;
 									events.push({
 										eventtitle: 'redorders',

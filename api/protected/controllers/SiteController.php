@@ -3355,9 +3355,34 @@ else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reque
 	
 		if(count($coveragezipcheck)){
 			$zipcolor = $coveragezipcheck->zip_color;
-			if(($zipcolor != '') || ($zipcolor != 'blue')) continue;
-		}	
-	}    
+			if(($zipcolor != '') && ($zipcolor != 'blue')) continue;
+		}
+		
+	}
+	
+	if($event == 'yelloworders'){
+		$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
+	
+		if(count($coveragezipcheck)){
+			$zipcolor = $coveragezipcheck->zip_color;
+			if(($zipcolor != 'yellow')) continue;
+		}
+		else{
+			continue;
+		}
+	}
+	
+	if($event == 'redorders'){
+		$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
+	
+		if(count($coveragezipcheck)){
+			$zipcolor = $coveragezipcheck->zip_color;
+			if(($zipcolor != 'red')) continue;
+		}
+		else{
+			continue;
+		}
+	}
 
 if($wrequest['is_scheduled']){
                  if($wrequest['reschedule_time']) $scheduledatetime = $wrequest['reschedule_date']." ".$wrequest['reschedule_time'];
