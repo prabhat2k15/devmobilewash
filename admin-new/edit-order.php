@@ -240,7 +240,6 @@ $jsondata = json_decode($result);
 }
 
 $old_car_list = explode(",", $getorder->car_list);
-
 if(count($_POST['car_makes'])){
 $car_ids = '';
 $car_packs = '';
@@ -1093,6 +1092,7 @@ $point_index = 0;
 foreach($regular_vehicles as $ind => $veh): ?>
 <?php
 if($getorder->status != 4) $wash_points++;
+
 $handle = curl_init(ROOT_URL."/api/index.php?r=customers/getvehiclebyid");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array("vehicle_id" => $veh->id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
@@ -1204,7 +1204,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
       $wash_points = 0;
 }
 else{
-      echo "<div class='fifth-disc-wrap'></div>";
+      echo "<div class='fifth-disc-wrap'><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='0' /></div>";
 //echo "<input type='hidden' name='fifth_discs[]' value='".$veh_detail[10]."' />";
     } ?>
 
@@ -1340,7 +1340,7 @@ if($vehdata->vehicle->vehicle_type == 'E') {
       $wash_points = 0;
 }
 else{
-      echo "<div class='fifth-disc-wrap'></div>";
+      echo "<div class='fifth-disc-wrap'><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='0' /></div>";
 //echo "<input type='hidden' name='fifth_discs[]' value='".$veh_detail[10]."' />";
     } ?>
 
@@ -2412,7 +2412,7 @@ if(wash_points >= 5){
       wash_points = 0;
 }
 else{
-      content += "<div class='fifth-disc-wrap'></div>";
+      content += "<div class='fifth-disc-wrap'><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='0' /></div>";
     }
 
 content +="<p style='margin-top: 20px; text-align: right; margin-right: 15px; margin-bottom: 15px;'><a href='#' class='regular-car-remove'>Remove</a></p></div>";
@@ -2471,7 +2471,7 @@ wash_points++;
       wash_points = 0;
 }
 else{
-      content += "<div class='fifth-disc-wrap'></div>";
+      content += "<div class='fifth-disc-wrap'><input type='hidden' name='fifth_discs[]' id='fifth_discs' value='0' /></div>";
     }
 content += "<p style='margin-top: 20px; text-align: right; margin-right: 15px; margin-bottom: 15px;'><a href='#' class='classic-car-remove'>Remove</a></p></div>";
 

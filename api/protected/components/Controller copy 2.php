@@ -542,9 +542,6 @@ if($vehicle_details->vehicle_type == 'E') $floormat_price = 15;
 						//$agent_total += round(5 * .8, 2);
 
 						$fifth_wash_disc = 5;
-						$fifth_wash_discount += 5;
-						if(count($total_cars) > 1) $company_total -= 5-.8;
-						else $company_total -= 5;
 					}
 
 					/* ----- pet hair / lift / fifth / addons check end ------- */
@@ -582,7 +579,6 @@ $first_wash_discount = $first_disc;
 if((!$fifth_wash_disc) && (!$first_wash_discount) && (count($total_cars) > 1)) {
   if(count($vehicle_wash_pricing)) $bundle_disc = $vehicle_wash_pricing->bundle_disc;
   else $bundle_disc = 1;
-  $bundle_discount++;
 }
 if(count($total_cars) > 1) {
     //if(count($vehicle_wash_pricing)) $agent_bundle_disc = $vehicle_wash_pricing->bundle_disc*.8;
@@ -674,10 +670,10 @@ $total =  $total + $wash_later_fee;
 
 				/* ------------ bundle discount ------- */
 
-				/*if(count($total_cars) >= 2) {
+				if(count($total_cars) >= 2) {
 					$bundle_discount = count($total_cars) * 1;
 
-				}*/
+				}
 
                 /* ------------ bundle discount end ------- */
 
@@ -687,10 +683,10 @@ $total =  $total + $wash_later_fee;
 
 				$cust_details = Customers::model()->findByAttributes(array("id"=>$wash_id_check->customer_id));
 
-				//$fifth_wash_discount = $wash_id_check->fifth_wash_discount;
+				$fifth_wash_discount = $wash_id_check->fifth_wash_discount;
 				$promo_wash_count = $cust_details->fifth_wash_points;
 
-				//if($fifth_wash_discount && $bundle_discount) $bundle_discount -= 1;
+				if($fifth_wash_discount && $bundle_discount) $bundle_discount -= 1;
 
 				/* ------------ fifth wash discount end ------- */
 
@@ -735,11 +731,11 @@ if($first_wash_discount && $bundle_discount) $bundle_discount -= 1;
 				$company_total -= $bundle_discount * .2;
 
 
-				/*if($wash_id_check->fifth_wash_discount){
+				if($wash_id_check->fifth_wash_discount){
 
 						if(count($total_cars) > 1) $company_total -= 5-.8;
 						else $company_total -= 5;
-				}*/
+				}
 
 
 				if($coupon_discount > 0){
