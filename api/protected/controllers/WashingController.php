@@ -8864,15 +8864,15 @@ if($orderbycustomer['zipcode']) {
                     $data[$value['start']]['new_customer'][] = 1;
                 }
 		
-		if((($value['zip_color'] == '') || ($value['zip_color'] == 'blue'))){
+		if((($value['zip_color'] == '') || ($value['zip_color'] == 'blue'))  && ($value['title'] != 'Canceled')){
                     $data[$value['start']]['zip_blue'][] = 1;
                 }
 		
-		if(($value['zip_color'] == 'yellow')){
+		if(($value['zip_color'] == 'yellow') && ($value['title'] != 'Canceled')){
                     $data[$value['start']]['zip_yellow'][] = 1;
                 }
 		
-		if(($value['zip_color'] == 'red')){
+		if(($value['zip_color'] == 'red') && ($value['title'] != 'Canceled')){
                     $data[$value['start']]['zip_red'][] = 1;
                 }
                 

@@ -417,7 +417,7 @@ $(document).ready(function() {
 									color3 = '#2a3f53';
 									events.push({
 										title:title3,
-										description:'q',
+										description:'v',
 										start:index,
 										color:color3,
 										

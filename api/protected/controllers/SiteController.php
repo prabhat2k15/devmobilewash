@@ -3252,14 +3252,14 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 				$status = 0;
 				$status_qr = ' AND w.status="'.$status.'"';
 			} elseif($event == 'total_orders'){
-                $status_qr = " AND w.status IN('0','4')";
+                $status_qr = " AND w.status IN('0','4','3','2','1')";
             } elseif($event == 'completed'){
 				$status = 4;
 				$status_qr = ' AND w.status="'.$status.'"';
 			} elseif($event == 'processing'){
 				$status = 3;
-				//$status_qr = ' AND (w.status >=1 && w.status <=3)';
-                $status_qr = ' AND (w.status = 3)';
+				$status_qr = ' AND (w.status >=1 && w.status <=3)';
+                //$status_qr = ' AND (w.status = 3)';
 			} elseif($event == 'canceled'){
 				$status_qr = ' AND (w.status=5 || w.status=6)';
 			} elseif($event == 'declined'){
@@ -3288,7 +3288,9 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 			}
 			elseif($event == 'newcustomer'){
 				$status_qr=" AND c.total_wash = 0";
-			}
+			}elseif(in_array($event, array('yelloworders', 'blueorders', 'redorders'))){
+                $status_qr = " AND w.status IN('0','4','3','2','1')";
+            }
 			else {
 				$status_qr = '';
 			}
