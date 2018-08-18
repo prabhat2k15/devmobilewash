@@ -11414,12 +11414,13 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
 					$to_time = strtotime(date('Y-m-d g:i A'));
 					$from_time = strtotime($scheduledatetime);
 					$min_diff = -1;
-					if($from_time >= $to_time){
+					//if($from_time >= $to_time){
 						$min_diff = round(($from_time - $to_time) / 60,2);
-					}
+					//}
 
 					if(!$is_scheduled_wash_120){
-						if($min_diff <= 120 && $min_diff >= 0){
+						//if($min_diff <= 120 && $min_diff >= 0){
+						if($min_diff <= 120){
 							$is_scheduled_wash_120 = 1;
 							$scheduled_wash_120_id = $schedwash->id;
 							break;

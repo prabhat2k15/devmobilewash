@@ -5334,7 +5334,22 @@ die();
 	 $ind5 = 0;
 	 $ind10 = 0;
 	 $ind15 = 0;
-$all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0, 'is_first_wash' => 0),array('order'=>'id ASC'));
+	 $total_entries = 0;
+	$total_pages = 0;
+	$limit = 0;
+	$offset = 0;
+	$page_number = 1;
+	$limit = Yii::app()->request->getParam('limit');
+	$page_number = Yii::app()->request->getParam('page_number');
+	$limit = 100;
+	$offset = ($page_number -1) * $limit;
+  
+$total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE total_wash = 0 AND is_first_wash = 0")->queryAll();
+if($limit > 0) $all_customers =  Yii::app()->db->createCommand("SELECT * FROM customers WHERE total_wash = 0 AND is_first_wash = 0 ORDER BY id ASC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+
+ $total_entries = $total_rows[0]['countid'];
+ if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
+ 
 
 			if(count($all_customers)){
 
@@ -5344,7 +5359,7 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
                      
 			$current_time = strtotime(date('Y-m-d H:i:s'));
 
-			$create_time = strtotime($customer->created_date);
+			$create_time = strtotime($customer['created_date']);
 			$min_diff = 0;
 			if($current_time > $create_time){
 				$min_diff = round(($current_time - $create_time) / 60,2);
@@ -5353,12 +5368,12 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			// 5 days or more inactive
 			if(($min_diff >= 7200) && ($min_diff < 14400)){
 
-			$nonreturncust_arr_5[$ind5]['id'] = $customer->id;
-			$nonreturncust_arr_5[$ind5]['name'] = $customer->first_name." ".$customer->last_name;
-			$nonreturncust_arr_5[$ind5]['email'] = $customer->email;
-			$nonreturncust_arr_5[$ind5]['phone'] = $customer->contact_number;
-			$nonreturncust_arr_5[$ind5]['total_wash'] = $customer->total_wash;
-			$nonreturncust_arr_5[$ind5]['updated_date'] = date('Y-m-d h:i A', strtotime($customer->updated_date));
+			$nonreturncust_arr_5[$ind5]['id'] = $customer['id'];
+			$nonreturncust_arr_5[$ind5]['name'] = $customer['first_name']." ".$customer['last_name'];
+			$nonreturncust_arr_5[$ind5]['email'] = $customer['email'];
+			$nonreturncust_arr_5[$ind5]['phone'] = $customer['contact_number'];
+			$nonreturncust_arr_5[$ind5]['total_wash'] = $customer['total_wash'];
+			$nonreturncust_arr_5[$ind5]['updated_date'] = date('Y-m-d h:i A', strtotime($customer['updated_date']));
 			
 			$ind5++;
 
@@ -5367,12 +5382,12 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			// 10 days or more inactive
 			if(($min_diff >= 14400) && ($min_diff < 21600)){
 
-			$nonreturncust_arr_10[$ind10]['id'] = $customer->id;
-			$nonreturncust_arr_10[$ind10]['name'] = $customer->first_name." ".$customer->last_name;
-			$nonreturncust_arr_10[$ind10]['email'] = $customer->email;
-			$nonreturncust_arr_10[$ind10]['phone'] = $customer->contact_number;
-			$nonreturncust_arr_10[$ind10]['total_wash'] = $customer->total_wash;
-			$nonreturncust_arr_10[$ind10]['updated_date'] = date('Y-m-d h:i A', strtotime($customer->updated_date));
+			$nonreturncust_arr_10[$ind10]['id'] = $customer['id'];
+			$nonreturncust_arr_10[$ind10]['name'] = $customer['first_name']." ".$customer['last_name'];
+			$nonreturncust_arr_10[$ind10]['email'] = $customer['email'];
+			$nonreturncust_arr_10[$ind10]['phone'] = $customer['contact_number'];
+			$nonreturncust_arr_10[$ind10]['total_wash'] = $customer['total_wash'];
+			$nonreturncust_arr_10[$ind10]['updated_date'] = date('Y-m-d h:i A', strtotime($customer['updated_date']));
 			
 			$ind10++;
 
@@ -5381,12 +5396,12 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			// 15 days or more inactive
 			if($min_diff >= 21600){
 
-			$nonreturncust_arr_15[$ind15]['id'] = $customer->id;
-			$nonreturncust_arr_15[$ind15]['name'] = $customer->first_name." ".$customer->last_name;
-			$nonreturncust_arr_15[$ind15]['email'] = $customer->email;
-			$nonreturncust_arr_15[$ind15]['phone'] = $customer->contact_number;
-			$nonreturncust_arr_15[$ind15]['total_wash'] = $customer->total_wash;
-			$nonreturncust_arr_15[$ind15]['updated_date'] = date('Y-m-d h:i A', strtotime($customer->updated_date));
+			$nonreturncust_arr_15[$ind15]['id'] = $customer['id'];
+			$nonreturncust_arr_15[$ind15]['name'] = $customer['first_name']." ".$customer['last_name'];
+			$nonreturncust_arr_15[$ind15]['email'] = $customer['email'];
+			$nonreturncust_arr_15[$ind15]['phone'] = $customer['contact_number'];
+			$nonreturncust_arr_15[$ind15]['total_wash'] = $customer['total_wash'];
+			$nonreturncust_arr_15[$ind15]['updated_date'] = date('Y-m-d h:i A', strtotime($customer['updated_date']));
 			
 			$ind15++;
 
@@ -5404,7 +5419,9 @@ $all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0
 			'response'=> $response,
 			'nonreturncusts_5' => $nonreturncust_arr_5,
 			'nonreturncusts_10' => $nonreturncust_arr_10,
-			'nonreturncusts_15' => $nonreturncust_arr_15
+			'nonreturncusts_15' => $nonreturncust_arr_15,
+			'total_entries' => $total_entries,
+	    'total_pages' => $total_pages
 		);
 
 		echo json_encode($json);
@@ -7344,8 +7361,14 @@ die();
 	 $index = 0;
 	 
 $range = Yii::app()->request->getParam('range');
+$page_number = 1;
+	$limit = Yii::app()->request->getParam('limit');
+	$page_number = Yii::app()->request->getParam('page_number');
+	$limit = 100;
+	$offset = ($page_number -1) * $limit;
 
-$all_customers = Customers::model()->findAllByAttributes(array('total_wash' => 0, 'is_first_wash' => 0),array('order'=>'id ASC'));
+if($limit > 0) $all_customers =  Yii::app()->db->createCommand("SELECT * FROM customers WHERE total_wash = 0 AND is_first_wash = 0 ORDER BY id ASC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+
 
 if(count($all_customers)){
 
@@ -7353,7 +7376,7 @@ if(count($all_customers)){
                      
 			$current_time = strtotime(date('Y-m-d H:i:s'));
 
-			$create_time = strtotime($customer->created_date);
+			$create_time = strtotime($customer['created_date']);
 			$min_diff = 0;
 			if($current_time > $create_time){
 				$min_diff = round(($current_time - $create_time) / 60,2);
@@ -7362,12 +7385,12 @@ if(count($all_customers)){
 			// 5 days or more inactive
 			if(($range == 5) && ($min_diff >= 7200) && ($min_diff < 14400)){
 
-			$inactivecust_arr[$index]['id'] = $customer->id;
-			$inactivecust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
-			$inactivecust_arr[$index]['email'] = $customer->email;
-			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
-			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
-			$inactivecust_arr[$index]['last_activity'] = date('Y-m-d h:s A', strtotime($customer->updated_date));
+			$inactivecust_arr[$index]['id'] = $customer['id'];
+			$inactivecust_arr[$index]['customername'] = $customer['first_name']." ".$customer['last_name'];
+			$inactivecust_arr[$index]['email'] = $customer['email'];
+			$inactivecust_arr[$index]['phone'] = $customer['contact_number'];
+			$inactivecust_arr[$index]['total_wash'] = $customer['total_wash'];
+			$inactivecust_arr[$index]['last_activity'] = date('Y-m-d h:s A', strtotime($customer['updated_date']));
 			
 			$index++;
 
@@ -7376,12 +7399,12 @@ if(count($all_customers)){
 			// 10 days or more inactive
 			if(($range == 10) && ($min_diff >= 14400) && ($min_diff < 21600)){
 
-			$inactivecust_arr[$index]['id'] = $customer->id;
-			$inactivecust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
-			$inactivecust_arr[$index]['email'] = $customer->email;
-			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
-			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
-			$inactivecust_arr[$index]['last_activity'] = date('Y-m-d h:s A', strtotime($customer->updated_date));
+			$inactivecust_arr[$index]['id'] = $customer['id'];
+			$inactivecust_arr[$index]['customername'] = $customer['first_name']." ".$customer['last_name'];
+			$inactivecust_arr[$index]['email'] = $customer['email'];
+			$inactivecust_arr[$index]['phone'] = $customer['contact_number'];
+			$inactivecust_arr[$index]['total_wash'] = $customer['total_wash'];
+			$inactivecust_arr[$index]['last_activity'] = date('Y-m-d h:s A', strtotime($customer['updated_date']));
 			
 			$index++;
 
@@ -7390,12 +7413,12 @@ if(count($all_customers)){
 			// 15 days or more inactive
 			if(($range == 15) && ($min_diff >= 21600)){
 
-			$inactivecust_arr[$index]['id'] = $customer->id;
-			$inactivecust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
-			$inactivecust_arr[$index]['email'] = $customer->email;
-			$inactivecust_arr[$index]['phone'] = $customer->contact_number;
-			$inactivecust_arr[$index]['total_wash'] = $customer->total_wash;
-			$inactivecust_arr[$index]['last_activity'] = date('Y-m-d h:s A', strtotime($customer->updated_date));
+			$inactivecust_arr[$index]['id'] = $customer['id'];
+			$inactivecust_arr[$index]['customername'] = $customer['first_name']." ".$customer['last_name'];
+			$inactivecust_arr[$index]['email'] = $customer['email'];
+			$inactivecust_arr[$index]['phone'] = $customer['contact_number'];
+			$inactivecust_arr[$index]['total_wash'] = $customer['total_wash'];
+			$inactivecust_arr[$index]['last_activity'] = date('Y-m-d h:s A', strtotime($customer['updated_date']));
 			
 			$index++;
 
@@ -7407,7 +7430,7 @@ if(count($all_customers)){
     $inactivecust_arr, // a CActiveRecord array OR any CModel array
     array('id'=>array('raw'),'customername'=>array('text'), 'email'=>array('text'), 'phone'=>array('text'), 'last_activity'=>array('text')),
     true, // boolPrintRows
-    'inactivecustomers-'.$range.'days--'.date('Y-m-d-H-i-s').".csv",
+    'inactivecustomers-'.$range.'days-pageno-'.$page_number.'--'.date('Y-m-d-H-i-s').".csv",
     ","
    );
   

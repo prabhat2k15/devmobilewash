@@ -22,7 +22,9 @@ var table;
 
            table = $('#example1, #example2, #example3').dataTable( {
   "pageLength": 20,
-  "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
+  "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+  "bPaginate": false,
+  "aaSorting": [],
 } );
 
 
@@ -34,14 +36,15 @@ var table;
 <?php include('navigation-employee.php') ?>
 <?php endif; ?>
 <?php
-
+$page_number = 1;
+if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
 
     $url = ROOT_URL.'/api/index.php?r=site/getinactivecustomers';
 
 
         //echo $url;
         $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'page_number' => $page_number);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -143,6 +146,22 @@ display: none;
     font-size: 26px;
     font-weight: 400;
 }
+
+.custom-pagination{
+    text-align: center;
+    margin: 10px;
+}
+
+.custom-pagination a{
+   padding: 5px 10px;
+    background: #337ab7;
+    color: #fff;
+    margin-right: 2px; 
+}
+
+.custom-pagination a:hover{
+    text-decoration: none;
+}
 </style>
 
 
@@ -175,7 +194,7 @@ cursor: pointer !important;
                                 <div class="portlet-title tabbable-line">
                                                 <div class="caption caption-md">
                                                     <i class="icon-globe theme-font hide"></i>
-                                                    <span class="caption-subject bold uppercase" style="color: #000"> Inactive Customers</span> <a style="margin-left: 20px;" target="_blank" class="csv-link" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=5&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4">Download CSV</a>
+                                                    <span class="caption-subject bold uppercase" style="color: #000"> Inactive Customers</span> <a style="margin-left: 20px;" target="_blank" class="csv-link" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=5&page_number=<?php echo $page_number; ?>&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4">Download CSV</a>
                                                 </div>
                                                 <ul class="nav nav-tabs">
                                                     <li class="active">
@@ -314,6 +333,17 @@ cursor: pointer !important;
                                         </tbody>
                                     </table>
                                     </div>
+                                      <div class='custom-pagination'>
+                                    <?php 
+                                    //echo $searchresults->total_pages."<br>";
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?page_number=1'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    if($page_number != $allcustomers->total_pages) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?page_number=".$allcustomers->total_pages."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
                                 </div>
                                  
                                 </div><!-- body end-->
@@ -336,13 +366,13 @@ cursor: pointer !important;
                   $(".nav-tabs a").click(function(){
                      
                      if ($(this).text() == '5 Days') {
-                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=5&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
+                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=5&page_number=<?php echo $page_number; ?>&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
                      }
                      if ($(this).text() == '10 Days') {
-                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=10&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
+                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=10&page_number=<?php echo $page_number; ?>&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
                      }
                      if ($(this).text() == '15 Days') {
-                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=15&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
+                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=15&page_number=<?php echo $page_number; ?>&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
                      }
                   });
                   });
