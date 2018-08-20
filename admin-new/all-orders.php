@@ -413,6 +413,16 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 .street_view{
     position: relative;
 }
+.dt-button.buttons-csv.buttons-html5 {
+    padding: 5px 10px;
+    background-color: lightgray;
+    color: black;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.manik > .dt-buttons{float: left !important;}
+.dt-button.buttons-csv.buttons-html5:hover{ background-color: black; color: #fff; border-color: black; }
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -660,6 +670,30 @@ $.fn.dataTableExt.oSort['nullable-desc'] = function(a,b) {
     }
 }
 
+  /*         dt_table = $('#example1, #example2').dataTable( {
+  "pageLength": 20,
+  "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+
+"aaSorting": []
+
+} );*/
+
+        });
+        </script>
+<?php if(isset($_GET['event']) && $_GET['event'] == 'total_orders'){?>
+<script type="text/javascript">
+  dt_table = $('#example1, #example2').DataTable({
+        "pageLength": 20,
+        "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+        "aaSorting": [],
+        "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [
+            'csvHtml5'
+        ]
+    });
+  </script>
+<?php } else {?>
+<script type="text/javascript">
            dt_table = $('#example1, #example2').dataTable( {
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
@@ -667,9 +701,8 @@ $.fn.dataTableExt.oSort['nullable-desc'] = function(a,b) {
 "aaSorting": []
 
 } );
-
-        });
-        </script>
+</script>
+<?php } ?>
 <script>
 var params = {};
    <?php  foreach($_GET as $key => $value)

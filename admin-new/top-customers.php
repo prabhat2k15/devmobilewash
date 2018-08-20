@@ -54,8 +54,16 @@ $customers_data = json_decode($result);
 <?php endif; ?>
 
 <style>
-
-
+.dt-button.buttons-csv.buttons-html5 {
+    padding: 5px 10px;
+    background-color: lightgray;
+    color: black;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.manik > .dt-buttons{margin : 0px !important; float: left !important;}
+.dt-button.buttons-csv.buttons-html5:hover{ background-color: black; color: #fff; border-color: black; }
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -140,6 +148,17 @@ $customers_data = json_decode($result);
             <?php include('footer.php') ?>
 
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script type="text/javascript">
+                $('#example1').DataTable({
+        pageLength: 25,
+        stateSave: true,
+        //lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [
+            'csvHtml5'
+        ]
+    });
+            </script>
              <!--<script src='js/jquery.voicerss-tts.min.js'></script>-->
       
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
