@@ -54,8 +54,7 @@ $washers_data = json_decode($result);
 <?php endif; ?>
 
 <style>
-
-
+.dt-button.buttons-csv.buttons-html5 { opacity: 0;}
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -73,7 +72,7 @@ $washers_data = json_decode($result);
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> Top Washers (<?php echo date("M j, Y",strtotime($from)); ?>  - <?php echo date("M j, Y",strtotime($to)); ?>) </span>
+                                        <span class="caption-subject bold uppercase"> Top Washers (<?php echo date("M j, Y",strtotime($from)); ?>  - <?php echo date("M j, Y",strtotime($to)); ?>) </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                                     </div>
                                     <div class="caption font-dark">
 
@@ -100,6 +99,10 @@ $washers_data = json_decode($result);
 						<th> ID </th>
                                                 <th> Real Washer ID </th>
                                                 <th> Name </th>
+                                                <th style="display: none;"> Street </th>
+                                                <th style="display: none;"> city </th>
+                                                <th style="display: none;"> state </th>
+                                                <th style="display: none;"> zip </th>
                                                 <th> Total Washes </th>
                                             </tr>
                                         </thead>
@@ -109,6 +112,10 @@ $washers_data = json_decode($result);
     <td><?php echo $washer->id; ?></td>
     <td><?php echo $washer->company_id; ?></td>
     <td><?php echo $washer->name; ?></td>
+    <td style="display: none;"><?php echo $washer->street; ?></td>
+    <td style="display: none;"><?php echo $washer->city; ?></td>
+    <td style="display: none;"><?php echo $washer->state; ?></td>
+    <td style="display: none;"><?php echo $washer->zip; ?></td>
     <td><?php echo $washer->total_washes; ?></td>
 </tr>
 <?php endforeach; ?>
@@ -138,6 +145,23 @@ $washers_data = json_decode($result);
             <?php include('footer.php') ?>
 
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script type="text/javascript">
+                $('#example1').DataTable({
+        pageLength: 25,
+        stateSave: true,
+        //lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [
+            'csvHtml5'
+        ]
+    });
+$(document).ready(function(){
+
+    $('.csv-link').on('click',function(){
+        $('.buttons-csv').trigger('click');
+    });
+});
+            </script>
              <!--<script src='js/jquery.voicerss-tts.min.js'></script>-->
       
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>

@@ -413,16 +413,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 .street_view{
     position: relative;
 }
-.dt-button.buttons-csv.buttons-html5 {
-    padding: 5px 10px;
-    background-color: lightgray;
-    color: black;
-    border: 1px solid lightgray;
-    border-radius: 5px;
-    text-decoration: none;
-}
-.manik > .dt-buttons{float: left !important;}
-.dt-button.buttons-csv.buttons-html5:hover{ background-color: black; color: #fff; border-color: black; }
+.dt-button.buttons-csv.buttons-html5 { opacity: 0; }
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -442,7 +433,8 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> <?php if($_GET['filter'] == 'upcoming') echo 'Upcoming'; if($_GET['filter'] == 'nonupcoming') echo 'Non-Upcoming'; ?> All Orders </span>
+                                        <span class="caption-subject bold uppercase"> <?php if($_GET['filter'] == 'upcoming') echo 'Upcoming'; if($_GET['filter'] == 'nonupcoming') echo 'Non-Upcoming'; ?> All Orders </span><?php if(isset($_GET['event']) && $_GET['event'] == 'total_orders'){ ?><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                                        <?php } ?>
                                     </div>
                                     <div class="caption font-dark">
 
@@ -691,6 +683,12 @@ $.fn.dataTableExt.oSort['nullable-desc'] = function(a,b) {
             'csvHtml5'
         ]
     });
+    $(document).ready(function(){
+
+    $('.csv-link').on('click',function(){
+        $('.buttons-csv').trigger('click');
+    });
+});
   </script>
 <?php } else {?>
 <script type="text/javascript">

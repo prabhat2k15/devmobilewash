@@ -54,16 +54,7 @@ $customers_data = json_decode($result);
 <?php endif; ?>
 
 <style>
-.dt-button.buttons-csv.buttons-html5 {
-    padding: 5px 10px;
-    background-color: lightgray;
-    color: black;
-    border: 1px solid lightgray;
-    border-radius: 5px;
-    text-decoration: none;
-}
-.manik > .dt-buttons{margin : 0px !important; float: left !important;}
-.dt-button.buttons-csv.buttons-html5:hover{ background-color: black; color: #fff; border-color: black; }
+.dt-button.buttons-csv.buttons-html5 { opacity: 0;}
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -81,7 +72,7 @@ $customers_data = json_decode($result);
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> Top Customers (<?php echo date("M j, Y",strtotime($from)); ?>  - <?php echo date("M j, Y",strtotime($to)); ?>) </span>
+                                        <span class="caption-subject bold uppercase"> Top Customers (<?php echo date("M j, Y",strtotime($from)); ?>  - <?php echo date("M j, Y",strtotime($to)); ?>) </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                                     </div>
                                     <div class="caption font-dark">
 
@@ -109,6 +100,11 @@ $customers_data = json_decode($result);
                                                 <th> Name </th>
 						<th> Phone </th>
 						<th> Email </th>
+                                                <th style="display: none;"> Address </th>
+                        <th style="display: none;"> Street </th>
+                        <th style="display: none;"> city </th>
+                        <th style="display: none;"> state </th>
+                        <th style="display: none;"> zip </th>
                                                 <th> Total Washes </th>
                                             </tr>
                                         </thead>
@@ -119,6 +115,11 @@ $customers_data = json_decode($result);
     <td><?php echo $cust->name; ?></td>
     <td><?php echo $cust->phone; ?></td>
     <td><?php echo $cust->email; ?></td>
+    <td style="display: none;"><?php echo $cust->address; ?></td>
+    <td style="display: none;"><?php echo $cust->street; ?></td>
+    <td style="display: none;"><?php echo $cust->city; ?></td>
+    <td style="display: none;"><?php echo $cust->state; ?></td>
+    <td style="display: none;"><?php echo $cust->zip; ?></td>
     <td><?php echo $cust->total_washes; ?></td>
 </tr>
 <?php endforeach; ?>
@@ -158,6 +159,11 @@ $customers_data = json_decode($result);
             'csvHtml5'
         ]
     });
+        $(document).ready(function(){
+            $('.csv-link').on('click',function(){
+                $('.buttons-csv').trigger('click');
+            });
+        });
             </script>
              <!--<script src='js/jquery.voicerss-tts.min.js'></script>-->
       
