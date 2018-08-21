@@ -5239,14 +5239,28 @@ die();
 	 $ind30 = 0;
 	 $ind60 = 0;
 	 $ind90 = 0;
-$all_customers = Customers::model()->findAllByAttributes(array('is_non_returning' => 1),array('order'=>'id ASC'));
+	 $total_entries = 0;
+	$total_pages = 0;
+	$limit = 0;
+	$offset = 0;
+	$page_number = 1;
+	$limit = Yii::app()->request->getParam('limit');
+	$page_number = Yii::app()->request->getParam('page_number');
+	$limit = 100;
+	$offset = ($page_number -1) * $limit;
+	
+	$total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_non_returning = 1")->queryAll();
+if($limit > 0) $all_customers =  Yii::app()->db->createCommand("SELECT * FROM customers WHERE is_non_returning = 1 ORDER BY id ASC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
 
+ $total_entries = $total_rows[0]['countid'];
+ if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
+ 
 			if(count($all_customers)){
 
 				$response = "nonreturning customers";
 				$result = "true";
                 foreach($all_customers as $ind=>$customer){
-                     $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer->id, 'status' => 4),array('order'=>'id DESC'));
+                     $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer['id'], 'status' => 4),array('order'=>'id DESC'));
 		     if(count($last_wash)){
 			$current_time = strtotime(date('Y-m-d H:i:s'));
 
@@ -5259,11 +5273,11 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 			// 30 days or more inactive
 			if(($min_diff >= 43200) && ($min_diff < 86400)){
 
-			$nonreturncust_arr_30[$ind30]['id'] = $customer->id;
-			$nonreturncust_arr_30[$ind30]['name'] = $customer->first_name." ".$customer->last_name;
-			$nonreturncust_arr_30[$ind30]['email'] = $customer->email;
-			$nonreturncust_arr_30[$ind30]['phone'] = $customer->contact_number;
-			$nonreturncust_arr_30[$ind30]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr_30[$ind30]['id'] = $customer['id'];
+			$nonreturncust_arr_30[$ind30]['name'] = $customer['first_name']." ".$customer['last_name'];
+			$nonreturncust_arr_30[$ind30]['email'] = $customer['email'];
+			$nonreturncust_arr_30[$ind30]['phone'] = $customer['contact_number'];
+			$nonreturncust_arr_30[$ind30]['total_wash'] = $customer['total_wash'];
 			$nonreturncust_arr_30[$ind30]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
 			
 			$ind30++;
@@ -5273,11 +5287,11 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 			// 60 days or more inactive
 			if(($min_diff >= 86400) && ($min_diff < 129600)){
 
-			$nonreturncust_arr_60[$ind60]['id'] = $customer->id;
-			$nonreturncust_arr_60[$ind60]['name'] = $customer->first_name." ".$customer->last_name;
-			$nonreturncust_arr_60[$ind60]['email'] = $customer->email;
-			$nonreturncust_arr_60[$ind60]['phone'] = $customer->contact_number;
-			$nonreturncust_arr_60[$ind60]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr_60[$ind60]['id'] = $customer['id'];
+			$nonreturncust_arr_60[$ind60]['name'] = $customer['first_name']." ".$customer['last_name'];
+			$nonreturncust_arr_60[$ind60]['email'] = $customer['email'];
+			$nonreturncust_arr_60[$ind60]['phone'] = $customer['contact_number'];
+			$nonreturncust_arr_60[$ind60]['total_wash'] = $customer['total_wash'];
 			$nonreturncust_arr_60[$ind60]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
 			
 			$ind60++;
@@ -5287,11 +5301,11 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 			// 90 days or more inactive
 			if($min_diff >= 129600){
 
-			$nonreturncust_arr_90[$ind90]['id'] = $customer->id;
-			$nonreturncust_arr_90[$ind90]['name'] = $customer->first_name." ".$customer->last_name;
-			$nonreturncust_arr_90[$ind90]['email'] = $customer->email;
-			$nonreturncust_arr_90[$ind90]['phone'] = $customer->contact_number;
-			$nonreturncust_arr_90[$ind90]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr_90[$ind90]['id'] = $customer['id'];
+			$nonreturncust_arr_90[$ind90]['name'] = $customer['first_name']." ".$customer['last_name'];
+			$nonreturncust_arr_90[$ind90]['email'] = $customer['email'];
+			$nonreturncust_arr_90[$ind90]['phone'] = $customer['contact_number'];
+			$nonreturncust_arr_90[$ind90]['total_wash'] = $customer['total_wash'];
 			$nonreturncust_arr_90[$ind90]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
 			
 			$ind90++;
@@ -5310,7 +5324,9 @@ $all_customers = Customers::model()->findAllByAttributes(array('is_non_returning
 			'response'=> $response,
 			'nonreturncusts_30' => $nonreturncust_arr_30,
 			'nonreturncusts_60' => $nonreturncust_arr_60,
-			'nonreturncusts_90' => $nonreturncust_arr_90
+			'nonreturncusts_90' => $nonreturncust_arr_90,
+			'total_entries' => $total_entries,
+			'total_pages' => $total_pages
 		);
 
 		echo json_encode($json);
@@ -7279,13 +7295,18 @@ die();
 	 $index = 0;
 	 
 $range = Yii::app()->request->getParam('range');
-
-$all_customers = Customers::model()->findAllByAttributes(array('is_non_returning' => 1),array('order'=>'id ASC'));
+$page_number = 1;
+	$limit = Yii::app()->request->getParam('limit');
+	$page_number = Yii::app()->request->getParam('page_number');
+	$limit = 100;
+	$offset = ($page_number -1) * $limit;
+	
+	if($limit > 0) $all_customers =  Yii::app()->db->createCommand("SELECT * FROM customers WHERE is_non_returning = 1 ORDER BY id ASC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
 
 if(count($all_customers)){
 
                 foreach($all_customers as $customer){
-                     $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer->id, 'status' => 4),array('order'=>'id DESC'));
+                     $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer['id'], 'status' => 4),array('order'=>'id DESC'));
 		     if(count($last_wash)){
 			$current_time = strtotime(date('Y-m-d H:i:s'));
 
@@ -7298,11 +7319,11 @@ if(count($all_customers)){
 			
 			if(($range == 30) && ($min_diff >= 43200) && ($min_diff < 86400)){
 
-			$nonreturncust_arr[$index]['id'] = $customer->id;
-			$nonreturncust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
-			$nonreturncust_arr[$index]['email'] = $customer->email;
-			$nonreturncust_arr[$index]['phone'] = $customer->contact_number;
-			$nonreturncust_arr[$index]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr[$index]['id'] = $customer['id'];
+			$nonreturncust_arr[$index]['customername'] = $customer['first_name']." ".$customer['last_name'];
+			$nonreturncust_arr[$index]['email'] = $customer['email'];
+			$nonreturncust_arr[$index]['phone'] = $customer['contact_number'];
+			$nonreturncust_arr[$index]['total_wash'] = $customer['total_wash'];
 			$nonreturncust_arr[$index]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
 			
 			$index++;
@@ -7311,11 +7332,11 @@ if(count($all_customers)){
 			
 			if(($range == 60) && ($min_diff >= 86400) && ($min_diff < 129600)){
 
-			$nonreturncust_arr[$index]['id'] = $customer->id;
-			$nonreturncust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
-			$nonreturncust_arr[$index]['email'] = $customer->email;
-			$nonreturncust_arr[$index]['phone'] = $customer->contact_number;
-			$nonreturncust_arr[$index]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr[$index]['id'] = $customer['id'];
+			$nonreturncust_arr[$index]['customername'] = $customer['first_name']." ".$customer['last_name'];
+			$nonreturncust_arr[$index]['email'] = $customer['email'];
+			$nonreturncust_arr[$index]['phone'] = $customer['contact_number'];
+			$nonreturncust_arr[$index]['total_wash'] = $customer['total_wash'];
 			$nonreturncust_arr[$index]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
 			
 			$index++;
@@ -7324,11 +7345,11 @@ if(count($all_customers)){
 			
 			if(($range == 90) && ($min_diff >= 129600)){
 
-			$nonreturncust_arr[$index]['id'] = $customer->id;
-			$nonreturncust_arr[$index]['customername'] = $customer->first_name." ".$customer->last_name;
-			$nonreturncust_arr[$index]['email'] = $customer->email;
-			$nonreturncust_arr[$index]['phone'] = $customer->contact_number;
-			$nonreturncust_arr[$index]['total_wash'] = $customer->total_wash;
+			$nonreturncust_arr[$index]['id'] = $customer['id'];
+			$nonreturncust_arr[$index]['customername'] = $customer['first_name']." ".$customer['last_name'];
+			$nonreturncust_arr[$index]['email'] = $customer['email'];
+			$nonreturncust_arr[$index]['phone'] = $customer['contact_number'];
+			$nonreturncust_arr[$index]['total_wash'] = $customer['total_wash'];
 			$nonreturncust_arr[$index]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
 			
 			$index++;
@@ -7342,7 +7363,7 @@ if(count($all_customers)){
     $nonreturncust_arr, // a CActiveRecord array OR any CModel array
     array('id'=>array('raw'),'customername'=>array('text'), 'email'=>array('text'), 'phone'=>array('text'), 'total_wash'=>array('text'), 'last_order'=>array('text')),
     true, // boolPrintRows
-    'nonreturncustomers-'.$range.'days--'.date('Y-m-d-H-i-s').".csv",
+    'nonreturncustomers-'.$range.'days-pageno-'.$page_number.'--'.date('Y-m-d-H-i-s').".csv",
     ","
    );
   
