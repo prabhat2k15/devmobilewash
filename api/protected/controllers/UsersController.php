@@ -2648,7 +2648,7 @@ $ios_order_rotate_time = $app_settings[0]['max_order_rotate_time'];
 $ios_washer_search_radius = $app_settings[0]['washer_search_radius'];
                 }
 		
-if(!$ios_wash_now_fee){
+if((!$ios_wash_now_fee) || ($ios_wash_now_fee == 'dontpass')){
 $ios_wash_now_fee = $app_settings[0]['wash_now_fee'];
                 }
 		
@@ -2681,7 +2681,7 @@ $android_order_rotate_time = $app_settings[1]['max_order_rotate_time'];
 $android_washer_search_radius = $app_settings[1]['washer_search_radius'];
                 }
 		
-		if(!$android_wash_now_fee){
+		if((!$android_wash_now_fee) || ($android_wash_now_fee == 'dontpass')){
 $android_wash_now_fee = $app_settings[1]['wash_now_fee'];
                 }
 		

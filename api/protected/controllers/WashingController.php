@@ -2327,7 +2327,7 @@ if($agent_id) $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
 
-//file_put_contents("autocancelog-".$wash_request_id.".log","wash id: ".$wash_request_id." agent id: ".$agent_id." status: ".$status."\n",FILE_APPEND);
+file_put_contents("autocancelog-".$wash_request_id.".log",date('Y-m-d H:i:s')." wash id: ".$wash_request_id." agent id: ".$agent_id." status: ".$status."\n",FILE_APPEND);
 
         $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
         $order_for_date = '';
@@ -4442,6 +4442,8 @@ if($tip_amount == 'zero') $tip_amount = 0;
 
                 //echo $total;
                 $total = number_format($total, 2, '.', '');
+		
+		Washingrequests::model()->updateByPk($wash_request_id, array('tip_amount' => $tip_amount));
 
 /* ------- send order receipt ----------- */
 
@@ -4483,7 +4485,7 @@ $from = Vargas::Obj()->getAdminFromEmail();
 if((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5) || (!empty($comments))) Vargas::Obj()->SendMail($to,$from,$message,"Customer Feedback - Order #0000".$wash_request_id, 'mail-receipt');
 
 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
-Washingrequests::model()->updateByPk($wash_request_id, array('tip_amount' => $tip_amount));
+
 if(number_format($tip_amount,2) != number_format($washrequest_id_check->tip_amount,2)){
     $washeractionlogdata = array(
         'wash_request_id'=> $wash_request_id,
