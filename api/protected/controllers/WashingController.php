@@ -2327,7 +2327,7 @@ if($agent_id) $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
 
-//file_put_contents("autocancelog-".$wash_request_id.".log",date('Y-m-d H:i:s')." wash id: ".$wash_request_id." agent id: ".$agent_id." status: ".$status."\n",FILE_APPEND);
+file_put_contents("autocancelog-".$wash_request_id.".log",date('Y-m-d H:i:s')." wash id: ".$wash_request_id." agent id: ".$agent_id." status: ".$status."\n",FILE_APPEND);
 
         $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
         $order_for_date = '';
