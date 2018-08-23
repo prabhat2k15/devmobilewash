@@ -6599,13 +6599,14 @@ arsort($topcusts_arr);
 $i = 0;
 foreach($topcusts_arr as $key=>$cust){
 	$cust_det = Customers::model()->findByPk($key);
+	if(((!$cust_det->first_name) && (!$cust_det->last_name)) && (!$cust_det->customername)) continue;
     $location = CustomerLocation::model()->findByPk($key);
 	$topcusts_det_arr[$i]['id'] = $key;
 	$topcusts_det_arr[$i]['name'] = $cust_det->first_name." ".$cust_det->last_name;
 	$topcusts_det_arr[$i]['email'] = $cust_det->email;
 	$topcusts_det_arr[$i]['phone'] = $cust_det->contact_number;
     $topcusts_det_arr[$i]['address'] = $location->location_address;
-    $topcusts_det_arr[$i]['street'] = $location->street_name;
+    //$topcusts_det_arr[$i]['street'] = $location->street_name;
     $topcusts_det_arr[$i]['city'] = $location->city;
     $topcusts_det_arr[$i]['state'] = $location->state;
     $topcusts_det_arr[$i]['zip'] = $location->zipcode;
