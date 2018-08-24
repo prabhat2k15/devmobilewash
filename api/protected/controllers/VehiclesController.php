@@ -625,7 +625,7 @@ $response= 'invalid vehicle';
 	}
 	
 	
-			public function actionupdatevehiclebyid()
+	public function actionupdatevehiclebyid()
 	{
 
 if(Yii::app()->request->getParam('key') != API_KEY){
@@ -644,12 +644,12 @@ $build = Yii::app()->request->getParam('build');
 			$response= 'pass required parameters';
 			
 						
-						if($build == 'regular'){
-		$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
+		if($build == 'regular'){
+			$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
 		}
 						
 		if($build == 'classic'){
-		$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_classic_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
+			$veh_detail = Yii::app()->db->createCommand()->select('*')->from('all_classic_vehicles')->where("id=:id", array())->bindValue(':id', $id, PDO::PARAM_STR)->queryAll();	
 		}
 
 if(count($veh_detail) > 0){
@@ -658,7 +658,9 @@ if(count($veh_detail) > 0){
 	
 	$data = array('make'=>$make, 'model'=>$model, 'type'=>$type, 'category'=>$cat);
 	if($build == 'regular') $resUpdate = Yii::app()->db->createCommand()->update('all_vehicles',$data,"id='".$veh_detail[0]['id']."'");		
-	if($build == 'classic') $resUpdate = Yii::app()->db->createCommand()->update('all_classic_vehicles',$data,"id='".$veh_detail[0]['id']."'");		
+	if($build == 'classic') $resUpdate = Yii::app()->db->createCommand()->update('all_classic_vehicles',$data,"id='".$veh_detail[0]['id']."'");
+	
+	Vehicle::model()->updateAll(array('brand_name'=>$make, 'model_name' => $model, 'vehicle_type' => $type, 'vehicle_category' => $cat), "vehicle_source_id=:vehicle_source_id AND vehicle_build = '".$build."'", array(':vehicle_source_id'=>$veh_detail[0]['id']));
 
  
 }

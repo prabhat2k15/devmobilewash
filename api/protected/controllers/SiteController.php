@@ -2165,7 +2165,7 @@ die();
 
 Agents::model()->updateAll(array('device_token' => '', 'status'=> 'offline', 'available_for_new_order'=> 0));
 Customers::model()->updateAll(array('online_status' => 'offline'));
-Washingrequests::model()->updateAll(array('status' => 5),'status < 4 AND is_scheduled != 1');
+//Washingrequests::model()->updateAll(array('status' => 5),'status < 4 AND is_scheduled != 1');
 
 }
 
