@@ -5183,10 +5183,11 @@ echo "Invalid api key";
 die();
 }
 
-	$clientlist = Customers::model()->findAll();
+	$clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1), array('limit'=> 1000));
 
 	if(count($clientlist)){
 	    foreach($clientlist as $client){
+		//echo $client->id."<br>";
 	       // echo $client['id']."<br>";
 	        $wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$client->id, 'status' => 4),array('order'=>'id DESC'));
 	         if(count($wash_check)){
@@ -5213,9 +5214,13 @@ else{
 }
 	         }
 
-
+Customers::model()->updateByPk($client->id, array("non_return_check" => 0));
 
 	    }
+	}
+	else{
+		Customers::model()->updateAll(array('non_return_check' => 1));
+
 	}
 
 
