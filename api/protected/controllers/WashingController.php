@@ -1777,7 +1777,38 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 	    $app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
 	if(count($app_settings)){
 		
-		if(is_numeric($app_settings[0]['wash_later_fee'])) $wash_later_fee = $app_settings[0]['wash_later_fee'];
+		//if(is_numeric($app_settings[0]['wash_later_fee'])) $wash_later_fee = $app_settings[0]['wash_later_fee'];
+        $wash_now_fee = 0;
+		$current_day = date('l',strtotime($schedule_date));
+		$schedule_times = Yii::app()->db->createCommand()->select('*')->from('schedule_times')->where('id=1')->queryAll();
+		if($current_day == 'Monday') $times = $schedule_times[0]['mon'];
+		if($current_day == 'Tuesday') $times = $schedule_times[0]['tue'];
+		if($current_day == 'Wednesday') $times = $schedule_times[0]['wed'];
+		if($current_day == 'Thursday') $times = $schedule_times[0]['thurs'];
+		if($current_day == 'Friday') $times = $schedule_times[0]['fri'];
+		if($current_day == 'Saturday') $times = $schedule_times[0]['sat'];
+		if($current_day == 'Sunday') $times = $schedule_times[0]['sun'];
+
+		$times_arr = explode("|",$times);
+
+		foreach($times_arr as $time){
+			$time_detail = explode(",",$time);
+			//if($time_detail[1] == 'inactive') continue;
+			$start = strtotime($current_date." ".$time_detail[0]);
+			$end = strtotime($current_date." ".$time_detail[0]." +14 minutes 59 seconds");
+			//echo $schedule_time." ".date('h:i:s A', $schedule_time);
+			//echo $start." ".$end." ".date('h:i:s A', $start)." ".date('h:i:s A', $end)." ".$time_detail[2]."<br>";
+
+			if(strtotime($schedule_time) >= $start && strtotime($schedule_time) <= $end) {
+			  $wash_now_fee = $time_detail[2];
+			  $wash_unavailable = 0;
+			  if($time_detail[1] == 'inactive') $wash_unavailable = 1;
+			  break;
+			} 
+		}
+
+		$wash_later_fee = $wash_now_fee;
+
 	}
 
             $order_for_date = date("Y-m-d H:i:s", strtotime($schedule_date." ".$schedule_time));
