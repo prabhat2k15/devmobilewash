@@ -2770,8 +2770,10 @@ if(Yii::app()->request->getParam('company_cancel')) $company_cancel  = Yii::app(
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id'=>$car));
                     }
 
-                      $data= array('status' => $status, 'company_cancel' => $company_cancel, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => 0, 'washer_cancel_fee' => 0);
-                $washrequestmodel = new Washingrequests;
+                      if((!$status) && (!$wash_id_check->is_scheduled)) $data= array('status' => $status, 'agent_id' => 0, 'company_cancel' => $company_cancel, 'cancel_fee' => 0, 'washer_cancel_fee' => 0, 'washer_payment_status' => 0, 'order_temp_assigned' => 0);
+			else $data= array('status' => $status, 'company_cancel' => $company_cancel, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => 0, 'washer_cancel_fee' => 0);
+			 
+		$washrequestmodel = new Washingrequests;
                 $washrequestmodel->attributes= $data;
 
                 $resUpdate = $washrequestmodel->updateAll($data, 'id=:id', array(':id'=>$wash_request_id));
@@ -2832,7 +2834,7 @@ if(Yii::app()->request->getParam('company_cancel')) $company_cancel  = Yii::app(
          
        }
        
-          if(($result == 'true') && ($admin_username)){
+          if(($result == 'true') && ($admin_username) && ($status)){
                  $washeractionlogdata = array(
                         
                         'wash_request_id'=> $wash_request_id,
@@ -2843,6 +2845,22 @@ if(Yii::app()->request->getParam('company_cancel')) $company_cancel  = Yii::app(
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
             }
+	    
+	    if(($result == 'true') && ($admin_username) && (!$status) && (!$wash_id_check->is_scheduled)){
+		if($wash_id_check->agent_id) {			
+				$old_agent_detail = Agents::model()->findByPk($wash_id_check->agent_id);
+				 $washeractionlogdata = array(
+				'agent_id'=> $wash_id_check->agent_id,
+				'wash_request_id'=> $wash_request_id,
+				'agent_company_id'=> $old_agent_detail->real_washer_id,
+				'admin_username' => $admin_username,
+				'action'=> 'admindropjob',
+				'action_date'=> date('Y-m-d H:i:s'));
+
+				Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+		       
+		}
+	}
        }
 
 

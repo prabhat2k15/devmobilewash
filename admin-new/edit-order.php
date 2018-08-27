@@ -2024,10 +2024,14 @@ $(".cancel-order-ondemand").html('Cancel Order');
 });
         },
               "Company Cancel (no fee, no rating penalty)": function() {
+                var cancel_status = 5;
+                <?php if($getorder->status == 1): ?>
+                cancel_status = 0;
+              <?php endif; ?>
       $( this ).dialog( "close" );
 $(".cancel-order-ondemand").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: 5, free_cancel: 'yes', admin_username: "<?php echo $jsondata_permission->user_name; ?>", company_cancel: 1, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", status: cancel_status, free_cancel: 'yes', admin_username: "<?php echo $jsondata_permission->user_name; ?>", company_cancel: 1, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";

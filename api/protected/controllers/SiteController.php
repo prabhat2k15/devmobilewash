@@ -6237,8 +6237,25 @@ die();
             }
 
             else if(!$agent_id){
-                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => $agent_id));
-                    $json= array(
+                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => $agent_id, 'washer_payment_status' => 0, 'status' => 0, 'order_temp_assigned' => 0));
+                     
+		     if(($wrequest_id_check->agent_id != $agent_id)) {
+			$old_agent_id = $wrequest_id_check->agent_id;
+			if($old_agent_id){
+				$old_agent_detail = Agents::model()->findByPk($old_agent_id);
+				 $washeractionlogdata = array(
+				'agent_id'=> $old_agent_id,
+				'wash_request_id'=> $wash_request_id,
+				'agent_company_id'=> $old_agent_detail->real_washer_id,
+				'admin_username' => $admin_username,
+				'action'=> 'admindropjob',
+				'action_date'=> date('Y-m-d H:i:s'));
+
+				Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+		       }
+		     }
+		       
+		    $json= array(
 				        'result'=> 'true',
 				        'response'=> 'Washer updated'
 		    	    );
@@ -6378,7 +6395,10 @@ die();
 
                 if(($wrequest_id_check->agent_id != $agent_id) && ($result != 'false')) {
                     $old_agent_id = $wrequest_id_check->agent_id;
-		    if((!$wrequest_id_check->status) && (!$wrequest_id_check->is_scheduled)) Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0, 'status' => 1));
+		    if((!$wrequest_id_check->is_scheduled)) {
+			if(($agent_id)) Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0, 'status' => 1));
+			else Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0, 'status' => 0, 'order_temp_assigned' => 0));
+		    }
 		else Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0));
 
                     $result = 'true';
@@ -6398,15 +6418,17 @@ die();
 		       }
 		      
 
-			        $washeractionlogdata = array(
-                        'agent_id'=> $agent_id,
-                        'wash_request_id'=> $wash_request_id,
-                        'agent_company_id'=> $agent_check->real_washer_id,
-                        'admin_username' => $admin_username,
-                        'action'=> 'savejob',
-                        'action_date'=> date('Y-m-d H:i:s'));
+			if($agent_id){        
+				$washeractionlogdata = array(
+				'agent_id'=> $agent_id,
+				'wash_request_id'=> $wash_request_id,
+				'agent_company_id'=> $agent_check->real_washer_id,
+				'admin_username' => $admin_username,
+				'action'=> 'savejob',
+				'action_date'=> date('Y-m-d H:i:s'));
 
-                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+				Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+			}
                 }
 
             }
