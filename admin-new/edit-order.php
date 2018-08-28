@@ -2025,9 +2025,7 @@ $(".cancel-order-ondemand").html('Cancel Order');
         },
               "Company Cancel (no fee, no rating penalty)": function() {
                 var cancel_status = 5;
-                <?php if($getorder->status == 1): ?>
-                cancel_status = 0;
-              <?php endif; ?>
+                
       $( this ).dialog( "close" );
 $(".cancel-order-ondemand").html('Cancelling. Please wait...');
 $(".err-text").hide();
