@@ -7314,7 +7314,7 @@ die();
 }
   CsvExport::export(
     Agents::model()->findAll(), // a CActiveRecord array OR any CModel array
-    array('id'=>array('raw'),'real_washer_id'=>array('raw'), 'first_name'=>array('text'), 'last_name'=>array('text'), 'email'=>array('text'), 'phone_number'=>array('text'), 'city'=>array('text'),  'rating'=>array('text'), 'bt_submerchant_id'=>array('text'), 'created_date'=>array('datetime'), 'total_wash'=>array('text'), 'washer_position'=>array('text')),
+    array('id'=>array('raw'),'real_washer_id'=>array('raw'), 'first_name'=>array('text'), 'last_name'=>array('text'), 'email'=>array('text'), 'phone_number'=>array('text'), 'city'=>array('text'),  'rating'=>array('text'),'care_rating' => array('text'), 'bt_submerchant_id'=>array('text'), 'created_date'=>array('datetime'), 'total_wash'=>array('text'), 'washer_position'=>array('text')),
     true, // boolPrintRows
     'washers--'.date('Y-m-d-H-i-s').".csv",
     ","
@@ -7897,6 +7897,72 @@ else{
 }
    
     }
+ 
+    public function actionwashercareratingupdate(){
+    if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
+
+$all_agents = Agents::model()->findAll();
+
+
+if(count($all_agents) > 0){
+    foreach($all_agents as $ind=> $washer){
+        //print_r($washer);
+        $agent_id = $washer->id;
+        
+        $washer_registered_since = 0;
+        $current_time = time(); // or your date as well
+        $washer_created = strtotime($washer->created_date);
+        $datediff = $current_time - $washer_created;
+
+        $washer_registered_since = round($datediff / (60 * 60 * 24));
+        
+        if($washer_registered_since > 30){
+            $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$agent_id."'")->queryAll();
+            $totalwash = count($totalwash_arr);
+
+            if(count($totalwash_arr)){
+            $cust_served_ids = array();
+            foreach($totalwash_arr as $agentwash){
+                if(!in_array($agentwash['customer_id'], $cust_served_ids)){
+                     $cust_served_ids[] = $agentwash['customer_id'];
+                }
+            }
+
+
+            //$cust_served_ids = array_unique($cust_served_ids);
+            $total_returning_customers = 0;
+            if(count($cust_served_ids) > 0){
+              foreach($cust_served_ids as $cid){
+                 $cust_check = Customers::model()->findByAttributes(array("id"=>$cid));
+             $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$cid, 'status' => 4),array('order'=>'id DESC'));
+             if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning) && ($cust_last_wash_check->agent_id == $agent_id)){
+                 $total_returning_customers++;
+             }
+              }
+            }
+            
+
+            if(count($cust_served_ids) > 0) {
+                $care_rating = ($total_returning_customers/$totalwash) * 100;
+                $care_rating = round($care_rating, 2);
+            }
+
+        }else{
+            $care_rating = "N/A";
+        }
+    }else{
+        $care_rating = "NEW";
+    }
     
+Agents::model()->updateByPk($agent_id,array('care_rating' => $care_rating));
+
+}
+
+
+}
+}
     
 }
