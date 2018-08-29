@@ -55,7 +55,7 @@ $total_pages = $allagents->total_pages;
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
 "aaSorting": [],
-	    "bPaginate": false,
+	    "bPaginate": true,
 } );
 
         });
@@ -367,12 +367,12 @@ $('#late_drivers').click(function(){
 				    <div class='custom-pagination'>
                                     <?php 
                                     //echo $searchresults->total_pages."<br>";
-                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/manage-agents.php?type=".$_GET['type']."&page_number=1'>&laquo;</a> ";
+                                    /*if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/manage-agents.php?type=".$_GET['type']."&page_number=1'>&laquo;</a> ";
                                     for($i=$page_number+1, $j=1; $i<=$allagents->total_pages; $i++, $j++){
                                       echo "<a href='".ROOT_URL."/admin-new/manage-agents.php?type=".$_GET['type']."&page_number=".$i."'>".$i."</a> ";  
                                       if($j==5) break;
                                     }
-                                    if($page_number != $allagents->total_pages) echo "<a href='".ROOT_URL."/admin-new/manage-agents.php?type=".$_GET['type']."&page_number=".$allagents->total_pages."'>&raquo;</a> ";
+                                    if($page_number != $allagents->total_pages) echo "<a href='".ROOT_URL."/admin-new/manage-agents.php?type=".$_GET['type']."&page_number=".$allagents->total_pages."'>&raquo;</a> ";*/
                                     ?>
                                     </div>
                                      <a href="#" class="load-more">Load More</a>

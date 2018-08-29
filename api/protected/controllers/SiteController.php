@@ -7312,9 +7312,14 @@ die();
 echo "Invalid api key";
 die();
 }
+ $real_washer = $all_washes =  Yii::app()->db->createCommand("SELECT *, CASE WHEN account_status = 1 THEN 'Active'
+            ELSE 'Blocked' END AS washer_status FROM agents WHERE washer_position = :washer_position")
+            ->bindValue(':washer_position', "real", PDO::PARAM_STR)
+            ->queryAll();
+
   CsvExport::export(
-    Agents::model()->findAll(), // a CActiveRecord array OR any CModel array
-    array('id'=>array('raw'),'real_washer_id'=>array('raw'), 'first_name'=>array('text'), 'last_name'=>array('text'), 'email'=>array('text'), 'phone_number'=>array('text'), 'city'=>array('text'),  'rating'=>array('text'),'care_rating' => array('text'), 'bt_submerchant_id'=>array('text'), 'created_date'=>array('datetime'), 'total_wash'=>array('text'), 'washer_position'=>array('text')),
+    $real_washer, // a CActiveRecord array OR any CModel array
+    array('id'=>array('raw'),'real_washer_id'=>array('raw'), 'first_name'=>array('text'), 'last_name'=>array('text'), 'email'=>array('text'), 'phone_number'=>array('text'), 'city'=>array('text'),  'rating'=>array('text'), 'care_rating' => array(text), 'bt_submerchant_id'=>array('text'), 'created_date'=>array('datetime'), 'total_wash'=>array('text'), 'washer_position'=>array('text'), 'washer_status'=> array('text')),
     true, // boolPrintRows
     'washers--'.date('Y-m-d-H-i-s').".csv",
     ","

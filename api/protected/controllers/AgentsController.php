@@ -3076,20 +3076,30 @@ die();
 	$limit = 20;
 	$offset = ($page_number -1) * $limit;
   
-          if(Yii::app()->request->getParam('type') == 'demo'){
+/*          if(Yii::app()->request->getParam('type') == 'demo'){
 $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'demo' OR washer_position = ''")->queryAll();
  if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'demo' OR washer_position = '' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
 }
 else{
 $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'real'")->queryAll();
 if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+}*/
+
+if(Yii::app()->request->getParam('type') == 'demo'){
+$total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'demo' OR washer_position = ''")->queryAll();
+ if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'demo' OR washer_position = '' ORDER BY id DESC")->queryAll();
+ //$washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'demo' OR washer_position = '' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+}
+else{
+$total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'real'")->queryAll();
+if($limit > 0)  $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC")->queryAll();
+//$washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
 }
 
-
 	
 	
- $total_entries = $total_rows[0]['countid'];
- if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
+ //$total_entries = $total_rows[0]['countid'];
+ //if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
       
 
 			if(count($washers_exists)>0){
@@ -3109,7 +3119,7 @@ $washer_created = strtotime($washer['created_date']);
 $datediff = $current_time - $washer_created;
 
 $washer_registered_since = round($datediff / (60 * 60 * 24));
-if($washer_registered_since > 30){
+/*if($washer_registered_since > 30){
   
   $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$washer['id']."'")->queryAll();
 $totalwash = count($totalwash_arr);
@@ -3141,8 +3151,8 @@ $cust_served_ids = array_unique($cust_served_ids);
 		}
 		else{
 		  $care_rating = "NEW";
-		}
-		
+		}*/
+		$care_rating = $washer['care_rating'];
 		$insurance_date = '';
 		if(strtotime($washer['insurance_license_expiration']) > 0) $insurance_date = date('m-d-Y', strtotime($washer['insurance_license_expiration']));
 		else $insurance_date = '';
@@ -3173,8 +3183,8 @@ $all_washers[$ind]['insurance_exp_date'] = $insurance_date;
 				'result'=> $result,
 				'response'=> $response,
                 'all_washers' => $all_washers,
-		'total_entries' => $total_entries,
-	    'total_pages' => $total_pages
+		//'total_entries' => $total_entries,
+	    //'total_pages' => $total_pages
 			);
 
 		echo json_encode($json); die();
