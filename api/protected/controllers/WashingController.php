@@ -4931,6 +4931,15 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 }
 						
 						Washingrequests::model()->updateByPk($wrequest['id'], array( 'status' => 5, 'no_washer_cancel' => 1));
+						
+				 $logdata = array(
+				'agent_id'=> $wrequest['agent_id'],
+				'wash_request_id'=> $wrequest['id'],
+				'agent_company_id'=> 0,
+				'action'=> 'ondemandautocancel',
+				'action_date'=> date('Y-m-d H:i:s'));
+
+				Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 	
 }
 }

@@ -1765,6 +1765,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'clientwashnowschedule'): ?>
                                                           <p style="margin-bottom: 10px;">Customer changed Wash Now to Scheduled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'ondemandautocancel'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer's On Demand auto-canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           
                                                           <?php endforeach; ?>
                                                           </div>
@@ -4135,6 +4138,11 @@ if(data.result == 'true'){
        if(log.action == 'clientwashnowschedule'){
         contents += "<p style='margin-bottom: 10px;'>Customer changed Wash Now to Scheduled at "+log.formatted_action_date+"</p>";
        }
+       
+       if(log.action == 'ondemandautocancel'){
+        contents += "<p style='margin-bottom: 10px;'>Customer's On Demand auto-canceled at "+log.formatted_action_date+"</p>";
+       }
+       
 
    });
    
