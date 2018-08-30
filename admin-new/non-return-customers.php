@@ -222,7 +222,7 @@ cursor: pointer !important;
 <th> Email </th>
 <th> Phone </th>
 <th> Washes </th>
-<th> Last Order </th>
+<!--<th> Last Order </th>-->
 
                                             </tr>
                                         </thead>
@@ -236,14 +236,12 @@ cursor: pointer !important;
                                         ?>
                                             <tr class="odd gradeX">
  <td> <?php echo $customer->id; ?> </td>
- <td> <?php echo $customer->name; ?> </td>
+ <td> <?php echo $customer->first_name." ".$customer->last_name; ?> </td>
 <td> <?php echo $customer->email; ?> </td>
-<td> <?php echo $customer->phone; ?> </td>
+<td> <?php echo $customer->contact_number; ?> </td>
  <td> <?php
 if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
 else echo $customer->total_wash;?> </td>
-
- <td> <?php echo $customer->last_order; ?> </td>
 
 
                                             </tr>
@@ -269,7 +267,7 @@ else echo $customer->total_wash;?> </td>
 <th> Email </th>
 <th> Phone </th>
 <th> Washes </th>
-<th> Last Order </th>
+<!--<th> Last Order </th>-->
 
                                             </tr>
                                         </thead>
@@ -283,14 +281,13 @@ else echo $customer->total_wash;?> </td>
                                         ?>
                                             <tr class="odd gradeX">
  <td> <?php echo $customer->id; ?> </td>
- <td> <?php echo $customer->name; ?> </td>
+ <td> <?php echo $customer->first_name." ".$customer->last_name; ?> </td>
 <td> <?php echo $customer->email; ?> </td>
-<td> <?php echo $customer->phone; ?> </td>
+<td> <?php echo $customer->contact_number; ?> </td>
  <td> <?php
 if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
 else echo $customer->total_wash;?> </td>
 
- <td> <?php echo $customer->last_order; ?> </td>
 
 
                                             </tr>
@@ -316,7 +313,7 @@ else echo $customer->total_wash;?> </td>
 <th> Email </th>
 <th> Phone </th>
 <th> Washes </th>
-<th> Last Order </th>
+<!--<th> Last Order </th>-->
 
                                             </tr>
                                         </thead>
@@ -330,14 +327,13 @@ else echo $customer->total_wash;?> </td>
                                         ?>
                                             <tr class="odd gradeX">
  <td> <?php echo $customer->id; ?> </td>
- <td> <?php echo $customer->name; ?> </td>
+ <td> <?php echo $customer->first_name." ".$customer->last_name; ?> </td>
 <td> <?php echo $customer->email; ?> </td>
-<td> <?php echo $customer->phone; ?> </td>
+<td> <?php echo $customer->contact_number; ?> </td>
  <td> <?php
 if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
 else echo $customer->total_wash;?> </td>
 
- <td> <?php echo $customer->last_order; ?> </td>
 
 
                                             </tr>

@@ -5205,12 +5205,14 @@ $min_diff = round(($current_time - $create_time) / 60,2);
 //more than 30 days
 if($min_diff >= 43200){
 
-						 Customers::model()->updateByPk($client->id, array("is_non_returning" => 1));
+	if(($min_diff >= 43200) && ($min_diff < 86400)) Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30));
+	if(($min_diff >= 86400) && ($min_diff < 129600)) Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60));
+	if($min_diff >= 129600) Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90));
 
 
 }
 else{
-    Customers::model()->updateByPk($client->id, array("is_non_returning" => 0));
+    Customers::model()->updateByPk($client->id, array("is_non_returning" => 0, "nonreturn_cat" => 0));
 }
 	         }
 
@@ -5244,27 +5246,48 @@ die();
 	 $ind30 = 0;
 	 $ind60 = 0;
 	 $ind90 = 0;
-	 $total_entries = 0;
-	$total_pages = 0;
+	 $total_entries_30 = 0;
+	$total_pages_30 = 0;
+	 $total_entries_60 = 0;
+	$total_pages_60 = 0;
+	$total_entries_90 = 0;
+	$total_pages_90 = 0;
 	$limit = 0;
-	$offset = 0;
+	$offset_30 = 0;
+	$offset_60 = 0;
+	$offset_90 = 0;
 	$page_number = 1;
 	$limit = Yii::app()->request->getParam('limit');
 	$page_number = Yii::app()->request->getParam('page_number');
+	$range = Yii::app()->request->getParam('range');
 	$limit = 100;
-	$offset = ($page_number -1) * $limit;
+	if($range == 30) $offset_30 = ($page_number -1) * $limit;
+	if($range == 60) $offset_60 = ($page_number -1) * $limit;
+	if($range == 90) $offset_90 = ($page_number -1) * $limit;
 	
-	$total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_non_returning = 1")->queryAll();
-if($limit > 0) $all_customers =  Yii::app()->db->createCommand("SELECT * FROM customers WHERE is_non_returning = 1 ORDER BY id ASC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+	$total_rows_30 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 30")->queryAll();
+if($limit > 0) $nonreturncust_arr_30 =  Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 30 ORDER BY id ASC LIMIT ".$limit." OFFSET ".$offset_30)->queryAll();
 
- $total_entries = $total_rows[0]['countid'];
- if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
+ $total_entries_30 = $total_rows_30[0]['countid'];
+ if($total_entries_30 > 0) $total_pages_30 = ceil($total_entries_30 / $limit);
  
-			if(count($all_customers)){
+ $total_rows_60 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 60")->queryAll();
+if($limit > 0) $nonreturncust_arr_60 =  Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 60 ORDER BY id ASC LIMIT ".$limit." OFFSET ".$offset_60)->queryAll();
+
+ $total_entries_60 = $total_rows_60[0]['countid'];
+ if($total_entries_60 > 0) $total_pages_60 = ceil($total_entries_60 / $limit);
+ 
+  $total_rows_90 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 90")->queryAll();
+if($limit > 0) $nonreturncust_arr_90 =  Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 90 ORDER BY id ASC LIMIT ".$limit." OFFSET ".$offset_90)->queryAll();
+
+ $total_entries_90 = $total_rows_90[0]['countid'];
+ if($total_entries_90 > 0) $total_pages_90 = ceil($total_entries_90 / $limit);
+ 
+			if(count($nonreturncust_arr_30) || count($nonreturncust_arr_60) || count($nonreturncust_arr_90)){
 
 				$response = "nonreturning customers";
 				$result = "true";
-                foreach($all_customers as $ind=>$customer){
+                /*foreach($all_customers as $ind=>$customer){
                      $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer['id'], 'status' => 4),array('order'=>'id DESC'));
 		     if(count($last_wash)){
 			$current_time = strtotime(date('Y-m-d H:i:s'));
@@ -5318,7 +5341,7 @@ if($limit > 0) $all_customers =  Yii::app()->db->createCommand("SELECT * FROM cu
 			}
 		     }
             
-                }
+                }*/
 
 			}
 
@@ -5330,8 +5353,12 @@ if($limit > 0) $all_customers =  Yii::app()->db->createCommand("SELECT * FROM cu
 			'nonreturncusts_30' => $nonreturncust_arr_30,
 			'nonreturncusts_60' => $nonreturncust_arr_60,
 			'nonreturncusts_90' => $nonreturncust_arr_90,
-			'total_entries' => $total_entries,
-			'total_pages' => $total_pages
+			'total_entries_30' => $total_entries_30,
+			'total_pages_30' => $total_pages_30,
+			'total_entries_60' => $total_entries_60,
+			'total_pages_60' => $total_pages_60,
+			'total_entries_90' => $total_entries_90,
+			'total_pages_90' => $total_pages_90,
 		);
 
 		echo json_encode($json);
