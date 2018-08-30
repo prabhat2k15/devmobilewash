@@ -6055,4 +6055,82 @@ if(count($all_washers)){
 
  
     }
+    
+public function actionwasherstoplocation(){
+       	
+		if(Yii::app()->request->getParam('key') != API_KEY){
+			echo "Invalid api key";
+			die();
+		}       	
+
+		$result= 'false';
+	$response= 'Pass the required parameters';
+
+	$agent_id = Yii::app()->request->getParam('agent_id');
+	
+	if(!empty($agent_id) && isset($agent_id)){
+		
+		if((AES256CBC_STATUS == 1)){
+		$agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
+		}
+
+		//$wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$washer_request_id));
+		
+    	$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+
+						/* --- notification call --- */
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '44' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+						
+						foreach( $agentdevices as $atdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($atdevice['device_type']);
+							$notify_token = $atdevice['device_token'];
+								$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+						
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '45' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+						
+						foreach( $agentdevices as $atdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($atdevice['device_type']);
+							$notify_token = $atdevice['device_token'];
+							$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+				$result= 'true';
+				$response= 'notification sent';
+		}
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+		echo json_encode($json);
+
+}
 }
