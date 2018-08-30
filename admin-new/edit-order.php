@@ -2012,8 +2012,8 @@ $(".cancel-order-ondemand").html('Cancel Order');
           $( this ).dialog( "close" );
 $(".cancel-order-ondemand").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", free_cancel: 'yes', status: 6, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
-//console.log(data);
+<?php if($getorder->status == 1): ?>
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/washerenroutecancel", { wash_request_id: "<?php echo $getorder->id; ?>", status: 6, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 if(data.result == 'true'){
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
@@ -2025,6 +2025,21 @@ $(".cancel-order-ondemand").html('Cancel Order');
 }
 
 });
+<?php else: ?>
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", free_cancel: 'yes', status: 6, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+
+if(data.result == 'true'){
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+}
+else{
+$(".err-text").html(data.response);
+$(".err-text").show();
+$(".cancel-order-ondemand").html('Cancel Order');
+
+}
+
+});
+<?php endif; ?>
         },
               "Company Cancel (no fee, no rating penalty)": function() {
                 var cancel_status = 5;

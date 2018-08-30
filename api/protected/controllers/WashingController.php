@@ -3816,6 +3816,7 @@ die();
 $veh_type = '';
 $fifth_fee_check = 0;
 $first_fee_check = 0;
+$canceled_washer_id = 0;
 if(Yii::app()->request->getParam('zipcode')) $zipcode = Yii::app()->request->getParam('zipcode');
 	$exp_surge_factor = 0;
 	$del_surge_factor = 0;
@@ -4243,6 +4244,11 @@ $hours = floor($wash_time / 60);
             $response= 'Pass the required parameters';
 
         }
+	
+	if((AES256CBC_STATUS == 1) && ($wrequest_id_check->canceled_washer_id)){
+		$canceled_washer_id = $this->aes256cbc_crypt( $wrequest_id_check->canceled_washer_id, 'e', AES256CBC_API_PASS );
+	}
+
         if($response){
             $json= array(
                 'result'=> $result,
@@ -4265,7 +4271,8 @@ $hours = floor($wash_time / 60);
 	    'order_address' => $wrequest_id_check->address,
 	    'latitude' => $wrequest_id_check->latitude,
 	    'longitude' => $wrequest_id_check->longitude,
-	    'company_cancel' => $wrequest_id_check->company_cancel
+	    'company_cancel' => $wrequest_id_check->company_cancel,
+	    'canceled_washer_id' => $canceled_washer_id
             );
         }
         else{
@@ -4274,7 +4281,8 @@ $hours = floor($wash_time / 60);
                 'response'=> $response,
 		'agent_id' => $wrequest_id_check->agent_id,
 		'no_washer_cancel' => $wrequest_id_check->no_washer_cancel,
-		'company_cancel' => $wrequest_id_check->company_cancel
+		'company_cancel' => $wrequest_id_check->company_cancel,
+		'canceled_washer_id' => $canceled_washer_id
             );
         }
         echo json_encode($json);
@@ -4815,7 +4823,7 @@ if($feedback_source != 'dropjob'){
                 //echo $total;
                 $total = number_format($total, 2, '.', '');
 
-//Washingrequests::model()->updateByPk($wash_request_id, array('is_feedback_sent' => 1));
+if(!$simulate_rating) Washingrequests::model()->updateByPk($wash_request_id, array('canceled_washer_id' => 0));
 
 
             }
@@ -8274,9 +8282,11 @@ die();
         $result= 'false';
         $response= 'Pass the required parameters';
         $json= array();
+	 $api_password = '';
+	 $api_password = Yii::app()->request->getParam('api_password');
         if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($status) && !empty($status))){
 		
-		if(AES256CBC_STATUS == 1){
+		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 		$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );	
 		}
              $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
@@ -8297,7 +8307,7 @@ die();
             'action_date'=> date('Y-m-d H:i:s'));
         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-            Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => 0, 'wash_begin' => date("Y-m-d H:i:s")));
+            Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => 0, 'canceled_washer_id' => $wrequest_id_check->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
 
              if($wrequest_id_check->agent_id && $wrequest_id_check->agent_id > 0){
                   $agentmodel = Agents::model()->findByPk($wrequest_id_check->agent_id);
