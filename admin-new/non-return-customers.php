@@ -12,6 +12,11 @@ $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 ?>
+<style>
+   .customcsv{
+      opacity: 0;
+   }
+</style>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
@@ -25,9 +30,16 @@ var table;
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
     "bPaginate": false,
   "aaSorting": [],
+  "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center customcsv'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+ buttons: [
+            'csvHtml5'
+        ]
 } );
 
 
+   $('.csv-link').on('click',function(){
+        $('.buttons-csv').trigger('click');
+    });
         });
         </script>
  <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
@@ -37,14 +49,16 @@ var table;
 <?php endif; ?>
 <?php
 $page_number = 1;
+$range = 30;
 if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
+if(isset($_GET['range'])) $range = $_GET['range'];
 
     $url = ROOT_URL.'/api/index.php?r=site/getnonreturncustomers';
 
 
         //echo $url;
         $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'page_number' => $page_number);
+        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'page_number' => $page_number, 'range' => $range);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -194,23 +208,23 @@ cursor: pointer !important;
                                 <div class="portlet-title tabbable-line">
                                                 <div class="caption caption-md">
                                                     <i class="icon-globe theme-font hide"></i>
-                                                    <span class="caption-subject bold uppercase" style="color: #000"> Non-Returning Customers</span> <a style="margin-left: 20px;" target="_blank" class="csv-link" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/nonreturncustscsvexport&range=30&page_number=<?php echo $page_number; ?>&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4">Download CSV</a>
+                                                    <span class="caption-subject bold uppercase" style="color: #000"> Non-Returning Customers</span> <a style="margin-left: 20px;" target="_blank" class="csv-link" href="javascript:void(0)">Download CSV</a>
                                                 </div>
                                                 <ul class="nav nav-tabs">
-                                                    <li class="active">
+                                                    <li <?php if(($_GET['range'] == 30) || (!isset($_GET['range']))) echo "class='active'"; ?>>
                                                         <a href="#tab_1_1" data-toggle="tab">30 Days</a>
                                                     </li>
-                                                    <li>
+                                                    <li <?php if(($_GET['range'] == 60)) echo "class='active'"; ?>>
                                                         <a href="#tab_1_2" data-toggle="tab">60 Days</a>
                                                     </li>
-                                                    <li>
+                                                    <li <?php if(($_GET['range'] == 90)) echo "class='active'"; ?>>
                                                         <a href="#tab_1_3" data-toggle="tab">90 Days</a>
                                                     </li>
                                                 </ul>
                                   </div>
                                 <div class="portlet-body">
                                  <div class="tab-content">
-                                    <div class="tab-pane active" id="tab_1_1">
+                                    <div class="tab-pane <?php if(($_GET['range'] == 30) || (!isset($_GET['range']))) echo "active"; ?>" id="tab_1_1">
 
 									<table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                     <!--table class="table table-striped table-bordered table-hover table-checkable order-column"-->
@@ -255,8 +269,33 @@ else echo $customer->total_wash;?> </td>
                                         ?>
                                         </tbody>
                                     </table>
+                                      <?php if((!isset($_GET['range'])) || ($_GET['range'] == 30)): ?>
+                                      <div class='custom-pagination'>
+                                    <?php 
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?page_number=1&range=30'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages_30; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=30&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    if($page_number != $allcustomers->total_pages_30) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=30&page_number=".$allcustomers->total_pages_30."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
+                                      <?php else: ?>
+                                       <?php if($allcustomers->total_pages_30 >1): ?>
+                                       <div class='custom-pagination'>
+                                    <?php 
+                                    
+                                    for($i=1, $j=1; $i<=$allcustomers->total_pages_30; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=30&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=30&page_number=".$allcustomers->total_pages_30."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
+                                       <?php endif; ?>
+                                      <?php endif; ?>
                                  </div>
-                                    <div class="tab-pane" id="tab_1_2">
+                                    <div class="tab-pane <?php if(($_GET['range'] == 60)) echo "active"; ?>" id="tab_1_2">
                                        									<table class="table table-striped table-bordered table-hover table-checkable order-column" id="example2">
                                     <!--table class="table table-striped table-bordered table-hover table-checkable order-column"-->
                                         <thead>
@@ -301,8 +340,33 @@ else echo $customer->total_wash;?> </td>
                                         ?>
                                         </tbody>
                                     </table>
+                                      <?php if(($_GET['range'] == 60)): ?>
+                                      <div class='custom-pagination'>
+                                    <?php 
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?page_number=1&range=60'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages_60; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=60&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    if($page_number != $allcustomers->total_pages_60) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=60&page_number=".$allcustomers->total_pages_60."'>&raquo;</a> ";
+                                    ?>
                                     </div>
-                                      <div class="tab-pane" id="tab_1_3">
+                                      <?php else: ?>
+                                      <?php if($allcustomers->total_pages_60 > 1): ?>
+                                      <div class='custom-pagination'>
+                                    <?php 
+                                    
+                                    for($i=1, $j=1; $i<=$allcustomers->total_pages_60; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=60&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                   echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=60&page_number=".$allcustomers->total_pages_60."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
+                                      <?php endif; ?>
+                                      <?php endif; ?>
+                                    </div>
+                                      <div class="tab-pane <?php if(($_GET['range'] == 90)) echo "active"; ?>" id="tab_1_3">
                                        									<table class="table table-striped table-bordered table-hover table-checkable order-column" id="example3">
                                     <!--table class="table table-striped table-bordered table-hover table-checkable order-column"-->
                                         <thead>
@@ -347,18 +411,33 @@ else echo $customer->total_wash;?> </td>
                                         ?>
                                         </tbody>
                                     </table>
-                                    </div>
-                                      <div class='custom-pagination'>
+                                       <?php if(($_GET['range'] == 90)): ?>
+                                       <div class='custom-pagination'>
                                     <?php 
-                                    //echo $searchresults->total_pages."<br>";
-                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?page_number=1'>&laquo;</a> ";
-                                    for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages; $i++, $j++){
-                                      echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?page_number=".$i."'>".$i."</a> ";  
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?page_number=1&range=90'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages_90; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=90&page_number=".$i."'>".$i."</a> ";  
                                       if($j==5) break;
                                     }
-                                    if($page_number != $allcustomers->total_pages) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?page_number=".$allcustomers->total_pages."'>&raquo;</a> ";
+                                    if($page_number != $allcustomers->total_pages_90) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=90&page_number=".$allcustomers->total_pages_90."'>&raquo;</a> ";
                                     ?>
                                     </div>
+                                       <?php else: ?>
+                                       <?php if($allcustomers->total_pages_90 > 1): ?>
+                                       <div class='custom-pagination'>
+                                    <?php 
+                                    
+                                    for($i=1, $j=1; $i<=$allcustomers->total_pages_90; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=90&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?range=90&page_number=".$allcustomers->total_pages_90."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
+                                       <?php endif; ?>
+                                       <?php endif; ?>
+                                    </div>
+                                      
                                 </div>
                                  
                                 </div><!-- body end-->
@@ -377,6 +456,7 @@ else echo $customer->total_wash;?> </td>
             <!-- END CONTENT -->
             <?php include('footer.php') ?>
             <script>
+               /*
                $(function(){
                   $(".nav-tabs a").click(function(){
                      
@@ -390,10 +470,11 @@ else echo $customer->total_wash;?> </td>
                         $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/nonreturncustscsvexport&page_number=<?php echo $page_number; ?>&range=90&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
                      }
                   });
-                  });
+                  });*/
             </script>
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
+
         <!-- END PAGE LEVEL SCRIPTS -->
         <style>
 
