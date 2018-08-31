@@ -2787,7 +2787,7 @@ if(Yii::app()->request->getParam('company_cancel')) $company_cancel  = Yii::app(
            else{
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=washing/cancelwashrequest");
-            $data = array('wash_request_id' => $wash_request_id, 'status' => $status, 'company_cancel' => $company_cancel, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+            $data = array('wash_request_id' => $wash_request_id, 'status' => $status, 'company_cancel' => $company_cancel, 'admin_username' => $admin_username, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

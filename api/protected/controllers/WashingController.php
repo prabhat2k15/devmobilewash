@@ -7820,6 +7820,7 @@ die();
 	if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
         $result= 'false';
         $response= 'Pass the required parameters';
+	$admin_username = Yii::app()->request->getParam('admin_username');
         $json= array();
         if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($status) && !empty($status))){
 
@@ -7895,7 +7896,7 @@ if(!count($is_cust_has_order)){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
 
-  if($status == 5 && $wrequest_id_check->status != 5){
+  if($status == 5 && $wrequest_id_check->status != 5 && (!$admin_username)){
       if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
@@ -7936,7 +7937,7 @@ if($wrequest_id_check->coupon_code){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
 
-  if($status == 5 && $wrequest_id_check->status != 5){
+  if($status == 5 && $wrequest_id_check->status != 5 && (!$admin_username)){
       if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
@@ -8033,7 +8034,7 @@ if($wrequest_id_check->coupon_code){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
 
-  if($status == 5 && $wrequest_id_check->status != 5){
+  if($status == 5 && $wrequest_id_check->status != 5 && (!$admin_username)){
       if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
@@ -8279,11 +8280,14 @@ die();
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $status = Yii::app()->request->getParam('status');
+	
         $result= 'false';
         $response= 'Pass the required parameters';
         $json= array();
 	 $api_password = '';
 	 $api_password = Yii::app()->request->getParam('api_password');
+	 $admin_username = '';
+        $admin_username  = Yii::app()->request->getParam('admin_username');
         if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($status) && !empty($status))){
 		
 		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
@@ -8299,12 +8303,25 @@ die();
             else{
 
              $agent_detail = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
-        $washeractionlogdata = array(
+        if($admin_username){
+		
+				 $washeractionlogdata = array(
+				'agent_id'=> $wrequest_id_check->agent_id,
+				'wash_request_id'=> $wash_request_id,
+				'agent_company_id'=> $agent_detail->real_washer_id,
+				'admin_username' => $admin_username,
+				'action'=> 'admindropjob',
+				'action_date'=> date('Y-m-d H:i:s'));
+	}
+	else{
+	$washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
             'action'=> 'washerenroutecancel',
             'agent_id'=> $wrequest_id_check->agent_id,
             'agent_company_id'=> $agent_detail->real_washer_id,
             'action_date'=> date('Y-m-d H:i:s'));
+	}
+	
         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
             Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => 0, 'canceled_washer_id' => $wrequest_id_check->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));

@@ -2013,7 +2013,7 @@ $(".cancel-order-ondemand").html('Cancel Order');
 $(".cancel-order-ondemand").html('Cancelling. Please wait...');
 $(".err-text").hide();
 <?php if($getorder->status == 1): ?>
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/washerenroutecancel", { wash_request_id: "<?php echo $getorder->id; ?>", status: 6, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/washerenroutecancel", { wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", status: 6, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 if(data.result == 'true'){
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
