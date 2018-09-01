@@ -6101,27 +6101,6 @@ public function actionwasherstoplocation(){
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
-						
-						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '45' ")->queryAll();
-						$message = $pushmsg[0]['message'];
-						
-						foreach( $agentdevices as $atdevice){
-
-							//echo $agentdetails['mobile_type'];
-							$device_type = strtolower($atdevice['device_type']);
-							$notify_token = $atdevice['device_token'];
-							$alert_type = "schedule";
-							$notify_msg = urlencode($message);
-
-							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-							//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-							$ch = curl_init();
-							curl_setopt($ch,CURLOPT_URL,$notifyurl);
-							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
-							if($notify_msg) $notifyresult = curl_exec($ch);
-							curl_close($ch);
-						}
 				$result= 'true';
 				$response= 'notification sent';
 		}
@@ -6131,6 +6110,24 @@ public function actionwasherstoplocation(){
 			'response'=> $response
 		);
 		echo json_encode($json);
+
+}
+
+public function actionwashernotifycc(){
+	
+	$check_washer = Yii::app()->db->createCommand("SELECT al.*, wr.id as order_id FROM washing_requests wr INNER JOIN agent_locations al ON wr.agent_id = al.agent_id WHERE wr.status = 1")->queryAll();
+	$result = false;
+	$response = array();
+	if(count($check_washer) > 0){
+			$result = true;
+			$response = $check_washer;
+	}
+
+	$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+		echo json_encode($json);	
 
 }
 }

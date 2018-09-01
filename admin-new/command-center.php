@@ -580,6 +580,8 @@ var infoWindow;
 var layer;
 var socketId;
 var socketintvaltimer;
+var location_arr = [];
+var total_stop_count = 0;
 var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
 
 socket.on('connect', function() {
@@ -609,6 +611,16 @@ $(window).load(function(){
 
             });
     });
+    $.getJSON("<?php echo ROOT_URL;?>/api/index.php?r=agents/washernotifycc", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+        if(data.result){
+            var data_show = data.response;
+                location_arr[0] = data_show[0].agent_id;
+                location_arr[1] = data_show[0].latitude;
+                location_arr[2] = data_show[0].longitude;
+                total_stop_count =1;
+                console.log(location_arr);
+        }
+    });
 });
 setInterval(function(){
     $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/wash30secondrunning", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
@@ -626,6 +638,31 @@ setInterval(function(){
 
             });
     });
+}, 60000);
+    
+setInterval(function(){
+    $.getJSON("<?php echo ROOT_URL;?>/api/index.php?r=agents/washernotifycc", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+        if(data.result){
+            var data_show = data.response;
+            if(location_arr.length > 0){
+                if(location_arr[0] == data_show[0].agent_id && location_arr[1] == data_show[0].latitude && location_arr[2] == data_show[0].longitude){
+                    total_stop_count = parseInt(total_stop_count)+1;
+                }
+            }else{
+                total_stop_count = 1;
+            }   
+                var data_show = data.response;
+                location_arr[0] = data_show[0].agent_id;
+                location_arr[1] = data_show[0].latitude;
+                location_arr[2] = data_show[0].longitude;
+                //alert(total_stop_count);
+        }else{
+            total_stop_count = 0;
+        }
+    });
+    if(total_stop_count == 5){
+        alert("You must drive to your order");
+    }
 }, 60000);
 </script>
 
