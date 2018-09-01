@@ -4636,13 +4636,24 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
             else{
 		
 		if(($feedback_source == 'dropjob') && ($agent_id)){
-                        $washeractionlogdata= array(
+                        if(!$washrequest_id_check->is_scheduled){
+			$washeractionlogdata= array(
+                            'agent_id'=> $agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agents_id_check->real_washer_id,
+                            'action'=> 'agentfeedback',
+			    'addi_detail' => $comments,
+                            'action_date'=> date('Y-m-d H:i:s'));	
+			}
+			else{
+			$washeractionlogdata= array(
                             'agent_id'=> $agent_id,
                             'wash_request_id'=> $wash_request_id,
                             'agent_company_id'=> $agents_id_check->real_washer_id,
                             'action'=> 'dropjob',
 			    'addi_detail' => $comments,
                             'action_date'=> date('Y-m-d H:i:s'));
+			}
 
                         if(!$simulate_rating) Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 			
