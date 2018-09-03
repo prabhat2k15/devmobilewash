@@ -741,6 +741,45 @@ $old_tip_amount = Yii::app()->db->createCommand("SELECT tip_amount FROM washing_
                     
 /* ---------- insert addons / others -------------- */
 
+if($order_state == '(null)' || $order_zipcode == '(null)'){
+	    /* --- Geocode lat long --- */
+
+    $geourl = "https://maps.google.com/maps/api/geocode/json?sensor=false&address=".$encode_address."&language=en&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
+    $ch = curl_init();
+
+	curl_setopt($ch,CURLOPT_URL,$geourl);
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+//	curl_setopt($ch,CURLOPT_HEADER, false);
+
+$georesult = curl_exec($ch);
+curl_close($ch);
+$geojsondata = json_decode($georesult);
+//var_dump($geojsondata);
+
+if($geojsondata->status == 'ZERO_RESULTS'){
+  $json = array(
+            'result'=> 'false',
+            'response'=> 'Invalid address',
+
+        );
+
+        echo json_encode($json); die();
+}
+else{
+	$address_components = $geojsondata->results[0]->address_components;
+	
+	foreach ($address_components as $key_geo => $geo_value) {
+
+		echo $geo_value->types[0];
+		if($geo_value->types[0] == 'postal_code'){
+			$order_zipcode = $geo_value->long_name;
+		}elseif($geo_value->types[0] == 'administrative_area_level_1' && $geo_value->types[1] == 'political'){
+			$order_zipcode = $geo_value->long_name;
+		}
+	}
+}
+}
+                    
 $fifth_disc = 0;
          if($fifth_wash_vehicles) $fifth_disc = 5;
 

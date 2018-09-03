@@ -316,6 +316,193 @@ $all_coupons[$ind]['premium_amount'] = $coupon['premium_amount'];
 		echo json_encode($json);
 
     }
+    
+    public function actionuserdpromocode(){
+
+      if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $coupon_code = Yii::app()->request->getParam('promocode');
+
+        $result= 'false';
+    $response= 'none';
+
+        $coupon_usage = $coupons_user = array();
+        $coupon_usage = Yii::app()->db->createCommand("SELECT wr.* FROM customer_discounts cd INNER JOIN washing_requests wr ON cd.wash_request_id = wr.id WHERE cd.promo_code = :promocode")->bindValue(':promocode', $coupon_code, PDO::PARAM_STR)->queryAll();
+        
+        if(count($coupon_usage)>0){
+           $result= 'true';
+           $response= 'all coupons';
+           foreach ($coupon_usage as $key => $wrequest) {
+             if($wrequest['is_scheduled']){
+                if($wrequest['reschedule_time']) $scheduledatetime = $wrequest['reschedule_date']." ".$wrequest['reschedule_time'];
+                else $scheduledatetime = $wrequest['schedule_date']." ".$wrequest['schedule_time'];
+
+                               $to_time = strtotime(date('Y-m-d g:i A'));
+                $from_time = strtotime($scheduledatetime);
+                $min_diff = 0;
+
+                $min_diff = round(($from_time - $to_time) / 60,2);
+
+                //$min_diff = abs($min_diff);
+                }
+                else{
+                  if($wrequest['status'] >= 0 && $wrequest['status'] < 4) $min_diff = 0;
+                  else{
+
+                               $to_time = strtotime(date('Y-m-d g:i A'));
+                $from_time = strtotime($wrequest['order_for']);
+                $min_diff = 0;
+
+                $min_diff = round(($from_time - $to_time) / 60,2);
+                  }
+                }
+           
+           $cust_details = Customers::model()->findByAttributes(array("id"=>$wrequest['customer_id']));
+                $agent_details = Agents::model()->findByAttributes(array("id"=>$wrequest['agent_id']));
+                $cars =  explode(",",$wrequest['car_list']);
+        $packs =  explode(",",$wrequest['package_list']);
+        $vehicles = array();
+        foreach($cars as $ind=>$car){
+                    $car_details = Vehicle::model()->findByAttributes(array("id"=>$car));
+        
+        $veh_addons = '';
+        
+        $pet_hair_vehicles_arr = explode(",", $wrequest['pet_hair_vehicles']);
+if (in_array($car, $pet_hair_vehicles_arr)) $veh_addons .= 'Extra Cleaning, ';
+
+$lifted_vehicles_arr = explode(",", $wrequest['lifted_vehicles']);
+if (in_array($car, $lifted_vehicles_arr)) $veh_addons .= 'Lifted Truck, ';
+
+$exthandwax_addon_arr = explode(",", $wrequest['exthandwax_vehicles']);
+if (in_array($car, $exthandwax_addon_arr)) $veh_addons .= 'Liquid Hand Wax, ';
+
+$extplasticdressing_addon_arr = explode(",", $wrequest['extplasticdressing_vehicles']);
+if (in_array($car, $extplasticdressing_addon_arr)) $veh_addons .= 'Exterior Plastic Dressing, ';
+
+$extclaybar_addon_arr = explode(",", $wrequest['extclaybar_vehicles']);
+if (in_array($car, $extclaybar_addon_arr)) $veh_addons .= 'Clay Bar & Paste Wax, ';
+
+$waterspotremove_addon_arr = explode(",", $wrequest['waterspotremove_vehicles']);
+if (in_array($car, $waterspotremove_addon_arr)) $veh_addons .= 'Water Spot Removal, ';
+
+$upholstery_addon_arr = explode(",", $wrequest['upholstery_vehicles']);
+if (in_array($car, $upholstery_addon_arr)) $veh_addons .= 'Upholstery Conditioning, ';
+
+$floormat_addon_arr = explode(",", $wrequest['floormat_vehicles']);
+if (in_array($car, $floormat_addon_arr)) $veh_addons .= 'Floor Mat Cleaning, ';
+
+$veh_addons = rtrim($veh_addons, ", ");
+
+                    $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind], 'addons' => $veh_addons);
+        }
+
+        if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+            $customername = '';
+            $cust_name = explode(" ", trim($cust_details->last_name));
+            $customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+            
+          }
+          else{
+            $customername = '';
+        $cust_name = explode(" ", trim($cust_details->customername));
+        if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+        else $customername = $cust_name[0];
+          }
+          
+          $customername = strtolower($customername);
+$customername = ucwords($customername);
+
+                $agent_info = array();
+        if(count($agent_details)){
+             $agent_info = array('agent_id'=>$wrequest['agent_id'], 'real_washer_id'=>$agent_details->real_washer_id, 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
+        }
+$payment_status = '';
+$submerchant_id = '';
+$transaction_status = '';
+
+if($wrequest['failed_transaction_id']){
+  $payment_status = 'Declined';
+}
+else{
+if($wrequest['transaction_id']){
+
+if($wrequest['escrow_status'] == 'hold_pending' || $wrequest['escrow_status'] == 'held'){
+$payment_status = 'Processed';
+}
+
+else if($wrequest['escrow_status'] == 'release_pending' || $wrequest['escrow_status'] == 'released'){
+$payment_status = 'Released';
+}
+
+
+/*if($cust_details->client_position == 'real') $payresult = Yii::app()->braintree->getTransactionById_real($wrequest['transaction_id']);
+else $payresult = Yii::app()->braintree->getTransactionById($wrequest['transaction_id']);
+if($payresult['success'] == 1) {
+//$submerchant_id = $payresult['merchant_id'];
+$transaction_status = $payresult['status'];
+}*/
+
+ }
+}
+
+$kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS);
+$kartdata = json_decode($kartapiresult);
+
+if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
+
+$coupons_user[] = array('id'=>$wrequest['id'],
+                    'customer_id'=>$wrequest['customer_id'],
+                    'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
+                    'customer_email'=>$cust_details->email,
+                    'customer_phoneno'=>$cust_details->contact_number,
+                     'agent_details'=> $agent_info,
+                    'car_list'=>$wrequest['car_list'],
+                    'package_list'=>$wrequest['package_list'],
+                    'vehicles' => $vehicles,
+                    'address'=>$wrequest['address'],
+                    'address_type'=>$wrequest['address_type'],
+                    'latitude'=>$wrequest['latitude'],
+                    'longitude'=>$wrequest['longitude'],
+                    'payment_type'=>$wrequest['payment_type'],
+                    'nonce'=>$wrequest['nonce'],
+                    'estimate_time'=>$wrequest['estimate_time'],
+                    'status'=>$wrequest['status'],
+                    'is_scheduled'=>$wrequest['is_scheduled'],
+                    'schedule_date'=>date('Y-m-d',strtotime($wrequest['schedule_date'])),
+                    'schedule_time'=>date('h:i A', strtotime($wrequest['schedule_time'])),
+          'reschedule_date'=>$resched_date,
+          'checklist'=>$wrequest['checklist'],
+                    'reschedule_time'=>$resched_time,
+          'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
+                    'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
+          'transaction_id'=>$wrequest['transaction_id'],
+          'failed_transaction_id'=>$wrequest['failed_transaction_id'],
+          'transaction_status'=>$transaction_status,
+          'submerchant_id' => $submerchant_id,
+                    'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
+                    'schedule_total'=>$wrequest['schedule_total'],
+                    'schedule_company_total'=>$wrequest['schedule_company_total'],
+                    'schedule_agent_total'=>$wrequest['schedule_agent_total'],
+          'wash_request_position'=>$wrequest['wash_request_position'],
+          'net_price'=>$kartdata->net_price,
+'payment_status' => $payment_status,
+'min_diff' => $min_diff
+                );
+
+  }
+        }
+
+          $json= array(
+      'result'=> $result,
+      'response'=> $response,
+            'coupons'=> $coupons_user
+    );
+    echo json_encode($json);
+
+    }
 
     public function actionapplycoupon(){
 

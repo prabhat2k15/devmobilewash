@@ -126,7 +126,7 @@ $all_coupons = $jsondata->coupons;
                     echo $coupon->premium_amount;
                     if($coupon->discount_unit == 'percent') { echo "%"; }
                     ?></td>
-                    <td><?php echo $coupon->coupon_usage; ?></td>
+                    <td><a href="/admin-new/promocode_use.php?promocode=<?php echo $coupon->coupon_code; ?>"><?php echo $coupon->coupon_usage; ?></a></td>
                     <td><?php if(strtotime($coupon->expire_date) < 0 ) { echo "N/A"; }
                     else { echo $coupon->expire_date; } ?></td>
 

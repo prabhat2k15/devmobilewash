@@ -1727,7 +1727,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> removed <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'customerfeedback'): ?>
-                                                          <p style="margin-bottom: 10px;">Customer feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
+                                                          <p style="margin-bottom: 10px; color:red;">Customer feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentfeedback'): ?>
                                                           <p style="margin-bottom: 10px; color: red;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
@@ -4105,7 +4105,7 @@ if(data.result == 'true'){
       }
       
        if(log.action == 'customerfeedback'){
-            contents += "<p style='margin-bottom: 10px;'>Customer feedback at "+log.formatted_action_date +" : "+ log.addi_detail+"</p>";
+            contents += "<p style='margin-bottom: 10px; color:red;'>Customer feedback at "+log.formatted_action_date +" : "+ log.addi_detail+"</p>";
       }
       
        if(log.action == 'agentfeedback'){
