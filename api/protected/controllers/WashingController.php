@@ -4248,6 +4248,19 @@ $hours = floor($wash_time / 60);
 	if((AES256CBC_STATUS == 1) && ($wrequest_id_check->canceled_washer_id)){
 		$canceled_washer_id = $this->aes256cbc_crypt( $wrequest_id_check->canceled_washer_id, 'e', AES256CBC_API_PASS );
 	}
+	
+$sched_date = '';
+$sched_time = '';
+if($wrequest_id_check->is_scheduled){
+if($wrequest_id_check->reschedule_time){
+$sched_date = $wrequest_id_check->reschedule_date;
+$sched_time = $wrequest_id_check->reschedule_time;
+}
+else{
+$sched_date = $wrequest_id_check->schedule_date;
+$sched_time = $wrequest_id_check->schedule_time;
+}
+}
 
         if($response){
             $json= array(
@@ -4272,7 +4285,10 @@ $hours = floor($wash_time / 60);
 	    'latitude' => $wrequest_id_check->latitude,
 	    'longitude' => $wrequest_id_check->longitude,
 	    'company_cancel' => $wrequest_id_check->company_cancel,
-	    'canceled_washer_id' => $canceled_washer_id
+	    'canceled_washer_id' => $canceled_washer_id,
+	    'schedule_date' => $sched_date,
+	    'schedule_time' => $sched_time
+	     
             );
         }
         else{
@@ -4282,7 +4298,9 @@ $hours = floor($wash_time / 60);
 		'agent_id' => $wrequest_id_check->agent_id,
 		'no_washer_cancel' => $wrequest_id_check->no_washer_cancel,
 		'company_cancel' => $wrequest_id_check->company_cancel,
-		'canceled_washer_id' => $canceled_washer_id
+		'canceled_washer_id' => $canceled_washer_id,
+		'schedule_date' => $sched_date,
+	    'schedule_time' => $sched_time
             );
         }
         echo json_encode($json);

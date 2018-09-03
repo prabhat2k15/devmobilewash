@@ -60,6 +60,7 @@ return;
         $card_img = '';
 	$total_cars = array();
 	$coveragezipcheck = 0;
+	$is_startable = 0;
 
 		if((isset($wash_request_id) && !empty($wash_request_id))){
 		  
@@ -823,6 +824,29 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
 		 if($wash_id_check->agent_id) {
 		     $agent_det = Agents::model()->findByPk($wash_id_check->agent_id);
 		     $agent_details['rating'] = $agent_det->rating;
+		     if($wash_id_check->is_scheduled){
+		     $has_workinprogress_wash =  Washingrequests::model()->findAll(array("condition"=>"status > 0 AND status <= 3 AND agent_id=:agent_id", 'params'  => array(':agent_id' => $wash_id_check->agent_id), 'order' => 'created_date desc'));
+		     $sched_date = '';
+$sched_time = '';
+if($wash_id_check->reschedule_time){
+$sched_date = $wash_id_check->reschedule_date;
+$sched_time = $wash_id_check->reschedule_time;
+}
+else{
+$sched_date = $wash_id_check->schedule_date;
+$sched_time = $wash_id_check->schedule_time;
+}
+		     $scheduledatetime = $sched_date." ".$sched_time;
+               $to_time = strtotime(date('Y-m-d g:i A'));
+$from_time = strtotime($scheduledatetime);
+$min_diff = 0;
+if($from_time >= $to_time){
+$min_diff = round(($from_time - $to_time) / 60,2);
+}
+if(($min_diff <= 60) && (!count($has_workinprogress_wash))){
+$is_startable = 1;
+}
+		 }
 		  }
 
 		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
@@ -892,7 +916,8 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
 	        'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
             'vehicles' => $vehicles,
             'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount,
-	    'company_cancel' => $wash_id_check->company_cancel
+	    'company_cancel' => $wash_id_check->company_cancel,
+	    'is_startable'=>$is_startable
         );
 		}
 		else{
@@ -956,7 +981,8 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_details->braintree_
 	        'admin_submit_for_settle' => $wash_id_check->admin_submit_for_settle,
             'vehicles' => $vehicles,
             'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount,
-	    'company_cancel' => $wash_id_check->company_cancel
+	    'company_cancel' => $wash_id_check->company_cancel,
+	    'is_startable'=>$is_startable
         );
 		}
 	
