@@ -1730,7 +1730,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentfeedback'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
+                                                          <p style="margin-bottom: 10px; color: red;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'customercall'): ?>
                                                           <p style="margin-bottom: 10px;">Customer called washer #<?php echo $log->agent_company_id; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -4109,7 +4109,7 @@ if(data.result == 'true'){
       }
       
        if(log.action == 'agentfeedback'){
-            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" feedback at "+log.formatted_action_date +" : "+ log.addi_detail+"</p>";
+            contents += "<p style='margin-bottom: 10px; color: red;'>Washer #"+log.agent_company_id+" feedback at "+log.formatted_action_date +" : "+ log.addi_detail+"</p>";
       }
       
        if(log.action == 'customercall'){
