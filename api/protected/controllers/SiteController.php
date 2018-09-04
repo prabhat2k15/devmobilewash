@@ -2417,7 +2417,8 @@ if((isset($wash_request_id) && !empty($wash_request_id))){
     $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
     if($promo_code) {
       $coupon_check = CouponCodes::model()->findByAttributes(array("coupon_code"=>$promo_code));
-$coupon_usage = CustomerDiscounts::model()->findByAttributes(array("promo_code"=>$promo_code, "customer_id" => $wrequest_id_check->customer_id));
+$coupon_usage = CustomerDiscounts::model()->findByAttributes(array("promo_code"=>$promo_code, "customer_id" => $wrequest_id_check->customer_id), array('condition'=>"wash_request_id != ".$wash_request_id));
+
     }
 
 
@@ -2436,14 +2437,14 @@ $coupon_usage = CustomerDiscounts::model()->findByAttributes(array("promo_code"=
 		           $response= "Sorry, this promo is not available this time.";
                 }
 
-  else if(($promo_code) && (strtotime($coupon_check->expire_date) > 0 && (strtotime($coupon_check->expire_date) < strtotime(date("Y-m-d"))))){
+  else if(($wrequest_id_check->coupon_code != $promo_code) && ($promo_code) && (strtotime($coupon_check->expire_date) > 0 && (strtotime($coupon_check->expire_date) < strtotime(date("Y-m-d"))))){
                    	$result= 'false';
 		            $response= "Promo code expired";
                 }
 
  else if(($promo_code) && (($coupon_check->usage_limit == 'single') && (count($coupon_usage) >= 1))){
                    	$result= 'false';
-		            $response= "Sorry, you already used this promo once.";
+		        $response= "Sorry, you already used this promo once.";
                 }
             else{
                 $result = 'true';

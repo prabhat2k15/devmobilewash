@@ -373,6 +373,7 @@ curl_close($handle);
 $data = array("wash_request_id" => $_GET['id'], "car_ids_org" => $getorder->car_list, "car_ids" => $car_ids, "car_packs" => $car_packs, "pet_hair_vehicles" => $pet_hair_vehicles, "pet_hair_vehicles_custom"=> $pet_hair_vehicles_custom, "lifted_vehicles" => $lifted_vehicles, "exthandwax_vehicles" => $exthandwax_vehicles, "extplasticdressing_vehicles" => $extplasticdressing_vehicles, "extclaybar_vehicles" => $extclaybar_vehicles, "waterspotremove_vehicles" => $waterspotremove_vehicles, "upholstery_vehicles" => $upholstery_vehicles, "floormat_vehicles" => $floormat_vehicles, "fifthwash_vehicles" => $fifthwash_vehicles, "tip_amount" => $_POST['ctip'], "full_address" => $full_address, "address_type" => $address_type, "city" => $city, "state" => $state, "zipcode" => $zipcode, "lat" => $lat, "lng" => $long, "admin_command" => "update-order", 'promo_code' => $_POST['promo_code'], "admin_username" => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
 //print_r($data);
+
   $handle_data = curl_init(ROOT_URL."/api/index.php?r=site/updatewashadmin");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $data);
@@ -1578,7 +1579,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">                            #<?php echo $log->agent_company_id; ?> saved order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endif; ?>
-                                                          <?php if($log->action == 'dropjob'): ?>
+                                                          <?php if($log->action == 'dropjob' && ($getorder->is_scheduled)): ?>
                                                           <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>. Reason: <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'admindropjob'): ?>
@@ -3897,10 +3898,11 @@ if(data.result == 'true'){
             contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" assigned "+log.formatted_action_date+"</p>";
         }
      } 
+      <?php if(($getorder->is_scheduled)): ?>
       if(log.action == 'dropjob'){
           contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped order at "+log.formatted_action_date+"</p>. Reason: "+log.addi_detail; 
       }
-      
+      <?php endif; ?>
       if(log.action == 'admindropjob'){
           contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" dropped washer #"+log.agent_company_id+" from the order at "+log.formatted_action_date+"</p>";
       }
