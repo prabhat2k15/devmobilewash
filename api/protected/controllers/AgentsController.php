@@ -1970,6 +1970,12 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                    $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$aid."' AND available_for_new_order = 1 AND block_washer=0")->queryAll();
 
                  /* ------- check if agent is available for new order end -------- */
+		 
+		 /* --- agent assigned to another order --- */
+		 
+		 $agent_has_order = Washingrequests::model()->findByAttributes(array("order_temp_assigned"=>$aid, "status"=>0, "is_scheduled"=>0), array('condition'=>'id'!=$wash_request_id));
+		
+		/* --- agent assigned to another order end --- */
 
                  /* ------- check if agent already reject current order -------- */
 
@@ -1987,7 +1993,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                  /* ------- check if agent already reject current order end -------- */
 
 
-                 if(count($isavailable) && (!$order_rejects)){
+                 if(count($isavailable) && (!$order_rejects) && (!count($agent_has_order))){
 //echo "working";
                  $near_agent = $aid;
                  break;
