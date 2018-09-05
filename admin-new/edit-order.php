@@ -1610,7 +1610,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> voided payment at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                            <?php if($log->action == 'cancelorder'): ?>
-                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> canceled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px; color:red;"><?php echo $log->admin_username; ?> canceled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                            <?php if($log->action == 'agentreceiptsend'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> sent washer receipt at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1680,13 +1680,13 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> un-canceled wash at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'cancelorderclient'): ?>
-                                                          <p style="margin-bottom: 10px;">Customer canceled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;  color:red;">Customer canceled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'cancelorderwasher'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> canceled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;  color:red;">Washer #<?php echo $log->agent_company_id; ?> canceled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerenroutecancel'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> canceled order enroute at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px; color:red;">Washer #<?php echo $log->agent_company_id; ?> canceled order enroute at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                            <?php if($log->action == 'adminstopwasherpayment'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> stopped washer payment at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1767,7 +1767,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer changed Wash Now to Scheduled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'ondemandautocancel'): ?>
-                                                          <p style="margin-bottom: 10px;">Customer's On Demand auto-canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px; color:red;">Customer's On Demand auto-canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
@@ -3940,7 +3940,7 @@ if(data.result == 'true'){
       } 
       
       if(log.action == 'cancelorder'){
-          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" canceled order at "+log.formatted_action_date+"</p>";  
+          contents += "<p style='margin-bottom: 10px; color:red;'>"+log.admin_username+" canceled order at "+log.formatted_action_date+"</p>";  
       } 
       
       if(log.action == 'agentreceiptsend'){
@@ -4029,15 +4029,15 @@ if(data.result == 'true'){
       }
 
       if(log.action == 'cancelorderclient'){
-            contents += "<p style='margin-bottom: 10px;'>Customer canceled order at "+log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px; color:red;'>Customer canceled order at "+log.formatted_action_date+"</p>";
       }
 
       if(log.action == 'cancelorderwasher'){
-            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" canceled order at "+log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px; color:red;'>Washer #"+log.agent_company_id+" canceled order at "+log.formatted_action_date+"</p>";
       }
 
       if(log.action == 'washerenroutecancel'){
-            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" canceled order enroute at "+log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px; color:red;'>Washer #"+log.agent_company_id+" canceled order enroute at "+log.formatted_action_date+"</p>";
       }
 
        if(log.action == 'adminstopwasherpayment'){
@@ -4156,7 +4156,7 @@ if(data.result == 'true'){
        }
        
        if(log.action == 'ondemandautocancel'){
-        contents += "<p style='margin-bottom: 10px;'>Customer's On Demand auto-canceled at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;  color:red;'>Customer's On Demand auto-canceled at "+log.formatted_action_date+"</p>";
        }
        
 

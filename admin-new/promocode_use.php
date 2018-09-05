@@ -12,10 +12,20 @@
         $(document).ready(function(){
             $('#example1').dataTable( {
   "pageLength": 20,
-  "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
+  "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+  "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [
+            'csvHtml5'
+        ]
 } );
             
         });
+        $(document).ready(function(){
+
+    $('.csv-link').on('click',function(){
+        $('.buttons-csv').trigger('click');
+    });
+});
         </script>
 <?php include('right-sidebar.php') ?>
 <?php
@@ -45,6 +55,36 @@ die;*/
 .label-offline {
     background-color: #FF0202 !important;
 }
+.dt-button.buttons-csv.buttons-html5 {
+    opacity: 0;
+}
+.portlet-body{
+    width: 100%;
+    overflow-x: scroll;
+}
+.label-complete {
+    background-color: #16CE0C !important;
+}
+
+.label-pending {
+    background-color: #DCAD53 !important;
+}
+
+.label-fraud {
+    background-color: #f44336 !important;
+}
+
+.label-process {
+    background-color: #D0792B !important;
+}
+
+.label-enroute {
+    background-color: #00BCD4 !important;
+}
+
+.label-cancel {
+    background-color: #999 !important;
+}
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -68,7 +108,7 @@ die;*/
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> Manage Promotions Users</span>
+                                        <span class="caption-subject bold uppercase"> Manage Promotions Users</span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                                     </div>
                                     <div class="caption font-dark">
                                         
@@ -88,8 +128,9 @@ die;*/
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                         <thead>
                                             <tr>
+                                                <th> Action </th>
                                                 <th> ID </th>
-                                                 <th> Order Type </th>
+                                                <th> Order Type </th>
                                                 <th> Status </th>
                                                 <th> Payment </th>
                                                 <th> Transaction ID </th>
@@ -114,6 +155,7 @@ die;*/
 
                    <?php foreach($all_coupons as $order){ ?>
                 <tr class="odd gradeX <?php if($ind == 0) echo "flashro";?>" id="order-<?php echo $order->id; ?>">
+                    <td><a href="edit-order.php?id=<?php echo $order->id; ?>" class="appt-edit-order" data-id="<?php echo $order->id; ?>" style="margin-right: 7px;">Edit</a></td>
                     <td><?php echo $order->id; ?></td>
                     <td><?php if($order->is_scheduled): ?><p><span class="label label-sm label-pending" style="background-color: #0046ff !important;">Scheduled</span></p><?php endif; ?><?php if(!$order->is_scheduled): ?><p><span class="label label-sm label-pending" style="background-color: #009688 !important;">On-Demand</span></p><?php endif; ?></td>
                     <td>               
@@ -176,7 +218,7 @@ die;*/
                 width: 14% !important;
             }
             </style>
-            <?php include('footer.php') ?>
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
+            <?php include('footer.php') ?>
