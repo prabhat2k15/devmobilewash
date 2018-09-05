@@ -185,6 +185,10 @@ $vehicle_type = $vehicle_exists[0]['type'];
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $planDetails['price'] = $planDetails['tier3_price'];
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $planDetails['price'] = $planDetails['tier4_price'];
+			      }
 			      	
 			}
 			
@@ -332,6 +336,10 @@ die();
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $planDetails['price'] = $planDetails['tier3_price'];
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $planDetails['price'] = $planDetails['tier4_price'];
+			      }
 			      	
 			}
 
@@ -434,17 +442,19 @@ die();
         $price = Yii::app()->request->getParam('price');
 	$price2 = Yii::app()->request->getParam('price2');
 	$price3 = Yii::app()->request->getParam('price3');
+	$price4 = Yii::app()->request->getParam('price4');
         $description = Yii::app()->request->getParam('description');
 
         $result= 'false';
         $response= 'Pass the required parameters';
 
-$update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration=:duration, wash_time=:wash_time, price=:price, tier2_price=:price2, tier3_price=:price3, description=:description WHERE id = :id")
+$update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration=:duration, wash_time=:wash_time, price=:price, tier2_price=:price2, tier3_price=:price3, tier4_price=:price4, description=:description WHERE id = :id")
            ->bindValue(':duration', $duration, PDO::PARAM_STR)
 	   ->bindValue(':wash_time', $wash_time, PDO::PARAM_STR)
 	   ->bindValue(':price', $price, PDO::PARAM_STR)
 	   ->bindValue(':price2', $price2, PDO::PARAM_STR)
 	   ->bindValue(':price3', $price3, PDO::PARAM_STR)
+	   ->bindValue(':price4', $price4, PDO::PARAM_STR)
 	   ->bindValue(':description', $description, PDO::PARAM_STR)
 	   ->bindValue(':id', $id, PDO::PARAM_STR)
            ->execute();
@@ -4122,6 +4132,10 @@ $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $wash_price = $washing_plan_det->tier3_price; 
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $wash_price = $washing_plan_det->tier4_price; 
+			      }
 			}
 		      
 		      
@@ -4153,6 +4167,10 @@ $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"
 			      
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $wash_price = $washing_plan_det->tier3_price; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $wash_price = $washing_plan_det->tier4_price; 
 			      }
 			}
 		      

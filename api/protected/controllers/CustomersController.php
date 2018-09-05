@@ -4249,6 +4249,10 @@ $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $wash_price = $washing_plan_det->tier3_price; 
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $wash_price = $washing_plan_det->tier4_price; 
+			      }
 			}
 			
                       if($cardata->new_pack_name == 'Express') $wash_price = $wash_price + ($wash_price * ($exp_surge_factor / 100));
@@ -4278,6 +4282,10 @@ $washing_plan_det = Washingplans::model()->findByAttributes(array("vehicle_type"
 			      
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $wash_price = $washing_plan_det->tier3_price; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $wash_price = $washing_plan_det->tier4_price; 
 			      }
 			}
 			
@@ -6082,6 +6090,10 @@ if(count( $washplan_id_exists)){
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $package_price = $washplan_id_exists->tier3_price; 
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $package_price = $washplan_id_exists->tier4_price; 
+			      }
 			}
   if($wash_package == 'Express') $package_price = $package_price + ($package_price * ($exp_surge_factor / 100));
 		      if($wash_package == 'Deluxe') $package_price = $package_price + ($package_price * ($del_surge_factor / 100));
@@ -6262,6 +6274,10 @@ $wash_price = 0;
 			      
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $wash_price = $washing_plan_det->tier3_price; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $wash_price = $washing_plan_det->tier4_price; 
 			      }
 		}
 		    

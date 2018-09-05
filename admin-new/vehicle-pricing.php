@@ -26,7 +26,7 @@ $allcarsdata = json_decode($result);
 if(isset($_POST['pricing_submit'])){
 for($i = 1, $j=0; $i <= count($_POST['price']); $i++, $j++){
  
-$vehdata = array('id'=> $i, 'duration' => $_POST['duration'][$j], 'wash_time' => $_POST['wash_time'][$j], 'price' => $_POST['price'][$j], 'price2' => $_POST['price2'][$j], 'price3' => $_POST['price3'][$j], 'description' => $_POST['description'][$j], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$vehdata = array('id'=> $i, 'duration' => $_POST['duration'][$j], 'wash_time' => $_POST['wash_time'][$j], 'price' => $_POST['price'][$j], 'price2' => $_POST['price2'][$j], 'price3' => $_POST['price3'][$j], 'price4' => $_POST['price4'][$j], 'description' => $_POST['description'][$j], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=washing/updatevehicleplan");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
@@ -264,6 +264,7 @@ $pricingdata = json_decode($result);
     <th>Tier 1 Price <span style="color: #076ee1;">(Blue)</span></th>
     <th>Tier 2 Price <span style="color: #f4d942;">(Yellow)</span></th>
     <th>Tier 3 Price <span style="color: #ff5722;">(Red)</span></th>
+    <th>Tier 4 Price <span style="color: #800080;">(Purple)</span></th>
     <th>Handling Fee</th>
     <th style="min-width: 200px;">Description</th>
     <th>Vehicle Type</th>
@@ -276,6 +277,7 @@ $pricingdata = json_decode($result);
 <td><input type="text" value="<?php echo $plan->price; ?>" name="price[]" required /></td>
 <td><input type="text" value="<?php echo $plan->tier2_price; ?>" name="price2[]" required /></td>
 <td><input type="text" value="<?php echo $plan->tier3_price; ?>" name="price3[]" required /></td>
+<td><input type="text" value="<?php echo $plan->tier4_price; ?>" name="price4[]" required /></td>
 <td><?php echo $plan->handling_fee; ?></td>
 <td><textarea name="description[]" style="width: 100%; height: 100px;"><?php echo $plan->description; ?></textarea></td>
 <td><?php echo $plan->vehicle_type; ?></td>

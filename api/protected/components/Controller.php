@@ -199,6 +199,10 @@ $addressComponents = $geojsondata->results[0]->address_components;
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $expr_price = $washing_plan_express->tier3_price; 
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $expr_price = $washing_plan_express->tier4_price; 
+			      }
 			}
 			/*if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
 			$expr_price += $zipcode_price_factor;
@@ -222,6 +226,10 @@ $addressComponents = $geojsondata->results[0]->address_components;
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $delx_price = $washing_plan_deluxe->tier3_price; 
 			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $delx_price = $washing_plan_deluxe->tier4_price; 
+			      }
 			}
 			/*if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
 			$delx_price += $zipcode_price_factor;
@@ -244,6 +252,10 @@ $addressComponents = $geojsondata->results[0]->address_components;
 			      
 			      if($coveragezipcheck->zip_color == 'red'){
 				 $prem_price = $washing_plan_prem->tier3_price; 
+			      }
+			      
+			      if($coveragezipcheck->zip_color == 'purple'){
+				 $prem_price = $washing_plan_prem->tier4_price; 
 			      }
 			}
 			/*if((count($zipcodeprice)) && ($zipcodeprice[0]['price_unit'] == 'usd')){
