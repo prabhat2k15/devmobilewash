@@ -4731,7 +4731,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 			
 
                         if(!$simulate_rating) {
-				Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+				if(!$washrequest_id_check->is_scheduled) Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 				Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata2);
 			}
 			
