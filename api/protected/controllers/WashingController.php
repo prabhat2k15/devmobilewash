@@ -3216,6 +3216,15 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 
 $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $washrequestmodel->customer_id, PDO::PARAM_STR)->queryAll();
 	
+                    $washeractionlogdata = array(
+                        'agent_id'=> $agent_id,
+                        'wash_request_id'=> $wash_request_id,
+                        'agent_company_id'=> $agent_detail->real_washer_id,
+                        'action'=> 'Dropschedule',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);	
+                    
             if(count($clientdevices))
             {
                 foreach($clientdevices as $ctdevice)

@@ -1580,7 +1580,10 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'dropjob' && ($getorder->is_scheduled)): ?>
-                                                          <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>. Reason: <?php echo $log->addi_detail; ?></p>
+                                                          <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped Reason at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'Dropschedule' && ($getorder->is_scheduled)): ?>
+                                                          <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'admindropjob'): ?>
                                                           <p style="margin-bottom: 10px; color: red;"><?php echo $log->admin_username; ?> dropped washer #<?php echo $log->agent_company_id; ?> from the order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -3900,7 +3903,10 @@ if(data.result == 'true'){
      } 
       <?php if(($getorder->is_scheduled)): ?>
       if(log.action == 'dropjob'){
-          contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped order at "+log.formatted_action_date+"</p>. Reason: "+log.addi_detail; 
+          contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped Reason at "+log.formatted_action_date+"</p>: "+log.addi_detail; 
+      }
+      if(log.action == 'Dropschedule'){
+          contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped order at "+log.formatted_action_date+"</p>"; 
       }
       <?php endif; ?>
       if(log.action == 'admindropjob'){
