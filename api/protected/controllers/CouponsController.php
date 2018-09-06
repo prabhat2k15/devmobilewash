@@ -448,8 +448,8 @@ $transaction_status = $payresult['status'];
  }
 }
 
-$kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS);
-$kartdata = json_decode($kartapiresult);
+//$kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS);
+//$kartdata = json_decode($kartapiresult);
 
 if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 
@@ -487,7 +487,7 @@ $coupons_user[] = array('id'=>$wrequest['id'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
           'wash_request_position'=>$wrequest['wash_request_position'],
-          'net_price'=>$kartdata->net_price,
+          'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff
                 );
