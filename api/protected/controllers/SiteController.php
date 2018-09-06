@@ -7953,8 +7953,9 @@ if(count($all_agents) > 0){
         $washer_registered_since = round($datediff / (60 * 60 * 24));
         
         if($washer_registered_since > 30){
-            $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$agent_id."'")->queryAll();
-            $totalwash = count($totalwash_arr);
+            $totalwash_arr = Yii::app()->db->createCommand("SELECT customer_id FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$agent_id."' AND `order_for` >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)")->queryAll();
+            
+	    $totalwash = count($totalwash_arr);
 
             if(count($totalwash_arr)){
             $cust_served_ids = array();
@@ -7996,6 +7997,33 @@ Agents::model()->updateByPk($agent_id,array('care_rating' => $care_rating));
 
 
 }
+
+/* --- mobilewash care rating ---- */
+/*
+ $totalwash_arr = Yii::app()->db->createCommand("SELECT customer_id FROM `washing_requests` WHERE status=4 AND `order_for` >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)")->queryAll();
+            
+	    $totalwash = count($totalwash_arr);
+
+            if(count($totalwash_arr)){
+            $cust_served_ids = array();
+            foreach($totalwash_arr as $agentwash){
+                if(!in_array($agentwash['customer_id'], $cust_served_ids)){
+                     $cust_served_ids[] = $agentwash['customer_id'];
+                }
+            }
+
+            $cust_served_ids = array_unique($cust_served_ids);
+  
+            if(count($cust_served_ids) > 0) {
+                $mw_care_rating = (count($cust_served_ids)/$totalwash) * 100;
+                $mw_care_rating = round($mw_care_rating, 2);
+            }
+
+        }else{
+            $mw_care_rating = "N/A";
+        }
+	*/
+	/* --- mobilewash care rating end ---- */
 }
     
 }
