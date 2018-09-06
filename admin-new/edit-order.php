@@ -1944,9 +1944,9 @@ $(".cancel-order").html('Cancel Order');
         "Washer Cancel (rating penalty, no fee)": function() {
 
           $( this ).dialog( "close" );
-$(".cancel-order-ondemand").html('Cancelling. Please wait...');
+$(".cancel-order").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", { id: "<?php echo $getorder->id; ?>", free_cancel: 'yes', status: 6, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", { wash_request_id: "<?php echo $getorder->id; ?>", agent_id: 0, washer_drop_job: 1, is_scheduled: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
@@ -1954,7 +1954,7 @@ window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php ech
 else{
 $(".err-text").html(data.response);
 $(".err-text").show();
-$(".cancel-order-ondemand").html('Cancel Order');
+$(".cancel-order").html('Cancel Order');
 
 }
 

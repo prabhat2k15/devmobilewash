@@ -864,10 +864,15 @@ $is_startable = 1;
 		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 		  
 		  $agt_id = $wash_id_check->agent_id;
+		  $canceled_washer_id = $wash_id_check->canceled_washer_id;
 		  if($agt_id) {
 		     $agt_id = $this->aes256cbc_crypt( $wash_id_check->agent_id, 'e', AES256CBC_API_PASS );
-		    
 		  }
+		  
+		  if($canceled_washer_id) {
+		     $canceled_washer_id = $this->aes256cbc_crypt( $canceled_washer_id, 'e', AES256CBC_API_PASS );
+		  }
+		  
 		  	$json = array(
             'result'=> $result,
             'response'=> $response,
@@ -929,6 +934,7 @@ $is_startable = 1;
             'vehicles' => $vehicles,
             'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount,
 	    'company_cancel' => $wash_id_check->company_cancel,
+	    'canceled_washer_id' => $canceled_washer_id,
 	    'is_startable'=>$is_startable
         );
 		}
@@ -994,6 +1000,7 @@ $is_startable = 1;
             'vehicles' => $vehicles,
             'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount,
 	    'company_cancel' => $wash_id_check->company_cancel,
+	    'canceled_washer_id' => $canceled_washer_id,
 	    'is_startable'=>$is_startable
         );
 		}

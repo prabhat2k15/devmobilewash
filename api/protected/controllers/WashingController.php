@@ -3118,7 +3118,7 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 			
 			
 			
-			Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0, "is_washer_assigned_push_sent" => 0));
+			Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0, "is_washer_assigned_push_sent" => 0, "canceled_washer_id" => $wrequest_id_check->agent_id));
 			
                     $alert_type = "strong";
                     $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '24' ")->queryAll();
