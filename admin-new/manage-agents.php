@@ -35,6 +35,16 @@ $total_pages = $allagents->total_pages;
             die();
             }
     }
+    
+    $url = ROOT_URL.'/api/index.php?r=users/getappsettings';
+            $handle = curl_init($url);
+            $data = '';
+            curl_setopt($handle, CURLOPT_POST, true);
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+            $result = curl_exec($handle);
+            curl_close($handle);
+            $appsettings = json_decode($result);
 ?>
 <?php
     if($washer_module_permission == 'no'){
@@ -250,6 +260,10 @@ $('#late_drivers').click(function(){
                         <div class="col-md-1 col-sm-1 <?php echo $late_drivers; ?>" id="late_drivers" style="padding: 13px 0px 0px 10px; cursor: pointer; border-top: 5px solid #25e900;">
                             <div style="font-size: 20px;" class="late_drivers">0</div>
                             <div>Late Drivers</div>
+                        </div>
+			<div class="col-md-6 col-sm-6" id="care-rating" style="padding: 13px 0px 0px 10px; cursor: pointer;">
+                            <div style="font-size: 20px;" class="care_rating"><?php echo $appsettings->mw_care_rating; ?><?php if($appsettings->mw_care_rating > 0) echo "%"; ?></div>
+                            <div>MW Care Rating</div>
                         </div>
                     </div>
                     <div class="clear">&nbsp;</div>

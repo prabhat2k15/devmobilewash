@@ -2567,6 +2567,7 @@ $wash_now_fee_json = json_decode($app_settings[0]['wash_now_fee']);
                 'ios_washer_search_radius' => $app_settings[0]['washer_search_radius'],
 		'ios_wash_now_fee' => $wash_now_fee_json,
 		'ios_wash_later_fee' => $app_settings[0]['wash_later_fee'],
+		
                 'android_app_version_check' => $app_settings[1]['version_check'],
                 'android_app_version' => $app_settings[1]['app_version'],
                 'android_app_link' => $app_settings[1]['app_link'],
@@ -2574,7 +2575,8 @@ $wash_now_fee_json = json_decode($app_settings[0]['wash_now_fee']);
                 'android_max_order_rotate_time' => $app_settings[1]['max_order_rotate_time'],
                 'android_washer_search_radius' => $app_settings[1]['washer_search_radius'],
 		'android_wash_now_fee' => $wash_now_fee_json,
-		'android_wash_later_fee' => $app_settings[1]['wash_later_fee']
+		'android_wash_later_fee' => $app_settings[1]['wash_later_fee'],
+		'mw_care_rating' => $app_settings[0]['mw_care_rating'],
             );
 
                 }

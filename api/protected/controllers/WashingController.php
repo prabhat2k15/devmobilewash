@@ -4801,6 +4801,7 @@ die();
         $feedback_source = '';
 $feedback_source = Yii::app()->request->getParam('feedback_source');
 $simulate_rating = Yii::app()->request->getParam('simulate_rating');
+$ratingdecrease = Yii::app()->request->getParam('ratingdecrease');
   $api_password = '';
 if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 $cancel_feedback = Yii::app()->request->getParam('cancel_feedback');
@@ -4850,13 +4851,25 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                             'action_date'=> date('Y-m-d H:i:s'));	
 			}
 			
+			if($ratingdecrease == 'no'){
 			$washeractionlogdata2= array(
                             'agent_id'=> $agent_id,
                             'wash_request_id'=> $wash_request_id,
                             'agent_company_id'=> $agents_id_check->real_washer_id,
-                            'action'=> 'dropjob',
+                            'action'=> 'dropjob_ratingunchange',
 			    'addi_detail' => $comments,
-                            'action_date'=> date('Y-m-d H:i:s'));
+                            'action_date'=> date('Y-m-d H:i:s'));	
+			}
+			else{
+			$washeractionlogdata2= array(
+                            'agent_id'=> $agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agents_id_check->real_washer_id,
+                            'action'=> 'dropjob_rating',
+			    'addi_detail' => $comments,
+                            'action_date'=> date('Y-m-d H:i:s'));	
+			}
+			
 			
 
                         if(!$simulate_rating) {
