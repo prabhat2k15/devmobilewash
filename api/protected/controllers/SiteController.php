@@ -7999,30 +7999,39 @@ Agents::model()->updateByPk($agent_id,array('care_rating' => $care_rating));
 }
 
 /* --- mobilewash care rating ---- */
-/*
- $totalwash_arr = Yii::app()->db->createCommand("SELECT customer_id FROM `washing_requests` WHERE status=4 AND `order_for` >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)")->queryAll();
-            
-	    $totalwash = count($totalwash_arr);
 
+$mw_care_rating = '';
+ $totalwash_arr = Yii::app()->db->createCommand("SELECT customer_id, status FROM `washing_requests` WHERE `order_for` >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)")->queryAll();
+            
+	
             if(count($totalwash_arr)){
             $cust_served_ids = array();
+	     $unique_custs_ids = array();
             foreach($totalwash_arr as $agentwash){
-                if(!in_array($agentwash['customer_id'], $cust_served_ids)){
+		if(!in_array($agentwash['customer_id'], $unique_custs_ids)){
+                     $unique_custs_ids[] = $agentwash['customer_id'];
+                }
+                if((!in_array($agentwash['customer_id'], $cust_served_ids)) && ($agentwash['status'] == 4)){
                      $cust_served_ids[] = $agentwash['customer_id'];
                 }
             }
 
-            $cust_served_ids = array_unique($cust_served_ids);
+            //$cust_served_ids = array_unique($cust_served_ids);
   
             if(count($cust_served_ids) > 0) {
-                $mw_care_rating = (count($cust_served_ids)/$totalwash) * 100;
+		
+                $mw_care_rating = (count($unique_custs_ids)/count($cust_served_ids)) * 100;
                 $mw_care_rating = round($mw_care_rating, 2);
             }
 
         }else{
             $mw_care_rating = "N/A";
         }
-	*/
+	
+	Yii::app()->db->createCommand("UPDATE app_settings SET mw_care_rating = :mw_care_rating WHERE id = '1' ")->bindValue(':mw_care_rating', $mw_care_rating, PDO::PARAM_STR)->execute();
+      
+      Yii::app()->db->createCommand("UPDATE app_settings SET mw_care_rating = :mw_care_rating WHERE id = '2' ")->bindValue(':mw_care_rating', $mw_care_rating, PDO::PARAM_STR)->execute();
+	
 	/* --- mobilewash care rating end ---- */
 }
     
