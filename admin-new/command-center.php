@@ -1947,6 +1947,11 @@ if (rows[i][12] == 'purple') {
 
 }
 
+if (rows[i][12] == 'gray') {
+    areacolor = "#808080";
+
+}
+
             var randomnumber = Math.floor(Math.random() * 4);
             var country = new google.maps.Polygon({
               paths: newCoordinates,
@@ -1969,6 +1974,7 @@ ziparea_polys.push(country);
               if(this.zipcolor == 'yellow') this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
 	      else if(this.zipcolor == 'red') this.setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
 	      else if(this.zipcolor == 'purple') this.setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
+	    else if(this.zipcolor == 'gray') this.setOptions({fillColor: "#808080", fillOpacity: 0.6, strokeOpacity: 0.8});
 	      else this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
             });
 
@@ -1980,12 +1986,14 @@ ziparea_polys.push(country);
 		      var yellow_selected = '';
 		      var red_selected = '';
 		      var purple_selected = '';
+		      var gray_selected = '';
 		      
 if (this.zipcolor == 'yellow') {
     yellow_selected = "selected='selected'";
     blue_selected = '';
     red_selected = '';
     purple_selected = '';
+    gray_selected = '';
 }
 
 if (this.zipcolor == 'red') {
@@ -1993,6 +2001,7 @@ if (this.zipcolor == 'red') {
     blue_selected = '';
     red_selected = "selected='selected'";
     purple_selected = '';
+    gray_selected = '';
 }
 
 if (this.zipcolor == 'purple') {
@@ -2000,9 +2009,18 @@ if (this.zipcolor == 'purple') {
     blue_selected = '';
     red_selected = '';
     purple_selected = "selected='selected'";
+    gray_selected = '';
+}
+
+if (this.zipcolor == 'gray') {
+    yellow_selected = '';
+    blue_selected = '';
+    red_selected = '';
+    purple_selected = '';
+    gray_selected = "selected='selected'";
 }
    
-    var content = "<div class='zip-info'><p><b>ZIPCODE: </b>"+this.zipcode+"</p><p>Zip Color <select class='zip-color'><option value='' "+blue_selected+">Blue</option><option value='yellow' "+yellow_selected+">Yellow</option><option value='red' "+red_selected+">Red</option><option value='purple' "+purple_selected+">Purple</option></select></p><p><a href='#' class='save-zip-info' data-zip='"+this.zipcode+"'>Save</a></p></div>";
+    var content = "<div class='zip-info'><p><b>ZIPCODE: </b>"+this.zipcode+"</p><p>Zip Color <select class='zip-color'><option value='gray' "+gray_selected+">Disabled</option><option value='' "+blue_selected+">Blue</option><option value='yellow' "+yellow_selected+">Yellow</option><option value='red' "+red_selected+">Red</option><option value='purple' "+purple_selected+">Purple</option></select></p><p><a href='#' class='save-zip-info' data-zip='"+this.zipcode+"'>Save</a></p></div>";
   var infowindow = new google.maps.InfoWindow({
         content: content, position: e.latLng
 
@@ -2047,6 +2065,10 @@ if (data[i][12] == 'red') {
 
 if (data[i][12] == 'purple') {
     areacolor = "#800080";
+}
+
+if (data[i][12] == 'gray') {
+    areacolor = "#808080";
 }
 
             var randomnumber = Math.floor(Math.random() * 4);

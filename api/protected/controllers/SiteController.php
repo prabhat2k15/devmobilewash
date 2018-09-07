@@ -6281,6 +6281,31 @@ die();
 
 				Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 		       }
+		       
+		       if(($wrequest_id_check->is_scheduled) && (!$wrequest_id_check->status)){
+		      $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$old_agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '46' ")->queryAll();
+							//$message = $pushmsg[0]['message'];
+							$message = str_replace("[ORDER_ID]","#".$wrequest_id_check->id, $pushmsg[0]['message']);
+							foreach($agentdevices as $agdevice){
+								//$message =  "You have a new scheduled wash request.";
+								//echo $agentdetails['mobile_type'];
+								$device_type = strtolower($agdevice['device_type']);
+								$notify_token = $agdevice['device_token'];
+								$alert_type = "strong";
+								$notify_msg = urlencode($message);
+
+								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+								$ch = curl_init();
+								curl_setopt($ch,CURLOPT_URL,$notifyurl);
+								curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+								if($notify_msg) $notifyresult = curl_exec($ch);
+								curl_close($ch);
+							}
+		       }
 		     }
 		       
 		    $json= array(
@@ -6443,6 +6468,31 @@ die();
                         'action_date'=> date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+		    
+		    if(($wrequest_id_check->is_scheduled) && (!$wrequest_id_check->status)){
+		      $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$old_agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '46' ")->queryAll();
+							//$message = $pushmsg[0]['message'];
+							$message = str_replace("[ORDER_ID]","#".$wrequest_id_check->id, $pushmsg[0]['message']);
+							foreach($agentdevices as $agdevice){
+								//$message =  "You have a new scheduled wash request.";
+								//echo $agentdetails['mobile_type'];
+								$device_type = strtolower($agdevice['device_type']);
+								$notify_token = $agdevice['device_token'];
+								$alert_type = "strong";
+								$notify_msg = urlencode($message);
+
+								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+								$ch = curl_init();
+								curl_setopt($ch,CURLOPT_URL,$notifyurl);
+								curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+								if($notify_msg) $notifyresult = curl_exec($ch);
+								curl_close($ch);
+							}
+		       }
 		       }
 		      
 
@@ -6456,6 +6506,31 @@ die();
 				'action_date'=> date('Y-m-d H:i:s'));
 
 				Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+				
+				if(($wrequest_id_check->is_scheduled) && (!$wrequest_id_check->status)){
+		      $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '47' ")->queryAll();
+							//$message = $pushmsg[0]['message'];
+							$message = str_replace("[ORDER_ID]","#".$wrequest_id_check->id, $pushmsg[0]['message']);
+							foreach($agentdevices as $agdevice){
+								//$message =  "You have a new scheduled wash request.";
+								//echo $agentdetails['mobile_type'];
+								$device_type = strtolower($agdevice['device_type']);
+								$notify_token = $agdevice['device_token'];
+								$alert_type = "strong";
+								$notify_msg = urlencode($message);
+
+								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+								$ch = curl_init();
+								curl_setopt($ch,CURLOPT_URL,$notifyurl);
+								curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+								if($notify_msg) $notifyresult = curl_exec($ch);
+								curl_close($ch);
+							}
+		       }
 			}
                 }
 

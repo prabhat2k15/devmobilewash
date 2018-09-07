@@ -1025,7 +1025,7 @@ $last_order_days = "N/A";
 }
  
 
-            $message = "WASH NOW ATTEMPT #000".$washrequestid."- ".date('M d', strtotime($wash_details->created_date))." @ ".date('h:i A', strtotime($wash_details->created_date))."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
+            $message = "WASH NOW ATTEMPT #000".$washrequestid."- ".date('M d', strtotime($wash_details->created_date))." @ ".date('h:i A', strtotime($wash_details->created_date))."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$address." (".$address_type.") \r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
 
 try {
@@ -1371,7 +1371,7 @@ $last_order_days = "N/A";
 }
 
 
-            $message = "NEW Scheduled Order #000".$washrequestid."- ".date('M d', strtotime($wash_details->schedule_date))." @ ".$wash_details->schedule_time."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$address."\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
+            $message = "NEW Scheduled Order #000".$washrequestid."- ".date('M d', strtotime($wash_details->schedule_date))." @ ".$wash_details->schedule_time."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$address." (".$address_type.")\r\nDays Since Last Order: ".$last_order_days."\r\n------\r\n".$mobile_receipt;
 
 
 try {
@@ -3381,7 +3381,7 @@ try {
                     $auth_token = TWILIO_AUTH_TOKEN;
                     $client = new Services_Twilio($account_sid, $auth_token);
 
-                    $message = "Order #".$wash_request_id." has been re-scheduled at ".$sched_date." @ ".$reschedule_time."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$wrequest_id_check->address."\r\n------\r\n".$mobile_receipt;
+                    $message = "Order #".$wash_request_id." has been re-scheduled at ".$sched_date." @ ".$reschedule_time."\r\n".$customers_id_check->first_name." ".$customers_id_check->last_name."\r\n".$customers_id_check->contact_number."\r\n".$wrequest_id_check->address." (".$wrequest_id_check->address_type.")\r\n------\r\n".$mobile_receipt;
 
 
 try {
@@ -8808,8 +8808,10 @@ die();
 
             foreach($codes_exists as $ind=>$zipcode){
 
-                $all_zipcodes[$ind]['id'] = $zipcode['id'];
-               $all_zipcodes[$ind]['zipcode'] = $zipcode['zipcode'];
+		if($zipcode['zip_color'] != 'gray'){
+			$all_zipcodes[$ind]['id'] = $zipcode['id'];
+			$all_zipcodes[$ind]['zipcode'] = $zipcode['zipcode'];
+		}
 
             }
 
@@ -10453,7 +10455,7 @@ Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_
             $auth_token = TWILIO_AUTH_TOKEN;
             $client = new Services_Twilio($account_sid, $auth_token);
 
- $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->first_name." ".$cust_exists->last_name."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
+ $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->first_name." ".$cust_exists->last_name."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address." (".$order_exists->address_type.")";
 $message2 = "Order #".$id." has been canceled";
 
 
@@ -10800,7 +10802,7 @@ $this->layout = "xmlLayout";
             $client = new Services_Twilio($account_sid, $auth_token);
 
 
-            $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->first_name." ".$cust_exists->last_name."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address;
+            $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->first_name." ".$cust_exists->last_name."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address." (".$order_exists->address_type.")";
 $message2 = "Order #".$id." has been canceled";
 
 try {
