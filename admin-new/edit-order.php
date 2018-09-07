@@ -1579,7 +1579,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">                            #<?php echo $log->agent_company_id; ?> saved order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endif; ?>
-                                                          <?php if((($log->action == 'dropjob') || ($log->action == 'dropjob_ratingunchange')) && ($getorder->is_scheduled)): ?>
+                                                          <?php if($log->action == 'dropjob' && ($getorder->is_scheduled)): ?>
                                                           <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>. Reason: <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'admindropjob'): ?>
@@ -3899,7 +3899,7 @@ if(data.result == 'true'){
         }
      } 
       <?php if(($getorder->is_scheduled)): ?>
-      if((log.action == 'dropjob') || (log.action == 'dropjob_ratingunchange')){
+      if(log.action == 'dropjob'){
           contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped order at "+log.formatted_action_date+"</p>. Reason: "+log.addi_detail; 
       }
       <?php endif; ?>
