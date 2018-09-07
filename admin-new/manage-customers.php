@@ -22,8 +22,18 @@ var table;
 
            table = $('#example1').dataTable( {
   "pageLength": 20,
-  "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
+  "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+     "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [
+            'csvHtml5'
+        ]
 } );
+            
+$(document).ready(function(){
+    $('.csv-link').on('click',function(){
+        $('.buttons-csv').trigger('click');
+    });
+});
 
 $('.cust-search-box').show();
 
@@ -149,6 +159,13 @@ display: none;
     font-size: 26px;
     font-weight: 400;
 }
+.dt-button.buttons-csv.buttons-html5 {
+    opacity: 0;
+}
+.portlet-body{
+    width: 100%;
+    overflow-x: scroll;
+}
 </style>
 
 
@@ -181,7 +198,8 @@ cursor: pointer !important;
 
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> Managed Customers</span>
+                                        <span class="caption-subject bold uppercase"> Managed Customers</span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                                    </div>
                                     </div>
                                     <div class="actions">
                                          <i class="icon-calendar"></i>&nbsp;
