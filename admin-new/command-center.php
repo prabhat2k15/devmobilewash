@@ -1980,6 +1980,7 @@ ziparea_polys.push(country);
 
             google.maps.event.addListener(country, 'click', function(e)
 {
+    
    // console.log(country);
    //this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
   		      var blue_selected = "selected='selected'";
