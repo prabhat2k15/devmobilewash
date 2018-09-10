@@ -1060,28 +1060,6 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3236383339',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-
-	     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3104930721',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-
-	     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
 
           
            }
@@ -1404,25 +1382,6 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3236383339',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3104930721',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 
       
             }
@@ -2129,28 +2088,6 @@ try {
             //echo  $e;
 }
 
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3236383339',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3104930721',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
                    
                     }
 		    
@@ -2669,27 +2606,6 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3236383339',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-
-	     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3104930721',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-
-	     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 	}
 
         }
@@ -3303,28 +3219,6 @@ try {
             //echo  $e;
 }
 
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3236383339',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3104930721',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
                    
                     }
 
@@ -3418,26 +3312,6 @@ try {
 try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  '5622467300',
-                        'From' => '+13103128070',
-                        'Body' => $message,
-                    ));
-		      }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3236383339',
-                        'From' => '+13103128070',
-                        'Body' => $message,
-                    ));
-		      }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3104930721',
                         'From' => '+13103128070',
                         'Body' => $message,
                     ));
@@ -8496,28 +8370,6 @@ try {
             //echo  $e;
 }
 
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3236383339',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '3104930721',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
                    
                     }
 
@@ -8916,6 +8768,41 @@ if(Yii::app()->request->getParam('zipcolor')) $zipcolor = Yii::app()->request->g
 		 CoverageAreaCodes::model()->updateByPk($code_exists->id, array('zip_color' => $zipcolor));
 
 			}
+
+		}
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response
+		);
+
+		echo json_encode($json);
+
+    }
+    
+    	public function actionupdategroupcoveragezipcodes(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+         $result= 'false';
+		$response= 'Please provide zipcode';
+
+		$zipcode = Yii::app()->request->getParam('zipcode');
+$zipcolor = '';
+if(Yii::app()->request->getParam('zipcolor')) $zipcolor = Yii::app()->request->getParam('zipcolor');
+
+
+		if((isset($zipcode) && !empty($zipcode)))
+		{
+$zip_arr = explode(",",$zipcode);
+$zip_str = join("','",$zip_arr);            
+ 		$response = "zipcode updated";
+                $result = 'true';
+
+		Yii::app()->db->createCommand("UPDATE coverage_area_zipcodes SET zip_color = :zip_color WHERE zipcode IN ('$zip_str') ")->bindValue(':zip_color', $zipcolor, PDO::PARAM_STR)->execute();
 
 		}
 
@@ -10499,25 +10386,6 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3236383339',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3104930721',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 
 	       if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
               try {
@@ -10838,26 +10706,6 @@ $sendmessage = $client->account->messages->create(array(
 try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '5622467300',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3236383339',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3104930721',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));

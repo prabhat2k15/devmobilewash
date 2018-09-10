@@ -1933,13 +1933,29 @@ return false;
 $('body').on('click', '.save-zip-info', function(){
     var zip = $(this).data('zip');
     var zipcolor = $(this).parent().parent().find('.zip-color').val();
-    console.log(zipcolor);
 
   if (zip != null) {
       $("#container .note-message").fadeIn();
 $("#container .note-message").html('Saving...');
 
     $.getJSON( "ajax.php", { action: 'savezip', zipcode: zip, zipcolor: zipcolor  }, function( data ) {
+       $("#container .note-message").html(data.response);
+if(data.result == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
+else setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
+    });
+  }
+return false;
+});
+
+$('body').on('click', '.save-groupzip-info', function(){
+    var zip = $(this).data('zips');
+    var zipcolor = $(this).parent().parent().find('.zip-color').val();
+
+  if (zip != null) {
+      $("#container .note-message").fadeIn();
+$("#container .note-message").html('Saving...');
+
+    $.getJSON( "ajax.php", { action: 'savegroupzips', zipcode: zip, zipcolor: zipcolor  }, function( data ) {
        $("#container .note-message").html(data.response);
 if(data.result == 'false') setTimeout(function(){$("#container .note-message").fadeOut();}, 30000);
 else setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
