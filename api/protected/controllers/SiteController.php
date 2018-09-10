@@ -8012,8 +8012,8 @@ echo "Invalid api key";
 die();
 }
 
-$all_agents = Agents::model()->findAll();
-
+//$all_agents = Agents::model()->findAll();
+$all_agents = Yii::app()->db->createCommand("SELECT * FROM agents WHERE block_washer = 0 AND washer_position = 'real' ORDER BY id ASC");
 
 if(count($all_agents) > 0){
     foreach($all_agents as $ind=> $washer){
@@ -8028,19 +8028,40 @@ if(count($all_agents) > 0){
         $washer_registered_since = round($datediff / (60 * 60 * 24));
         
         if($washer_registered_since > 30){
-		
-	$totalwash_arr = Yii::app()->db->createCommand("SELECT COUNT(DISTINCT customer_id) AS total FROM `washing_requests` WHERE `agent_id` = '".$agent_id."'")->queryAll();
-    
-	$totalwash_arr_60 = Yii::app()->db->createCommand("SELECT COUNT(DISTINCT customer_id) AS total60 FROM `washing_requests` WHERE `agent_id` = '".$agent_id."' AND `order_for` >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)")->queryAll();
-                  
-	if($totalwash_arr[0]['total'] > 0){
-		$care_rating = ($totalwash_arr_60[0]['total60'] / $totalwash_arr[0]['total']) * 100;
-		$care_rating = round($care_rating,2);
-	}
-	else{
-		$mw_care_rating = 'N/A';	
-	}
+            $totalwash_arr = Yii::app()->db->createCommand("SELECT customer_id FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$agent_id."' AND `order_for` >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)")->queryAll();
+            
+	    $totalwash = count($totalwash_arr);
 
+            if(count($totalwash_arr)){
+            $cust_served_ids = array();
+            foreach($totalwash_arr as $agentwash){
+                if(!in_array($agentwash['customer_id'], $cust_served_ids)){
+                     $cust_served_ids[] = $agentwash['customer_id'];
+                }
+            }
+
+
+            //$cust_served_ids = array_unique($cust_served_ids);
+            $total_returning_customers = count($cust_served_ids);
+            /*if(count($cust_served_ids) > 0){
+              foreach($cust_served_ids as $cid){
+                 $cust_check = Customers::model()->findByAttributes(array("id"=>$cid));
+             $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$cid, 'status' => 4),array('order'=>'id DESC'));
+             if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning) && ($cust_last_wash_check->agent_id == $agent_id)){
+                 $total_returning_customers++;
+             }
+              }
+            }*/
+            
+
+            if(count($cust_served_ids) > 0) {
+                $care_rating = ($total_returning_customers/$totalwash) * 100;
+                $care_rating = round($care_rating, 2);
+            }
+
+        }else{
+            $care_rating = "N/A";
+        }
     }else{
         $care_rating = "NEW";
     }
@@ -8048,6 +8069,7 @@ if(count($all_agents) > 0){
 Agents::model()->updateByPk($agent_id,array('care_rating' => $care_rating));
 
 }
+
 
 }
 
@@ -8072,6 +8094,5 @@ Yii::app()->db->createCommand("UPDATE app_settings SET mw_care_rating = :mw_care
 	
 	/* --- mobilewash care rating end ---- */
 }
-
     
 }

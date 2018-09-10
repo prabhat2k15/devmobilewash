@@ -1590,7 +1590,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'admindropjob'): ?>
-                                                          <p style="margin-bottom: 10px; color: red;"><?php echo $log->admin_username; ?> dropped washer #<?php echo $log->agent_company_id; ?> from the order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px; color: red;"><?php echo $log->admin_username; ?> dropped washer Badge# <?php echo $log->agent_company_id; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'reschedule'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> re-scheduled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1738,7 +1738,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px; color:red;">Customer feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentfeedback'): ?>
-                                                          <p style="margin-bottom: 10px; color: red;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
+                                                          <p style="margin-bottom: 10px; color: red;">Washer #<?php echo $log->agent_company_id; ?> finishes adding the feedback for that dropped order <?php //echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'customercall'): ?>
                                                           <p style="margin-bottom: 10px;">Customer called washer #<?php echo $log->agent_company_id; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1953,7 +1953,7 @@ $(".cancel-order").html('Cancel Order');
           $( this ).dialog( "close" );
 $(".cancel-order").html('Cancelling. Please wait...');
 $(".err-text").hide();
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", { wash_request_id: "<?php echo $getorder->id; ?>", agent_id: 0, washer_drop_job: 1, is_scheduled: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", { wash_request_id: "<?php echo $getorder->id; ?>", agent_id: 0, washer_drop_job: 1, is_scheduled: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4',admin_username: "<?php echo $jsondata_permission->user_name; ?>"}, function(data){
 //console.log(data);
 if(data.result == 'true'){
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
@@ -3918,7 +3918,7 @@ if(data.result == 'true'){
       }
       <?php endif; ?>
       if(log.action == 'admindropjob'){
-          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" dropped washer #"+log.agent_company_id+" from the order at "+log.formatted_action_date+"</p>";
+          contents += "<p style='margin-bottom: 10px;'>"+log.admin_username+" dropped washer Badge#"+log.agent_company_id+" from the order at "+log.formatted_action_date+"</p>";
       }
                
           if(log.action == 'reschedule'){
@@ -4125,7 +4125,8 @@ if(data.result == 'true'){
       }
       
        if(log.action == 'agentfeedback'){
-            contents += "<p style='margin-bottom: 10px; color: red;'>Washer #"+log.agent_company_id+" feedback at "+log.formatted_action_date +" : "+ log.addi_detail+"</p>";
+            /*"+log.formatted_action_date +"*/
+		    contents += "<p style='margin-bottom: 10px; color: red;'>Washer #"+log.agent_company_id+" finishes adding the feedback for that dropped order : "+ log.addi_detail+"</p>";
       }
       
        if(log.action == 'customercall'){
