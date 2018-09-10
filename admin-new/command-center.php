@@ -583,6 +583,8 @@ var socketintvaltimer;
 var location_arr = [];
 var total_stop_count = 0;
 var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
+var is_shiftpressed = 0;
+var selectedzips = '';
 
 socket.on('connect', function() {
 socketId = socket.io.engine.id;
@@ -1457,6 +1459,7 @@ map.setZoom(18);
 
      this.setMap(null);
         });
+	
 
 google.maps.event.addListener(marker, 'drag', function(event) {
 //console.log('new position is '+event.latLng.lat()+' / '+event.latLng.lng());
@@ -1605,6 +1608,37 @@ zoomControl: true,
         this.setCenter(myLatLng);
         google.maps.event.removeListener(boundsListener);
     });
+    
+    	google.maps.event.addDomListener(document, 'keydown', function (e) {
+
+    var code = (e.keyCode ? e.keyCode : e.which);
+
+   if (code == 16) {
+    is_shiftpressed = 1;
+   }
+});
+
+    	google.maps.event.addDomListener(document, 'keyup', function (e) {
+
+    var code = (e.keyCode ? e.keyCode : e.which);
+
+    is_shiftpressed = 0;
+
+});
+	
+	   	google.maps.event.addDomListener(map, 'rightclick', function (e) {
+   if (selectedzips) {
+    var content = "<div class='zip-info'><p><b> SELECTED ZIPCODES: </b>"+selectedzips.replace(/,\s*$/, "")+"</p><p>Zip Color <select class='zip-color'><option value='gray'>Disabled</option><option value=''>Blue</option><option value='yellow'>Yellow</option><option value='red'>Red</option><option value='purple'>Purple</option></select></p><p><a href='#' class='save-groupzip-info' data-zips='"+selectedzips+"'>Save</a></p></div>";
+  var infowindow = new google.maps.InfoWindow({
+        content: content, position: e.latLng, maxWidth: 300
+
+    });
+    infowindow.open(this);
+    
+   }
+
+});
+	
 
 
 /*
@@ -1645,6 +1679,8 @@ strokeColor: "#076ee1",
         body.appendChild(script);
 
 }
+
+
 
 
 </script>
@@ -1968,19 +2004,46 @@ ziparea_polys.push(country);
 
             google.maps.event.addListener(country, 'mouseover', function() {
 		//console.log(this);
-              this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
+              if(!selectedzips) this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
             });
             google.maps.event.addListener(country, 'mouseout', function() {
-              if(this.zipcolor == 'yellow') this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
-	      else if(this.zipcolor == 'red') this.setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
-	      else if(this.zipcolor == 'purple') this.setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
-	    else if(this.zipcolor == 'gray') this.setOptions({fillColor: "#808080", fillOpacity: 0.6, strokeOpacity: 0.8});
-	      else this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
+		if(!selectedzips){
+		    if(this.zipcolor == 'yellow') this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
+		    else if(this.zipcolor == 'red') this.setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
+		    else if(this.zipcolor == 'purple') this.setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
+		    else if(this.zipcolor == 'gray') this.setOptions({fillColor: "#808080", fillOpacity: 0.6, strokeOpacity: 0.8});
+		    else this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
+		}
             });
+	    
+	   google.maps.event.addDomListener(country, 'rightclick', function (e) {
+   if (selectedzips) {
+    var content = "<div class='zip-info'><p><b> SELECTED ZIPCODES: </b>"+selectedzips.replace(/,\s*$/, "")+"</p><p>Zip Color <select class='zip-color'><option value='gray'>Disabled</option><option value=''>Blue</option><option value='yellow'>Yellow</option><option value='red'>Red</option><option value='purple'>Purple</option></select></p><p><a href='#' class='save-groupzip-info' data-zips='"+selectedzips+"'>Save</a></p></div>";
+  var infowindow = new google.maps.InfoWindow({
+        content: content, position: e.latLng, maxWidth: 300
+
+    });
+    infowindow.open(map, this);
+    
+   }
+
+});
+	    
+
 
             google.maps.event.addListener(country, 'click', function(e)
 {
+
     
+    if (is_shiftpressed) {
+	 this.setOptions({fillColor: '#008000', fillOpacity: 0.4});
+	 selectedzips += this.zipcode+",";
+	
+	 return false;
+    }
+    else{
+	selectedzips = '';
+    }
    // console.log(country);
    //this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
   		      var blue_selected = "selected='selected'";
