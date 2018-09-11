@@ -1587,6 +1587,8 @@ if($phone_number_check->carrier['type'] == 'voip'){
 'bt_submerchant_id' => $bt_submerchant_id,
 'forced_logout' => $force_logout,
 'is_voip_number' => $is_voip_number,
+'bank_account_number' => $bank_account_number,
+'routing_number' => $routing_number,
 					'updated_date'=> date('Y-m-d h:i:s')
 				);
 				

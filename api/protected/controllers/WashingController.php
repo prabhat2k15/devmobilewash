@@ -3187,7 +3187,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                 }
             }
 		
-        if(Yii::app()->request->getParam('washer_drop_job') != ''){
+        if(Yii::app()->request->getParam('admin_username') == ''){
             
                     $agent_id = $wrequest_id_check->agent_id;
                     $agent_details = Agents::model()->findByAttributes(array('id'=>$agent_id));
