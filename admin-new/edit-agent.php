@@ -78,7 +78,7 @@ $err = '';
 
 $data = $_POST['agentnewpic'];
 
-$data = str_replace('data:image/jpeg;base64,', '', $data);
+$data = str_replace('data:image/png;base64,', '', $data);
 $data = str_replace(' ', '+', $data);
 $data = base64_decode($data);
 $md5 = md5(uniqid(rand(), true));
@@ -981,6 +981,7 @@ function chooseFile(fileid) {
 				height: 200,
 				type: 'circle'
 			},
+			enforceBoundary: false,
 			enableExif: false
 		});
 
@@ -990,9 +991,11 @@ function chooseFile(fileid) {
 				type: 'canvas',
 				size: 'viewport',
 				circle: false,
+				
 				quality: .9,
-				format: 'jpeg'
+				format: 'png'
 			}).then(function (resp) {
+
 				$('#image_pic').attr('src', resp);
 				$('.agentnewpic').val(resp);
 			});

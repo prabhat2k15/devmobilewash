@@ -2399,6 +2399,8 @@ $customername = ucwords($customername);
         if(Yii::app()->request->getParam('meet_washer_outside_washend')) $meet_washer_outside_washend = Yii::app()->request->getParam('meet_washer_outside_washend');
 	$api_password = '';
         if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
+	$admin_username = '';
+        if(Yii::app()->request->getParam('admin_username')) $admin_username = Yii::app()->request->getParam('admin_username');
 
         $result = 'false';
         $response = 'Pass the required parameters';
@@ -3098,13 +3100,22 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 	    Washingrequests::model()->updateByPk($wash_request_id, array("is_washer_assigned_push_sent" => 1));
 		}
             
-	     $get_data = Yii::app()->db->createCommand("SELECT count(*) as count FROM activity_logs WHERE agent_id = :agent_id AND agent_company_id = :agent_company_id AND action = 'savejob' AND wash_request_id = :wash_request_id")
+	     /*$get_data = Yii::app()->db->createCommand("SELECT count(*) as count FROM activity_logs WHERE agent_id = :agent_id AND agent_company_id = :agent_company_id AND action = 'savejob' AND wash_request_id = :wash_request_id")
 	     ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
 	     ->bindValue(':agent_company_id', $agent_detail->real_washer_id, PDO::PARAM_STR)
 	     ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+	     ->queryAll();*/
+	     
+	     $lastsavelogcheck = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE agent_id = :agent_id AND action = 'savejob' AND wash_request_id = :wash_request_id ORDER BY id DESC LIMIT 1")
+	     ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+	     ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
 	     ->queryAll();
+	$lastsavesecond = 0;
+	if(count($lastsavelogcheck)){
+		$lastsavesecond = time() - strtotime($lastsavelogcheck[0]['action_date']);
+	}
 	        
-		    if($get_data[0]['count'] == 0){
+		    if((!count($lastsavelogcheck)) || $lastsavesecond > 5){
                     $washeractionlogdata = array(
                         'agent_id'=> $agent_id,
                         'wash_request_id'=> $wash_request_id,
@@ -3121,7 +3132,7 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 			
 			
 			
-			Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0, "is_washer_assigned_push_sent" => 0, "canceled_washer_id" => $wrequest_id_check->agent_id));
+			Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0, "agent_id" => 0, "is_washer_assigned_push_sent" => 0, "canceled_washer_id" => $wrequest_id_check->agent_id));
 			
                     $alert_type = "strong";
                     $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '24' ")->queryAll();
@@ -3131,14 +3142,26 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                     $cust_details = Customers::model()->findByAttributes(array('id' => $washrequestmodel->customer_id));
 
 $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $washrequestmodel->customer_id, PDO::PARAM_STR)->queryAll();
-	
-                    $agent_detail = Agents::model()->findByPk($wrequest_id_check->agent_id);
+	 $agent_detail = Agents::model()->findByPk($wrequest_id_check->agent_id);
+                    if($admin_username){
+				   $washeractionlogdata = array(
+                        'agent_id'=> $wrequest_id_check->agent_id,
+                        'wash_request_id'=> $wash_request_id,
+                        'agent_company_id'=> $agent_detail->real_washer_id,
+			'admin_username'=> $admin_username,
+                        'action'=> 'admindropjob',
+                        'action_date'=> date('Y-m-d H:i:s'));
+		    }
+		    else{
 				   $washeractionlogdata = array(
                         'agent_id'=> $wrequest_id_check->agent_id,
                         'wash_request_id'=> $wash_request_id,
                         'agent_company_id'=> $agent_detail->real_washer_id,
                         'action'=> 'Dropschedule',
                         'action_date'=> date('Y-m-d H:i:s'));
+		    }
+		   
+			
 				 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);	
                     
@@ -8702,8 +8725,8 @@ die();
             foreach($codes_exists as $ind=>$zipcode){
 
 		if($zipcode['zip_color'] != 'gray'){
-			$all_zipcodes[$ind]['id'] = $zipcode['id'];
-			$all_zipcodes[$ind]['zipcode'] = $zipcode['zipcode'];
+			$all_zipcodes[]['id'] = $zipcode['id'];
+			$all_zipcodes[]['zipcode'] = $zipcode['zipcode'];
 		}
 
             }
