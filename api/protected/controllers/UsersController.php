@@ -441,7 +441,7 @@ die();
 		if((isset($msg) && !empty($msg)) && (isset($receiver_type) && !empty($receiver_type))){
 
           $allagents =  Yii::app()->db->createCommand()->select('*')->from('agent_devices')->queryAll();
-          $allclients = Yii::app()->db->createCommand()->select('*')->from('customer_devices')->queryAll();
+          //$allclients = Yii::app()->db->createCommand()->select('*')->from('customer_devices')->queryAll();
 
 
           if($receiver_type == 'all-agents' || $receiver_type == 'agents'){
@@ -479,7 +479,7 @@ die();
         }
         }
 
-         if($receiver_type == 'all-clients' || $receiver_type == 'clients'){
+         /*if($receiver_type == 'all-clients' || $receiver_type == 'clients'){
             if($receiver_type == 'clients'){   
                 $allclients = explode(',', $selecter);
             }
@@ -487,7 +487,7 @@ die();
                 if($receiver_type == 'clients'){
                     $client = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$client."' ORDER BY last_used DESC LIMIT 1")->queryAll();
                 }
-                        /* --- notification call --- */
+                       
 
                             //echo $agentdetails['mobile_type'];
                             $device_type = strtolower($client['device_type']);
@@ -504,9 +504,9 @@ die();
                             if($notify_msg) $notifyresult = curl_exec($ch);
                             curl_close($ch);
 
-                            /* --- notification call end --- */
+                           
         }
-        }
+        }*/
 
         	$json = array(
 				'result'=> 'true',

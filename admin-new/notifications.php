@@ -26,42 +26,50 @@
 $response = '';
 $result_code = '';
 if(isset($_POST['notify-form-submit'])){
-        
-$handle = curl_init(ROOT_URL."/api/index.php?r=users/adminnotify");
-        $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-if($_POST['receiver_type'] == 'agents'){
-    $data['selecter'] = $_POST['selecter'];
-}
-elseif($_POST['receiver_type'] == 'clients'){
-    $data['selecter'] = $_POST['selecter'];
-}
-curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-$result = curl_exec($handle);
-curl_close($handle);
-$jsondata = json_decode($result);
-$response = $jsondata->response;
-$result_code = $jsondata->result;
-
-
-    if($_POST['receiver_type'] == 'all-clients' || $_POST['receiver_type'] == 'clients'){
-$handle = curl_init(ROOT_URL."/api/index.php?r=site/adminaddschedulenotify");
-        $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+     if(($_POST['receiver_type'] == 'agents') || ($_POST['receiver_type'] == 'all-agents')){
+     $handle = curl_init(ROOT_URL."/api/index.php?r=users/adminnotify");
+    $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+     curl_setopt($handle, CURLOPT_POST, true);
+    curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+    $result = curl_exec($handle);
+    curl_close($handle);
+    $jsondata = json_decode($result);
+    $response = $jsondata->response;
+    $result_code = $jsondata->result;
+         
+     }
+    if($_POST['receiver_type'] == 'agents'){
+        $data['selecter'] = $_POST['selecter'];
     }
-elseif($_POST['receiver_type'] == 'clients'){
-    $data['receiver_ids'] = $_POST['selecter'];
+    elseif($_POST['receiver_type'] == 'clients'){
+        $data['selecter'] = $_POST['selecter'];
+    }
+    
+    
+    
+    if($_POST['receiver_type'] == 'clients'){
+        $handle = curl_init(ROOT_URL."/api/index.php?r=site/adminaddschedulenotify");
+        $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data['receiver_ids'] = $_POST['selecter'];
+    }
+    
+    if($_POST['receiver_type'] == 'All-clients')
+    {
+        $handle = curl_init(ROOT_URL."/api/index.php?r=site/adminaddschedulenotify");
+        $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>"clients", 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+    }
+    
+    curl_setopt($handle, CURLOPT_POST, true);
+    curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+    $result = curl_exec($handle);
+    print_r($result);
+    curl_close($handle);
+    $jsondata = json_decode($result);
+    $response = $jsondata->response;
+    $result_code = $jsondata->result;
 }
-curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-$result = curl_exec($handle);
-curl_close($handle);
-$jsondata = json_decode($result);
-$response = $jsondata->response;
-$result_code = $jsondata->result;
-}
-
 ?>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -97,16 +105,18 @@ $result_code = $jsondata->result;
                                             <div class="form-group">
                                                 <label class="control-label col-md-3">Receiver Type</label>
                                                 <div class="col-md-3">
-                                                    <select class="form-control input-medium" name="receiver_type" id="receiver_type">
+                                                    
+                                                    <select class="form-control input-medium" onchange="changeSelect()" name="receiver_type" id="receiver_type">
                                                        <option value="all-agents">All Washers</option>
                                                        <option value="All-clients">All Customers</option>
-                                                       <option value="agents">Washers</option>
-                                                       <option value="clients">Customers</option>
+                                                       <option value="agents">Washer</option>
+                                                       <option value="clients">Customer</option>
                                                        <!--<option value="all" selected="">All</option>-->
                                                     </select>
                                                 </div>
-                                                <div class="col-md-4 customer">
-                                                <span class="control-label">ID#:</span>
+                                                
+                                                <div class="col-md-6 customer">
+                                                <span class="control-label" id='selecterlabel'>ID #:</span>
                                                     <input type="text" class="form-control input-medium" name="selecter" >
                                                 </div>
                                             </div>
@@ -154,4 +164,13 @@ $('#receiver_type').on('change', function(){
         $('.customer').hide();
     }
 });
+function changeSelect (){
+    if($('#receiver_type').val()=='agents'){
+        $('#selecterlabel').html('Badge Number #:')
+    }    
+    else
+    {
+        $('#selecterlabel').html('ID #:')
+    }
+}
 </script>
