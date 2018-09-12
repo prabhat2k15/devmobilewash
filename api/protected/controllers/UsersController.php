@@ -436,32 +436,55 @@ die();
 
 		$msg = Yii::app()->request->getParam('msg');
 		$receiver_type = Yii::app()->request->getParam('receiver_type');
-        $selecter = Yii::app()->request->getParam('selecter');
+        $user_id = Yii::app()->request->getParam('user_id');
 
-		if((isset($msg) && !empty($msg)) && (isset($receiver_type) && !empty($receiver_type))){
+		if((isset($msg) && !empty($msg)) && (isset($receiver_type) && !empty($receiver_type)) && (isset($user_id) && !empty($user_id))){
 
-          $allagents =  Yii::app()->db->createCommand()->select('*')->from('agent_devices')->queryAll();
-          //$allclients = Yii::app()->db->createCommand()->select('*')->from('customer_devices')->queryAll();
+         if($receiver_type == 'single-client') $user_check = Customers::model()->findByPk($user_id);
+	 if($receiver_type == 'single-agent') $user_check = Agents::model()->findByPk($user_id);
 
-
-          if($receiver_type == 'all-agents' || $receiver_type == 'agents'){
-            if($receiver_type == 'agents'){   
-                $allagents = explode(',', $selecter);
-            }
-        foreach($allagents as $agent){
-            if($receiver_type == 'agents'){
-                $agent = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-            }
+          if(!count($user_check)){
+		$json = array(
+				'result'=> 'false',
+				'response'=> 'User not found'
+			);
+		echo json_encode($json);
+		die();
+	  }
+	  
+	  if(($receiver_type == 'single-client') && ($user_check->block_client)){
+		$json = array(
+				'result'=> 'false',
+				'response'=> 'Customer is blocked and not eligible for receiving notification'
+			);
+		echo json_encode($json);
+		die();
+	  }
+	  
+	  if(($receiver_type == 'single-agent') && ($user_check->block_washer)){
+		$json = array(
+				'result'=> 'false',
+				'response'=> 'Washer is blocked and not eligible for receiving notification'
+			);
+		echo json_encode($json);
+		die();
+	  }
+	  
+      
+           
+        if($receiver_type == 'single-client') $user_devices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$user_check->id."'")->queryAll();
+	if($receiver_type == 'single-agent') $user_devices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$user_check->id."'")->queryAll();
+  		
 		
-		$agent_detail = Agents::model()->findByPk($agent['agent_id']);
-
-                       if((count($agent_detail)) && (!$agent_detail->block_washer)){
+if(count($user_devices)){
+	
+                    foreach($user_devices as $device){
 			
 		        /* --- notification call --- */
 
                             //echo $agentdetails['device_type'];
-                            $device_type = strtolower($agent['device_type']);
-                            $notify_token = $agent['device_token'];
+                            $device_type = strtolower($device['device_type']);
+                            $notify_token = $device['device_token'];
                             $alert_type = "strong";
                             $notify_msg = urlencode($msg);
 
@@ -476,37 +499,18 @@ die();
 
                             /* --- notification call end --- */
 	}
-        }
-        }
+		}
+		else{
+		$json = array(
+				'result'=> 'false',
+				'response'=> 'No devices found for the user'
+			);
+		echo json_encode($json);
+		die();	
+		}
+     
+      
 
-         /*if($receiver_type == 'all-clients' || $receiver_type == 'clients'){
-            if($receiver_type == 'clients'){   
-                $allclients = explode(',', $selecter);
-            }
-        foreach($allclients as $client){
-                if($receiver_type == 'clients'){
-                    $client = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$client."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-                }
-                       
-
-                            //echo $agentdetails['mobile_type'];
-                            $device_type = strtolower($client['device_type']);
-                            $notify_token = $client['device_token'];
-                            $alert_type = "strong";
-                            $notify_msg = urlencode($msg);
-
-                            $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-                            //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-                            $ch = curl_init();
-                            curl_setopt($ch,CURLOPT_URL,$notifyurl);
-                            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
-                            if($notify_msg) $notifyresult = curl_exec($ch);
-                            curl_close($ch);
-
-                           
-        }
-        }*/
 
         	$json = array(
 				'result'=> 'true',

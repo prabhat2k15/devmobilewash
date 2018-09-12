@@ -5657,11 +5657,13 @@ die();
 		$msg = Yii::app()->request->getParam('msg');
 		$receiver_type = Yii::app()->request->getParam('receiver_type');
         $receiver_ids = Yii::app()->request->getParam('receiver_ids');
-        
+        $receiver_str = '';
+	if($receiver_type == 'all-clients') $receiver_str = 'clients';
+	if($receiver_type == 'all-agents') $receiver_str = 'agents';
 
 		if((isset($msg) && !empty($msg)) && (isset($receiver_type) && !empty($receiver_type))){
 
-		$pending_job_check =  Yii::app()->db->createCommand("SELECT * FROM `scheduled_notifications` WHERE status = 0")->queryAll();
+		$pending_job_check =  Yii::app()->db->createCommand("SELECT * FROM `scheduled_notifications` WHERE status = 0 AND notification_type = '".$receiver_str."'")->queryAll();
 		
 		if(count($pending_job_check)){
 		$json = array(
@@ -5673,7 +5675,7 @@ die();
 		}
 		
             $data = array(
-                        'notification_type'=> $receiver_type,
+                        'notification_type'=> $receiver_str,
                         'receiver_ids' => '',
                         'notification_msg' => $msg,
                         'schedule_date' => date('Y-m-d H:i:s'),
@@ -5682,7 +5684,8 @@ die();
 
                     Yii::app()->db->createCommand()->insert('scheduled_notifications', $data);
 		    
-		    Customers::model()->updateAll(array('is_pushmsg_pending'=>1));
+		    if($receiver_type == 'all-clients') Customers::model()->updateAll(array('is_pushmsg_pending'=>1));
+		    if($receiver_type == 'all-agents') Agents::model()->updateAll(array('is_pushmsg_pending'=>1));
 
         	$json = array(
 				'result'=> 'true',
@@ -7926,7 +7929,7 @@ die();
           
 	  //$allclients = Customers::model()->findAllByAttributes(array('is_pushmsg_pending'=> 1));
 	  $allclients = Yii::app()->db->createCommand('SELECT * FROM customers WHERE is_pushmsg_pending = 1 ORDER BY total_wash DESC LIMIT 2000')->queryAll();
-	  $pendingjob = Yii::app()->db->createCommand('SELECT * FROM scheduled_notifications WHERE status = 0 ORDER BY id DESC LIMIT 1')->queryAll();
+	  $pendingjob = Yii::app()->db->createCommand("SELECT * FROM scheduled_notifications WHERE status = 0 AND notification_type = 'clients' ORDER BY id DESC LIMIT 1")->queryAll();
 	
 
 	 if(count($allclients) && count($pendingjob)){ 
@@ -7960,7 +7963,58 @@ die();
 		}
 	}
 	else{
-		if(count($pendingjob)) Yii::app()->db->createCommand("UPDATE scheduled_notifications SET status=1")->execute();
+		if(count($pendingjob)) Yii::app()->db->createCommand("UPDATE scheduled_notifications SET status=1 WHERE id=".$pendingjob[0]['id'])->execute();
+           
+	}
+      
+
+ 
+	}
+	
+	    	public function actionsendwasherschedulepushnotify(){
+
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
+
+          
+	  $allagents = Yii::app()->db->createCommand('SELECT * FROM agents WHERE is_pushmsg_pending = 1 ORDER BY total_wash DESC LIMIT 2000')->queryAll();
+	  $pendingjob = Yii::app()->db->createCommand("SELECT * FROM scheduled_notifications WHERE status = 0 AND notification_type = 'agents' ORDER BY id DESC LIMIT 1")->queryAll();
+	
+
+	 if(count($allagents) && count($pendingjob)){ 
+		foreach($allagents as $agent){
+
+			$agentdevices = Yii::app()->db->createCommand('SELECT * FROM agent_devices WHERE agent_id = :agent_id ORDER BY last_used DESC LIMIT 1')->bindValue(':agent_id', $agent['id'], PDO::PARAM_STR)->queryAll();
+	
+			if(count($agentdevices)){
+				
+			/* --- notification call --- */
+
+                            //echo $agentdetails['mobile_type'];
+                            $device_type = strtolower($agentdevices[0]['device_type']);
+                            $notify_token = $agentdevices[0]['device_token'];
+                            $alert_type = "strong";
+                            $notify_msg = urlencode($pendingjob[0]['notification_msg']);
+
+                            $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+                            //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                            $ch = curl_init();
+                            curl_setopt($ch,CURLOPT_URL,$notifyurl);
+                            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+                            if($notify_msg) $notifyresult = curl_exec($ch);
+                            curl_close($ch);
+
+                            /* --- notification call end --- */
+			}
+			
+			Agents::model()->updateByPk($agent['id'], array("is_pushmsg_pending" => 0));
+		}
+	}
+	else{
+		if(count($pendingjob)) Yii::app()->db->createCommand("UPDATE scheduled_notifications SET status=1 WHERE id=".$pendingjob[0]['id'])->execute();
            
 	}
       
