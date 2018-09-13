@@ -3161,7 +3161,7 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
 			
 			
 			
-			Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0, "agent_id" => 0, "is_washer_assigned_push_sent" => 0, "canceled_washer_id" => $wrequest_id_check->agent_id));
+			Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0, "is_washer_assigned_push_sent" => 0, "canceled_washer_id" => $wrequest_id_check->agent_id));
 			
                     $alert_type = "strong";
                     $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '24' ")->queryAll();
@@ -3216,17 +3216,17 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                 }
             }
 		
-        if(Yii::app()->request->getParam('admin_username') == ''){
+        //if(Yii::app()->request->getParam('admin_username') == ''){
             
-                    $agent_id = $wrequest_id_check->agent_id;
-                    $agent_details = Agents::model()->findByAttributes(array('id'=>$agent_id));
+                    $agent_details = Agents::model()->findByAttributes(array('id'=>$wrequest_id_check->agent_id));
                     $notify_token2 = '';
 		    
-$agentdevices = Yii::app()->db->createCommand('SELECT * FROM agent_devices WHERE agent_id = :agent_id ORDER BY last_used DESC LIMIT 1')->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
+$agentdevices = Yii::app()->db->createCommand('SELECT * FROM agent_devices WHERE agent_id = :agent_id ORDER BY last_used DESC LIMIT 1')->bindValue(':agent_id', $wrequest_id_check->agent_id, PDO::PARAM_STR)->queryAll();
 	
             if((count($agentdevices)) && (!$agent_details->block_washer))
             {
-                $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '20' ")->queryAll();
+                //$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '20' ")->queryAll();
+		$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '46' ")->queryAll();
 							//$message = $pushmsg[0]['message'];
                             $message = str_replace("[ORDER_ID]","#".$wash_request_id, $pushmsg[0]['message']);
 							foreach($agentdevices as $agdevice){
@@ -3247,7 +3247,7 @@ $agentdevices = Yii::app()->db->createCommand('SELECT * FROM agent_devices WHERE
 								curl_close($ch);
 							}
             }
-        }
+       // }
                   
                 // INCREMENT 'total_schedule_rejected' counter on each rejection
                  $washrequestmodel->total_schedule_rejected = $washrequestmodel->total_schedule_rejected + 1;

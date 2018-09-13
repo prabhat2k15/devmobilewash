@@ -371,6 +371,35 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     color: #fff;
     text-decoration: underline;
 }
+
+.spec-orders-2{
+  width: 600px;
+    height: auto;
+    max-height: 100px;
+    position: fixed;
+    background: #ff5722e6;
+    z-index: 999;
+    top: 65px;
+    left: 50%;
+    margin-left: -300px;
+    color: #fff;
+    padding: 20px;
+    padding-top: 0;
+    box-sizing: border-box;
+    overflow: auto;
+    display: none;
+}
+
+.spec-orders-2 p{
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.spec-orders-2 p a{
+   margin-left: 10px;
+    color: #fff;
+    text-decoration: underline;
+}
 .table-scrollable {
   width: 100%;
   overflow-x: auto;
@@ -422,6 +451,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
                     <!-- BEGIN PAGE HEADER-->
 
                      <div class="spec-orders"></div>
+		     <div class="spec-orders-2"></div>
 
                     <!-- END PAGE HEADER-->
                     <!-- BEGIN DASHBOARD STATS 1-->
@@ -813,6 +843,7 @@ function ajaxorderlist(){
     var alldata;
     var upcomingwashes = [];
     var processordeclined_washes = "";
+    var meetwasheralertbox = "";
 //console.log(params);
   $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getallwashrequestsnew", params, function( data ) {
     
@@ -842,6 +873,9 @@ $.each(data.wash_requests, function( index, value ) {
     }
     if(value.admin_submit_for_settle == 1){
       processordeclined_washes += "<p>#"+value.id+" BT custom payment order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+    }
+    if(value.washercustnomeet == 1){
+      meetwasheralertbox += "<p>#"+value.id+" - Customer has not selected meet Washer or No Thanks for 10 minutes - Call Customer <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
@@ -955,6 +989,19 @@ if(processordeclined_washes != ''){
 else{
   $(".spec-orders").html("");
    $(".spec-orders").hide();
+}
+
+if(meetwasheralertbox != ''){
+    $(".spec-orders-2").html(meetwasheralertbox);
+   $(".spec-orders-2").show();
+   if ($(".spec-orders").is(":visible")) {
+	$(".spec-orders-2").css('top', '185px');
+   }
+}
+else{
+  $(".spec-orders-2").html("");
+   $(".spec-orders-2").hide();
+   $(".spec-orders-2").removeAttr('style');
 }
 });
 //console.log('working');
