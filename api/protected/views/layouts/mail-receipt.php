@@ -4,7 +4,7 @@
  
 </head>
 <body style='margin: 0; padding: 0;'>
-<div style='background: #c6c6c6; width: 100%; height: 100%; padding-top: 50px;'>
+<div style='/*background: #c6c6c6;*/ width: 100%; height: 100%; /*padding-top: 50px;*/'>
 <div style='width: 650px; background: #fff; margin: 0 auto;'>
 <div style='padding: 20px; text-align: center;'>
 <a href='https://www.mobilewash.com'><img style='float: left;' src='https://www.mobilewash.com/images/logo-new.png' width='320' /></a>

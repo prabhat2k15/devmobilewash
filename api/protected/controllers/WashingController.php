@@ -10334,7 +10334,7 @@ $sched_time = $order_exists->schedule_time;
 					else $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Scheduled order for ".$sched_date." @ ".$sched_time."</p>";
 					$message .= "<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$order_exists->address."</p>";
 					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>Client Name:</strong> ".$cust_exists->first_name." ".$cust_exists->last_name."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
+					<tr><td><strong>Client Name:</strong><br> ".$cust_exists->first_name." ".$cust_exists->last_name."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
