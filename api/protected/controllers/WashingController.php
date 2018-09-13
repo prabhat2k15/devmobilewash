@@ -3773,7 +3773,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
 
                     //$notify_msg = "Please meet your washer outside";
                     $alert_type = "soft";
-                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array("meet_washer_push_sent" => 1));
+                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array("meet_washer_push_sent" => 1, "washer_arrived_at" => date('Y-m-d H:i:s')));
                     $agent_det = Agents::model()->findByAttributes(array("id"=>$wrequest_id_check->agent_id));
                         $washeractionlogdata= array(
                             'agent_id'=> $wrequest_id_check->agent_id,
@@ -5172,7 +5172,100 @@ if($min_diff >= 1){
 }
 }
 
+$clientwashernomeetwashes =  Yii::app()->db->createCommand("SELECT id, customer_id, agent_id, washer_arrived_at, meet_washer_10min_alert, meet_washer_20min_alert FROM washing_requests WHERE status = 2 AND meet_washer_outside != 'yes' AND (meet_washer_20min_alert = 0 OR meet_washer_10min_alert = 0)")->queryAll();
 
+if(count($clientwashernomeetwashes)){
+	foreach($clientwashernomeetwashes as $nomeetwash){
+		$min_diff = 0;
+		$current_time = strtotime(date('Y-m-d H:i:s'));
+
+		if($current_time > strtotime($nomeetwash['washer_arrived_at'])){
+			$min_diff = round(($current_time - strtotime($nomeetwash['washer_arrived_at'])) / 60,2);
+		}	
+			if(($min_diff >= 10) && (!$nomeetwash['meet_washer_10min_alert'])){
+				
+				$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$nomeetwash['customer_id']."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '50' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+
+						foreach( $clientdevices as $ctdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($ctdevice['device_type']);
+							$notify_token = $ctdevice['device_token'];
+								$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+			
+						
+						$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$nomeetwash['agent_id']."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '49' ")->queryAll();
+						$message = $pushmsg[0]['message'];
+
+						foreach( $agentdevices as $agdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($agdevice['device_type']);
+							$notify_token = $agdevice['device_token'];
+								$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+						
+				
+				Washingrequests::model()->updateByPk($nomeetwash['id'], array( 'meet_washer_10min_alert' => 1));
+			}
+			if(($min_diff >= 20) && (!$nomeetwash['meet_washer_20min_alert'])){
+				
+				$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$nomeetwash['agent_id']."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+
+						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '51' ")->queryAll();
+						
+						$message = $pushmsg[0]['message'];
+
+						foreach( $agentdevices as $agdevice){
+
+							//echo $agentdetails['mobile_type'];
+							$device_type = strtolower($agdevice['device_type']);
+							$notify_token = $agdevice['device_token'];
+								$alert_type = "schedule";
+							$notify_msg = urlencode($message);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+							
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+				
+				Washingrequests::model()->updateByPk($nomeetwash['id'], array( 'meet_washer_20min_alert' => 1));
+			}
+			
+		
+	}
+}
      }
 
     public function actionrejectwashrequest()
