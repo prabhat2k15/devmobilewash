@@ -1975,7 +1975,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 		 
 		 /* --- agent assigned to another order --- */
 		 
-		 $agent_has_order = Washingrequests::model()->findByAttributes(array("order_temp_assigned"=>$aid, "status"=>0, "is_scheduled"=>0), array('condition'=>'id'!=$wash_request_id));
+		 //$agent_has_order = Washingrequests::model()->findByAttributes(array("order_temp_assigned"=>$aid, "status"=>0, "is_scheduled"=>0), array('condition'=>'id'!=$wash_request_id));
 		
 		/* --- agent assigned to another order end --- */
 
@@ -1995,10 +1995,12 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                  /* ------- check if agent already reject current order end -------- */
 
 
-                 if(count($isavailable) && (!$order_rejects) && (!count($agent_has_order))){
+                 //if(count($isavailable) && (!$order_rejects) && (!count($agent_has_order))){
+		 if(count($isavailable) && (!$order_rejects)){
 //echo "working";
                  $near_agent = $aid;
-                 break;
+		 if($near_agent == $agent_id) break;
+                 
 
                  }
                     //echo $aid."<br>";

@@ -5878,7 +5878,7 @@ $agent_id = $this->aes256cbc_crypt( $agent_id, 'd', AES256CBC_API_PASS );
 
         if((isset($agent_id) && !empty($agent_id)) ){
 			$agents_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
-			//$agent_has_order = Washingrequests::model()->findByAttributes(array("order_temp_assigned"=>$agent_id, "status"=>0, "is_scheduled"=>0));
+			$agent_has_order = Washingrequests::model()->findByAttributes(array("order_temp_assigned"=>$agent_id, "status"=>0, "is_scheduled"=>0));
 
 if($agents_id_check->washer_position == 'real') $pendingschedrequests =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position = 'real' AND agent_id = 0 AND is_scheduled = 1 AND status = 0"));
 else $pendingschedrequests =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position != 'real' AND agent_id = 0 AND is_scheduled = 1 AND status = 0"));
@@ -5965,7 +5965,7 @@ if(!$is_scheduled_wash_120){
 			$response= 'Agent is not available for new order';
 			}
 
-			/*else if(count($agent_has_order)){
+			else if(count($agent_has_order)){
 				  $result= 'true';
 			 $response= 'wash request found';
 
@@ -5995,7 +5995,7 @@ if(!$agent_has_order->create_wash_push_sent){
                     if($notify_msg) $notifyresult = curl_exec($ch);
                     curl_close($ch);
                 
-            }*--/
+            }*/
 
 								
 
@@ -6080,7 +6080,7 @@ $pendingwashrequests[] = array('id'=>$agent_has_order->id,
 					);
 }
 					
-			}*/
+			}
 
 			else{
 
@@ -6116,7 +6116,7 @@ $pendingwashrequests[] = array('id'=>$agent_has_order->id,
 
 
 					  //if($prequest['order_temp_assigned'] == 0 AND (!$order_rejects)){
-                       //if($prequest['order_temp_assigned'] == 0){
+                       if($prequest['order_temp_assigned'] == 0){
 						  /* ------- check if agent is nearest -------- */
 
 							$handle = curl_init(ROOT_URL."/api/index.php?r=agents/isagentnearest");
@@ -6134,7 +6134,7 @@ $pendingwashrequests[] = array('id'=>$agent_has_order->id,
 
 
 							if($nearest_check == 'true' && $nearest_response == 'agent is nearest'){
-							   //$id_assign_check = Washingrequests::model()->updateByPk($prequest['id'], array( 'order_temp_assigned' => $agent_id ));
+							   $id_assign_check = Washingrequests::model()->updateByPk($prequest['id'], array( 'order_temp_assigned' => $agent_id ));
 								  $result= 'true';
 				  $response= 'wash request found';
 
@@ -6261,7 +6261,7 @@ $pendingwashrequests[] = array('id'=>$prequest['id'],
 							   break;
 							}
 
-					  //}
+					  }
 
 				   }
 

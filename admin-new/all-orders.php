@@ -62,6 +62,7 @@ curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
 curl_close($handle);
 $jsondata = json_decode($result);
+
 $s_orders_response = $jsondata->response;
 $s_orders_result_code = $jsondata->result;
 $s_mw_all_orders = $jsondata->wash_requests;

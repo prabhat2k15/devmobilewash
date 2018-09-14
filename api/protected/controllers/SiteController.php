@@ -3518,17 +3518,6 @@ else if($wrequest['escrow_status'] == 'release_pending' || $wrequest['escrow_sta
 $payment_status = 'Released';
 }
 
-if(($wrequest['status'] == 2) && ($wrequest['meet_washer_outside'] != 'yes')){
-	$min_diff = 0;
-	$current_time = strtotime(date('Y-m-d H:i:s'));
-
-	if($current_time > strtotime($wrequest['washer_arrived_at'])){
-		$min_diff = round(($current_time - strtotime($wrequest['washer_arrived_at'])) / 60,2);
-	}
-	
-	if($min_diff >= 10) $washercustnomeet = 1;
-}
-
 
 /*if($cust_details->client_position == 'real') $payresult = Yii::app()->braintree->getTransactionById_real($wrequest['transaction_id']);
 else $payresult = Yii::app()->braintree->getTransactionById($wrequest['transaction_id']);
@@ -3545,7 +3534,16 @@ if(($wrequest['status'] >=1) && ($wrequest['status'] <= 3)){
 }
 
 
+if(($wrequest['status'] == 2) && ($wrequest['meet_washer_outside'] != 'yes')){
+	$min_diff = 0;
+	$current_time = strtotime(date('Y-m-d H:i:s'));
 
+	if($current_time > strtotime($wrequest['washer_arrived_at'])){
+		$min_diff = round(($current_time - strtotime($wrequest['washer_arrived_at'])) / 60,2);
+	}
+	
+	if($min_diff >= 10) $washercustnomeet = 1;
+}
 
 
 if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
