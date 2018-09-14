@@ -1583,7 +1583,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id; ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>. Reason: <?php //echo $log->addi_detail; ?></p>-->
                                                           <p style="margin-bottom: 10px; color: red;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
-                                                          <?php if($log->action == 'dropjob' && ($getorder->is_scheduled)): ?>
+                                                          <?php if($log->action == 'dropjob' && ($getorder->is_scheduled) && (!$log->admin_username)): ?>
                                                           <p style="margin-bottom: 10px; color: red;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'Dropschedule' && ($getorder->is_scheduled)): ?>
@@ -3910,7 +3910,7 @@ if(data.result == 'true'){
           /*contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped order at "+log.formatted_action_date+"</p>. Reason: "+log.addi_detail; */
           contents += "<p style='margin-bottom: 10px; color:red;'>Washer #"+log.agent_company_id+" feedback at "+log.formatted_action_date+" : "+log.addi_detail+'</p>';  
       }
-      if(log.action == 'dropjob'){
+      if((log.action == 'dropjob') && (!log.admin_username)){
           contents += "<p style='margin-bottom: 10px; color:red;'>Washer #"+log.agent_company_id+" feedback at "+log.formatted_action_date+" : "+log.addi_detail+'</p>';   
       }
       if(log.action == 'Dropschedule'){

@@ -6793,6 +6793,7 @@ die();
 	
 $user_photo = '';
 $user_name = '';
+$user_rating = '';
            $result  = 'false';
 $response = 'pass the required fields';
 
@@ -6842,7 +6843,7 @@ $response = 'device updated';
 			
 			$user_photo = $user_check->image;
 			$user_name = $user_check->first_name." ".$user_check->last_name;
-			
+			$user_rating = $user_check->rating;
 			$pending_wash_id_check =  Washingrequests::model()->findAll(array("condition"=>"status <= 3 AND customer_id=:customer_id", 'params'  => array(':customer_id' => $user_id), 'order' => 'created_date desc'));
 			if(count($pending_wash_id_check)){
 				$pending_wash_id = $pending_wash_id_check[0]->id;
@@ -6857,7 +6858,7 @@ $response = 'device updated';
 			
 			$user_photo = $user_check->image;
 			$user_name = $user_check->first_name." ".$user_check->last_name;
-			
+			$user_rating = $user_check->rating;
 			$is_agent_has_wash = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE agent_id='".$user_check->id."' AND (status >= 1 AND status <= 3)")->queryAll();
 			
 			if(count($is_agent_has_wash)){
@@ -6908,6 +6909,7 @@ $json= array(
 				'user_type'=> $user_type,
 				'user_photo' => $user_photo,
 				'user_name' => $user_name,
+				'user_rating' => $user_rating,
 				'customer_pending_wash_id' => $pending_wash_id,
 				'customer_pending_wash_is_scheduled' => $is_scheduled,
 				'customer_pending_wash_status' => $wash_status,

@@ -3159,7 +3159,23 @@ if(!$wrequest_id_check->is_washer_assigned_push_sent){
                 if(Yii::app()->request->getParam('washer_drop_job') == 1)
                 {
 			
-			
+			$sched_time = '';
+					if($wrequest_id_check->reschedule_time){
+						$sched_date = $wrequest_id_check->reschedule_date;
+						$sched_time = $wrequest_id_check->reschedule_time;
+					}
+					else{
+						$sched_date = $wrequest_id_check->schedule_date;
+						$sched_time = $wrequest_id_check->schedule_time;
+					}
+
+					$scheduledatetime = $sched_date." ".$sched_time;
+               $to_time = strtotime(date('Y-m-d g:i A'));
+$from_time = strtotime($scheduledatetime);
+$min_diff = 0;
+
+$min_diff = round(($from_time - $to_time) / 60,2);
+
 			
 			Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 0, "is_washer_assigned_push_sent" => 0, "canceled_washer_id" => $wrequest_id_check->agent_id));
 			
@@ -3180,6 +3196,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
 			'admin_username'=> $admin_username,
                         'action'=> 'admindropjob',
                         'action_date'=> date('Y-m-d H:i:s'));
+	
 		    }
 		    else{
 				   $washeractionlogdata = array(
@@ -3192,7 +3209,58 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
 		   
 			
 				 
-                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);	
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+		    
+		    if(($admin_username) && ($min_diff <= 60)){
+			$washeractionlogdata2 = array(
+                        'agent_id'=> $wrequest_id_check->agent_id,
+                        'wash_request_id'=> $wash_request_id,
+                        'agent_company_id'=> $agent_detail->real_washer_id,
+			'admin_username'=> $admin_username,
+                        'action'=> 'dropjob',
+                        'action_date'=> date('Y-m-d H:i:s'));
+			Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata2);
+			
+			/* ------------ calculate agent average feedback ---------------- */
+
+		$washer_total_dropjobs = 0;
+                $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $wrequest_id_check->agent_id));
+                $total_rate = count($agent_feedbacks);
+		
+		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob'")->bindValue(':agent_id', $wrequest_id_check->agent_id, PDO::PARAM_STR)->queryAll();
+                
+		if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
+                if($total_rate){
+                    $rate = 50;
+                    foreach($agent_feedbacks as $ind=>$agent_feedback){
+                
+				if(!is_numeric($agent_feedback->customer_ratings)) $rate += 5;
+				else $rate += $agent_feedback->customer_ratings;
+			
+                    }
+
+                     if($washer_total_dropjobs) {
+			//echo "rate: ".$rate."<br>total drops: ".$washer_total_dropjobs."<br>total rate: ".$total_rate."<br>";
+			$agent_rate =  ($rate + $washer_total_dropjobs) / ($total_rate + 10 + $washer_total_dropjobs);
+			
+		}
+		    else $agent_rate =  $rate/($total_rate + 10);
+                    
+		    $agent_rate = number_format($agent_rate, 2, '.', '');
+
+                }
+                else{
+                    $agent_rate = 5.00;
+
+                }
+
+               
+                $agentmodel = new Agents;
+                if($agent_rate < 3) $agentmodel->updateAll(array("rating"=> $agent_rate, "block_washer" => 1, 'forced_logout' => 1), 'id=:id', array(':id'=>$wrequest_id_check->agent_id));
+                $agentmodel->updateAll(array("rating"=> $agent_rate), 'id=:id', array(':id'=>$wrequest_id_check->agent_id));
+
+                /* ------------ calculate agent average feedback end ---------------- */
+		    }
                     
             if(count($clientdevices))
             {
@@ -4832,7 +4900,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                             'agent_id'=> $agent_id,
                             'wash_request_id'=> $wash_request_id,
                             'agent_company_id'=> $agents_id_check->real_washer_id,
-                            'action'=> 'dropjob_rating',
+                            'action'=> 'dropjob',
 			    'addi_detail' => $comments,
                             'action_date'=> date('Y-m-d H:i:s'));	
 			}
