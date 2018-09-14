@@ -7355,7 +7355,15 @@ else if($min_diff <= 0) {
  $message2 = "You missed your appointment. This may affect your ratings.";
 
   Washingrequests::model()->updateByPk($schedwash->id, array("status" => 6, "washer_late_cancel" => 1));
+    
+    
+    $washeractionlogdata = array(
+        'wash_request_id'=> $schedwash->id,
+        'action'=> 'scheduleauto-canceled',
+        'action_date'=> date('Y-m-d H:i:s'));
 
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+    
    $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ")->queryAll();
 
      if(count($clientdevices)){

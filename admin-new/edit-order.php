@@ -1776,6 +1776,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'ondemandautocancel'): ?>
                                                           <p style="margin-bottom: 10px; color:red;">Customer's On Demand auto-canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'scheduleauto-canceled'): ?>
+                                                          <p style="margin-bottom: 10px; color:red;">"Scheduled Order auto-canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
                                                         </div>
@@ -4174,6 +4177,9 @@ if(data.result == 'true'){
         contents += "<p style='margin-bottom: 10px;  color:red;'>Customer's On Demand auto-canceled at "+log.formatted_action_date+"</p>";
        }
        
+       if(log.action == 'scheduleauto-canceled'){
+        contents += "<p style='margin-bottom: 10px;  color:red;'>Scheduled Order auto-canceled at "+log.formatted_action_date+"</p>";
+       }
 
    });
    
