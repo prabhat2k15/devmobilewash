@@ -880,7 +880,7 @@ $.each(data.wash_requests, function( index, value ) {
     }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
-     if((value.min_diff <= 60) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
+     if((value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
      if((value.min_diff < 0) && (value.status == 1)) upcomingwashes["DT_RowClass"] = "flashrownotarrive";
      if(value.payment_status == 'Declined') upcomingwashes["DT_RowClass"] = "flashrowdeclined";
      if((value.min_diff <= 30) && (value.status == 0) && (value.payment_status == 'Declined')) upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";

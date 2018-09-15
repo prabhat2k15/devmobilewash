@@ -6282,7 +6282,7 @@ die();
             }
 
             else if(!$agent_id){
-                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => $agent_id, 'washer_payment_status' => 0, 'status' => 0, 'washer_on_way_push_sent' => 0, 'order_temp_assigned' => 0));
+                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array('agent_id' => $agent_id, 'washer_payment_status' => 0, 'status' => 0, 'is_create_schedulewash_push_sent' => 0, 'washer_on_way_push_sent' => 0, 'order_temp_assigned' => 0));
                      
 		     if(($wrequest_id_check->agent_id != $agent_id)) {
 			$old_agent_id = $wrequest_id_check->agent_id;

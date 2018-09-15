@@ -1144,6 +1144,7 @@ if($bt_result->fundingDetails->routingNumber) $routing_no = $bt_result->fundingD
 'hours_opt_check' => $agent_id_check->hours_opt_check,
 'rating_control' => $agent_id_check->rating_control,
 'sms_control' => $agent_id_check->sms_control,
+'last_edited_admin' => $agent_id_check->last_edited_admin,
 'last_used_device' => $agentdevices
 
 				);
@@ -1236,6 +1237,8 @@ $insurance_expiration = '';
         $insurance_expiration = Yii::app()->request->getParam('insurance_expiration');
 	$is_voip_number = Yii::app()->request->getParam('is_voip_number');
 	$api_password = '';
+	$admin_username = '';
+	$admin_username = Yii::app()->request->getParam('admin_username');
 	$force_logout = 0;
 	if($block_washer == 1) $force_logout = 1;
 	
@@ -1529,6 +1532,10 @@ if($phone_number_check->carrier['type'] == 'voip'){
  if($real_washer_id == ''){
                     $real_washer_id = $model->real_washer_id;
                 }
+		
+		if($admin_username == ''){
+                    $admin_username = $model->last_edited_admin;
+                }
 
  if($rating == ''){
                     $rating = $model->rating;
@@ -1589,6 +1596,7 @@ if($phone_number_check->carrier['type'] == 'voip'){
 'is_voip_number' => $is_voip_number,
 'bank_account_number' => $bank_account_number,
 'routing_number' => $routing_number,
+'last_edited_admin' => $admin_username,
 					'updated_date'=> date('Y-m-d h:i:s')
 				);
 				
@@ -4978,6 +4986,8 @@ die();
         $wash_experience = Yii::app()->request->getParam('wash_experience');
 $washer_position = Yii::app()->request->getParam('washer_position');
 $real_washer_id = Yii::app()->request->getParam('real_washer_id');
+$admin_username = '';
+$admin_username = Yii::app()->request->getParam('admin_username');
         $date = date('Y-m-d H:i:s');
         $directorypath1 = realpath(Yii::app()->basePath . '/../images/agent_img');
         $SiteUrl= Yii::app()->getBaseUrl(true);
@@ -5083,6 +5093,8 @@ else if(count($customers_phone_exists)>0){
 				$model->attributes= $agentdata;
 				if($model->save(false)){
 					$agentid = Yii::app()->db->getLastInsertID();
+					
+					if($admin_username) Agents::model()->updateByPk($agentid, array('last_edited_admin' => $admin_username));
 
 					$result= 'true';
 					$response= 'Agent successfully registered';
