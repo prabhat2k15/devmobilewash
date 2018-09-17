@@ -97,7 +97,20 @@ echo json_encode($json);
 }
 
 }
-
-
-
 ?>
+<?php if($_GET['action'] == 'sendcurrentschedulealert'): ?>
+<script src="http://209.95.41.9:3000/socket.io/socket.io.js"></script>
+<script>
+    var wash_id = "<?php echo $_GET['wash_request_id']; ?>";
+    var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
+    socket.on('connect', function() {
+socketId = socket.io.engine.id;
+  //console.log(socketId);
+
+    socket.emit('currentwashschedulealert',{wash_request_id: wash_id, socketId:socketId});
+   
+    
+  
+});
+</script>
+<?php endif; ?>

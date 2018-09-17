@@ -3568,9 +3568,14 @@ $(".err-text").hide();
 $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminchangewasher", { agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
+  
+  //$.getJSON( "<?php echo ROOT_URL; ?>/admin-new/ajax.php", { action: 'sendcurrentschedulealert', wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
+//console.log(data);
     $(th).addClass('washer_update');
 $(th).val('Save Washer');
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+//});
+
 }
 else{
 $(".err-text").html(data.response);
