@@ -1145,7 +1145,8 @@ if($bt_result->fundingDetails->routingNumber) $routing_no = $bt_result->fundingD
 'rating_control' => $agent_id_check->rating_control,
 'sms_control' => $agent_id_check->sms_control,
 'last_edited_admin' => $agent_id_check->last_edited_admin,
-'last_used_device' => $agentdevices
+'last_used_device' => $agentdevices,
+'decals_installed'=>$agent_id_check->decals_installed
 
 				);
 			}else{
@@ -1229,6 +1230,8 @@ $admin_edit = '';
 $admin_edit = Yii::app()->request->getParam('admin_edit');
 $hours_opt_check = '';
 $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
+$decals_installed = 1;
+$decals_installed = Yii::app()->request->getParam('decals_installed');
 $rating_control = 0;
 $rating_control = Yii::app()->request->getParam('rating_control');
 $rating_control = 0;
@@ -1597,6 +1600,7 @@ if($phone_number_check->carrier['type'] == 'voip'){
 'bank_account_number' => $bank_account_number,
 'routing_number' => $routing_number,
 'last_edited_admin' => $admin_username,
+'decals_installed' => $decals_installed,
 					'updated_date'=> date('Y-m-d h:i:s')
 				);
 				
