@@ -1003,6 +1003,11 @@ $is_startable = 1;
 	    'canceled_washer_id' => $canceled_washer_id,
 	    'is_startable'=>$is_startable
         );
+			
+			if((AES256CBC_STATUS == 1) && ($api_password == AES256CBC_API_PASS)){
+			   $wash_id_encoded = $this->aes256cbc_crypt( $wash_id_check->id, 'e', AES256CBC_API_PASS );
+			   $json['specid'] = $wash_id_encoded;
+			}
 		}
 	
 

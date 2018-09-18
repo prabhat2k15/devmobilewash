@@ -1,4 +1,8 @@
 <?php
+if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") { 
+  header("Location: http://www.devmobilewash.com/admin-new/edit-order.php?id=".$_GET['id']);
+die();
+}
 require_once('../api/protected/vendors/braintree/lib/Braintree.php');
 include('header.php');
 
@@ -1900,6 +1904,7 @@ if($savedroplogdata->result == 'true'):?>
 </div>
 
 <script src="assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="http://209.95.41.9:3000/socket.io/socket.io.js"></script>
 <script>
 var current_vehicle_id;
   $( function() {
@@ -1956,9 +1961,15 @@ $(".cancel-order").html('Cancel Order');
           $( this ).dialog( "close" );
 $(".cancel-order").html('Cancelling. Please wait...');
 $(".err-text").hide();
+var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
+    socket.on('connect', function() {
 $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", { wash_request_id: "<?php echo $getorder->id; ?>", agent_id: 0, washer_drop_job: 1, is_scheduled: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4',admin_username: "<?php echo $jsondata_permission->user_name; ?>"}, function(data){
 //console.log(data);
 if(data.result == 'true'){
+  var wash_id = "<?php echo $getorder->specid; ?>";
+  socketId = socket.io.engine.id;
+  //console.log(socketId);
+  socket.emit('currentwashschedulealert',{wash_request_id: wash_id, socketId:socketId});
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
 }
 else{
@@ -1968,6 +1979,7 @@ $(".cancel-order").html('Cancel Order');
 
 }
 
+});
 });
         },
         "Company Cancel (no fee, no rating penalty)": function() {
@@ -3124,7 +3136,9 @@ return false;
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
         <script src="assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
+        
    <script src="js/jquery.bxslider.min.js"></script>
+   
    <script>
 $(function(){
   $('.bxslider').bxSlider();
@@ -3565,17 +3579,26 @@ var agent_id = $("#phone-order-form #detailer").val();
 $(this).val('Saving...');
 $(this).removeClass('washer_update');
 $(".err-text").hide();
+ var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
+    socket.on('connect', function() {
 $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminchangewasher", { agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
 //console.log(data);
 if(data.result == 'true'){
   
-  //$.getJSON( "<?php echo ROOT_URL; ?>/admin-new/ajax.php", { action: 'sendcurrentschedulealert', wash_request_id: "<?php echo $getorder->id; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function(data){
-//console.log(data);
-    $(th).addClass('washer_update');
+   var wash_id = "<?php echo $getorder->specid; ?>";
+   
+socketId = socket.io.engine.id;
+  //console.log(socketId);
+
+    if((agent_id == 0) && (order_status == 0)) {
+      socket.emit('currentwashschedulealert',{wash_request_id: wash_id, socketId:socketId});
+      }
+   
+   $(th).addClass('washer_update');
 $(th).val('Save Washer');
 window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-//});
 
+  
 }
 else{
 $(".err-text").html(data.response);
@@ -3586,6 +3609,7 @@ $(th).addClass('washer_update');
 }
 
 });
+ });
 }
 
 return false;
