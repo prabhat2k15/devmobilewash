@@ -3449,11 +3449,13 @@ try {
 				if(($is_scheduled) && ($agent_id) && ($status == 1))
                 {
 					$cust_detail = Customers::model()->findByPk($wrequest_id_check->customer_id);
+					$agent_det = Agents::model()->findByAttributes(array("id"=>$agent_id));
                     $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$wrequest_id_check->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 					/* --- notification call --- */
 					$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '17' ")->queryAll();
 					$message = $pushmsg[0]['message'];
+					$message = str_replace("[WASHERFIRSTNAME]",$agent_det->first_name,$message);
 
 					foreach( $clientdevices as $ctdevice)
                     {
@@ -3477,7 +3479,7 @@ try {
 
                      Washingrequests::model()->updateByPk($wrequest_id_check->id, array("washer_on_way_push_sent" => 1, "wash_begin" => date("Y-m-d H:i:s")));
 
-                    $agent_det = Agents::model()->findByAttributes(array("id"=>$agent_id));
+                    
                         $washeractionlogdata= array(
                             'agent_id'=> $agent_id,
                             'wash_request_id'=> $wash_request_id,
@@ -3765,6 +3767,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                 {
 					$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '11' ")->queryAll();
 					$notify_msg = $pushmsg[0]['message'];
+					$notify_msg = str_replace("[WASHERFIRSTNAME]",$agent_det->first_name,$notify_msg);
 
                     $alert_type = "strong";
                     //$washrequestmodel->wash_begin = date("Y-m-d H:i:s");
@@ -5585,65 +5588,31 @@ $status = -1 * abs($status);
                         {
                             Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => $status_text, 'all_reject_ids' => $saved_reject_ids, 'order_temp_assigned' => 0, 'create_wash_push_sent' => 0 ));
 
-                            $all_reject_ids = $wash_id_check->agent_reject_ids;
-                            $all_reject_ids_arr = explode(",", $all_reject_ids);
-                            $everyone_rejects = true;
-                            /*
-                                               foreach($all_reject_ids_arr as $reject_id){
-                                                   if (!array_key_exists($reject_id, $nearagentsdetails->nearest_agents)){
-                                                      $everyone_rejects = false;
-                                                      break;
-                                                   }
-
-                                               }
-                            */
-
-                            $all_reject_ids_arr_new = array();
-                            foreach($all_reject_ids_arr as $val) $all_reject_ids_arr_new[] = abs($val);
-                                               $everyone_rejects = true;
-
-                            foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis)
-                            {
-                                if (!in_array($agid, $all_reject_ids_arr_new))
-                                {
-                                    $everyone_rejects = false;
-                                    break;
-                                }
-
-                            }
-
-                            if($everyone_rejects)
-                            {
-                              // Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => '', 'order_temp_assigned' => 0, 'all_reject_ids' => $saved_reject_ids, 'create_wash_push_sent' => 0 ));
-                            }
-
-                            /* ------- check if all available agents rejects order two times -------- */
-
-                            $two_loops_rejects = 1;
-        					$total_rejects_array = explode(',',$saved_reject_ids);
-        					$num_rejects_per_agents = array_count_values($total_rejects_array);
-
-                            foreach($nearagentsdetails->nearest_agents as $agid=>$nearagentdis)
-                            {
-                                if (!in_array($agid, $total_rejects_array))
-                                {
-                                    $two_loops_rejects = 0;
-                                    break;
-                                }
-
-                                if (in_array($agid, $total_rejects_array))
-                                {
-                                    if($num_rejects_per_agents[$agid] < 2){
-                                        $two_loops_rejects = 0;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if($two_loops_rejects)
-                            {
-                               // Washingrequests::model()->updateByPk($wash_request_id, array('is_two_loops_reject' => 1, 'create_wash_push_sent' => 0)); //make wash available for schedule
-                            }
+                        
+			    $ondmeandpendingwashes =  Washingrequests::model()->findAllByAttributes(array("status"=>0, "is_scheduled"=>0), array('order'=>'order_for ASC'));
+			    $agent_has_order = 0;
+			    foreach($ondmeandpendingwashes as $pwash){
+				$rejected_ids = explode(",", $pwash->agent_reject_ids);
+				
+				if (!in_array($status, $rejected_ids)) {
+				$agent_has_order = 1;
+				break;
+				}
+			    }
+			    
+			    if(!$agent_has_order){
+				$ondmeandagentrejectwashes =  Washingrequests::model()->findAllByAttributes(array("status"=>0, "is_scheduled"=>0), array('order'=>'order_for ASC'));
+				foreach($ondmeandagentrejectwashes as $rwash){
+				$rejected_ids = explode(",", $rwash->agent_reject_ids);
+				
+					if(($key = array_search($status, $rejected_ids)) !== false) {
+					unset($rejected_ids[$key]);
+					$rejected_ids = array_values($rejected_ids);
+					}
+					$reject_ids_str = implode(',', $rejected_ids);
+					Washingrequests::model()->updateByPk($rwash->id, array('agent_reject_ids' => $reject_ids_str));
+				}
+			    }
                         }
                     }
 
@@ -6223,7 +6192,7 @@ $pendingwashrequests[] = array('id'=>$agent_has_order->id,
 
 			else{
 
-			     $pendingrequests =  Washingrequests::model()->findAllByAttributes(array("status"=>0, "is_scheduled"=>0));
+			     $pendingrequests =  Washingrequests::model()->findAllByAttributes(array("status"=>0, "is_scheduled"=>0), array('order'=>'order_for ASC'));
 
 
 
@@ -6249,11 +6218,11 @@ $pendingwashrequests[] = array('id'=>$agent_has_order->id,
 					  $total_rejects_array = explode(',',$prequest['all_reject_ids']);
 					  $num_rejects_per_agents = array_count_values($total_rejects_array);
 
-                      if($num_rejects_per_agents[$agent_id] >= 2){
+                      if($num_rejects_per_agents[$agent_id] >= 0){
                         $order_rejects = true;
                       }
-
-
+		      
+		    
 					  //if($prequest['order_temp_assigned'] == 0 AND (!$order_rejects)){
                        //if($prequest['order_temp_assigned'] == 0){
 						  /* ------- check if agent is nearest -------- */
