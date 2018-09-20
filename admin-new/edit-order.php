@@ -2000,6 +2000,25 @@ $(".cancel-order").html('Cancel Order');
 }
 
 });
+        },
+        "Customer No Response (fee)": function() {
+      $( this ).dialog( "close" );
+$(".cancel-order").html('Cancelling. Please wait...');
+$(".err-text").hide();
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/customernoresponse", { customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 30, admin_username: "<?php echo $jsondata_permission->user_name; ?>", api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+}
+else{
+$(".err-text").html(data.response);
+$(".err-text").show();
+$(".cancel-order").html('Cancel Order');
+
+}
+
+});
+
         }
       }
     });
@@ -2082,6 +2101,25 @@ $(".cancel-order-ondemand").html('Cancel Order');
 }
 
 });
+        },
+        "Customer No Response (fee)": function() {
+      $( this ).dialog( "close" );
+$(".cancel-order").html('Cancelling. Please wait...');
+$(".err-text").hide();
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=washing/customernoresponse", { customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 30, admin_username: "<?php echo $jsondata_permission->user_name; ?>", api_password: "<?php echo AES256CBC_API_PASS; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+}
+else{
+$(".err-text").html(data.response);
+$(".err-text").show();
+$(".cancel-order").html('Cancel Order');
+
+}
+
+});
+
         }
 
       }
