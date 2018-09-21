@@ -3267,50 +3267,6 @@ if($total_count > 0) $total_pages = ceil($total_count / $limit);
 				$response = 'all agents';
 
                 foreach($washers_exists as $ind=> $washer){
-
-$care_rating = 0;
-$total_returning_customers = 0;
-$totalwash = 0;
-$washer_registered_since = 0;
-$current_time = time(); // or your date as well
-$washer_created = strtotime($washer['created_date']);
-$datediff = $current_time - $washer_created;
-$washer_registered_since = round($datediff / (60 * 60 * 24));
-
-$totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$washer['id']."'")->queryAll();
-$totalwash = count($totalwash_arr);
-
-        if($washer_registered_since > 30){
-
-if(count($totalwash_arr)){
-  foreach($totalwash_arr as $agentwash){
-     $cust_served_ids[] = $agentwash['customer_id'];
-  }
-
-
-$cust_served_ids = array_unique($cust_served_ids);
-
-  if(count($cust_served_ids) > 0){
-      foreach($cust_served_ids as $cid){
-         $cust_check = Customers::model()->findByAttributes(array("id"=>$cid));
-   $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$cid, 'status' => 4),array('order'=>'id DESC'));
-     if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning) && ($cust_last_wash_check->agent_id == $washer['id'])){
-         $total_returning_customers++;
-     }
-      }
-  }
-
- if(count($cust_served_ids) > 0) {
-  $care_rating = ($total_returning_customers/$totalwash) * 100;
- $care_rating = round($care_rating, 2);
- }
-    }
-    else $care_rating = "N/A";
-    }
-    else{
-      $care_rating = "NEW";
-    }
-                    
                     
                     $all_washers[$ind]['id'] = $washer['id'];
 $all_washers[$ind]['real_washer_id'] = $washer['real_washer_id'];
@@ -3323,8 +3279,8 @@ $all_washers[$ind]['real_washer_id'] = $washer['real_washer_id'];
                     $all_washers[$ind]['state'] = $washer['state'];
                     $all_washers[$ind]['zipcode'] = $washer['zipcode'];
 $all_washers[$ind]['rating'] = $washer['rating'];
-$all_washers[$ind]['care_rating'] = $care_rating;
-$all_washers[$ind]['total_wash'] = $totalwash;
+$all_washers[$ind]['care_rating'] = $washer['care_rating'];
+$all_washers[$ind]['total_wash'] = $washer['total_wash'];
 $all_washers[$ind]['bt_submerchant_id'] = $washer['bt_submerchant_id'];
 $all_washers[$ind]['status'] = $washer['status'];
 $all_washers[$ind]['insurance_exp_date'] = $washer['insurance_license_expiration'];

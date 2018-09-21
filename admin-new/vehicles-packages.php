@@ -124,6 +124,10 @@ $jsondata_permission = json_decode($result_permission);
                                                                 <option value="">Car Model</option>
                                                                 </select>   
                                                             </div>
+							    <div class="form-group">
+                                                                <label class="control-label">Zipcode</label>
+                                                                <input type="text" name="regular-zipcode" id="regular-zipcode" class="form-control" value="" required style="width: 40%;"> 
+                                                            </div>
                                                             <div class="clear" style="height: 10px;">&nbsp;</div>
                                                             <div class="margiv-top-10">
                                                                 <input type="submit" id="regular-submit" value="Get Details" name="submit" style="color: rgb(255, 255, 255); background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 6px 7px 7px 6px; border-radius: 3px;" />
@@ -321,10 +325,16 @@ mod = value.split("|");
 	});
 
     $("#regular-submit").click(function() {
+	reg_zipcode = $("#regular-zipcode").val();
+if (!reg_zipcode) {
+    alert('Please enter zipcode');
+    return false;
+}
 $(".reg-loading").show();
 make_name = $("#regular-make").val();
 //console.log(make_name);
 model_no = $("#regular-model").val();
+
 veh_cat = $("#regular-model option:selected").attr('data-cat').toLowerCase();
 $.getJSON("../api/index.php?r=washing/plans",  {vehicle_make: make_name, vehicle_model: model_no, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data) {
 $(".reg-loading").hide();

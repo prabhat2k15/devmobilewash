@@ -8083,7 +8083,7 @@ die();
 }
 
 //$all_agents = Agents::model()->findAll();
-$all_agents = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE block_washer = 0 AND washer_position = '".APP_ENV."' ORDER BY id ASC")->queryAll();
+$all_agents = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE block_washer = 0 AND washer_position = '".APP_ENV."' AND is_carerating_update_pending = 1 ORDER BY id ASC LIMIT 50")->queryAll();
 if(count($all_agents) > 0){
     foreach($all_agents as $ind=> $washer){
         
@@ -8140,14 +8140,24 @@ if(count($all_agents) > 0){
         $care_rating = "NEW";
     }
     
-Agents::model()->updateByPk($agent_id,array('care_rating' => $care_rating));
+Agents::model()->updateByPk($agent_id,array('care_rating' => $care_rating, 'is_carerating_update_pending' => 0));
 
 }
 
 
 }
 
-/* --- mobilewash care rating ---- */
+
+}
+
+
+public function actionmwcareratingupdate(){
+    if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
+
+Agents::model()->updateAll(array("is_carerating_update_pending" => 1), 'block_washer=0');
 
 $mw_care_rating = '';
 $totalwash_arr = Yii::app()->db->createCommand("SELECT COUNT(DISTINCT customer_id) AS total FROM `washing_requests` WHERE status = 4")->queryAll();
@@ -8155,6 +8165,7 @@ $totalwash_arr = Yii::app()->db->createCommand("SELECT COUNT(DISTINCT customer_i
 $totalwash_arr_60 = Yii::app()->db->createCommand("SELECT COUNT(DISTINCT w.customer_id) AS total60 FROM `washing_requests` w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.total_wash > 0 AND w.order_for >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)")->queryAll();
                   
 if($totalwash_arr[0]['total'] > 0){
+	//echo $totalwash_arr_60[0]['total60']." ".$totalwash_arr[0]['total'];
 $mw_care_rating = ($totalwash_arr_60[0]['total60'] / $totalwash_arr[0]['total']) * 100;
 $mw_care_rating = round($mw_care_rating,2);
 }
@@ -8165,8 +8176,7 @@ $mw_care_rating = 'N/A';
 Yii::app()->db->createCommand("UPDATE app_settings SET mw_care_rating = :mw_care_rating WHERE id = '1' ")->bindValue(':mw_care_rating', $mw_care_rating, PDO::PARAM_STR)->execute();
       
 Yii::app()->db->createCommand("UPDATE app_settings SET mw_care_rating = :mw_care_rating WHERE id = '2' ")->bindValue(':mw_care_rating', $mw_care_rating, PDO::PARAM_STR)->execute();
-	
-	/* --- mobilewash care rating end ---- */
+
 }
     
 }
