@@ -2626,7 +2626,7 @@ $sendmessage = $client->account->messages->create(array(
 	      if(($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id))
                     {
                         $result = 'false';
-                        $response = 'Sorry, this order is already assigned to another washer';
+                        $response = 'Sorry this order is already taken by another washer';
                         $json = array('result' => $result, 'response' => $response);
                         echo json_encode($json);die();
                     }
@@ -3512,7 +3512,7 @@ try {
                 if($washrequestmodel->status == WASHREQUEST_STATUS_ACCEPTED && $washrequestmodel->agent_id != $agent_id)
                 {
 					$result= 'false';
-					$response= 'Wash request already accepted by other agent';
+					$response= 'Sorry this order is already taken by another washer';
                 }
                 else if($status == WASHREQUEST_STATUS_CANCELWASH_BYCLIENT)
                 {
@@ -3765,6 +3765,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
             }
                 if(($status == WASHREQUEST_STATUS_ACCEPTED) && (!$wrequest_id_check->washer_on_way_push_sent))
                 {
+			 $agent_det = Agents::model()->findByAttributes(array("id"=>$agent_id));
 					$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '11' ")->queryAll();
 					$notify_msg = $pushmsg[0]['message'];
 					$notify_msg = str_replace("[WASHERFIRSTNAME]",$agent_det->first_name,$notify_msg);
@@ -3774,7 +3775,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                     //$resUpdate = $washrequestmodel->save(false);
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("washer_on_way_push_sent" => 1, "wash_begin" => date("Y-m-d H:i:s")));
 
-                    $agent_det = Agents::model()->findByAttributes(array("id"=>$agent_id));
+                   
                         $washeractionlogdata= array(
                             'agent_id'=> $agent_id,
                             'wash_request_id'=> $wash_request_id,
@@ -4488,7 +4489,8 @@ $sched_time = $wrequest_id_check->schedule_time;
 	    'company_cancel' => $wrequest_id_check->company_cancel,
 	    'canceled_washer_id' => $canceled_washer_id,
 	    'schedule_date' => $sched_date,
-	    'schedule_time' => $sched_time
+	    'schedule_time' => $sched_time,
+	    'order_for' => $wrequest_id_check->order_for
 	     
             );
         }
@@ -4501,7 +4503,8 @@ $sched_time = $wrequest_id_check->schedule_time;
 		'company_cancel' => $wrequest_id_check->company_cancel,
 		'canceled_washer_id' => $canceled_washer_id,
 		'schedule_date' => $sched_date,
-	    'schedule_time' => $sched_time
+	    'schedule_time' => $sched_time,
+	    'order_for' => $wrequest_id_check->order_for
             );
         }
         echo json_encode($json);

@@ -17,7 +17,7 @@ $page_number = 1;
 if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
 if(($_GET['search_area'] == 'Order Number') || ($_GET['search_area'] == 'Created Date') || ($_GET['search_area'] == 'Scheduled Date') || ($_GET['search_area'] == 'On-Demand') || ($_GET['search_area'] == 'Scheduled')) $url = ROOT_URL.'/api/index.php?r=site/searchorders';
 if(($_GET['search_area'] == 'Customer Name') || ($_GET['search_area'] == 'Customer Email') || ($_GET['search_area'] == 'Customer Phone')) $url = ROOT_URL.'/api/index.php?r=customers/searchcustomers';
-if(($_GET['search_area'] == 'Washer Name') || ($_GET['search_area'] == 'Washer Phone')) $url = ROOT_URL.'/api/index.php?r=agents/searchagents';
+if(($_GET['search_area'] == 'Washer Badge') || ($_GET['search_area'] == 'Washer Name') || ($_GET['search_area'] == 'Washer Phone')) $url = ROOT_URL.'/api/index.php?r=agents/searchagents';
         $handle = curl_init($url);
         $data = array('query' => $_GET['q'], 'limit' => 10, 'search_area' => $_GET['search_area'], 'page_number' => $page_number, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
         curl_setopt($handle, CURLOPT_POST, true);
@@ -231,7 +231,7 @@ else echo $customer->total_wash;
                                     </div>
                                 <?php endif; ?>
                                 
-<?php if((($_GET['search_area'] == 'Washer Name') || ($_GET['search_area'] == 'Washer Phone')) && (count($searchresults->all_washers) > 0)): ?>
+<?php if((($_GET['search_area'] == 'Washer Badge') || ($_GET['search_area'] == 'Washer Name') || ($_GET['search_area'] == 'Washer Phone')) && (count($searchresults->all_washers) > 0)): ?>
                                 <div class="portlet-body">
                                     <h3 style="font-weight: bold; margin-top: 0; margin-bottom: 20px;">Washers</h3>
                                     

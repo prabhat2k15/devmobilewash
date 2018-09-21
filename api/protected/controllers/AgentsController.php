@@ -1719,7 +1719,7 @@ $total_pages = 0;
 	            }
                 else{
 
-			$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE agent_id=:agent_id AND ((status='4' OR status='5' OR status='6')) order by created_date desc")
+			$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE agent_id=:agent_id AND ((status='4' OR status='5' OR status='6')) order by order_for desc")
 			->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
 			->queryAll();
               $total_entries = $all_wash_requests_count[0]['count'];
@@ -1743,7 +1743,7 @@ $total_pages = ceil($total_entries / $limit);
 			->where("agent_id=:agent_id AND ((status='4' OR status='5' OR status='6'))", array(":agent_id" => $agent_id))
 			->limit($limit)
 			->offset(($page-1) * $limit)
-			->order(array('created_date desc'))
+			->order(array('order_for desc'))
 			->queryAll();
 	     
 	     /*$all_wash_requests =  Yii::app()->db->createCommand("SELECT DISTINCT w.id, w.agent_id FROM washing_requests w LEFT JOIN activity_logs a ON w.id = a.wash_request_id WHERE (w.agent_id='".$agent_id."' AND (w.status='4' OR w.status='5' OR w.status='6')) OR (a.agent_id='".$agent_id."' AND a.action='dropjob') order by created_date desc")->queryAll();
@@ -3249,7 +3249,8 @@ $page_number = 1;
 	else $agent_query = "(first_name LIKE :query OR last_name LIKE :query) ";
       }
      if($search_area == "Washer Phone") $agent_query = "(phone_number LIKE :query) ";
-       if($query){
+     if($search_area == "Washer Badge") $agent_query = "(real_washer_id LIKE :query) ";
+       if(($query) || is_numeric($query)){
         
              if(($search_area == "Washer Name") && (count($query_arr) > 1)) $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE ".$agent_query."ORDER BY id DESC".$limit_str)->queryAll();
 	     else $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE ".$agent_query."ORDER BY id DESC".$limit_str)->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();

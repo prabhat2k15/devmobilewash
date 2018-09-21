@@ -375,6 +375,7 @@
                                     <select name="search_area" style="background: #fff; padding: 6px; width: 100%; display: block; margin-bottom: 10px;" required>
                                         <option value="">-- Select Search Area --</option>
                                         <option value="Order Number">Order Number</option>
+					<option value="Washer Badge">Washer Badge</option>
                                         <option value="Washer Name">Washer Name</option>
 					<option value="Washer Phone">Washer Phone</option>
                                         <option value="Customer Name">Customer Name</option>
