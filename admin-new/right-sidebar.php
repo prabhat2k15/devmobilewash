@@ -67,13 +67,23 @@
                                         <span class="title">App Orders</span>
                                     </a>                                  
                                 </li>                                
-                                <li class="nav-item  <?php if($url == 'payment-reports.php' || $newurl_page[0] == 'payment-reports.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
-                                    <a href="payment-reports.php?filter=&limit=400" class="nav-link ">
-                                    <span class="title">Payment Reports</span>
+                                
+                               <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php if($url == 'show-calendar.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="show-calendar.php" class="nav-link ">
+                                        <span class="title">Order Calendar</span>
                                     </a>
                                 </li>
-                               
+                                <li style="display: <?php echo $checked_command_center_display; ?>" class="nav-item  <?php if($url == 'command-center.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="command-center.php" target="_blank" class="nav-link ">
+                                        <span class="title">Command Center</span>
+                                    </a>
+                                </li>
 						
+                                <li class="nav-item <?php if($url == 'manage-promotions.php' || $newurl_page[0] == 'manage-promotions.php' || $newurl[1] == 'add-coupon.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_promotions_display; ?>">
+                                    <a href="manage-promotions.php" class="nav-link ">
+                                        <span class="title">Manage Promotions</span>
+                                    </a>
+                                </li>
 							
 							<?php /*
 								<li class="nav-item  <?php if($url == 'merge-orders.php' || $newurl_page[0] == 'merge-orders.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
@@ -90,6 +100,26 @@
  <li class="nav-item <?php if($url == 'vehicle-pricing.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
                                     <a href="vehicle-pricing.php" class="nav-link ">
                                         <span class="title">Vehicle Pricing</span>
+                                    </a>
+                                </li>
+                                <li style="display: <?php echo $checked_opening_display; ?>" class="nav-item  <?php if($url == 'schedule-times.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="schedule-times.php" class="nav-link ">
+                                        <span class="title">Schedule Times</span>
+                                    </a>
+                                </li>
+				<li style="display: <?php echo $checked_opening_display; ?>" class="nav-item  <?php if($url == 'ondemand-surge-times.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="ondemand-surge-times.php" class="nav-link ">
+                                        <span class="title">On-Demand Surge Times</span>
+                                    </a>
+                                </li>
+                                <li style="display: <?php echo $checked_notifications_display; ?>" class="nav-item  <?php if($url == 'notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="notifications.php" class="nav-link ">
+                                        <span class="title">Notifications</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item  <?php if($url == 'payment-reports.php' || $newurl_page[0] == 'payment-reports.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
+                                    <a href="payment-reports.php?filter=&limit=400" class="nav-link ">
+                                    <span class="title">Payment Reports</span>
                                     </a>
                                 </li>
 <li class="nav-item <?php if($url == 'vehicle-addons-pricing.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
@@ -122,11 +152,7 @@
                                         <span class="title">Classic Vehicles</span>
                                     </a>
                                 </li>
-                                <li class="nav-item <?php if($url == 'manage-promotions.php' || $newurl_page[0] == 'manage-promotions.php' || $newurl[1] == 'add-coupon.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_promotions_display; ?>">
-                                    <a href="manage-promotions.php" class="nav-link ">
-                                        <span class="title">Manage Promotions</span>
-                                    </a>
-                                </li>
+                                
   <li class="nav-item <?php if($url == 'promo-popups.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $open_agent; ?>">
                                     <a href="promo-popups.php" class="nav-link ">
                                         <span class="title">Promo Popups</span>
@@ -140,16 +166,6 @@
                                 <li style="display: <?php echo $checked_opening_display; ?>" class="nav-item  <?php if($url == 'hours-of-operation.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="hours-of-operation.php" class="nav-link ">
                                         <span class="title">Hours of Operation</span>
-                                    </a>
-                                </li>
-<li style="display: <?php echo $checked_opening_display; ?>" class="nav-item  <?php if($url == 'schedule-times.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="schedule-times.php" class="nav-link ">
-                                        <span class="title">Schedule Times</span>
-                                    </a>
-                                </li>
-				<li style="display: <?php echo $checked_opening_display; ?>" class="nav-item  <?php if($url == 'ondemand-surge-times.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="ondemand-surge-times.php" class="nav-link ">
-                                        <span class="title">On-Demand Surge Times</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php if($url == 'site-settings.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_site_display; ?>">
@@ -172,11 +188,7 @@
                                         <span class="title">Push Messages</span>
                                     </a>
                                 </li>
-                                <li style="display: <?php echo $checked_notifications_display; ?>" class="nav-item  <?php if($url == 'notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="notifications.php" class="nav-link ">
-                                        <span class="title">Notifications</span>
-                                    </a>
-                                </li>
+                                
                                 <li style="display: <?php echo $checked_cms_display; ?>" class="nav-item  <?php if($url == 'cms.php' || $newurl_page[0] == 'cms.php' || $newurl_page[0] == 'edit-cms.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="cms.php" class="nav-link ">
                                         <span class="title">CMS</span>
@@ -234,21 +246,13 @@
                                         <span class="title">Coverage Area Cities</span>
                                     </a>
                                 </li>
-                                <li style="display: <?php echo $checked_command_center_display; ?>" class="nav-item  <?php if($url == 'command-center.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="command-center.php" target="_blank" class="nav-link ">
-                                        <span class="title">Command Center</span>
-                                    </a>
-                                </li>
+                                
 				<li style="display: <?php echo $checked_command_center_display; ?>" class="nav-item  <?php if($url == 'heatmap.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="heatmap.php" target="_blank" class="nav-link ">
                                         <span class="title">Heatmap</span>
                                     </a>
                                 </li>
-								<li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php if($url == 'show-calendar.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="show-calendar.php" class="nav-link ">
-                                        <span class="title">Order Calendar</span>
-                                    </a>
-                                </li>
+								
 								<li class="nav-item <?php if($url == 'list-review.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_show_review_display; ?>">
                                     <a href="list-review.php" class="nav-link ">
                                         <span class="title">Review</span>
@@ -307,11 +311,11 @@
                                         <span class="title">MobileWasher Service Feedbacks</span>
                                     </a>
                                 </li>
-                                <li class="nav-item  <?php if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="customer-notifications.php" class="nav-link ">
                                         <span class="title">Customer Push Notifications</span>
                                     </a>
-                                </li>
+                                </li>-->
 				<li class="nav-item  <?php if($url == 'top-customers.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="top-customers.php" class="nav-link ">
                                         <span class="title">Top Customers</span>
@@ -343,11 +347,11 @@
                                         <span class="title">Manage Agents</span>
                                     </a>
                                 </li>
-                                <li class="nav-item  <?php if($url == 'washer-notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                <!--<li class="nav-item  <?php //if($url == 'washer-notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="washer-notifications.php" class="nav-link ">
                                         <span class="title">Washer Push Notifications</span>
                                     </a>
-                                </li>
+                                </li>-->
 				<li class="nav-item  <?php if($url == 'top-washers.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="top-washers.php" class="nav-link ">
                                         <span class="title">Top Washers</span>

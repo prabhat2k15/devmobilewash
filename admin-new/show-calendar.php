@@ -187,6 +187,7 @@ $(document).ready(function() {
 								var zipblue = value.zipblue.count;
 								var zipyellow = value.zipyellow.count;
 								var zipred = value.zipred.count;
+                                var zippurple = value.zippurple.count;
 								
                                 if(value.new_customer.count > 0){
 									titledec = value.new_customer.count+' New Customer';
@@ -460,6 +461,18 @@ $(document).ready(function() {
 										description:'t',
 										start:index,
 										color:colorzipred,
+									});
+								}
+                                
+                                if(zippurple > 0){
+									titlezippurple = value.zippurple.count+' Purple Zone Orders';
+									colorzippurple = value.zippurple.color;
+									events.push({
+										eventtitle: 'purpleorders',
+										title:titlezippurple,
+										description:'t',
+										start:index,
+										color:colorzippurple,
 									});
 								}
                                  if(total_cars >= 1  ){

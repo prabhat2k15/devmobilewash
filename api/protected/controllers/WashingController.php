@@ -9455,6 +9455,10 @@ if($orderbycustomer['zipcode']) {
                     $data[$value['start']]['zip_red'][] = 1;
                 }
                 
+        if(($value['zip_color'] == 'purple') && ($value['title'] != 'Canceled')){
+                    $data[$value['start']]['zip_purple'][] = 1;
+                } 
+                
                 if($value['address_type'] == 'Home'){
                     $data[$value['start']]['home'][] = $value['address_type'];
                 }
@@ -9555,6 +9559,8 @@ if($orderbycustomer['zipcode']) {
 		$dt[$key]['zipyellow']['count']= 0;
 		$dt[$key]['zipred']['color']= '';
 		$dt[$key]['zipred']['count']= 0;
+        $dt[$key]['zippurple']['color']= '';
+		$dt[$key]['zippurple']['count']= 0;
 		$addonscompleted = 0;
                 //print_r($val);
                 if(count($val['declined'])>0){
@@ -9640,6 +9646,11 @@ if($orderbycustomer['zipcode']) {
 		if(count($val['zip_red'])>0){
                     $dt[$key]['zipred']['count']= count($val['zip_red']);
                     $dt[$key]['zipred']['color']= '#FF0000';
+                }
+                
+        if(count($val['zip_purple'])>0){
+                    $dt[$key]['zippurple']['count']= count($val['zip_purple']);
+                    $dt[$key]['zippurple']['color']= '#800080';
                 }
 		
 		
@@ -13815,8 +13826,9 @@ else $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['t
                         $result = 'true';
                         $response = 'Order canceled';
                         $cancel_price =  $fee;
-                         if(($order_exists->status > 1) && ($order_exists->status <= 3)) Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $fee-5, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
-			 else Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
+                         $washer_cancel_fee = $fee-5;
+                         if(($order_exists->status > 1) && ($order_exists->status <= 3)) Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
+			 else Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee,'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
 
                                     if($order_exists->transaction_id) {
                  if($order_exists->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($order_exists->transaction_id);

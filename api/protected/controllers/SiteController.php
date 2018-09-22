@@ -3289,7 +3289,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 			}
 			elseif($event == 'newcustomer'){
 				$status_qr=" AND c.total_wash = 0";
-			}elseif(in_array($event, array('yelloworders', 'blueorders', 'redorders'))){
+			}elseif(in_array($event, array('yelloworders', 'blueorders', 'redorders', 'purpleorders'))){
                 $status_qr = " AND w.status IN('0','4','3','2','1')";
             }
 			else {
@@ -3386,6 +3386,18 @@ else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reque
 			continue;
 		}
 	}
+                
+    if($event == 'purpleorders'){
+        $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
+    
+        if(count($coveragezipcheck)){
+            $zipcolor = $coveragezipcheck->zip_color;
+            if(($zipcolor != 'purple')) continue;
+        }
+        else{
+            continue;
+        }
+    }
 
 if($wrequest['is_scheduled']){
                  if($wrequest['reschedule_time']) $scheduledatetime = $wrequest['reschedule_date']." ".$wrequest['reschedule_time'];
@@ -7435,7 +7447,8 @@ echo "Invalid api key";
 die();
 }
  $real_washer = $all_washes =  Yii::app()->db->createCommand("SELECT *, CASE WHEN account_status = 1 THEN 'Active'
-            ELSE 'Blocked' END AS washer_status FROM agents WHERE washer_position = :washer_position")
+            ELSE 'Blocked' END AS washer_status, CASE WHEN decals_installed = 1 THEN 'Yes'
+            ELSE 'No' END AS decals_installed FROM agents WHERE washer_position = :washer_position")
             ->bindValue(':washer_position', "real", PDO::PARAM_STR)
             ->queryAll();
 
