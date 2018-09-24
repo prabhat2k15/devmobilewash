@@ -6113,4 +6113,35 @@ public function actionwashernotifycc(){
 		echo json_encode($json);	
 
 }
+
+   	           public function actionupdatetotalwash()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$offset = 0;
+$offset = Yii::app()->request->getParam('offset');
+
+		
+		$all_agents = Yii::app()->db->createCommand("SELECT * FROM agents ORDER BY id ASC LIMIT 100 OFFSET ".$offset)->queryAll();
+
+if(count($all_agents)){
+    foreach($all_agents as $agent){
+	$total_rows =  Yii::app()->db->createCommand("SELECT COUNT(id) as total FROM washing_requests WHERE agent_id = ".$agent['id']." AND status = 4")->queryAll();
+	$total_wash = $total_rows[0]['total'];
+	echo "agent id: ".$agent['id']." | wash: ".$total_wash;
+        echo "<br>";
+	
+	Agents::model()->updateByPk($agent['id'],array('total_wash'=> $total_wash));
+	
+    }
+}
+else{
+    echo "nothing found";
+}
+   
+    }
 }
