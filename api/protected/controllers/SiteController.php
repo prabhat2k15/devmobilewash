@@ -8096,7 +8096,8 @@ die();
 }
 
 //$all_agents = Agents::model()->findAll();
-$all_agents = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE block_washer = 0 AND washer_position = '".APP_ENV."' AND is_carerating_update_pending = 1 ORDER BY id ASC LIMIT 50")->queryAll();
+$all_agents = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE washer_position = '".APP_ENV."' AND is_carerating_update_pending = 1 ORDER BY id ASC LIMIT 50")->queryAll();
+
 if(count($all_agents) > 0){
     foreach($all_agents as $ind=> $washer){
         
@@ -8122,8 +8123,13 @@ if(count($all_agents) > 0){
                 if(!in_array($agentwash['customer_id'], $cust_served_ids)){
                      $cust_served_ids[] = $agentwash['customer_id'];
 		     
-		     $cust_wash_attempt_60days = Yii::app()->db->createCommand("SELECT customer_id FROM `washing_requests` WHERE `customer_id` = '".$agentwash['customer_id']."' AND `order_for` >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)")->queryAll();
-			if(count($cust_wash_attempt_60days)) $attempted_cust_ids[] = $agentwash['customer_id'];
+		     $cust_wash_attempt_60days = Yii::app()->db->createCommand("SELECT customer_id FROM `washing_requests` WHERE `customer_id` = '".$agentwash['customer_id']."' AND `order_for` >= DATE_SUB(CURDATE(), INTERVAL 60 DAY)")->queryAll();
+			 //$cust_wash_attempt_60days = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE `customer_id` = '".$agentwash['customer_id']."' AND `order_for` >= DATE_SUB(CURDATE(), INTERVAL 60 DAY) ORDER BY order_for DESC")->queryAll();
+			
+			if(count($cust_wash_attempt_60days)) {
+			    $attempted_cust_ids[] = $agentwash['customer_id'];
+			   //echo "wash id: ".$cust_wash_attempt_60days[0]['id']." customer id: ".$cust_wash_attempt_60days[0]['customer_id']." ".$cust_wash_attempt_60days[0]['order_for']."<br>";
+			   }
 		}
             }
 
@@ -8142,6 +8148,7 @@ if(count($all_agents) > 0){
             
 
             if(count($cust_served_ids) > 0) {
+                //echo "# ".$agent_id." ".count($attempted_cust_ids)."/".count($cust_served_ids)."<br>";
                 $care_rating = (count($attempted_cust_ids)/count($cust_served_ids)) * 100;
                 $care_rating = round($care_rating, 2);
             }
@@ -8171,11 +8178,12 @@ die();
 }
 
 Agents::model()->updateAll(array("is_carerating_update_pending" => 1), 'block_washer=0');
+//Agents::model()->updateAll(array("is_carerating_update_pending" => 1));
 
 $mw_care_rating = '';
 $totalwash_arr = Yii::app()->db->createCommand("SELECT COUNT(DISTINCT customer_id) AS total FROM `washing_requests` WHERE status = 4")->queryAll();
     
-$totalwash_arr_60 = Yii::app()->db->createCommand("SELECT COUNT(DISTINCT w.customer_id) AS total60 FROM `washing_requests` w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.total_wash > 0 AND w.order_for >= DATE_SUB(CURDATE(), INTERVAL 2 MONTH)")->queryAll();
+$totalwash_arr_60 = Yii::app()->db->createCommand("SELECT COUNT(DISTINCT w.customer_id) AS total60 FROM `washing_requests` w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.total_wash > 0 AND w.order_for >= DATE_SUB(CURDATE(), INTERVAL 60 DAY)")->queryAll();
                   
 if($totalwash_arr[0]['total'] > 0){
 	//echo $totalwash_arr_60[0]['total60']." ".$totalwash_arr[0]['total'];
