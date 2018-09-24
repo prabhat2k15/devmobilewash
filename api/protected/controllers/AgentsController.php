@@ -3179,23 +3179,24 @@ $cust_served_ids = array_unique($cust_served_ids);
 		if(strtotime($washer['insurance_license_expiration']) > 0) $insurance_date = date('m-d-Y', strtotime($washer['insurance_license_expiration']));
 		else $insurance_date = '';
 
-                    $all_washers[$ind]['id'] = $washer['id'];
-$all_washers[$ind]['real_washer_id'] = $washer['real_washer_id'];
-                    $all_washers[$ind]['email'] = $washer['email'];
-                    $all_washers[$ind]['first_name'] = $washer['first_name'];
-                    $all_washers[$ind]['last_name'] = $washer['last_name'];
-                    $all_washers[$ind]['phone_number'] = $washer['phone_number'];
-                    $all_washers[$ind]['city'] = $washer['city'];
-                    $all_washers[$ind]['state'] = $washer['state'];
-                    $all_washers[$ind]['zipcode'] = $washer['zipcode'];
-		    $all_washers[$ind]['phone_verify_code'] = $washer['phone_verify_code'];
-$all_washers[$ind]['rating'] = $washer['rating'];
-$all_washers[$ind]['care_rating'] = $care_rating;
-$all_washers[$ind]['total_wash'] = $washer['total_wash'];
-$all_washers[$ind]['bt_submerchant_id'] = $washer['bt_submerchant_id'];
-$all_washers[$ind]['status'] = $washer['status'];
-$all_washers[$ind]['insurance_exp_date'] = $insurance_date;
-                    $all_washers[$ind]['created_date'] = $washer['created_date'];
+                $all_washers[$ind]['id'] = $washer['id'];
+                $all_washers[$ind]['real_washer_id'] = $washer['real_washer_id'];
+                $all_washers[$ind]['email'] = $washer['email'];
+                $all_washers[$ind]['first_name'] = $washer['first_name'];
+                $all_washers[$ind]['last_name'] = $washer['last_name'];
+                $all_washers[$ind]['phone_number'] = $washer['phone_number'];
+                $all_washers[$ind]['city'] = $washer['city'];
+                $all_washers[$ind]['state'] = $washer['state'];
+                $all_washers[$ind]['zipcode'] = $washer['zipcode'];
+                $all_washers[$ind]['phone_verify_code'] = $washer['phone_verify_code'];
+                $all_washers[$ind]['rating'] = $washer['rating'];
+                $all_washers[$ind]['care_rating'] = $care_rating;
+                $all_washers[$ind]['block_washer'] = ($washer['block_washer'] == 1)? 'Yes':'No';
+                $all_washers[$ind]['total_wash'] = $washer['total_wash'];
+                $all_washers[$ind]['bt_submerchant_id'] = $washer['bt_submerchant_id'];
+                $all_washers[$ind]['status'] = $washer['status'];
+                $all_washers[$ind]['insurance_exp_date'] = $insurance_date;
+                $all_washers[$ind]['created_date'] = $washer['created_date'];
                 }
 
 			}

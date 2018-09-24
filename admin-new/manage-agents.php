@@ -316,6 +316,7 @@ $('#late_drivers').click(function(){
 <th> Insurance Exp. Date </th>
                                                 <th> Rating </th>
                                                 <th> CARE Rating </th>
+                                                <th> Blocked </th>
 <th> Washes </th>
  <th> BT Submerchant ID </th>
                                                 <th> Status </th>
@@ -364,6 +365,7 @@ $('#late_drivers').click(function(){
 
 <td> <?php echo $washer->rating; ?> </td>
 <td> <?php echo $washer->care_rating; ?><?php if(($washer->care_rating != "N/A") && ($washer->care_rating != "NEW")) echo "%"; ?></td>
+<td> <?php echo $washer->block_washer; ?> </td>
 <td> <?php echo $washer->total_wash; ?> </td>
 <td> <?php echo $washer->bt_submerchant_id; ?> </td>
                                               <td> <?php echo $washer->status; ?> </td>

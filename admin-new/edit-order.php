@@ -810,12 +810,11 @@ display: none;
 <div style="float: right; font-size: 18px; background: #fff; padding: 10px; max-width: 300px;" <?php if(($getorder->transaction_id) && ($transaction_details->transaction_details->amount != $getorder->net_price) && (($transaction_details->transaction_details->status == 'submitted_for_settlement') || ($transaction_details->transaction_details->status == 'settling') || ($transaction_details->transaction_details->status == 'settled'))) echo "class='red-border'"; ?>>
 <div style="font-size: 18px; background: #006fcf; color: #fff; padding: 5px 10px;">
 
-<span style="font-weight: 500;font-size: 22px; display: block; float: right;"><?php if($getorder->status == 5 || $getorder->status == 6) {echo "$".number_format($getorder->cancel_fee, 2); }else{if($getorder->net_price > 0) {$net_total = $getorder->net_price - $getorder->company_discount; echo "$".$net_total;} else {echo "N/A";}} ?></span>
+<span style="font-weight: 500;font-size: 22px; display: block; float: right;"><?php if($getorder->status == 5 || $getorder->status == 6 || $getorder->status == 7) {echo "$".number_format($getorder->cancel_fee, 2); }else{if($getorder->net_price > 0) {$net_total = $getorder->net_price - $getorder->company_discount; echo "$".$net_total;} else {echo "N/A";}} ?></span>
 <span style="display: block; float: right; margin-top: 4px; margin-right: 5px;">TOTAL PRICE:</span>
-<?php if(($getorder->wash_now_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Wash Now Fee: <?php echo "+$".number_format($getorder->wash_now_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->wash_later_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Surge Fee: <?php echo "+$".number_format($getorder->wash_later_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->transaction_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Transaction Fee: <?php echo "$".number_format($getorder->transaction_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->status != 5) && ($getorder->status != 6)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Service Fee: +$1.00)</span><?php endif; ?><?php if(($getorder->tip_amount > 0) && ($getorder->status != 5) && ($getorder->status != 6)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Tip: <?php echo "+$".number_format($getorder->tip_amount, 2); ?>)</span><?php endif; ?><?php if(($getorder->coupon_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(<?php echo $getorder->coupon_code; ?>: <?php echo "-$".number_format($getorder->coupon_discount, 2); ?>)</span><?php endif; ?><?php if(($getorder->company_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">Company Discount: <?php echo "-$".number_format($getorder->company_discount, 2); ?></span><?php endif; ?><?php if(($getorder->fifth_wash_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(5th Wash Discount: <?php echo "-$".number_format($getorder->fifth_wash_discount, 2); ?>)</span><?php endif; ?>
-<span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right; margin-top: 10px;">Agent Total: <?php if($getorder->status == 5 || $getorder->status == 6) {echo "$".number_format($getorder->washer_cancel_fee, 2); } else{if($getorder->agent_total > 0) {echo "$".$getorder->agent_total;} else {echo "N/A";}} ?></span>
-<span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right;">Company Total: <?php if(($getorder->status == 5 || $getorder->status == 6) && ($getorder->cancel_fee != 30)) {if($getorder->washer_cancel_fee > 0) {echo "$".number_format($getorder->washer_cancel_fee / 2, 2);} else {echo "$".number_format($getorder->cancel_fee, 2);}}if($getorder->cancel_fee == 30){ echo "$".number_format($getorder->company_cancel, 2); } else{if($getorder->company_total > 0) {$net_company_total = $getorder->company_total - $getorder->company_discount; echo "$".number_format($net_company_total, 2);} else {echo "N/A";}} ?></span>
-<div style="clear: both;"></div>
+<?php if(($getorder->wash_now_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Wash Now Fee: <?php echo "+$".number_format($getorder->wash_now_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->wash_later_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Surge Fee: <?php echo "+$".number_format($getorder->wash_later_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->transaction_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Transaction Fee: <?php echo "$".number_format($getorder->transaction_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Service Fee: +$1.00)</span><?php endif; ?><?php if(($getorder->tip_amount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Tip: <?php echo "+$".number_format($getorder->tip_amount, 2); ?>)</span><?php endif; ?><?php if(($getorder->coupon_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(<?php echo $getorder->coupon_code; ?>: <?php echo "-$".number_format($getorder->coupon_discount, 2); ?>)</span><?php endif; ?><?php if(($getorder->company_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">Company Discount: <?php echo "-$".number_format($getorder->company_discount, 2); ?></span><?php endif; ?><?php if(($getorder->fifth_wash_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(5th Wash Discount: <?php echo "-$".number_format($getorder->fifth_wash_discount, 2); ?>)</span><?php endif; ?>
+<span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right; margin-top: 10px;">Agent Total: <?php if($getorder->status == 5 || $getorder->status == 6  || $getorder->status == 7) {echo "$".number_format($getorder->washer_cancel_fee, 2); } else{if($getorder->agent_total > 0) {echo "$".$getorder->agent_total;} else {echo "N/A";}} ?></span>
+<span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right;">Company Total: <?php if(($getorder->status == 5 || $getorder->status == 6) && ($getorder->status != 7)) {if($getorder->washer_cancel_fee > 0) {echo "$".number_format($getorder->washer_cancel_fee / 2, 2);} else {echo "$".number_format($getorder->cancel_fee, 2);}}if($getorder->status == 7){ echo "$".number_format($getorder->company_cancel, 2); } else{if($getorder->company_total > 0) {$net_company_total = $getorder->company_total - $getorder->company_discount; echo "$".number_format($net_company_total, 2);} else {echo "N/A";}} ?></span><div style="clear: both;"></div>
 <?php if($getorder->payment_type == 'free'): ?>
 <p style="margin: 5px 0; text-align: center;">(Free wash applied)</p>
 <?php endif; ?>
@@ -826,7 +825,7 @@ display: none;
 </div>
 <?php if($getorder->status == 4): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; background: #05b500; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">Order Complete</div>
-<?php elseif($getorder->status == 5 || $getorder->status == 6): ?>
+<?php elseif($getorder->status == 5 || $getorder->status == 6     || $getorder->status == 7): ?>
 <div class="process-payment-trigger" style="float: right; font-size: 18px; margin-top: 3px; background: #999; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">Cancelled <?php if($getorder->cancel_fee) echo "($".number_format($getorder->cancel_fee, 2).")"; ?></div>
 <?php elseif($getorder->status == 0): ?>
 <div class="process-payment-trigger" style="float: right; font-size: 18px; margin-top: 3px; background: red; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">Pending</div>
@@ -875,7 +874,7 @@ display: none;
  <?php endif; ?>
 <?php endif; ?>
 <?php endif; ?>
-<?php if($getorder->status != 5 && $getorder->status != 6 && (!$getorder->admin_submit_for_settle)): ?>
+<?php if($getorder->status != 5 && $getorder->status != 6 && $getorder->status != 7 && (!$getorder->admin_submit_for_settle)): ?>
  <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
 
 <div style="float: right; font-size: 18px; margin-top: 3px; background: #e47e00; cursor: pointer; color: #fff; padding: 8px 35px; margin-right: 20px;" class="<?php if($getorder->status ==0) {echo "cancel-order";} else {echo "cancel-order-ondemand";}; ?>">Cancel Order</div>
@@ -1518,6 +1517,11 @@ $first_card_type = ''; ?>
                                                               if($getorder->company_cancel == 1) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>MobileWash Canceled</span></p>";
                                                               else echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>6 - Washer Canceled</span></p>";
                                                               }
+                                                                 
+                                                              if($getorder->status == 7) {
+                                                              if($getorder->company_cancel == 1) echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>MobileWash Canceled</span></p>";
+                                                              else echo "<p style='margin-bottom: 0;'><span class='label label-sm label-cancel'>7 - Customer No Response</span></p>";
+                                                              }      
                                                                ?>
 
                                                         </div>
@@ -1782,6 +1786,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'scheduleauto-canceled'): ?>
                                                           <p style="margin-bottom: 10px; color:red;">"Scheduled Order auto-canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'cnrcompanynoresponse'): ?>
+                                                          <p style="margin-bottom: 10px; color:red;"><?php echo $log->admin_username; ?> applied CNR Fee at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
@@ -4246,6 +4253,10 @@ if(data.result == 'true'){
        
        if(log.action == 'scheduleauto-canceled'){
         contents += "<p style='margin-bottom: 10px;  color:red;'>Scheduled Order auto-canceled at "+log.formatted_action_date+"</p>";
+       }
+       
+       if(log.action == 'cnrcompanynoresponse'){
+        contents += "<p style='margin-bottom: 10px;  color:red;'>"+log.admin_username+" applied CNR Fee at "+log.formatted_action_date+"</p>";
        }
 
    });

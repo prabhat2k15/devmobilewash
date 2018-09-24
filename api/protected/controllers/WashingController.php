@@ -13826,9 +13826,9 @@ else $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['t
                         $result = 'true';
                         $response = 'Order canceled';
                         $cancel_price =  $fee;
-                         $washer_cancel_fee = $fee-5;
-                         if(($order_exists->status > 1) && ($order_exists->status <= 3)) Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
-			 else Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee,'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
+                        $washer_cancel_fee = $fee-5;
+                         if(($order_exists->status > 1) && ($order_exists->status <= 3)) Washingrequests::model()->updateByPk($id, array('status'=>7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
+			 else Washingrequests::model()->updateByPk($id, array('status'=>7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee,'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
 
                                     if($order_exists->transaction_id) {
                  if($order_exists->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($order_exists->transaction_id);
@@ -13891,7 +13891,7 @@ $sched_time = $order_exists->schedule_time;
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
-
+//test
                          foreach($kartdata->vehicles as $ind=>$vehicle){
 
 $message .="<tr>
@@ -14157,7 +14157,8 @@ else $cancelvoid = Yii::app()->braintree->void($cancelresult['transaction_id']);
                   $result = 'true';
                         $response = 'Order canceled';
                         $cancel_price = 0;
-                         Washingrequests::model()->updateByPk($id, array('status'=>5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => 0));
+                        $washer_cancel_fee = $fee-5;
+                         Washingrequests::model()->updateByPk($id, array('status'=>7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
 
                          if($order_exists->transaction_id) {
                  if($order_exists->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($order_exists->transaction_id);
@@ -14491,7 +14492,7 @@ $sendmessage = $client->account->messages->create(array(
                         'wash_request_id'=> $order_exists->id,
 
                         'admin_username' => $admin_username,
-                        'action'=> 'cancelorder',
+                        'action'=> 'cnrcompanynoresponse',
                         'action_date'=> date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
@@ -14525,7 +14526,7 @@ $sendmessage = $client->account->messages->create(array(
             if(($result == 'true') && (!$admin_username)){
                  $washeractionlogdata = array(
                         'wash_request_id'=> $order_exists->id,
-                        'action'=> 'cancelorderclient',
+                        'action'=> 'cnrcompanynoresponse',
                         'action_date'=> date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
@@ -14549,5 +14550,5 @@ $sendmessage = $client->account->messages->create(array(
 
 		echo json_encode($json);
 }
-
+    
 }

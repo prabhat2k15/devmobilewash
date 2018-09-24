@@ -78,7 +78,11 @@
                                         <span class="title">Command Center</span>
                                     </a>
                                 </li>
-						
+						        <li style="display: <?php echo $checked_notifications_display; ?>" class="nav-item  <?php if($url == 'notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="notifications.php" class="nav-link ">
+                                        <span class="title">Notifications</span>
+                                    </a>
+                                </li>
                                 <li class="nav-item <?php if($url == 'manage-promotions.php' || $newurl_page[0] == 'manage-promotions.php' || $newurl[1] == 'add-coupon.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_promotions_display; ?>">
                                     <a href="manage-promotions.php" class="nav-link ">
                                         <span class="title">Manage Promotions</span>
@@ -112,11 +116,7 @@
                                         <span class="title">On-Demand Surge Times</span>
                                     </a>
                                 </li>
-                                <li style="display: <?php echo $checked_notifications_display; ?>" class="nav-item  <?php if($url == 'notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="notifications.php" class="nav-link ">
-                                        <span class="title">Notifications</span>
-                                    </a>
-                                </li>
+                                
                                 <li class="nav-item  <?php if($url == 'payment-reports.php' || $newurl_page[0] == 'payment-reports.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
                                     <a href="payment-reports.php?filter=&limit=400" class="nav-link ">
                                     <span class="title">Payment Reports</span>
@@ -277,13 +277,13 @@
                         <li class="nav-item  <?php if($url == 'manage-pre-clients.php' || $newurl_page[0] == 'manage-customers.php' || $url == 'non-return-customers.php' || $newurl_page[0] == 'non-return-customers.php' || $url == 'trash-pre-clients.php' || $url == 'client_dashboard.php' || $newurl_page[0] == 'pre-clients-details.php' || $url == 'manage-customers.php' || $newurl_page[0] == 'edit-customer.php' || $url == 'feedbacks.php' || $url == 'customer-notifications.php' || $url == 'top-customers.php' || $newurl_page[0] == 'manage-pre-clients.php') { $open_client = 'open'; echo 'active open'; } ?>" style="display: <?php echo $client_module_show; ?>;">
                             <a href="client_dashboard.php" class="nav-link nav-toggle">
                                 <i class="icon-layers"></i>
-                                <span class="title">Client</span>
+                                <span class="title">Customer</span>
                                 <span class="arrow <?php echo $open_client; ?>"></span>
                             </a>
                             <ul class="sub-menu">
                                 <li class="nav-item  <?php if($url == 'manage-pre-clients.php' || $url == 'trash-pre-clients.php'  || $newurl_page[0] == 'manage-pre-clients.php' || $newurl_page[0] == 'pre-clients-details.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="manage-pre-clients.php" class="nav-link ">
-                                        <span class="title">Pre-Registered Clients</span>
+                                        <span class="title">Pre-Registered Customers</span>
                                     </a>
                                 </li>
                                 <li class="nav-item  <?php if($url == 'manage-customers.php' || $newurl_page[0] == 'manage-customers.php' || $newurl_page[0] == 'edit-customer.php') { $open_agent = 'open'; echo 'active open'; } ?>">
