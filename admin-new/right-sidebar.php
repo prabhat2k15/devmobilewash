@@ -344,7 +344,7 @@
                                 </li>-->
                                 <li class="nav-item  <?php if($url == 'manage-agents.php' || $newurl_page[0] == 'manage-agents.php' || $newurl_page[0] == 'edit-agent.php' || $newurl[1] == 'add-agent.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="manage-agents.php?type=demo" class="nav-link ">
-                                        <span class="title">Manage Agents</span>
+                                        <span class="title">Manage Washers</span>
                                     </a>
                                 </li>
                                 <!--<li class="nav-item  <?php //if($url == 'washer-notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">

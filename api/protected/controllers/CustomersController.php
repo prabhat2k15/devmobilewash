@@ -6728,6 +6728,7 @@ die();
 		'sms_control' => $customerdetail['sms_control'],
                 'block_client' => $customerdetail['block_client'],
                 'notes'=>$customerdetail['notes'],
+                'created_date' => $customerdetail['created_date'],
             );
              echo json_encode($json);
              exit;

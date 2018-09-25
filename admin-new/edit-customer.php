@@ -174,6 +174,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
              $sms_control = $jsondata->sms_control;
              $block_client = $jsondata->block_client;
              $notes = $jsondata->notes;
+            $created_date = $jsondata->created_date;
 
 
 			$url = ROOT_URL.'/api/index.php?r=customers/getcustomerlogindetail&customerID='.$customerID;
@@ -282,8 +283,8 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                     </div>
                                     <!-- END SIDEBAR BUTTONS -->
                                     <!-- SIDEBAR MENU -->
-                                    <div class="profile-usermenu">
-                                        &nbsp;
+                                    <div class="profile-usermenu" style="margin-top: 10px; text-align: center;">
+                                        Created on: <?php echo date('m-d-Y h:i A', strtotime($created_date));?>
                                     </div>
                                     <!-- END MENU -->
                                 </div>
