@@ -282,6 +282,30 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
   100% { background-color: #fff; }
 }
 
+ @-webkit-keyframes glowing6 {
+  0% { background-color: #fff; }
+  50% { background-color: #ff5722;  }
+  100% { background-color: #fff; }
+}
+
+@-moz-keyframes glowing6 {
+ 0% { background-color: #fff; }
+  50% { background-color: #ff5722;  }
+  100% { background-color: #fff; }
+}
+
+@-o-keyframes glowing6 {
+ 0% { background-color: #fff; }
+  50% { background-color: #ff5722;  }
+  100% { background-color: #fff; }
+}
+
+@keyframes glowing6 {
+  0% { background-color: #fff; }
+  50% { background-color: #ff5722;  }
+  100% { background-color: #fff; }
+}
+
 
   .flashrow{
    -webkit-animation: glowing 1500ms infinite;
@@ -339,6 +363,18 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 }
 
 .flashrowchangedpack td{
+    border: 0 !important;
+
+}
+
+  .washernowashactivity{
+   -webkit-animation: glowing6 1500ms infinite;
+        -moz-animation: glowing6 1500ms infinite;
+        -o-animation: glowing6 1500ms infinite;
+        animation: glowing6 1500ms infinite;
+}
+
+.washernowashactivity td{
     border: 0 !important;
 
 }
@@ -880,6 +916,9 @@ $.each(data.wash_requests, function( index, value ) {
     if(value.washercustnomeet == 1){
       meetwasheralertbox += "<p>#"+value.id+" - Customer has not selected meet Washer or No Thanks for 10 minutes - Call Customer <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
+    if(value.washer_wash_activity == 0){
+      meetwasheralertbox += "<p>#"+value.id+" - Washer hasn't tapped Start Wash for 10 minutes - Please call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+    }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
      if((value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
@@ -887,6 +926,7 @@ $.each(data.wash_requests, function( index, value ) {
      if(value.payment_status == 'Declined') upcomingwashes["DT_RowClass"] = "flashrowdeclined";
      if((value.min_diff <= 30) && (value.status == 0) && (value.payment_status == 'Declined')) upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
      if(value.washer_change_pack > 0) upcomingwashes["DT_RowClass"] = "flashrowchangedpack";
+     if(value.washer_wash_activity == 0) upcomingwashes["DT_RowClass"] = "washernowashactivity";
 
       upcomingwashes.push("<a href='edit-order.php?id="+value.id+"' class='appt-edit-order' data-id='"+value.id+"' style='margin-right: 7px;'>Edit</a>");
       upcomingwashes.push(value.id);

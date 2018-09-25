@@ -3901,6 +3901,7 @@ $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_m
                   //$notify_msg = "Inspection complete for ".$vehicle_details->brand_name." ".$vehicle_details->model_name.", please confirm.";
                  }
 
+if($status == 2) Washingrequests::model()->updateByPk($wash_request_id, array('washer_wash_activity' => 1));
 
 if($status == 3){
 //Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0));
