@@ -381,21 +381,17 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 
 
 .spec-orders{
-  width: 600px;
+  width: 100%;
     height: auto;
     max-height: 100px;
-    position: fixed;
     background: rgba(234, 0, 85, 0.84);
-    z-index: 999;
-    top: 65px;
-    left: 50%;
-    margin-left: -300px;
     color: #fff;
     padding: 20px;
     padding-top: 0;
     box-sizing: border-box;
     overflow: auto;
     display: none;
+    margin-bottom: 20px;
 }
 
 .spec-orders p{
@@ -410,21 +406,18 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 }
 
 .spec-orders-2{
-  width: 600px;
+  width: 100%;
     height: auto;
     max-height: 100px;
-    position: fixed;
     background: #ff5722e6;
-    z-index: 999;
-    top: 65px;
-    left: 50%;
-    margin-left: -300px;
+
     color: #fff;
     padding: 20px;
     padding-top: 0;
     box-sizing: border-box;
     overflow: auto;
     display: none;
+    margin-bottom: 20px;
 }
 
 .spec-orders-2 p{
@@ -437,6 +430,33 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     color: #fff;
     text-decoration: underline;
 }
+
+.spec-orders-3{
+  width: 100%;
+    height: auto;
+    max-height: 100px;
+    background: #92c300e0;
+
+    color: #fff;
+    padding: 20px;
+    padding-top: 0;
+    box-sizing: border-box;
+    overflow: auto;
+    display: none;
+    margin-bottom: 20px;
+}
+
+.spec-orders-3 p{
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.spec-orders-3 p a{
+   margin-left: 10px;
+    color: #fff;
+    text-decoration: underline;
+}
+
 .table-scrollable {
   width: 100%;
   overflow-x: auto;
@@ -480,15 +500,28 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     position: relative;
 }
 .dt-button.buttons-csv.buttons-html5 { opacity: 0; }
+
+.alert-box-wrap{
+width: 600px;
+    position: fixed;
+    z-index: 999;
+    top: 65px;
+    left: 50%;
+    margin-left: -300px;
+    height: auto;
+    }
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
                 <div class="page-content">
                     <!-- BEGIN PAGE HEADER-->
-
-                     <div class="spec-orders"></div>
-		     <div class="spec-orders-2"></div>
+<div class="alert-box-wrap">
+ <div class="spec-orders"></div>
+<div class="spec-orders-2"></div>
+<div class="spec-orders-3"></div>
+</div>
+                    
 
                     <!-- END PAGE HEADER-->
                     <!-- BEGIN DASHBOARD STATS 1-->
@@ -883,6 +916,7 @@ function ajaxorderlist(){
     var upcomingwashes = [];
     var processordeclined_washes = "";
     var meetwasheralertbox = "";
+    var washernoarrive30minbox = "";
 //console.log(params);
   $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getallwashrequestsnew", params, function( data ) {
     
@@ -918,6 +952,9 @@ $.each(data.wash_requests, function( index, value ) {
     }
     if(value.washer_wash_activity == 0){
       meetwasheralertbox += "<p>#"+value.id+" - Washer hasn't tapped Start Wash for 10 minutes - Please call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+    }
+    if(value.washer_30_min_noarrive == 1){
+      washernoarrive30minbox += "<p>#"+value.id+" - Washer hasn't arrived in wash location for 30 minutes - Please call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
@@ -1037,15 +1074,23 @@ else{
 if(meetwasheralertbox != ''){
     $(".spec-orders-2").html(meetwasheralertbox);
    $(".spec-orders-2").show();
-   if ($(".spec-orders").is(":visible")) {
-	$(".spec-orders-2").css('top', '185px');
-   }
+
 }
 else{
   $(".spec-orders-2").html("");
    $(".spec-orders-2").hide();
-   $(".spec-orders-2").removeAttr('style');
 }
+
+if(washernoarrive30minbox != ''){
+    $(".spec-orders-3").html(washernoarrive30minbox);
+   $(".spec-orders-3").show();
+
+}
+else{
+  $(".spec-orders-3").html("");
+   $(".spec-orders-3").hide();
+}
+
 });
 //console.log('working');
 

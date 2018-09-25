@@ -3508,6 +3508,7 @@ $washer_payment_status = '';
 $washer_change_pack = 0;
 $washercustnomeet = 0;
 $washer_wash_activity = 1;
+$washer_30_min_noarrive = 0;
 
 if(($wrequest['status'] == 4) && (!$wrequest['washer_payment_status'])){
 $end = time();
@@ -3546,6 +3547,16 @@ if(($wrequest['status'] >=1) && ($wrequest['status'] <= 3)){
  }
 }
 
+if(($wrequest['status'] == 1) && (!$wrequest['is_scheduled'])){
+	$min_diff = 0;
+	$current_time = strtotime(date('Y-m-d H:i:s'));
+
+	if($current_time > strtotime($wrequest['wash_begin'])){
+		$min_diff = round(($current_time - strtotime($wrequest['wash_begin'])) / 60,2);
+	}
+	
+	if($min_diff >= 30) $washer_30_min_noarrive = 1;
+}
 
 if(($wrequest['status'] == 2) && ($wrequest['meet_washer_outside'] != 'yes')){
 	$min_diff = 0;
@@ -3620,7 +3631,8 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
 'admin_submit_for_settle'=>$wrequest['admin_submit_for_settle'],
 'washer_change_pack' => $washer_change_pack,
 'washercustnomeet' => $washercustnomeet,
-'washer_wash_activity' => $washer_wash_activity
+'washer_wash_activity' => $washer_wash_activity,
+'washer_30_min_noarrive' => $washer_30_min_noarrive
                 );
 
 }
@@ -3673,7 +3685,8 @@ if($min_diff >= 0){
 'admin_submit_for_settle'=>$wrequest['admin_submit_for_settle'],
 'washer_change_pack' => $washer_change_pack,
 'washercustnomeet' => $washercustnomeet,
-'washer_wash_activity' => $washer_wash_activity
+'washer_wash_activity' => $washer_wash_activity,
+'washer_30_min_noarrive' => $washer_30_min_noarrive
                 );
 
 }
@@ -3719,7 +3732,8 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 'admin_submit_for_settle'=>$wrequest['admin_submit_for_settle'],
 'washer_change_pack' => $washer_change_pack,
 'washercustnomeet' => $washercustnomeet,
-'washer_wash_activity' => $washer_wash_activity
+'washer_wash_activity' => $washer_wash_activity,
+'washer_30_min_noarrive' => $washer_30_min_noarrive
                 );
 
 }
@@ -3763,7 +3777,8 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 'admin_submit_for_settle'=>$wrequest['admin_submit_for_settle'],
 'washer_change_pack' => $washer_change_pack,
 'washercustnomeet' => $washercustnomeet,
-'washer_wash_activity' => $washer_wash_activity
+'washer_wash_activity' => $washer_wash_activity,
+'washer_30_min_noarrive' => $washer_30_min_noarrive
                 );
 
 
