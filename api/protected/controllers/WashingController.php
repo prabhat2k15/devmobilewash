@@ -9336,6 +9336,13 @@ die();
 
         /* END */
         if(!empty($customers_order)){
+            $check_auto_canceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'scheduleauto-canceled'")->queryAll();
+        	$scheduleautoArr = array();
+        	if(count($check_auto_canceled) > 0){
+        		foreach ($check_auto_canceled as $key => $value) {
+        			$scheduleautoArr[] = $value['wash_request_id'];
+        		}       		
+        	}
             foreach($customers_order as $orderbycustomer){
 
                 //$counttype = array_count_values($package_list_explode);
@@ -9345,6 +9352,11 @@ die();
                 $created_date = $orderbycustomer['order_for'];
                 $wash_request_position = $orderbycustomer['wash_request_position'];
                 $color='';
+                if(in_array($orderid, $scheduleautoArr)){
+                	$check_auto_canceled = array('order_id' => $orderid);
+                }else{
+                	$check_auto_canceled = array();
+                }
 		$zipcolor = '';
 		
 if($orderbycustomer['zipcode']) {
@@ -9358,6 +9370,13 @@ if($orderbycustomer['zipcode']) {
                 if($orderstatus == 4)
                 {
                     $order_of_status = 'Complete';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#30A0FF';
+                }
+                elseif(COUNT($check_auto_canceled) > 0)
+                {
+                	$order_of_status = 'Scheduled-auto';
                     $totalminutes = 'N/A';
                     $near_agent = '';
                     $color = '#30A0FF';
@@ -9499,6 +9518,9 @@ if($orderbycustomer['zipcode']) {
                 if($value['title'] == 'Pending'){
                     $data[$value['start']]['pending'][] = $value['title'];
                 }
+                if($value['title'] == 'Scheduled-auto'){
+                    $data[$value['start']]['scheduled_auto'][] = $value['title'];
+                }
                 if($value['title'] == 'Processing'){
                     $data[$value['start']]['processing'][] = $value['title'];
                 }
@@ -9553,6 +9575,8 @@ if($orderbycustomer['zipcode']) {
 		$dt[$key]['schedulecompleted']['color']= '';
 		$dt[$key]['ondemandcompleted']['color']= '';
 		$dt[$key]['addoncompleted']['color']= '';
+        $dt[$key]['scheduled_auto']['color']= '';
+		$dt[$key]['scheduled_auto']['count']= 0;
 		$dt[$key]['zipblue']['color']= '';
 		$dt[$key]['zipblue']['count']= 0;
 		$dt[$key]['zipyellow']['color']= '';
@@ -9589,6 +9613,10 @@ if($orderbycustomer['zipcode']) {
                 if(count($val['canceled'])>0){
                     $dt[$key]['canceled']['count']= count($val['canceled']);
                     $dt[$key]['canceled']['color']= '#8b9d9e';
+                }
+                if(count($val['scheduled_auto'])>0){
+                    $dt[$key]['scheduled_auto']['count']= count($val['scheduled_auto']);
+                    $dt[$key]['scheduled_auto']['color']= '#8b9d9e';
                 }
 		if(count($val['schedulecanceled'])>0){
                     $dt[$key]['schedulecanceled']['count']= count($val['schedulecanceled']);

@@ -184,6 +184,7 @@ $(document).ready(function() {
 								var home_ord = Object.keys(value.home).length;
 								var work_ord = Object.keys(value.work).length;
 								var new_customer = Object.keys(value.new_customer).length;
+                                var scheduleauto = Object.keys(value.scheduled_auto).length;
 								var zipblue = value.zipblue.count;
 								var zipyellow = value.zipyellow.count;
 								var zipred = value.zipred.count;
@@ -248,6 +249,19 @@ $(document).ready(function() {
 										description:'d',
 										start:index,
 										color:color,
+										
+									});
+								}
+                                
+                                if(scheduleauto > 0  ){
+									title34 = value.scheduled_auto.count+' Scheduled Auto-Canceled';
+									color34 = value.scheduled_auto.color;
+									events.push({
+										eventtitle: 'scheduleauto',
+										title:title34,
+										description:'n',
+										start:index,
+										color:color34,
 										
 									});
 								}

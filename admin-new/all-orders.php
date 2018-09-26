@@ -999,6 +999,9 @@ $.each(data.wash_requests, function( index, value ) {
       else if(value.status == 4){
          upcomingwashes.push("<span class='label label-sm label-complete'>Completed</span>");
       }
+    else if(value.status == 7){
+        upcomingwashes.push("<span class="label label-sm label-cancel">CNR</span>");
+      }
       
        var payment_status_str = '';
 if((value.payment_status == 'Declined') || (value.payment_status == 'Check Fraud')){
