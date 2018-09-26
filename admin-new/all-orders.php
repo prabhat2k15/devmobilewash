@@ -954,7 +954,7 @@ $.each(data.wash_requests, function( index, value ) {
       meetwasheralertbox += "<p>#"+value.id+" - Washer hasn't tapped Start Wash for 10 minutes - Please call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
     if(value.washer_30_min_noarrive == 1){
-      washernoarrive30minbox += "<p>#"+value.id+" - Washer hasn't arrived in wash location for 30 minutes - Please call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+      washernoarrive30minbox += "<p>#"+value.id+" - En Route Washer "+value.agent_details.agent_name+" hasn't tapped \"arrive\" for 30 minutes - Please Call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";

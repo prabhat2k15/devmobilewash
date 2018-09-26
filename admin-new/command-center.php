@@ -134,16 +134,16 @@ cursor: pointer;
     float: left;
 }
 
-::-webkit-scrollbar {
+.menu-container ::-webkit-scrollbar {
     width: 12px;
 }
 
-::-webkit-scrollbar-track {
+.menu-container ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb {
+.menu-container ::-webkit-scrollbar-thumb {
     border-radius: 10px;
 
     background: rgba(255, 255, 255, .3);
@@ -255,6 +255,7 @@ background: green;
     padding: 10px;
     text-align: center;
 display: none;
+word-break: break-all;
 }
 
 .search-cc{
@@ -585,6 +586,11 @@ var total_stop_count = 0;
 var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
 var is_shiftpressed = 0;
 var selectedzips = '';
+ var shiftPressed = false;
+     var mouseDownPos, gribBoundingBox = null,
+        mouseIsDown = 0;
+    var themap;
+    var ziparea_polys = [];
 
 socket.on('connect', function() {
 socketId = socket.io.engine.id;
@@ -1561,6 +1567,7 @@ zoomControl: true,
     map.setTilt(45);
 
 
+
     // Multiple Markers
 
      markerClusterer = new MarkerClusterer(map, markers, {
@@ -1609,7 +1616,7 @@ zoomControl: true,
         google.maps.event.removeListener(boundsListener);
     });
     
-    	google.maps.event.addDomListener(document, 'keydown', function (e) {
+    /*	google.maps.event.addDomListener(document, 'keydown', function (e) {
 
     var code = (e.keyCode ? e.keyCode : e.which);
 
@@ -1625,7 +1632,7 @@ zoomControl: true,
     is_shiftpressed = 0;
 
 });
-	
+*/	
 	   	google.maps.event.addDomListener(map, 'rightclick', function (e) {
    if (selectedzips) {
     var content = "<div class='zip-info'><p><b> SELECTED ZIPCODES: </b>"+selectedzips.replace(/,\s*$/, "")+"</p><p>Zip Color <select class='zip-color'><option value='gray'>Disabled</option><option value=''>Blue</option><option value='yellow'>Yellow</option><option value='red'>Red</option><option value='purple'>Purple</option></select></p><p><a href='#' class='save-groupzip-info' data-zips='"+selectedzips+"'>Save</a></p></div>";
@@ -1638,6 +1645,116 @@ zoomControl: true,
    }
 
 });
+		
+google.maps.event.addDomListener(map, 'click', function (e) {
+selectedzips = '';
+
+ for (var i=0; i < ziparea_polys.length; i++)
+{
+if(ziparea_polys[i].zipcolor == 'yellow') ziparea_polys[i].setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
+else if(ziparea_polys[i].zipcolor == 'red') ziparea_polys[i].setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
+else if(ziparea_polys[i].zipcolor == 'purple') ziparea_polys[i].setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
+else if(ziparea_polys[i].zipcolor == 'gray') ziparea_polys[i].setOptions({fillColor: "#808080", fillOpacity: 0.6, strokeOpacity: 0.8});
+else ziparea_polys[i].setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
+}
+
+});
+
+  themap = map;  
+     // Start drag rectangle to select markers !!!!!!!!!!!!!!!!
+   
+
+    $(window).keydown(function (evt) {
+        if (evt.which === 16) { // shift
+            shiftPressed = true;
+           
+        }
+    }).keyup(function (evt) {
+        if (evt.which === 16) { // shift
+            shiftPressed = false;
+           
+        }
+    });
+
+
+
+    google.maps.event.addListener(themap, 'mousemove', function (e) {      
+        if (mouseIsDown && (shiftPressed|| gribBoundingBox != null) ) {
+            if (gribBoundingBox !== null) // box exists
+            {         
+                var newbounds = new google.maps.LatLngBounds(mouseDownPos,null);
+                newbounds.extend(e.latLng);    
+                gribBoundingBox.setBounds(newbounds); // If this statement is enabled, I lose mouseUp events
+
+            } else // create bounding box
+            {
+                 
+                gribBoundingBox = new google.maps.Rectangle({
+                    map: themap,
+                    bounds: null,
+                    fillOpacity: 0.15,
+                    strokeWeight: 0.9,
+                    clickable: false
+                });
+            }
+        }
+    });
+
+    google.maps.event.addListener(themap, 'mousedown', function (e) {
+        if (shiftPressed) {
+            mouseIsDown = 1;
+            mouseDownPos = e.latLng;
+            themap.setOptions({
+                draggable: false
+            });
+        }
+    });
+
+    google.maps.event.addListener(themap, 'mouseup', function (e) {
+         var pointsInside = 0;
+	 var contentString = '';
+    var pointsOutside = 0;
+	if (mouseIsDown && (shiftPressed|| gribBoundingBox != null)) {
+            mouseIsDown = 0;
+            if (gribBoundingBox !== null) // box exists
+            {
+                var boundsSelectionArea = new google.maps.LatLngBounds(gribBoundingBox.getBounds().getSouthWest(), gribBoundingBox.getBounds().getNorthEast());
+		     for (var i=0; i < ziparea_polys.length; i++)
+		    {
+			
+			var pointsInside = 0;
+			var pointsOutside = 0;
+			var vertices = ziparea_polys[i].getPath();
+			for (var j =0; j < vertices.getLength(); j++) {
+			    var xy = vertices.getAt(j);
+			    polyLatLng = new google.maps.LatLng({lat: xy.lat(), lng: xy.lng()});
+			    (gribBoundingBox.getBounds().contains(polyLatLng)) ? pointsInside++ : pointsOutside++;
+			    
+				if (pointsInside > pointsOutside) break;
+			   
+			}
+			
+			if (pointsInside > pointsOutside)
+			{
+			    ziparea_polys[i].setOptions({fillColor: '#008000', fillOpacity: 0.4});
+			    selectedzips += ziparea_polys[i].zipcode+",";
+			
+			}
+			
+			
+		    }
+
+                gribBoundingBox.setMap(null); // remove the rectangle
+            }
+            gribBoundingBox = null;
+
+        }
+
+        themap.setOptions({
+            draggable: true
+        });
+        //stopDraw(e);
+    });
 	
 
 
@@ -1686,7 +1803,7 @@ strokeColor: "#076ee1",
 </script>
 <script>
 var fusiondata = '';
-var ziparea_polys = [];
+
 function greeting(){
   var audio = document.getElementById("audio1");
 var audio2 = document.getElementById("audio2");
@@ -2018,12 +2135,93 @@ if (rows[i][12] == 'gray') {
 
 ziparea_polys.push(country);
 
+ google.maps.event.addListener(country, 'mousemove', function (e) {
+              
+        if (mouseIsDown && (shiftPressed|| gribBoundingBox != null) ) {
+            if (gribBoundingBox !== null) // box exists
+            {         
+                var newbounds = new google.maps.LatLngBounds(mouseDownPos,null);
+                newbounds.extend(e.latLng);    
+                gribBoundingBox.setBounds(newbounds); // If this statement is enabled, I lose mouseUp events
+
+            } else // create bounding box
+            {
+                 
+                gribBoundingBox = new google.maps.Rectangle({
+                    map: themap,
+                    bounds: null,
+                    fillOpacity: 0.15,
+                    strokeWeight: 0.9,
+                    clickable: false
+                });
+            }
+	    
+        }
+    });
+
+    google.maps.event.addListener(country, 'mousedown', function (e) {
+        if (shiftPressed) {
+            mouseIsDown = 1;
+            mouseDownPos = e.latLng;
+            themap.setOptions({
+                draggable: false
+            });
+        }
+    });
+
+    google.maps.event.addListener(country, 'mouseup', function (e) {
+         var pointsInside = 0;
+	 var contentString = '';
+    var pointsOutside = 0;
+	if (mouseIsDown && (shiftPressed|| gribBoundingBox != null)) {
+            mouseIsDown = 0;
+            if (gribBoundingBox !== null) // box exists
+            {
+                var boundsSelectionArea = new google.maps.LatLngBounds(gribBoundingBox.getBounds().getSouthWest(), gribBoundingBox.getBounds().getNorthEast());
+		     for (var i=0; i < ziparea_polys.length; i++)
+		    {
+			
+			var pointsInside = 0;
+			var pointsOutside = 0;
+			var vertices = ziparea_polys[i].getPath();
+			for (var j =0; j < vertices.getLength(); j++) {
+			    var xy = vertices.getAt(j);
+			    polyLatLng = new google.maps.LatLng({lat: xy.lat(), lng: xy.lng()});
+			    (gribBoundingBox.getBounds().contains(polyLatLng)) ? pointsInside++ : pointsOutside++;
+			    
+				if (pointsInside > pointsOutside) break;
+			   
+			}
+			
+			if (pointsInside > pointsOutside)
+			{
+			    ziparea_polys[i].setOptions({fillColor: '#008000', fillOpacity: 0.4});
+			    selectedzips += ziparea_polys[i].zipcode+",";
+			
+			}
+			
+			
+		    }
+
+                gribBoundingBox.setMap(null); // remove the rectangle
+            }
+            gribBoundingBox = null;
+
+        }
+
+        themap.setOptions({
+            draggable: true
+        });
+        //stopDraw(e);
+    });
+
             google.maps.event.addListener(country, 'mouseover', function() {
 		//console.log(this);
-              if(!selectedzips) this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
+		
+               if((!shiftPressed) && (!selectedzips)) this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
             });
             google.maps.event.addListener(country, 'mouseout', function() {
-		if(!selectedzips){
+		if((!shiftPressed) && (!selectedzips)){
 		    if(this.zipcolor == 'yellow') this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
 		    else if(this.zipcolor == 'red') this.setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
 		    else if(this.zipcolor == 'purple') this.setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
@@ -2031,8 +2229,9 @@ ziparea_polys.push(country);
 		    else this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
 		}
             });
+
 	    
-	   google.maps.event.addDomListener(country, 'rightclick', function (e) {
+	  google.maps.event.addDomListener(country, 'rightclick', function (e) {
    if (selectedzips) {
     var content = "<div class='zip-info'><p><b> SELECTED ZIPCODES: </b>"+selectedzips.replace(/,\s*$/, "")+"</p><p>Zip Color <select class='zip-color'><option value='gray'>Disabled</option><option value=''>Blue</option><option value='yellow'>Yellow</option><option value='red'>Red</option><option value='purple'>Purple</option></select></p><p><a href='#' class='save-groupzip-info' data-zips='"+selectedzips+"'>Save</a></p></div>";
   var infowindow = new google.maps.InfoWindow({
@@ -2050,16 +2249,17 @@ ziparea_polys.push(country);
             google.maps.event.addListener(country, 'click', function(e)
 {
 
-    
-    if (is_shiftpressed) {
-	 this.setOptions({fillColor: '#008000', fillOpacity: 0.4});
-	 selectedzips += this.zipcode+",";
-	
-	 return false;
-    }
-    else{
 	selectedzips = '';
-    }
+	
+	 for (var i=0; i < ziparea_polys.length; i++)
+{
+if(ziparea_polys[i].zipcolor == 'yellow') ziparea_polys[i].setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
+else if(ziparea_polys[i].zipcolor == 'red') ziparea_polys[i].setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
+else if(ziparea_polys[i].zipcolor == 'purple') ziparea_polys[i].setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
+else if(ziparea_polys[i].zipcolor == 'gray') ziparea_polys[i].setOptions({fillColor: "#808080", fillOpacity: 0.6, strokeOpacity: 0.8});
+else ziparea_polys[i].setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
+}
+
    // console.log(country);
    //this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
   		      var blue_selected = "selected='selected'";

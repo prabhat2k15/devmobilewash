@@ -585,10 +585,6 @@ var total_stop_count = 0;
 var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
 var is_shiftpressed = 0;
 var selectedzips = '';
- var shiftPressed = false;
-     var mouseDownPos, gribBoundingBox = null,
-        mouseIsDown = 0;
-    var themap;
 
 socket.on('connect', function() {
 socketId = socket.io.engine.id;
@@ -1565,7 +1561,6 @@ zoomControl: true,
     map.setTilt(45);
 
 
-
     // Multiple Markers
 
      markerClusterer = new MarkerClusterer(map, markers, {
@@ -1614,7 +1609,7 @@ zoomControl: true,
         google.maps.event.removeListener(boundsListener);
     });
     
-    /*	google.maps.event.addDomListener(document, 'keydown', function (e) {
+    	google.maps.event.addDomListener(document, 'keydown', function (e) {
 
     var code = (e.keyCode ? e.keyCode : e.which);
 
@@ -1642,95 +1637,7 @@ zoomControl: true,
     
    }
 
-});*/
-  themap = map;  
-     // Start drag rectangle to select markers !!!!!!!!!!!!!!!!
-   
-
-    $(window).keydown(function (evt) {
-        if (evt.which === 16) { // shift
-            shiftPressed = true;
-            console.log("key down");
-        }
-    }).keyup(function (evt) {
-        if (evt.which === 16) { // shift
-            shiftPressed = false;
-            console.log("key up ");
-        }
-    });
-
-
-
-    google.maps.event.addListener(themap, 'mousemove', function (e) {
-       console.log("move md,sh", mouseIsDown,shiftPressed);        
-        if (mouseIsDown && (shiftPressed|| gribBoundingBox != null) ) {
-            if (gribBoundingBox !== null) // box exists
-            {         
-                var newbounds = new google.maps.LatLngBounds(mouseDownPos,null);
-                newbounds.extend(e.latLng);    
-                gribBoundingBox.setBounds(newbounds); // If this statement is enabled, I lose mouseUp events
-
-            } else // create bounding box
-            {
-                 console.log("first move");
-                gribBoundingBox = new google.maps.Rectangle({
-                    map: themap,
-                    bounds: null,
-                    fillOpacity: 0.15,
-                    strokeWeight: 0.9,
-                    clickable: false
-                });
-            }
-        }
-    });
-
-    google.maps.event.addListener(themap, 'mousedown', function (e) {
-        if (shiftPressed) {
-            mouseIsDown = 1;
-            mouseDownPos = e.latLng;
-            themap.setOptions({
-                draggable: false
-            });
-        }
-    });
-
-    google.maps.event.addListener(themap, 'mouseup', function (e) {
-        if (mouseIsDown && (shiftPressed|| gribBoundingBox != null)) {
-            mouseIsDown = 0;
-            if (gribBoundingBox !== null) // box exists
-            {
-                var boundsSelectionArea = new google.maps.LatLngBounds(gribBoundingBox.getBounds().getSouthWest(), gribBoundingBox.getBounds().getNorthEast());
-                
-                /*for (var key in markers) { // looping through my Markers Collection	
-
-//                    if (boundsSelectionArea.contains(markers[key].marker.getPosition())) 
-                    if (gribBoundingBox.getBounds().contains(markers[key].marker.getPosition())) 
-                    {
-                        //if(flashMovie !== null && flashMovie !== undefined) {
-                        markers[key].marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue.png")
-			document.getElementById('info').innerHTML += "key:"+key+" posn:"+markers[key].marker.getPosition()+" in bnds:"+gribBoundingBox.getBounds()+"<br>";
-                        // console.log("User selected:" + key + ", id:" + markers[key].id);
-                        //}   
-                    } else {
-                        //if(flashMovie !== null && flashMovie !== undefined) {
-                        markers[key].marker.setIcon("http://maps.google.com/mapfiles/ms/icons/red.png")
-			document.getElementById('info').innerHTML += "key:"+key+" posn:"+markers[key].marker.getPosition()+" out of bnds:"+gribBoundingBox.getBounds()+"<br>";
-                        // console.log("User NOT selected:" + key + ", id:" + markers[key].id);
-                        //} 
-                    }
-                }*/
-
-                gribBoundingBox.setMap(null); // remove the rectangle
-            }
-            gribBoundingBox = null;
-
-        }
-
-        themap.setOptions({
-            draggable: true
-        });
-        //stopDraw(e);
-    });
+});
 	
 
 
@@ -2111,108 +2018,12 @@ if (rows[i][12] == 'gray') {
 
 ziparea_polys.push(country);
 
- google.maps.event.addListener(country, 'mousemove', function (e) {
-              
-        if (mouseIsDown && (shiftPressed|| gribBoundingBox != null) ) {
-            if (gribBoundingBox !== null) // box exists
-            {         
-                var newbounds = new google.maps.LatLngBounds(mouseDownPos,null);
-                newbounds.extend(e.latLng);    
-                gribBoundingBox.setBounds(newbounds); // If this statement is enabled, I lose mouseUp events
-
-            } else // create bounding box
-            {
-                 
-                gribBoundingBox = new google.maps.Rectangle({
-                    map: themap,
-                    bounds: null,
-                    fillOpacity: 0.15,
-                    strokeWeight: 0.9,
-                    clickable: false
-                });
-            }
-	    
-	  this.setOptions({fillColor: '#008000', fillOpacity: 0.4});
-	 selectedzips += this.zipcode+",";
-        }
-    });
-
-    google.maps.event.addListener(country, 'mousedown', function (e) {
-        if (shiftPressed) {
-            mouseIsDown = 1;
-            mouseDownPos = e.latLng;
-            themap.setOptions({
-                draggable: false
-            });
-        }
-    });
-
-    google.maps.event.addListener(country, 'mouseup', function (e) {
-	//console.log(country.getPath());
-	//console.log(country.getPath().getArray());
-	var bounds = new google.maps.LatLngBounds();
-         var pointsInside = 0;
-	 var contentString = '';
-    var pointsOutside = 0;
-	if (mouseIsDown && (shiftPressed|| gribBoundingBox != null)) {
-            mouseIsDown = 0;
-            if (gribBoundingBox !== null) // box exists
-            {
-                var boundsSelectionArea = new google.maps.LatLngBounds(gribBoundingBox.getBounds().getSouthWest(), gribBoundingBox.getBounds().getNorthEast());
-                var vertices = this.getPath();
-		for (var i =0; i < vertices.getLength(); i++) {
-          var xy = vertices.getAt(i);
-          contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
-              xy.lng();
-	      //console.log(contentString);
-	      polyLatLng = new google.maps.LatLng({lat: xy.lat(), lng: xy.lng()});
-	      (gribBoundingBox.getBounds().contains(polyLatLng)) ? pointsInside++ : pointsOutside++;
-        }
-		/*country.getPath().getArray().forEach(function(x) {
-		     //bounds.extend(x);
-		     //(boundsSelectionArea.contains(x)) ? pointsInside++ : pointsOutside++;
-		     //console.log("in "+pointsInside);
-	//console.log("out "+pointsOutside);
-		});*/
-		
-		/*country.getPath().getArray().map(function (x) {
-		    console.log(x);
-		    
-        //(google.maps.geometry.poly.containsLocation(x, gribBoundingBox.getBounds())) ? pointsInside++ : pointsOutside++;
-	
-    });*/
-                /*for (var key in markers) { // looping through my Markers Collection*/	
-
-//                    if (boundsSelectionArea.contains(markers[key].marker.getPosition()))
- console.log("in "+pointsInside);
-	console.log("out "+pointsOutside);
-                    if (pointsInside > pointsOutside)
-                    {
-                       console.log('contains: '+this.zipcode); 
-                    } else {
-                       
-                    }
-                //}
-
-                gribBoundingBox.setMap(null); // remove the rectangle
-            }
-            gribBoundingBox = null;
-
-        }
-
-        themap.setOptions({
-            draggable: true
-        });
-        //stopDraw(e);
-    });
-
             google.maps.event.addListener(country, 'mouseover', function() {
 		//console.log(this);
-		console.log("shiftactive: "+shiftPressed);
-               if(!shiftPressed) this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
+              if(!selectedzips) this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
             });
             google.maps.event.addListener(country, 'mouseout', function() {
-		if(!shiftPressed){
+		if(!selectedzips){
 		    if(this.zipcolor == 'yellow') this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
 		    else if(this.zipcolor == 'red') this.setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
 		    else if(this.zipcolor == 'purple') this.setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
@@ -2220,9 +2031,8 @@ ziparea_polys.push(country);
 		    else this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
 		}
             });
-
 	    
-	  /* google.maps.event.addDomListener(country, 'rightclick', function (e) {
+	   google.maps.event.addDomListener(country, 'rightclick', function (e) {
    if (selectedzips) {
     var content = "<div class='zip-info'><p><b> SELECTED ZIPCODES: </b>"+selectedzips.replace(/,\s*$/, "")+"</p><p>Zip Color <select class='zip-color'><option value='gray'>Disabled</option><option value=''>Blue</option><option value='yellow'>Yellow</option><option value='red'>Red</option><option value='purple'>Purple</option></select></p><p><a href='#' class='save-groupzip-info' data-zips='"+selectedzips+"'>Save</a></p></div>";
   var infowindow = new google.maps.InfoWindow({
@@ -2233,7 +2043,7 @@ ziparea_polys.push(country);
     
    }
 
-});*/
+});
 	    
 
 
