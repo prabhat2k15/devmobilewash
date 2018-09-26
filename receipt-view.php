@@ -38,7 +38,7 @@ color: #fff;
 }
 
 .header{
-background: #006bd0;
+background: #0270D1;
     padding: 15px;
 box-sizing: border-box;
 }
