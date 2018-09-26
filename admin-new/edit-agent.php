@@ -378,8 +378,9 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>Update successfu
                                                                 <p>Created On: <?php echo date('M j, Y h:i A',strtotime($profiledetail->created_date)); ?></p>
                                                             </div>
                                                             <!--/span-->
-                                                            <div class="col-md-4">
-                                                                <p>Last Edited by: <?php echo $profiledetail->last_edited_admin; ?></p>
+                                                            <div class="col-md-4" style="margin-top: 20px;">
+                                                                <span>Last Edited by: <?php echo $profiledetail->last_edited_admin; ?></span>
+                                                                <span>on <?php echo date('M j, Y h:i A',strtotime($profiledetail->updated_date)); ?></span>
                                                             </div>
                                                             <!--/span-->
                                                         </div>

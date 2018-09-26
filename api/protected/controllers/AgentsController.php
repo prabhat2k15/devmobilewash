@@ -1133,6 +1133,7 @@ if($bt_result->fundingDetails->routingNumber) $routing_no = $bt_result->fundingD
                     'total_washes' => $agent_id_check->total_wash,
                     'rating' => $agent_id_check->rating,
                     'created_date' => $agent_id_check->created_date,
+                    'updated_date' => $agent_id_check->updated_date,
                     'phone_verified'=> $agent_id_check->phone_verified,
 'mobile_type' => $agent_id_check->mobile_type,
 'bt_submerchant_id' => $agent_id_check->bt_submerchant_id,

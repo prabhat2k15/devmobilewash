@@ -283,8 +283,11 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                     </div>
                                     <!-- END SIDEBAR BUTTONS -->
                                     <!-- SIDEBAR MENU -->
-                                    <div class="profile-usermenu" style="margin-top: 10px; text-align: center;">
+                                    <div class="profile-usermenu" style="margin: 10px; padding: 0px; text-align: center;">
                                         Created on: <?php echo date('m-d-Y h:i A', strtotime($created_date));?>
+                                    </div>
+                                    <div class="profile-usermenu" style="margin-top: 10px; text-align: center;">
+                                        last edited: <?php echo date('m-d-Y h:i A', strtotime($updated_date));?>
                                     </div>
                                     <!-- END MENU -->
                                 </div>
