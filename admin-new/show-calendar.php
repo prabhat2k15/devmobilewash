@@ -185,6 +185,7 @@ $(document).ready(function() {
 								var work_ord = Object.keys(value.work).length;
 								var new_customer = Object.keys(value.new_customer).length;
                                 var scheduleauto = Object.keys(value.scheduled_auto).length;
+                                var ondemandauto = Object.keys(value.ondemandautocanceled).length;
 								var zipblue = value.zipblue.count;
 								var zipyellow = value.zipyellow.count;
 								var zipred = value.zipred.count;
@@ -262,6 +263,19 @@ $(document).ready(function() {
 										description:'n',
 										start:index,
 										color:color34,
+										
+									});
+								}
+                                
+                                if(ondemandauto > 0  ){
+									title36 = value.ondemandautocanceled.count+' Wash Now Auto-Canceled';
+									color36 = value.ondemandautocanceled.color;
+									events.push({
+										eventtitle: 'ondemandauto',
+										title:title36,
+										description:'n',
+										start:index,
+										color:color36,
 										
 									});
 								}
