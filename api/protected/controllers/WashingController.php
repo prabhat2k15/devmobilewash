@@ -5573,11 +5573,11 @@ $status = -1 * abs($status);
                         $last_agent_id = key($nearagentsdetails->nearest_agents);
                         reset($nearagentsdetails->nearest_agents);
 
-                        if(abs($status) == $last_agent_id)
+                        /*if(abs($status) == $last_agent_id)
                         {
                             Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => '', 'order_temp_assigned' => 0, 'all_reject_ids' => $saved_reject_ids, 'create_wash_push_sent' => 0 ));
 
-                            /* ------- check if last agent rejects order two times -------- */
+                            
 
         					$total_rejects_array = explode(',',$saved_reject_ids);
         					$num_rejects_per_agents = array_count_values($total_rejects_array);
@@ -5586,9 +5586,8 @@ $status = -1 * abs($status);
                             {
                                // Washingrequests::model()->updateByPk($wash_request_id, array('is_two_loops_reject' => 1, 'create_wash_push_sent' => 0)); //make wash available for schedule
                             }
-                        }
-                        else
-                        {
+                        }*/
+                        //else{
                             Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => $status_text, 'all_reject_ids' => $saved_reject_ids, 'order_temp_assigned' => 0, 'create_wash_push_sent' => 0 ));
 
                         
@@ -5616,7 +5615,7 @@ $status = -1 * abs($status);
 					Washingrequests::model()->updateByPk($rwash->id, array('agent_reject_ids' => $reject_ids_str));
 				}
 			    }
-                        }
+                        //}
                     }
 
                     //else Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => $status_text, 'order_temp_assigned' => 0 ));
@@ -12498,7 +12497,7 @@ $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id =
          }
          else{
 
-         if(($min_diff <= 0) && (!$schedwash->network_error_push_sent)) {
+         if(($min_diff <= 0) && ($schedwash->schedule_time) && (!$schedwash->network_error_push_sent)) {
 
   Washingrequests::model()->updateByPk($schedwash->id, array("status" => 5, "no_washer_cancel" => 1));
 Washingrequests::model()->updateByPk($schedwash->id, array("network_error_push_sent" => 1));
