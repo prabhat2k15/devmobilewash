@@ -3558,11 +3558,13 @@ if($payresult['success'] == 1) {
 $transaction_status = $payresult['status'];
 }*/
 
-if(($wrequest['status'] >=1) && ($wrequest['status'] <= 3)){
-	$total_rows =  Yii::app()->db->createCommand("SELECT COUNT(*) as total FROM activity_logs WHERE action = 'customeracceptupgrade' AND wash_request_id = ".$wrequest['id'])->queryAll();
-	$washer_change_pack = $total_rows[0]['total'];
-}
+
  }
+}
+
+if(($wrequest['status'] >=1) && ($wrequest['status'] <= 3)){
+	$total_rows =  Yii::app()->db->createCommand("SELECT COUNT(*) as total FROM activity_logs WHERE action = 'customeracceptupgrade' AND admin_username = '' AND wash_request_id = ".$wrequest['id'])->queryAll();
+	$washer_change_pack = $total_rows[0]['total'];
 }
 
 if(($wrequest['status'] == 1) && (!$wrequest['is_scheduled'])){
@@ -7067,6 +7069,32 @@ $addi_detail = Yii::app()->request->getParam('addi_detail');
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
             
+
+	$json= array(
+		'result'=> 'true',
+		'response'=> 'done'
+		);
+	echo json_encode($json);
+
+
+    }
+    
+           public function actionupdatelog(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$wash_request_id = Yii::app()->request->getParam('wash_request_id');
+
+$admin_username = Yii::app()->request->getParam('admin_username');
+
+
+Yii::app()->db->createCommand("UPDATE `activity_logs` SET `admin_username`=:admin_username WHERE `wash_request_id` = :wash_request_id")
+	    ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+	    ->bindValue(':admin_username', $admin_username, PDO::PARAM_STR)
+	    ->execute();
 
 	$json= array(
 		'result'=> 'true',

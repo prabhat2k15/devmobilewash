@@ -457,6 +457,32 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     text-decoration: underline;
 }
 
+.spec-orders-4{
+  width: 100%;
+    height: auto;
+    max-height: 100px;
+    background: rgba(0, 83, 234, 0.84);
+
+    color: #fff;
+    padding: 20px;
+    padding-top: 0;
+    box-sizing: border-box;
+    overflow: auto;
+    display: none;
+    margin-bottom: 20px;
+}
+
+.spec-orders-4 p{
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.spec-orders-4 p a{
+   margin-left: 10px;
+    color: #fff;
+    text-decoration: underline;
+}
+
 .table-scrollable {
   width: 100%;
   overflow-x: auto;
@@ -520,6 +546,7 @@ width: 600px;
  <div class="spec-orders"></div>
 <div class="spec-orders-2"></div>
 <div class="spec-orders-3"></div>
+<div class="spec-orders-4"></div>
 </div>
                     
 
@@ -911,12 +938,31 @@ $.each(data.wash_ids, function( index, value ) {
 </script>
 <?php if($_GET['ajax'] == 'true'): ?>
 <script>
+	$(function(){
+		$( "body" ).on( "click", ".addonupgrade-view", function() {
+			
+			var wash_id = $(this).attr('data-id');
+		  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/updatelog", {wash_request_id: wash_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+    
+
+});
+		  $(this).parent().remove();
+		  if ($(".spec-orders-4").children().length < 1){
+			$(".spec-orders-4").hide();
+		  }
+		  window.open('edit-order.php?id='+wash_id, '_blank');
+		  return false;
+		  
+			});
+
+	});
 function ajaxorderlist(){
     var alldata;
     var upcomingwashes = [];
     var processordeclined_washes = "";
     var meetwasheralertbox = "";
     var washernoarrive30minbox = "";
+    var addonupgradebox = "";
 //console.log(params);
   $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getallwashrequestsnew", params, function( data ) {
     
@@ -942,7 +988,7 @@ $.each(data.wash_requests, function( index, value ) {
       processordeclined_washes += "<p>#"+value.id+" Payment non-settled order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
     if(value.washer_change_pack > 0){
-      processordeclined_washes += "<p>#"+value.id+" upgraded package/changed addons order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+     addonupgradebox += "<p>#"+value.id+" upgraded package/changed addons order - "+value.customer_name+" <a class='addonupgrade-view' data-id='"+value.id+"' href='#'>View</a></p>";
     }
     if(value.admin_submit_for_settle == 1){
       processordeclined_washes += "<p>#"+value.id+" BT custom payment order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
@@ -954,7 +1000,7 @@ $.each(data.wash_requests, function( index, value ) {
       meetwasheralertbox += "<p>#"+value.id+" - Washer hasn't tapped Start Wash for 10 minutes - Please call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
     if(value.washer_30_min_noarrive == 1){
-      washernoarrive30minbox += "<p>#"+value.id+" - En Route Washer "+value.agent_details.agent_name+" hasn't tapped \"arrive\" for 30 minutes - Please Call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+      washernoarrive30minbox += "<p>#"+value.id+" - En Route Washer "+value.agent_details.agent_name+" hasn't tapped \"arrive\" within 30 minutes - Please Call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
     }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
@@ -1092,6 +1138,16 @@ if(washernoarrive30minbox != ''){
 else{
   $(".spec-orders-3").html("");
    $(".spec-orders-3").hide();
+}
+
+if(addonupgradebox != ''){
+    $(".spec-orders-4").html(addonupgradebox);
+   $(".spec-orders-4").show();
+
+}
+else{
+  $(".spec-orders-4").html("");
+   $(".spec-orders-4").hide();
 }
 
 });
