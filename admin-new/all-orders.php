@@ -528,13 +528,55 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 .dt-button.buttons-csv.buttons-html5 { opacity: 0; }
 
 .alert-box-wrap{
-width: 600px;
+    width: 600px;
     position: fixed;
     z-index: 999;
     top: 65px;
     left: 50%;
     margin-left: -300px;
     height: auto;
+    display: none;
+    max-height: 200px;
+    box-sizing: border-box;
+    overflow: auto;
+    display: none;
+    }
+    
+    .spec-order-list{
+	list-style:none;
+	margin: 0;
+	padding: 0;
+    }
+    
+    .spec-order-list li{
+	display: block;
+    color: #fff;
+    padding: 10px;
+    border-bottom: 1px solid #fff;
+	
+    }
+    
+    .spec-order-list li a{
+	margin-left: 10px;
+    color: #fff;
+    text-decoration: underline;
+    }
+    
+    .spec-order-list li.processordeclined{
+	background: rgba(234, 0, 85, 0.84);
+    }
+    
+    .spec-order-list li.addonupgrade{
+	background: rgba(0, 83, 234, 0.84);
+    }
+    
+    .spec-order-list li.meetwasher{
+	background: #ff5722e6;
+    }
+    
+    .spec-order-list li.washernoarrive30min{
+	
+	background: #92c300e0;
     }
 </style>
 <!-- BEGIN CONTENT -->
@@ -543,10 +585,7 @@ width: 600px;
                 <div class="page-content">
                     <!-- BEGIN PAGE HEADER-->
 <div class="alert-box-wrap">
- <div class="spec-orders"></div>
-<div class="spec-orders-2"></div>
-<div class="spec-orders-3"></div>
-<div class="spec-orders-4"></div>
+
 </div>
                     
 
@@ -651,7 +690,7 @@ else echo $order->payment_status; ?>
 </td>
  <td><?php echo $order->transaction_id; ?></td>
  <td><?php echo $order->failed_transaction_id; ?></td>
-                    <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
+                    <td><a target="_blank" href="<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                     <td><?php echo $order->customer_phoneno; ?></td>
                     <?php if($_GET['customer_id']): ?>
                     <td><?php echo $cust_avg_order_frequency; ?> days</td>
@@ -662,7 +701,7 @@ else echo "N/A";
 ?>
 </td>
 <td><?php
-if(count($order->agent_details)) echo "<a target='_blank' href='/admin-new/all-orders.php?agent_id=".$order->agent_details->agent_id."'>".$order->agent_details->agent_name."</a>";
+if(count($order->agent_details)) echo "<a target='_blank' href='".ROOT_URL."'/admin-new/all-orders.php?agent_id=".$order->agent_details->agent_id."'>".$order->agent_details->agent_name."</a>";
 else echo "N/A";
 ?>
 </td>
@@ -947,8 +986,29 @@ $.each(data.wash_ids, function( index, value ) {
 
 });
 		  $(this).parent().remove();
-		  if ($(".spec-orders-4").children().length < 1){
-			$(".spec-orders-4").hide();
+		   if ($(".spec-order-list").children().length < 1){
+			$(".spec-order-list").remove();
+		  }
+		  
+		  if ($(".alert-box-wrap").children().length < 1){
+			$(".alert-box-wrap").hide();
+		  }
+		  window.open('edit-order.php?id='+wash_id, '_blank');
+		  return false;
+		  
+			});
+			
+			$( "body" ).on( "click", ".spec-order-list li a", function() {
+			
+			var wash_id = $(this).attr('data-id');
+
+		  $(this).parent().remove();
+		  if ($(".spec-order-list").children().length < 1){
+			$(".spec-order-list").remove();
+		  }
+		  
+		  if ($(".alert-box-wrap").children().length < 1){
+			$(".alert-box-wrap").hide();
 		  }
 		  window.open('edit-order.php?id='+wash_id, '_blank');
 		  return false;
@@ -963,6 +1023,11 @@ function ajaxorderlist(){
     var meetwasheralertbox = "";
     var washernoarrive30minbox = "";
     var addonupgradebox = "";
+    var popuptextred = '';
+    var popuptextgreen = '';
+    var popuptextorange = '';
+    var popuptextblue = '';
+    var popuptextfull = '';
 //console.log(params);
   $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getallwashrequestsnew", params, function( data ) {
     
@@ -982,25 +1047,25 @@ dt_table.fnClearTable();
 $.each(data.wash_requests, function( index, value ) {
     var upcomingwashes = [];
     if(value.payment_status == 'Declined'){
-      processordeclined_washes += "<p>#"+value.id+" Processor declined order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+      popuptextred += "<li class='processordeclined'>#"+value.id+" Processor declined order - "+value.customer_name+" <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     if(value.washer_pay_status == 'pending'){
-      processordeclined_washes += "<p>#"+value.id+" Payment non-settled order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+       popuptextred += "<li class='processordeclined'>#"+value.id+" Payment non-settled order - "+value.customer_name+" <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     if(value.washer_change_pack > 0){
-     addonupgradebox += "<p>#"+value.id+" upgraded package/changed addons order - "+value.customer_name+" <a class='addonupgrade-view' data-id='"+value.id+"' href='#'>View</a></p>";
+     popuptextblue += "<li class='addonupgrade'>#"+value.id+" upgraded package/changed addons order - "+value.customer_name+" <a class='addonupgrade-view' data-id='"+value.id+"' href='#'>View</a></li>";
     }
     if(value.admin_submit_for_settle == 1){
-      processordeclined_washes += "<p>#"+value.id+" BT custom payment order - "+value.customer_name+" <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+       popuptextred += "<li class='processordeclined'>#"+value.id+" BT custom payment order - "+value.customer_name+" <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     if(value.washercustnomeet == 1){
-      meetwasheralertbox += "<p>#"+value.id+" - Customer has not selected meet Washer or No Thanks for 10 minutes - Call Customer <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+      popuptextorange += "<li class='meetwasher'>#"+value.id+" - Customer has not selected meet Washer or No Thanks for 10 minutes - Call Customer <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     if(value.washer_wash_activity == 0){
-      meetwasheralertbox += "<p>#"+value.id+" - Washer hasn't tapped Start Wash for 10 minutes - Please call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+      popuptextorange += "<li class='meetwasher'>#"+value.id+" - Washer hasn't tapped Start Wash for 10 minutes - Please call <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     if(value.washer_30_min_noarrive == 1){
-      washernoarrive30minbox += "<p>#"+value.id+" - En Route Washer "+value.agent_details.agent_name+" hasn't tapped \"arrive\" within 30 minutes - Please Call <a href='edit-order.php?id="+value.id+"' target='_blank'>View</a></p>";
+      popuptextgreen += "<li class='washernoarrive30min'>#"+value.id+" - En Route Washer "+value.agent_details.agent_name+" hasn't tapped \"arrive\" within 30 minutes - Please Call <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     upcomingwashes["DT_RowId"] = "order-"+value.id;
      //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
@@ -1061,11 +1126,11 @@ payment_status_str += "<span class='label label-sm label-fraud'>"+value.payment_
 
 upcomingwashes.push(value.transaction_id);
 upcomingwashes.push(value.failed_transaction_id);
-upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?customer_id="+value.customer_id+"'>"+value.customer_name+"</a>");
+upcomingwashes.push("<a target='_blank' href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id="+value.customer_id+"'>"+value.customer_name+"</a>");
 upcomingwashes.push(value.customer_phoneno);
 if(value.agent_details.real_washer_id) upcomingwashes.push(value.agent_details.real_washer_id);
 else upcomingwashes.push("N/A");
-if(value.agent_details.agent_name) upcomingwashes.push("<a target='_blank' href='/admin-new/all-orders.php?agent_id="+value.agent_details.agent_id+"'>"+value.agent_details.agent_name+"</a>");
+if(value.agent_details.agent_name) upcomingwashes.push("<a target='_blank' href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?agent_id="+value.agent_details.agent_id+"'>"+value.agent_details.agent_name+"</a>");
 else upcomingwashes.push("N/A");
 if(value.agent_details.agent_phoneno) upcomingwashes.push(value.agent_details.agent_phoneno);
 else upcomingwashes.push("N/A"); 
@@ -1076,7 +1141,12 @@ if(value.is_scheduled == 1){
   upcomingwashes.push("<span style='color: red; font-weight: bold; font-size: 13px;'>"+value.reschedule_date+" "+value.reschedule_time+"</span><p style='text-align: center; font-weight: bold; color: red; margin: 5px 0;'>Re-Scheduled</p>");  
 }
 else{
- if(value.schedule_time) upcomingwashes.push(value.schedule_date+" "+value.schedule_time);   
+ if(value.schedule_time){
+	upcomingwashes.push(value.schedule_date+" "+value.schedule_time);
+}
+ else{
+	upcomingwashes.push("N/A");  
+}
 }
 }
 else{
@@ -1111,44 +1181,18 @@ dt_table.fnAddData(upcomingwashes);
 }
 
 //console.log(processordeclined_washes);
-if(processordeclined_washes != ''){
-    $(".spec-orders").html(processordeclined_washes);
-   $(".spec-orders").show();
+popuptextfull = popuptextred+popuptextgreen+popuptextblue+popuptextorange;
+if(popuptextfull != ''){
+	popuptextfull = "<ul class='spec-order-list'>"+popuptextfull+"</ul>";
+
+    $(".alert-box-wrap").html(popuptextfull);
+   $(".alert-box-wrap").show();
 }
 else{
-  $(".spec-orders").html("");
-   $(".spec-orders").hide();
+  $(".alert-box-wrap").html("");
+   $(".alert-box-wrap").hide();
 }
 
-if(meetwasheralertbox != ''){
-    $(".spec-orders-2").html(meetwasheralertbox);
-   $(".spec-orders-2").show();
-
-}
-else{
-  $(".spec-orders-2").html("");
-   $(".spec-orders-2").hide();
-}
-
-if(washernoarrive30minbox != ''){
-    $(".spec-orders-3").html(washernoarrive30minbox);
-   $(".spec-orders-3").show();
-
-}
-else{
-  $(".spec-orders-3").html("");
-   $(".spec-orders-3").hide();
-}
-
-if(addonupgradebox != ''){
-    $(".spec-orders-4").html(addonupgradebox);
-   $(".spec-orders-4").show();
-
-}
-else{
-  $(".spec-orders-4").html("");
-   $(".spec-orders-4").hide();
-}
 
 });
 //console.log('working');
