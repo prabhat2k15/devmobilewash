@@ -531,7 +531,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
     width: 600px;
     position: fixed;
     z-index: 999;
-    top: 65px;
+    top: 47px;
     left: 50%;
     margin-left: -300px;
     height: auto;

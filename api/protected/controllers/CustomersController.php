@@ -6729,7 +6729,8 @@ die();
                 'block_client' => $customerdetail['block_client'],
                 'notes'=>$customerdetail['notes'],
                 'created_date' => $customerdetail['created_date'],
-                'updated_date' => $customerdetail['updated_date']
+                'updated_date' => $customerdetail['updated_date'],
+                'admin_username' => $customerdetail['last_edited_admin']
             );
              echo json_encode($json);
              exit;
@@ -6768,6 +6769,8 @@ $hours_opt_check = Yii::app()->request->getParam('hours_opt_check');
 $sms_control = Yii::app()->request->getParam('sms_control');
 $block_client = Yii::app()->request->getParam('block_client');
 $notes = Yii::app()->request->getParam('notes');
+$admin_username = '';
+$admin_username = Yii::app()->request->getParam('admin_username');
 
 $contact_number = preg_replace('/\D/', '', $contact_number);
 
@@ -6831,7 +6834,7 @@ else{
         curl_close($curl);
      }
      
-     $data = array('first_name' => $firstname, 'last_name' => $lastname, 'customername'=> $firstname." ".$lastname,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes, 'sms_control' => $sms_control);
+     $data = array('first_name' => $firstname, 'last_name' => $lastname, 'customername'=> $firstname." ".$lastname,'email'=> $email,'contact_number'=> $contact_number,'email_alerts'=> $email_alerts,'push_notifications'=> $push_notifications, 'online_status'=> $online_status, 'image'=> $image, 'password'=> $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes, 'sms_control' => $sms_control,'last_edited_admin' => $admin_username,'updated_date'=> date('Y-m-d h:i:s'));
         //$data = array_filter($data);
 
         if($account_status == 0 || $account_status == 1)

@@ -118,7 +118,7 @@ else{
 
             // COLLECT POST VALUE //
 
-            $data = array('id'=> strip_tags($_GET['customerID']),'firstname' => $firstname, 'lastname' => $lastname, 'customername'=> strip_tags($customername),'email'=> strip_tags($email),'contact_number'=> strip_tags($contact_number),'email_alerts'=> strip_tags($email_alerts),'push_notifications'=> strip_tags($push_notifications),'total_wash'=> strip_tags($total_wash),'time_zone'=> strip_tags($time_zone),'account_status'=> strip_tags($account_status),'created_date'=> strip_tags($created_date),'updated_date'=> strip_tags($updated_date),'online_status'=> strip_tags($online_status),'rating'=> strip_tags($rating),'image'=> strip_tags($profileimg), 'password'=> strip_tags($password), 'how_hear_mw'=> strip_tags($_POST['how_hear_mw']), 'hours_opt_check' => strip_tags($hours_opt_check), 'sms_control' => strip_tags($sms_control), 'block_client' => strip_tags($block_client), 'notes' => strip_tags($notes), 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('id'=> strip_tags($_GET['customerID']),'firstname' => $firstname, 'lastname' => $lastname, 'customername'=> strip_tags($customername),'email'=> strip_tags($email),'contact_number'=> strip_tags($contact_number),'email_alerts'=> strip_tags($email_alerts),'push_notifications'=> strip_tags($push_notifications),'total_wash'=> strip_tags($total_wash),'time_zone'=> strip_tags($time_zone),'account_status'=> strip_tags($account_status),'created_date'=> strip_tags($created_date),'updated_date'=> strip_tags($updated_date),'online_status'=> strip_tags($online_status),'rating'=> strip_tags($rating),'image'=> strip_tags($profileimg), 'password'=> strip_tags($password), 'how_hear_mw'=> strip_tags($_POST['how_hear_mw']), 'hours_opt_check' => strip_tags($hours_opt_check), 'sms_control' => strip_tags($sms_control), 'block_client' => strip_tags($block_client), 'notes' => strip_tags($notes), 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
             // END COLLECT POST VALUE //
 
@@ -175,6 +175,8 @@ $how_hear_mw = $jsondata->how_hear_mw;
              $block_client = $jsondata->block_client;
              $notes = $jsondata->notes;
             $created_date = $jsondata->created_date;
+            $updated_date = $jsondata->updated_date;
+            $admin_username = $jsondata->admin_username;
 
 
 			$url = ROOT_URL.'/api/index.php?r=customers/getcustomerlogindetail&customerID='.$customerID;
@@ -287,7 +289,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                         Created on: <?php echo date('m-d-Y h:i A', strtotime($created_date));?>
                                     </div>
                                     <div class="profile-usermenu" style="margin-top: 10px; text-align: center;">
-                                        last edited: <?php echo date('m-d-Y h:i A', strtotime($updated_date));?>
+                                        <?php echo $admin_username;?> last edited on: <?php echo date('m-d-Y h:i A', strtotime($updated_date));?>
                                     </div>
                                     <!-- END MENU -->
                                 </div>
