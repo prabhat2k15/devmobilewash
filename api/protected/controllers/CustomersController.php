@@ -5349,7 +5349,7 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
                 else{
 
                 //$all_wash_requests = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE customer_id='".$customer_id."'")->queryAll();
-$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE customer_id=:customer_id AND ((status='4' OR status='5' OR status='6') AND no_washer_cancel = 0) order by created_date desc")
+$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE customer_id=:customer_id AND ((status='4' OR status='5' OR status='6' OR status='7') AND no_washer_cancel = 0) order by created_date desc")
 ->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
 ->queryAll();
               $total_entries = $all_wash_requests_count[0]['count'];
@@ -5363,7 +5363,7 @@ $total_pages = ceil($total_entries / $limit);
                 $all_wash_requests = Yii::app()->db->createCommand()
 			->select('*')
 			->from('washing_requests')
-			->where("customer_id=:customer_id AND ((status='4' OR status='5' OR status='6') AND no_washer_cancel = 0)", array(":customer_id" => $customer_id))
+			->where("customer_id=:customer_id AND ((status='4' OR status='5' OR status='6' OR status='7') AND no_washer_cancel = 0)", array(":customer_id" => $customer_id))
 ->limit($limit)
 ->offset(($page-1) * $limit)
 ->order(array('created_date desc'))

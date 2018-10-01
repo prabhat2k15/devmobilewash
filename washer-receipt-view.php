@@ -166,11 +166,13 @@ font-size: 24px !important;
 
 <h2 class="order-date"><?php echo date('M d, Y', strtotime($kartdata->order_date)); ?> @ <?php echo date('h:i A', strtotime($kartdata->order_date)); ?></h2>
 
+<?php if(($kartdata->status == 5) || ($kartdata->status == 7)): ?>
 <?php if($kartdata->status == 5): ?>
 <h2 style="padding: 0 20px;">This order is canceled by client</h2>
+<?php endif; ?>
 <table class="discount-details">
 <tr>
-<td><p style="font-size: 20px;">Cancel Fee</p></td>
+<td><p style="font-size: 20px;"><?php if($kartdata->status == 7) {echo "CNR Fee";} else {echo "Cancel Fee";} ?></p></td>
 <td class="rightalign">
 <p class="price">$<?php if($kartdata->washer_cancel_fee > 0) {echo number_format($kartdata->washer_cancel_fee, 2);} else{echo '0.00';} ?></p>
 </td>

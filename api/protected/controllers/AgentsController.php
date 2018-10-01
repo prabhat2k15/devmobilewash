@@ -1720,7 +1720,7 @@ $total_pages = 0;
 	            }
                 else{
 
-			$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE agent_id=:agent_id AND ((status='4' OR status='5' OR status='6')) order by order_for desc")
+			$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE agent_id=:agent_id AND ((status='4' OR status='5' OR status='6' OR status='7')) order by order_for desc")
 			->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
 			->queryAll();
               $total_entries = $all_wash_requests_count[0]['count'];
@@ -1741,7 +1741,7 @@ $total_pages = ceil($total_entries / $limit);
              $all_wash_requests = Yii::app()->db->createCommand()
 			->select('*')
 			->from('washing_requests')
-			->where("agent_id=:agent_id AND ((status='4' OR status='5' OR status='6'))", array(":agent_id" => $agent_id))
+			->where("agent_id=:agent_id AND ((status='4' OR status='5' OR status='6' OR status='7'))", array(":agent_id" => $agent_id))
 			->limit($limit)
 			->offset(($page-1) * $limit)
 			->order(array('order_for desc'))
