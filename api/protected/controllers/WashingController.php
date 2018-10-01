@@ -2564,7 +2564,8 @@ if($kartdata->wash_later_fee > 0){
 
 
                      $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
-
+if(APP_ENV == 'real'){
+                    $this->layout = "xmlLayout";
                     
 		require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
                 require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
@@ -2606,6 +2607,7 @@ $sendmessage = $client->account->messages->create(array(
 
 	     }catch (Services_Twilio_RestException $e) {
             //echo  $e;
+}
 }
 
 	}
@@ -3827,7 +3829,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                             'action_date'=> date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
-                    if(((APP_ENV == 'real') || (APP_ENV == '')) && ($cust_details->sms_control)){
+                    if(((APP_ENV == 'real')) && ($cust_details->sms_control)){
 			
 			 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '48' ")->queryAll();
 			$message = $pushmsg[0]['message'];
@@ -5198,7 +5200,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 
 				Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 				
-				if((APP_ENV == 'real') || (APP_ENV == '')){
+				if((APP_ENV == 'real')){
 	//if(($result == 'true') && ($wash_now_canceled == 1)){
 		 $mobile_receipt = '';
 		 
@@ -5285,7 +5287,7 @@ if($kartdata->wash_later_fee > 0){
 
 
                      $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
-		     
+		     if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
                     
 
@@ -5336,7 +5338,7 @@ try {
             //echo  $e;
 }
 
-                   
+             }
                     }
 	
 }
@@ -5381,7 +5383,7 @@ if(count($clientwashernomeetwashes)){
 						$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '50' ")->queryAll();
 						$message = $pushmsg[0]['message'];
 						
-						if(((APP_ENV == 'real') || (APP_ENV == '')) && ($cust_details->sms_control)){
+						if(((APP_ENV == 'real')) && ($cust_details->sms_control)){
 						require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
 						require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
@@ -8674,6 +8676,7 @@ if($kartdata->wash_later_fee > 0){
 
                      $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
 		     
+                    if(APP_ENV == 'real'){
                     $this->layout = "xmlLayout";
                     
 
@@ -8723,7 +8726,7 @@ try {
 }catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
-
+                    }
                    
                     }
 
@@ -11154,8 +11157,8 @@ $sendmessage = $client->account->messages->create(array(
   $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$order_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '20' ")->queryAll();
-							//$message = $pushmsg[0]['message'];
-                            $message = str_replace("[ORDER_ID]","#".$order_exists->id, $pushmsg[0]['message']);
+							$message = $pushmsg[0]['message'];
+                            //$message = str_replace("[ORDER_ID]","#".$order_exists->id, $pushmsg[0]['message']);
 							foreach($agentdevices as $agdevice){
 								//$message =  "You have a new scheduled wash request.";
 								//echo $agentdetails['mobile_type'];
@@ -13826,7 +13829,9 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
               else if($order_exists->agent_id == 0){
               	$response = "No Agent ID";	
               }
-	      
+            else if($order_exists->status != 2){
+              	$response = "Customers Not (Meet Washer/No Thanks) screen.";		
+              }
 
            else{
 
@@ -14518,8 +14523,8 @@ $sendmessage = $client->account->messages->create(array(
   $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$order_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '20' ")->queryAll();
-							//$message = $pushmsg[0]['message'];
-                            $message = str_replace("[ORDER_ID]","#".$order_exists->id, $pushmsg[0]['message']);
+							$message = $pushmsg[0]['message'];
+                            //$message = str_replace("[ORDER_ID]","#".$order_exists->id, $pushmsg[0]['message']);
 							foreach($agentdevices as $agdevice){
 								//$message =  "You have a new scheduled wash request.";
 								//echo $agentdetails['mobile_type'];

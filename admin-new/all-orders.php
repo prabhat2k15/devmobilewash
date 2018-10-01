@@ -529,7 +529,7 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 
 .alert-box-wrap{
     width: 600px;
-    position: fixed;
+    position: absolute;
     z-index: 999;
     top: 47px;
     left: 50%;
