@@ -16,9 +16,28 @@
         margin: 0;
         padding: 0;
       }
+      
+      body .list-btn{
+        position: absolute;
+    top: 10px;
+    left: 180px;
+    z-index: 999;
+    background: #fff;
+    color: #000;
+    text-decoration: none;
+    font-family: arial, sans-serif;
+    display: block;
+    padding: 8px 28px;
+    font-size: 20px;
+      }
+      
+      body .list-btn:hover{
+        background: #e6e6e6;
+      }
     </style>
   </head>
   <body>
+    <a href="heatmap-list.php" class="list-btn">List</a>
     <div id="map"></div>
     <script>
       function initMap() {

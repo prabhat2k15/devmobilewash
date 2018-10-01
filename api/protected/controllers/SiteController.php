@@ -8288,5 +8288,85 @@ Yii::app()->db->createCommand("UPDATE app_settings SET mw_care_rating = :mw_care
 Yii::app()->db->createCommand("UPDATE app_settings SET mw_care_rating = :mw_care_rating WHERE id = '2' ")->bindValue(':mw_care_rating', $mw_care_rating, PDO::PARAM_STR)->execute();
 
 }
+
+
+	    		public function actionheatmaplistdata()
+	{
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$from  = Yii::app()->request->getParam('from');
+$to  = Yii::app()->request->getParam('to');
+$blue_orders = 0;
+$red_orders = 0;
+$yellow_orders = 0;
+$purple_orders = 0;
+
+			$result= 'false';
+			$response= 'nothing found';
+			
+			$qrRequests =  Yii::app()->db->createCommand("SELECT COUNT(w.id) as total FROM washing_requests w RIGHT JOIN coverage_area_zipcodes z ON w.zipcode = z.zipcode WHERE (order_for >= :from AND order_for <= :to) AND w.status = 4 AND z.zip_color='purple'")
+			->bindValue(":from", $from)
+			->bindValue(":to", $to)
+			->queryAll();
+
+			$purple_orders = $qrRequests[0]['total'];
+			
+			$qrRequests =  Yii::app()->db->createCommand("SELECT COUNT(w.id) as total FROM washing_requests w RIGHT JOIN coverage_area_zipcodes z ON w.zipcode = z.zipcode WHERE (order_for >= :from AND order_for <= :to) AND w.status = 4 AND z.zip_color='yellow'")
+			->bindValue(":from", $from)
+			->bindValue(":to", $to)
+			->queryAll();
+
+			$yellow_orders = $qrRequests[0]['total'];
+			
+			$qrRequests =  Yii::app()->db->createCommand("SELECT COUNT(w.id) as total FROM washing_requests w RIGHT JOIN coverage_area_zipcodes z ON w.zipcode = z.zipcode WHERE (order_for >= :from AND order_for <= :to) AND w.status = 4 AND z.zip_color='red'")
+			->bindValue(":from", $from)
+			->bindValue(":to", $to)
+			->queryAll();;
+
+			$red_orders = $qrRequests[0]['total'];
+						
+			$qrRequests =  Yii::app()->db->createCommand("SELECT COUNT(w.id) as total FROM washing_requests w RIGHT JOIN coverage_area_zipcodes z ON w.zipcode = z.zipcode WHERE (order_for >= :from AND order_for <= :to) AND w.status = 4 AND (z.zip_color='' OR z.zip_color='blue')")
+			->bindValue(":from", $from)
+			->bindValue(":to", $to)
+			->queryAll();
+
+			$blue_orders = $qrRequests[0]['total'];
+			
+			$all_washes_city =  Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM washing_requests WHERE (order_for >= :from AND order_for <= :to) AND status = 4 GROUP BY city ORDER BY COUNT(id) DESC")
+			->bindValue(":from", $from)
+			->bindValue(":to", $to)
+			->queryAll();
+			
+			$all_washes_zipcode =  Yii::app()->db->createCommand("SELECT zipcode, COUNT(id) as total FROM washing_requests WHERE (order_for >= :from AND order_for <= :to) AND status = 4 GROUP BY zipcode ORDER BY COUNT(id) DESC")
+			->bindValue(":from", $from)
+			->bindValue(":to", $to)
+			->queryAll();
+			
+			
+
+if((count($all_washes_city)) || (count($all_washes_zipcode))){
+    $result= 'true';
+    $response= 'all washes';
+
+
+}
+
+
+		$json= array(
+			'result'=> $result,
+			'response'=> $response,
+			'all_washes_city' => $all_washes_city,
+			'all_washes_zipcode' => $all_washes_zipcode,
+			'blue_orders' => $blue_orders,
+			'yellow_orders' => $yellow_orders,
+			'red_orders' => $red_orders,
+			'purple_orders' => $purple_orders,
+		);
+		echo json_encode($json);
+	}
     
 }
