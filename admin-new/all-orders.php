@@ -283,27 +283,27 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 }
 
  @-webkit-keyframes glowing6 {
-  0% { background-color: #fff; }
+  0% { background-color: #ff5722; }
   50% { background-color: #ff5722;  }
-  100% { background-color: #fff; }
+  100% { background-color: #ff5722; }
 }
 
 @-moz-keyframes glowing6 {
- 0% { background-color: #fff; }
+ 0% { background-color: #ff5722; }
   50% { background-color: #ff5722;  }
-  100% { background-color: #fff; }
+  100% { background-color: #ff5722; }
 }
 
 @-o-keyframes glowing6 {
- 0% { background-color: #fff; }
+ 0% { background-color: #ff5722; }
   50% { background-color: #ff5722;  }
-  100% { background-color: #fff; }
+  100% { background-color: #ff5722; }
 }
 
 @keyframes glowing6 {
-  0% { background-color: #fff; }
+  0% { background-color: #ff5722; }
   50% { background-color: #ff5722;  }
-  100% { background-color: #fff; }
+  100% { background-color: #ff5722; }
 }
 
 
