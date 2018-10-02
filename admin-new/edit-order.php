@@ -1790,6 +1790,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'cnrcompanynoresponse'): ?>
                                                           <p style="margin-bottom: 10px; color:red;"><?php echo $log->admin_username; ?> applied CNR Fee at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'customerdeclinecar'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer declined add vehicle request: <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
                                                         </div>
@@ -4258,6 +4261,11 @@ if(data.result == 'true'){
        if(log.action == 'cnrcompanynoresponse'){
         contents += "<p style='margin-bottom: 10px;  color:red;'>"+log.admin_username+" applied CNR Fee at "+log.formatted_action_date+"</p>";
        }
+       
+       if(log.action == 'customerdeclinecar'){
+         contents += "<p style='margin-bottom: 10px;'>Customer declined add vehicle request: "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+       }
+       
 
    });
    

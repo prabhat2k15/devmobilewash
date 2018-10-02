@@ -2389,7 +2389,7 @@ $washpricehistorymodel = new WashPricingHistory;
 	    'agent_id'=> $wash_request_exists->agent_id,
 	    'agent_company_id'=> $agent_detail->real_washer_id,
             'action'=> 'washeraddcar',
-	    'addi_detail' => $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name." ".$new_pack_name,
+	    'addi_detail' => $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name." (".$new_pack_name.")",
             'action_date'=> date('Y-m-d H:i:s'));
         Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 
@@ -3810,6 +3810,17 @@ $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, '
 
 
                   /* --- notification end --- */
+		  
+		  $cust_vehicle_data = CustomerDraftVehicle::model()->findByPk($wash_request_exists->draft_vehicle_id);
+		  
+		$logdata = array(
+            'wash_request_id'=> $wash_request_id,
+	    'agent_id'=> $wash_request_exists->agent_id,
+	    'agent_company_id'=> $agent_detail->real_washer_id,
+            'action'=> 'customerdeclinecar',
+	    'addi_detail' => $cust_vehicle_data->brand_name." ".$cust_vehicle_data->model_name." (".$cust_vehicle_data->wash_package.")",
+            'action_date'=> date('Y-m-d H:i:s'));
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 
                   }
 

@@ -1048,19 +1048,6 @@ $sendmessage = $client->account->messages->create(array(
 	     }catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '5622467300',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-
-	     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-
           
            }
 
@@ -1371,17 +1358,6 @@ $sendmessage = $client->account->messages->create(array(
 }catch (Services_Twilio_RestException $e) {
             //echo  $e;
 }
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '5622467300',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
 
       
             }
@@ -2077,17 +2053,6 @@ try {
             //echo  $e;
 }
 
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '5622467300',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
                    
                     }
 		    
@@ -2598,16 +2563,6 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '5622467300',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-
-	     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 }
 
 	}
@@ -3333,17 +3288,6 @@ try {
             //echo  $e;
 }
 
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '5622467300',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
                    
                     }
 
@@ -3427,16 +3371,6 @@ try {
 try {
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  '3109999334',
-                        'From' => '+13103128070',
-                        'Body' => $message,
-                    ));
-		      }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '5622467300',
                         'From' => '+13103128070',
                         'Body' => $message,
                     ));
@@ -5320,17 +5254,6 @@ try {
 
                     $sendmessage = $client->account->messages->create(array(
                         'To' =>  '3109999334',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '5622467300',
                         'From' => '+13103128070',
                         'Body' => $smscontent,
                     ));
@@ -8716,16 +8639,6 @@ try {
             //echo  $e;
 }
 
-try {
-
-                    $sendmessage = $client->account->messages->create(array(
-                        'To' =>  '5622467300',
-                        'From' => '+13103128070',
-                        'Body' => $smscontent,
-                    ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
                     }
                    
                     }
@@ -10799,15 +10712,6 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '5622467300',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 
 
 	       if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
@@ -11119,16 +11023,6 @@ $sendmessage = $client->account->messages->create(array(
 try {
 $sendmessage = $client->account->messages->create(array(
                 'To' =>  '3109999334',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '5622467300',
                 'From' => '+13103128070',
                 'Body' => $message,
             ));
@@ -12708,35 +12602,6 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '5622467300',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3236383339',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3104930721',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 
       
             }
@@ -14166,17 +14031,6 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '5622467300',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-
 	       if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
               try {
              $sendmessage = $client->account->messages->create(array(
@@ -14494,15 +14348,6 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '5622467300',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
 
             if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
              try{
