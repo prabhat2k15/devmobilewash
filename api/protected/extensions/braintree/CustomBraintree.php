@@ -1562,6 +1562,53 @@ $all_transactions = array();
 
 
     }
+    
+              public function searchsettletransactionsbyorderid_real($order_id)
+    {
+        Braintree_Configuration::environment('production');
+        Braintree_Configuration::merchantId('74zsnfqy5svgpvjv');
+        Braintree_Configuration::publicKey('7gg5kfvkx8w5fcx8');
+        Braintree_Configuration::privateKey('579e6af0c752079c2f9596c838191327');
+        
+$all_transactions = array();
+
+        try {
+            $collection = Braintree_Transaction::search([
+  Braintree_TransactionSearch::orderId()->is($order_id),
+   Braintree_TransactionSearch::status()->in(
+    [
+      Braintree_Transaction::SETTLED
+    ]
+  )
+]);
+     if(count($collection)){
+        $ind = 0;
+        foreach($collection as $transaction) {
+    $all_transactions[$ind]['id'] = $transaction->id;
+    $all_transactions[$ind]['status'] = $transaction->status;
+    $ind++;
+}
+        return (array(
+                'success' => 1,
+                'all_transactions' => $all_transactions,
+            ));
+        }
+        else{
+          return (array(
+                'success' => 0,
+                'all_transactions' => 0,
+            ));  
+        }
+            
+        } catch (Exception $e) {
+            return (array(
+                'success' => 0,
+                'message' => "error in search"
+            ));
+        }
+
+
+    }
 
     public function createCard($data)
     {

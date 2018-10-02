@@ -3568,36 +3568,36 @@ if(($wrequest['status'] >=1) && ($wrequest['status'] <= 3)){
 }
 
 if(($wrequest['status'] == 1) && (!$wrequest['is_scheduled'])){
-	$min_diff = 0;
+	$min_diff2 = 0;
 	$current_time = strtotime(date('Y-m-d H:i:s'));
 
 	if($current_time > strtotime($wrequest['wash_begin'])){
-		$min_diff = round(($current_time - strtotime($wrequest['wash_begin'])) / 60,2);
+		$min_diff2 = round(($current_time - strtotime($wrequest['wash_begin'])) / 60,2);
 	}
 	
-	if($min_diff >= 30) $washer_30_min_noarrive = 1;
+	if($min_diff2 >= 30) $washer_30_min_noarrive = 1;
 }
 
 if(($wrequest['status'] == 2) && ($wrequest['meet_washer_outside'] != 'yes')){
-	$min_diff = 0;
+	$min_diff2 = 0;
 	$current_time = strtotime(date('Y-m-d H:i:s'));
 
 	if($current_time > strtotime($wrequest['washer_arrived_at'])){
-		$min_diff = round(($current_time - strtotime($wrequest['washer_arrived_at'])) / 60,2);
+		$min_diff2 = round(($current_time - strtotime($wrequest['washer_arrived_at'])) / 60,2);
 	}
 	
-	if($min_diff >= 10) $washercustnomeet = 1;
+	if($min_diff2 >= 10) $washercustnomeet = 1;
 }
 
 if(($wrequest['status'] == 3) && (!$wrequest['washer_wash_activity'])){
-	$min_diff = 0;
+	$min_diff2 = 0;
 	$current_time = strtotime(date('Y-m-d H:i:s'));
 
 	if($current_time > strtotime($wrequest['meet_or_nomeet_washer_outside_at'])){
-		$min_diff = round(($current_time - strtotime($wrequest['meet_or_nomeet_washer_outside_at'])) / 60,2);
+		$min_diff2 = round(($current_time - strtotime($wrequest['meet_or_nomeet_washer_outside_at'])) / 60,2);
 	}
 	
-	if($min_diff >= 10) $washer_wash_activity = 0;
+	if($min_diff2 >= 10) $washer_wash_activity = 0;
 }
 
 

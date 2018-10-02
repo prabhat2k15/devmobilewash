@@ -701,7 +701,7 @@ else echo "N/A";
 ?>
 </td>
 <td><?php
-if(count($order->agent_details)) echo "<a target='_blank' href='".ROOT_URL."'/admin-new/all-orders.php?agent_id=".$order->agent_details->agent_id."'>".$order->agent_details->agent_name."</a>";
+if(count($order->agent_details)) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?agent_id=".$order->agent_details->agent_id."'>".$order->agent_details->agent_name."</a>";
 else echo "N/A";
 ?>
 </td>
@@ -993,12 +993,17 @@ $.each(data.wash_ids, function( index, value ) {
 		  if ($(".alert-box-wrap").children().length < 1){
 			$(".alert-box-wrap").hide();
 		  }
+		  
+		  $("#example1 tr#order-"+wash_id).removeClass('flashrowchangedpack');
 		  window.open('edit-order.php?id='+wash_id, '_blank');
 		  return false;
 		  
 			});
 			
 			$( "body" ).on( "click", ".spec-order-list li a", function() {
+				if ($(this).hasClass("addonupgrade-view")) {
+					return false;
+				}
 			
 			var wash_id = $(this).attr('data-id');
 
@@ -1074,7 +1079,7 @@ $.each(data.wash_requests, function( index, value ) {
      if(value.payment_status == 'Declined') upcomingwashes["DT_RowClass"] = "flashrowdeclined";
      if((value.min_diff <= 30) && (value.status == 0) && (value.payment_status == 'Declined')) upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
      if(value.washer_change_pack > 0) upcomingwashes["DT_RowClass"] = "flashrowchangedpack";
-     if(value.washer_wash_activity == 0) upcomingwashes["DT_RowClass"] = "washernowashactivity";
+     //if(value.washer_wash_activity == 0) upcomingwashes["DT_RowClass"] = "washernowashactivity";
 
       upcomingwashes.push("<a href='edit-order.php?id="+value.id+"' class='appt-edit-order' data-id='"+value.id+"' style='margin-right: 7px;'>Edit</a>");
       upcomingwashes.push(value.id);

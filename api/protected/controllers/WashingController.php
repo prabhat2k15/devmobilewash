@@ -13510,8 +13510,10 @@ $pendingwashes =  Washingrequests::model()->findAll(array("condition"=>"status =
 
 if(count($pendingwashes)){
 	foreach($pendingwashes as $wash){
+	     $customer_check = Customers::model()->findByPk($wash['customer_id']);
 		
-		$Bresult = Yii::app()->braintree->searchsettletransactionsbyorderid($wash['id']);
+		if($customer_check->client_position == 'real') $Bresult = Yii::app()->braintree->searchsettletransactionsbyorderid_real($wash['id']);
+		else $Bresult = Yii::app()->braintree->searchsettletransactionsbyorderid($wash['id']); 
 		
 		if($Bresult['success'] == 1){
 			
@@ -13519,7 +13521,7 @@ if(count($pendingwashes)){
 		foreach($Bresult['all_transactions'] as $transaction){
 			
 			//print_r($transaction);
-			//echo $transaction['id']." ".$transaction['status']."<br>";
+			//echo $wash['id']." ".$transaction['id']." ".$transaction['status']."<br>";
 			if($transaction['status'] == 'settled'){
 				Washingrequests::model()->updateByPk($wash['id'], array("transaction_id" => $transaction['id'], 'failed_transaction_id'=>'', 'washer_payment_status' => 1));
 				break;
