@@ -9266,7 +9266,7 @@ die();
 
         $count = $total_order[0]['countid'];
 
-        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."'$order_month")
+        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."' AND a.status != 7 $order_month")
 	->bindValue(':last_month', $last_month, PDO::PARAM_STR)
 	->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
 	->queryAll();
@@ -9296,15 +9296,12 @@ die();
                 $created_date = $orderbycustomer['order_for'];
                 $wash_request_position = $orderbycustomer['wash_request_position'];
                 $color='';
-                if(in_array($orderid, $scheduleautoArr)){
-                	$check_auto_canceled = array('order_id' => $orderid);
-                }else{
-                	$check_auto_canceled = array();
+                $check_auto_canceled = $ondemandautocanceled = 0;
+                if(in_array($orderbycustomer['id'], $scheduleautoArr)){
+                	$check_auto_canceled = 1;
                 }
-                if(in_array($orderid, $ondemandautocancelArr)){
-                	$ondemandautocanceled = array('order_id' => $orderid);
-                }else{
-                	$ondemandautocanceled = array();
+                if(in_array($orderbycustomer['id'], $ondemandautocancelArr)){
+                	$ondemandautocanceled = 1;
                 }
 		$zipcolor = '';
 		
@@ -9323,14 +9320,14 @@ if($orderbycustomer['zipcode']) {
                     $near_agent = '';
                     $color = '#30A0FF';
                 }
-                elseif(COUNT($check_auto_canceled) > 0)
+                elseif($check_auto_canceled == 1)
                 {
                 	$order_of_status = 'Scheduled-auto';
                     $totalminutes = 'N/A';
                     $near_agent = '';
                     $color = '#30A0FF';
                 }
-                elseif(count($ondemandautocanceled) > 0){
+                elseif($ondemandautocanceled == 1){
                 	$order_of_status = 'ondemandautocanceled';
                     $totalminutes = 'N/A';
                     $near_agent = '';
@@ -9537,6 +9534,8 @@ if($orderbycustomer['zipcode']) {
 		$dt[$key]['scheduled_auto']['count']= 0;
         $dt[$key]['ondemandautocanceled']['color']= '#8b9d9e';
 		$dt[$key]['ondemandautocanceled']['count']= 0;
+        $dt[$key]['schedulecanceled']['count'] = 0;
+        $dt[$key]['schedulecanceled']['color'] = '#8b9d9e';
 		$dt[$key]['zipblue']['color']= '';
 		$dt[$key]['zipblue']['count']= 0;
 		$dt[$key]['zipyellow']['color']= '';
@@ -9571,7 +9570,7 @@ if($orderbycustomer['zipcode']) {
                     $dt[$key]['complete']['color']= '#14c266';
                 }
                 if(count($val['canceled'])>0){
-                    $dt[$key]['canceled']['count']= count($val['canceled']);
+                    $dt[$key]['canceled']['count']= count($val['canceled'])+count($val['scheduled_auto'])+count($val['ondemandautocanceled']);
                     $dt[$key]['canceled']['color']= '#8b9d9e';
                 }
                 if(count($val['scheduled_auto'])>0){

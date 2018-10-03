@@ -253,33 +253,7 @@ $(document).ready(function() {
 										
 									});
 								}
-                                
-                                if(scheduleauto > 0  ){
-									title34 = value.scheduled_auto.count+' Scheduled Auto-Canceled';
-									color34 = value.scheduled_auto.color;
-									events.push({
-										eventtitle: 'scheduleauto',
-										title:title34,
-										description:'n',
-										start:index,
-										color:color34,
-										
-									});
-								}
-                                
-                                if(ondemandauto > 0  ){
-									title36 = value.ondemandautocanceled.count+' Wash Now Auto-Canceled';
-									color36 = value.ondemandautocanceled.color;
-									events.push({
-										eventtitle: 'ondemandauto',
-										title:title36,
-										description:'n',
-										start:index,
-										color:color36,
-										
-									});
-								}
-								
+                        		
 									if(processing > 1  ){
 								    title2 = value.processing.count+' Processing Orders';
 									color2 = value.processing.color;
@@ -400,6 +374,19 @@ $(document).ready(function() {
 										
 									});
 								}
+                                
+                                if(scheduleauto > 0  ){
+									title34 = value.scheduled_auto.count+' Scheduled Auto-Canceled';
+									color34 = value.scheduled_auto.color;
+									events.push({
+										eventtitle: 'scheduleauto',
+										title:title34,
+										description:'p',
+										start:index,
+										color:color34,
+										
+									});
+								}
 								
 								if(canceled > 1  ){
 									title2 = value.canceled.count+' Total Canceled Orders';
@@ -415,7 +402,7 @@ $(document).ready(function() {
 								}
 								
 								if(ondemandcanceled > 1  ){
-									ondemandcanceledtitle = value.ondemandcanceled.count+' On-Demand Canceled Orders';
+									ondemandcanceledtitle = value.ondemandcanceled.count+' On-Demand Manual Canceled';
 									ondemandcanceledcolor = value.ondemandcanceled.color;
 									events.push({
 										eventtitle: 'ondemandcanceled',
@@ -426,9 +413,22 @@ $(document).ready(function() {
 										
 									});
 								}
+                                
+                                if(ondemandauto > 0  ){
+									title36 = value.ondemandautocanceled.count+' On-Demand Auto-Canceled';
+									color36 = value.ondemandautocanceled.color;
+									events.push({
+										eventtitle: 'ondemandauto',
+										title:title36,
+										description:'o',
+										start:index,
+										color:color36,
+										
+									});
+								}
 								
-								if(schedulecanceled > 1  ){
-									schedulecanceledtitle = value.schedulecanceled.count+' Scheduled Canceled Orders';
+								if(schedulecanceled > 0  ){
+									schedulecanceledtitle = value.schedulecanceled.count+' Scheduled Manual Canceled';
 									schedulecanceledcolor = value.schedulecanceled.color;
 									events.push({
 										eventtitle: 'schedulecanceled',
