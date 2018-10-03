@@ -722,6 +722,28 @@ $longitude = $geojsondata->results[0]->geometry->location->lng;
                     $washrequestid = Yii::app()->db->getLastInsertID();
                     $result= 'true';
                     $response= $washrequestid;
+		    
+	if($is_scheduled){
+	$logdata = array(
+        'wash_request_id'=> $washrequestid,
+        //'admin_username' => $admin_username,
+        //'agent_id'=> $customer_id,
+        'addi_detail' => "",
+        'action'=> 'customerschedulecreate',
+        'action_date'=> date('Y-m-d H:i:s'));	
+	}
+	else{
+	$logdata = array(
+        'wash_request_id'=> $washrequestid,
+        //'admin_username' => $admin_username,
+        //'agent_id'=> $customer_id,
+        'addi_detail' => "",
+        'action'=> 'customerondemandcreate',
+        'action_date'=> date('Y-m-d H:i:s'));	
+	}
+	
+
+        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 
                     /* ---------- insert transaction id -------------- */
 
@@ -12606,7 +12628,14 @@ $sendmessage = $client->account->messages->create(array(
       
             }
 					   
+$logdata = array(
+				
+				'wash_request_id'=> $schedwash->id,
+				'action'=> 'scheduleauto-canceled',
+				'action_date'=> date('Y-m-d H:i:s'));
 
+				Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+				
 }
 
          }

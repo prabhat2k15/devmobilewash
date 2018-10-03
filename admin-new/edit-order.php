@@ -1782,16 +1782,22 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer changed Wash Now to Scheduled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'ondemandautocancel'): ?>
-                                                          <p style="margin-bottom: 10px; color:red;">Customer's On Demand auto-canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px; color:red;">On Demand order Auto-Canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'scheduleauto-canceled'): ?>
-                                                          <p style="margin-bottom: 10px; color:red;">"Scheduled Order auto-canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px; color:red;">Scheduled order Auto-Canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'cnrcompanynoresponse'): ?>
                                                           <p style="margin-bottom: 10px; color:red;"><?php echo $log->admin_username; ?> applied CNR Fee at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'customerdeclinecar'): ?>
                                                           <p style="margin-bottom: 10px;">Customer declined add vehicle request: <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'customerondemandcreate'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer placed On Demand Order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'customerschedulecreate'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer placed Scheduled Order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
@@ -4251,11 +4257,11 @@ if(data.result == 'true'){
        }
        
        if(log.action == 'ondemandautocancel'){
-        contents += "<p style='margin-bottom: 10px;  color:red;'>Customer's On Demand auto-canceled at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;  color:red;'>On Demand order Auto-Canceled at "+log.formatted_action_date+"</p>";
        }
        
        if(log.action == 'scheduleauto-canceled'){
-        contents += "<p style='margin-bottom: 10px;  color:red;'>Scheduled Order auto-canceled at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;  color:red;'>Scheduled order Auto-Canceled at "+log.formatted_action_date+"</p>";
        }
        
        if(log.action == 'cnrcompanynoresponse'){
@@ -4264,6 +4270,14 @@ if(data.result == 'true'){
        
        if(log.action == 'customerdeclinecar'){
          contents += "<p style='margin-bottom: 10px;'>Customer declined add vehicle request: "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+       }
+       
+       if(log.action == 'customerondemandcreate'){
+        contents += "<p style='margin-bottom: 10px;'>Customer placed On Demand Order at "+log.formatted_action_date+"</p>";
+       }
+       
+       if(log.action == 'customerschedulecreate'){
+        contents += "<p style='margin-bottom: 10px;'>Customer placed Scheduled Order at "+log.formatted_action_date+"</p>";
        }
        
 
