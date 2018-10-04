@@ -1757,6 +1757,8 @@ $washrequestid = $this->aes256cbc_crypt( $washrequestid, 'e', AES256CBC_API_PASS
 	$is_rescheduled = Yii::app()->request->getParam('is_rescheduled');
 	$wash_now_reschedule = 0;
 	if(Yii::app()->request->getParam('wash_now_reschedule')) $wash_now_reschedule = Yii::app()->request->getParam('wash_now_reschedule');
+	$is_reschedule = 0;
+	if(Yii::app()->request->getParam('is_reschedule')) $is_reschedule = Yii::app()->request->getParam('is_reschedule');
 	$wash_later_fee = 0;
 	$mobile_receipt = '';
 
@@ -2084,6 +2086,18 @@ try {
                         'wash_request_id'=> $wash_request_id,
                         'action'=> 'clientwashnowschedule',
                         'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+		    }
+		    
+		    if(($is_reschedule == 1)){
+			 $logdata = array(
+                        
+                        'wash_request_id'=> $wash_request_id,
+                        'action'=> 'customerreschedule',
+			'addi_detail' => date('n/d h:i A', strtotime($wash_details->schedule_date." ".$wash_details->schedule_time))." to ".date('n/d h:i A', strtotime($schedule_date." ".$schedule_time)),
+                        
+			'action_date'=> date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 		    }
@@ -13836,12 +13850,12 @@ $sched_time = $order_exists->schedule_time;
 					$subject = 'Cancel Order Receipt - #0000'.$id;
 					//$message = "Hello ".$customername.",<br/><br/>Welcome to Mobile wash!";
 					$message = "<div class='block-content' style='background: #fff; text-align: left;'>
-					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>This order has been canceled</h2>";
+					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>Customer No Response</h2>";
 					if(!$order_exists->is_scheduled) $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>On-demand order for ".$sched_date." @ ".$sched_time."</p>";
 					else $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Scheduled order for ".$sched_date." @ ".$sched_time."</p>";
 					$message .= "<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$order_exists->address."</p>";
 					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>Client Name:</strong><br> ".$cust_exists->first_name." ".$cust_exists->last_name."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
+					<tr><td><strong>Customer Name:</strong><br> ".$cust_exists->first_name." ".$cust_exists->last_name."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
 					</table>";
 
 					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
@@ -14003,7 +14017,7 @@ $message .= "</table>
 						}*/
 $message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
 							<td style='padding-bottom: 15px;'>
-							<p style='font-size: 20px; margin: 0;'><strong>Cancellation Fee</strong></p>
+							<p style='font-size: 20px; margin: 0;'><strong>Customer No Response Fee</strong></p>
 							</td>
 							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 20px; margin: 0; font-weight: bold;'>$".number_format($fee, 2)."</p></td>
 							</tr></table>";
@@ -14015,6 +14029,7 @@ $message .= "<table style='width: 100%; border-collapse: collapse; border-bottom
 					<td></td>
 					<td style='text-align: right;'><p style='font-size: 20px; margin: 0; color: #000;'>Order Total: <span style='font-weight: bold;'>$".number_format($fee, 2)."</span></p></td></tr></table>";
 
+					$message .= "<p style='text-align: center; font-size: 14px; line-height: 20px; margin-top: 45px; margin-bottom: 0;'>The Customer No Fee is applied after multiple attempts of contacting you by way of notification, SMS, calls from both the office and your washer, and a 15 minute grace period. If you have any questions please contact our office at (888) 209-5585</p>";
 $to = Vargas::Obj()->getAdminToEmail();
 
 	Vargas::Obj()->SendMail($cust_exists->email,"billing@devmobilewash.com",$message,$subject, 'mail-receipt');
@@ -14095,304 +14110,7 @@ else $cancelvoid = Yii::app()->braintree->void($cancelresult['transaction_id']);
 		$response= 'no payment method exists';
                 }
                }
-               else{
-
-                  $result = 'true';
-                        $response = 'Order canceled';
-                        $cancel_price = 0;
-                        $washer_cancel_fee = $fee-5;
-                         Washingrequests::model()->updateByPk($id, array('status'=>7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
-
-                         if($order_exists->transaction_id) {
-                 if($order_exists->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($order_exists->transaction_id);
-                 else $voidresult = Yii::app()->braintree->void($order_exists->transaction_id);
-               }
-
-                                    $is_cust_has_order =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE customer_id=".$order_exists->customer_id." AND (status >= 0 AND status <= 4)")->queryAll();
-if(!count($is_cust_has_order)){
-   Customers::model()->updateByPk($order_exists->customer_id, array("is_first_wash" => 0));
-}
-
-$from = Vargas::Obj()->getAdminFromEmail();
-					//echo $from;
-					$sched_date = '';
-$sched_time = '';
-
-if(!$order_exists->is_scheduled){
-
-if(strtotime($order_exists->order_for) == strtotime(date('Y-m-d'))){
-						$sched_date = 'Today';
-					}
-					else{
-						$sched_date = date('M d', strtotime($order_exists->order_for));
-					}
-$sched_time = date('g:i A', strtotime($order_exists->order_for));
-   
-}
-else{
-    
-					if($order_exists->reschedule_time){
-if(strtotime($order_exists->reschedule_date) == strtotime(date('Y-m-d'))){
-						$sched_date = 'Today';
-
-					}
-					else{
-						$sched_date = date('M d', strtotime($order_exists->reschedule_date));
-					}
-$sched_time = $order_exists->reschedule_time;
-}
-else{
-if(strtotime($order_exists->schedule_date) == strtotime(date('Y-m-d'))){
-						$sched_date = 'Today';
-					}
-					else{
-						$sched_date = date('M d', strtotime($order_exists->schedule_date));
-					}
-$sched_time = $order_exists->schedule_time;
-}
-}
-					$message = '';
-					$subject = 'Cancel Order Receipt - #0000'.$id;
-					//$message = "Hello ".$customername.",<br/><br/>Welcome to Mobile wash!";
-					$message = "<div class='block-content' style='background: #fff; text-align: left;'>
-					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>This order has been canceled</h2>";
-					if(!$order_exists->is_scheduled) $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>On-demand order for ".$sched_date." @ ".$sched_time."</p>";
-					else $message .= "<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Scheduled order for ".$sched_date." @ ".$sched_time."</p>";
-					$message .= "<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$order_exists->address."</p>";
-					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
-					<tr><td><strong>Client Name:</strong> ".$cust_exists->first_name." ".$cust_exists->last_name."</td><td style='text-align: right;'><strong>Order Number:</strong> #000".$id."</td></tr>
-					</table>";
-
-					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
-
-                    foreach($kartdata->vehicles as $ind=>$vehicle){
-
-$message .="<tr>
-<td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
-<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
-<tr>
-<td><p style='font-size: 20px; margin: 0; font-weight: bold;'>".$vehicle->brand_name." ".$vehicle->model_name."</p></td>
-<td style='text-align: right;'>
-<p style='font-size: 20px; margin: 0; font-weight: bold;'>+$0.00</p>
-</td>
-</tr>
-<tr>
-<td><p style='font-size: 18px; margin: 0;'>".$vehicle->vehicle_washing_package." Package</p></td>
-<td style='text-align: right;'></td>
-</tr>";
-if($vehicle->extclaybar_vehicle_fee > 0){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-if($vehicle->waterspotremove_vehicle_fee > 0){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Water Spot Removal</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-if($vehicle->upholstery_vehicle_fee > 0){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-if($vehicle->exthandwax_vehicle_fee > 0){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-if($vehicle->extplasticdressing_vehicle_fee > 0){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Dressing of all Exterior Plastics</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-
-if($vehicle->floormat_vehicle_fee > 0){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-
-$message .="<tr>
-<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-if($vehicle->pet_hair_fee > 0){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Extra Cleaning Fee</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-if($vehicle->lifted_vehicle_fee > 0){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Lifted Truck</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-
-if(($vehicle->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-
-
-if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-
-if(($ind == 0) && ($kartdata->coupon_discount > 0)){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Promo (".$order_exists->coupon_code.")</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-
-if($vehicle->fifth_wash_discount > 0){
-$message .= "<tr>
-<td>
-<p style='font-size: 18px; margin: 0;'>Fifth Wash Discount</p>
-</td>
-<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-</tr>";
-
-}
-
-$message .= "</table>
-
-</td>
-</tr>";
-
-}
-
-
-
-/*if($coupon_amount){
-							$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
-							<td style='padding-bottom: 15px;'>
-							<p style='font-size: 18px; margin: 0;'>Coupon Discount</p>
-							</td>
-							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>-</p></td>
-							</tr></table>";
-						}*/
-$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
-							<td style='padding-bottom: 15px;'>
-							<p style='font-size: 20px; margin: 0;'><strong>Cancellation Fee</strong></p>
-							</td>
-							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 20px; margin: 0; font-weight: bold;'>$0.00</p></td>
-							</tr></table>";
-
-					$message .= "</table>";
-
-					$message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
-					<tr>
-					<td></td>
-					<td style='text-align: right;'><p style='font-size: 20px; margin: 0; color: #000;'>Order Total: <span style='font-weight: bold;'>$0</span></p></td></tr></table>";
-
-
-$to = Vargas::Obj()->getAdminToEmail();
-
-	Vargas::Obj()->SendMail($cust_exists->email,"billing@devmobilewash.com",$message,$subject, 'mail-receipt');
-Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt');
-
-Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_sent' => 1));
-
-if((APP_ENV == 'real')){
-
-$this->layout = "xmlLayout";
-
-            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
-
-            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
-            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
-
-            $account_sid = TWILIO_SID;
-            $auth_token = TWILIO_AUTH_TOKEN;
-            $client = new Services_Twilio($account_sid, $auth_token);
-
-
-            $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->first_name." ".$cust_exists->last_name."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address." (".$order_exists->address_type.")";
-$message2 = "Order #".$id." has been canceled";
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '8183313631',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
- }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3109999334',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-
-            if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
-             try{
-             $sendmessage = $client->account->messages->create(array(
-                'To' =>  $agent_det->phone_number,
-                'From' => '+13103128070',
-                'Body' => $message2,
-            ));
-             }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-            }
-
-
-           }
-
-}
+               
   if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer)){
 
   $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$order_exists->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();

@@ -1799,6 +1799,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'customerschedulecreate'): ?>
                                                           <p style="margin-bottom: 10px;">Customer placed Scheduled Order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
+                                                          <?php if($log->action == 'customerreschedule'): ?>
+                                                          <p style="margin-bottom: 10px;">Customer rescheduled order from <?php echo $log->addi_detail; ?> on <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
                                                         </div>
@@ -4278,6 +4281,10 @@ if(data.result == 'true'){
        
        if(log.action == 'customerschedulecreate'){
         contents += "<p style='margin-bottom: 10px;'>Customer placed Scheduled Order at "+log.formatted_action_date+"</p>";
+       }
+       
+       if(log.action == 'customerreschedule'){
+        contents += "<p style='margin-bottom: 10px;'>Customer rescheduled order from "+log.addi_detail+" on "+log.formatted_action_date+"</p>";
        }
        
 
