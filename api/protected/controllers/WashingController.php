@@ -2095,7 +2095,7 @@ try {
                         
                         'wash_request_id'=> $wash_request_id,
                         'action'=> 'customerreschedule',
-			'addi_detail' => date('n/d h:i A', strtotime($wash_details->schedule_date." ".$wash_details->schedule_time))." to ".date('n/d h:i A', strtotime($schedule_date." ".$schedule_time)),
+			'addi_detail' => date('n/d h:i A', strtotime($wash_id_check->schedule_date." ".$wash_id_check->schedule_time))." to ".date('n/d h:i A', strtotime($schedule_date." ".$schedule_time)),
                         
 			'action_date'=> date('Y-m-d H:i:s'));
 
@@ -4702,9 +4702,10 @@ Washingrequests::model()->updateByPk($wash_request_id, array('is_order_receipt_s
 					
 if($washrequest_id_check->agent_id) $agent_detail = Agents::model()->findByAttributes(array("id"=>$washrequest_id_check->agent_id));
 
-$message = "<div class='block-content' style='background: #fff; text-align: left;'>
-<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer Feedback</h2>
-<p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000".$wash_request_id."</p>
+$message = "<div class='block-content' style='background: #fff; text-align: left;'>";
+if($washrequest_id_check->status == 4) $message .= "<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer Wash Complete Feedback</h2>";
+if(($washrequest_id_check->status == 5) || ($washrequest_id_check->status == 6)) $message .= "<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer Reason for Cancellation</h2>";
+$message .= "<p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000".$wash_request_id."</p>
 <p><b>Customer Name:</b> ".$customers_id_check->first_name." ".$customers_id_check->last_name."</p>
 <p><b>Customer Email:</b> ".$customers_id_check->email."</p>
 <p><b>Rating by Customer:</b> ".number_format($ratings, 2, '.', '')."</p>
@@ -4715,8 +4716,10 @@ if($fb_id) $message .= "<p><b>Facebook/Instagram handle:</b> ".$fb_id."</p>";
 
 $to = Vargas::Obj()->getAdminToEmail();
 $from = Vargas::Obj()->getAdminFromEmail();
-
-if((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5) || (!empty($comments))) Vargas::Obj()->SendMail($to,$from,$message,"Customer Cancellation Feedback - Order #0000".$wash_request_id, 'mail-receipt');
+$subject = '';
+if($washrequest_id_check->status == 4) $subject = 'Customer Wash Complete Feedback';
+if(($washrequest_id_check->status == 5) || ($washrequest_id_check->status == 6)) $subject = 'Customer Reason for Cancellation';
+if((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5) || (!empty($comments))) Vargas::Obj()->SendMail($to,$from,$message,$subject." - Order #0000".$wash_request_id, 'mail-receipt');
 
 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
 
@@ -5044,7 +5047,28 @@ if($feedback_source != 'dropjob'){
                 //echo $total;
                 $total = number_format($total, 2, '.', '');
 
-if(!$simulate_rating) Washingrequests::model()->updateByPk($wash_request_id, array('canceled_washer_id' => 0));
+if(!$simulate_rating) {
+	Washingrequests::model()->updateByPk($wash_request_id, array('canceled_washer_id' => 0));
+	
+	$message = "<div class='block-content' style='background: #fff; text-align: left;'>";
+if($washrequest_id_check->status == 4) $message .= "<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Washer Wash Complete Feedback</h2>";
+else $message .= "<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Washer Reason for Cancellation</h2>";
+$message .= "<p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000".$wash_request_id."</p>
+<p><b>Washer Name:</b> ".$agents_id_check->first_name." ".$agents_id_check->last_name."</p>
+<p><b>Washer Email:</b> ".$agents_id_check->email."</p>
+<p><b>Rating by Washer:</b> ".number_format($ratings, 2, '.', '')."</p>
+<p><b>Comments:</b> ".$comments."</p>";
+if($washrequest_id_check->agent_id) $message .= "<p><b>Customer Name:</b> ".$cust_check->first_name." ".$cust_check->last_name."</p>";
+
+
+$to = Vargas::Obj()->getAdminToEmail();
+$from = Vargas::Obj()->getAdminFromEmail();
+$subject = '';
+if($washrequest_id_check->status == 4) $subject = 'Washer Wash Complete Feedback';
+else $subject = 'Washer Reason for Cancellation';
+if((!empty($comments))) Vargas::Obj()->SendMail($to,$from,$message,$subject." - Order #0000".$wash_request_id, 'mail-receipt');
+
+	}
 
 
             }
