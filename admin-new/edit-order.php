@@ -1589,10 +1589,10 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if((($log->action == 'dropjob_ratingunchange')) && ($getorder->is_scheduled)): ?>
                                                           <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id; ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>. Reason: <?php //echo $log->addi_detail; ?></p>-->
-                                                          <p style="margin-bottom: 10px; color: red;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
+                                                          <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'dropjob' && ($getorder->is_scheduled) && (!$log->admin_username)): ?>
-                                                          <p style="margin-bottom: 10px; color: red;">Washer #<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
+                                                          <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'Dropschedule' && ($getorder->is_scheduled)): ?>
                                                           <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> dropped order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1696,10 +1696,10 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;  color:red;">Customer canceled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'cancelorderwasher'): ?>
-                                                          <p style="margin-bottom: 10px;  color:red;">Washer #<?php echo $log->agent_company_id; ?> canceled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;  color:red;">#<?php echo $log->agent_company_id; ?> canceled order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerenroutecancel'): ?>
-                                                          <p style="margin-bottom: 10px; color:red;">Washer #<?php echo $log->agent_company_id; ?> canceled order enroute at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px; color:red;">#<?php echo $log->agent_company_id; ?> canceled order enroute at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                            <?php if($log->action == 'adminstopwasherpayment'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> stopped washer payment at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1711,7 +1711,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer accepted add vehicle request: <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerchangepack'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> changed package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> changed package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'adminsubmitforsettlement'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> submitted payment for settlement at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1723,7 +1723,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer hit <?php if($log->addi_detail == 'yes') {echo "'Meet Washer Outside'";} if($log->addi_detail == 'no') {echo "'No Thanks'";}  ?> after wash at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washereditcar'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> edited vehicle to <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> edited vehicle to <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'adminaddcar'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> added <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1735,7 +1735,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> changed addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerremovecar'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> removed <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> removed <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'adminremovecar'): ?>
                                                           <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> removed <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1744,16 +1744,16 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px; color:red;">Customer feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentfeedback'): ?>
-                                                          <p style="margin-bottom: 10px; color: red;">Washer #<?php echo $log->agent_company_id; ?> finishes adding the feedback for that dropped order <?php //echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
+                                                          <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> finishes adding the feedback for that dropped order <?php //echo date('F j, Y - h:i A', strtotime($log->action_date)); ?> : <?php echo $log->addi_detail; ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'customercall'): ?>
                                                           <p style="margin-bottom: 10px;">Customer called washer #<?php echo $log->agent_company_id; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentcall'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> called customer at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> called customer at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentbuzz'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_company_id; ?> buzzed customer at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> buzzed customer at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'customeracceptupgrade'): ?>
                                                           <p style="margin-bottom: 10px;">Customer accepted package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1771,10 +1771,10 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer added <?php echo $log->addi_detail;?> tip amount at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentreinspectopt'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_id; ?> choose reinspect for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> choose reinspect for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentnodamageopt'): ?>
-                                                          <p style="margin-bottom: 10px;">Washer #<?php echo $log->agent_id; ?> choose no damage for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> choose no damage for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'clientwashnowschedule'): ?>
                                                           <p style="margin-bottom: 10px;">Customer changed Wash Now to Scheduled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1801,13 +1801,16 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer rescheduled order from <?php echo $log->addi_detail; ?> on <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerstartinspection'): ?>
-                                                          <p style='margin-bottom: 10px;'>Washer #<?php echo $log->agent_company_id; ?> <?php echo $log->addi_detail; ?> started inspection at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style='margin-bottom: 10px;'>#<?php echo $log->agent_company_id; ?> started inspection for <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washercompleteinspection'): ?>
-                                                          <p style='margin-bottom: 10px;'>Washer #<?php echo $log->agent_company_id; ?> <?php echo $log->addi_detail; ?> completed inspection at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style='margin-bottom: 10px;'>#<?php echo $log->agent_company_id; ?> completed inspection for <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerstartwash'): ?>
-                                                          <p style='margin-bottom: 10px;'>Washer #<?php echo $log->agent_company_id; ?> <?php echo $log->addi_detail; ?> started wash at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style='margin-bottom: 10px;'>#<?php echo $log->agent_company_id; ?> started wash for <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washerfinishwash'): ?>
+                                                          <p style='margin-bottom: 10px;'>#<?php echo $log->agent_company_id; ?> completed wash for <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
@@ -4004,10 +4007,10 @@ if(data.result == 'true'){
       <?php if(($getorder->is_scheduled)): ?>
       if(log.action == 'dropjob_ratingunchange'){
           /*contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped order at "+log.formatted_action_date+"</p>. Reason: "+log.addi_detail; */
-          contents += "<p style='margin-bottom: 10px; color:red;'>Washer #"+log.agent_company_id+" feedback at "+log.formatted_action_date+" : "+log.addi_detail+'</p>';  
+          contents += "<p style='margin-bottom: 10px; color:red;'>#"+log.agent_company_id+" feedback at "+log.formatted_action_date+" : "+log.addi_detail+'</p>';  
       }
       if((log.action == 'dropjob') && (!log.admin_username)){
-          contents += "<p style='margin-bottom: 10px; color:red;'>Washer #"+log.agent_company_id+" feedback at "+log.formatted_action_date+" : "+log.addi_detail+'</p>';   
+          contents += "<p style='margin-bottom: 10px; color:red;'>#"+log.agent_company_id+" feedback at "+log.formatted_action_date+" : "+log.addi_detail+'</p>';   
       }
       if(log.action == 'Dropschedule'){
           contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped order at "+log.formatted_action_date+"</p>"; 
@@ -4139,11 +4142,11 @@ if(data.result == 'true'){
       }
 
       if(log.action == 'cancelorderwasher'){
-            contents += "<p style='margin-bottom: 10px; color:red;'>Washer #"+log.agent_company_id+" canceled order at "+log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px; color:red;'>#"+log.agent_company_id+" canceled order at "+log.formatted_action_date+"</p>";
       }
 
       if(log.action == 'washerenroutecancel'){
-            contents += "<p style='margin-bottom: 10px; color:red;'>Washer #"+log.agent_company_id+" canceled order enroute at "+log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px; color:red;'>#"+log.agent_company_id+" canceled order enroute at "+log.formatted_action_date+"</p>";
       }
 
        if(log.action == 'adminstopwasherpayment'){
@@ -4159,7 +4162,7 @@ if(data.result == 'true'){
       }
       
        if(log.action == 'washerchangepack'){
-            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" changed package/addons "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" changed package/addons "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
       }
       
       if(log.action == 'adminsubmitforsettlement'){
@@ -4189,7 +4192,7 @@ if(data.result == 'true'){
       }
       
         if(log.action == 'washereditcar'){
-            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" edited vehicle to "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" edited vehicle to "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
       }
       
        if(log.action == 'adminaddcar'){
@@ -4205,7 +4208,7 @@ if(data.result == 'true'){
       }
       
        if(log.action == 'washerremovecar'){
-            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" removed "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" removed "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
       }
       
        if(log.action == 'adminremovecar'){
@@ -4218,7 +4221,7 @@ if(data.result == 'true'){
       
        if(log.action == 'agentfeedback'){
             /*"+log.formatted_action_date +"*/
-		    contents += "<p style='margin-bottom: 10px; color: red;'>Washer #"+log.agent_company_id+" finishes adding the feedback for that dropped order : "+ log.addi_detail+"</p>";
+		    contents += "<p style='margin-bottom: 10px; color: red;'>#"+log.agent_company_id+" finishes adding the feedback for that dropped order : "+ log.addi_detail+"</p>";
       }
       
        if(log.action == 'customercall'){
@@ -4226,11 +4229,11 @@ if(data.result == 'true'){
       }
       
        if(log.action == 'agentcall'){
-            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id +" called customer at "+ log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id +" called customer at "+ log.formatted_action_date+"</p>";
       }
       
        if(log.action == 'agentbuzz'){
-            contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id +" buzzed customer at "+ log.formatted_action_date+"</p>";
+            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id +" buzzed customer at "+ log.formatted_action_date+"</p>";
       }
       
        if(log.action == 'customeracceptupgrade'){
@@ -4251,11 +4254,11 @@ if(data.result == 'true'){
        }
        
        if(log.action == 'agentreinspectopt'){
-        contents += "<p style='margin-bottom: 10px;'>Washer # "+log.agent_id+" choose reinspect for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" choose reinspect for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
        }
        
        if(log.action == 'agentnodamageopt'){
-        contents += "<p style='margin-bottom: 10px;'>Washer # "+log.agent_id+" choose no damage for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" choose no damage for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
        }
        
        if(log.action == 'clientwashnowschedule'){
@@ -4291,15 +4294,19 @@ if(data.result == 'true'){
        }
        
        if(log.action == 'washerstartinspection'){
-        contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" "+ log.addi_detail+" started inspection at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" started inspection for "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
        }
        
        if(log.action == 'washercompleteinspection'){
-        contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" "+ log.addi_detail+" completed inspection at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" completed inspection for "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
        }
        
        if(log.action == 'washerstartwash'){
-        contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" "+ log.addi_detail+" started wash at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" started wash for "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
+       }
+       
+       if(log.action == 'washerfinishwash'){
+        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" completed wash for "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
        }
        
 

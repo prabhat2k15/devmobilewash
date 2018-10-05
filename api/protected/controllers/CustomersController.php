@@ -2815,6 +2815,7 @@ $vehicles[] = array('id'=>$vehicle['id'],
 
 	$customer_id = Yii::app()->request->getParam('customer_id');
 	$wash_request_id = Yii::app()->request->getParam('wash_request_id');
+	$vehicle_id = Yii::app()->request->getParam('vehicle_id');
 
 	if(!empty($customer_id) && isset($customer_id)){
 		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
@@ -2825,14 +2826,27 @@ $vehicles[] = array('id'=>$vehicle['id'],
 		
             $washrequest_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
 		$agents_id_check = Agents::model()->findByAttributes(array("id"=>$washrequest_id_check->agent_id));
+		if($vehicle_id) $vehicle_details = Vehicle::model()->findByPk($vehicle_id);
 		
+		if($vehicle_id){
 		$logdata= array(
                             'agent_id'=> $washrequest_id_check->agent_id,
                             'wash_request_id'=> $wash_request_id,
                             'agent_company_id'=> $agents_id_check->real_washer_id,
                             'action'=> 'washerstartinspection',
-			    'addi_detail' => $agents_id_check->first_name." ".$agents_id_check->last_name,
-                            'action_date'=> date('Y-m-d H:i:s'));
+			    'addi_detail' => $vehicle_details->brand_name." ".$vehicle_details->model_name,
+                            'action_date'=> date('Y-m-d H:i:s'));	
+		}
+		else{
+		$logdata= array(
+                            'agent_id'=> $washrequest_id_check->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agents_id_check->real_washer_id,
+                            'action'=> 'washerstartinspection',
+			    'addi_detail' => 'current vehicle',
+                            'action_date'=> date('Y-m-d H:i:s'));	
+		}
+		
 
                         Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 			
@@ -3934,7 +3948,7 @@ $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_m
                             'wash_request_id'=> $wash_request_id,
                             'agent_company_id'=> $agent_detail->real_washer_id,
                             'action'=> 'washercompleteinspection',
-			    'addi_detail' => $agent_detail->first_name." ".$agent_detail->last_name,
+			    'addi_detail' => $vehicle_details->brand_name." ".$vehicle_details->model_name,
                             'action_date'=> date('Y-m-d H:i:s'));
 		  Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
                  }
@@ -4072,24 +4086,27 @@ Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles'
 
 /* -------- pet hair / lift / addons check end --------- */
 
-if($upgrade_pack == 0){
+//if($upgrade_pack == 0){
+if((!$upgrade_pack) && (!$new_vehicle_confirm) && (!$remove_vehicle_from_kart) && (!$edit_vehicle)){
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '6' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
 
 $notify_msg = str_replace("[BRAND_NAME]",$vehicle_details->brand_name, $notify_msg);
 $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_msg);
-		 }
 
-                  //$notify_msg = $vehicle_details->brand_name." ".$vehicle_details->model_name." car wash is in progress.";
-		  $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+ $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 		  $logdata = array(
                             'agent_id'=> $wash_request_exists->agent_id,
                             'wash_request_id'=> $wash_request_id,
                             'agent_company_id'=> $agent_detail->real_washer_id,
                             'action'=> 'washerstartwash',
-			    'addi_detail' => $agent_detail->first_name." ".$agent_detail->last_name,
+			    'addi_detail' => $vehicle_details->brand_name." ".$vehicle_details->model_name,
                             'action_date'=> date('Y-m-d H:i:s'));
 		  Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+		 }
+
+                  //$notify_msg = $vehicle_details->brand_name." ".$vehicle_details->model_name." car wash is in progress.";
+		 
                  }
 
                   if(($status == 6)){
@@ -4101,6 +4118,18 @@ $notify_msg = $pushmsg[0]['message'];
 
 $notify_msg = str_replace("[BRAND_NAME]",$vehicle_details->brand_name, $notify_msg);
 $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_msg);
+
+$agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+		  $logdata = array(
+                            'agent_id'=> $wash_request_exists->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_detail->real_washer_id,
+                            'action'=> 'washerfinishwash',
+			    'addi_detail' => $vehicle_details->brand_name." ".$vehicle_details->model_name,
+                            'action_date'=> date('Y-m-d H:i:s'));
+		  Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+
+
 }
 
                   //$notify_msg = $vehicle_details->brand_name." ".$vehicle_details->model_name." car wash complete.";

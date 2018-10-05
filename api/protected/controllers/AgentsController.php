@@ -1272,7 +1272,7 @@ $twilio = new Client($sid, $token);
 try { 
 $phone_number_check = $twilio->lookups->v1->phoneNumbers($phone_number)->fetch(array("type" => "carrier"));
 
-if($phone_number_check->carrier['type'] == 'voip'){
+if(($phone_number_check->carrier['type'] == 'voip') && (!$block_washer)){
 	$result= "false";
         $response = "MobileWash no longer allows VOIP numbers, please enter a valid mobile number to continue";
         $json = array(
