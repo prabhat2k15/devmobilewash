@@ -2814,11 +2814,28 @@ $vehicles[] = array('id'=>$vehicle['id'],
 	$response= 'Pass the required parameters';
 
 	$customer_id = Yii::app()->request->getParam('customer_id');
+	$wash_request_id = Yii::app()->request->getParam('wash_request_id');
 
 	if(!empty($customer_id) && isset($customer_id)){
 		if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 		$customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
+		$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 		}
+		
+		
+            $washrequest_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
+		$agents_id_check = Agents::model()->findByAttributes(array("id"=>$washrequest_id_check->agent_id));
+		
+		$logdata= array(
+                            'agent_id'=> $washrequest_id_check->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agents_id_check->real_washer_id,
+                            'action'=> 'washerstartinspection',
+			    'addi_detail' => $agents_id_check->first_name." ".$agents_id_check->last_name,
+                            'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+			
     	$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 						/* --- notification call --- */
@@ -3903,6 +3920,7 @@ $vehicle_details = Vehicle::model()->findByAttributes(array('id'=>$vehicle_id, '
                  //   echo "hi roahn".$device_type."_".$notify_token;die;
                  if(count($vehicle_details)){
                  if(($status == 2) && (!$upgrade_pack) && (!$new_vehicle_confirm) && (!$edit_vehicle) && (!$remove_vehicle_from_kart)){
+			
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '4' ")->queryAll();
 $notify_msg = $pushmsg[0]['message'];
 
@@ -3910,6 +3928,15 @@ $notify_msg = str_replace("[BRAND_NAME]",$vehicle_details->brand_name, $notify_m
 $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_msg);
 
                   //$notify_msg = "Inspection complete for ".$vehicle_details->brand_name." ".$vehicle_details->model_name.", please confirm.";
+		  $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+		  $logdata = array(
+                            'agent_id'=> $wash_request_exists->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_detail->real_washer_id,
+                            'action'=> 'washercompleteinspection',
+			    'addi_detail' => $agent_detail->first_name." ".$agent_detail->last_name,
+                            'action_date'=> date('Y-m-d H:i:s'));
+		  Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
                  }
 
 if($status == 2) Washingrequests::model()->updateByPk($wash_request_id, array('washer_wash_activity' => 1));
@@ -3941,6 +3968,8 @@ $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_m
 					
 				}
 			}
+			
+			
                  }
 
                  if($status == 5){
@@ -4052,6 +4081,15 @@ $notify_msg = str_replace("[MODEL_NAME]",$vehicle_details->model_name, $notify_m
 		 }
 
                   //$notify_msg = $vehicle_details->brand_name." ".$vehicle_details->model_name." car wash is in progress.";
+		  $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+		  $logdata = array(
+                            'agent_id'=> $wash_request_exists->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'agent_company_id'=> $agent_detail->real_washer_id,
+                            'action'=> 'washerstartwash',
+			    'addi_detail' => $agent_detail->first_name." ".$agent_detail->last_name,
+                            'action_date'=> date('Y-m-d H:i:s'));
+		  Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
                  }
 
                   if(($status == 6)){

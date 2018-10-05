@@ -1682,9 +1682,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php if($log->action == 'washerarrivejob'): ?>
                                                           <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> arrived at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
-                                                          <?php if($log->action == 'washerprocessjob'): ?>
-                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> started processing at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
-                                                          <?php endif; ?>
+                                                         
                                                           <?php if($log->action == 'appcompletejob'): ?>
                                                           <p style="margin-bottom: 10px;">Order completed at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
@@ -1801,6 +1799,15 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'customerreschedule'): ?>
                                                           <p style="margin-bottom: 10px;">Customer rescheduled order from <?php echo $log->addi_detail; ?> on <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washerstartinspection'): ?>
+                                                          <p style='margin-bottom: 10px;'>Washer #<?php echo $log->agent_company_id; ?> <?php echo $log->addi_detail; ?> started inspection at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washercompleteinspection'): ?>
+                                                          <p style='margin-bottom: 10px;'>Washer #<?php echo $log->agent_company_id; ?> <?php echo $log->addi_detail; ?> completed inspection at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'washerstartwash'): ?>
+                                                          <p style='margin-bottom: 10px;'>Washer #<?php echo $log->agent_company_id; ?> <?php echo $log->addi_detail; ?> started wash at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
@@ -4115,10 +4122,6 @@ if(data.result == 'true'){
             contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" arrived at "+log.formatted_action_date+"</p>";
       }
 
-      if(log.action == 'washerprocessjob'){
-            contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" started processing at "+log.formatted_action_date+"</p>";
-      }
-
       if(log.action == 'appcompletejob'){
             contents += "<p style='margin-bottom: 10px;'>Order completed at "+log.formatted_action_date+"</p>";
       }
@@ -4285,6 +4288,18 @@ if(data.result == 'true'){
        
        if(log.action == 'customerreschedule'){
         contents += "<p style='margin-bottom: 10px;'>Customer rescheduled order from "+log.addi_detail+" on "+log.formatted_action_date+"</p>";
+       }
+       
+       if(log.action == 'washerstartinspection'){
+        contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" "+ log.addi_detail+" started inspection at "+log.formatted_action_date+"</p>";
+       }
+       
+       if(log.action == 'washercompleteinspection'){
+        contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" "+ log.addi_detail+" completed inspection at "+log.formatted_action_date+"</p>";
+       }
+       
+       if(log.action == 'washerstartwash'){
+        contents += "<p style='margin-bottom: 10px;'>Washer #"+log.agent_company_id+" "+ log.addi_detail+" started wash at "+log.formatted_action_date+"</p>";
        }
        
 
