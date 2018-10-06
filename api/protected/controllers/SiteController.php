@@ -3415,6 +3415,12 @@ else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reque
              continue;
         }
         
+    }elseif($event == 'ondemandcanceled'){
+        $ondemandautocanceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'ondemandautocancel' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
+        //print_r($check_auto_canceled);
+        if(count($ondemandautocanceled) != 0 || $wrequest['status'] == 7){
+             continue;
+        }
     }
 
 if($wrequest['is_scheduled']){
