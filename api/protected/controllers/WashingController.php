@@ -9358,14 +9358,14 @@ if($orderbycustomer['zipcode']) {
                     $near_agent = '';
                     $color = '#30A0FF';
                 }
-                elseif($check_auto_canceled == 1)
+                elseif($check_auto_canceled == 1 && $orderbycustomer['is_scheduled'] == 1)
                 {
                 	$order_of_status = 'Scheduled-auto';
                     $totalminutes = 'N/A';
                     $near_agent = '';
                     $color = '#30A0FF';
                 }
-                elseif($ondemandautocanceled == 1){
+                elseif($ondemandautocanceled == 1 && $orderbycustomer['is_scheduled'] == 0){
                 	$order_of_status = 'ondemandautocanceled';
                     $totalminutes = 'N/A';
                     $near_agent = '';

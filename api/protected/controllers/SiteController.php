@@ -3402,16 +3402,20 @@ else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reque
     if($event == 'scheduleauto'){
         $check_auto_canceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'scheduleauto-canceled' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
         //print_r($check_auto_canceled);
-        if(count($check_auto_canceled) == 0){
+        if(count($check_auto_canceled) == 0 || $wrequest['is_scheduled'] == 0){
+             continue;
+        }   
+    }elseif($event == 'schedulecanceled'){
+        $ondemandautocanceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'scheduleauto-canceled' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
+        if(count($ondemandautocanceled) != 0 || $wrequest['status'] == 7){
              continue;
         }
-        
     }
-                
+            
     if($event == 'ondemandauto'){
         $ondemandautocanceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'ondemandautocancel' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
         //print_r($check_auto_canceled);
-        if(count($ondemandautocanceled) == 0){
+        if(count($ondemandautocanceled) == 0 || $wrequest['is_scheduled'] == 1){
              continue;
         }
         
