@@ -721,7 +721,7 @@ else echo "N/A";
     <?php if($order->is_scheduled): ?>
 <?php if(strtotime($order->reschedule_date) > 0): ?>
 
-<span style="color: red; font-weight: bold; font-size: 13px;"><?php echo $order->reschedule_date." ".$order->reschedule_time; ?></span><p style="text-align: center; font-weight: bold; color: red; margin: 5px 0;">Re-Scheduled</p>
+<p style="color: red; font-weight: bold; font-size: 13px; margin: 0;">Rescheduled to <?php echo $order->reschedule_date." ".$order->reschedule_time; ?></p>
 <?php endif; ?>
 <?php if(strtotime($order->schedule_date) > 0) echo $order->schedule_date." ".$order->schedule_time; ?>
 <?php else: ?>
@@ -1143,7 +1143,7 @@ upcomingwashes.push(value.address+" ("+value.address_type+")");
 
 if(value.is_scheduled == 1){
  if (value.reschedule_time) {
-  upcomingwashes.push("<span style='color: red; font-weight: bold; font-size: 13px;'>"+value.reschedule_date+" "+value.reschedule_time+"</span><p style='text-align: center; font-weight: bold; color: red; margin: 5px 0;'>Re-Scheduled</p>");  
+  upcomingwashes.push("<p style='color: red; font-weight: bold; font-size: 13px; margin: 0;'>Rescheduled to "+value.reschedule_date+" "+value.reschedule_time+"</p>");  
 }
 else{
  if(value.schedule_time){

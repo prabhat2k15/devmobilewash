@@ -1771,10 +1771,10 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">Customer added <?php echo $log->addi_detail;?> tip amount at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentreinspectopt'): ?>
-                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> choose reinspect for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> chose reinspect for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'agentnodamageopt'): ?>
-                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> choose no damage for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> chose no damage for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'clientwashnowschedule'): ?>
                                                           <p style="margin-bottom: 10px;">Customer changed Wash Now to Scheduled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -4254,11 +4254,11 @@ if(data.result == 'true'){
        }
        
        if(log.action == 'agentreinspectopt'){
-        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" choose reinspect for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" chose reinspect for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
        }
        
        if(log.action == 'agentnodamageopt'){
-        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" choose no damage for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" chose no damage for "+ log.addi_detail+" at "+log.formatted_action_date+"</p>";
        }
        
        if(log.action == 'clientwashnowschedule'){
