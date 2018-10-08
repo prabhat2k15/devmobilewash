@@ -12060,6 +12060,12 @@ die();
 
          if(count($allschedwashes)){
                foreach($allschedwashes as $schedwash){
+		$wash_id_encoded = '';
+		if(AES256CBC_STATUS == 1){
+$wash_id_encoded = $this->aes256cbc_crypt( $schedwash->id, 'e', AES256CBC_API_PASS );
+}
+		
+		 
 
                /* --- send schedule wash create alert ------- */
 
@@ -12103,6 +12109,7 @@ die();
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
 							$message = $pushmsg[0]['message'];
+							$message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wash_id_check->city), $wash_id_check->agent_total), $message);
 
 							foreach($agentdevices as $agdevice){
 								
@@ -12113,10 +12120,10 @@ $notify_token = '';
 								$device_type = strtolower($agdevice['device_type']);
 								$notify_token = $agdevice['device_token'];
 								$alert_type = "schedule";
-								$notify_msg = urlencode($message);
+								$notify_msg = urlencode($message2);
 //echo $device_type." ".$notify_token."<br><br>";
 
-								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type."&wash_id=".$wash_id_encoded;
 								file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
 								$ch = curl_init();
 								curl_setopt($ch,CURLOPT_URL,$notifyurl);
@@ -13299,6 +13306,7 @@ die();
 }
 
 	$wash_request_id  = Yii::app()->request->getParam('wash_request_id');
+	$wash_request_id_org  = Yii::app()->request->getParam('wash_request_id');
 	
 	
 		if(AES256CBC_STATUS == 1){
@@ -13311,6 +13319,8 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 		$allagents = Agents::model()->findAll(array("condition"=>"block_washer =  0"));
 		$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
 		$message = $pushmsg[0]['message'];
+		$message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wash_id_check->city), $wash_id_check->agent_total), $message);
+
 		
 		foreach($allagents as $agent){
 			
@@ -13334,9 +13344,9 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 					$notify_token = $agdevice['device_token'];
 					$alert_type = "schedule";
 
-					$notify_msg = urlencode($message);
+					$notify_msg = urlencode($message2);
 
-					$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+					$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type."&wash_id=".$wash_request_id_org;
 								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
 					$ch = curl_init();
 					curl_setopt($ch,CURLOPT_URL,$notifyurl);
@@ -14053,7 +14063,7 @@ $message .= "<table style='width: 100%; border-collapse: collapse; border-bottom
 					<td></td>
 					<td style='text-align: right;'><p style='font-size: 20px; margin: 0; color: #000;'>Order Total: <span style='font-weight: bold;'>$".number_format($fee, 2)."</span></p></td></tr></table>";
 
-					$message .= "<p style='text-align: center; font-size: 14px; line-height: 20px; margin-top: 45px; margin-bottom: 0;'>The Customer No Fee is applied after multiple attempts of contacting you by way of notification, SMS, calls from both the office and your washer, and a 15 minute grace period. If you have any questions please contact our office at (888) 209-5585</p>";
+					$message .= "<p style='text-align: center; font-size: 14px; line-height: 20px; margin-top: 45px; margin-bottom: 0;'>Customer No Response Fee is applied 15 minutes after the washer arrives. We've made multiple attempts to reach you via texts, app notifications, and courtesy call(s). We charge this fee in order to compensate your washer.</p>";
 $to = Vargas::Obj()->getAdminToEmail();
 
 	Vargas::Obj()->SendMail($cust_exists->email,"billing@devmobilewash.com",$message,$subject, 'mail-receipt');
