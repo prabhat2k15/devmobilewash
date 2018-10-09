@@ -2402,6 +2402,12 @@ $customername = ucwords($customername);
         if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->request->getParam('api_password');
 	$admin_username = '';
         if(Yii::app()->request->getParam('admin_username')) $admin_username = Yii::app()->request->getParam('admin_username');
+	$save_coupon = 0;
+        if(Yii::app()->request->getParam('save_coupon')) $save_coupon = Yii::app()->request->getParam('save_coupon');
+	$coupon_code = '';
+        if(Yii::app()->request->getParam('coupon_code')) $coupon_code = Yii::app()->request->getParam('coupon_code');
+	$coupon_amount = '';
+        if(Yii::app()->request->getParam('coupon_amount')) $coupon_amount = Yii::app()->request->getParam('coupon_amount');
 
         $result = 'false';
         $response = 'Pass the required parameters';
@@ -2414,6 +2420,15 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 
         $agent_detail = Agents::model()->findByAttributes(array("id"=>$agent_id));
         $order_for_date = '';
+	
+	if($save_coupon == 1){
+		Washingrequests::model()->updateByPk($wash_request_id, array("coupon_code" => $coupon_code, "coupon_discount" => $coupon_amount));
+        	
+	$json = array('result'=> 'true',
+                        'response'=> 'coupon updated');
+
+            echo json_encode($json);die();
+	}
 
         if($meet_washer_outside) {
 	$old_meet_washer_outside = Yii::app()->db->createCommand("SELECT meet_washer_outside FROM washing_requests WHERE id = :id LIMIT 1" )->bindValue(':id', $wash_request_id, PDO::PARAM_STR)->queryAll();
@@ -5542,21 +5557,21 @@ $status = -1 * abs($status);
                 else
                 {
                     /* ------- get nearest agents --------- */
-        			$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
+        			/*$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
         			$data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
         			curl_setopt($handle, CURLOPT_POST, true);
         			curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         			curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
         			$output = curl_exec($handle);
         			curl_close($handle);
-        			$nearagentsdetails = json_decode($output);
+        			$nearagentsdetails = json_decode($output);*/
                     /* ------- get nearest agents end --------- */
 
-                    if($nearagentsdetails->result == 'true')
+                   /* if($nearagentsdetails->result == 'true')
                     {
                         end($nearagentsdetails->nearest_agents);
                         $last_agent_id = key($nearagentsdetails->nearest_agents);
-                        reset($nearagentsdetails->nearest_agents);
+                        reset($nearagentsdetails->nearest_agents);*/
 
                         /*if(abs($status) == $last_agent_id)
                         {
@@ -5601,7 +5616,7 @@ $status = -1 * abs($status);
 				}
 			    }
                         //}
-                    }
+                   // }
 
                     //else Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => $status_text, 'order_temp_assigned' => 0 ));
                }
@@ -12109,7 +12124,7 @@ $wash_id_encoded = $this->aes256cbc_crypt( $schedwash->id, 'e', AES256CBC_API_PA
 
 							$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
 							$message = $pushmsg[0]['message'];
-							$message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wash_id_check->city), $wash_id_check->agent_total), $message);
+							$message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($schedwash->city), number_format($schedwash->agent_total, 2)), $message);
 
 							foreach($agentdevices as $agdevice){
 								
@@ -13232,7 +13247,7 @@ $mins_since_last_use = round((time() - strtotime($agentdevices[0]['last_used']))
                         //if($current_mile <= 1) $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
                         //else $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
 			           
-				    $message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wash_id_check->city), $wash_id_check->agent_total), $message);
+				    $message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wash_id_check->city), number_format($wash_id_check->agent_total,2)), $message);
                         //echo $agid." ".$message2."<br>";
 						foreach($agentdevices as $agdevice){
 
@@ -13320,7 +13335,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 		$allagents = Agents::model()->findAll(array("condition"=>"block_washer =  0"));
 		$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
 		$message = $pushmsg[0]['message'];
-		$message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wash_id_check->city), $wash_id_check->agent_total), $message);
+		$message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wash_id_check->city), number_format($wash_id_check->agent_total,2)), $message);
 
 		
 		foreach($allagents as $agent){
