@@ -2724,6 +2724,7 @@ $("body").on('focusout', '.custom_pet_fees', function(){
     var val = $(this).val();
     if(val > 10 || (val > 0 && val < 10)){
       if(confirm('Are you sure you want to change extra cleaning fee amount to ( '+val+' )? ')){
+          $('#edit-order-submit').trigger('click');
           return true;
       }else{
         $(this).val(10);
