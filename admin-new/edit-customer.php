@@ -77,7 +77,7 @@ $err = '';
 
 $data = $_POST['custnewpic'];
 
-$data = str_replace('data:image/jpeg;base64,', '', $data);
+$data = str_replace('data:image/png;base64,', '', $data);
 $data = str_replace(' ', '+', $data);
 $data = base64_decode($data);
 $md5 = md5(uniqid(rand(), true));
@@ -575,6 +575,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
 				height: 200,
 				type: 'circle'
 			},
+                        enforceBoundary: false,
 			enableExif: false
 		});
 
@@ -585,7 +586,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
 				size: 'viewport',
 				circle: false,
 				quality: .9,
-				format: 'jpeg'
+				format: 'png'
 			}).then(function (resp) {
 				$('.profile-sidebar .profile-userpic img').attr('src', resp);
 				$('.custnewpic').val(resp);

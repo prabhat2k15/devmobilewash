@@ -5556,6 +5556,21 @@ $status = -1 * abs($status);
                 }
                 else
                 {
+			
+			$app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = 'IOS'")->queryAll();
+			$agentlocation = AgentLocations::model()->findByAttributes(array('agent_id'=>abs($status)));
+			
+			 /* --------- distance calculation ------------ */
+
+                  $theta = $wash_id_check->longitude - $agentlocation->longitude;
+            $dist = sin(deg2rad($wash_id_check->latitude)) * sin(deg2rad($agentlocation->latitude)) +  cos(deg2rad($wash_id_check->latitude)) * cos(deg2rad($agentlocation->latitude)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+            $unit = strtoupper($unit);
+
+	    if(($miles > 0) && ($miles <= $app_settings[0]['washer_search_radius'])){
+		
                     /* ------- get nearest agents --------- */
         			/*$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
         			$data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
@@ -5617,6 +5632,7 @@ $status = -1 * abs($status);
 			    }
                         //}
                    // }
+		}
 
                     //else Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => $status_text, 'order_temp_assigned' => 0 ));
                }
