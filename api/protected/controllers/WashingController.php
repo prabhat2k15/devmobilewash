@@ -8862,8 +8862,32 @@ die();
                     curl_close($ch);
                 }
             }
+                
+$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
+$message = $pushmsg[0]['message'];
+$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wrequest_id_check->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+				    $message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wrequest_id_check->city), number_format($wrequest_id_check->agent_total,2)), $message);
+                        //echo $agid." ".$message2."<br>";
+                if(count($agentdevices) > 0){
+						foreach($agentdevices as $agdevice){
 
-	    
+						    $device_type = strtolower($agdevice['device_type']);
+							$notify_token = $agdevice['device_token'];
+							$alert_type = "default";
+
+							$notify_msg = urlencode($message2);
+
+							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+							$ch = curl_init();
+							curl_setopt($ch,CURLOPT_URL,$notifyurl);
+							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+							if($notify_msg) $notifyresult = curl_exec($ch);
+							curl_close($ch);
+						}
+
+                }
 
 
 $result = 'true';
