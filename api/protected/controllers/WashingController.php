@@ -2034,6 +2034,10 @@ $mobile_receipt .= "Surge Fee $".number_format($kartdata->wash_later_fee, 2)."\r
 
 
                      $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
+		     
+		     Washingrequests::model()->updateByPk($wash_request_id, array('agent_total' => $kartdata->agent_total));
+	
+                
 
                     
 		    if(($wash_now_reschedule == 1) && (APP_ENV == 'real')){
@@ -13928,7 +13932,7 @@ $sched_time = $order_exists->schedule_time;
 }
 }
 					$message = '';
-					$subject = 'Cancel Order Receipt - #0000'.$id;
+					$subject = 'Order Receipt - #000'.$id;
 					//$message = "Hello ".$customername.",<br/><br/>Welcome to Mobile wash!";
 					$message = "<div class='block-content' style='background: #fff; text-align: left;'>
 					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>Customer No Response</h2>";
@@ -14111,66 +14115,45 @@ $message .= "<table style='width: 100%; border-collapse: collapse; border-bottom
 					<td style='text-align: right;'><p style='font-size: 20px; margin: 0; color: #000;'>Order Total: <span style='font-weight: bold;'>$".number_format($fee, 2)."</span></p></td></tr></table>";
 
 					$message .= "<p style='text-align: center; font-size: 14px; line-height: 20px; margin-top: 45px; margin-bottom: 0;'>Customer No Response Fee is applied 15 minutes after the washer arrives. We've made multiple attempts to reach you via texts, app notifications, and courtesy call(s). We charge this fee in order to compensate your washer.</p>";
+
+$message_washer = "<div class='block-content' style='background: #fff; text-align: left;'>
+					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>Customer No Response</h2><h2 style='text-align: center; font-size: 26px; margin-top: 0;'>Order Number: <span style='font-weight: normal;'>#000".$id."</span></h2>";
+					
+$message_washer .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
+							<td style='padding-bottom: 15px; padding-top: 15px;'>
+							<p style='font-size: 20px; margin: 0;'>CNR Fee</p>
+							</td>
+							<td style='text-align: right; padding-top: 15px; padding-bottom: 15px;'><p style='font-size: 20px; margin: 0;'>+$25.00</p></td>
+							</tr></table>";
+							
+	$message_washer .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+					<tr>
+					<td></td>
+					<td style='text-align: right;'><p style='font-size: 20px; margin: 0; color: #000;'>Order Total: <span style='font-weight: bold;'>$25.00</span></p></td></tr></table>";
+
+$message_company = "<div class='block-content' style='background: #fff; text-align: left;'>
+					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>Customer No Response</h2><h2 style='text-align: center; font-size: 26px; margin-top: 0;'>Order Number: <span style='font-weight: normal;'>#000".$id."</span></h2>";
+					
+$message_company .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
+							<td style='padding-bottom: 15px; padding-top: 15px;'>
+							<p style='font-size: 20px; margin: 0;'>CNR Fee</p>
+							</td>
+							<td style='text-align: right; padding-top: 15px; padding-bottom: 15px;'><p style='font-size: 20px; margin: 0;'>+$5.00</p></td>
+							</tr></table>";
+							
+	$message_company .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+					<tr>
+					<td></td>
+					<td style='text-align: right;'><p style='font-size: 20px; margin: 0; color: #000;'>Order Total: <span style='font-weight: bold;'>$5.00</span></p></td></tr></table>";
+										
 $to = Vargas::Obj()->getAdminToEmail();
 
 	Vargas::Obj()->SendMail($cust_exists->email,"billing@devmobilewash.com",$message,$subject, 'mail-receipt');
-Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt');
+	Vargas::Obj()->SendMail($agent_det->email,"billing@devmobilewash.com",$message_washer,$subject, 'mail-receipt');
+	Vargas::Obj()->SendMail($to,"billing@devmobilewash.com",$message_company,$subject, 'mail-receipt');
+//Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt');
 
 Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_sent' => 1));
-
-  if((APP_ENV == 'real')){
-
- $this->layout = "xmlLayout";
-
-            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
-
-             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
-                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
-
-            $account_sid = TWILIO_SID;
-            $auth_token = TWILIO_AUTH_TOKEN;
-            $client = new Services_Twilio($account_sid, $auth_token);
-
- $message = "Order #".$id." has been canceled\r\nCustomer Name: ".$cust_exists->first_name." ".$cust_exists->last_name."\r\nPhone: ".$cust_exists->contact_number."\r\nAddress: ".$order_exists->address." (".$order_exists->address_type.")";
-$message2 = "Order #".$id." has been canceled";
-
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '8183313631',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-try {
-$sendmessage = $client->account->messages->create(array(
-                'To' =>  '3109999334',
-                'From' => '+13103128070',
-                'Body' => $message,
-            ));
-}catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-
-	       if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
-              try {
-             $sendmessage = $client->account->messages->create(array(
-                'To' =>  $agent_det->phone_number,
-                'From' => '+13103128070',
-                'Body' => $message2,
-            ));
-              }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
-            }
-
-           }
-
-
-break;
 
                      }
                      else{
