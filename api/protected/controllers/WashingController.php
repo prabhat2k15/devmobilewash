@@ -2404,10 +2404,16 @@ $customername = ucwords($customername);
         if(Yii::app()->request->getParam('admin_username')) $admin_username = Yii::app()->request->getParam('admin_username');
 	$save_coupon = 0;
         if(Yii::app()->request->getParam('save_coupon')) $save_coupon = Yii::app()->request->getParam('save_coupon');
+	$remove_coupon = 0;
+        if(Yii::app()->request->getParam('remove_coupon')) $remove_coupon = Yii::app()->request->getParam('remove_coupon');
 	$coupon_code = '';
         if(Yii::app()->request->getParam('coupon_code')) $coupon_code = Yii::app()->request->getParam('coupon_code');
 	$coupon_amount = '';
         if(Yii::app()->request->getParam('coupon_amount')) $coupon_amount = Yii::app()->request->getParam('coupon_amount');
+	$fifth_wash_discount = 0;
+        if(Yii::app()->request->getParam('fifth_wash_discount')) $fifth_wash_discount = Yii::app()->request->getParam('fifth_wash_discount');
+	$fifth_wash_vehicle = '';
+        if(Yii::app()->request->getParam('fifth_wash_vehicle')) $fifth_wash_vehicle = Yii::app()->request->getParam('fifth_wash_vehicle');
 
         $result = 'false';
         $response = 'Pass the required parameters';
@@ -2422,10 +2428,19 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
         $order_for_date = '';
 	
 	if($save_coupon == 1){
-		Washingrequests::model()->updateByPk($wash_request_id, array("coupon_code" => $coupon_code, "coupon_discount" => $coupon_amount));
+		Washingrequests::model()->updateByPk($wash_request_id, array("coupon_code" => $coupon_code, "coupon_discount" => $coupon_amount, "fifth_wash_discount" => 0, "fifth_wash_vehicles" => ''));
         	
 	$json = array('result'=> 'true',
                         'response'=> 'coupon updated');
+
+            echo json_encode($json);die();
+	}
+	
+	if($remove_coupon == 1){
+		Washingrequests::model()->updateByPk($wash_request_id, array("coupon_code" => $coupon_code, "coupon_discount" => $coupon_amount, "fifth_wash_discount" => $fifth_wash_discount, "fifth_wash_vehicles" => $fifth_wash_vehicle));
+        	
+	$json = array('result'=> 'true',
+                        'response'=> 'coupon removed');
 
             echo json_encode($json);die();
 	}
