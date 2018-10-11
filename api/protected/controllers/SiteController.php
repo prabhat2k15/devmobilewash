@@ -8533,5 +8533,24 @@ if((count($all_washes_city)) || (count($all_washes_zipcode))){
 		);
 		echo json_encode($json);
 	}
+	
+	     public function actiontestnum()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+
+             $json = array(
+                'result'=> 'true',
+                'response'=> '+13237384326'
+            );
+             echo json_encode($json);
+             exit;
+
+
+    }
     
 }
