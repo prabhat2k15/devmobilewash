@@ -1429,45 +1429,45 @@ if(($phone_number_check->carrier['type'] == 'voip') && (!$block_washer)){
                     $zipcode = $model->zipcode;
                 }
 
-                 if(empty($legally_eligible)){
+                 /*if(empty($legally_eligible)){
                     $legally_eligible = $model->legally_eligible;
-                }
+                }*/
 
                  if(empty($own_vehicle)){
                     $own_vehicle = $model->own_vehicle;
                 }
 
-                 if(empty($waterless_wash_product)){
+                 /*if(empty($waterless_wash_product)){
                     $waterless_wash_product = $model->waterless_wash_product;
-                }
+                }*/
 
                 if(empty($operate_area)){
                     $operate_area = $model->operate_area;
                 }
 
-                if(empty($work_schedule)){
+                /*if(empty($work_schedule)){
                     $work_schedule = $model->work_schedule;
-                }
+                }*/
 
                 if(empty($operating_as)){
                     $operating_as = $model->operating_as;
                 }
 
-                if(empty($company_name)){
+                /*if(empty($company_name)){
                     $company_name = $model->company_name;
-                }
+                }*/
 
                 if(empty($wash_experience)){
                     $wash_experience = $model->wash_experience;
                 }
 
-                if(empty($bank_account_number)){
+                /*if(empty($bank_account_number)){
                     $bank_account_number = $model->bank_account_number;
-                }
+                }*/
 
-                if(empty($routing_number)){
+                /*if(empty($routing_number)){
                     $routing_number = $model->routing_number;
-                }
+                }*/
                 
                 if(empty($insurance_expiration)){
                     $insurance_expiration = $model->insurance_license_expiration;
