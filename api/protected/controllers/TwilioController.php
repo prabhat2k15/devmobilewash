@@ -63,13 +63,14 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
             
             /* make Twilio REST request to initiate outgoing call */
             $call = $client->account->calls->create($this->from, $to, $newurl);
+	    //$call = $client->account->calls->create($fromnumber, $to, $newurl);
 
 			//exit;
             $capability = new Services_Twilio_Capability($this->pccountSid, $this->authToken);
             $capability->allowClientOutgoing($this->appSid);
             $token = $capability->generateToken();
 	    		     }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
+            echo  $e;
 }
 
 			if($token !=""){

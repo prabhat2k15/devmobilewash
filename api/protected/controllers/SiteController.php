@@ -2554,7 +2554,7 @@ $date = date('Y-m-d H:i:s');
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
     }
     $wash_later_fee = 0;
-    if(($admin_command == 'save-reschedule') && $reschedule_time){
+    /*if(($admin_command == 'save-reschedule') && $reschedule_time){
 	$schedule_times = Yii::app()->db->createCommand()->select('*')->from('schedule_times')->where('id=1')->queryAll();
 	
 	$reschedule_day = date('l', strtotime($reschedule_date." ".$reschedule_time));
@@ -2576,9 +2576,9 @@ break;
 }
 	
 }
-    }
+    }*/
 
-                Washingrequests::model()->updateByPk($wash_request_id, array("reschedule_date" => $reschedule_date, "reschedule_time" => $reschedule_time, "status" => $status, "agent_id" => $agent_id, "notes" => $notes, 'order_for' => $order_for_date, 'wash_later_fee' => $wash_later_fee));
+                Washingrequests::model()->updateByPk($wash_request_id, array("reschedule_date" => $reschedule_date, "reschedule_time" => $reschedule_time, "status" => $status, "agent_id" => $agent_id, "notes" => $notes, 'order_for' => $order_for_date));
 
 
 if(($admin_command == 'save-reschedule') && ($wrequest_id_check->is_scheduled == 1) && ($wrequest_id_check->agent_id) && ($reschedule_time) && ((strtotime($reschedule_date) != strtotime($wrequest_id_check->schedule_date)) || (strtotime($reschedule_time) != strtotime($wrequest_id_check->schedule_time)))){

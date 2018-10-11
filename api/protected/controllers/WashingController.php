@@ -7117,7 +7117,7 @@ if($kartdata->wash_later_fee > 0){
 $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
 $message_agent .= "<tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Surge Fee</p></td>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Surge</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
 <p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_later_fee*.75, 2), 2)."</p>
 </td>
