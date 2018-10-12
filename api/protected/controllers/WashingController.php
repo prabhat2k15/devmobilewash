@@ -8864,32 +8864,59 @@ die();
                 }
             }
                 
-$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
-$message = $pushmsg[0]['message'];
-$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$wrequest_id_check->agent_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-				    $message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wrequest_id_check->city), number_format($wrequest_id_check->agent_total,2)), $message);
-                        //echo $agid." ".$message2."<br>";
-                if(count($agentdevices) > 0){
-						foreach($agentdevices as $agdevice){
+$app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = 'IOS'")->queryAll();
+$sql="SELECT * FROM agent_locations";
+        $command = Yii::app()->db->createCommand($sql)->queryAll();
 
-						    $device_type = strtolower($agdevice['device_type']);
-							$notify_token = $agdevice['device_token'];
-							$alert_type = "default";
+        foreach($command as $loc){
+        /* --------- distance calculation ------------ */
+        $theta = $customer_lng - $loc['longitude'];
+        $dist = sin(deg2rad($customer_lat)) * sin(deg2rad($loc['latitude'])) +  cos(deg2rad($customer_lat)) * cos(deg2rad($loc['latitude'])) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+		if(($miles > 0) && ($miles <= $app_settings[0]['washer_search_radius'])){
+			$isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND available_for_new_order = 1 AND block_washer=0")->queryAll();
+			if(count($isavailable) > 0){
+				$distance_array[$loc['agent_id']] = $miles;
+			}
+		}
+}
 
-							$notify_msg = urlencode($message2);
+if(count($distance_array)) {
+     asort($distance_array);
+     //print_r($distance_array);
+     foreach($distance_array as $aid=>$dist){
 
-							$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-								//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-							$ch = curl_init();
-							curl_setopt($ch,CURLOPT_URL,$notifyurl);
-							curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+		$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
+		$message = $pushmsg[0]['message'];
+		$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$aid."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+						    $message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wrequest_id_check->city), number_format($wrequest_id_check->agent_total,2)), $message);
+		                        //echo $agid." ".$message2."<br>";
+		                if(count($agentdevices) > 0){
+								foreach($agentdevices as $agdevice){
 
-							if($notify_msg) $notifyresult = curl_exec($ch);
-							curl_close($ch);
-						}
+								    $device_type = strtolower($agdevice['device_type']);
+									$notify_token = $agdevice['device_token'];
+									$alert_type = "default";
 
-                }
+									$notify_msg = urlencode($message2);
 
+									$notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
+										//file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+									$ch = curl_init();
+									curl_setopt($ch,CURLOPT_URL,$notifyurl);
+									curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+
+									if($notify_msg) $notifyresult = curl_exec($ch);
+									curl_close($ch);
+								}
+
+		                }
+		}
+
+}
 
 $result = 'true';
 $response = 'wash reset';
