@@ -314,7 +314,7 @@ font-size: 24px !important;
 <table class="discount-details">
 
 <tr>
-<td><p>Wash Now Fee</p></td>
+<td><p>Wash Now</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
 <p class="price">+$<?php echo number_format(round($kartdata->wash_now_fee*.75, 2), 2); ?></p>
 </td>

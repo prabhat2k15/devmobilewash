@@ -2945,7 +2945,7 @@ $sendmessage = $client->account->messages->create(array(
                     /* --- addons time end ----- */
 				}
 
-                $washtime += 30;
+                //$washtime += 30;
                 if($model_NewRqst->reschedule_time)
                 {
                     $currentwashtotalscheduletime = date('Y-m-d h:i A', strtotime($model_NewRqst->reschedule_date.' '.$model_NewRqst->reschedule_time." +".$washtime." minutes"));
@@ -3031,7 +3031,7 @@ $sendmessage = $client->account->messages->create(array(
                             /* --- addons time end ----- */
     					}
 
-    					$washtime += 30;
+    					//$washtime += 30;
                         if($agtwash->reschedule_time)
                         {
                             $agtwashtotalscheduletime = date('Y-m-d h:i A', strtotime($agtwash->reschedule_date.' '.$agtwash->reschedule_time." +".$washtime." minutes"));
@@ -7105,7 +7105,7 @@ if($kartdata->wash_now_fee > 0){
 $message_agent .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px; border-bottom: 1px solid #000;'>";
 
 $message_agent .= "<tr>
-<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now Fee</p></td>
+<td style='padding-bottom: 10px;'><p style='font-size: 18px; margin: 0;'>Wash Now</p></td>
 <td style='padding-bottom: 10px; font-size: 18px; margin: 0; text-align: right;'>
 <p style='font-size: 18px; margin: 0;'>+$".number_format(round($kartdata->wash_now_fee*.75, 2), 2)."</p>
 </td>

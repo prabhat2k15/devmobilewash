@@ -8534,7 +8534,7 @@ if((count($all_washes_city)) || (count($all_washes_zipcode))){
 		echo json_encode($json);
 	}
 	
-	     public function actiontestnum()
+	     public function actiongetphonefortwiliocall()
     {
 
 if(Yii::app()->request->getParam('key') != API_KEY){
@@ -8542,10 +8542,41 @@ echo "Invalid api key";
 die();
 }
 
+$fromphone  = Yii::app()->request->getParam('fromphone');
+$fromphone = preg_replace('/\D/', '', $fromphone);
+$fromphone = substr($fromphone,-10);
+$tophone = '3102941020';
+
+$customer =  Customers::model()->findByAttributes(array('contact_number'=>$fromphone));
+$agent   =   Agents::model()->findByAttributes(array('phone_number'=>$fromphone));
+
+if(count($customer)){
+	$inprocess_wash_check = Washingrequests::model()->findByAttributes(array(),array("condition"=>"(status >= 1 AND status <= 3) AND customer_id=:customer_id", 'params'  => array(':customer_id' => $customer->id), 'order' => 'id desc'));
+	if(count($inprocess_wash_check)){
+		$current_agent = Agents::model()->findByPk($inprocess_wash_check->agent_id);
+		if(count($current_agent)) $tophone = $current_agent->phone_number;
+	}
+}
+
+if(count($agent)){
+	$inprocess_wash_check = Washingrequests::model()->findByAttributes(array(),array("condition"=>"(status >= 1 AND status <= 3) AND agent_id=:agent_id", 'params'  => array(':agent_id' => $agent->id), 'order' => 'id desc'));
+	if(count($inprocess_wash_check)){
+		$current_cust = Customers::model()->findByPk($inprocess_wash_check->customer_id);
+		if(count($current_cust)) $tophone = $current_cust->contact_number;
+	}
+	/*else{
+	$inprocess_wash_check = Washingrequests::model()->findByAttributes(array(),array("condition"=>"status = 4 AND meet_washer_outside_washend = '' AND agent_id=:agent_id", 'params'  => array(':agent_id' => $agent->id), 'order' => 'id desc'));
+	
+	if(count($inprocess_wash_check)){
+		$current_cust = Customers::model()->findByPk($inprocess_wash_check->customer_id);
+		if(count($current_cust)) $tophone = $current_cust->contact_number;
+	}	
+	}*/
+}
 
              $json = array(
                 'result'=> 'true',
-                'response'=> '+13237384326'
+                'response'=> $tophone
             );
              echo json_encode($json);
              exit;
