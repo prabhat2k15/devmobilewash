@@ -205,7 +205,7 @@ font-size: 24px !important;
 <?php if($vehicle->surge_vehicle_fee > 0): ?>
 <tr>
 <td>
-<p style="color: #ccc;">Surge Charge</p>
+<p style="color: #ccc;">Surge</p>
 </td>
 <td class="rightalign"><p>+$<?php $surge_fee = $vehicle->surge_vehicle_fee*.8; echo number_format(round($surge_fee, 2), 2); ?></p></td>
 </tr>
@@ -326,7 +326,7 @@ font-size: 24px !important;
 <table class="discount-details">
 
 <tr>
-<td><p>Surge Fee</p></td>
+<td><p>Surge</p></td>
 <td class="rightalign" style="vertical-align: top; min-width: 90px;">
 <p class="price">+$<?php echo number_format(round($kartdata->wash_later_fee*.75, 2), 2); ?></p>
 </td>

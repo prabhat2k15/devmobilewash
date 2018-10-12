@@ -1760,6 +1760,7 @@ $washrequestid = $this->aes256cbc_crypt( $washrequestid, 'e', AES256CBC_API_PASS
 	$is_reschedule = 0;
 	if(Yii::app()->request->getParam('is_reschedule')) $is_reschedule = Yii::app()->request->getParam('is_reschedule');
 	$wash_later_fee = 0;
+	if(Yii::app()->request->getParam('wash_later_fee')) $wash_later_fee = Yii::app()->request->getParam('wash_later_fee');
 	$mobile_receipt = '';
 
         $json = array();
@@ -1858,7 +1859,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 			} 
 		}
 
-		$wash_later_fee = $wash_now_fee;
+		//$wash_later_fee = $wash_now_fee;
 
 	}
 
