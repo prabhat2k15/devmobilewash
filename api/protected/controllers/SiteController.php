@@ -8564,14 +8564,14 @@ if(count($agent)){
 		$current_cust = Customers::model()->findByPk($inprocess_wash_check->customer_id);
 		if(count($current_cust)) $tophone = $current_cust->contact_number;
 	}
-	/*else{
-	$inprocess_wash_check = Washingrequests::model()->findByAttributes(array(),array("condition"=>"status = 4 AND meet_washer_outside_washend = '' AND agent_id=:agent_id", 'params'  => array(':agent_id' => $agent->id), 'order' => 'id desc'));
-	
+	else{
+	$inprocess_wash_check = Washingrequests::model()->findByAttributes(array(),array("condition"=>"status = 4 AND meet_washer_outside_washend = '' AND order_for >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND agent_id=:agent_id", 'params'  => array(':agent_id' => $agent->id), 'order' => 'id desc'));
+
 	if(count($inprocess_wash_check)){
 		$current_cust = Customers::model()->findByPk($inprocess_wash_check->customer_id);
 		if(count($current_cust)) $tophone = $current_cust->contact_number;
 	}	
-	}*/
+	}
 }
 
              $json = array(
