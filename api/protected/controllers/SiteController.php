@@ -3373,9 +3373,15 @@ else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reque
    //print_r($qrRequests);
 
         if(count($qrRequests)>0){
-
+$ios_count = $other_count = $android_count =0;
             foreach($qrRequests as $ind=> $wrequest)
             {
+                
+                if($wrequest['mobile_type'] == 'IOS'){
+                    $ios_count++; 
+                }else{
+                    $android_count++;
+                }
 
 	if($event == 'blueorders'){
 		$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
@@ -3875,7 +3881,9 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
             'response'=> $response,
             'wash_requests' => $pendingwashrequests,
             'pending_wash_count' => $pendingorderscount,
-            'cust_avg_order_frequency' => $avg_order_frequency
+            'cust_avg_order_frequency' => $avg_order_frequency,
+            'ios_count'=>$ios_count,
+            'android_count' =>  $android_count
             //'upcoming' => $pendingwashrequests_upcoming,
             //'nonupcoming' => $pendingwashrequests_nonupcoming,
         );

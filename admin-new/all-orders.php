@@ -73,6 +73,8 @@ if($jsondata->pending_wash_count == 1) $pending_order_count = "1 order";
 if($jsondata->pending_wash_count > 1) $pending_order_count = $jsondata->pending_wash_count." orders"; 
 $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_order_count." pending.";
  $cust_avg_order_frequency = $jsondata->cust_avg_order_frequency;
+$android_count = $jsondata->android_count;
+ $ios_count = $jsondata->ios_count;
 ?>
 <style>
 .label-complete {
@@ -614,8 +616,8 @@ $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_o
 
                                 </div>
                                 <div class="portlet-body">
-                                    <p style="margin-bottom: 20px; font-size: 16px;">Limit Orders <select class='order-limit'><option value="200" <?php if($_GET['limit'] == 200) echo "selected"; ?>>200</option><option value="400" <?php if($_GET['limit'] == 400) echo "selected"; ?>>400</option><option value="600" <?php if($_GET['limit'] == 600) echo "selected"; ?>>600</option><option value="800" <?php if($_GET['limit'] == 800) echo "selected"; ?>>800</option><option value="1000" <?php if($_GET['limit'] == 1000) echo "selected"; ?>>1000</option><option value="0" <?php if(!$_GET['limit']) echo "selected"; ?>>none</option></select></p>
-                                 <p style="margin-bottom: 20px; font-size: 16px;">Filter Orders <select class='order-filter'><option value="" <?php if(!$_GET['filter']) echo "selected"; ?>>Real Orders</option><option value="testorders" <?php if($_GET['filter'] == 'testorders') echo "selected"; ?>>Test Orders</option></select></p>
+                                    <p style="margin-bottom: 20px; font-size: 16px;">Limit Orders <select class='order-limit'><option value="200" <?php if($_GET['limit'] == 200) echo "selected"; ?>>200</option><option value="400" <?php if($_GET['limit'] == 400) echo "selected"; ?>>400</option><option value="600" <?php if($_GET['limit'] == 600) echo "selected"; ?>>600</option><option value="800" <?php if($_GET['limit'] == 800) echo "selected"; ?>>800</option><option value="1000" <?php if($_GET['limit'] == 1000) echo "selected"; ?>>1000</option><option value="0" <?php if(!$_GET['limit']) echo "selected"; ?>>none</option></select><span class="pull-right">Android Order <?php echo $android_count;?></span></p>
+                                 <p style="margin-bottom: 20px; font-size: 16px;">Filter Orders <select class='order-filter'><option value="" <?php if(!$_GET['filter']) echo "selected"; ?>>Real Orders</option><option value="testorders" <?php if($_GET['filter'] == 'testorders') echo "selected"; ?>>Test Orders</option></select><span class="pull-right">IOS Order <?php echo $ios_count;?></span></p>
                                  
                                  <?php if($s_orders_result_code == 'true'){ ?>
                                  <div class="large-table-fake-top-scroll-container-3">

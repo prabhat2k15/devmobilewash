@@ -8870,8 +8870,8 @@ $sql="SELECT * FROM agent_locations";
 
         foreach($command as $loc){
         /* --------- distance calculation ------------ */
-        $theta = $customer_lng - $loc['longitude'];
-        $dist = sin(deg2rad($customer_lat)) * sin(deg2rad($loc['latitude'])) +  cos(deg2rad($customer_lat)) * cos(deg2rad($loc['latitude'])) * cos(deg2rad($theta));
+        $theta = $wrequest_id_check->longitude - $loc['latitude'];
+        $dist = sin(deg2rad($wrequest_id_check->latitude)) * sin(deg2rad($loc['latitude'])) +  cos(deg2rad($wrequest_id_check->latitude)) * cos(deg2rad($loc['latitude'])) * cos(deg2rad($theta));
         $dist = acos($dist);
         $dist = rad2deg($dist);
         $miles = $dist * 60 * 1.1515;
