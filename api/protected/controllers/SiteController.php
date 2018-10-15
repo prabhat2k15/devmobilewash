@@ -5034,6 +5034,68 @@ $message = str_replace("[CUSTNAME]",$custname, $message);
 
 	    }
 	}
+	
+	
+		$newclients = Yii::app()->db->createCommand("SELECT * FROM customers WHERE is_first_wash = 0 AND is_firstwash_reminder_sms_sent = 0")->queryAll();
+
+	if(count($newclients)){
+	    foreach($newclients as $client){
+
+	         $current_time = strtotime(date('Y-m-d H:i:s'));
+$create_time = strtotime($client['created_date']);
+$min_diff = 0;
+if($current_time > $create_time){
+$min_diff = round(($current_time - $create_time) / 60,2);
+}
+
+if($min_diff >= 60){
+
+$cust_details = Customers::model()->findByAttributes(array("id"=>$client['id']));
+if(($cust_details->customername) && ($cust_details->customername != 'N/A')){
+  $custname_arr = explode(" ",$cust_details->customername);
+  $custname = " ".$custname_arr[0];
+}
+else{
+  $custname = '';
+}
+
+
+$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '52' ")->queryAll();
+$message = $pushmsg[0]['message'];
+$message = str_replace("[CUSTNAME]",$custname, $message);
+
+ if(((APP_ENV == 'real') || (APP_ENV == '')) && ($cust_details->sms_control)){
+	
+	$this->layout = "xmlLayout";
+         
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
+            $clienttwilio = new Services_Twilio($account_sid, $auth_token);
+
+             try {
+            $sendmessage = $clienttwilio->account->messages->create(array(
+                'To' =>  $cust_details->contact_number,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+ }
+ catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+	
+	    }
+
+Customers::model()->updateByPk($client['id'], array("is_firstwash_reminder_sms_sent" => 1));
+
+
+}
+
+	    }
+	}
 
 
 
@@ -8573,7 +8635,7 @@ if(count($agent)){
 		if(count($current_cust)) $tophone = $current_cust->contact_number;
 	}
 	else{
-	$inprocess_wash_check = Washingrequests::model()->findByAttributes(array(),array("condition"=>"status = 4 AND meet_washer_outside_washend = '' AND order_for >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND agent_id=:agent_id", 'params'  => array(':agent_id' => $agent->id), 'order' => 'id desc'));
+	$inprocess_wash_check = Washingrequests::model()->findByAttributes(array(),array("condition"=>"status = 4 AND is_washer_submit_feedback = 0 AND order_for >= DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND agent_id=:agent_id", 'params'  => array(':agent_id' => $agent->id), 'order' => 'id desc'));
 
 	if(count($inprocess_wash_check)){
 		$current_cust = Customers::model()->findByPk($inprocess_wash_check->customer_id);

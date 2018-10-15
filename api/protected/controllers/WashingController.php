@@ -1757,6 +1757,7 @@ $washrequestid = $this->aes256cbc_crypt( $washrequestid, 'e', AES256CBC_API_PASS
 	$is_rescheduled = Yii::app()->request->getParam('is_rescheduled');
 	$wash_now_reschedule = 0;
 	if(Yii::app()->request->getParam('wash_now_reschedule')) $wash_now_reschedule = Yii::app()->request->getParam('wash_now_reschedule');
+	
 	$is_reschedule = 0;
 	if(Yii::app()->request->getParam('is_reschedule')) $is_reschedule = Yii::app()->request->getParam('is_reschedule');
 	$wash_later_fee = 0;
@@ -5083,7 +5084,7 @@ if($feedback_source != 'dropjob'){
                 $total = number_format($total, 2, '.', '');
 
 if(!$simulate_rating) {
-	Washingrequests::model()->updateByPk($wash_request_id, array('canceled_washer_id' => 0));
+	Washingrequests::model()->updateByPk($wash_request_id, array('canceled_washer_id' => 0, 'is_washer_submit_feedback' => 1));
 	
 	$message = "<div class='block-content' style='background: #fff; text-align: left;'>";
 if($washrequest_id_check->status == 4) $message .= "<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Washer Wash Complete Feedback</h2>";
@@ -8326,6 +8327,8 @@ die();
         $result= 'false';
         $response= 'Pass the required parameters';
 	$admin_username = Yii::app()->request->getParam('admin_username');
+	$ondemand_cancel_for_schedule = '';
+	if(Yii::app()->request->getParam('ondemand_cancel_for_schedule')) $ondemand_cancel_for_schedule = Yii::app()->request->getParam('ondemand_cancel_for_schedule');
         $json= array();
         if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($status) && !empty($status))){
 
@@ -8539,7 +8542,7 @@ if($wrequest_id_check->coupon_code){
      CustomerDiscounts::model()->deleteAll("wash_request_id=".$wrequest_id_check->id." AND customer_id=".$wrequest_id_check->customer_id." AND promo_code='".$wrequest_id_check->coupon_code."'");
   }
 
-  if($status == 5 && $wrequest_id_check->status != 5 && (!$admin_username)){
+  if($status == 5 && $wrequest_id_check->status != 5 && (!$admin_username) && (!$ondemand_cancel_for_schedule)){
       if($action_log == 0){
         $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,

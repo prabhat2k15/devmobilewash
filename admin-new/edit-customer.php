@@ -400,11 +400,11 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="control-label">Push Notifications<span style="color: red;">*</span></label>
-                                                                <input type="text" class="form-control" name="push_notifications" value="<?php echo $push_notifications; ?>" required />
+                                                                <input type="text" class="form-control" name="push_notifications" value="<?php echo $push_notifications; ?>" />
                                                             </div>
 <div class="form-group">
                                                                 <label class="control-label">How did you hear about MobileWash?<span style="color: red;">*</span></label>
-                                                                <input type="text" class="form-control" name="how_hear_mw" value="<?php echo $how_hear_mw; ?>" required />
+                                                                <input type="text" class="form-control" name="how_hear_mw" value="<?php echo $how_hear_mw; ?>" />
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="control-label">Time Zone<span style="color: red;">*</span></label>

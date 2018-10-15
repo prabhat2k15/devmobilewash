@@ -1777,7 +1777,7 @@ if($savedroplogdata->result == 'true'):?>
                                                           <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> chose no damage for <?php echo $log->addi_detail;?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'clientwashnowschedule'): ?>
-                                                          <p style="margin-bottom: 10px;">Customer changed Wash Now to Scheduled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <p style="margin-bottom: 10px;">Customer changed On Demand to Scheduled on <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'ondemandautocancel'): ?>
                                                           <p style="margin-bottom: 10px; color:red;">On Demand order Auto-Canceled at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -4263,7 +4263,7 @@ if(data.result == 'true'){
        }
        
        if(log.action == 'clientwashnowschedule'){
-        contents += "<p style='margin-bottom: 10px;'>Customer changed Wash Now to Scheduled at "+log.formatted_action_date+"</p>";
+        contents += "<p style='margin-bottom: 10px;'>Customer changed On Demand to Scheduled on "+log.formatted_action_date+"</p>";
        }
        
        if(log.action == 'ondemandautocancel'){
