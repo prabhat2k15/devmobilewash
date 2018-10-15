@@ -8880,7 +8880,7 @@ $sql="SELECT * FROM agent_locations";
         $miles = $dist * 60 * 1.1515;
         $unit = strtoupper($unit);
 		if(($miles > 0) && ($miles <= $app_settings[0]['washer_search_radius'])){
-			$isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND available_for_new_order = 1 AND block_washer=0")->queryAll();
+			$isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND available_for_new_order = 1 AND status = 'online'")->queryAll();
 			if(count($isavailable) > 0){
 				$distance_array[$loc['agent_id']] = $miles;
 			}
