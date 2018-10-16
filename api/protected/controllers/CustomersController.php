@@ -5261,7 +5261,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($braintree_id);
 
           }
 
-           public function actiondeletecustomerpaymentmethod() {
+public function actiondeletecustomerpaymentmethod() {
 
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
@@ -5278,7 +5278,10 @@ if(Yii::app()->request->getParam('api_password')) $api_password = Yii::app()->re
   if((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)){
 $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
 }
-if($cust_type == 'real') $Bresult = Yii::app()->braintree->deletePaymentMethod_real($token);
+
+$wash_exists = Washingrequests::model()->findByPk($wash_request_id);
+$customer_exists = Customers::model()->findByPk($wash_exists->customer_id);
+if($customer_exists->client_position == 'real') $Bresult = Yii::app()->braintree->deletePaymentMethod_real($token);
 else $Bresult = Yii::app()->braintree->deletePaymentMethod($token);
 
 if(($Bresult['success'] == 1) && ($admin_username)){

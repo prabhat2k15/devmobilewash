@@ -6856,6 +6856,17 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
+try {
+$sendmessage = $client->account->messages->create(array(
+                'To' =>  '3103442534',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+
+	     }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
 //}
 		       
 			}
