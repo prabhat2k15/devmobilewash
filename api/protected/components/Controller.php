@@ -98,7 +98,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                 $surge_vehicles_arr = explode(",",$wash_id_check->surge_price_vehicles);
 				$fifth_vehicles_arr = explode(",",$wash_id_check->fifth_wash_vehicles);
                 $pet_hair_vehicles_custom_amount = $wash_id_check->pet_hair_vehicles_custom_amount;
-
+ if($pet_hair_vehicles_custom_amount) $pet_hair_vehicles_custom_amount_obj = json_decode($pet_hair_vehicles_custom_amount);
                 if($wash_id_check->coupon_discount) $coupon_discount = $wash_id_check->coupon_discount;
                 if($wash_id_check->coupon_code) $coupon_code = $wash_id_check->coupon_code;
 
@@ -335,16 +335,8 @@ $addressComponents = $geojsondata->results[0]->address_components;
                     $upholstery_vehicle = 0;
                     $floormat_vehicle = 0;
 					if (in_array($car, $pet_hair_arr)){
-					    if(count($vehicle_wash_pricing) || $pet_hair_vehicles_custom_amount > 0){
-                        if($pet_hair_vehicles_custom_amount > 0){
-					    		$total += $pet_hair_vehicles_custom_amount;
-								$total_pet_lift_fee += $pet_hair_vehicles_custom_amount;
-
-
-								$agent_total += $pet_hair_vehicles_custom_amount * .80;
-								$company_total += $pet_hair_vehicles_custom_amount * .20;
-								$pet_hair = $pet_hair_vehicles_custom_amount;
-					    	}else{
+					    if(count($vehicle_wash_pricing)){
+                     		   
                          		$total += $vehicle_wash_pricing->pet_hair;
 								$total_pet_lift_fee += $vehicle_wash_pricing->pet_hair;
 
@@ -353,18 +345,18 @@ $addressComponents = $geojsondata->results[0]->address_components;
 								$company_total += $vehicle_wash_pricing->pet_hair * .20;
 
 								$pet_hair = $vehicle_wash_pricing->pet_hair;
-							}
+							
 					    }
                         else{
-                          	$total += 10;
-						$total_pet_lift_fee += 10;
+                          	$total += $pet_hair_vehicles_custom_amount_obj->$car;
+						$total_pet_lift_fee += $pet_hair_vehicles_custom_amount_obj->$car;
 
 
-							$agent_total += 10 * .80;
-							$company_total += 10 * .20;
+							$agent_total += $pet_hair_vehicles_custom_amount_obj->$car * .80;
+							$company_total += $pet_hair_vehicles_custom_amount_obj->$car * .20;
 
 
-						$pet_hair = 10;
+						$pet_hair = $pet_hair_vehicles_custom_amount_obj->$car;
                         }
 
 					}
@@ -643,7 +635,7 @@ if((count($total_cars) > 1) && ($carindex==0) && ($wash_id_check->coupon_discoun
                         'bundle_discount' => number_format($bundle_disc, 2, '.', ''),
                         'bundle_discount_agent' => number_format($agent_bundle_disc, 2, '.', ''),
                         'fifth_wash_discount' => number_format($fifth_wash_disc, 2, '.', ''),
-                        'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount
+                        //'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount
 					);
 
 
