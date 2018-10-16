@@ -8959,15 +8959,15 @@ $sql="SELECT * FROM agent_locations";
 
         foreach($command as $loc){
         /* --------- distance calculation ------------ */
-        $theta = $wrequest_id_check->longitude - $loc['latitude'];
+        $theta = $wrequest_id_check->longitude - $loc['longitude'];
         $dist = sin(deg2rad($wrequest_id_check->latitude)) * sin(deg2rad($loc['latitude'])) +  cos(deg2rad($wrequest_id_check->latitude)) * cos(deg2rad($loc['latitude'])) * cos(deg2rad($theta));
         $dist = acos($dist);
         $dist = rad2deg($dist);
         $miles = $dist * 60 * 1.1515;
         $unit = strtoupper($unit);
-		if(($miles > 0) && ($miles <= $app_settings[0]['washer_search_radius'])){
-			$isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND available_for_new_order = 1 AND status = 'online'")->queryAll();
-			if(count($isavailable) > 0){
+		if(($miles > 0) && ($miles <= 10)){
+			$isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='".$loc['agent_id']."' AND block_washer = 0")->queryAll();
+			if((count($isavailable) > 0) && ($wrequest_id_check->agent_id != $loc['agent_id'])){
 				$distance_array[$loc['agent_id']] = $miles;
 			}
 		}
