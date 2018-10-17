@@ -6654,7 +6654,7 @@ die();
                 if(($wrequest_id_check->agent_id != $agent_id) && ($result != 'false')) {
                     $old_agent_id = $wrequest_id_check->agent_id;
 		    if((!$wrequest_id_check->is_scheduled)) {
-			if(($agent_id)) Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0, 'status' => 1));
+			if(($agent_id)) Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0, 'status' => 1, 'wash_begin' => date('Y-m-d H:i:s')));
 			else Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0, 'status' => 0, 'order_temp_assigned' => 0));
 		    }
 		else Washingrequests::model()->updateByPk($wash_request_id, array("agent_id" => $agent_id, 'washer_payment_status' => 0));
@@ -8666,6 +8666,82 @@ if(count($agent)){
              exit;
 
 
+    }
+    
+    	   	           public function actionaddmissingdnaborhoodcityzip()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$offset = 0;
+$offset = Yii::app()->request->getParam('offset');
+$updateentry = 0;
+$updateentry = Yii::app()->request->getParam('updateentry');
+
+		
+		$all_washes = Yii::app()->db->createCommand("SELECT id,address,city,zipcode FROM washing_requests ORDER BY id ASC LIMIT 500 OFFSET ".$offset)->queryAll();
+		
+		if(count($all_washes)){
+			foreach($all_washes as $wash){
+				$addr = '';
+				$city = '';
+$naborhood = '';
+$zipcode = '';
+$data = array();
+$addr = $wash['address'];
+$encode_address = urlencode($addr);
+    $geourl = "https://maps.googleapis.com/maps/api/geocode/json?address=".$encode_address."&sensor=true&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
+    $ch = curl_init();
+
+	curl_setopt($ch,CURLOPT_URL,$geourl);
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+//	curl_setopt($ch,CURLOPT_HEADER, false);
+
+$georesult = curl_exec($ch);
+curl_close($ch);
+$geojsondata = json_decode($georesult, true);
+//var_dump($geojsondata);
+if($geojsondata['status'] == 'OK'){
+	
+foreach ($geojsondata["results"] as $result) {
+    foreach ($result["address_components"] as $address) {
+        if (in_array("locality", $address["types"])) {
+            $city = $address["long_name"];
+        }
+	
+	if (in_array("neighborhood", $address["types"])) {
+            $naborhood = $address["long_name"];
+        }
+	
+	if (in_array("postal_code", $address["types"])) {
+            $zipcode = $address["long_name"];
+        }
+    }
+}
+
+echo $wash['id']." ".$addr."<br>";
+echo "naborhoode: ".$naborhood."<br>city: ".$city."<br>zip: ".$zipcode;
+echo "<br>------<br>";
+
+if(!$wash['city']) $data['city'] = $city;
+if(!$wash['zipcode']) $data['zipcode'] = $zipcode;
+
+$data['neighborhood'] = $naborhood;
+
+Washingrequests::model()->updateByPk($wash['id'], $data);
+
+}
+				
+			}
+		}
+
+
+
+
+   
     }
     
 }
