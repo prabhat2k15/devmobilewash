@@ -141,6 +141,8 @@ if($user_result_code == 'true'){
                                                                 <label class="control-label" style="margin-top: 15px;">User Type<span style="color: red;">*</span></label>
                                                                 <select name="usertype" class="form-control" style="width: 40%;" required>
 <option value="employee" <?php if($getuser->usertype == 'employee') echo "selected"; ?>>Employee</option>
+<option value="scheduler" <?php if($getuser->usertype == 'scheduler') echo "selected"; ?>>Scheduler</option>
+<option value="recruiter" <?php if($getuser->usertype == 'recruiter') echo "selected"; ?>>Recruiter</option>
 <option value="admin" <?php if($getuser->usertype == 'admin') echo "selected"; ?>>Admin</option>
 </select>
                                                             </div>

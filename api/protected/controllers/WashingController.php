@@ -4562,7 +4562,11 @@ $sched_time = $wrequest_id_check->schedule_time;
 	    'canceled_washer_id' => $canceled_washer_id,
 	    'schedule_date' => $sched_date,
 	    'schedule_time' => $sched_time,
-	    'order_for' => $wrequest_id_check->order_for
+	    'order_for' => $wrequest_id_check->order_for,
+	    'total_price' => $wrequest_id_check->total_price,
+	    'net_price' => $wrequest_id_check->net_price,
+	    'agent_total' => $wrequest_id_check->agent_total,
+	    'company_total' => $wrequest_id_check->company_total,
 	     
             );
         }
@@ -4576,7 +4580,11 @@ $sched_time = $wrequest_id_check->schedule_time;
 		'canceled_washer_id' => $canceled_washer_id,
 		'schedule_date' => $sched_date,
 	    'schedule_time' => $sched_time,
-	    'order_for' => $wrequest_id_check->order_for
+	    'order_for' => $wrequest_id_check->order_for,
+	    'total_price' => $wrequest_id_check->total_price,
+	    'net_price' => $wrequest_id_check->net_price,
+	    'agent_total' => $wrequest_id_check->agent_total,
+	    'company_total' => $wrequest_id_check->company_total,
             );
         }
         echo json_encode($json);

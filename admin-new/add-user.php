@@ -128,6 +128,8 @@ if($user_result_code == 'true'){
                                                                 <label class="control-label" style="margin-top: 15px;">User Type<span style="color: red;">*</span></label>
                                                                 <select name="usertype" class="form-control" style="width: 40%;" required>
 <option value="employee">Employee</option>
+<option value="scheduler">Scheduler</option>
+<option value="recruiter">Recruiter</option>
 <option value="admin">Admin</option>
 </select>
                                                             </div>

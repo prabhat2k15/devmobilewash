@@ -101,11 +101,13 @@
                                         <span class="title">Vehicles Packages</span>
                                     </a>
                                 </li>
+ <?php if($jsondata_permission->users_type == 'admin'): ?>
  <li class="nav-item <?php if($url == 'vehicle-pricing.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
                                     <a href="vehicle-pricing.php" class="nav-link ">
                                         <span class="title">Vehicle Pricing</span>
                                     </a>
                                 </li>
+				
                                 <li style="display: <?php echo $checked_opening_display; ?>" class="nav-item  <?php if($url == 'schedule-times.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="schedule-times.php" class="nav-link ">
                                         <span class="title">Schedule Times</span>
@@ -116,7 +118,7 @@
                                         <span class="title">On-Demand Surge Times</span>
                                     </a>
                                 </li>
-                                
+                                <?php endif; ?>
                                 <li class="nav-item  <?php if($url == 'payment-reports.php' || $newurl_page[0] == 'payment-reports.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
                                     <a href="payment-reports.php?filter=&limit=400" class="nav-link ">
                                     <span class="title">Payment Reports</span>

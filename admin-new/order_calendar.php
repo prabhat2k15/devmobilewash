@@ -1,27 +1,5 @@
 <?php
-include('header.php');
-    if($_GET['action'] == 'trash'){
-        $clientsid = $_GET['id'];
-        $url = ROOT_URL.'/api/index.php?r=customers/trashpreclients&id='.$clientsid;
-        $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-        curl_setopt($handle, CURLOPT_POST, true);
-        curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-        $result = curl_exec($handle);
-        curl_close($handle);
-        $jsondata = json_decode($result);
-        $response = $jsondata->response;
-        $result_code = $jsondata->result;
-        if($response == "clients trashed" && $result_code == "true"){
-            ?>
-            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/manage-pre-clients.php?trash=true"</script>
-            <?php
-            die();
-            }
-    }
-
- ?>
+include('header.php') ?>
 <?php
 if (isset($_COOKIE['mw_admin_auth'])) {
 	$device_token = $_COOKIE["mw_admin_auth"];
@@ -46,6 +24,7 @@ $jsondata_permission = json_decode($result_permission);
 <?php include('right-sidebar.php') ?>
 <?php else: ?>
 <?php include('navigation-employee.php') ?>
+<?php endif; ?>
 <style>
 #calendar .fc-right{
 display: none;
@@ -55,7 +34,6 @@ display: none;
 text-transform: capitalize;
 }
 </style>
-<?php endif; ?>
 <?php
 	$url = ROOT_URL.'/api/index.php?r=customers/getallpreclients';
 	$handle = curl_init($url);
@@ -83,14 +61,39 @@ text-transform: capitalize;
 ?>
 <link href='assets/global/css/full-cal/fullcalendar.css' rel='stylesheet' />
 <link href='assets/global/css/full-cal/fullcalendar.print.css' rel='stylesheet' media='print' />
+<style>
+.total-cars-div{
+        bottom: 26px;
+    height: 28px;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+}
+.fc-basic-view .fc-body .fc-row{padding-bottom: 60px;}
+.fc-left .center div{
+	margin-bottom: 5px;
+}
+
+.fc-row.fc-rigid .fc-content-skeleton{
+	position: relative;
+}
+
+.fc-day-grid-event .fc-content{
+	white-space: normal;
+}
+
+</style>
 <script src='assets/global/scripts/full-cal/moment.min.js'></script>
 <script src='assets/global/scripts/full-cal/fullcalendar.min.js'></script>
 <script>
-var event_Day;
 var timetracker = 0;
 $(document).ready(function() {
+    	
 	var color_back= title = "";
+	var home = work = 0;
 	var __bool = 0;
+	
 	__checkBool(__bool);
 	$('.ord_center a').click(function(){
 		order_for  = $(this).attr('id');
@@ -108,123 +111,417 @@ $(document).ready(function() {
 	}
 
 	function show_calendar(type){
+	    //console.log(type);
 		$('#calendar').fullCalendar( 'destroy' );
-		/* $url = '/api/index.php?r=washing/order_schedule_app'; */
-		$url = '/api/index.php?r=washing/order_schedule_app';
+		$url = '<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule_app';
 
-		/* if(type == 'app_orders'){
-			$url = '/api/index.php?r=washing/order_schedule_app';
-		} */
-		if(type == 'phone_orders'){
-			$url = "/api/index.php?r=washing/order_schedule";
-$(".ordertypetext").html("(Phone Orders)");
+		if(type == 'app_orders'){
+			$url = '<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule_app';
+		}if(type == 'phone_orders'){
+			$url = "<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule";
 		}if(type == 'schedule_orders'){
-			$url = '/api/index.php?r=washing/order_schedule_ordSchedule';
-$(".ordertypetext").html("(Schedule Orders)");
+			$url = '<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule_ordSchedule';
+		}if(type == 'all_orders'){
+			$url = '<?php echo ROOT_URL; ?>/api/index.php?r=washing/order_schedule_all_orders';
 		}
-
+        //console.log($url);
 		$('#calendar').fullCalendar({
 			defaultDate: moment().toDate(),
-			editable: true,
+			editable: false,
 			eventLimit: true, // allow "more" link when too many events
+			droppable: false,
 			aspectRatio: 1,
 			events: function(start, end, timezone, callback) {
 				//$('#calendar').fullCalendar('removeEvents');
+                //console.log(start);
+                //console.log(end);
 
 				month = end.month();
 				year = end.year();
- if(month == 0){
+                //console.log(month);
+                 //console.log(year);
+                 if(month == 0){
                      month = 12;
                      year--;
                  }
 				start = startMonthYear(month,year)
 				end = endMonthYear(month,year)
-//console.log(start);
-//console.log(end);
+                 console.log("start "+start);
+                 console.log("end "+end);
 				//$('.cal-overlay').css('display','block');
-				$('.fc-left .center').remove();
+			   $('.fc-left .center').remove();
 				$.ajax({
 					url: $url,
+					 async: true,
 					dataType: 'json',
 					data: {
 						// our hypothetical feed requires UNIX timestamps
 						start: start,
 						end: end,
-key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
+						key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 					},
 					success: function(doc) {
 					    //console.log(doc);
 						var events = [];
+                        //console.log(doc.order.empty);
 						if(doc.order.empty == 'yes'){
 							$('.cal-overlay').css('display','none');
 						}
 						else{
-							var color,title,start,start1,color1,title1,start2,color2,title2,titledec,colordec;
+							var color,title,start,start1,color1,title1,start2,color2,title2,title3,color,title4,title5,title6,titledec,colordec,titletotalcars,colortotalcars,titleExp,titleDlx,titlePre,colorExp,colorDlx,colorPre,titleCC,colorCC,titleTa,titleondemandcompleted, titleschedulecompleted, titleaddoncompleted, colorTa,color6, colorschedulecompleted, colorondemandcompleted, coloraddoncompleted, schedulecanceledtitle, schedulecanceledcolor, ondemandcanceledtitle, ondemandcanceledcolor, new_customer;
 							$.each( doc.order, function(index, value ) {
-								var complete = Object.keys(value.complete).length;
-								var pending = Object.keys(value.pending).length;
-								var processing = Object.keys(value.processing).length;
-								var canceled = Object.keys(value.canceled).length;
-								var declined = Object.keys(value.declined).length;
+							    
 								var _viewAll = ['1'];
 								var view_all = Object.keys(_viewAll).length
+								var declined = Object.keys(value.declined).length;
+								var total_orders = Object.keys(value.total_orders).length;
+								var pending = Object.keys(value.pending).length;
+								var complete = Object.keys(value.complete).length;
+								var canceled = Object.keys(value.canceled).length;
+								var Express = Object.keys(value.Express).length;
+								var Deluxe = Object.keys(value.Deluxe).length;
+								var Premium = Object.keys(value.Premium).length;
+								var coupon_code = Object.keys(value.coupon_code).length;
+								var tip_amount = Object.keys(value.tip_amount).length;
+								var processing = Object.keys(value.processing).length;
+								var addoncompleted = Object.keys(value.addoncompleted).length;
+								var ondemandcompleted = Object.keys(value.ondemandcompleted).length;
+								var schedulecompleted = Object.keys(value.schedulecompleted).length;
+								var schedulecanceled = Object.keys(value.schedulecanceled).length;
+								var ondemandcanceled = Object.keys(value.ondemandcanceled).length;
+                                var total_cars = Object.keys(value.total_cars).length;
 								var home_ord = Object.keys(value.home).length;
 								var work_ord = Object.keys(value.work).length;
-
-								if(complete > 1 ){
-									title = value.complete.count+' Completed';
-									color = value.complete.color;
+								var new_customer = Object.keys(value.new_customer).length;
+                                var scheduleauto = Object.keys(value.scheduled_auto).length;
+                                var ondemandauto = Object.keys(value.ondemandautocanceled).length;
+								var zipblue = value.zipblue.count;
+								var zipyellow = value.zipyellow.count;
+								var zipred = value.zipred.count;
+                                var zippurple = value.zippurple.count;
+								
+                                if(value.new_customer.count > 0){
+									titledec = value.new_customer.count+' New Customer';
+									colordec = value.new_customer.color;
 									events.push({
-										title:title,
+										eventtitle: 'newcustomer',
+										title:titledec,
+										description:'a',
 										start:index,
-										color  : color
+										color:colordec
 									});
 								}
+                                
+								if(declined > 1  ){
+									titledec = value.declined.count+' Declined Orders';
+									colordec = value.declined.color;
+									events.push({
+										eventtitle: 'declined',
+										title:titledec,
+										description:'a',
+										start:index,
+										color:colordec
+									});
+								}
+								
+								if(total_orders > 1 ){
+									title6 = value.total_orders.count+' Total Orders';
+									color6 = value.total_orders.color;
+									events.push({
+										eventtitle: 'total_orders',
+										title:title6,
+										description:'b',
+										start:index,
+										color:color6,
+										
+									});
+								}
+								
 								if(pending > 1 ){
-
-									title1 = value.pending.count+' Pending';
+									title1 = value.pending.count+' Pending Orders';
 									color1 = value.pending.color;
 									events.push({
+										eventtitle: 'pending',
 										title:title1,
+										description:'c',
 										start:index,
-										color  : color1
+										color:color1,
+										textColor: '#fff',
+										
 									});
 								}
-								if(processing > 1  ){
-									title2 = value.processing.count+' Processing';
+								if(complete > 1 ){
+									title = value.complete.count+' Completed Orders';
+									color = value.complete.color;
+									events.push({
+										eventtitle: 'completed',
+										title:title,
+										description:'d',
+										start:index,
+										color:color,
+										
+									});
+								}
+                        		
+									if(processing > 1  ){
+								    title2 = value.processing.count+' Processing Orders';
 									color2 = value.processing.color;
-										events.push({
+									events.push({
+										eventtitle: 'processing',
 										title:title2,
+										description:'e',
 										start:index,
-										color  : color2
+										color:color2,
+										
 									});
 								}
+								
+									if(Express > 1  ){
+									//titledec = 'Express Completed: '+value.Express.count;
+									titleExp = value.Express.count+' Express Services';
+									colorExp = value.Express.color;
+									events.push({
+										eventtitle: 'express',
+										title:titleExp,
+										description:'f',
+										start:index,
+										color:colorExp,
+									});
+								}
+								
+								if(Deluxe > 1  ){
+									//titledec = 'Deluxe Completed: '+value.Deluxe.count;
+									titleDlx = value.Deluxe.count+' Deluxe Services';
+									colorDlx = value.Deluxe.color;
+									events.push({
+										eventtitle: 'deluxe',
+										title:titleDlx,
+										description:'g',
+										start:index,
+										color:colorDlx,
+										
+									});
+								}
+								if(Premium > 1  ){
+									//titledec = 'Premium Completed: '+value.Premium.count;
+									titlePre = value.Premium.count+' Premium Services';
+									colorPre = value.Premium.color;
+									events.push({
+										eventtitle: 'premium',
+										title:titlePre,
+										description:'h',
+										start:index,
+										color:colorPre,
+										
+									});
+								}
+								
+									if(coupon_code > 1  ){
+									//titledec = 'Promo Codes: '+value.coupon_code.count;
+									titleCC = value.coupon_code.count+' Promo Codes';
+									colorCC = value.coupon_code.color;
+									events.push({
+										eventtitle: 'coupon_code',
+										title:titleCC,
+										description:'i',
+										start:index,
+										color:colorCC,
+										
+									});
+								}
+								
+									if(tip_amount > 1  ){
+									//titledec = 'Tips: '+value.tip_amount.count;
+									titleTa = value.tip_amount.count+' Tips';
+									colorTa = value.tip_amount.color;
+									events.push({
+										eventtitle: 'tip_amount',
+										title:titleTa,
+										description:'j',
+										start:index,
+										color:colorTa,
+										textColor: '#fff',
+										
+									});
+								}
+								
+								if(addoncompleted > 1  ){
+								    titleaddoncompleted = value.addoncompleted.count+' Add-Ons Completed';
+									coloraddoncompleted = value.addoncompleted.color;
+									events.push({
+										eventtitle: 'addoncompleted',
+										title:titleaddoncompleted,
+										description:'k',
+										start:index,
+										color:coloraddoncompleted,
+										
+									});
+								}
+								
+								if(ondemandcompleted > 1  ){
+								    titleondemandcompleted = value.ondemandcompleted.count+' On-Demand Completed';
+									colorondemandcompleted = value.ondemandcompleted.color;
+									events.push({
+										eventtitle: 'ondemandcompleted',
+										title:titleondemandcompleted,
+										description:'l',
+										start:index,
+										color:colorondemandcompleted,
+										
+									});
+								}
+								
+								if(schedulecompleted > 1  ){
+								    titleschedulecompleted = value.schedulecompleted.count+' Scheduled Completed';
+									colorschedulecompleted = value.schedulecompleted.color;
+									events.push({
+										eventtitle: 'schedulecompleted',
+										title:titleschedulecompleted,
+										description:'m',
+										start:index,
+										color:colorschedulecompleted,
+										
+									});
+								}
+                                
+                                if(scheduleauto > 0  ){
+									title34 = value.scheduled_auto.count+' Scheduled Auto-Canceled';
+									color34 = value.scheduled_auto.color;
+									events.push({
+										eventtitle: 'scheduleauto',
+										title:title34,
+										description:'p',
+										start:index,
+										color:color34,
+										
+									});
+								}
+								
 								if(canceled > 1  ){
-									title2 = value.canceled.count+' Canceled';
+									title2 = value.canceled.count+' Total Canceled Orders';
 									color2 = value.canceled.color;
-										events.push({
+									events.push({
+										eventtitle: 'canceled',
 										title:title2,
+										description:'n',
 										start:index,
-										color  : color2
+										color:color2,
+										
 									});
 								}
-								if(declined > 1  ){
-									titledec = value.declined.count+' Declined';
-									colordec = value.declined.color;
-										events.push({
-										title:titledec,
+								
+								if(ondemandcanceled > 1  ){
+									ondemandcanceledtitle = value.ondemandcanceled.count+' On-Demand Manual Canceled';
+									ondemandcanceledcolor = value.ondemandcanceled.color;
+									events.push({
+										eventtitle: 'ondemandcanceled',
+										title:ondemandcanceledtitle,
+										description:'o',
 										start:index,
-										color  : colordec
+										color:ondemandcanceledcolor,
+										
 									});
 								}
-								if(view_all >= 1){
+                                
+                                if(ondemandauto > 0  ){
+									title36 = value.ondemandautocanceled.count+' On-Demand Auto-Canceled';
+									color36 = value.ondemandautocanceled.color;
+									events.push({
+										eventtitle: 'ondemandauto',
+										title:title36,
+										description:'o',
+										start:index,
+										color:color36,
+										
+									});
+								}
+								
+								if(schedulecanceled > 0  ){
+									schedulecanceledtitle = value.schedulecanceled.count+' Scheduled Manual Canceled';
+									schedulecanceledcolor = value.schedulecanceled.color;
+									events.push({
+										eventtitle: 'schedulecanceled',
+										title:schedulecanceledtitle,
+										description:'p',
+										start:index,
+										color:schedulecanceledcolor,
+										
+									});
+								}
+								
+							
+								//if(view_all >= 1){
 									title3 = 'View All';
-									color3 = '#035954';
+									color3 = '#2a3f53';
 									events.push({
 										title:title3,
+										description:'v',
 										start:index,
-										color: color3
+										color:color3,
+										
 									});
+								//}
+								
+								if(zipblue > 0){
+									
+									titlezipblue = value.zipblue.count+' Blue Zone Orders';
+									colorzipblue = value.zipblue.color;
+									events.push({
+										eventtitle: 'blueorders',
+										title:titlezipblue,
+										description:'r',
+										start:index,
+										color:colorzipblue,
+									});
+								}
+								
+								if(zipyellow > 0){
+									
+									titlezipyellow = value.zipyellow.count+' Yellow Zone Orders';
+									colorzipyellow = value.zipyellow.color;
+									events.push({
+										eventtitle: 'yelloworders',
+										title:titlezipyellow,
+										description:'s',
+										start:index,
+										color:colorzipyellow,
+									});
+								}
+								
+								if(zipred > 0){
+									
+									titlezipred = value.zipred.count+' Red Zone Orders';
+									colorzipred = value.zipred.color;
+									events.push({
+										eventtitle: 'redorders',
+										title:titlezipred,
+										description:'t',
+										start:index,
+										color:colorzipred,
+									});
+								}
+                                
+                                if(zippurple > 0){
+									titlezippurple = value.zippurple.count+' Purple Zone Orders';
+									colorzippurple = value.zippurple.color;
+									events.push({
+										eventtitle: 'purpleorders',
+										title:titlezippurple,
+										description:'t',
+										start:index,
+										color:colorzippurple,
+									});
+								}
+                                 if(total_cars >= 1  ){
+								   /*	titletotalcars = value.total_cars.count+' Vehicles';
+									colortotalcars = "#000000";
+										events.push({
+										title:titletotalcars,
+										start:index,
+										color  : colortotalcars
+									});*/
+                                    //home = value.home.count;
+									$('.hidd-total_cars').append('<input class="total_cars" data-date="'+index+'" type="hidden" value="'+value.total_cars.count+'">');
 								}
 								if(home_ord >= 1){
 									home = value.home.count;
@@ -234,9 +531,9 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 									work = value.work.count;
 									$('.hidd-home-work').append('<input class="work" data-date="'+index+'" type="hidden" value="'+value.work.count+'">')
 								}
+
 							});
 							$('.cal-overlay').css('display','none');
-
 						}
 						callback(events);
 					},
@@ -257,82 +554,135 @@ key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
 				e.preventDefault();
 			},
 			eventClick: function(calEvent, jsEvent, view) {
+				
 				var _day = calEvent.start._i;
-
-				var _event = '';
-				if(calEvent.color == '#FF3B30'){
+				var _event = calEvent.eventtitle;
+				
+				if ((calEvent.eventtitle == '') || (!calEvent.eventtitle)) {
+					_event = 'all';
+				}
+				
+				/*if(calEvent.color == '#f6a635'){
 					_event = 'pending';
-				}else if(calEvent.color == '#30A0FF'){
+				}else if(calEvent.color == '#9c64b7'){
+					_event = 'total_orders';
+				}else if(calEvent.color == '#14c266'){
 					_event = 'completed';
-				}else if(calEvent.color == '#EF9047'){
+				}else if(calEvent.color == '#e67418'){
 					_event = 'processing';
-				}else if(calEvent.color == '#AAAAAA'){
+				}
+				else if(calEvent.color == '#8b9d9e'){
 					_event = 'canceled';
 				}
-				else if(calEvent.color == '#cc0066'){
+				else if(calEvent.color == '#eb1350'){
 					_event = 'declined';
-				}else{
+				}
+				else if(calEvent.color == '#2490d7'){
+					_event = 'express';
+				}
+				else if(calEvent.color == '#2490d7'){
+					_event = 'deluxe';
+				}
+				else if(calEvent.color == '#2490d7'){
+					_event = 'premium';
+				}
+				else if(calEvent.color == '#800080'){
+					_event = 'coupon_code';
+				}
+				else if(calEvent.color == '#f28fba'){
+					_event = 'tip_amount';
+				}
+				else{
 					_event = 'all'
-				}
-
-
-				if(type == 'phone_orders'){
-					window.location = "/admin-new/phone-orders.php?day="+_day+"&event="+_event;
+				}*/
+				
+			
+				if(type == 'app_orders'){
+					window.location  = "<?php echo ROOT_URL; ?>/admin-new/manage-orders.php?day="+_day+"&event="+_event;
+				}else if(type == 'phone_orders'){
+					window.location = "<?php echo ROOT_URL; ?>/admin-new/phone-orders.php?day="+_day+"&event="+_event;
 				}else if(type == 'schedule_orders'){
-					window.location = "/admin-new/schedule-orders.php?sday="+_day+"&event="+_event;
-				}else if(type == 'all'){
-					window.location = "/admin-new/schedule-orders.php?ajax=true&day="+_day+"&event="+_event;
+					window.location = "<?php echo ROOT_URL; ?>/admin-new/schedule-orders.php?sday="+_day+"&event="+_event;
+				}else if(type == 'all_orders'){
+					window.location = "<?php echo ROOT_URL; ?>/admin-new/all-orders.php?ajax=true&alordday="+_day+"&event="+_event;
 				}else{
-				    window.open("/admin-new/all-orders.php?ajax=true&day="+_day+"&event="+_event);
-					//window.location  = "/admin-new/all-orders.php?day="+_day+"&event="+_event;
+					window.open("<?php echo ROOT_URL; ?>/admin-new/all-orders.php?ajax=true&day="+_day+"&event="+_event);
+					//window.location  = "<?php echo ROOT_URL; ?>/admin-new/all-orders.php?day="+_day+"&event="+_event;
 				}
-
-				//window.location = _url;
 			},
-			eventAfterAllRender:  function(view){
+			
+			eventAfterAllRender: function(view){
+
 				//var _html = '<div class="center" style="width: 45%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span>Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #aaa; background: #aaa;"><span>Canceled</span></div>	</div>';
 
 				//$('.fc-left').append(_html);
+				
 				var event_current_date = moment().format('YYYY-MM-DD');
 				var event_previous_date = moment().add(-1, 'days').format('YYYY-MM-DD');
 				var event_next_date = moment().add(+1, 'days').format('YYYY-MM-DD');
-//console.log(event_current_date);
 
-				$('.hidd-home-work input.home').each(function(){
+                $('.hidd-total_cars input.total_cars').each(function(index, val){
+                    //console.log('working');
+					total_cars_count = $(this).val();
+					total_cars_day = $(this).data('date');
+                    //console.log(total_cars_day);
+					if(total_cars_count.length < 1) total_cars_count = 0;
+					if( (event_current_date == total_cars_day) || (event_previous_date == total_cars_day) || (event_next_date ==total_cars_day)){
+					$('.fc-day-grid .fc-bg tbody tr td[data-date="'+total_cars_day+'"]').append('<div class="total-cars-div">0 Vehicles</div>');
+					$('td[data-date="'+total_cars_day+'"] .total-cars-div').text(total_cars_count+" Vehicles");
+					}
+
+				});
+                $('.hidd-home-work input.home').each(function(){
+
 					home_count = $(this).val();
 					home_day = $(this).data('date');
 					if(home_count.length < 1) home_count = 0;
-//console.log(home_count.length);
-if( (event_current_date == home_day) || (event_previous_date == home_day) || (event_next_date ==home_day)){
+					if( (event_current_date == home_day) || (event_previous_date == home_day) || (event_next_date ==home_day)){
 					$('.fc-day-grid .fc-bg tbody tr td[data-date="'+home_day+'"]').append('<div class="home_work"><div class="left">Home: 0</div></div>');
 					$('td[data-date="'+home_day+'"] .home_work .left').text('Home: '+home_count);
-}
+					}
 
 				});
 				$('.hidd-home-work input.work').each(function(){
 					work_count = $(this).val();
 					work_day = $(this).data('date');
 					if(work_count.length < 1) work_count = 0;
-//console.log(work_count.length);
-if( (event_current_date == work_day) || (event_previous_date == work_day) || (event_next_date ==work_day)){
+					if( (event_current_date == home_day) || (event_previous_date == home_day) || (event_next_date ==home_day)){
 					$('.fc-day-grid .fc-bg tbody tr td[data-date="'+work_day+'"] .home_work').append('<div class="right">Work: 0</div>');
 					$('td[data-date="'+work_day+'"] .home_work .right').text('Work: '+work_count);
-}
+					}
 				});
-
 				if($('.hidd-home-work input').length > 0){
 					$('.hidd-home-work').find('input').remove();
 				}
-                
-			}
+			},
+			dayClick: function(date, jsEvent, view) {
+				if($('.fc-day').hasClass('day_highlight')){
+					if($(this).hasClass('day_highlight')){
+						$('.fc-day').removeClass('day_highlight');
+					}else{
+						$('.fc-day').removeClass('day_highlight');
+						$(this).addClass('day_highlight');
+					}
+				}else{
+					$(this).addClass('day_highlight');
+				}
+			},
+			eventOrder: "description"
 		});
 		
-	var _html = '<div class="center" style="width: 50%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span>Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #aaa; background: #aaa;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #cc0066; background: #cc0066;"><span>Declined</span></div>	</div>';
+		 var _html = '<div class="center" style="width: 70%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span style="color: #fff;">Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #8b9d9e; background: #8b9d9e;"><span>Canceled</span></div><div id="declined" style="border: 1px solid #eb1350; background: #eb1350;"><span>Declined</span></div><div id="express" style="border: 1px solid #2490d7; background: #2490d7;"><span>Express</span></div><div id="deluxe" style="border: 1px solid #2490d7; background: #2490d7;"><span>Deluxe</span></div><div id="premium" style="border: 1px solid #2490d7; background: #2490d7;"><span>Premium</span></div><div id="tip" style="border: 1px solid #f28fba; background: #f28fba; color: #fff;"><span>Tip</span></div><div id="addoncompleted" style="border: 1px solid #87CEFA; background: #87CEFA; color: #fff;"><span>Add-Ons</span></div><div id="ondemandcompleted" style="border: 1px solid #008080; background: #008080; color: #fff;"><span>On-Demand</span></div><div id="schedulecompleted" style="border: 1px solid #0000ff; background: #0000ff; color: #fff;"><span>Scheduled</span></div><div id="new_customer" style="border: 1px solid #3fcfb6; background: #3fcfb6; color: #fff;"><span>New Customer</span></div>	</div>';
 
 				$('.fc-left').append(_html);
+				
+				 //setTimeout( show_calendar(__bool), 10000 );
 	}
+	
+	show_calendar(__bool);
 
 });
+
 function startMonthYear(month,year){
 	last_year = '';
 	last_month = parseInt(month);
@@ -365,21 +715,21 @@ function refreshCal(){
 				$('.fc-left').append(_html); 
 				//console.log('working');
 				timetracker+= 10;
-				if(timetracker >= 120) window.location.href="<?php echo ROOT_URL; ?>/admin-new/order_calendar.php";
+				if(timetracker >= 120) window.location.href="<?php echo ROOT_URL; ?>/admin-new/show-calendar.php";
 				 setTimeout( refreshCal, 10000 );
 }
 
-setTimeout( refreshCal, 10000 );
+//setTimeout( refreshCal, 10000 );
 
 /*setInterval(function(){
     //$('#calendar').fullCalendar('removeEvents');
               //$('#calendar').fullCalendar('addEventSource', events);         
               //$('#calendar').fullCalendar('rerenderEvents' );
     $('#calendar').fullCalendar('refetchEvents');
-    
-  	var _html = '<div class="center" style="width: 45%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span>Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #aaa; background: #aaa;"><span>Canceled</span></div>	</div>';
+     var _html = '<div class="center" style="width: 45%;"><div id="view_all"><span>View All</span></div><div id="complete"><span>Complete</span></div><div id="pending"><span>Pending</span></div><div id="process"><span>Processing</span></div><div id="canceled" style="border: 1px solid #aaa; background: #aaa;"><span>Canceled</span></div>	</div>';
 
-				$('.fc-left').append(_html); 
+				$('.fc-left').append(_html);
+   
     
 }, 10000);*/
 </script>
@@ -412,28 +762,14 @@ setTimeout( refreshCal, 10000 );
 
 							<span class="caption-subject bold uppercase"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						</div>
-						<!--div class="ord_center1">
 
-							<div>
-								<span>
-									<a class="btn btn-info active-ord" href="javascript:;" id="phone_orders">Phone Orders</a>
-								</span>
-							</div>
-							<div>
-								<span>
-									<a class="btn btn-info" href="javascript:;" id="schedule_orders">Schedule Orders</a>
-								</span>
-							</div>
-						</div-->
 						<div class="actions">
 							 <i class="icon-calendar"></i>&nbsp;
 							 <span id="servertime" style="font-weight: 300 !important;"></span>&nbsp;
 						</div>
 
 					</div>
-					<div class="order-btn ord_center">
-						
-					</div>
+
 					<div class="portlet-body">
 						<div id='calendar'><div class="cal-overlay" style="display:none"></div></div>
 					</div>
@@ -442,6 +778,7 @@ setTimeout( refreshCal, 10000 );
 			</div>
 		</div>
 		<div class="clearfix"></div>
+        <div class="hidd-total_cars"></div>
 		<div class="hidd-home-work"></div>
 	</div>
 	<!-- END CONTENT BODY -->

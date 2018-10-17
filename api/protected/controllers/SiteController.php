@@ -2716,6 +2716,9 @@ if($admin_command == 'update-order'){
                             $washpricehistorymodel->save(false);
 
                             /* --------- car pricing save end --------- */
+			    
+			    Vehicle::model()->updateByPk($car->id, array('pet_hair' => $car->pet_hair_fee, 'lifted_vehicle' => $car->lifted_vehicle_fee, 'exthandwax_addon' => $car->exthandwax_vehicle_fee, 'extplasticdressing_addon' => $car->extplasticdressing_vehicle_fee, 'extclaybar_addon' => $car->extclaybar_vehicle_fee, 'waterspotremove_addon' => $car->waterspotremove_vehicle_fee, 'upholstery_addon' => $car->upholstery_vehicle_fee, 'floormat_addon' => $car->floormat_vehicle_fee));
+
                         }
                     }
 
