@@ -5475,7 +5475,7 @@ if(count($clientwashernomeetwashes)){
 		$min_diff = 0;
 		$current_time = strtotime(date('Y-m-d H:i:s'));
 
-		if($current_time > strtotime($nomeetwash['washer_arrived_at'])){
+		if($current_time > strtotime($nomeetwash['washer_arrived_at']) && $nomeetwash['washer_arrived_at'] != '0000-00-00 00:00:00'){
 			$min_diff = round(($current_time - strtotime($nomeetwash['washer_arrived_at'])) / 60,2);
 		}	
 			if(($min_diff >= 10) && (!$nomeetwash['meet_washer_10min_alert'])){

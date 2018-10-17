@@ -2552,6 +2552,10 @@ $date = date('Y-m-d H:i:s');
                         'action_date'=> date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+        
+                    if($status == 2){
+                        Washingrequests::model()->updateByPk($wash_request_id, array("meet_washer_push_sent" => 1, "washer_arrived_at" => date('Y-m-d H:i:s')));
+                    }
     }
     $wash_later_fee = 0;
     /*if(($admin_command == 'save-reschedule') && $reschedule_time){

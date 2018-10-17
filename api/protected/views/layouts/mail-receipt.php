@@ -21,8 +21,8 @@
                 </div>
 </div>
 <p style='text-align: center; font-size: 16px; font-family: arial, sans-serif; line-height: 20px; margin: 12px auto; padding-bottom: 25px; margin-top: 20px;'>Thank you for choosing MobileWash!</p>
-</div>
-<p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; <?php echo date("Y"); ?> MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
 
+<p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; <?php echo date("Y"); ?> MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
+</div>
 </body>
 </html>
