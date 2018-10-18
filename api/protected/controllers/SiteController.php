@@ -8686,7 +8686,7 @@ $updateentry = 0;
 $updateentry = Yii::app()->request->getParam('updateentry');
 
 		
-		$all_washes = Yii::app()->db->createCommand("SELECT id,address,city,zipcode FROM washing_requests ORDER BY id ASC LIMIT 500 OFFSET ".$offset)->queryAll();
+		$all_washes = Yii::app()->db->createCommand("SELECT id,address,city,zipcode FROM washing_requests WHERE (city = '' || zipcode = '') AND blankcityzipcheck = 0 ORDER BY id ASC LIMIT 500")->queryAll();
 		
 		if(count($all_washes)){
 			foreach($all_washes as $wash){
@@ -8730,10 +8730,14 @@ echo $wash['id']." ".$addr."<br>";
 echo "naborhoode: ".$naborhood."<br>city: ".$city."<br>zip: ".$zipcode;
 echo "<br>------<br>";
 
-if(!$wash['city']) $data['city'] = $city;
+if(!$wash['city']) {
+	if($naborhood) $data['city'] = $naborhood;
+	else $data['city'] = $city;
+}
 if(!$wash['zipcode']) $data['zipcode'] = $zipcode;
 
-$data['neighborhood'] = $naborhood;
+$data['blankcityzipcheck'] = 1;
+
 
 Washingrequests::model()->updateByPk($wash['id'], $data);
 

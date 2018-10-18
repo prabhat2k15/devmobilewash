@@ -1364,8 +1364,8 @@ if(($phone_number_check->carrier['type'] == 'voip') && (!$block_washer)){
 						if(count($email_details)>0){
 								$email = $email_details->email;
 						}
-					   $result= 'false';
-						$response= 'Email already exists';
+					   //$result= 'false';
+						//$response= 'Email already exists';
                        $email = $model->email;
 					}
 
@@ -4974,16 +4974,16 @@ $admin_username = Yii::app()->request->getParam('admin_username');
 			$agents_phone_exists = Agents::model()->findByAttributes(array("phone_number"=>$contact_number));
 			$customers_email_exists = Customers::model()->findByAttributes(array("email"=>$emailid));
 		$customers_phone_exists = Customers::model()->findByAttributes(array("contact_number"=>$contact_number));	
-			if(count($customers_email_exists)>0){
+			/*if(count($customers_email_exists)>0){
 					$result = 'false';
 					$response = 'You are already registered as Customer.';
 					$json= array(
 						'result'=> $result,
 						'response'=> $response
 					);
-				}
+				}*/
 
-else if(count($customers_phone_exists)>0){
+if(count($customers_phone_exists)>0){
 					$result = 'false';
 					$response = 'Phone number already exists.';
 				
@@ -4993,7 +4993,7 @@ else if(count($customers_phone_exists)>0){
 					);
 				}
 				
-			else if(count($agents_email_exists)>0){
+			/*else if(count($agents_email_exists)>0){
 				$result = 'false';
 				$response = 'Email already exists.';
 				$agentid = $agents_email_exists->id;
@@ -5002,7 +5002,7 @@ else if(count($customers_phone_exists)>0){
 					'response'=> $response,
 					'agentid'=> $agentid
 				);
-			}
+			}*/
 			else if(count($agents_phone_exists)>0){
 				$result = 'false';
 				$response = 'Phone number already exists.';

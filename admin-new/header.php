@@ -4,11 +4,9 @@ require_once('../api/protected/config/constant.php');
 $device_token = '';
 if (isset($_COOKIE['mw_admin_auth'])) {
 $device_token = $_COOKIE["mw_admin_auth"];
-$username = $_COOKIE['mw_username'];
-$uid = $_COOKIE['mw_uid'];
 }
-$userdata = array("mw_uid"=>$uid, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/checkpermission");
+$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -16,229 +14,9 @@ $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 
+$recruiter_permit_pages = array('index.php', 'edit-user.php');
+$scheduler_permit_pages = array('index.php');
 
-if($jsondata_permission->users_type == 'admin'){
-    $client_module_permission = $jsondata_permission->client_action;
-    $washer_module_permission = $jsondata_permission->washer_action;
-    $company_module_permission = $jsondata_permission->company_action;
-    $reminder_show = 'none';
-     $add_text = 'add';
-        $delete_text = 'delete';
-        $edit_text = 'edit';
-        
-    if($client_module_permission == 'no'){
-        $client_module_show = 'none';
-    }
-    else{
-        $client_module_show = '';
-        $client_action = unserialize($jsondata_permission->client_action);
-       
-        if (is_array($client_action) &&  in_array($edit_text, $client_action, $strict = FALSE)){
-            $edit = '';
-        }else{
-            $edit = 'none';
-        }
-        if (is_array($client_action) &&  in_array($add_text, $client_action, $strict = FALSE)){
-            $add = '';
-        }else{
-            $add = 'none';
-        }
-        if (is_array($client_action) &&  in_array($delete_text, $client_action, $strict = FALSE)){
-            $delete = '';
-        }else{
-            $delete = 'none';
-        }
-    }
-    if($washer_module_permission == 'no'){
-        $washer_module_show = 'none';
-    }
-    else{
-        $washer_module_show = '';
-        $washer_action = unserialize($jsondata_permission->washer_action);
-        
-        if (is_array($washer_action) &&  in_array($edit_text, $washer_action, $strict = FALSE)){
-            $edit_washer = '';
-        }else{
-            $edit_washer = 'none';
-        }
-        if (is_array($washer_action) &&  in_array($add_text, $washer_action, $strict = FALSE)){
-            $add_washer = '';
-        }else{
-            $add_washer = 'none';
-        }
-        if (is_array($washer_action) &&  in_array($delete_text, $washer_action, $strict = FALSE)){
-            $delete_washer = '';
-        }else{
-            $delete_washer = 'none';
-        }
-    }
-    if($company_module_permission == 'no'){
-        $company_module_show = 'none';
-    }
-    else{
-        $company_module_show = '';
-        $company_action = unserialize($jsondata_permission->company_action);
-            $manage_order = 'manage_order';
-            $vehicles_packages = 'vehicles_packages';
-            $manage_promotions = 'manage_promotions';
-            $opening_hours = 'opening_hours';
-            $site_settings = 'site_settings';
-            $messages = 'messages';
-            $notifications = 'notifications';
-            $cms = 'cms';
-            $manage_user = 'manage_user';
-            $reminder_washer = 'reminder_washer';
-            $reminder_client = 'reminder_client';
-            $backup_db = 'backup_db';
-            $command_center = 'command_center';
-            $show_calendar = 'show_calendar';
-            $order_calendar = 'order_calendar';
-            $review = 'review';
-			if(is_array($show_calendar) &&  in_array($show_calendar, $company_action, $strict = FALSE)){
-				$checked_show_calendar = 'checked';
-				$checked_show_calendar_display = '';
-            }else{
-				$checked_show_calendar = '';
-				$checked_show_calendar_display = 'none';
-            }
-			if(is_array($review) &&  in_array($review, $company_action, $strict = FALSE)){
-				$checked_review_display = 'checked';
-				$checked_show_review_display = '';
-				
-            }else{
-				$checked_review_display = '';
-				$checked_show_review_display = 'none';
-            }
-			if(is_array($order_calendar) &&  in_array($order_calendar, $company_action, $strict = FALSE)){
-				$checked_order_calendar = 'checked';
-				$checked_order_calendar_display = '';
-            }else{
-				$checked_order_calendar = '';
-				$checked_order_calendar_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($manage_order, $company_action, $strict = FALSE)){
-				$checked_manage_order = 'checked';
-				$checked_manage_display = '';
-            }else{
-				$checked_manage_order = '';
-				$checked_manage_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($vehicles_packages, $company_action, $strict = FALSE)){
-                $checked_vehicles_packages = 'checked';
-                $checked_vehicles_display = '';
-            }else{
-                $checked_vehicles_packages = '';
-                $checked_vehicles_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($manage_promotions, $company_action, $strict = FALSE)){
-                $checked_manage_promotions = 'checked';
-                $checked_promotions_display = '';
-            }else{
-                $checked_manage_promotions = '';
-                $checked_promotions_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($opening_hours, $company_action, $strict = FALSE)){
-                $checked_opening_hours = 'checked';
-                $checked_opening_display = '';
-            }else{
-                $checked_opening_hours = '';
-                $checked_opening_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($site_settings, $company_action, $strict = FALSE)){
-                $checked_site_settings = 'checked';
-                $checked_site_display = '';
-            }else{
-                $checked_site_settings = '';
-                $checked_site_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($messages, $company_action, $strict = FALSE)){
-                $checked_messages = 'checked';
-                $checked_messages_display = '';
-            }else{
-                $checked_messages = '';
-                $checked_messages_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($notifications, $company_action, $strict = FALSE)){
-                $checked_notifications = 'checked';
-                $checked_notifications_display = '';
-            }else{
-                $checked_notifications = '';
-                $checked_notifications_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($cms, $company_action, $strict = FALSE)){
-                $checked_cms = 'checked';
-                $checked_cms_display = '';
-            }else{
-                $checked_cms = '';
-                $checked_cms_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($manage_user, $company_action, $strict = FALSE)){
-                $checked_manage_user = 'checked';
-                $checked_user_display = '';
-            }else{
-                $checked_manage_user = '';
-                $checked_user_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($reminder_washer, $company_action, $strict = FALSE)){
-                $checked_reminder_washer = 'checked';
-                $checked_reminderwasher_display = '';
-            }else{
-                $checked_reminder_washer = '';
-                $checked_reminderwasher_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($reminder_client, $company_action, $strict = FALSE)){
-                $checked_reminder_client = 'checked';
-                $checked_reminderclient_display = '';
-            }else{
-                $checked_reminder_client = '';
-                $checked_reminderclient_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($backup_db, $company_action, $strict = FALSE)){
-                $checked_backup_db = 'checked';
-                $checked_backup_db_display = '';
-            }else{
-                $checked_backup_db = '';
-                $checked_backup_db_display = 'none';
-            }
-            if(is_array($company_action) &&  in_array($command_center, $company_action, $strict = FALSE)){
-                $checked_command_center = 'checked';
-                $checked_command_center_display = '';
-            }else{
-                $checked_command_center = '';
-                $checked_command_center_display = 'none';
-            }
-    }
-}else{
-    
-            $checked_manage_order = ' ';
-           
-                $checked_vehicles_packages = ' ';
-            
-                $checked_manage_promotions = ' ';
-             
-                $checked_opening_hours = ' ';
-                $checked_site_settings = ' ';
-            
-                $checked_messages = ' ';
-           
-                $checked_notifications = ' ';
-            
-                $checked_cms = ' ';
-           
-                $checked_manage_user = ' ';
-            
-                $checked_reminder_washer = ' ';
-            
-                $checked_reminder_client = ' ';
-            
-                $checked_backup_db = ' ';
-            
-                $checked_command_center = ' ';
-				
-				$checked_show_calendar = ' ';
-				
-				$checked_order_calendar = ' ';
-}
 $data = array("device_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 $handle = curl_init(ROOT_URL."/api/index.php?r=users/authenticate");
 curl_setopt($handle, CURLOPT_POST, true);
@@ -253,6 +31,32 @@ $result_code = $jsondata->result;
 if($response == "error" && $result_code == "false"){
 header("Location: ".ROOT_URL."/admin-new/login.php");
 die();
+}
+
+
+$uri = $_SERVER['REQUEST_URI'];
+$page_index = '';
+$page_index = basename($_SERVER['PHP_SELF']);
+
+
+if($jsondata_permission->users_type == 'recruiter'){
+    
+    $permit_check = array_search($page_index, $recruiter_permit_pages);
+    if(!$permit_check){
+	   header("Location: ".ROOT_URL."/admin-new/edit-user.php");
+	die(); 
+    }
+
+}
+
+if($jsondata_permission->users_type == 'scheduler'){
+    
+    $permit_check = array_search($page_index, $scheduler_permit_pages);
+    if(!$permit_check){
+	   header("Location: ".ROOT_URL."/admin-new/index.php");
+	die(); 
+    }
+
 }
 
 
