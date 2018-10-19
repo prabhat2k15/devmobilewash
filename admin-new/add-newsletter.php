@@ -54,11 +54,7 @@ $mw_all_subscribers = $jsondata->subscribers;
 
     }
 ?>
-<?php
-    if($company_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
+
 <?php include('right-sidebar.php') ?>
 <?php
 

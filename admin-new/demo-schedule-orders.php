@@ -26,11 +26,9 @@ $jsondata_permission = json_decode($result_permission);
 
         });
         </script>
- <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 <?php
 
 

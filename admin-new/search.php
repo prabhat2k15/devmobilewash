@@ -32,11 +32,6 @@ if(($_GET['search_area'] == 'Washer Badge') || ($_GET['search_area'] == 'Washer 
 
 ?>
 
-<?php
-    if($washer_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
@@ -59,12 +54,8 @@ if(($_GET['search_area'] == 'Washer Badge') || ($_GET['search_area'] == 'Washer 
 
         });
         </script>
- <?php
- if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
 
 <style>
 .label-busy {

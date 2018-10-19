@@ -46,11 +46,7 @@ $total_pages = $allagents->total_pages;
             curl_close($handle);
             $appsettings = json_decode($result);
 ?>
-<?php
-    if($washer_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
+
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>

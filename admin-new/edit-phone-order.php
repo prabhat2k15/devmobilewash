@@ -386,11 +386,9 @@ foreach($result->errors->deepAll() AS $error) {
         <link href="assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
         <!-- BEGIN THEME LAYOUT STYLES -->
-       <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 
 <style>
 #main{

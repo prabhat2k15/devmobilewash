@@ -503,11 +503,9 @@ $transaction_details = json_decode($result);
  <link rel="stylesheet" href="assets/global/plugins/jquery-ui/jquery-ui.min.css">
 
         <!-- BEGIN THEME LAYOUT STYLES -->
-       <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 
 <style>
 #main{

@@ -44,14 +44,8 @@ $heatmaplist_data = json_decode($result);
         <!-- END PAGE LEVEL PLUGINS -->
 
 
-
-
-
- <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 
 <style>
 .dt-button.buttons-csv.buttons-html5 { opacity: 0;}

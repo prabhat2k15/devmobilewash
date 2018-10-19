@@ -43,15 +43,8 @@ $customers_data = json_decode($result);
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.12/sorting/datetime-moment.js"></script>
         <!-- END PAGE LEVEL PLUGINS -->
 
-
-
-
-
- <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 
 <style>
 .dt-button.buttons-csv.buttons-html5 { opacity: 0;}

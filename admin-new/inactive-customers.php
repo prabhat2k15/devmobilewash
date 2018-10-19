@@ -30,11 +30,9 @@ var table;
 
         });
         </script>
- <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 <?php
 $page_number = 1;
 if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];

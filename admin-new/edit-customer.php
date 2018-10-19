@@ -13,9 +13,6 @@ $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 
-    if($client_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
 ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
@@ -55,12 +52,9 @@ $jsondata_permission = json_decode($result_permission);
                 <?php
             }
             ?>
- <?php
- if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 <?php
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);

@@ -22,6 +22,23 @@ header("Location: ".ROOT_URL."/admin-new/login.php");
 die();
 }
 
+$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
+curl_setopt($handle_data, CURLOPT_POST, true);
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
+curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
+$result_permission = curl_exec($handle_data);
+curl_close($handle_data);
+$jsondata_permission = json_decode($result_permission);
+
+if($jsondata_permission->users_type == 'recruiter'){
+
+	   header("Location: ".ROOT_URL."/admin-new/");
+	die(); 
+
+
+}
+
 
 /* -------- logged in auth end --------- */
 
