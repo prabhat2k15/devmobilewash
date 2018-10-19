@@ -1,9 +1,5 @@
 <?php include('header.php') ?>
-<?php
-    if($client_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
+
 <style>	
 	#chartdiv {
 		width	: 100%;

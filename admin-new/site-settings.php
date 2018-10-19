@@ -59,11 +59,7 @@ include('header.php');
             $message = $jsondata->message;
     }
 ?>
-<?php
-    if($company_module_permission == 'no' || $checked_site_settings == ''){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
+
 <?php include('right-sidebar.php') ?>
 
 <!-- BEGIN CONTENT -->

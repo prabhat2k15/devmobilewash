@@ -12,11 +12,7 @@ $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 ?>
-<?php
-    if($washer_module_permission == 'no'){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
+
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/morris/morris.css" rel="stylesheet" type="text/css" />

@@ -1,5 +1,18 @@
 <?php
 include('header.php');
+$device_token = '';
+if (isset($_COOKIE['mw_admin_auth'])) {
+$device_token = $_COOKIE["mw_admin_auth"];
+}
+$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
+curl_setopt($handle_data, CURLOPT_POST, true);
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
+curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
+$result_permission = curl_exec($handle_data);
+curl_close($handle_data);
+$jsondata_permission = json_decode($result_permission);
+
 if(isset($_POST['schedule_times_submit'])){
 
  $url = ROOT_URL.'/api/index.php?r=site/updatescheduletimes';
@@ -170,7 +183,14 @@ $date = date('m/d/Y h:i:s a', time());
                                      <div class="price-row">
                                       <p><span class='color-block gray'></span> - Surge Price N/A</p>
                                       <p><span class='color-block blue'></span> - Standard Surge Price ($0)</p>
+                                      <?php if($jsondata_permission->users_type == 'scheduler'): ?>
+                                      <p><span class='color-block yellow'></span> - Dynamic Wash Later Fee: <?php echo $appsettings->ios_wash_later_fee; ?></p>
+                                     
+                                      <?php else: ?>
                                       <p><span class='color-block yellow'></span> - Dynamic Wash Later Fee <input type="text" name="custom_surge" id="custom_surge" value = "<?php echo $appsettings->ios_wash_later_fee; ?>"/></p>
+                                     
+                                      <?php endif; ?>
+                                      
                                      </div>
 
                                      <div class="col">
@@ -617,8 +637,9 @@ $suntimes_arr = explode("|", $suntimes);
 <input type="hidden" name="sat_spec_time" id="sat_spec_time" value="<?php echo $sched_times->sat_spec; ?>" />
 <input type="hidden" name="sun_spec_time" id="sun_spec_time" value="<?php echo $sched_times->sun_spec; ?>" />
                                      <p>
+                                     <?php if($jsondata_permission->users_type == 'admin'): ?>
                                      <input type="submit" style="color: rgb(255, 255, 255); background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 7px 20px 7px 20px; border-radius: 3px; margin-top: 30px;" name="schedule_times_submit" value="Update">
-
+<?php endif; ?>
                                      </p>
                                     </form>
 
@@ -911,7 +932,7 @@ if($(this).text() == sun_spec) $(this).addClass('spec-time');
     $('#sun_time').val(timestr);
 
 
-
+<?php if($jsondata_permission->users_type == 'admin'): ?>
 $('.portlet-body .col ul li').click(function(){
  var changeclass = 0;
  if($(this).hasClass('active') && (!changeclass)) {
@@ -1053,12 +1074,13 @@ if($(this).parent().hasClass('suntime')){
     $('#sun_time').val(timestr);
 }
 });
-
+<?php endif; ?>
 $(".portlet-body form").submit(function(){
  refreshtimesandprice();
 });
 });
 </script>
+<?php if($jsondata_permission->users_type == 'admin'): ?>
 <script>
 $(function(){
 $(".times li").mousedown(function(event) {
@@ -1099,3 +1121,4 @@ $('.times li').contextmenu(function() {
 });
 });
 </script>
+<?php endif; ?>

@@ -38,11 +38,7 @@ $agent_reminder_json_arr = json_encode($agent_reminder);
 
     }
 ?>
-<?php
-    if($company_module_permission == 'no' || $checked_reminder_washer == ''){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
+
 <?php include('right-sidebar.php') ?>
 <?php
             $url = ROOT_URL.'/api/index.php?r=site/getremindersadmin';

@@ -1677,7 +1677,7 @@ else ziparea_polys[i].setOptions({fillColor: "#076ee1", fillOpacity: 0.6, stroke
     });
 
 
-
+<?php if($jsondata_permission->users_type == 'admin'): ?>
     google.maps.event.addListener(themap, 'mousemove', function (e) {      
         if (mouseIsDown && (shiftPressed|| gribBoundingBox != null) ) {
             if (gribBoundingBox !== null) // box exists
@@ -1755,7 +1755,7 @@ else ziparea_polys[i].setOptions({fillColor: "#076ee1", fillOpacity: 0.6, stroke
         });
         //stopDraw(e);
     });
-	
+<?php endif; ?>	
 
 
 /*
@@ -2135,6 +2135,7 @@ if (rows[i][12] == 'gray') {
 
 ziparea_polys.push(country);
 
+<?php if($jsondata_permission->users_type == 'admin'): ?>
  google.maps.event.addListener(country, 'mousemove', function (e) {
               
         if (mouseIsDown && (shiftPressed|| gribBoundingBox != null) ) {
@@ -2214,7 +2215,7 @@ ziparea_polys.push(country);
         });
         //stopDraw(e);
     });
-
+<?php endif; ?>
             google.maps.event.addListener(country, 'mouseover', function() {
 		//console.log(this);
 		
@@ -2230,7 +2231,7 @@ ziparea_polys.push(country);
 		}
             });
 
-	    
+	<?php if($jsondata_permission->users_type == 'admin'): ?>    
 	  google.maps.event.addDomListener(country, 'rightclick', function (e) {
    if (selectedzips) {
     var content = "<div class='zip-info'><p><b> SELECTED ZIPCODES: </b>"+selectedzips.replace(/,\s*$/, "")+"</p><p>Zip Color <select class='zip-color'><option value='gray'>Disabled</option><option value=''>Blue</option><option value='yellow'>Yellow</option><option value='red'>Red</option><option value='purple'>Purple</option></select></p><p><a href='#' class='save-groupzip-info' data-zips='"+selectedzips+"'>Save</a></p></div>";
@@ -2243,7 +2244,7 @@ ziparea_polys.push(country);
    }
 
 });
-	    
+<?php endif; ?>	    
 
 
             google.maps.event.addListener(country, 'click', function(e)
@@ -2300,7 +2301,14 @@ if (this.zipcolor == 'gray') {
     gray_selected = "selected='selected'";
 }
    
-    var content = "<div class='zip-info'><p><b>ZIPCODE: </b>"+this.zipcode+"</p><p>Zip Color <select class='zip-color'><option value='gray' "+gray_selected+">Disabled</option><option value='' "+blue_selected+">Blue</option><option value='yellow' "+yellow_selected+">Yellow</option><option value='red' "+red_selected+">Red</option><option value='purple' "+purple_selected+">Purple</option></select></p><p><a href='#' class='save-zip-info' data-zip='"+this.zipcode+"'>Save</a></p></div>";
+   <?php if($jsondata_permission->users_type == 'scheduler'): ?>
+   var content = "<div class='zip-info'><p><b>ZIPCODE: </b>"+this.zipcode+"</p><p>Zip Color: "+this.zipcolor+"</p></div>";
+  
+   <?php else: ?>
+   var content = "<div class='zip-info'><p><b>ZIPCODE: </b>"+this.zipcode+"</p><p>Zip Color <select class='zip-color'><option value='gray' "+gray_selected+">Disabled</option><option value='' "+blue_selected+">Blue</option><option value='yellow' "+yellow_selected+">Yellow</option><option value='red' "+red_selected+">Red</option><option value='purple' "+purple_selected+">Purple</option></select></p><p><a href='#' class='save-zip-info' data-zip='"+this.zipcode+"'>Save</a></p></div>";
+  
+   <?php endif; ?>
+    
   var infowindow = new google.maps.InfoWindow({
         content: content, position: e.latLng
 

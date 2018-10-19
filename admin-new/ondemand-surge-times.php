@@ -1,6 +1,18 @@
 <?php
 include('header.php');
 
+$device_token = '';
+if (isset($_COOKIE['mw_admin_auth'])) {
+$device_token = $_COOKIE["mw_admin_auth"];
+}
+$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
+curl_setopt($handle_data, CURLOPT_POST, true);
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
+curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
+$result_permission = curl_exec($handle_data);
+curl_close($handle_data);
+$jsondata_permission = json_decode($result_permission);
 
 if(isset($_POST['schedule_times_submit'])){
  
@@ -199,15 +211,31 @@ $date = date('m/d/Y h:i:s a', time());
                                      <div class="price-row">
                                       <p><span class='color-block gray'></span> - Disabled</p>
                                       <p><span class='color-block blue'></span> - Enabled</p>
+                                      <?php if($jsondata_permission->users_type == 'scheduler'): ?>
+                                      <p><span class='color-block yellow'></span> - Dynamic Wash Now Fee: <?php echo $appsettings->ios_wash_now_fee->yellow; ?></p>
+                                      <p><span class='color-block orange'></span> - Dynamic Wash Now Fee: <?php echo $appsettings->ios_wash_now_fee->orange; ?></p>
+                                      <p><span class='color-block red'></span> - Dynamic Wash Now Fee: <?php echo $appsettings->ios_wash_now_fee->red; ?></p>
+                                      
+                                      <p><span class='color-block purple'></span> - Dynamic Wash Now Fee: <?php echo $appsettings->ios_wash_now_fee->purple; ?></p>
+                                      
+                                      <?php else: ?>
                                       <p><span class='color-block yellow'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_yellow" id="custom_surgeactive-yellow" value = "<?php echo $appsettings->ios_wash_now_fee->yellow; ?>"/></p>
                                       <p><span class='color-block orange'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_orange" id="custom_surgeactive-orange" value = "<?php echo $appsettings->ios_wash_now_fee->orange; ?>"/></p>
                                       <p><span class='color-block red'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_red" id="custom_surgeactive-red" value = "<?php echo $appsettings->ios_wash_now_fee->red; ?>"/></p>
                                       
                                       <p><span class='color-block purple'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_purple" id="custom_surgeactive-purple" value = "<?php echo $appsettings->ios_wash_now_fee->purple; ?>"/></p>
+                                      
+                                      <?php endif; ?>
+                                      
                                       <h5>Message (when unavailable)</h5>
-                                        
-                                                <textarea style="margin-bottom: 40px; display: block; width: 60%; height: 130px; padding: 5px;" name="business_unavail_notice" id="business_unavail_notice"><?php echo $sched_times->message; ?></textarea>
+                                        <?php if($jsondata_permission->users_type == 'scheduler'): ?>
+                                         <p><?php echo $sched_times->message; ?></p>
 
+                                        <?php else: ?>
+                                         <textarea style="margin-bottom: 40px; display: block; width: 60%; height: 130px; padding: 5px;" name="business_unavail_notice" id="business_unavail_notice"><?php echo $sched_times->message; ?></textarea>
+
+                                        <?php endif; ?>
+                                               
                                      </div>
 
                                      <div class="col">
@@ -647,8 +675,9 @@ $suntimes_arr = explode("|", $suntimes);
 <input type="hidden" name="sun_time" id="sun_time" value="<?php echo $sched_times->sun; ?>" />
 
                                      <p>
+                                     <?php if($jsondata_permission->users_type == 'admin'): ?>
                                      <input type="submit" style="color: rgb(255, 255, 255); background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 7px 20px 7px 20px; border-radius: 3px; margin-top: 30px;" name="schedule_times_submit" value="Update">
-
+<?php endif; ?>
                                      </p>
                                     </form>
 
@@ -803,7 +832,7 @@ function refreshtimesandprice(){
 
 
 }
-
+<?php if($jsondata_permission->users_type == 'admin'): ?>
 $(function(){
 
 $('.portlet-body .col ul li').click(function(){
@@ -944,4 +973,5 @@ $(".portlet-body form").submit(function(){
  refreshtimesandprice();
 });
 });
+<?php endif; ?>
 </script>

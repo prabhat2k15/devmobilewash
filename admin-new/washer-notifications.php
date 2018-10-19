@@ -1,9 +1,5 @@
 <?php include('header.php') ?>
-<?php
-    if($company_module_permission == 'no' || $checked_notifications == ''){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
+
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />

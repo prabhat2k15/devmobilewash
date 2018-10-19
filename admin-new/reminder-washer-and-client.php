@@ -40,11 +40,7 @@ include('header.php');
 
     }
 ?>
-<?php
-    if($reminder_show == 'none'){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
+
 <?php include('right-sidebar.php') ?>
 <?php
         $url = ROOT_URL.'/api/index.php?r=site/getreminders'; 

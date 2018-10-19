@@ -48,11 +48,7 @@ curl_close($handle_data);
 $pricingdata = json_decode($result);
 
 ?>
-<?php
-    if($company_module_permission == 'no' || $checked_vehicles_packages == ''){
-        ?><script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/index.php"</script><?php
-    }
-?>
+
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
@@ -65,11 +61,9 @@ $pricingdata = json_decode($result);
         <link href="assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
         <!-- BEGIN THEME LAYOUT STYLES -->
-       <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 
 <style>
 #main{
@@ -152,7 +146,9 @@ $pricingdata = json_decode($result);
 </tr>
 <?php endforeach; ?>
 </table>
+<?php if($jsondata_permission->users_type == 'admin'): ?>
 <input type="submit" value="Save" name="addons_pricing_submit" style="color: rgb(255, 255, 255); background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 6px 7px 7px 6px; border-radius: 3px; width: 135px;" />
+<?php endif; ?>
 </form>
 <?php endif; ?>
 
@@ -183,6 +179,13 @@ $pricingdata = json_decode($result);
                 <!-- END CONTENT BODY -->
             </div>
 <?php include('footer.php') ?>
+<?php if($jsondata_permission->users_type == 'scheduler'): ?>
+<script>
+   $(function(){
+      $("#pricing_form input, #pricing_form textarea").attr('disabled', 'disabled');
+   })
+</script>
+<?php endif; ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <script src="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
         <script src="assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>

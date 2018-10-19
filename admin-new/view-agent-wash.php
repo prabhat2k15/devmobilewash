@@ -31,11 +31,9 @@ $.fn.dataTable.moment( 'MM-DD-YYYY hh:mm A' );
 
         });
         </script>
- <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 <?php
 	$agent_id ='';
 	if( isset($_GET) && !empty($_GET['id']) ){
