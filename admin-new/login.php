@@ -37,7 +37,7 @@ if(isset($_POST['admin-login-submit'])){
 		
 		
 
-		if($jsondata->user_type == 'employee'){
+		if($jsondata->user_type == 'recruiter'){
 			header("Location: ".ROOT_URL."/admin-new/all-orders.php?filter=&limit=400");
 			die();
 		}
@@ -48,6 +48,7 @@ if(isset($_POST['admin-login-submit'])){
 	}
 
 }
+
 ?>
 
 <!DOCTYPE HTML>

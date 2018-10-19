@@ -14,8 +14,10 @@ $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
 
-$recruiter_permit_pages = array('index.php', 'edit-user.php');
-$scheduler_permit_pages = array('index.php');
+
+$recruiter_permit_pages = array('index.php', 'all-orders.php', 'vehicles-packages.php', 'order_calendar.php', 'manage-pre-clients.php', 'manage-customers.php', 'manage-pre-washers.php', 'add-new-bug.php');
+$scheduler_permit_pages = array('index.php', 'command-center.php', 'notifications.php', 'manage-promotions.php', 'vehicles-packages.php', 'schedule-times.php', 'ondemand-surge-times.php', 'payment-reports.php', 'vehicle-addons-pricing.php', 'add-vehicle.php', 'modern-vehicles.php', 'classic-vehicles.php', 'hours-of-operation.php', 'messagess.php', 'heatmap.php', 'client_dashboard.php', 'manage-pre-clients.php', 'manage-customers.php', 'non-return-customers.php', 'inactive-customers.php', 'feedbacks.php', 'mobilewasher-service-feedbacks.php', 'top-customers.php', 'washer_dashboard.php', 'manage-pre-washers.php',
+				'manage-agents.php', 'top-washers.php', 'add-new-bug.php', 'search.php');
 
 $data = array("device_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 $handle = curl_init(ROOT_URL."/api/index.php?r=users/authenticate");
@@ -41,9 +43,8 @@ $page_index = basename($_SERVER['PHP_SELF']);
 
 if($jsondata_permission->users_type == 'recruiter'){
     
-    $permit_check = array_search($page_index, $recruiter_permit_pages);
-    if(!$permit_check){
-	   header("Location: ".ROOT_URL."/admin-new/edit-user.php");
+    if ( array_search($page_index, $recruiter_permit_pages) === false ) {
+	   header("Location: ".ROOT_URL."/admin-new/");
 	die(); 
     }
 
@@ -51,9 +52,8 @@ if($jsondata_permission->users_type == 'recruiter'){
 
 if($jsondata_permission->users_type == 'scheduler'){
     
-    $permit_check = array_search($page_index, $scheduler_permit_pages);
-    if(!$permit_check){
-	   header("Location: ".ROOT_URL."/admin-new/index.php");
+    if ( array_search($page_index, $scheduler_permit_pages) === false ) {
+	   header("Location: ".ROOT_URL."/admin-new/");
 	die(); 
     }
 

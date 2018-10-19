@@ -35,11 +35,9 @@ echo '<audio src="' . $voice['response'] . '" autoplay="autoplay"></audio>';*/
         <link href="assets/global/plugins/fullcalendar/fullcalendar.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
-<?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+
 <?php include('right-sidebar.php') ?>
-<?php else: ?>
-<?php include('navigation-employee.php') ?>
-<?php endif; ?>
+
 
 <style>
 .dashboard-stat.blue {
@@ -184,7 +182,7 @@ $('#pre_register_client').click(function(){
                 <div class="page-content">
                     <!-- BEGIN PAGE HEADER-->
 
-                    <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+                    <?php if($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'scheduler'): ?>
                     <!-- BEGIN DASHBOARD STATS 1-->
 
 					<div class="clearfix"></div>

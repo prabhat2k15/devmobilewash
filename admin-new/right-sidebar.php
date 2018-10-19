@@ -67,35 +67,42 @@
                                         <span class="title">App Orders</span>
                                     </a>                                  
                                 </li>                                
-                                
+                               <?php if($jsondata_permission->users_type == 'admin'): ?> 
                                <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php if($url == 'show-calendar.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="show-calendar.php" class="nav-link ">
                                         <span class="title">Order Calendar</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
+				<?php if(($jsondata_permission->users_type == 'recruiter') || ($jsondata_permission->users_type == 'scheduler')): ?> 
+                               <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php if($url == 'order_calendar.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="order_calendar.php" class="nav-link ">
+                                        <span class="title">Order Calendar</span>
+                                    </a>
+                                </li>
+				<?php endif; ?>
+				<?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
                                 <li style="display: <?php echo $checked_command_center_display; ?>" class="nav-item  <?php if($url == 'command-center.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="command-center.php" target="_blank" class="nav-link ">
                                         <span class="title">Command Center</span>
                                     </a>
                                 </li>
-						        <li style="display: <?php echo $checked_notifications_display; ?>" class="nav-item  <?php if($url == 'notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+				<?php endif; ?>
+				<?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
+				<li style="display: <?php echo $checked_notifications_display; ?>" class="nav-item  <?php if($url == 'notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="notifications.php" class="nav-link ">
                                         <span class="title">Notifications</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
+				<?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
                                 <li class="nav-item <?php if($url == 'manage-promotions.php' || $newurl_page[0] == 'manage-promotions.php' || $newurl[1] == 'add-coupon.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_promotions_display; ?>">
                                     <a href="manage-promotions.php" class="nav-link ">
                                         <span class="title">Manage Promotions</span>
                                     </a>
                                 </li>
-							
-							<?php /*
-								<li class="nav-item  <?php if($url == 'merge-orders.php' || $newurl_page[0] == 'merge-orders.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
-                                    <a href="merge-orders.php" class="nav-link ">
-                                        <span class="title">All Orders</span>
-                                    </a>
-                                </li>
- */ ?>
+				<?php endif; ?>
+
                                 <li class="nav-item <?php if($url == 'vehicles-packages.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
                                     <a href="vehicles-packages.php" class="nav-link ">
                                         <span class="title">Vehicles Packages</span>
@@ -107,7 +114,8 @@
                                         <span class="title">Vehicle Pricing</span>
                                     </a>
                                 </li>
-				
+				 <?php endif; ?>
+				<?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
                                 <li style="display: <?php echo $checked_opening_display; ?>" class="nav-item  <?php if($url == 'schedule-times.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="schedule-times.php" class="nav-link ">
                                         <span class="title">Schedule Times</span>
@@ -118,7 +126,7 @@
                                         <span class="title">On-Demand Surge Times</span>
                                     </a>
                                 </li>
-                                <?php endif; ?>
+                               
                                 <li class="nav-item  <?php if($url == 'payment-reports.php' || $newurl_page[0] == 'payment-reports.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_manage_display; ?>">
                                     <a href="payment-reports.php?filter=&limit=400" class="nav-link ">
                                     <span class="title">Payment Reports</span>
@@ -129,6 +137,8 @@
                                         <span class="title">Vehicle Addons Pricing</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
+				<?php if($jsondata_permission->users_type == 'admin'): ?>
                                 <li class="nav-item <?php if($url == 'surge-pricing.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
                                     <a href="surge-pricing.php" class="nav-link ">
                                         <span class="title">Surge Pricing</span>
@@ -139,6 +149,8 @@
                                         <span class="title">Zipcode Pricing</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
+				<?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
 				<li class="nav-item <?php if($url == 'add-vehicle.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_vehicles_display; ?>">
                                     <a href="add-vehicle.php" class="nav-link ">
                                         <span class="title">Add New Vehicle</span>
@@ -154,7 +166,8 @@
                                         <span class="title">Classic Vehicles</span>
                                     </a>
                                 </li>
-                                
+				<?php endif; ?>
+                         <?php if($jsondata_permission->users_type == 'admin'): ?>       
   <li class="nav-item <?php if($url == 'promo-popups.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $open_agent; ?>">
                                     <a href="promo-popups.php" class="nav-link ">
                                         <span class="title">Promo Popups</span>
@@ -165,11 +178,15 @@
                                         <span class="title">Discount Settings</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
+				<?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
                                 <li style="display: <?php echo $checked_opening_display; ?>" class="nav-item  <?php if($url == 'hours-of-operation.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="hours-of-operation.php" class="nav-link ">
                                         <span class="title">Hours of Operation</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
+				<?php if($jsondata_permission->users_type == 'admin'): ?>
                                 <li class="nav-item  <?php if($url == 'site-settings.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_site_display; ?>">
                                     <a href="site-settings.php" class="nav-link ">
                                         <span class="title">Site Settings</span>
@@ -180,12 +197,16 @@
                                         <span class="title">App Settings</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
+				<?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
                                 <li style="display: <?php echo $checked_messages_display; ?>" class="nav-item  <?php if($url == 'messagess.php' || $newurl_page[0] == 'messagess.php' || $newurl_page[0] == 'edit-message.php' || $newurl[1] == 'add-message.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="messagess.php" class="nav-link ">
                                         <span class="title">Messages</span>
                                     </a>
                                 </li>
-								<li style="display: <?php echo $checked_messages_display; ?>" class="nav-item  <?php if($url == 'push-messages.php' || $newurl_page[0] == 'push-messages.php' || $newurl_page[0] == 'edit-push-message.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+				<?php endif; ?>
+				<?php if($jsondata_permission->users_type == 'admin'): ?>
+				<li style="display: <?php echo $checked_messages_display; ?>" class="nav-item  <?php if($url == 'push-messages.php' || $newurl_page[0] == 'push-messages.php' || $newurl_page[0] == 'edit-push-message.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="push-messages.php" class="nav-link ">
                                         <span class="title">Push Messages</span>
                                     </a>
@@ -221,7 +242,7 @@
                                         <span class="title">Backup DB</span>
                                     </a>
                                 </li>
-								<li style="display: <?php echo $checked_backup_db_display; ?>" class="nav-item  <?php if($url == 'newsletters.php' || $url == 'newsletters.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+				<li style="display: <?php echo $checked_backup_db_display; ?>" class="nav-item  <?php if($url == 'newsletters.php' || $url == 'newsletters.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="newsletters.php" class="nav-link ">
                                         <span class="title">Newsletters</span>
                                     </a>
@@ -238,7 +259,7 @@
 										</li>
 									</ul>
                                 </li>
-								<li style="display: <?php echo $checked_backup_db_display; ?>" class="nav-item  <?php if($url == 'coverage-area-zipcodes.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+				<li style="display: <?php echo $checked_backup_db_display; ?>" class="nav-item  <?php if($url == 'coverage-area-zipcodes.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="coverage-area-zipcodes.php" class="nav-link ">
                                         <span class="title">Coverage Area Zipcodes</span>
                                     </a>
@@ -248,14 +269,17 @@
                                         <span class="title">Coverage Area Cities</span>
                                     </a>
                                 </li>
-                                
+                                <?php endif; ?>
+				<?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
 				<li style="display: <?php echo $checked_command_center_display; ?>" class="nav-item  <?php if($url == 'heatmap.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="heatmap.php" target="_blank" class="nav-link ">
                                         <span class="title">Heatmap</span>
                                     </a>
                                 </li>
 								
-								<li class="nav-item <?php if($url == 'list-review.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_show_review_display; ?>">
+				<?php endif; ?>
+				<?php if($jsondata_permission->users_type == 'admin'): ?>
+				<li class="nav-item <?php if($url == 'list-review.php') { $open_agent = 'open'; echo 'active open'; } ?>" style="display: <?php echo $checked_show_review_display; ?>">
                                     <a href="list-review.php" class="nav-link ">
                                         <span class="title">Review</span>
                                     </a>
@@ -273,6 +297,7 @@
                                         <span class="title">Bug Report</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
                             </ul>
                         </li>
                         
@@ -293,6 +318,7 @@
                                         <span class="title">Manage Customers</span>
                                     </a>
                                 </li>
+				<?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
                                 <li class="nav-item  <?php if($url == 'non-return-customers.php' || $newurl_page[0] == 'non-return-customers.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="non-return-customers.php" class="nav-link ">
                                         <span class="title">Non Returning Customers</span>
@@ -323,6 +349,7 @@
                                         <span class="title">Top Customers</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
                             </ul>
                         </li>
                         
@@ -339,26 +366,19 @@
                                     </a>
                                 </li>
                               
-                                <!--<li class="nav-item  <?php if($url == 'add-new-washer.php' || $newurl_page[0] == 'add-new-washer.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="add-new-washer.php" class="nav-link ">
-                                        <span class="title">Add New Washer</span>
-                                    </a>
-                                </li>-->
+                                <?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
                                 <li class="nav-item  <?php if($url == 'manage-agents.php' || $newurl_page[0] == 'manage-agents.php' || $newurl_page[0] == 'edit-agent.php' || $newurl[1] == 'add-agent.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="manage-agents.php?type=demo" class="nav-link ">
                                         <span class="title">Manage Washers</span>
                                     </a>
                                 </li>
-                                <!--<li class="nav-item  <?php //if($url == 'washer-notifications.php') { $open_agent = 'open'; echo 'active open'; } ?>">
-                                    <a href="washer-notifications.php" class="nav-link ">
-                                        <span class="title">Washer Push Notifications</span>
-                                    </a>
-                                </li>-->
+                               
 				<li class="nav-item  <?php if($url == 'top-washers.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="top-washers.php" class="nav-link ">
                                         <span class="title">Top Washers</span>
                                     </a>
                                 </li>
+				<?php endif; ?>
                             </ul>
                         </li>
                         
@@ -372,6 +392,7 @@
                     <!-- END SIDEBAR MENU -->
                     <!-- END SIDEBAR MENU -->
 <a class="add-bug-btn" href="add-new-bug.php" style="display: block;margin: 0 auto;color: #fff;text-align: center;padding: 10px;margin: 20px 45px;box-sizing: border-box;border-radius: 50px;text-decoration: none;border: 2px solid #b4bcc8;">Report Bug</a>
+ <?php if(($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
  <form class="sidebar-search  " action="search.php" method="GET">
                                 
                                
@@ -396,6 +417,7 @@
                                 
                                 <input style="width: 100%;" type="submit" value='Search' />
                             </form>
+ <?php endif; ?>
 </div>
                 <!-- END SIDEBAR -->
             </div>
