@@ -610,7 +610,8 @@ die();
         if((isset($agent_id) && !empty($agent_id)) && (isset($wash_id) && !empty($wash_id))){
         $agents_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
         $wash_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_id));
-
+$admin_username = '';
+        $admin_username  = Yii::app()->request->getParam('admin_username');
 
         if(!count($agents_id_check)){
           $result= 'false';
@@ -626,7 +627,18 @@ die();
              $result= 'true';
         $response= 'order assigned';
 
-        $id_assign_check = Washingrequests::model()->updateByPk($wash_id, array( 'order_temp_assigned' => $agent_id, 'agent_reject_ids'=>'' ));
+        //$id_assign_check = Washingrequests::model()->updateByPk($wash_id, array( 'order_temp_assigned' => $agent_id, 'agent_reject_ids'=>'' ));
+	$id_assign_check = Washingrequests::model()->updateByPk($wash_id, array( 'agent_id' => $agent_id, 'status'=>1 ));
+	
+	$washeractionlogdata = array(
+				'agent_id'=> $agent_id,
+				'wash_request_id'=> $wash_id,
+				'agent_company_id'=> $agents_id_check->real_washer_id,
+				'admin_username' => $admin_username,
+				'action'=> 'savejob',
+				'action_date'=> date('Y-m-d H:i:s'));
+
+				Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 
         }
         }

@@ -1873,7 +1873,7 @@ var th = $(this);
 //alert(wash_id+" "+agent_id);
 $(this).html('Assigning...');
 
-$.post( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+$.post( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
   $(th).html('Assigned');
 $("#container .note-message").fadeIn();
 $("#container .note-message").html('Order assigned successfully');

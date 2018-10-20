@@ -1526,7 +1526,19 @@ $first_card_type = ''; ?>
 
                                                         <div class="form-group">
                                                              <label class="control-label">Assigned Detailer</label>
-                                                             <input type="text" id="agentname" name="agentname" class="form-control" value="<?php if($agentdetails->id) echo $agentdetails->real_washer_id." - ".$agentdetails->first_name." ".$agentdetails->last_name; ?>" />
+                                                             <?php
+                                                             $washer_phone = $agentdetails->phone_number;
+
+if(  preg_match( '/^(\d{3})(\d{3})(\d{4})$/', $washer_phone,  $matches ) )
+{
+    $washer_phoneformat = "(".$matches[1] . ') ' .$matches[2] . '-' . $matches[3];
+   
+}
+else{
+  $washer_phoneformat = $washer_phone;
+}
+?>
+                                                             <input type="text" id="agentname" name="agentname" class="form-control" value="<?php if($agentdetails->id) echo $agentdetails->real_washer_id." - ".$agentdetails->first_name." ".$agentdetails->last_name." ".$washer_phoneformat; ?>" />
                                                              <input type="hidden" name="detailer" id="detailer" value="<?php if($agentdetails->id) {echo $agentdetails->id;}else{echo "0";} ?>" />
 
                                                         </div>
