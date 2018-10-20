@@ -669,7 +669,7 @@ setInterval(function(){
         }
     });
     if(total_stop_count == 5){
-        alert("You must drive to your order");
+        //alert("You must drive to your order");
     }
 }, 60000);
 </script>

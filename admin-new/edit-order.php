@@ -1123,7 +1123,19 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 }
 ?>
 <div class='regular-car-box' id='regular-car-box-<?php echo $ind+1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
-<img style="width: 170px; clear: both; display: block; margin-top: 20px;" src="<?php if(strpos($veh->vehicle_image, ROOT_URL) !== false) {echo $veh->vehicle_image; } else{echo ROOT_URL."/api/images/veh_img/".$veh->vehicle_image; } ?>" alt="" />
+<div class="upload_Vihicle_image">
+    <img style="width: 58%; clear: both; float: left; margin-top: 20px;" src="<?php if(strpos($veh->vehicle_image, ROOT_URL) !== false) {echo $veh->vehicle_image; } else{echo ROOT_URL."/api/images/veh_img/".$veh->vehicle_image; } ?>" alt="" />
+    <div class="upload_form" style="width:37%; float: left; margin: 84px 5px;"> 
+    Upload Image
+    <input type="button" value="Browse" onclick="$(this).next().click();" />
+    <input type="file" name="vehicle_image" class="vehicle_image" style="display: none;">
+    <br>
+    <input type="hidden" value="<?php echo $veh->id;?>" name="vehicle_id" class="vehicle_id">
+    <input type="button" value="SAVE" class="submit_vih_image">
+    </div>
+</div>
+<div style="clear: both;"></div>
+
 <p style="margin-top: 20px;">Eco friendly waterless wash: <?php if($veh->eco_friendly == 1) {echo "Yes";} else {echo "No";} ?></p>
 <label class='control-label'>Make</label>
 <input type="text" name='car_makes[]' class='form-control regular-make' style='width: 300px; border: 0;' readonly value="<?php echo $veh->brand_name; ?>" />
@@ -1257,7 +1269,19 @@ if($vehdata->vehicle->vehicle_type == 'E') {
 }
 ?>
 <div class='classic-car-box' id='classic-car-box-<?php echo $ind+1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
-<img style="width: 170px; clear: both; display: block; margin-top: 20px;" src="<?php if(strpos($veh->vehicle_image, ROOT_URL) !== false) {echo $veh->vehicle_image; } else{echo ROOT_URL."/api/images/veh_img/".$veh->vehicle_image; } ?>" alt="" />
+<div class="upload_Vihicle_image">
+    <img style="width: 58%; clear: both; float: left; margin-top: 20px;" src="<?php if(strpos($veh->vehicle_image, ROOT_URL) !== false) {echo $veh->vehicle_image; } else{echo ROOT_URL."/api/images/veh_img/".$veh->vehicle_image; } ?>" alt="" />
+    <div class="upload_form" style="width:37%; float: left; margin: 84px 5px;"> 
+    Upload Image
+    <input type="button" value="Browse" onclick="$(this).next().click();" />
+    <input type="file" name="vehicle_image" class="vehicle_image" style="display: none;">
+    <br>
+    <input type="hidden" value="<?php echo $veh->id;?>" name="vehicle_id" class="vehicle_id">
+    <input type="button" value="SAVE" class="submit_vih_image">
+    </div>
+</div>
+<div style="clear: both;"></div>
+
 <p style="margin-top: 20px;">Eco friendly waterless wash: <?php if($veh->eco_friendly == 1) {echo "Yes";} else {echo "No";} ?></p>
 <label class='control-label'>Make</label>
 <input type="text" name='car_makes[]' class='form-control classic-make' style='width: 300px; border: 0;' readonly value="<?php echo $veh->brand_name; ?>" />
@@ -4331,7 +4355,29 @@ if(data.result == 'true'){
 });  
 }
 
-
+$(document).ready(function() {
+    $('.submit_vih_image').click(function(e){
+        e.preventDefault();
+        var parent = $(this).parent('.upload_form');
+        var file_data = parent.children('.vehicle_image').prop('files')[0];
+        var vehicle_id = parent.children('.vehicle_id').val();
+        var form_data = new FormData();                  
+        form_data.append('file', file_data);
+        form_data.append('vehicle_id', vehicle_id);
+        //alert(form_data);
+        $.ajax({
+            url: "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/addVehicelImage",
+            type: "POST",
+            data: form_data,
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(data){
+                location.reload();
+            }
+        });
+    });
+});
 
 </script>
 

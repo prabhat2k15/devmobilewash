@@ -793,7 +793,38 @@ foreach($all_cust_vehicles as $veh_detail){
 		echo json_encode($json);
 	}
 
+public function actionaddVehicelImage(){
 
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$result= 'false';
+			$response= 'pass required parameters';
+
+
+	$vehicle_id = Yii::app()->request->getParam('vehicle_id');
+	$target_dir = realpath(Yii::app()->basePath . '/../images/veh_img');
+	//$target_file = $target_dir . basename($_FILES["file"]["name"]);
+	$md5 = md5(uniqid(rand(), true));
+	$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+	$name = $customer_id.'_'.$md5.$imageFileType;
+	$path = $target_dir.'/'.$name;
+	$SiteUrl= Yii::app()->getBaseUrl(true);
+	$image = $SiteUrl.'/images/veh_img/'.$name;
+	move_uploaded_file($_FILES["file"]["tmp_name"], $path);
+
+	$resUpdate = Yii::app()->db->createCommand()->update('customer_vehicals',array('vehicle_image'=>$image),"id=:id", array(":id" => $vehicle_id));
+	$result= 'true';
+	$response= 'update successful';
+
+	$json= array(
+	'result'=> $result,
+	'response'=> $response,
+);
+echo json_encode($json);
+}
 
 
 }
