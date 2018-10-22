@@ -16,6 +16,7 @@ define("APP_ENV",""); // real or blank
 
 define("ENV","sandbox");//sandbox or production
 define("MERCHANT_ID","czckz7jkzcnny4jj");
+define("MERCHANT_ID_REAL","74zsnfqy5svgpvjv");
 define("PUBLIC_KEY","zwcjr8h49b5j5s96");
 define("PRIVATE_KEY","1d9f980b86df0a4d0e0ce3253970a8ee");
 define("MERCHANT_ACCOUNT_ID","");

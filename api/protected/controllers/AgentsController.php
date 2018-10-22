@@ -1354,7 +1354,7 @@ if(($phone_number_check->carrier['type'] == 'voip') && (!$block_washer)){
 				}
 
 
-				if(isset($email) && !empty($email) ){
+				/*if(isset($email) && !empty($email) ){
 					$email_Exist= Agents::model()->findByAttributes(array('email'=>$email));
 					if(isset($email_Exist->id) &&($email_Exist->id == $agent_id)){
 						$email_Exist = array();
@@ -1371,6 +1371,10 @@ if(($phone_number_check->carrier['type'] == 'voip') && (!$block_washer)){
 
 
 				}else{
+					 $email = $model->email;
+				}*/
+				
+				if(empty($email) ){
 					 $email = $model->email;
 				}
 
@@ -1657,8 +1661,17 @@ if($washer_position == 'real') $merchant_id = 'MobileWashINC_marketplace';
   'masterMerchantAccountId' => $merchant_id
 ];
 
-if($washer_position == 'real') $bt_result = Yii::app()->braintree->updateSubMerchant_real($agentcheck->bt_submerchant_id, $merchantAccountParams);
-else $bt_result = Yii::app()->braintree->updateSubMerchant($agentcheck->bt_submerchant_id, $merchantAccountParams);
+if($agentcheck->bt_submerchant_id){
+ if($washer_position == 'real') $bt_result = Yii::app()->braintree->updateSubMerchant_real($agentcheck->bt_submerchant_id, $merchantAccountParams);
+else $bt_result = Yii::app()->braintree->updateSubMerchant($agentcheck->bt_submerchant_id, $merchantAccountParams); 
+}
+else{
+  if($washer_position == 'real') $bt_result = Yii::app()->braintree->createSubMerchant_real($merchantAccountParams);
+else $bt_result = Yii::app()->braintree->createSubMerchant($merchantAccountParams);
+
+Agents::model()->updateByPk($agentcheck->id,array('bt_submerchant_id' => $bt_result['sub_merchant_id']));
+}
+
       //print_r($bt_result);
       //exit;
       

@@ -782,6 +782,23 @@ display: none;
 	height: 25px !important;
     width:25px !important;
 }
+
+.cc-status-red{
+  background: red;
+}
+
+.cc-status-yellow{
+  background: yellow;
+  color: #000 !important;
+}
+
+.cc-status-green{
+  background: green;
+}
+
+.cc-status-gray{
+  background: gray;
+}
 </style>
 <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
@@ -1387,9 +1404,33 @@ else{
 
     <h3 class="sec-heading" style="margin-top: 25px;">Payment Methods</h3>
     <?php if($getorder->is_flagged == 1): ?>
-<div style="float: left;font-size: 18px; margin-top: 3px; cursor: pointer; background: #9C27B0; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="pass-fraud">Pass Fraud</div>
-<div style="clear: both;"></div>
+<div style="float: left;font-size: 18px; margin-top: 3px; cursor: pointer; background: #9C27B0; color: #fff; padding: 8px 35px; margin-right: 65px; margin-bottom: 15px;" class="pass-fraud">Pass Fraud</div>
 <?php endif; ?>
+    <?php if(($getorder->transaction_id) || ($getorder->failed_transaction_id)): ?>
+    <?php
+    $tid = '';
+    $cc_status_class = '';
+    if($getorder->failed_transaction_id) $cc_status_class= 'cc-status-red';
+    else{
+      if(($transaction_details->transaction_details->status == 'authorized') || ($transaction_details->transaction_details->status == 'submitted_for_settlement') || ($transaction_details->transaction_details->status == 'settling')){
+        $cc_status_class= 'cc-status-yellow';
+      }
+      
+      if(($transaction_details->transaction_details->status == 'settled')){
+        $cc_status_class= 'cc-status-green';
+      }
+      
+      if(($transaction_details->transaction_details->status == 'voided')){
+        $cc_status_class= 'cc-status-gray';
+      }
+    }
+    if($getorder->failed_transaction_id) $tid = $getorder->failed_transaction_id;
+    else $tid = $getorder->transaction_id;
+    if(APP_ENV == 'real') $bt_link = "https://www.braintreegateway.com/merchants/".MERCHANT_ID_REAL."/transactions/".$tid;
+    else $bt_link = "https://sandbox.braintreegateway.com/merchants/".MERCHANT_ID."/transactions/".$tid; ?>
+<a href="<?php echo $bt_link; ?>" target="_blank" class="<?php echo $cc_status_class; ?>" style="float: left; display: block; font-size: 18px; margin-top: 3px; text-decoration: none; text-align: center; cursor: pointer; color: #fff; padding: 8px 20px; margin-bottom: 15px;">Transaction ID:<br><?php echo $tid; ?></a>
+<?php endif; ?>
+<div style="clear: both;"></div>
      <?php
  if($getorder->customer_id) {
 
