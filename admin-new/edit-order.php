@@ -793,7 +793,7 @@ display: none;
 }
 
 .cc-status-green{
-  background: green;
+  background: #05b500;
 }
 
 .cc-status-gray{
@@ -1428,7 +1428,7 @@ else{
     else $tid = $getorder->transaction_id;
     if(APP_ENV == 'real') $bt_link = "https://www.braintreegateway.com/merchants/".MERCHANT_ID_REAL."/transactions/".$tid;
     else $bt_link = "https://sandbox.braintreegateway.com/merchants/".MERCHANT_ID."/transactions/".$tid; ?>
-<a href="<?php echo $bt_link; ?>" target="_blank" class="<?php echo $cc_status_class; ?>" style="float: left; display: block; font-size: 18px; margin-top: 3px; text-decoration: none; text-align: center; cursor: pointer; color: #fff; padding: 8px 20px; margin-bottom: 15px;">Transaction ID:<br><?php echo $tid; ?></a>
+<a href="<?php echo $bt_link; ?>" target="_blank" class="<?php echo $cc_status_class; ?>" style="float: left; display: block; font-size: 18px; margin-top: 3px; text-decoration: none; text-align: center; cursor: pointer; color: #fff; padding: 8px 20px; margin-bottom: 15px;">Transaction ID: <?php echo $tid; ?></a>
 <?php endif; ?>
 <div style="clear: both;"></div>
      <?php
