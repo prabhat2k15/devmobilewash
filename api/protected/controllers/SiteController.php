@@ -8775,4 +8775,41 @@ Washingrequests::model()->updateByPk($wash['id'], $data);
    
     }
     
+   public function actionupdateadminnotifyview()
+    {
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$wash_request_id = Yii::app()->request->getParam('wash_request_id');
+$notify_name = Yii::app()->request->getParam('notify_name');
+$admin_username = Yii::app()->request->getParam('admin_username');
+
+$wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
+
+if(count($wash_id_check)){
+	if($wash_id_check->admin_notify_view){
+			$json_org = json_decode($wash_id_check->admin_notify_view, true);
+
+if (array_key_exists($admin_username,$json_org)){
+array_push($json_org[$admin_username], $notify_name);
+}
+else $json_org[$admin_username]= array($notify_name);
+
+Washingrequests::model()->updateByPk($wash_request_id, array('admin_notify_view' => json_encode($json_org)));
+
+	}
+	else{
+	$json_org[$admin_username]= array($notify_name);
+	Washingrequests::model()->updateByPk($wash_request_id, array('admin_notify_view' => json_encode($json_org)));
+	}
+
+
+}
+
+   
+    }
+    
 }

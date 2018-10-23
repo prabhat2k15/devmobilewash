@@ -978,7 +978,7 @@ $.each(data.wash_ids, function( index, value ) {
 			
 			var wash_id = $(this).attr('data-id');
 			var click_action = $(this).attr('data-action');
-		  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/updateadminnotifyview", {wash_request_id: wash_id, 'notify_name': click_action, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+		  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/updateadminnotifyview", {wash_request_id: wash_id, notify_name: click_action, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
     
 
 });
