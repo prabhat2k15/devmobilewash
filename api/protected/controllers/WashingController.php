@@ -6777,11 +6777,11 @@ echo "Invalid api key";
         $result= 'false';
         $response= 'Pass the required parameters';
 
-         if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($customer_id) && !empty($customer_id)) && (isset($agent_id) && !empty($agent_id))){
+         if((isset($wash_request_id) && !empty($wash_request_id)) && (isset($customer_id) && !empty($customer_id))){
 
                 $wash_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
                 $customer_id_check = Customers::model()->findByAttributes(array("id"=>$customer_id));
-                $agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
+                if(!$agent_id) $agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
 
                 if(!count($wash_id_check)){
                     $result= 'false';
@@ -6791,10 +6791,10 @@ echo "Invalid api key";
                     $result= 'false';
                     $response= 'Invalid customer id';
                 }
-                else if(!count($agent_id_check)){
+                /*else if(!count($agent_id_check)){
                     $result= 'false';
                     $response= 'Invalid agent id';
-                }
+                }*/
                 else{
                    $result= 'true';
                     $response= 'order receipts sent';
@@ -7737,7 +7737,7 @@ $com_message .= "<table style='width: 100%; border-collapse: collapse; margin-to
 
 $wash_feedbacks = Washingfeedbacks::model()->findByAttributes(array("wash_request_id" => $wash_request_id));
 
- $agent_details = Agents::model()->findByAttributes(array("id"=>$agent_id_check->id));
+ if(!$agent_id) $agent_details = Agents::model()->findByAttributes(array("id"=>$agent_id_check->id));
 
 $agentlname = '';
 if(trim($agent_details->last_name)) $agentlname = strtoupper(substr($agent_details->last_name, 0, 1)).".";
@@ -7945,7 +7945,7 @@ $to = Vargas::Obj()->getAdminToEmail();
 $from = Vargas::Obj()->getAdminFromEmail();
 
                     Vargas::Obj()->SendMail($customer_id_check->email,$from,$message,$subject, 'mail-receipt');
-                    Vargas::Obj()->SendMail($agent_id_check->email,$from,$message_agent,$subject, 'mail-receipt');
+                    if(!$agent_id) Vargas::Obj()->SendMail($agent_id_check->email,$from,$message_agent,$subject, 'mail-receipt');
                     //Vargas::Obj()->SendMail("billing@mobilewash.com","info@mobilewash.com",$com_message,$subject, 'mail-receipt'); //uncomment in live
 Vargas::Obj()->SendMail($to,$from,$com_message,$subject, 'mail-receipt');
 
@@ -8707,6 +8707,8 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
 	    
 	    
            }
+            
+$receiptresult = $this->actionsendorderreceipts($wash_request_id, $wrequest_id_check->customer_id, $wrequest_id_check->agent_id, 'true', API_KEY);
 	   
 	if(($result == 'true') && ($wash_now_canceled == 1) && (APP_ENV == 'real')){
 	//if(($result == 'true') && ($wash_now_canceled == 1)){
