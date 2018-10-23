@@ -47,7 +47,7 @@ $agent_id = 0;
 if(isset($_GET['customer_id'])) $cust_id = $_GET['customer_id'];
 if(isset($_GET['agent_id'])) $agent_id = $_GET['agent_id'];
 $handle = curl_init($url);
-$data = array('day'=>$day,'event'=>$_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('day'=>$day,'event'=>$_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
 
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -871,6 +871,7 @@ var params = {};
    params.<?php echo $key; ?> = "<?php echo $value; ?>";
 <?php } ; ?>
 params.key = "Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4";
+params.admin_username = "<?php echo $jsondata_permission->user_name; ?>";
 
 if((!params.limit) || params.limit > 100) params.limit = 100;
 
@@ -973,10 +974,11 @@ $.each(data.wash_ids, function( index, value ) {
 <?php if($_GET['ajax'] == 'true'): ?>
 <script>
 	$(function(){
-		$( "body" ).on( "click", ".addonupgrade-view", function() {
+		$( "body" ).on( "click", ".admin-notify-view-click", function() {
 			
 			var wash_id = $(this).attr('data-id');
-		  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/updatelog", {wash_request_id: wash_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+			var click_action = $(this).attr('data-action');
+		  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/updateadminnotifyview", {wash_request_id: wash_id, 'notify_name': click_action, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
     
 
 });
@@ -989,13 +991,13 @@ $.each(data.wash_ids, function( index, value ) {
 			$(".alert-box-wrap").hide();
 		  }
 		  
-		  $("#example1 tr#order-"+wash_id).removeClass('flashrowchangedpack');
+		  if(click_action == 'washer_change_pack') $("#example1 tr#order-"+wash_id).removeClass('flashrowchangedpack');
 		  window.open('edit-order.php?id='+wash_id, '_blank');
 		  return false;
 		  
 			});
 			
-			$( "body" ).on( "click", ".spec-order-list li a", function() {
+			/*$( "body" ).on( "click", ".spec-order-list li a", function() {
 				if ($(this).hasClass("addonupgrade-view")) {
 					return false;
 				}
@@ -1013,7 +1015,7 @@ $.each(data.wash_ids, function( index, value ) {
 		  window.open('edit-order.php?id='+wash_id, '_blank');
 		  return false;
 		  
-			});
+			});*/
 
 	});
 function ajaxorderlist(){
@@ -1053,16 +1055,16 @@ $.each(data.wash_requests, function( index, value ) {
        popuptextred += "<li class='processordeclined'>#"+value.id+" Payment non-settled order - "+value.customer_name+" <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     if(value.washer_change_pack > 0){
-     popuptextblue += "<li class='addonupgrade'>#"+value.id+" upgraded package/changed addons order - "+value.customer_name+" <a class='addonupgrade-view' data-id='"+value.id+"' href='#'>View</a></li>";
+     popuptextblue += "<li class='addonupgrade'>#"+value.id+" upgraded package/changed addons order - "+value.customer_name+" <a class='admin-notify-view-click' data-action='washer_change_pack' data-id='"+value.id+"' href='#'>View</a></li>";
     }
     if(value.admin_submit_for_settle == 1){
        popuptextred += "<li class='processordeclined'>#"+value.id+" BT custom payment order - "+value.customer_name+" <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     if(value.washercustnomeet == 1){
-      popuptextorange += "<li class='meetwasher'>#"+value.id+" - Customer has not selected meet Washer or No Thanks for 10 minutes - Call Customer <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
+      popuptextorange += "<li class='meetwasher'>#"+value.id+" - Customer has not selected meet Washer or No Thanks for 10 minutes - Call Customer <a class='admin-notify-view-click' data-action='washercustnomeet' data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     if(value.washer_wash_activity == 0){
-      popuptextorange += "<li class='meetwasher'>#"+value.id+" - Washer hasn't tapped Start Wash for 10 minutes - Please call <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
+      popuptextorange += "<li class='meetwasher'>#"+value.id+" - Washer hasn't tapped Start Wash for 10 minutes - Please call <a class='admin-notify-view-click' data-action='washer_wash_activity' data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";
     }
     if(value.washer_30_min_noarrive == 1){
       popuptextgreen += "<li class='washernoarrive30min'>#"+value.id+" - En Route Washer "+value.agent_details.agent_name+" hasn't tapped \"arrive\" within 30 minutes - Please Call <a data-id='"+value.id+"' href='edit-order.php?id="+value.id+"' target='_blank'>View</a></li>";

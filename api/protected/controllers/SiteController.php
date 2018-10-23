@@ -3350,6 +3350,8 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
         $limit = Yii::app()->request->getParam('limit');
         $customer_id = Yii::app()->request->getParam('customer_id');
         $agent_id = Yii::app()->request->getParam('agent_id');
+	$admin_username = '';
+	$admin_username = Yii::app()->request->getParam('admin_username');
 $pendingorderscount = 0;
 $cust_query = '';
 $agent_query = '';
@@ -3646,6 +3648,27 @@ if(($wrequest['status'] == 3) && (!$wrequest['washer_wash_activity'])){
 	
 	if($min_diff2 >= 10) $washer_wash_activity = 0;
 }
+
+if(($wrequest['admin_notify_view']) && ($admin_username)){
+$admin_action_check = json_decode($wrequest['admin_notify_view'], true);
+
+if (array_key_exists($admin_username,$admin_action_check)){
+if (in_array("washer_change_pack", $admin_action_check[$admin_username])){
+$washer_change_pack = 0;
+}
+
+if (in_array("washer_wash_activity", $admin_action_check[$admin_username])){
+$washer_wash_activity = 1;
+}
+
+if (in_array("washercustnomeet", $admin_action_check[$admin_username])){
+$washercustnomeet = 0;
+}
+
+}
+
+}
+
 
 
 if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
