@@ -8708,7 +8708,7 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
 	    
            }
             
-$receiptresult = $this->actionsendorderreceipts($wash_request_id, $wrequest_id_check->customer_id, $wrequest_id_check->agent_id, 'true', API_KEY);
+//$receiptresult = $this->actionsendorderreceipts($wash_request_id, $wrequest_id_check->customer_id, $wrequest_id_check->agent_id, 'true', API_KEY);
 	   
 	if(($result == 'true') && ($wash_now_canceled == 1) && (APP_ENV == 'real')){
 	//if(($result == 'true') && ($wash_now_canceled == 1)){

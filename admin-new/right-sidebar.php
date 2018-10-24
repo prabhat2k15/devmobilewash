@@ -74,6 +74,20 @@
                                     </a>
                                 </li>
 				<?php endif; ?>
+				<?php if($jsondata_permission->users_type == 'admin'): ?> 
+                               <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php if($url == 'flagged-issues.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="flagged-issues.php" class="nav-link ">
+                                        <span class="title">Flagged Issues</span>
+                                    </a>
+                                </li>
+				<?php endif; ?>
+				<?php if($jsondata_permission->users_type == 'admin'): ?> 
+                               <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php if($url == 'expansion-requests.php') { $open_agent = 'open'; echo 'active open'; } ?>">
+                                    <a href="expansion-requests.php" class="nav-link ">
+                                        <span class="title">Expansion Requests</span>
+                                    </a>
+                                </li>
+				<?php endif; ?>
 				<?php if(($jsondata_permission->users_type == 'recruiter') || ($jsondata_permission->users_type == 'scheduler')): ?> 
                                <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php if($url == 'order_calendar.php') { $open_agent = 'open'; echo 'active open'; } ?>">
                                     <a href="order_calendar.php" class="nav-link ">
