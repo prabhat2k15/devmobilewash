@@ -7861,6 +7861,15 @@ $com_message .= "<tr>
 </tr>";
 }
 
+if($wash_later_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Sugre Fee</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($wash_later_fee, 2)."</p></td>
+</tr>";
+
+}
 
 if(count($kartdata->vehicles) > 1){
 $com_message .= "<tr>
@@ -7946,8 +7955,13 @@ $from = Vargas::Obj()->getAdminFromEmail();
 
                     Vargas::Obj()->SendMail($customer_id_check->email,$from,$message,$subject, 'mail-receipt');
                     if(!$agent_id) Vargas::Obj()->SendMail($agent_id_check->email,$from,$message_agent,$subject, 'mail-receipt');
-                    //Vargas::Obj()->SendMail("billing@mobilewash.com","info@mobilewash.com",$com_message,$subject, 'mail-receipt'); //uncomment in live
-Vargas::Obj()->SendMail($to,$from,$com_message,$subject, 'mail-receipt');
+                    Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
+					if($is_scheduled == 1){
+						Vargas::Obj()->SendMail($customers_id_check->email,"billing@Mobilewash.com",$message,$subject, 'mail-receipt');
+					}else{	
+						$receiptresult = $this->actionsendorderreceipts($wash_request_id, $customer_id, 0, 'true', API_KEY);
+					}
+                    //Vargas::Obj()->SendMail($to,$from,$com_message,$subject, 'mail-receipt');
 
                 }
          }
