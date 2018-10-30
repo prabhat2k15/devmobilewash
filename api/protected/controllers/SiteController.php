@@ -3275,7 +3275,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
         }
 		/* Checking for post(day) parameters */
 		$order_day='';
-		if(!empty(Yii::app()->request->getParam('day')) && !empty(Yii::app()->request->getParam('event'))){
+		if((!empty(Yii::app()->request->getParam('day')) || !empty(Yii::app()->request->getParam('month'))) && !empty(Yii::app()->request->getParam('event'))){
 			$day = Yii::app()->request->getParam('day');
 			$event = Yii::app()->request->getParam('event');
 			
@@ -3284,7 +3284,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 				$status = 0;
 				$status_qr = ' AND w.status="'.$status.'"';
 			} elseif($event == 'total_orders'){
-                $status_qr = " AND w.status IN('0','4','3','2','1')";
+                $status_qr = " AND w.status IN(0,4,3,2,1,5,6)";
             } elseif($event == 'completed'){
 				$status = 4;
 				$status_qr = ' AND w.status="'.$status.'"';
@@ -3327,7 +3327,13 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 				$status_qr = '';
 			}
 
-			$order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '".$day."'".$status_qr;
+			if($month != ''){
+                $month_start = date("Y-m-d", strtotime("FIRST day of this month"));
+                $month_end = date('Y-m-d',strtotime('last day of this month'));
+                $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$month_start."' AND '".$month_end."'".$status_qr;
+            }else{    
+			    $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '".$day."'".$status_qr;
+            }
 		}
 		/* END */
 

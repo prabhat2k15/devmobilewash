@@ -34,11 +34,14 @@ $jsondata_permission = json_decode($result_permission);
 
 
 /* SCHEDULE ORDER */
-
-$day = $_event = '';
+$day = $_event = $month = '';
 if( isset($_GET['day']) && !empty( $_GET['day'] ) ){
 	$day = $_GET['day'];
 	$_event = $_GET['event'];
+}
+if(isset($_GET['month']) && !empty($_GET['month'])){
+  $month = $_GET['month'];
+  $_event = $_GET['event'];
 }
 
 $url = ROOT_URL.'/api/index.php?r=site/getallwashrequestsnew';
@@ -47,7 +50,7 @@ $agent_id = 0;
 if(isset($_GET['customer_id'])) $cust_id = $_GET['customer_id'];
 if(isset($_GET['agent_id'])) $agent_id = $_GET['agent_id'];
 $handle = curl_init($url);
-$data = array('day'=>$day,'event'=>$_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('day'=>$day,'event'=>$_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4','month'=>$month);
 
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
