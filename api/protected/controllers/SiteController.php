@@ -8818,4 +8818,148 @@ Washingrequests::model()->updateByPk($wash_request_id, array('admin_notify_view'
    
     }
     
+        public function actiontestingcsv(){
+
+    if(Yii::app()->request->getParam('key') != API_KEY){
+    echo "Invalid api key";
+    die();
+    }
+
+        ob_end_clean();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=Current_monthtask.csv');
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $file = fopen('php://output', 'w');
+
+        $url = ROOT_URL.'/api/index.php?r=site/getallwashrequestsnew';
+        $cust_id = 0;
+        $agent_id = 0;
+        $_event = 'total_orders';
+        $month = date("F");
+        $handle = curl_init($url);
+        $data = array('event'=>$_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'month' => $month);
+
+        curl_setopt($handle, CURLOPT_POST, true);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+        $result = curl_exec($handle);
+        curl_close($handle);
+        $jsondata = json_decode($result);
+        $s_orders_response = $jsondata->response;
+        $s_orders_result_code = $jsondata->result;
+        $s_mw_all_orders = $jsondata->wash_requests;
+         //echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; 
+         $pending_order_count = '';
+        if(!$jsondata->pending_wash_count) $pending_order_count = "no orders";
+        if($jsondata->pending_wash_count == 1) $pending_order_count = "1 order";
+        if($jsondata->pending_wash_count > 1) $pending_order_count = $jsondata->pending_wash_count." orders"; 
+        $voice_print = "Hello ".$jsondata_permission->user_name."! You have ".$pending_order_count." pending.";
+        $cust_avg_order_frequency = $jsondata->cust_avg_order_frequency;
+        $android_count = $jsondata->android_count;
+        $ios_count = $jsondata->ios_count;
+
+        if( count($s_mw_all_orders) > 0 ){
+                $Arr_field['field_name']['order_id'] = 'ID'; 
+                $Arr_field['field_name']['order_type'] = 'Order Type';
+                $Arr_field['field_name']['status'] = 'Status';
+                $Arr_field['field_name']['payment'] = 'Payment';
+                $Arr_field['field_name']['trans_id'] = 'Transaction ID';
+                $Arr_field['field_name']['declined_trans_id'] = 'Declined Transaction ID';
+                $Arr_field['field_name']['customer'] = 'Customer Name';
+                $Arr_field['field_name']['customer_phone'] = 'Customer Phone';
+                $Arr_field['field_name']['badge'] = 'Badge';
+                $Arr_field['field_name']['agent_name'] = 'Agent Name';
+                $Arr_field['field_name']['agent_phone'] = 'Agent Phone';
+                $Arr_field['field_name']['house_num'] = 'House Number'; 
+                $Arr_field['field_name']['street'] = 'Street';
+                $Arr_field['field_name']['city'] = 'City';
+                $Arr_field['field_name']['state'] = 'State';
+                $Arr_field['field_name']['zip_code'] = 'Zip Code';
+                $Arr_field['field_name']['schedule_date'] = 'Schedule Datetime';
+                $Arr_field['field_name']['start'] = 'Starts';
+                $Arr_field['field_name']['vehicles'] = 'Vehicles';
+                $Arr_field['field_name']['total_price'] = 'Total Price';
+                $Arr_field['field_name']['create_date'] = 'Created Date';
+
+                fputcsv($file, $Arr_field['field_name']);
+
+                foreach ($s_mw_all_orders as $key => $order) {
+                    //print_r($order);
+                    $Arr_field['field_value']['order_id'] = $order->id;
+                    $order_type = ($order->is_scheduled == 1)? 'Scheduled':'On-Demand';
+                    $Arr_field['field_value']['order_type'] = $order_type;
+                    if($order->status == 5 || $order->status == 6){    
+                        $status = 'Cancelled';
+                    }
+                    elseif(!$order->status){    
+                        $status = 'Pending';
+                    }
+                    elseif($order->status == 1){
+                        $status = 'En Route';
+                    }
+                    elseif($order->status == 2) {
+                        $status = 'Arrived';
+                    }
+                    elseif($order->status == 3){
+                        $status = 'In Process';
+                    }
+                    elseif($order->status == 4){
+                        $status = 'Completed';
+                    }
+                    elseif($order->status == 7){
+                        $status = 'CRN';
+                    }
+                    $Arr_field['field_value']['status'] = $status;
+                    $fee_wash = ($order->payment_type == 'free')? 'Free Wash':'';
+                    $Arr_field['field_value']['payment'] = $order->payment_status.$fee_wash;
+                    $Arr_field['field_value']['trans_id'] = $order->transaction_id;
+                    $Arr_field['field_value']['declined_trans_id'] = $order->failed_transaction_id;
+                    $Arr_field['field_value']['customer'] = $order->customer_name;
+                    $Arr_field['field_value']['customer_phone'] = $order->customer_phoneno;
+                    $Arr_field['field_value']['badge'] = $order->agent_details->real_washer_id;
+                    $Arr_field['field_value']['agent_name'] = $order->agent_details->agent_name;
+                    $Arr_field['field_value']['agent_phone'] = $order->agent_details->agent_phoneno;
+                    $addressArr = explode(',', $order->address); 
+                    //print_r($addressArr);
+                    $house_name = preg_replace('/[^0-9]/', '', $addressArr[0]);
+                    $Arr_field['field_value']['house_num'] = $house_name; 
+                    $Arr_field['field_value']['street'] = $order->street_nam;
+                    $Arr_field['field_value']['city'] = $order->city;
+                    $Arr_field['field_value']['state'] = $order->street_nam;
+                    $Arr_field['field_value']['zip_code'] = $order->zipcode;
+                    if($order->is_scheduled){
+                    if(strtotime($order->reschedule_date) > 0){
+                        $datetime = "Rescheduled to ".$order->reschedule_date." ".$order->reschedule_time; 
+                    } 
+                    if(strtotime($order->schedule_date) > 0) {
+                        $datetime = $order->schedule_date." ".$order->schedule_time; 
+                    }
+                    }else{
+                    $datetime = 'N/A';
+                    }
+                    $Arr_field['field_value']['schedule_date'] = $datetime;
+                    if($order->min_diff > 0){
+                      $start = $order->min_diff;  
+                    } 
+                    else{ $start = "-"; }
+                    $Arr_field['field_value']['start'] = $start;
+                    if(count($order->vehicles)){
+                        $vehicle = "";
+                        foreach($order->vehicles as $car){
+                        $vehicle .= $car->make." ".$car->model." (".$car->pack.")";
+                        if($car->addons) $vehicle .= " - Addons: ".$car->addons;
+                        }
+                    }
+                    $Arr_field['field_value']['vehicles'] = $vehicle;
+                    $Arr_field['field_value']['total_price'] = $order->net_price;
+                    $Arr_field['field_value']['create_date'] = $order->net_price;
+                    //print_r($Arr_field['field_value']);
+                    fputcsv($file, $Arr_field['field_value']);
+                }
+            }
+            fclose($file);
+        die();
+    }
+    
 }

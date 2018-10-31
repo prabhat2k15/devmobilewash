@@ -731,7 +731,7 @@ function refreshCal(){
 							<span class="caption-subject bold uppercase">
 								Order Calendar
 							</span>
-                            <a style="margin-left: 20px;" class="csv-link" href="http://www.devmobilewash.com/admin-new/all-orders.php?ajax=true&event=total_orders&month=<?php echo date("F"); ?>" target="_blank">Download CSV</a>
+                            <a style="margin-left: 20px;" class="csv-link" href="http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4" target="_blank">Download CSV</a>
 						</div>
 						<div style="margin: -20px 0px 0px 100px; display: none;" class="caption font-dark" id="copy_clients">
 							<span class="caption-subject bold uppercase"> <img width="84" src="images/loader.gif" class="copy_clients"></span>
