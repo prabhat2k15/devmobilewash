@@ -5281,8 +5281,15 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 
 $wash_exists = Washingrequests::model()->findByPk($wash_request_id);
 $customer_exists = Customers::model()->findByPk($wash_exists->customer_id);
+if(count($customer_exists)){
 if($customer_exists->client_position == 'real') $Bresult = Yii::app()->braintree->deletePaymentMethod_real($token);
-else $Bresult = Yii::app()->braintree->deletePaymentMethod($token);
+else $Bresult = Yii::app()->braintree->deletePaymentMethod($token);	
+}
+else{
+if($cust_type == 'real') $Bresult = Yii::app()->braintree->deletePaymentMethod_real($token);
+else $Bresult = Yii::app()->braintree->deletePaymentMethod($token);	
+}
+
 
 if(($Bresult['success'] == 1) && ($admin_username)){
 		   $washeractionlogdata = array(

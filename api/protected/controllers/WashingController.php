@@ -1291,11 +1291,25 @@ $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
 if($wash_now_fee > 0){
 
 $mobile_receipt .= "Wash Now $".number_format($wash_now_fee, 2)."\r\n";
+
+$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
+							<td style='padding-bottom: 15px;'>
+							<p style='font-size: 18px; margin: 0;'>Wash Now Fee</p>
+							</td>
+							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>+$".number_format($wash_now_fee, 2)."</p></td>
+							</tr></table>";
 }
 
 if($wash_later_fee > 0){
 
 $mobile_receipt .= "Surge Fee $".number_format($wash_later_fee, 2)."\r\n";
+
+$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
+							<td style='padding-bottom: 15px;'>
+							<p style='font-size: 18px; margin: 0;'>Surge Fee</p>
+							</td>
+							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>+$".number_format($wash_later_fee, 2)."</p></td>
+							</tr></table>";
 }
 
 if($wash_details->vip_coupon_code){
@@ -1339,6 +1353,8 @@ $mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
 					$to = Vargas::Obj()->getAdminToEmail();
 					$from = Vargas::Obj()->getAdminFromEmail();
 					Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
+					if($customers_id_check->email) Vargas::Obj()->SendMail($customers_id_check->email,$from,$message,$subject, 'mail-receipt');
+					
 
                    if((APP_ENV == 'real')){
 
@@ -6781,7 +6797,7 @@ echo "Invalid api key";
 
                 $wash_id_check = Washingrequests::model()->findByAttributes(array("id"=>$wash_request_id));
                 $customer_id_check = Customers::model()->findByAttributes(array("id"=>$customer_id));
-                if(!$agent_id) $agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
+                if($agent_id) $agent_id_check = Agents::model()->findByAttributes(array("id"=>$agent_id));
 
                 if(!count($wash_id_check)){
                     $result= 'false';
@@ -7864,7 +7880,7 @@ $com_message .= "<tr>
 if($wash_later_fee > 0){
 $message .= "<tr>
 <td>
-<p style='font-size: 18px; margin: 0;'>Sugre Fee</p>
+<p style='font-size: 18px; margin: 0;'>Surge Fee</p>
 </td>
 <td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".number_format($wash_later_fee, 2)."</p></td>
 </tr>";
@@ -7954,13 +7970,13 @@ $to = Vargas::Obj()->getAdminToEmail();
 $from = Vargas::Obj()->getAdminFromEmail();
 
                     Vargas::Obj()->SendMail($customer_id_check->email,$from,$message,$subject, 'mail-receipt');
-                    if(!$agent_id) Vargas::Obj()->SendMail($agent_id_check->email,$from,$message_agent,$subject, 'mail-receipt');
-                    Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
-					if($is_scheduled == 1){
+                    if($agent_id) Vargas::Obj()->SendMail($agent_id_check->email,$from,$message_agent,$subject, 'mail-receipt');
+                    Vargas::Obj()->SendMail($to,$from,$com_message,$subject, 'mail-receipt');
+					/*if($is_scheduled == 1){
 						Vargas::Obj()->SendMail($customers_id_check->email,"billing@Mobilewash.com",$message,$subject, 'mail-receipt');
 					}else{	
 						$receiptresult = $this->actionsendorderreceipts($wash_request_id, $customer_id, 0, 'true', API_KEY);
-					}
+					}*/
                     //Vargas::Obj()->SendMail($to,$from,$com_message,$subject, 'mail-receipt');
 
                 }
