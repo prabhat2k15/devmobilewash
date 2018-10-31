@@ -933,91 +933,264 @@ foreach($kartdata->vehicles as $ind=>$vehicle){
 
   if(!$is_scheduled){
       $wash_details = Washingrequests::model()->findByPk($washrequestid);
-     foreach($kartdata->vehicles as $ind=>$vehicle){
-           $mobile_receipt .= $vehicle->brand_name." ".$vehicle->model_name."\r\n".$vehicle->vehicle_washing_package." $".$vehicle->vehicle_washing_price."\r\nHandling $1.00\r\n";
+      
+      $from = Vargas::Obj()->getAdminFromEmail();
+					//echo $from;
+					$sched_date = '';
+					if(strtotime($wash_details->schedule_date) == strtotime(date('Y-m-d'))){
+						$sched_date = 'Today';
+					}
+					else{
+						$sched_date = date('M d', strtotime($wash_details->schedule_date));
+					}
+					$message = '';
+$mobile_receipt = '';
+					$subject = 'Order Receipt - #0000'.$washrequestid;
+					//$message = "Hello ".$customername.",<br/><br/>Welcome to Mobile wash!";
+					$message = "<div class='block-content' style='background: #fff; text-align: left;'>
+					<h2 style='text-align: center; font-size: 26px; margin-top: 0;'>Thank you for choosing MobileWash</h2>
+					<p style='text-align: center; font-size: 18px; margin-bottom: 0;'>Your order is placed for ".date('M d', strtotime($wash_details->order_for))." @ ".date('h:i A', strtotime($wash_details->order_for))."</p>
+					<p style='text-align: center; font-size: 18px; margin-top: 5px;'>at ".$address."</p>";
+					$message .= "<table style='width: 100%; border-collapse: collapse; text-align: left; font-size: 20px; margin-top: 30px;'>
+					<tr><td><strong>".$customers_id_check->first_name." ".$customers_id_check->last_name."</strong></td><td style='text-align: right;'><strong>Order Number:</strong> #000".$washrequestid."</td></tr>
+					</table>";
 
-     if($vehicle->surge_vehicle_fee > 0){
+					$message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
+					
+ foreach($kartdata->vehicles as $ind=>$vehicle){
+     $mobile_receipt .= $vehicle->brand_name." ".$vehicle->model_name."\r\n".$vehicle->vehicle_washing_package." $".$vehicle->vehicle_washing_price."\r\nHandling $1.00\r\n";
+$message .="<tr>
+<td style='border-bottom: 1px solid #000; padding-bottom: 10px;'>
+<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+<tr>
+<td><p style='font-size: 20px; margin: 0; font-weight: bold;'>".$vehicle->brand_name." ".$vehicle->model_name."</p></td>
+<td style='text-align: right;'>
+<p style='font-size: 20px; margin: 0; font-weight: bold;'>+$".$vehicle->vehicle_washing_price."</p>
+</td>
+</tr>
+<tr>
+<td><p style='font-size: 18px; margin: 0;'>".$vehicle->vehicle_washing_package." Package</p></td>
+<td style='text-align: right;'></td>
+</tr>";
+if($vehicle->surge_vehicle_fee > 0){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Surge Charge</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->surge_vehicle_fee."</p></td>
+</tr>";
 $mobile_receipt .= "Surge $".$vehicle->surge_vehicle_fee."\r\n";
 }
 if($vehicle->extclaybar_vehicle_fee > 0){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Clay Bar & Paste Wax</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extclaybar_vehicle_fee."</p></td>
+</tr>";
 $mobile_receipt .= "Clay $".$vehicle->extclaybar_vehicle_fee."\r\n";
 }
 if($vehicle->waterspotremove_vehicle_fee > 0){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Water Spot Removal</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->waterspotremove_vehicle_fee."</p></td>
+</tr>";
 $mobile_receipt .= "Spot $".$vehicle->waterspotremove_vehicle_fee."\r\n";
 }
 if($vehicle->exthandwax_vehicle_fee > 0){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Full Exterior Hand Wax (Liquid form)</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->exthandwax_vehicle_fee."</p></td>
+</tr>";
 $mobile_receipt .= "Wax $".$vehicle->exthandwax_vehicle_fee."\r\n";
 }
 
 if($vehicle->pet_hair_fee > 0){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Extra Cleaning Fee</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->pet_hair_fee."</p></td>
+</tr>";
 $mobile_receipt .= "Extra Cleaning $".$vehicle->pet_hair_fee."\r\n";
 }
 if($vehicle->lifted_vehicle_fee > 0){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Lifted Truck</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->lifted_vehicle_fee."</p></td>
+</tr>";
 $mobile_receipt .= "Lifted $".$vehicle->lifted_vehicle_fee."\r\n";
 }
 
 if($vehicle->extplasticdressing_vehicle_fee > 0){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Dressing of all Exterior Plastics</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->extplasticdressing_vehicle_fee."</p></td>
+</tr>";
 $mobile_receipt .= "Dressing $".$vehicle->extplasticdressing_vehicle_fee."\r\n";
 }
 
 if($vehicle->upholstery_vehicle_fee > 0){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Upholstery Conditioning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->upholstery_vehicle_fee."</p></td>
+</tr>";
 $mobile_receipt .= "Upholstery $".$vehicle->upholstery_vehicle_fee."\r\n";
 }
 
 if($vehicle->floormat_vehicle_fee > 0){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Floor Mat Cleaning</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->floormat_vehicle_fee."</p></td>
+</tr>";
 $mobile_receipt .= "Floormat $".$vehicle->floormat_vehicle_fee."\r\n";
 }
 
-if(($ind == 0) && ($kartdata->coupon_discount > 0)){
+$message .="<tr>
+<td><p style='font-size: 18px; margin: 0;'>Service Fee</p></td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>+$".$vehicle->safe_handling_fee."</p></td>
+</tr>";
 
+if(($ind == 0) && ($kartdata->coupon_discount > 0)){
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Promo Discount (".$coupon_code.")</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$".number_format($coupon_amount, 2)."</p></td>
+</tr>";
 $mobile_receipt .= "Promo: ".$coupon_code." -$".number_format($coupon_amount, 2)."\r\n";
 }
 
 
 if($vehicle->fifth_wash_discount > 0){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Fifth Wash Discount</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$".$vehicle->fifth_wash_discount."</p></td>
+</tr>";
 $mobile_receipt .= "5th -$".number_format($vehicle->fifth_wash_discount, 2)."\r\n";
 }
 
 if(($vehicle->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$1.00</p></td>
+</tr>";
 $mobile_receipt .= "Bundle -$1.00\r\n";
 }
 
 if(($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)){
-
+$message .= "<tr>
+<td>
+<p style='font-size: 18px; margin: 0;'>Bundle Discount</p>
+</td>
+<td style='text-align: right;'><p style='font-size: 18px; margin: 0;'>-$1.00</p></td>
+</tr>";
 $mobile_receipt .= "Bundle -$1.00\r\n";
 }
- $mobile_receipt .= "------\r\n";
+
+
+
+  $mobile_receipt .= "------\r\n";
+$message .= "</table>
+
+</td>
+</tr>";
+
 }
 
-if($tip_amount){
 
+if($tip_amount){
+							$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
+							<td style='padding-bottom: 15px;'>
+							<p style='font-size: 18px; margin: 0;'>Tip</p>
+							</td>
+							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>+$".number_format($tip_amount, 2)."</p></td>
+							</tr></table>";
 $mobile_receipt .= "Tip $".number_format($tip_amount, 2)."\r\n";
 						}
-						
+
 if($wash_now_fee > 0){
 
 $mobile_receipt .= "Wash Now $".number_format($wash_now_fee, 2)."\r\n";
+
+$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
+							<td style='padding-bottom: 15px;'>
+							<p style='font-size: 18px; margin: 0;'>Wash Now Fee</p>
+							</td>
+							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>+$".number_format($wash_now_fee, 2)."</p></td>
+							</tr></table>";
 }
 
 if($wash_later_fee > 0){
 
 $mobile_receipt .= "Surge Fee $".number_format($wash_later_fee, 2)."\r\n";
+
+$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
+							<td style='padding-bottom: 15px;'>
+							<p style='font-size: 18px; margin: 0;'>Surge Fee</p>
+							</td>
+							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'>+$".number_format($wash_later_fee, 2)."</p></td>
+							</tr></table>";
 }
 
+if($wash_details->vip_coupon_code){
 
-                     $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
+ $vip_coupon_check = VipCouponCodes::model()->findByAttributes(array("fullcode"=>$wash_details->vip_coupon_code));
+
+							$message .= "<table style='width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; margin-top: 15px;'><tr>
+							<td style='padding-bottom: 15px;'>
+							<p style='font-size: 18px; margin: 0;'>".$vip_coupon_check->package_name." (".$wash_details->vip_coupon_code.")</p>
+							</td>
+							<td style='text-align: right; padding-bottom: 15px;'><p style='font-size: 18px; margin: 0;'></p></td>
+							</tr></table>";
+$mobile_receipt .= $vip_coupon_check->package_name."\r\n";
+
+						}
+
+
+					$message .= "</table>";
+
+                    if($wash_details->schedule_total){
+                    $message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+					<tr>
+					<td></td>
+					<td style='text-align: right;'><p style='font-size: 20px; margin: 0; color: #000;'>Order Total: <span style='font-weight: bold;'>$".($wash_details->vip_coupon_code != '' ? $wash_details->schedule_total_vip : $wash_details->schedule_total)."</span></p></td></tr></table>";
+$mobile_receipt .= "Total: $".$wash_details->schedule_total."\r\n";
+ }
+                    else{
+                      $message .= "<table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+					<tr>
+					<td></td>
+					<td style='text-align: right;'><p style='font-size: 20px; margin: 0; color: #000;'>Order Total: <span style='font-weight: bold;'>$".$kartdata->net_price."</span></p></td></tr></table>";
+                       $mobile_receipt .= "Total: $".$kartdata->net_price."\r\n";
+                    }
 
                     $mobile_receipt .= "Washes: ".$customer_total_wash."\r\n";
+
+					$message .= "<p style='text-align: center; font-size: 14px; line-height: 22px; font-size: 16px; margin-top: 25px;'>Once you request a service, a pre-authorization charge is in place to ensure the credit card on file is valid. Please note that this charge will immediately be voided following the service request. Only the actual total will be charged at the end of the service.<br><br>We may kindly ask for a 30 minute grace period due to unforeseen traffic delays.<br>Appointment times may be rescheduled due to overwhelming demand.</p><p style='text-align: center; font-size: 18px;'>Log in to <a href='".ROOT_URL."' style='color: #016fd0'>MobileWash.com</a> to view your on-demand order options</p>";
+					$message .= "<p style='text-align: center; font-size: 16px; margin-bottom: 0; line-height: 22px;'>$15 cancellation fee will apply for canceling wash.</p>";
+
+					//Vargas::Obj()->SendMail($customers_id_check->email,"billing@Mobilewash.com",$message,$subject, 'mail-receipt');
+					$to = Vargas::Obj()->getAdminToEmail();
+					$from = Vargas::Obj()->getAdminFromEmail();
+					Vargas::Obj()->SendMail($to,$from,$message,$subject, 'mail-receipt');
+					if($customers_id_check->email) Vargas::Obj()->SendMail($customers_id_check->email,$from,$message,$subject, 'mail-receipt');
 
                     if((APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
