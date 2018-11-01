@@ -5196,6 +5196,31 @@ $message = str_replace("[CUSTNAME]",$custname, $message);
 							if($notify_msg) $notifyresult = curl_exec($ch);
 							curl_close($ch);
 						}
+						
+						 if((APP_ENV == 'real')){
+                    $this->layout = "xmlLayout";
+          
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+ require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+try {
+$sendmessage = $client->account->messages->create(array(
+                'To' =>  $cust_details->contact_number,
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+ }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+          
+           }
 
 						 Customers::model()->updateByPk($client['id'], array("is_nextwash_reminder_push_sent" => 1));
 
