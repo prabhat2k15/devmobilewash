@@ -3275,7 +3275,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
         }
 		/* Checking for post(day) parameters */
 		$order_day='';
-		if((!empty(Yii::app()->request->getParam('day')) || !empty(Yii::app()->request->getParam('month'))) && !empty(Yii::app()->request->getParam('event'))){
+		if(!empty(Yii::app()->request->getParam('event'))){
 			$day = Yii::app()->request->getParam('day');
 			$event = Yii::app()->request->getParam('event');
 			
@@ -3327,7 +3327,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 				$status_qr = '';
 			}
 
-			if($month != ''){
+			if(empty(Yii::app()->request->getParam('day'))){
                 $month_start = date("Y-m-d", strtotime("FIRST day of this month"));
                 $month_end = date('Y-m-d',strtotime('last day of this month'));
                 $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$month_start."' AND '".$month_end."'".$status_qr;
@@ -3696,9 +3696,10 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
                     'package_list'=>$wrequest['package_list'],
                     'vehicles' => $vehicles,
                     'address'=>$wrequest['address'],
-		    'city'=>$wrequest['city'],
-			'state'=>$wrequest['state'],
-			'zipcode'=>$wrequest['zipcode'],
+                    'street_name'=>$wrequest['street_name'],
+		            'city'=>$wrequest['city'],
+			        'state'=>$wrequest['state'],
+			        'zipcode'=>$wrequest['zipcode'],
                     'address_type'=>$wrequest['address_type'],
                     'latitude'=>$wrequest['latitude'],
                     'longitude'=>$wrequest['longitude'],
@@ -3753,6 +3754,7 @@ if($min_diff >= 0){
                     'package_list'=>$wrequest['package_list'],
                     'vehicles' => $vehicles,
                     'address'=>$wrequest['address'],
+                    'street_name'=>$wrequest['street_name'],
 		    'city'=>$wrequest['city'],
 			'state'=>$wrequest['state'],
 			'zipcode'=>$wrequest['zipcode'],
@@ -3803,6 +3805,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'package_list'=>$wrequest['package_list'],
                     'vehicles' => $vehicles,
                     'address'=>$wrequest['address'],
+                    'street_name'=>$wrequest['street_name'],
 		    'city'=>$wrequest['city'],
 			'state'=>$wrequest['state'],
 			'zipcode'=>$wrequest['zipcode'],
@@ -3853,6 +3856,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'package_list'=>$wrequest['package_list'],
                     'vehicles' => $vehicles,
                     'address'=>$wrequest['address'],
+                    'street_name'=>$wrequest['street_name'],
 		    'city'=>$wrequest['city'],
 			'state'=>$wrequest['state'],
 			'zipcode'=>$wrequest['zipcode'],
@@ -3867,7 +3871,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'schedule_date'=>$wrequest['schedule_date'],
                     'schedule_time'=>$wrequest['schedule_time'],
 					'reschedule_date'=>$wrequest['reschedule_date'],
-					'checklist'=>$wrequest['checklist'],
+					'checklist'=>$wrequest['checklist'],'street_name'=>$wrequest['street_name'],
                     'reschedule_time'=>$wrequest['reschedule_time'],
 					'created_date'=>$wrequest['created_date'],
 					'transaction_id'=>$wrequest['transaction_id'],
@@ -8843,7 +8847,7 @@ Washingrequests::model()->updateByPk($wash_request_id, array('admin_notify_view'
    
     }
     
-        public function actiontestingcsv(){
+public function actiontestingcsv(){
 
     if(Yii::app()->request->getParam('key') != API_KEY){
     echo "Invalid api key";
@@ -8863,7 +8867,7 @@ Washingrequests::model()->updateByPk($wash_request_id, array('admin_notify_view'
         $_event = 'total_orders';
         $month = date("F");
         $handle = curl_init($url);
-        $data = array('event'=>$_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'month' => $month);
+        $data = array('event'=>$_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'day' => '');
 
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -8949,9 +8953,9 @@ Washingrequests::model()->updateByPk($wash_request_id, array('admin_notify_view'
                     //print_r($addressArr);
                     $house_name = preg_replace('/[^0-9]/', '', $addressArr[0]);
                     $Arr_field['field_value']['house_num'] = $house_name; 
-                    $Arr_field['field_value']['street'] = $order->street_nam;
+                    $Arr_field['field_value']['street'] = $order->street_name;
                     $Arr_field['field_value']['city'] = $order->city;
-                    $Arr_field['field_value']['state'] = $order->street_nam;
+                    $Arr_field['field_value']['state'] = $order->state;
                     $Arr_field['field_value']['zip_code'] = $order->zipcode;
                     if($order->is_scheduled){
                     if(strtotime($order->reschedule_date) > 0){
