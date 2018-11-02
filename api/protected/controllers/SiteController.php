@@ -3328,8 +3328,8 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 			}
 
 			if(empty(Yii::app()->request->getParam('day'))){
-                $month_start = date("Y-m-d", strtotime("FIRST day of this month"));
-                $month_end = date('Y-m-d',strtotime('last day of this month'));
+                $month_start = date('Y').'-'.Yii::app()->request->getParam('month').'-01';
+                $month_end = date('Y').'-'.Yii::app()->request->getParam('month').'-31';
                 $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$month_start."' AND '".$month_end."'".$status_qr;
             }else{    
 			    $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '".$day."'".$status_qr;
@@ -8865,9 +8865,9 @@ public function actiontestingcsv(){
         $cust_id = 0;
         $agent_id = 0;
         $_event = 'total_orders';
-        $month = date("F");
+        $month = Yii::app()->request->getParam('month');
         $handle = curl_init($url);
-        $data = array('event'=>$_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'day' => '');
+        $data = array('event'=>$_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'day' => '', 'month' => $month);
 
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);

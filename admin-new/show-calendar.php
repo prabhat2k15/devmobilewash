@@ -715,6 +715,17 @@ function refreshCal(){
    
     
 }, 10000);*/
+$(document).ready(function(){
+	month = <?php echo date('m');?>;
+	$('.csv-link').attr('href', "http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&month="+month);
+	$('.fc-prev-button').click(function(){
+		$('.csv-link').attr('href', "http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&month="+month);
+	});
+	$('.fc-next-button').click(function(){
+		$('.csv-link').attr('href', "http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&month="+month);
+	});
+
+});
 </script>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
