@@ -5655,6 +5655,111 @@ $json= array(
 
 
     }
+    
+    
+    public function actiongettempaccesstoken(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+        $device_data = Yii::app()->request->getParam('device_data');
+	$t1 = Yii::app()->request->getParam('t1');
+	$t2 = Yii::app()->request->getParam('t2');
+
+
+if((isset($device_data) && !empty($device_data)) && (isset($t1) && !empty($t1)) && (isset($t2) && !empty($t2))){
+
+$first_25 = bin2hex(openssl_random_pseudo_bytes(12));
+$last_25 = bin2hex(openssl_random_pseudo_bytes(12));
+
+//echo "f25: ".$first_25."<br>";
+//echo "l25: ".$last_25."<br>";
+
+$usertoken = md5(uniqid().time());
+
+$ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
+$cryptokey = bin2hex(openssl_random_pseudo_bytes(8));
+$iv = bin2hex(openssl_random_pseudo_bytes(8));
+$ciphertext_raw = openssl_encrypt($first_25.$usertoken.$last_25."tmn!!==*".time(), $cipher, $cryptokey, $options=OPENSSL_RAW_DATA, $iv);
+$ciphertext = base64_encode($ciphertext_raw);
+
+/*echo 'key: '.$cryptokey."<br>";
+echo 'iv: '.$iv."<br>";
+echo 'token: '.$usertoken."<br>";
+echo 'raw encode: '.$ciphertext_raw."<br>";
+echo 'base64 encode: '.$ciphertext;*/
+
+//$c = base64_decode($ciphertext);
+
+
+//$original_plaintext = openssl_decrypt($c, $cipher, $cryptokey, $options=OPENSSL_RAW_DATA, $iv);
+
+//echo "decode text: ".$original_plaintext."<br>";
+
+/*$decodestrarr = explode("tmn!!==*",$original_plaintext);
+$timestamp_fct = $decodestrarr[1];
+$decodedstr2 = substr($decodestrarr[0],24);
+$user_token_str = substr($decodedstr2,0,-24);*/
+
+//echo "user token: ".$user_token_str."<br>timestamp: ".$timestamp_fct."<br>";
+
+$r1 = bin2hex(openssl_random_pseudo_bytes(6));
+$r2 = bin2hex(openssl_random_pseudo_bytes(6));
+$r3 = bin2hex(openssl_random_pseudo_bytes(7));
+$r4 = bin2hex(openssl_random_pseudo_bytes(7));
+
+$cryptokey_pt1 = substr($cryptokey,0,8);
+$cryptokey_pt2 = substr($cryptokey,-8,8);
+
+$cryptokeyencode = $r1.$cryptokey_pt1.$r2.$r3.$cryptokey_pt2.$r4; //[12][8][12][14][8][14]
+
+$r1 = bin2hex(openssl_random_pseudo_bytes(6));
+$r2 = bin2hex(openssl_random_pseudo_bytes(6));
+$r3 = bin2hex(openssl_random_pseudo_bytes(7));
+$r4 = bin2hex(openssl_random_pseudo_bytes(7));
+
+$iv_pt1 = substr($iv,0,8);
+$iv_pt2 = substr($iv,-8,8);
+
+$ivencode = $r1.$iv_pt1.$r2.$r3.$iv_pt2.$r4; //[12][8][12][14][8][14]
+
+$ciphertext_token = openssl_encrypt($usertoken, $cipher, AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_token_base64 = base64_encode($ciphertext_token);
+
+$ciphertext_key = openssl_encrypt($cryptokey, $cipher, AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_key_base64 = base64_encode($ciphertext_key);
+
+$ciphertext_iv = openssl_encrypt($iv, $cipher, AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_iv_base64 = base64_encode($ciphertext_iv);
+
+ $data= array(
+					'token'=> $ciphertext_token_base64,
+					'access_key'=> $ciphertext_key_base64,
+					'access_vector'=> $ciphertext_iv_base64,
+					'generated_token' => $ciphertext,
+					'created_date' => date('Y-m-d H:i:s'));
+
+				  Yii::app()->db->createCommand()->insert('temp_tokens', $data);
+
+$json= array(
+				'result'=> 'true',
+				'token'=> $ciphertext,
+				't1' => $cryptokeyencode,
+				't2' => $ivencode 
+			);
+		echo json_encode($json);
+    }
+    else{
+	$json= array(
+	'result'=> 'false',
+'response' => 'pass required parameters'
+			);
+		echo json_encode($json);
+    }
+
+    }
 
 
 
