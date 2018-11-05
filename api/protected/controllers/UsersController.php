@@ -4214,6 +4214,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+
+$token_check = $this->verifyapitemptoken( $api_token, $t1, $t2, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ die();
+}
+else{
+Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
+}
+
         $phone = Yii::app()->request->getParam('phone');
 	$send_verify_code = '';
 	$send_verify_code = Yii::app()->request->getParam('send_verify_code');
@@ -5670,6 +5687,33 @@ die();
 
 
 if((isset($device_data) && !empty($device_data)) && (isset($t1) && !empty($t1)) && (isset($t2) && !empty($t2))){
+	$t1decode = base64_decode($t1);
+	$t2decode = base64_decode($t2);
+	$tempappkey_pt1 = substr($t1decode,12,8);
+	$tempappkey_pt2 = substr($t1decode,-22,8);
+	
+	$tempappkey = $tempappkey_pt1.$tempappkey_pt2;
+	
+	$tempappiv_pt1 = substr($t2decode,12,8);
+	$tempappiv_pt2 = substr($t2decode,-22,8);
+	
+	$tempappiv = $tempappiv_pt1.$tempappiv_pt2;
+	
+	$device_data_decode = base64_decode($device_data);
+	
+	$device_data_plain = openssl_decrypt($device_data_decode, "AES-128-CBC", $tempappkey, $options=OPENSSL_RAW_DATA, $tempappiv);
+	
+	$deviceterms=array('device_id','device_name','device_token','device_type','os_details');
+	foreach ( $deviceterms as $dterm ){ 
+	if (strpos($device_data_plain, $dterm) === false){
+	$json= array(
+	'result'=> 'false',
+'response' => 'Invalid request'
+			);
+		echo json_encode($json);
+		die();
+	}
+}
 
 $first_25 = bin2hex(openssl_random_pseudo_bytes(12));
 $last_25 = bin2hex(openssl_random_pseudo_bytes(12));
@@ -5746,8 +5790,8 @@ $ciphertext_iv_base64 = base64_encode($ciphertext_iv);
 $json= array(
 				'result'=> 'true',
 				'token'=> $ciphertext,
-				't1' => $cryptokeyencode,
-				't2' => $ivencode 
+				't1' => base64_encode($cryptokeyencode),
+				't2' => base64_encode($ivencode) 
 			);
 		echo json_encode($json);
     }

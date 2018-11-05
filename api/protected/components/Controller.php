@@ -1027,4 +1027,54 @@ $is_startable = 1;
     return $output;
 }
 
+    public function verifyapitemptoken( $string, $key= '', $iv = '', $password = '' ) {
+    if($password != AES256CBC_API_PASS) {
+      echo "Access denied";
+      die();
+    }
+   
+   $checkexpiredtoken =  Yii::app()->db->createCommand("SELECT * FROM temp_tokens WHERE generated_token = '".$string."'")->queryAll();
+   
+   if(count($checkexpiredtoken)){
+      return 0;
+   }
+   
+$keydecode = base64_decode($key);
+	$ivdecode = base64_decode($iv);
+	$key_pt1 = substr($keydecode,12,8);
+	$key_pt2 = substr($keydecode,-22,8);
+	
+	$fullkey = $key_pt1.$key_pt2;
+	
+	$iv_pt1 = substr($ivdecode,12,8);
+	$iv_pt2 = substr($ivdecode,-22,8);
+	
+	$fulliv = $iv_pt1.$iv_pt2;
+	
+	$string_decode = base64_decode($string);
+	
+	$string_plain = openssl_decrypt($string_decode, "AES-128-CBC", $fullkey, $options=OPENSSL_RAW_DATA, $fulliv);
+	
+	$decodestrarr = explode("tmn!!==*",$string_plain);
+$timestamp_fct = $decodestrarr[1];
+$decodedstr2 = substr($decodestrarr[0],25);
+$user_token_str = substr($decodedstr2,0,-25);
+
+if((time()-$timestamp_fct) > 300){
+    return 0;
+}
+
+$gettemptokens =  Yii::app()->db->createCommand("SELECT * FROM temp_tokens")->queryAll();
+
+foreach($gettemptokens as $token){
+   $getsavedtoken = openssl_decrypt(base64_decode($token['token']), "AES-128-CBC", base64_decode($token['access_key']), $options=OPENSSL_RAW_DATA, base64_decode($token['access_vector']));
+   
+   if($getsavedtoken == $user_token_str){
+      return $token['id'];
+   }
+}
+	
+    return 0;
+}
+
 }
