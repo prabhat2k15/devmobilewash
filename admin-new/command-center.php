@@ -946,6 +946,7 @@ $.each( agentdata.online, function( index, agent ){
     content += "<p><b>"+agentname+"</b></p>";
     content += "<p>Phone Number: "+agent['phone_number']+"</p>";
      content += "<p>Rating: "+agent['rating']+"</p>";
+    content += "<p>Badge Number: "+agent['badge_number']+"</p>";
     content += "<p>Total Washes: "+agent['total_wash']+"</p>";
     content += "<p><a href='#' class='send-agent-notify' data-id='"+agent['id']+"'>Send Notification</a><a href='#' class='send-agent-sms' data-id='"+agent['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(agent['id'], agentname, agent['latitude'], agent['longitude'], 'images/online-agent-pin.png', 'onlineagents', content);
@@ -961,6 +962,7 @@ $.each( agentdata.offline, function( index, agent ){
     content += "<p><b>"+agentname+"</b></p>";
     content += "<p>Phone Number: "+agent['phone_number']+"</p>";
      content += "<p>Rating: "+agent['rating']+"</p>";
+    content += "<p>Badge Number: "+agent['badge_number']+"</p>";
     content += "<p>Total Washes: "+agent['total_wash']+"</p>";
     content += "<p><a href='#' class='send-agent-notify' data-id='"+agent['id']+"'>Send Notification</a><a href='#' class='send-agent-sms' data-id='"+agent['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(agent['id'], agentname, agent['latitude'], agent['longitude'], 'images/offline-agent-pin.png', 'offlineagents', content);
@@ -976,6 +978,7 @@ $.each( agentdata.busyAgents, function( index, agent ){
     content += "<p><b>"+agentname+"</b></p>";
     content += "<p>Phone Number: "+agent['phone_number']+"</p>";
      content += "<p>Rating: "+agent['rating']+"</p>";
+    content += "<p>Badge Number: "+agent['badge_number']+"</p>";
     content += "<p>Total Washes: "+agent['total_wash']+"</p>";
     content += "<p><a href='#' class='send-agent-notify' data-id='"+agent['id']+"'>Send Notification</a><a href='#' class='send-agent-sms' data-id='"+agent['id']+"' style='margin-left: 10px;'>Send SMS</a></p>";
     addlocation(agent['id'], agentname, agent['latitude'], agent['longitude'], 'images/busy-agent-pin.png', 'busyagents', content);
