@@ -4232,6 +4232,59 @@ else{
 Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
 }
 
+/*---- check ---- */
+/*
+  $checkexpiredtoken =  Yii::app()->db->createCommand("SELECT * FROM temp_tokens WHERE generated_token = '".$api_token."'")->queryAll();
+   
+   if(count($checkexpiredtoken)){
+      echo "used same token";
+      die();
+      
+   }
+   
+$keydecode = base64_decode($t1);
+	$ivdecode = base64_decode($t2);
+	$key_pt1 = substr($keydecode,12,8);
+	$key_pt2 = substr($keydecode,-22,8);
+	
+	$fullkey = $key_pt1.$key_pt2;
+	
+	$iv_pt1 = substr($ivdecode,12,8);
+	$iv_pt2 = substr($ivdecode,-22,8);
+	
+	$fulliv = $iv_pt1.$iv_pt2;
+	
+	$string_decode = base64_decode($api_token);
+	
+	$string_plain = openssl_decrypt($string_decode, "AES-128-CBC", $fullkey, $options=OPENSSL_RAW_DATA, $fulliv);
+	
+	$decodestrarr = explode("tmn!!==*",$string_plain);
+$timestamp_fct = $decodestrarr[1];
+$decodedstr2 = substr($decodestrarr[0],25);
+$user_token_str = substr($decodedstr2,0,-25);
+
+if((time()-$timestamp_fct) > 300){
+    echo "time expired";
+    die();
+}
+
+$gettemptokens =  Yii::app()->db->createCommand("SELECT * FROM temp_tokens")->queryAll();
+
+foreach($gettemptokens as $token){
+   $getsavedtoken = openssl_decrypt(base64_decode($token['token']), "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+
+echo $token['id']." saved token: ".$getsavedtoken." main token: ".$user_token_str."<br>";
+   if($getsavedtoken == $user_token_str){
+      echo $token['id'];
+      die();
+   }
+}
+	
+echo "token no match";
+die();
+*/
+/* ---- check end ---- */
+
         $phone = Yii::app()->request->getParam('phone');
 	$send_verify_code = '';
 	$send_verify_code = Yii::app()->request->getParam('send_verify_code');
@@ -5119,6 +5172,24 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+
+$token_check = $this->verifyapitemptoken( $api_token, $t1, $t2, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+else{
+Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
+}
+
         $userid = Yii::app()->request->getParam('id');
         $sortcode = Yii::app()->request->getParam('verify_code');
 	$user_type = Yii::app()->request->getParam('user_type');
@@ -5716,13 +5787,16 @@ if((isset($device_data) && !empty($device_data)) && (isset($t1) && !empty($t1)) 
 	}
 }
 
-$first_25 = bin2hex(openssl_random_pseudo_bytes(12));
-$last_25 = bin2hex(openssl_random_pseudo_bytes(12));
+$rand_bytes = bin2hex(openssl_random_pseudo_bytes(25));
+
+$first_25 = substr($rand_bytes,0,25);
+$last_25 = substr($rand_bytes,-25,25);
 
 //echo "f25: ".$first_25."<br>";
 //echo "l25: ".$last_25."<br>";
 
 $usertoken = md5(uniqid().time());
+//echo "user token just got: ".$usertoken."<br>";
 
 $ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
 $cryptokey = bin2hex(openssl_random_pseudo_bytes(8));
@@ -5770,13 +5844,15 @@ $iv_pt2 = substr($iv,-8,8);
 
 $ivencode = $r1.$iv_pt1.$r2.$r3.$iv_pt2.$r4; //[12][8][12][14][8][14]
 
-$ciphertext_token = openssl_encrypt($usertoken, $cipher, AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+//echo "user token before saving in db: ".$usertoken."<br>";
+
+$ciphertext_token = openssl_encrypt($usertoken, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
 $ciphertext_token_base64 = base64_encode($ciphertext_token);
 
-$ciphertext_key = openssl_encrypt($cryptokey, $cipher, AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_key = openssl_encrypt($cryptokey, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
 $ciphertext_key_base64 = base64_encode($ciphertext_key);
 
-$ciphertext_iv = openssl_encrypt($iv, $cipher, AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_iv = openssl_encrypt($iv, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
 $ciphertext_iv_base64 = base64_encode($ciphertext_iv);
 
  $data= array(

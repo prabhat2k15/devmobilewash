@@ -1067,7 +1067,7 @@ if((time()-$timestamp_fct) > 300){
 $gettemptokens =  Yii::app()->db->createCommand("SELECT * FROM temp_tokens")->queryAll();
 
 foreach($gettemptokens as $token){
-   $getsavedtoken = openssl_encrypt(base64_decode($token['token']), "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+   $getsavedtoken = openssl_decrypt(base64_decode($token['token']), "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
 
 
    if($getsavedtoken == $user_token_str){
