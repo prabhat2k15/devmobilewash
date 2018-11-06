@@ -294,7 +294,7 @@ $address = 'N/A';
                                                 <td style="display: <?php echo $edit; ?>"> <a href="edit-customer.php?customerID=<?php echo $responseagents->id; ?>">Edit</a></td>
  <td> <?php echo $responseagents->id; ?> </td>
 <td> <?php echo $responseagents->user_type; ?> </td>
- <td> <?php echo $responseagents->name; ?> </td>
+ <td> <a target="_blank" href="<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id=<?php echo $responseagents->id; ?>"><?php echo $responseagents->name; ?></a> </td>
 <td> <?php echo $responseagents->email; ?> </td>
 <td> <?php echo $responseagents->rating; ?> </td>
  <td> <?php 

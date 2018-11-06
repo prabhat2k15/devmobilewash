@@ -4225,6 +4225,7 @@ if(!$token_check){
                     'result'=> 'false',
                     'response'=> 'Invalid request'
                 );
+ echo json_encode($json);
  die();
 }
 else{
