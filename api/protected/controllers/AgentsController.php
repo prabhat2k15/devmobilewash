@@ -2296,7 +2296,7 @@ die();
 			 $jsonoff['longitude'] =  $checkagent_loc ->longitude;
 			 $jsonoff['total_wash'] =  $offlineagents ->total_wash;
 			 $jsonoff['rating'] = $offlineagents ->rating;
-            $jsonoff['badge_number'] = $onlineagents ->real_washer_id;
+            $jsonoff['badge_number'] = $offlineagents ->real_washer_id;
              $agentoff[$key] = $jsonoff;
 
 
@@ -2337,7 +2337,7 @@ $jsonobusy['id'] =  $agent_detail ->id;
 			 $jsonobusy['longitude'] =  $checkagent_loc ->longitude;
 			 $jsonobusy['total_wash'] =  $agent_detail ->total_wash;
 			 $jsonobusy['rating'] = $agent_detail ->rating;
-             $jsonobusy['badge_number'] = $onlineagents ->real_washer_id;
+             $jsonobusy['badge_number'] = $agent_detail ->real_washer_id;
              $agentsbusy[$key] = $jsonobusy;
 
 
