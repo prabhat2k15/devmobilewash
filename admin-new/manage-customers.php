@@ -251,6 +251,7 @@ cursor: pointer !important;
 <th> Address </th>
 <th> City </th>
 <th> How Hear MW </th>
+<th> Total Spent </th>
 <th> Created Date </th>
 
                                             </tr>
@@ -309,6 +310,7 @@ else echo $responseagents->total_wash;
 <td> <?php echo $responseagents->address; ?> </td>
   <td> <?php echo $responseagents->city; ?> </td>
  <td> <?php echo $responseagents->how_hear_mw; ?> </td>
+ <td> $<?php echo $responseagents->total_spent; ?> </td>
  <td> <?php echo date('m-d-Y h:i A', strtotime($responseagents->client_science)); ?> </td>
 
 

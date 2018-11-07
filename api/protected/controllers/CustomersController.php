@@ -6632,6 +6632,12 @@ $totalwash = count($totalwash_arr);
 
 $custlocation = CustomerLocation::model()->findByAttributes(array("customer_id" => $customername->id));
 
+$custspent =  Yii::app()->db->createCommand("SELECT SUM(net_price) FROM washing_requests WHERE customer_id = :customer_id AND  status = 4 AND net_price > 0")
+		->bindValue(':customer_id', $customername->id, PDO::PARAM_STR)
+		->queryAll();
+		$totalpaid = 0;
+		$totalpaid = $custspent[0]['SUM(net_price)'];
+
 $city = 'N/A';
 $address = 'N/A';
 
@@ -6662,6 +6668,7 @@ $json['wash_points'] =  $customername->fifth_wash_points;
 $json['address'] =  $address;
 $json['city'] =  $city;
 $json['how_hear_mw'] =  $customername->how_hear_mw;
+$json['total_spent'] =  number_format($totalpaid, 2);
 
 			$json['client_science'] =  $customername->created_date;
 
@@ -9280,7 +9287,7 @@ die();
 		$customerdetail = Customers::model()->findByAttributes(array("id"=>$customerID));
 		$lastorder =  Yii::app()->db->createCommand("SELECT created_date, complete_order FROM washing_requests WHERE customer_id = '$customerID' AND status = '4' ORDER BY id DESC LIMIT 0,1 ")->queryAll();
 		$image = $customerdetail->image;
-		$lastactive = $customerdetail->last_active;
+		//$lastactive = $customerdetail->last_active;
 		$lastlogin = explode(" ", $lastactive);
 		$createddate = $lastorder[0]['created_date'];
 		$lastprderdetail = explode(" ", $lastorder[0]['created_date']);
@@ -9297,14 +9304,20 @@ die();
 		$orderday = floor($orderdiff/(60*60*24));
 		$completeorderday = floor($ordercompletediff/(60*60*24));
 
-		$customertotal =  Yii::app()->db->createCommand("SELECT net_price FROM washing_requests WHERE customer_id = :customer_id ")
+		/*$customertotal =  Yii::app()->db->createCommand("SELECT net_price FROM washing_requests WHERE customer_id = :customer_id ")
 		->bindValue(':customer_id', $customerID, PDO::PARAM_STR)
 		->queryAll();
 		$totalprice = '';
 		foreach($customertotal as $toatl){
 			$totalprice += $toatl['net_price'];
-		}
+		}*/
 
+		$custspent =  Yii::app()->db->createCommand("SELECT SUM(net_price) FROM washing_requests WHERE customer_id = :customer_id AND  status = 4 AND net_price > 0")
+		->bindValue(':customer_id', $customerID, PDO::PARAM_STR)
+		->queryAll();
+		$totalpaid = 0;
+		$totalpaid = $custspent[0]['SUM(net_price)'];
+		
 		if($lastactive != '0000-00-00 00:00:00'){
 		if($day == 0){
 			$lastlogintime = $lastlogin[1];
@@ -9348,7 +9361,7 @@ die();
                 'last_login'=> $login,
                 'image'=> $image,
                 'login_time'=> $lastlogintime,
-                'totalprice'=> $totalprice,
+                'totalprice'=> number_format($totalpaid, 2),
                 'complte_order'=> $complte_order,
                 'lastorder'=> $order
         );

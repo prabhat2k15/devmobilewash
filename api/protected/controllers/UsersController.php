@@ -5884,13 +5884,5 @@ $json= array(
     }
 
 
-    public function actionmytest(){
-	$car_addon_price = Yii::app()->db->createCommand("SELECT * FROM `washing_plans_addons` WHERE package = 'Deluxe' AND vehicle_type = 'M'")->queryAll();
-
-	echo json_encode($car_addon_price);
-	foreach($car_addon_price as $addonprice){
-		if($addonprice['title'] == 'Clay Bar') echo "clay: ".$addonprice['price'];
-	}
-    }
 
 }
