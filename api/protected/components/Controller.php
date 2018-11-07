@@ -106,6 +106,8 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 				foreach($total_cars as $carindex=>$car){
 					$vehicle_details = Vehicle::model()->findByAttributes(array("id"=>$car));
                     $vehicle_wash_pricing = WashPricingHistory::model()->findByAttributes(array("vehicle_id"=>$car, "wash_request_id" => $wash_request_id, "status" => 0));
+		    
+		    $car_addon_price = Yii::app()->db->createCommand("SELECT * FROM `washing_plans_addons` WHERE package = '".$total_packs[$carindex]."' AND vehicle_type = '".$vehicle_details->vehicle_type."'")->queryAll();
 
 					$vehicle_inspect_details = Washinginspections::model()->findByAttributes(array("wash_request_id"=>$wash_request_id, "vehicle_id"=>$car));
 					$inspect_img = '';
@@ -334,6 +336,24 @@ $addressComponents = $geojsondata->results[0]->address_components;
                     $agent_bundle_disc = 0;
                     $upholstery_vehicle = 0;
                     $floormat_vehicle = 0;
+		    
+		    $extclaybar_price = 0;
+		    $lift_price = 10;
+                    $exthandwax_price = 12;
+                    $extplasticdressing_price = 8;
+                    $waterspotremove_price = 30;
+		    $upholstery_price = 20;
+                    $floormat_price = 0;
+		    
+		    foreach($car_addon_price as $addonprice){
+			if($addonprice['title'] == 'Clay Bar') $extclaybar_price = $addonprice['price'];
+			if($addonprice['title'] == 'Lifted Truck') $lift_price = $addonprice['price'];
+			if($addonprice['title'] == 'Exterior Hand Wax') $exthandwax_price = $addonprice['price'];
+			if($addonprice['title'] == 'Exterior Dressing') $extplasticdressing_price = $addonprice['price'];
+			if($addonprice['title'] == 'Water Spot') $waterspotremove_price = $addonprice['price'];
+			if($addonprice['title'] == 'Upholstery Conditioning') $upholstery_price = $addonprice['price'];
+			if($addonprice['title'] == 'Floor Mat Cleaning') $floormat_price = $addonprice['price'];
+		     }
 					if (in_array($car, $pet_hair_arr)){
 					    if(count($vehicle_wash_pricing)){
                      		   
@@ -372,13 +392,15 @@ $addressComponents = $geojsondata->results[0]->address_components;
 						$lift_vehicle = $vehicle_wash_pricing->lifted_vehicle;
 					    }
                         else{
-                          $total += 10;
-						$total_pet_lift_fee += 10;
 
-						$agent_total += 10 * .80;
-						$company_total += 10 * .20;
+                          $total += $lift_price;
+						$total_pet_lift_fee += $lift_price;
 
-						$lift_vehicle = 10;
+						$agent_total += $lift_price * .80;
+						$company_total += $lift_price * .20;
+
+						$lift_vehicle = $lift_price;
+			
                         }
 
 					}
@@ -393,12 +415,12 @@ $addressComponents = $geojsondata->results[0]->address_components;
 						$exthandwax_vehicle = $vehicle_wash_pricing->exthandwax_addon;
                     }
                     else{
-                     $total += 12;
+                     $total += $exthandwax_price;
 
-						$agent_total += 12 * .80;
-						$company_total += 12 * .20;
+						$agent_total += $exthandwax_price * .80;
+						$company_total += $exthandwax_price * .20;
 
-						$exthandwax_vehicle = 12;
+						$exthandwax_vehicle = $exthandwax_price;
                     }
 
 					}
@@ -413,12 +435,12 @@ $addressComponents = $geojsondata->results[0]->address_components;
 						$extplasticdressing_vehicle = $vehicle_wash_pricing->extplasticdressing_addon;
                     }
                     else{
-                      $total += 8;
+                      $total += $extplasticdressing_price;
 
-						$agent_total += 8 * .80;
-						$company_total += 8 * .20;
+						$agent_total += $extplasticdressing_price * .80;
+						$company_total += $extplasticdressing_price * .20;
 
-						$extplasticdressing_vehicle = 8;
+						$extplasticdressing_vehicle = $extplasticdressing_price;
                     }
 
 					}
@@ -437,11 +459,17 @@ if(count($vehicle_wash_pricing)){
 						$extclaybar_vehicle = $clay_price;
 }
 else{
-  $clay_price = 40;
+   if($extclaybar_price){
+      $clay_price = $extclaybar_price;
+   }
+   else{
+       $clay_price = 40;
     if($vehicle_details->vehicle_type == 'S') $clay_price = 40;
 if($vehicle_details->vehicle_type == 'M') $clay_price = 42.50;
 if($vehicle_details->vehicle_type == 'L') $clay_price = 45;
 if($vehicle_details->vehicle_type == 'E') $clay_price = 45;
+   }
+ 
 
 						$total += $clay_price;
 
@@ -465,13 +493,13 @@ if (in_array($car, $waterspotremove_vehicles_arr)){
 						$waterspotremove_vehicle = $vehicle_wash_pricing->waterspotremove_addon;
     }
     else{
-       $total += 30;
+       $total += $waterspotremove_price;
 
-						$agent_total += 30 * .80;
-						$company_total += 30 * .20;
+						$agent_total += $waterspotremove_price * .80;
+						$company_total += $waterspotremove_price * .20;
 
 
-						$waterspotremove_vehicle = 30;
+						$waterspotremove_vehicle = $waterspotremove_price;
     }
 
 					}
@@ -488,13 +516,13 @@ if (in_array($car, $waterspotremove_vehicles_arr)){
 						$upholstery_vehicle = $vehicle_wash_pricing->upholstery_addon;
     }
     else{
-       $total += 20;
+       $total += $upholstery_price;
 
-						$agent_total += 20 * .80;
-						$company_total += 20 * .20;
+						$agent_total += $upholstery_price * .80;
+						$company_total += $upholstery_price * .20;
 
 
-						$upholstery_vehicle = 20;
+						$upholstery_vehicle = $upholstery_price;
     }
 
 					}
@@ -512,11 +540,14 @@ if(count($vehicle_wash_pricing)){
 						$floormat_vehicle = $floormat_price;
 }
 else{
-  $floormat_price = 10;
+   if(!$floormat_price){
+      $floormat_price = 10;
     if($vehicle_details->vehicle_type == 'S') $floormat_price = 10;
 if($vehicle_details->vehicle_type == 'M') $floormat_price = 12.50;
 if($vehicle_details->vehicle_type == 'L') $floormat_price = 15;
 if($vehicle_details->vehicle_type == 'E') $floormat_price = 15;
+   }
+  
 
 						$total += $floormat_price;
 

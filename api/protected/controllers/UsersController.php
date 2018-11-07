@@ -4214,6 +4214,7 @@ echo "Invalid api key";
 die();
 }
 
+/*
 $api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
@@ -4230,7 +4231,7 @@ if(!$token_check){
 }
 else{
 Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
-}
+}*/
 
 /*---- check ---- */
 /*
@@ -5172,7 +5173,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 
@@ -5188,7 +5189,7 @@ if(!$token_check){
 }
 else{
 Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
-}
+}*/
 
         $userid = Yii::app()->request->getParam('id');
         $sortcode = Yii::app()->request->getParam('verify_code');
@@ -5883,6 +5884,13 @@ $json= array(
     }
 
 
+    public function actionmytest(){
+	$car_addon_price = Yii::app()->db->createCommand("SELECT * FROM `washing_plans_addons` WHERE package = 'Deluxe' AND vehicle_type = 'M'")->queryAll();
 
+	echo json_encode($car_addon_price);
+	foreach($car_addon_price as $addonprice){
+		if($addonprice['title'] == 'Clay Bar') echo "clay: ".$addonprice['price'];
+	}
+    }
 
 }
