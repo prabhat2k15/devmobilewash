@@ -4822,7 +4822,36 @@ if($wrequest['status'] == 0) $pendingorderscount++;
 				$vehicles = array();
 				foreach($cars as $ind=>$car){
                     $car_details = Vehicle::model()->findByAttributes(array("id"=>$car));
-                    $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind]);
+		    
+		    $veh_addons = '';
+		    
+		    $pet_hair_vehicles_arr = explode(",", $wrequest['pet_hair_vehicles']);
+if (in_array($car, $pet_hair_vehicles_arr)) $veh_addons .= 'Extra Cleaning, ';
+
+$lifted_vehicles_arr = explode(",", $wrequest['lifted_vehicles']);
+if (in_array($car, $lifted_vehicles_arr)) $veh_addons .= 'Lifted Truck, ';
+
+$exthandwax_addon_arr = explode(",", $wrequest['exthandwax_vehicles']);
+if (in_array($car, $exthandwax_addon_arr)) $veh_addons .= 'Liquid Hand Wax, ';
+
+$extplasticdressing_addon_arr = explode(",", $wrequest['extplasticdressing_vehicles']);
+if (in_array($car, $extplasticdressing_addon_arr)) $veh_addons .= 'Exterior Plastic Dressing, ';
+
+$extclaybar_addon_arr = explode(",", $wrequest['extclaybar_vehicles']);
+if (in_array($car, $extclaybar_addon_arr)) $veh_addons .= 'Clay Bar & Paste Wax, ';
+
+$waterspotremove_addon_arr = explode(",", $wrequest['waterspotremove_vehicles']);
+if (in_array($car, $waterspotremove_addon_arr)) $veh_addons .= 'Water Spot Removal, ';
+
+$upholstery_addon_arr = explode(",", $wrequest['upholstery_vehicles']);
+if (in_array($car, $upholstery_addon_arr)) $veh_addons .= 'Upholstery Conditioning, ';
+
+$floormat_addon_arr = explode(",", $wrequest['floormat_vehicles']);
+if (in_array($car, $floormat_addon_arr)) $veh_addons .= 'Floor Mat Cleaning, ';
+
+$veh_addons = rtrim($veh_addons, ", ");
+
+                    $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind], 'addons' => $veh_addons);
 				}
 
 				
@@ -4844,10 +4873,18 @@ $customername = ucwords($customername);
 					
 								$agent_info = array();
 				if(count($agent_details)){
-					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
+					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'real_washer_id'=>$agent_details->real_washer_id, 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
 				}
 $payment_status = '';
 
+if(($wrequest['status'] == 4) && (!$wrequest['washer_payment_status'])){
+$end = time();
+$start = strtotime($wrequest['order_for']);
+
+$days_between = ceil(abs($end - $start) / 86400);
+//echo $wrequest['id']." ".$days_between."<br>"; 
+if($days_between > 1 ) $washer_payment_status = 'pending';
+}
 if($wrequest['failed_transaction_id']){
   $payment_status = 'Declined';
 }
@@ -4862,9 +4899,18 @@ else if($wrequest['escrow_status'] == 'release_pending' || $wrequest['escrow_sta
 $payment_status = 'Released';
 }
 
+
+/*if($cust_details->client_position == 'real') $payresult = Yii::app()->braintree->getTransactionById_real($wrequest['transaction_id']);
+else $payresult = Yii::app()->braintree->getTransactionById($wrequest['transaction_id']);
+if($payresult['success'] == 1) {
+//$submerchant_id = $payresult['merchant_id'];
+$transaction_status = $payresult['status'];
+}*/
+
+
  }
 }
-
+if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
  if($min_diff >= 0){
     $resched_date = '';
     $resched_time = '';
@@ -4902,6 +4948,7 @@ $payment_status = 'Released';
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
+		    'net_price'=>$wrequest['net_price'],
 					'wash_request_position'=>$wrequest['wash_request_position'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff
@@ -4939,6 +4986,7 @@ if($min_diff < 0){
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
+		    'net_price'=>$wrequest['net_price'],
 					'wash_request_position'=>$wrequest['wash_request_position'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff
@@ -4976,6 +5024,7 @@ if($min_diff < 0){
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
+		    'net_price'=>$wrequest['net_price'],
 					'wash_request_position'=>$wrequest['wash_request_position'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff

@@ -6627,6 +6627,7 @@ else $customers = Customers::model()->findAll(array('order'=>'created_date desc'
 $totalwash = 0;
 			$customersid = $customername->id;
            $totalwash_arr = Washingrequests::model()->findAllByAttributes(array("status"=>4, "customer_id" => $customername->id));
+	   $custfirstdevice = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$customername->id."' ORDER BY device_add_date ASC LIMIT 1")->queryAll();
 
 $totalwash = count($totalwash_arr);
 
@@ -6660,7 +6661,12 @@ $json['user_type'] =  $customername->login_type;
 			$json['email'] =  $customername->email;
 $json['phone'] = $customername->contact_number;
 $json['rating'] = $customername->rating;
-$json['device_type'] = $customername->mobile_type;
+
+if(count($custfirstdevice)) $json['device_type'] = $custfirstdevice[0]['device_type'];
+else{
+	if($customername->mobile_type) $json['device_type'] = $customername->mobile_type;
+	else $json['device_type'] = "N/A";
+}
 $json['phone_verify_code'] = $customername->phone_verify_code;
 $json['wash_points'] =  $customername->fifth_wash_points;
 

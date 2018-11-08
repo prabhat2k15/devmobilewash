@@ -112,6 +112,30 @@ if(($_GET['search_area'] == 'Washer Badge') || ($_GET['search_area'] == 'Washer 
 .custom-pagination a:hover{
     text-decoration: none;
 }
+
+.label-complete {
+    background-color: #16CE0C !important;
+}
+
+.label-pending {
+    background-color: #DCAD53 !important;
+}
+
+.label-fraud {
+    background-color: #f44336 !important;
+}
+
+.label-process {
+    background-color: #D0792B !important;
+}
+
+.label-enroute {
+    background-color: #00BCD4 !important;
+}
+
+.label-cancel {
+    background-color: #999 !important;
+}
 </style>
 
 <!-- BEGIN CONTENT -->
@@ -330,11 +354,14 @@ else echo $customer->total_wash;
                                                 <th> Status </th>
 <th> Payment </th>
 <th> Transaction ID </th>
+<th> Declined Transaction ID </th>
 												<!--th> Customer ID </th-->
 												<th> Customer Name </th>
 
 												<th> Customer Phone </th>
 												<!--th> Agent ID </th-->
+                                                                                                <th> Badge </th>
+												
 												<th> Agent Name </th>
 												<!--th> Agent Email </th-->
                                                 <th> Agent Phone </th>
@@ -342,6 +369,7 @@ else echo $customer->total_wash;
                                                 <th> Schedule Datetime </th>
 <th> Starts </th>
                                                 <th>Vehicles </th>
+                                                <th> Total Price </th>
 												<!--th>Total Price </th-->
 												<!--th>Transaction ID </th-->
 												<th> Created Date </th>
@@ -374,9 +402,10 @@ else echo $customer->total_wash;
 <?php endif; ?>
                     </td>
 <td><?php 
-if($order->payment_status == 'Declined') echo"<span class='label label-sm label-pending'>".$order->payment_status."</span>";
+if(($order->payment_status == 'Declined') || ($order->payment_status == 'Check Fraud')) echo"<span class='label label-sm label-fraud'>".$order->payment_status."</span><br><br>";
 else echo $order->payment_status; ?></td>
  <td><?php echo $order->transaction_id; ?></td>
+ <td><?php echo $order->failed_transaction_id; ?></td>
                     <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                     <td><?php echo $order->customer_phoneno; ?></td>
 <!--td><?php /*
@@ -384,6 +413,11 @@ if(count($order->agent_details)) echo $order->agent_details->agent_id;
 else echo "N/A"; */
 ?>
 </td-->
+<td><?php 
+if(count($order->agent_details)) echo $order->agent_details->real_washer_id;
+else echo "N/A";
+?>
+</td>
 <td><?php
 if(count($order->agent_details)) echo "<a target='_blank' href='/admin-new/all-orders.php?agent_id=".$order->agent_details->agent_id."'>".$order->agent_details->agent_name."</a>";
 else echo "N/A";
@@ -423,13 +457,15 @@ else echo "-";
   if(count($order->vehicles)){
 echo "<ol style='padding-left: 15px;'>";
 foreach($order->vehicles as $car){
-echo "<li style='margin-bottom: 10px;'>".$car->make." ".$car->model." (".$car->pack.")</li>";
+echo "<li style='margin-bottom: 10px;'>".$car->make." ".$car->model." (".$car->pack.")";
+if($car->addons) echo " - Addons: ".$car->addons;
+echo "</li>";
 }
 echo "</ol>";
 }
 
 ?></td>
-
+<td>$<?php echo $order->net_price; ?></td>
  <td><?php echo $order->created_date; ?></td>
 
 
