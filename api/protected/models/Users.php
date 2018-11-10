@@ -28,11 +28,11 @@ class Users extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('email, username, password, users_type, device_token, password_reset_token', 'required'),
+			array('email, username, password, users_type, device_token, password_reset_token, last_login_at, last_login_data, verify_code', 'required'),
 			
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, email, username, password, users_type, device_token', 'safe', 'on'=>'search'),
+			array('id, email, username, password, users_type, device_token, last_login_at, last_login_data, verify_code', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -60,6 +60,9 @@ class Users extends CActiveRecord
 'users_type' => 'Users Type',
 			'device_token' => 'Device Token',	
 'password_reset_token' => 'password reset token',	
+'last_login_at' => 'last login at',
+'last_login_data' => 'last login data',
+'verify_code' => 'verify code',
 		);
 	}
 
@@ -88,6 +91,9 @@ class Users extends CActiveRecord
 $criteria->compare('users_type',$this->users_type,true);
 		$criteria->compare('device_token',$this->device_token,true);
 $criteria->compare('password_reset_token',$this->password_reset_token,true);
+$criteria->compare('last_login_at',$this->last_login_at,true);
+$criteria->compare('last_login_data',$this->last_login_data,true);
+$criteria->compare('verify_code',$this->verify_code,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

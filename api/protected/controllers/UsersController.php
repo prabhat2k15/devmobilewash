@@ -37,24 +37,23 @@ die();
 
 		$username = Yii::app()->request->getParam('email');
 		$password = md5(Yii::app()->request->getParam('password'));
-		$device_token = Yii::app()->request->getParam('device_token');
+	
 
 		if((isset($username) && !empty($username)) && (isset($password) && !empty($password))){
 			$user_id = Users::model()->findByAttributes(array("email"=>$username));
 			if(count($user_id)>0){
 				if($user_id->password== $password){
 
-
-					if(!empty($device_token)){
+					/*if(!empty($device_token)){
 							$model= Users::model()->findByAttributes(array('id'=>$user_id->id));
-							$data= array('device_token'=>$device_token, 'password_reset_token' => '');
+							$data= array('device_token'=>$device_token, 'password_reset_token' => '', 'last_login_at' => date("Y-m-d H:i:s"), 'last_login_data' => $device_data);
 							$data= array_filter($data);
 							$model->attributes= $data;
 							$model->save(false);
-					}
-
+					}*/
+$verify_code = mt_rand(100000, 999999);
 $model= Users::model()->findByAttributes(array('id'=>$user_id->id));
-							$data= array('password_reset_token' => '');
+							$data= array('verify_code' => $verify_code);
 							$model->attributes= $data;
 							$model->save(false);
 					$result= 'true';
@@ -62,9 +61,36 @@ $model= Users::model()->findByAttributes(array('id'=>$user_id->id));
 					$json= array(
 						'result'=> $result,
 						'response'=> $response,
-'user_type' => $user_id->users_type
+//'user_type' => $user_id->users_type
 
 					);
+					
+					$this->layout = "xmlLayout";
+         
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = "Admin Login Verification Code--\r\nCode: ".$verify_code."\r\nEmail: ".$username;
+
+
+             try {
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  '8183313631',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+ }
+ catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+} 
 				}else{
 					$result= 'false';
 					$response= 'Wrong password';
@@ -76,6 +102,96 @@ $model= Users::model()->findByAttributes(array('id'=>$user_id->id));
 			}else{
 				$result= "false";
 				$response = 'Wrong email';
+				$json = array(
+					'result'=> $result,
+					'response'=> $response
+				);
+			}
+		}else{
+			$json = array(
+				'result'=> 'false',
+				'response'=> 'Pass the required parameters'
+			);
+		}
+		echo json_encode($json);
+		die();
+	}
+	
+		public function actionadminlogincodeverify(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+		$username = Yii::app()->request->getParam('email');
+		$verify_code = Yii::app()->request->getParam('verify_code');
+		$device_token = Yii::app()->request->getParam('device_token');
+		$device_data = Yii::app()->request->getParam('device_data');
+
+		if((isset($username) && !empty($username)) && (isset($verify_code) && !empty($verify_code))){
+			$user_id = Users::model()->findByAttributes(array("email"=>$username));
+			
+			if(count($user_id)>0){
+				if($user_id->verify_code == $verify_code){
+
+					if(!empty($device_token)){
+							$model= Users::model()->findByAttributes(array('id'=>$user_id->id));
+							$data= array('device_token'=>$device_token, 'password_reset_token' => '', 'last_login_at' => date("Y-m-d H:i:s"), 'last_login_data' => $device_data);
+							$data= array_filter($data);
+							$model->attributes= $data;
+							$model->save(false);
+					}
+
+$model= Users::model()->findByAttributes(array('id'=>$user_id->id));
+							$data= array('password_reset_token' => '', 'last_login_at' => date("Y-m-d H:i:s"), 'last_login_data' => $device_data);
+							$model->attributes= $data;
+							$model->save(false);
+					$result= 'true';
+					$response= 'Successfully logged in';
+					$json= array(
+						'result'=> $result,
+						'response'=> $response,
+'user_type' => $user_id->users_type
+
+					);
+					
+					$this->layout = "xmlLayout";
+         
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = "Admin logged in--\r\nEmail: ".$username."\r\n".$device_data;
+ 
+             try {
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  '8183313631',
+                'From' => '+13103128070',
+                'Body' => $message,
+            ));
+ }
+ catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+} 
+				}else{
+					$result= 'false';
+					$response= 'Wrong code';
+					$json= array(
+						'result'=> $result,
+						'response'=> $response,
+					);
+				}
+			}else{
+				$result= "false";
+				$response = "User doesn't exists";
 				$json = array(
 					'result'=> $result,
 					'response'=> $response
@@ -4214,7 +4330,7 @@ echo "Invalid api key";
 die();
 }
 
-/*
+
 $api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
@@ -4231,7 +4347,7 @@ if(!$token_check){
 }
 else{
 Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
-}*/
+}
 
 /*---- check ---- */
 /*
@@ -5173,7 +5289,7 @@ echo "Invalid api key";
 die();
 }
 
-/*$api_token = Yii::app()->request->getParam('api_token');
+$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 
@@ -5189,7 +5305,7 @@ if(!$token_check){
 }
 else{
 Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
-}*/
+}
 
         $userid = Yii::app()->request->getParam('id');
         $sortcode = Yii::app()->request->getParam('verify_code');
@@ -5237,9 +5353,22 @@ $userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
          
 	
         if(!empty($matchcode)){
+		$usertoken = md5(uniqid().time());
+		$ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
+$cryptokey = bin2hex(openssl_random_pseudo_bytes(8));
+$iv = bin2hex(openssl_random_pseudo_bytes(8));
+		$ciphertext_token = openssl_encrypt($usertoken, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_token_base64 = base64_encode($ciphertext_token);
+
+$ciphertext_key = openssl_encrypt($cryptokey, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_key_base64 = base64_encode($ciphertext_key);
+
+$ciphertext_iv = openssl_encrypt($iv, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_iv_base64 = base64_encode($ciphertext_iv);
+		
             if($user_type == 'customer') {
-		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', is_voip_number = 0, current_app_version = '".$app_version."', contact_number = :phone, forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
-		else $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', current_app_version = '".$app_version."', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
+		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', is_voip_number = 0, current_app_version = '".$app_version."', contact_number = :phone, forced_logout= 0, access_token = '".$ciphertext_token_base64."', access_key='".$ciphertext_key_base64."', access_vector='".$ciphertext_iv_base64."', access_token_expire_at = '".date("Y-m-d H:i:s", strtotime('+7 days'))."' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
+		else $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', current_app_version = '".$app_version."', forced_logout= 0, access_token = '".$ciphertext_token_base64."', access_key='".$ciphertext_key_base64."', access_vector='".$ciphertext_iv_base64."', access_token_expire_at = '".date("Y-m-d H:i:s", strtotime('+7 days'))."' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
 		
 	    }
 	    else {
