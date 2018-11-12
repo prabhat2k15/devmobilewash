@@ -3284,6 +3284,8 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 				$status = 0;
 				$status_qr = ' AND w.status="'.$status.'"';
 			} elseif($event == 'total_orders'){
+                $status_qr = " AND w.status IN(0,4,3,2)";
+            } elseif($event == 'csv_total_orders'){
                 $status_qr = " AND w.status IN(0,4,3,2,1,5,6)";
             } elseif($event == 'completed'){
 				$status = 4;
@@ -8913,7 +8915,7 @@ public function actiontestingcsv(){
         $url = ROOT_URL.'/api/index.php?r=site/getallwashrequestsnew';
         $cust_id = 0;
         $agent_id = 0;
-        $_event = 'total_orders';
+        $_event = 'csv_total_orders';
         $month = Yii::app()->request->getParam('month');
         $handle = curl_init($url);
         $data = array('event'=>$_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'day' => '', 'month' => $month);

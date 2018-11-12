@@ -9999,7 +9999,7 @@ if($orderbycustomer['zipcode']) {
                     }
                 }
                  if(count($val['pending'])>0 || count($val['processing']) >0 || count($val['complete'])>0 || count($val['canceled'])>0 || count($val['scheduled_auto'])>0 || count($val['ondemandautocanceled'])>0 ){
-                    $total_orders = count($val['pending'])+count($val['processing'])+count($val['complete'])+count($val['canceled'])+count($val['scheduled_auto'])+count($val['ondemandautocanceled'])+count($val['declined']);
+                    $total_orders = count($val['pending'])+count($val['processing'])+count($val['complete']);//+count($val['canceled'])+count($val['scheduled_auto'])+count($val['ondemandautocanceled'])+count($val['declined']);
                     $dt[$key]['total_orders']['count']= $total_orders;
                     $dt[$key]['total_orders']['color']= '#9c64b7';
                 }
