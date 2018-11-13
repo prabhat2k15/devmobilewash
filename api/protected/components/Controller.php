@@ -1162,7 +1162,7 @@ foreach($checkuser as $user){
 
 
    if($getsavedtoken == $user_token_str){
-      return $token['id'];
+      return $user['id'];
    }
 }
 	

@@ -390,7 +390,7 @@ die();
 					'response'=> $response
 				);
 				
-				 Agents::model()->updateByPk($agent_id, array('forced_logout' => 0));
+				 Agents::model()->updateByPk($agent_id, array('forced_logout' => 0, 'access_token' => '', 'access_key' => '', 'access_vector' => ''));
 
 Yii::app()->db->createCommand("UPDATE agent_devices SET device_status='offline' WHERE agent_id = :agent_id AND device_token = :device_token")
 ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
