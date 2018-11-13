@@ -4345,9 +4345,7 @@ if(!$token_check){
  echo json_encode($json);
  die();
 }
-else{
-Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
-}
+
 
 /*---- check ---- */
 /*
@@ -5307,6 +5305,8 @@ else{
 Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
 }
 
+
+
         $userid = Yii::app()->request->getParam('id');
         $sortcode = Yii::app()->request->getParam('verify_code');
 	$user_type = Yii::app()->request->getParam('user_type');
@@ -5357,6 +5357,35 @@ $userid = $this->aes256cbc_crypt( $userid, 'd', AES256CBC_API_PASS );
 		$ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
 $cryptokey = bin2hex(openssl_random_pseudo_bytes(8));
 $iv = bin2hex(openssl_random_pseudo_bytes(8));
+
+$rand_bytes = bin2hex(openssl_random_pseudo_bytes(25));
+
+$first_25 = substr($rand_bytes,0,25);
+$last_25 = substr($rand_bytes,-25,25);
+
+$ciphertext_raw = openssl_encrypt($first_25.$usertoken.$last_25."tmn!!==*".time(), "AES-128-CBC", $cryptokey, $options=OPENSSL_RAW_DATA, $iv);
+$ciphertext = base64_encode($ciphertext_raw);
+
+$r1 = bin2hex(openssl_random_pseudo_bytes(6));
+$r2 = bin2hex(openssl_random_pseudo_bytes(6));
+$r3 = bin2hex(openssl_random_pseudo_bytes(7));
+$r4 = bin2hex(openssl_random_pseudo_bytes(7));
+
+$cryptokey_pt1 = substr($cryptokey,0,8);
+$cryptokey_pt2 = substr($cryptokey,-8,8);
+
+$cryptokeyencode = $r1.$cryptokey_pt1.$r2.$r3.$cryptokey_pt2.$r4; //[12][8][12][14][8][14]
+
+$r1 = bin2hex(openssl_random_pseudo_bytes(6));
+$r2 = bin2hex(openssl_random_pseudo_bytes(6));
+$r3 = bin2hex(openssl_random_pseudo_bytes(7));
+$r4 = bin2hex(openssl_random_pseudo_bytes(7));
+
+$iv_pt1 = substr($iv,0,8);
+$iv_pt2 = substr($iv,-8,8);
+
+$ivencode = $r1.$iv_pt1.$r2.$r3.$iv_pt2.$r4; //[12][8][12][14][8][14]
+
 		$ciphertext_token = openssl_encrypt($usertoken, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
 $ciphertext_token_base64 = base64_encode($ciphertext_token);
 
@@ -5372,13 +5401,16 @@ $ciphertext_iv_base64 = base64_encode($ciphertext_iv);
 		
 	    }
 	    else {
-		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0, current_app_version = '".$app_version."', is_voip_number = 0, phone_number = :phone WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
-		else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', current_app_version = '".$app_version."', forced_logout= 0 WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
+		if($phone) $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0, current_app_version = '".$app_version."', is_voip_number = 0, phone_number = :phone, access_token = '".$ciphertext_token_base64."', access_key='".$ciphertext_key_base64."', access_vector='".$ciphertext_iv_base64."', access_token_expire_at = '".date("Y-m-d H:i:s", strtotime('+7 days'))."' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
+		else $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', current_app_version = '".$app_version."', forced_logout= 0, access_token = '".$ciphertext_token_base64."', access_key='".$ciphertext_key_base64."', access_vector='".$ciphertext_iv_base64."', access_token_expire_at = '".date("Y-m-d H:i:s", strtotime('+7 days'))."' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
             
 		}
 	    $data = array(
                 'result' => 'true',
-                'response' => 'Congratulations, Your phone is verified.'
+                'response' => 'Congratulations, Your phone is verified.',
+		'token'=> $ciphertext,
+		't1' => base64_encode($cryptokeyencode),
+		't2' => base64_encode($ivencode) 
 
             );
             echo json_encode($data);
