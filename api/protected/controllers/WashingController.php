@@ -33,7 +33,7 @@ echo "Invalid api key";
 die();
 }
 
-	$api_token = Yii::app()->request->getParam('api_token');
+$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -3307,7 +3307,7 @@ $sendmessage = $client->account->messages->create(array(
 					//echo $car_detail->brand_name." ".$car_detail->model_name."<br>";
 
 					$handle = curl_init(ROOT_URL."/api/index.php?r=washing/plans");
-					$data = array('vehicle_make' => $car_detail->brand_name, 'vehicle_model' => $car_detail->model_name, 'vehicle_build' => $car_detail->vehicle_build, "key" => API_KEY);
+					$data = array('vehicle_make' => $car_detail->brand_name, 'vehicle_model' => $car_detail->model_name, 'vehicle_build' => $car_detail->vehicle_build, "key" => API_KEY,"api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
 					curl_setopt($handle, CURLOPT_POST, true);
 					curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 					curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -3393,7 +3393,7 @@ $sendmessage = $client->account->messages->create(array(
     						//echo $car_detail->brand_name." ".$car_detail->model_name."<br>";
 
     						$handle = curl_init(ROOT_URL."/api/index.php?r=washing/plans");
-    						$data = array('vehicle_make' => $car_detail->brand_name, 'vehicle_model' => $car_detail->model_name, 'vehicle_build' => $car_detail->vehicle_build, "key" => API_KEY);
+    						$data = array('vehicle_make' => $car_detail->brand_name, 'vehicle_model' => $car_detail->model_name, 'vehicle_build' => $car_detail->vehicle_build, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
     						curl_setopt($handle, CURLOPT_POST, true);
     						curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
     						curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -4440,6 +4440,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $customer_id = Yii::app()->request->getParam('customer_id');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
 	$upgrade_pack = Yii::app()->request->getParam('upgrade_pack');
@@ -4979,6 +4996,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $customer_id = Yii::app()->request->getParam('customer_id');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $comments = '';
@@ -5265,6 +5299,23 @@ else $logcomment = $comments;
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
         $agent_id = Yii::app()->request->getParam('agent_id');
@@ -5577,6 +5628,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 $pendingrequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE status = 0 AND is_scheduled = 0")->queryAll();
 
 if(count($pendingrequests)){
@@ -5586,7 +5654,7 @@ foreach($pendingrequests as $wrequest){
    /* ------- get nearest agents --------- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-$data = array('wash_request_id' => $wrequest['id'], "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+$data = array('wash_request_id' => $wrequest['id'], "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -5966,6 +6034,23 @@ if(count($clientwashernomeetwashes)){
             echo "Invalid api key";
             die();
         }
+	
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $status = Yii::app()->request->getParam('status');
@@ -6141,6 +6226,23 @@ $status = -1 * abs($status);
             echo "Invalid api key";
             die();
         }
+	
+	$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         if(!empty($wash_request_id))
@@ -6453,6 +6555,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $agent_id = Yii::app()->request->getParam('agent_id');
         $status = Yii::app()->request->getParam('washer_status');
         $json = array();
@@ -6724,7 +6843,7 @@ $pendingwashrequests[] = array('id'=>$agent_has_order->id,
 						  /* ------- check if agent is nearest -------- */
 
 							$handle = curl_init(ROOT_URL."/api/index.php?r=agents/isagentnearest");
-							$data = array("customer_id"=>$prequest['customer_id'], "wash_request_id"=>$prequest['id'], "agent_id"=>$agent_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+							$data = array("customer_id"=>$prequest['customer_id'], "wash_request_id"=>$prequest['id'], "agent_id"=>$agent_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
 							curl_setopt($handle, CURLOPT_POST, true);
 							curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 							curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -6899,6 +7018,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $washmodel = new Washingrequests;
         $washmodel->updateAll(array('agent_id'=>0), 'status=:status', array(':status'=>0));
         echo "done";
@@ -6907,8 +7043,14 @@ die();
 	/* view particular customer request */
 
     public function actionwashingkart(){
+	
+	$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
 
-           $kartapiresult = $this->washingkart(Yii::app()->request->getParam('wash_request_id'), Yii::app()->request->getParam('key'), Yii::app()->request->getParam('coupon_discount'), Yii::app()->request->getParam('api_password'), Yii::app()->request->getParam('show_payment_method'));
+           $kartapiresult = $this->washingkart(Yii::app()->request->getParam('wash_request_id'), Yii::app()->request->getParam('key'), Yii::app()->request->getParam('coupon_discount'), Yii::app()->request->getParam('api_password'), $api_token, $t1, $t2, $user_type, $user_id, Yii::app()->request->getParam('show_payment_method'));
 echo $kartapiresult;
 die();
 
@@ -6921,6 +7063,23 @@ die();
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
 		/* Checking for post(day) parameters */
@@ -7052,6 +7211,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $orderid = Yii::app()->request->getParam('orderid');
         $status = Yii::app()->request->getParam('status');
         $clientname = Yii::app()->request->getParam('clientname');
@@ -7108,6 +7284,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $sort = Yii::app()->request->getParam('orderby');
         $sortorder = explode("_",$sort);
         $table = $sortorder[0];
@@ -7138,12 +7331,23 @@ die();
          exit;
     }
 
-    public function actionsendorderreceipts($wash_request_id = 0, $customer_id = 0, $agent_id = 0, $return_val = 'false', $key = '')
+    public function actionsendorderreceipts($wash_request_id = 0, $customer_id = 0, $agent_id = 0, $return_val = 'false',$api_token = '', $t1 = '', $t2 = '', $user_type = '', $user_id = '', $key = '')
     {
 
 if((Yii::app()->request->getParam('key') != API_KEY) && ($key != API_KEY)){
 echo "Invalid api key";
 //die();
+}
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
         if(!$wash_request_id) $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         if(!$customer_id) $customer_id = Yii::app()->request->getParam('customer_id');
@@ -8361,6 +8565,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 /*        get the total */
         $total_feed =  Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_feedbacks w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN agents a ON w.agent_id = a.id")->queryAll();
         $feeds = $total_feed[0]['countid'];
@@ -8410,6 +8631,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $orderID = Yii::app()->request->getParam('orderID');
         $orderdetail = Washingrequests::model()->findByAttributes(array("id"=>$orderID));
         $near_agents = array();
@@ -8453,7 +8691,7 @@ $inspectiondetails_arr[$ind]['inspect_img'] = $inspectdet->damage_pic;
               /* ------- get nearest agents --------- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-$data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_request_id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -8514,6 +8752,23 @@ $order_of_status = 'Complete';
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
         $orderid = Yii::app()->request->getParam('orderid');
         $order =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE id in (:id) ")->bindValue(':id', $orderid, PDO::PARAM_STR)->queryAll();
@@ -8589,6 +8844,23 @@ die();
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
           $id = Yii::app()->request->getParam('id');
@@ -8682,7 +8954,7 @@ else $Bresult = Yii::app()->braintree->getCustomerById($cust_check->braintree_id
                                 if($voidresult['success'] == 1) {
 
                                    $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_check->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_check->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -8722,7 +8994,7 @@ else{
                 else{
 
                      $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $wash_check->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+$data = array('wash_request_id' => $wash_check->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -8784,6 +9056,23 @@ else{
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
@@ -9261,6 +9550,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $status = Yii::app()->request->getParam('status');
 	
@@ -9426,6 +9732,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $result= 'false';
         $response= 'No pending orders found';
         $json= array();
@@ -9453,7 +9776,7 @@ $pendingwasharr[$ind]['customer_name'] = $cust_details->first_name." ".$cust_det
                       /* ------- get nearest agents --------- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-$data = array('wash_request_id' => $pwash['id'], "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+$data = array('wash_request_id' => $pwash['id'], "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -9504,6 +9827,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
  $zipcode = Yii::app()->request->getParam('zipcode');
 
   $result= 'false';
@@ -9540,6 +9880,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
  $zipcode = Yii::app()->request->getParam('zipcode');
 
   $result= 'false';
@@ -9574,6 +9931,23 @@ public function actiongetallcoveragezipcodes(){
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
         $all_zipcodes = array();
@@ -9613,6 +9987,23 @@ public function actionaddcoveragezipcode(){
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
 		$result= 'false';
@@ -9663,6 +10054,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
          $result= 'false';
 		$response= 'Please provide zipcode';
 
@@ -9706,6 +10114,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
          $result= 'false';
 		$response= 'Please provide zipcode';
 
@@ -9740,6 +10165,23 @@ public function actiondeletecoveragezipcode(){
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
          $result= 'false';
@@ -9780,6 +10222,23 @@ die();
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
 		/* Checking for post(month) parameters */
@@ -9879,6 +10338,23 @@ die();
             echo "Invalid api key";
             die();
         }
+	
+	$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
         /* Checking for post(month) parameters */
         $order_month='';
         if(!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))){
@@ -10367,6 +10843,23 @@ if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
 }
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
 		/* Checking for post(month) parameters */
 		$order_month='';
 		if(!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))){
@@ -10508,6 +11001,23 @@ die();
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 		/* Checking for post(month) parameters */
 		$order_month='';
@@ -10742,6 +11252,23 @@ public function actiongetwashrequestbyid(){
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
  $result= 'false';
@@ -10989,6 +11516,23 @@ public function actioncancelscheduleorder(){
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 		$result= 'false';
 		$response= 'please provide required parameters';
@@ -11824,6 +12368,23 @@ if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
 }
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
 		/* Checking for post(day) parameters */
 		$order_day='';
 		if(!empty(Yii::app()->request->getParam('day')) && !empty(Yii::app()->request->getParam('event'))){
@@ -12109,6 +12670,23 @@ if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
 }
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
 		/* Checking for post(day) parameters */
 		$order_day='';
 		if(!empty(Yii::app()->request->getParam('day')) && !empty(Yii::app()->request->getParam('event'))){
@@ -12316,6 +12894,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 		$response = "no scheduled washes found";
 		$result = "false";
 		$allwashes = array();
@@ -12417,7 +13012,7 @@ if(($min_diff < 0) && ($min_diff <= -1440)){
 						//echo $car_detail->brand_name." ".$car_detail->model_name."<br>";
 
 						$handle = curl_init(ROOT_URL."/api/index.php?r=washing/plans");
-						$data = array('vehicle_make' => $car_detail->brand_name, 'vehicle_model' => $car_detail->model_name, 'vehicle_build' => $car_detail->vehicle_build, "key" => API_KEY);
+						$data = array('vehicle_make' => $car_detail->brand_name, 'vehicle_model' => $car_detail->model_name, 'vehicle_build' => $car_detail->vehicle_build, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
 						curl_setopt($handle, CURLOPT_POST, true);
 						curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 						curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -12662,6 +13257,23 @@ if (in_array($car, $floormat_vehicles_arr)) $washtime += 10;
  if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
 
@@ -12973,6 +13585,23 @@ else if($min_diff < 15 && $min_diff >= 10) $message2 = "You have a scheduled car
 if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
        $allschedwashes = Washingrequests::model()->findAll(array("condition"=>"is_scheduled = 1 AND status = 0"));
@@ -13319,6 +13948,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 $allschedwashes = Washingrequests::model()->findAllByAttributes(array('status' => 4, 'is_feedback_email_sent' => 0));
 
  if(count($allschedwashes)){
@@ -13397,6 +14043,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 $response = "addon details";
 		$result = "true";
 		$addons = array();
@@ -13427,6 +14090,23 @@ public function actionwashingaddonsnew() {
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
 $response = "addon details";
@@ -13519,6 +14199,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 $agent_id = Yii::app()->request->getParam('agent_id');
 $wash_request_id = Yii::app()->request->getParam('wash_request_id');
 $eta = '';
@@ -13600,6 +14297,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $result= 'false';
         $response= 'Pass the required parameters';
 
@@ -13632,6 +14346,23 @@ $allplans = Yii::app()->db->createCommand()
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
            	$fulltitles  = Yii::app()->request->getParam('fulltitles');
@@ -13680,6 +14411,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
        $allwashes = Washingrequests::model()->findAll(array("condition"=>"is_feedback_sent = 0 AND status = 4"));
 
          if(count($allwashes)){
@@ -13697,7 +14445,7 @@ die();
                     if($min_diff >= 30){
 
                         $handle = curl_init(ROOT_URL."/api/index.php?r=washing/customerfeedback");
-            $data = array('customer_id' => $wash->customer_id, 'wash_request_id' => $wash->id, 'comments' => '', 'ratings' => '5.00', 'feedback_source' => 'cron', "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+            $data = array('customer_id' => $wash->customer_id, 'wash_request_id' => $wash->id, 'comments' => '', 'ratings' => '5.00', 'feedback_source' => 'cron', "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -13706,7 +14454,7 @@ die();
 
 
              $handle = curl_init(ROOT_URL."/api/index.php?r=customers/customerpayment");
-            $data = array('customer_id' => $wash->customer_id, 'agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+            $data = array('customer_id' => $wash->customer_id, 'agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -13716,7 +14464,7 @@ die();
 
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=washing/agentfeedback");
-            $data = array('agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, 'comments' => '', 'ratings' => '5.00', 'feedback_source' => 'cron', "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+            $data = array('agent_id' => $wash->agent_id, 'wash_request_id' => $wash->id, 'comments' => '', 'ratings' => '5.00', 'feedback_source' => 'cron', "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -13742,6 +14490,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
         $allwashes = Washingrequests::model()->findAllByAttributes(array('is_scheduled' => 0, 'status' => 0, 'ondemand_create_push_sent' => 0));
 
 
@@ -13752,7 +14517,7 @@ die();
             /* ------- get nearest agents --------- */
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-            $data = array('wash_request_id' => $wash->id, "key" => API_KEY, "api_password" => AES256CBC_API_PASS, 'ignore_offline' => 1);
+            $data = array('wash_request_id' => $wash->id, "key" => API_KEY, "api_password" => AES256CBC_API_PASS, 'ignore_offline' => 1, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -13804,6 +14569,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 	$wash_request_id  = Yii::app()->request->getParam('wash_request_id');
 	
 	if(AES256CBC_STATUS == 1){
@@ -13821,7 +14603,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
             /* ------- get nearest agents --------- */
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-            $data = array('wash_request_id' => $wash_request_id, 'ignore_offline' => 2, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+            $data = array('wash_request_id' => $wash_request_id, 'ignore_offline' => 2, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -13925,6 +14707,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 	$wash_request_id  = Yii::app()->request->getParam('wash_request_id');
 	$wash_request_id_org  = Yii::app()->request->getParam('wash_request_id');
 	
@@ -13993,6 +14792,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 $result = 'false';
 $response = 'Right now no washer';
 //$washer_id = 91;
@@ -14022,6 +14838,23 @@ $response = 'Right now no washer';
  if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
 $result = 'false';
@@ -14067,6 +14900,23 @@ echo "Invalid api key";
 die();
 }
 
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
 $pendingwashes =  Washingrequests::model()->findAll(array("condition"=>"status = 4 AND washer_payment_status != 1 AND washer_payment_status != 3"));
 
 if(count($pendingwashes)){
@@ -14102,7 +14952,24 @@ if(count($pendingwashes)){
 		if(Yii::app()->request->getParam('key') != API_KEY){
 			echo "Invalid api key";
 			die();
-		}       	
+		}
+		
+		$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
 
 		$result= 'false';
 	$response= 'Pass the required parameters';
@@ -14159,7 +15026,24 @@ if(count($pendingwashes)){
 		if(Yii::app()->request->getParam('key') != API_KEY){
 			echo "Invalid api key";
 			die();
-		}       	
+		}
+		
+		$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
 
 		$result= 'false';
 	$response= 'Pass the required parameters';
@@ -14215,7 +15099,24 @@ if(count($pendingwashes)){
 		if(Yii::app()->request->getParam('key') != API_KEY){
 			echo "Invalid api key";
 			die();
-		}       	
+		}
+		
+		$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
 
 		$result= 'false';
 	$response= 'Pass the required parameters';
@@ -14295,7 +15196,24 @@ public function actionarrivelagent20mint(){
 		if(Yii::app()->request->getParam('key') != API_KEY){
 			echo "Invalid api key";
 			die();
-		}       	
+		}
+		
+		$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
 
 		$result= 'false';
 	$response= 'Pass the required parameters';
@@ -14349,6 +15267,23 @@ public function actioncustomernoresponse(){
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 		$result= 'false';
 		$response= 'please provide required parameters';

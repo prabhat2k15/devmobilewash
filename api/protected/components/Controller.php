@@ -25,11 +25,22 @@ class Controller extends CController
 
 	/* view particular customer request */
 
-    public function washingkart($wash_request_id, $api_key, $coupon_discount = 0, $api_password = '', $show_payment_method=''){
+    public function washingkart($wash_request_id, $api_key, $coupon_discount = 0, $api_password = '', $api_token = '', $t1 = '', $t2 = '', $user_type = '', $user_id = '', $show_payment_method=''){
 
        if($api_key != API_KEY){
 echo "Invalid api key";
 return;
+}
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
 }
 
         //$wash_request_id = Yii::app()->request->getParam('wash_request_id');
