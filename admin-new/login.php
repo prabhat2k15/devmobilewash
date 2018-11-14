@@ -52,11 +52,81 @@ $ip = getenv('REMOTE_ADDR');
 }
 }
 
+$tempdevicedata = "device_id=web&device_name=web&device_token=".md5(uniqid(rand(), true))."&device_type=web&os_details=web";
+$cryptokey = bin2hex(openssl_random_pseudo_bytes(8));
+$iv = bin2hex(openssl_random_pseudo_bytes(8));
+$tempdevicedata_raw = openssl_encrypt($tempdevicedata, "AES-128-CBC", $cryptokey, $options=OPENSSL_RAW_DATA, $iv);
+$tempdevicedata_encrypted = base64_encode($tempdevicedata_raw);
+
+$r1 = bin2hex(openssl_random_pseudo_bytes(6));
+$r2 = bin2hex(openssl_random_pseudo_bytes(6));
+$r3 = bin2hex(openssl_random_pseudo_bytes(7));
+$r4 = bin2hex(openssl_random_pseudo_bytes(7));
+
+$cryptokey_pt1 = substr($cryptokey,0,8);
+$cryptokey_pt2 = substr($cryptokey,-8,8);
+
+$cryptokeyencode = $r1.$cryptokey_pt1.$r2.$r3.$cryptokey_pt2.$r4; //[12][8][12][14][8][14]
+
+$r1 = bin2hex(openssl_random_pseudo_bytes(6));
+$r2 = bin2hex(openssl_random_pseudo_bytes(6));
+$r3 = bin2hex(openssl_random_pseudo_bytes(7));
+$r4 = bin2hex(openssl_random_pseudo_bytes(7));
+
+$iv_pt1 = substr($iv,0,8);
+$iv_pt2 = substr($iv,-8,8);
+
+$ivencode = $r1.$iv_pt1.$r2.$r3.$iv_pt2.$r4; //[12][8][12][14][8][14]
+
+$data = array("device_data"=>$tempdevicedata_encrypted, "t1" => base64_encode($cryptokeyencode),"t2" => base64_encode($ivencode),'key' => API_KEY);
+	$handle = curl_init(ROOT_URL."/api/index.php?r=users/gettempaccesstoken");
+	curl_setopt($handle, CURLOPT_POST, true);
+	curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+	curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+	$apirawdata = curl_exec($handle);
+	$gettempaccesstoken_result = json_decode($apirawdata);
+
+	
+	$finalusertoken = '';
+	if($gettempaccesstoken_result->result == 'true'){
+		$keydecode = base64_decode($gettempaccesstoken_result->t1);
+	$ivdecode = base64_decode($gettempaccesstoken_result->t2);
+	$key_pt1 = substr($keydecode,12,8);
+	$key_pt2 = substr($keydecode,-22,8);
+	
+	$fullkey = $key_pt1.$key_pt2;
+	
+	$iv_pt1 = substr($ivdecode,12,8);
+	$iv_pt2 = substr($ivdecode,-22,8);
+	
+	$fulliv = $iv_pt1.$iv_pt2;
+	
+	$string_decode = base64_decode($gettempaccesstoken_result->token);
+	
+	$string_plain = openssl_decrypt($string_decode, "AES-128-CBC", $fullkey, $options=OPENSSL_RAW_DATA, $fulliv);
+	
+	$decodestrarr = explode("tmn!!==*",$string_plain);
+$timestamp_fct = $decodestrarr[1];
+$decodedstr2 = substr($decodestrarr[0],25);
+$user_token_str = substr($decodedstr2,0,-25);
+
+$rand_bytes = bin2hex(openssl_random_pseudo_bytes(25));
+
+$first_25 = substr($rand_bytes,0,25);
+$last_25 = substr($rand_bytes,-25,25);
+
+$ciphertext_raw = openssl_encrypt($first_25.$user_token_str.$last_25."tmn!!==*".time(), "AES-128-CBC", $fullkey, $options=OPENSSL_RAW_DATA, $fulliv);
+$finalusertoken = base64_encode($ciphertext_raw);
+
+	}
+	
+
+
 if(($_GET['step'] == 'mobile-verification') && ($_SESSION['step1_passed'] == 'true')){
 	$error = '';
 	$device_token = md5(uniqid(rand(), true));
 	$device_data = 'IP: '.$ip.' Device data: '.$_SERVER['HTTP_USER_AGENT'];
-	$data = array("email"=>$_SESSION["user_email"], "verify_code"=>$_POST['verify-code'], "device_token"=>$device_token, 'device_data' => $device_data, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+	$data = array("email"=>$_SESSION["user_email"], "verify_code"=>$_POST['verify-code'], "device_token"=>$device_token, 'device_data' => $device_data, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $gettempaccesstoken_result->t1, 't2' => $gettempaccesstoken_result->t2);
 	$handle = curl_init(ROOT_URL."/api/index.php?r=users/adminlogincodeverify");
 	curl_setopt($handle, CURLOPT_POST, true);
 	curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -70,19 +140,21 @@ if(($_GET['step'] == 'mobile-verification') && ($_SESSION['step1_passed'] == 'tr
 	$result_code = $jsondata->result;
 	$username = $jsondata->username;
 	$uid = $jsondata->uid;
+	
+	
 
 	if($result_code == "true"){
-
+$admin_auth_text = $device_token."@@009654A!*csT=".$jsondata->token."@@009654A!*csT=".$jsondata->t1."@@009654A!*csT=".$jsondata->t2."@@009654A!*csT=".$jsondata->user_id;
 		if($_SESSION["rememberme"]){
-		setcookie( "mw_admin_auth", $device_token, time() + (86400 * 7), "/" ) ;
-		setcookie( "mw_username", $username, time() + (86400 * 7), "/" ) ;
-		setcookie( "mw_uid", $uid, time() + (86400 * 7), "/" ) ;
+		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time() + (86400 * 7), "/" ) ;
+		//setcookie( "mw_username", $username, time() + (86400 * 7), "/" ) ;
+		//setcookie( "mw_uid", $uid, time() + (86400 * 7), "/" ) ;
 		
 		}
 		else{
-		setcookie( "mw_admin_auth", $device_token, time()+3600, "/" ) ;
-		setcookie( "mw_username", $username, time()+3600, "/" ) ;
-		setcookie( "mw_uid", $uid, time()+3600, "/" ) ;
+		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time()+3600, "/" ) ;
+		//setcookie( "mw_username", $username, time()+3600, "/" ) ;
+		//setcookie( "mw_uid", $uid, time()+3600, "/" ) ;
 		
 		}
 		
@@ -103,7 +175,8 @@ else{
   	$email = $_POST['email'];
 	$password = $_POST['password'];
 	$error = '';
-	$data = array("email"=>$email, "password"=>$password, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+	$data = array("email"=>$email, "password"=>$password, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $gettempaccesstoken_result->t1, 't2' => $gettempaccesstoken_result->t2);
+	
 	$handle = curl_init(ROOT_URL."/api/index.php?r=users/login");
 	curl_setopt($handle, CURLOPT_POST, true);
 	curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -112,6 +185,7 @@ else{
 
 	curl_close($handle);
 	$jsondata = json_decode($result);
+	
 
 	$response = $jsondata->response;
 	$result_code = $jsondata->result;

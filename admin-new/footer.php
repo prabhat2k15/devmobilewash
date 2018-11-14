@@ -39,7 +39,7 @@
 $(function(){
 
 
-$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
   $(".clientonline").html(data.Online_Customers);
   $(".clientoffline").html(data.Offline_Customers);
   $(".pendingorder").html(data.Pending_Orders);
@@ -110,7 +110,7 @@ if ($('#site_activities').size() != 0) {
                      $('#new_customer_section').text('Monthly New Customer');
                 var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwise';
                  }
-               $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 if(selectedvalue == 'year'){
                 var data1 = new Array();
@@ -251,7 +251,7 @@ if ($('#site_statistics_new').size() != 0)
                 //var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwiseorder';
                 $('#site_statistics_new_loading').hide();
                 $('#site_statistics_new_content').show();
-                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+                $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
                     if(selectedvalue == 'year'){
                          var visitors_new = new Array();
                 $.each(data, function(k, v){
@@ -388,7 +388,7 @@ if ($('#site_statistics_4').size() != 0) {
                      $('#new_washers').text('Monthly New Washers');
                 var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/washermonthwise';
                  }
-               $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 if(selectedvalue == 'year'){
                 var data1 = new Array();
@@ -532,7 +532,7 @@ if ($('#site_activities_2').size() != 0) {
                      $('#new_washers').text('Monthly New Washers');
                 var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/CompRevenueMonthWise';
                  }
-               $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 if(selectedvalue == 'year'){
                 var data1 = new Array();
@@ -672,7 +672,7 @@ if ($('#site_statistics_5').size() != 0) {
                  }else{
                 var url = '<?php echo ROOT_URL; ?>/api/index.php?r=site/visitorsmonthwise';
                  }
-               $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 if(selectedvalue == 'year'){
                 var data1 = new Array();
@@ -812,7 +812,7 @@ if ($('#site_statistics_6').size() != 0) {
                  }else{
                 var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewashermonthwise';
                  }
-               $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 if(selectedvalue == 'year'){
                 var data1 = new Array();
@@ -951,7 +951,7 @@ if ($('#site_statistics_7').size() != 0) {
                  }else{
                 var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/preclientsmonthwise';
                  }
-               $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 if(selectedvalue == 'year'){
                 var data1 = new Array();
@@ -1080,7 +1080,7 @@ $(document).ready(function(){
 
                 $('#weekly_order_loading').hide();
                 $('#weekly_order_content').show();
-                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+                $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
 
 
@@ -1189,7 +1189,7 @@ $(document).ready(function(){
 
                 $('#monthly_order_loading').hide();
                 $('#monthly_order_content').show();
-                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+                $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
 
 
@@ -1298,7 +1298,7 @@ $(document).ready(function(){
 
                 $('#yearly_order_loading').hide();
                 $('#yearly_order_content').show();
-                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+                $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
 
 
@@ -1409,7 +1409,7 @@ $(document).ready(function(){
 
                 $('#weekly_comp_order_loading').hide();
                 $('#weekly_comp_order_content').show();
-                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', status: 'completed'}, function( data ) {
+                $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
 
 
@@ -1518,7 +1518,7 @@ $(document).ready(function(){
 
                 $('#monthly_comp_order_loading').hide();
                 $('#monthly_comp_order_content').show();
-                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', status: 'completed'}, function( data ) {
+                $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>", status: 'completed'}, function( data ) {
 
 
 
@@ -1627,7 +1627,7 @@ $(document).ready(function(){
 
                 $('#yearly_comp_order_loading').hide();
                 $('#yearly_comp_order_content').show();
-                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', status: 'completed'}, function( data ) {
+                $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>", status: 'completed'}, function( data ) {
 
 
 
@@ -1735,7 +1735,7 @@ $(document).ready(function(){
                 $('#site_activities_loading').hide();
                 $('#site_activities_content').show();
 
-               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwise", {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -1848,7 +1848,7 @@ $(document).ready(function(){
                 //var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/customermontwiseorder';
                 $('#site_statistics_new_loading').hide();
                 $('#site_statistics_new_content').show();
-                $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+                $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
 
                 var visitors_new = new Array();
@@ -1956,7 +1956,7 @@ $(document).ready(function(){
                 $('#site_statistics_4_loading').hide();
                 $('#site_statistics_4_content').show();
 
-               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/washermonthwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/washermonthwise", {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -2068,7 +2068,7 @@ $(document).ready(function(){
                 $('#site_activities_2_loading').hide();
                 $('#site_activities_2_content').show();
 
-               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/CompRevenueMonthWise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/CompRevenueMonthWise", {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -2181,7 +2181,7 @@ $(document).ready(function(){
                 $('#site_statistics_5_loading').hide();
                 $('#site_statistics_5_content').show();
 
-               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=site/visitorsmonthwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=site/visitorsmonthwise", {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -2295,7 +2295,7 @@ $(document).ready(function(){
                 $('#site_statistics_6_loading').hide();
                 $('#site_statistics_6_content').show();
 
-               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewashermonthwise", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewashermonthwise", {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
                 var data1 = new Array();
                 $.each(data, function(k, v){
@@ -2415,7 +2415,7 @@ $(document).ready(function(){
 
 		var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/preclientsmonthwise';
 
-	   $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+	   $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
 
 		var data1 = new Array();
@@ -2537,7 +2537,7 @@ if ($('#site_statistics_8').size() != 0) {
 
                 var url = '<?php echo ROOT_URL; ?>/api/index.php?r=customers/preclientsperday';
 
-               $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
 
                 var data1 = new Array();
@@ -2658,7 +2658,7 @@ if ($('#site_statistics_9').size() != 0) {
 
                 var url = '<?php echo ROOT_URL; ?>/api/index.php?r=agents/prewasherperday';
 
-               $.getJSON(url, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+               $.getJSON(url, {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
 
                 var data1 = new Array();

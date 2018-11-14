@@ -37,7 +37,7 @@ return array(
 			'connectionString' => 'mysql:host=localhost;dbname=devmobil_mwmain',
 			'emulatePrepare' => true,
 			'username' => 'devmobil_mwuser',
-			'password' => 'XUS9Qf9bwJ%&',
+			'password' => '9F;WPnZwCEscQ$*[K4',
 			'charset' => 'utf8mb4',
 		),
 		'braintree' => array(

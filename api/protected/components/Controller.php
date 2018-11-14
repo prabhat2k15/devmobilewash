@@ -1132,7 +1132,7 @@ foreach($gettemptokens as $token){
       return 0;
    }*/
    
-   	if(AES256CBC_STATUS == 1){
+   	if((AES256CBC_STATUS == 1) && ($user_type != 'admin')){
 $user_id = $this->aes256cbc_crypt( $user_id, 'd', AES256CBC_API_PASS );
 }
    
@@ -1163,6 +1163,7 @@ if((time()-$timestamp_fct) > 300){
 
 if($user_type =='customer') $checkuser = Yii::app()->db->createCommand("SELECT id, access_token FROM customers WHERE id=".$user_id)->queryAll();
 if($user_type =='washer') $checkuser = Yii::app()->db->createCommand("SELECT id, access_token FROM agents WHERE id=".$user_id)->queryAll();
+if($user_type =='admin') $checkuser = Yii::app()->db->createCommand("SELECT id, access_token FROM users WHERE id=".$user_id)->queryAll();
 
 if(!count($checkuser)){
    return 0;

@@ -49,6 +49,9 @@ if(!$token_check){
  echo json_encode($json);
  die();
 }
+else{
+Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
+}
 
 		$username = Yii::app()->request->getParam('email');
 		$password = md5(Yii::app()->request->getParam('password'));
@@ -153,6 +156,9 @@ if(!$token_check){
  echo json_encode($json);
  die();
 }
+else{
+Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();	
+}
 
 		$username = Yii::app()->request->getParam('email');
 		$verify_code = Yii::app()->request->getParam('verify_code');
@@ -164,6 +170,48 @@ if(!$token_check){
 			
 			if(count($user_id)>0){
 				if($user_id->verify_code == $verify_code){
+					
+					$usertoken = md5(uniqid().time());
+		$ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
+$cryptokey = bin2hex(openssl_random_pseudo_bytes(8));
+$iv = bin2hex(openssl_random_pseudo_bytes(8));
+
+$rand_bytes = bin2hex(openssl_random_pseudo_bytes(25));
+
+$first_25 = substr($rand_bytes,0,25);
+$last_25 = substr($rand_bytes,-25,25);
+
+$ciphertext_raw = openssl_encrypt($first_25.$usertoken.$last_25."tmn!!==*".time(), "AES-128-CBC", $cryptokey, $options=OPENSSL_RAW_DATA, $iv);
+$ciphertext = base64_encode($ciphertext_raw);
+
+$r1 = bin2hex(openssl_random_pseudo_bytes(6));
+$r2 = bin2hex(openssl_random_pseudo_bytes(6));
+$r3 = bin2hex(openssl_random_pseudo_bytes(7));
+$r4 = bin2hex(openssl_random_pseudo_bytes(7));
+
+$cryptokey_pt1 = substr($cryptokey,0,8);
+$cryptokey_pt2 = substr($cryptokey,-8,8);
+
+$cryptokeyencode = $r1.$cryptokey_pt1.$r2.$r3.$cryptokey_pt2.$r4; //[12][8][12][14][8][14]
+
+$r1 = bin2hex(openssl_random_pseudo_bytes(6));
+$r2 = bin2hex(openssl_random_pseudo_bytes(6));
+$r3 = bin2hex(openssl_random_pseudo_bytes(7));
+$r4 = bin2hex(openssl_random_pseudo_bytes(7));
+
+$iv_pt1 = substr($iv,0,8);
+$iv_pt2 = substr($iv,-8,8);
+
+$ivencode = $r1.$iv_pt1.$r2.$r3.$iv_pt2.$r4; //[12][8][12][14][8][14]
+
+		$ciphertext_token = openssl_encrypt($usertoken, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_token_base64 = base64_encode($ciphertext_token);
+
+$ciphertext_key = openssl_encrypt($cryptokey, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_key_base64 = base64_encode($ciphertext_key);
+
+$ciphertext_iv = openssl_encrypt($iv, "AES-128-CBC", AES128CBC_KEY, $options=OPENSSL_RAW_DATA, AES128CBC_IV);
+$ciphertext_iv_base64 = base64_encode($ciphertext_iv);
 
 					if(!empty($device_token)){
 							$model= Users::model()->findByAttributes(array('id'=>$user_id->id));
@@ -172,17 +220,19 @@ if(!$token_check){
 							$model->attributes= $data;
 							$model->save(false);
 					}
+					
+					 Users::model()->updateByPk($user_id->id, array('password_reset_token' => '', 'last_login_at' => date("Y-m-d H:i:s"), 'last_login_data' => $device_data, 'access_token' => $ciphertext_token_base64, 'access_key' => $ciphertext_key_base64, 'access_vector' => $ciphertext_iv_base64, 'access_token_expire_at' => date("Y-m-d H:i:s", strtotime('+7 days'))));
 
-$model= Users::model()->findByAttributes(array('id'=>$user_id->id));
-							$data= array('password_reset_token' => '', 'last_login_at' => date("Y-m-d H:i:s"), 'last_login_data' => $device_data);
-							$model->attributes= $data;
-							$model->save(false);
 					$result= 'true';
 					$response= 'Successfully logged in';
 					$json= array(
 						'result'=> $result,
 						'response'=> $response,
-'user_type' => $user_id->users_type
+'user_type' => $user_id->users_type,
+'user_id' => $user_id->id,
+'token'=> $ciphertext,
+		't1' => base64_encode($cryptokeyencode),
+		't2' => base64_encode($ivencode) 
 
 					);
 					
@@ -546,12 +596,13 @@ if(!$token_check){
 }
 
 		$device_token = Yii::app()->request->getParam('device_token');
-		$model= Users::model()->findByAttributes(array('device_token'=>$device_token));
+		$model= Users::model()->findByAttributes(array('id' => $user_id, 'device_token'=>$device_token));
 		$json= array();
 		if(count($model)>0){
 			$data= array('device_token' => '');
 			$model->attributes= $data;
 			if($model->save(false)){
+				Users::model()->updateByPk($user_id, array('access_token' => '', 'access_key' => '', 'access_vector' => ''));
 				$result= 'true';
 				$response= 'Successfully logged out';
 				$json= array(
@@ -561,7 +612,7 @@ if(!$token_check){
 			}
 		}else{
 			$result= 'false';
-			$response= 'Invalid request';
+			$response= 'User not found';
 			$json= array(
 				'result'=> $result,
 				'response'=> $response
@@ -599,7 +650,7 @@ if(!$token_check){
 	$device_token = Yii::app()->request->getParam('device_token');
 	if(isset($device_token) && ($device_token != '')) {
 
-		$model= Users::model()->findByAttributes(array('device_token'=>$device_token));
+		$model= Users::model()->findByAttributes(array('id' => $user_id, 'device_token'=>$device_token));
 		$json= array();
 		if(count($model)>0){
 		$result= 'true';
@@ -1242,7 +1293,7 @@ if(!$token_check){
 }
 
         $user_token = Yii::app()->request->getParam('user_token');
-        $userdetail =  Yii::app()->db->createCommand("SELECT * FROM users WHERE device_token = :device_token")->bindValue(':device_token', $user_token, PDO::PARAM_STR)->queryAll();
+        $userdetail =  Yii::app()->db->createCommand("SELECT * FROM users WHERE id = ".$user_id." AND device_token = :device_token")->bindValue(':device_token', $user_token, PDO::PARAM_STR)->queryAll();
 
 if(count($userdetail)){
 
@@ -6727,22 +6778,6 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
-$t1 = Yii::app()->request->getParam('t1');
-$t2 = Yii::app()->request->getParam('t2');
-$user_type = Yii::app()->request->getParam('user_type');
-$user_id = Yii::app()->request->getParam('user_id');
-
-$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-if(!$token_check){
- $json = array(
-                    'result'=> 'false',
-                    'response'=> 'Invalid request'
-                );
- echo json_encode($json);
- die();
-}
 
         $device_data = Yii::app()->request->getParam('device_data');
 	$t1 = Yii::app()->request->getParam('t1');

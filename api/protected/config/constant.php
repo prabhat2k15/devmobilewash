@@ -8,8 +8,8 @@
 
 /* --- API key --- */
 
-define("API_KEY","Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
-define("API_KEY_CRON","ZZAvmySKskGsEL4ecUuXyytCcTLXLuDAsGrzSq9T");
+define("API_KEY","m4b5WB0h0HXUK8fTvPw5O1nIDDmEAt4c");
+define("API_KEY_CRON","zCWJmjHOlZDbsyiLwhwM0bDdB9sUo2yo");
 define("ROOT_URL","http://www.devmobilewash.com");
 define("ROOT_WEBFOLDER","/home/devmobilewash");
 define("APP_ENV",""); // real or blank
@@ -30,7 +30,7 @@ define("AES256CBC_SALT","928FC69A87CFFF2F");
 define("AES128CBC_KEY","RfUjWnZr4u7x!A%D");
 define("AES128CBC_IV","u7x!A%D*G-KaPdSg");
 define("AES256CBC_STATUS", 1); // 0 => encrypt/decrypt off, 1 => encrypt/decrypt on
-define("AES256CBC_API_PASS","AE22K5O6j15xY3Qg5Oh989n6v63bS8eJ");
+define("AES256CBC_API_PASS","33CkqOl7C*4iO5Q.W8aO2eCYQ749=%158Jt8mIbM");
 
 /*
 define("ENV","production");//sandbox or production

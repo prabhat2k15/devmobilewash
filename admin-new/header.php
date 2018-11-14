@@ -2,10 +2,48 @@
 ob_start();
 require_once('../api/protected/config/constant.php');
 $device_token = '';
+$finalusertoken = '';
+$jsondata_permission = '';
+$mw_admin_auth_arr = array();
 if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
+$mw_admin_auth = base64_decode($_COOKIE["mw_admin_auth"]);
+$mw_admin_auth_arr = explode("@@009654A!*csT=",$mw_admin_auth);
+
+$device_token = $mw_admin_auth_arr[0];
+$keydecode = base64_decode($mw_admin_auth_arr[2]);
+	$ivdecode = base64_decode($mw_admin_auth_arr[3]);
+	$key_pt1 = substr($keydecode,12,8);
+	$key_pt2 = substr($keydecode,-22,8);
+	
+	$fullkey = $key_pt1.$key_pt2;
+	
+	$iv_pt1 = substr($ivdecode,12,8);
+	$iv_pt2 = substr($ivdecode,-22,8);
+	
+	$fulliv = $iv_pt1.$iv_pt2;
+	
+	$string_decode = base64_decode($mw_admin_auth_arr[1]);
+	
+	$string_plain = openssl_decrypt($string_decode, "AES-128-CBC", $fullkey, $options=OPENSSL_RAW_DATA, $fulliv);
+	
+	$decodestrarr = explode("tmn!!==*",$string_plain);
+$timestamp_fct = $decodestrarr[1];
+$decodedstr2 = substr($decodestrarr[0],25);
+$user_token_str = substr($decodedstr2,0,-25);
+
+$rand_bytes = bin2hex(openssl_random_pseudo_bytes(25));
+
+$first_25 = substr($rand_bytes,0,25);
+$last_25 = substr($rand_bytes,-25,25);
+
+$ciphertext_raw = openssl_encrypt($first_25.$user_token_str.$last_25."tmn!!==*".time(), "AES-128-CBC", $fullkey, $options=OPENSSL_RAW_DATA, $fulliv);
+$finalusertoken = base64_encode($ciphertext_raw);
 }
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+else{
+ header("Location: ".ROOT_URL."/admin-new/login.php");
+die();   
+}
+$userdata = array("user_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
@@ -19,7 +57,7 @@ $recruiter_permit_pages = array('index.php', 'all-orders.php', 'vehicles-package
 $scheduler_permit_pages = array('index.php', 'all-orders.php', 'edit-order.php', 'command-center.php', 'notifications.php', 'manage-promotions.php', 'vehicles-packages.php', 'schedule-times.php', 'ondemand-surge-times.php', 'payment-reports.php', 'vehicle-addons-pricing.php', 'add-vehicle.php', 'modern-vehicles.php', 'classic-vehicles.php', 'hours-of-operation.php', 'messagess.php', 'heatmap.php', 'client_dashboard.php', 'manage-pre-clients.php', 'manage-customers.php', 'edit-customer.php', 'non-return-customers.php', 'edit-agent.php', 'inactive-customers.php', 'feedbacks.php', 'mobilewasher-service-feedbacks.php', 'top-customers.php', 'washer_dashboard.php', 'manage-pre-washers.php',
 				'manage-agents.php', 'top-washers.php', 'add-new-bug.php', 'search.php', 'order_calendar.php', 'add-coupon.php', 'edit-coupon.php', 'edit-vehicle.php', 'add-message.php', 'edit-message.php', 'heatmap-list.php', 'pre-clients-details.php', 'edit-customer.php', 'add-agent.php');
 
-$data = array("device_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("device_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle = curl_init(ROOT_URL."/api/index.php?r=users/authenticate");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -64,8 +102,8 @@ if($jsondata_permission->users_type == 'scheduler'){
 
 parse_str($_SERVER['QUERY_STRING']);
 if($_GET['set']=="logout"){
-$device_token = $_COOKIE["mw_admin_auth"];
-$data = array("device_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+//$device_token = $_COOKIE["mw_admin_auth"];
+$data = array("device_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle = curl_init(ROOT_URL."/api/index.php?r=users/logout");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -77,9 +115,9 @@ $response = $jsondata->response;
 $result_code = $jsondata->result;
 
 if($result_code == "true"){
-unset($_COOKIE['mw_username']);
+//unset($_COOKIE['mw_username']);
 setcookie("mw_admin_auth", "", time() - 3600);
-setcookie("mw_username", "", time() - 3600);
+//setcookie("mw_username", "", time() - 3600);
 header("Location: ".ROOT_URL."/admin-new/login.php");
 die();
 }
@@ -147,7 +185,7 @@ $(function(){
 
 
 
-$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
   $(".clientonline").html(data.Online_Customers);
   $(".clientoffline").html(data.Offline_Customers);
   $(".pendingorder").html(data.Pending_Orders);
