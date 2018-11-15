@@ -9,7 +9,7 @@ $order_id = $_GET['orderid'];
 /* --- washing kart call --- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $order_id, 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('wash_request_id' => $order_id, 'key' => API_KEY,  'coupon_discount' => 0, 'api_password' => AES256CBC_API_PASS, 'api_token' => $_GET['api_token'], 't1' => $_GET['t1'], 't2' => $_GET['t2'], 'user_type' => $_GET['user_type'], 'user_id' => $_GET['user_id']);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -21,7 +21,7 @@ $per_car_wash_points_arr = explode(",", $kartdata->per_car_wash_points);
 
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customerid' => $kartdata->customer_id, 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customerid' => $kartdata->customer_id, 'api_password' => AES256CBC_API_PASS, 'key' => API_KEY, 'api_token' => $_GET['api_token'], 't1' => $_GET['t1'], 't2' => $_GET['t2'], 'user_type' => $_GET['user_type'], 'user_id' => $_GET['user_id']));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
@@ -29,7 +29,7 @@ $custdetails = json_decode($result);
 
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('agent_id' => $kartdata->agent_id, 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('agent_id' => $kartdata->agent_id, 'api_password' => AES256CBC_API_PASS, 'key' => API_KEY, 'api_token' => $_GET['api_token'], 't1' => $_GET['t1'], 't2' => $_GET['t2'], 'user_type' => $_GET['user_type'], 'user_id' => $_GET['user_id']));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);

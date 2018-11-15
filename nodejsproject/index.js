@@ -15,12 +15,12 @@ var getclientsbystatustimer;
 var getnewwashrequesttimer;
 var connectedusers = [];
 
-function getAppstat(socket_id='') {
+function getAppstat(socket_id='', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=users/Appstat',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4"
+  body:    "key="+key+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  // console.log(JSON.parse(body));
  //console.log('stat func');
@@ -37,12 +37,12 @@ request.post({
 //getappstattimer = setTimeout(getAppstat, 5000);
 }
 
-function getpendingwashesdetails(socket_id = '') {
+function getpendingwashesdetails(socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/pendingwashesdetails',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4"
+  body:    "key="+key+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  // console.log(JSON.parse(body));
  //console.log('pendingwash func');
@@ -59,11 +59,11 @@ request.post({
 //getpendingwashesdetailstimer = setTimeout(getpendingwashesdetails, 5000);
 }
 
-function washing_currentwashondemandalert(wash_request_id='', socket_id = '') {
+function washing_currentwashondemandalert(wash_request_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/currentwashondemandalert',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&wash_request_id="+wash_request_id
+  body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('pendingwash func');
@@ -71,11 +71,11 @@ request.post({
 });
 }
 
-function washing_currentwashschedulealert(wash_request_id='') {
+function washing_currentwashschedulealert(wash_request_id='', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/currentwashschedulealert',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&wash_request_id="+wash_request_id
+  body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('pendingwash func');
@@ -83,11 +83,11 @@ request.post({
 });
 }
 
-function washing_washingkart(wash_request_id='', socket_id = '') {
+function washing_washingkart(wash_request_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/washingkart',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&wash_request_id="+wash_request_id
+  body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('pendingwash func');
@@ -102,11 +102,11 @@ request.post({
 });
 }
 
-function washing_checkwashrequeststatus(wash_request_id='', customer_id='', socket_id = '') {
+function washing_checkwashrequeststatus(wash_request_id='', customer_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/checkwashrequeststatus',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&wash_request_id="+wash_request_id+"&customer_id="+customer_id
+  body:    "key="+key+"&wash_request_id="+wash_request_id+"&customer_id="+customer_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('pendingwash func');
@@ -121,12 +121,12 @@ request.post({
 });
 }
 
-function getagentsbystatus(socket_id = '') {
+function getagentsbystatus(socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=agents/agentsbystatus',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4"
+  body:    "key="+key+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  // console.log(JSON.parse(body));
  //console.log('agentsbystatus func');
@@ -142,12 +142,12 @@ request.post({
 //getagentsbystatustimer = setTimeout(getagentsbystatus, 5000);
 }
 
-function getclientsbystatus(socket_id = '') {
+function getclientsbystatus(socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/clientsbystatus',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4"
+  body:    "key="+key+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  // console.log(JSON.parse(body));
  //console.log('clientsbystatus func');
@@ -163,12 +163,12 @@ request.post({
 //getclientsbystatustimer = setTimeout(getclientsbystatus, 5000);
 }
 
-function washing_getnewwashrequest(agent_id='', socket_id = '') {
+function washing_getnewwashrequest(agent_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/getnewwashrequest',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&agent_id="+agent_id
+  body:    "key="+key+"&agent_id="+agent_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('washing_getnewwashrequest func');
@@ -187,12 +187,12 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function washing_getallschedulewashes(agent_id='', washer_position = '', agent_latitude = '', agent_longitude = '', socket_id = '') {
+function washing_getallschedulewashes(agent_id='', washer_position = '', agent_latitude = '', agent_longitude = '', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/getallschedulewashes',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&agent_id="+agent_id+"&washer_position="+washer_position+"&agent_latitude="+agent_latitude+"&agent_longitude="+agent_longitude
+  body:    "key="+key+"&agent_id="+agent_id+"&washer_position="+washer_position+"&agent_latitude="+agent_latitude+"&agent_longitude="+agent_longitude+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('washing_getnewwashrequest func');
@@ -211,11 +211,11 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function site_updatedevicestatus(user_type='', user_id='', device_token='', socket_id = '') {
+function site_updatedevicestatus(user_type='', user_id='', device_token='', socket_id = '', key = '', api_token='', t1='', t2='', user_type_security='', user_id_security='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=site/updatedevicestatus',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&user_type="+user_type+"&user_id="+user_id+"&device_token="+device_token
+  body:    "key="+key+"&user_type="+user_type+"&user_id="+user_id+"&device_token="+device_token+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type_security="+user_type_security+"&user_id_security="+user_id_security
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('site_updatedevicestatus');
@@ -233,11 +233,11 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function agents_updateagentlocations(agent_id='', latitude=0, longitude=0, socket_id = '') {
+function agents_updateagentlocations(agent_id='', latitude=0, longitude=0, socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=agents/updateagentlocations',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&agent_id="+agent_id+"&latitude="+latitude+"&longitude="+longitude
+  body:    "key="+key+"&agent_id="+agent_id+"&latitude="+latitude+"&longitude="+longitude+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('site_updatedevicestatus');
@@ -246,11 +246,11 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function customers_updatecustomerlocations(customer_id='', latitude=0, longitude=0, socket_id = '') {
+function customers_updatecustomerlocations(customer_id='', latitude=0, longitude=0, socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/updatecustomerlocations',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&customer_id="+customer_id+"&latitude="+latitude+"&longitude="+longitude
+  body:    "key="+key+"&customer_id="+customer_id+"&latitude="+latitude+"&longitude="+longitude+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
  //console.log('site_updatedevicestatus');
@@ -259,11 +259,11 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function customers_getclienttoken(customer_id='', socket_id = '') {
+function customers_getclienttoken(customer_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/getClientToken',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&customer_id="+customer_id
+  body:    "key="+key+"&customer_id="+customer_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
             try
@@ -280,11 +280,11 @@ request.post({
 
 }
 
-function customers_addcustomerpaymentmethod(customer_id='', nonce = '', socket_id = '') {
+function customers_addcustomerpaymentmethod(customer_id='', nonce = '', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/addcustomerpaymentmethod',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&customer_id="+customer_id+"&nonce="+nonce
+  body:    "key="+key+"&customer_id="+customer_id+"&nonce="+nonce+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
             try
@@ -301,11 +301,11 @@ request.post({
 
 }
 
-function customers_getcustomerpaymentmethods(customer_id='', socket_id = '') {
+function customers_getcustomerpaymentmethods(customer_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=customers/getcustomerpaymentmethods',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&customer_id="+customer_id
+  body:    "key="+key+"&customer_id="+customer_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
             try
@@ -322,12 +322,12 @@ request.post({
 
 }
 
-function washing_getwash30secondtimer(wash_request_id='', socket_id = '') {
+function washing_getwash30secondtimer(wash_request_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'http://www.devmobilewash.com/api/index.php?r=washing/wash30secondtimer',
-  body:    "key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&wash_request_id="+wash_request_id
+  body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
   //console.log("inside 30 timer"+JSON.parse(body));
             try
@@ -362,87 +362,87 @@ else{
 
   socket.on('get_appstat', function(data){
       //console.log(data);
-     getAppstat(data.socketId);
+     getAppstat(data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
   socket.on('get_pendingwashesdetails', function(data){
       //console.log(data);
-     getpendingwashesdetails(data.socketId);
+     getpendingwashesdetails(data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
    socket.on('get_agentsbystatus', function(data){
       //console.log(data);
-     getagentsbystatus(data.socketId);
+     getagentsbystatus(data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
    
       socket.on('get_clientsbystatus', function(data){
       //console.log(data);
-     getclientsbystatus(data.socketId);
+     getclientsbystatus(data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
   socket.on('getnewwashrequest', function(data){
       //console.log(data);
-     washing_getnewwashrequest(data.agent_id, data.socketId);
+     washing_getnewwashrequest(data.agent_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
     socket.on('currentwashondemandalert', function(data){
       //console.log(data);
-    washing_currentwashondemandalert(data.wash_request_id, data.socketId);
+    washing_currentwashondemandalert(data.wash_request_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
      socket.on('currentwashschedulealert', function(data){
       //console.log(data);
-    washing_currentwashschedulealert(data.wash_request_id, data.socketId);
+    washing_currentwashschedulealert(data.wash_request_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
   socket.on('washingkart', function(data){
       //console.log(data);
-    washing_washingkart(data.wash_request_id, data.socketId);
+    washing_washingkart(data.wash_request_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
   socket.on('checkwashrequeststatus', function(data){
       //console.log(data);
-    washing_checkwashrequeststatus(data.wash_request_id, data.customer_id, data.socketId);
+    washing_checkwashrequeststatus(data.wash_request_id, data.customer_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
    socket.on('getallschedulewashes', function(data){
       //console.log(data);
-    washing_getallschedulewashes(data.agent_id, data.washer_position, data.agent_latitude, data.agent_longitude, data.socketId);
+    washing_getallschedulewashes(data.agent_id, data.washer_position, data.agent_latitude, data.agent_longitude, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
    socket.on('updateuserdevice', function(data){
       //console.log(data);
-    site_updatedevicestatus(data.user_type, data.user_id, data.device_token, data.socketId);
+    site_updatedevicestatus(data.user_type, data.user_id, data.device_token, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type_security, data.user_id_security);
   });
   
      socket.on('updateagentlocations', function(data){
       //console.log(data);
-    agents_updateagentlocations(data.agent_id, data.latitude, data.longitude, data.socketId);
+    agents_updateagentlocations(data.agent_id, data.latitude, data.longitude, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
      
           socket.on('updatecustomerlocations', function(data){
       //console.log(data);
-    customers_updatecustomerlocations(data.customer_id, data.latitude, data.longitude, data.socketId);
+    customers_updatecustomerlocations(data.customer_id, data.latitude, data.longitude, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
    socket.on('getbtclienttoken', function(data){
       //console.log(data);
-    customers_getclienttoken(data.customer_id, data.socketId);
+    customers_getclienttoken(data.customer_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
     socket.on('addcustomerpaymentmethod', function(data){
       //console.log(data);
-    customers_addcustomerpaymentmethod(data.customer_id, data.nonce, data.socketId);
+    customers_addcustomerpaymentmethod(data.customer_id, data.nonce, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
    socket.on('getcustomerpaymentmethods', function(data){
       //console.log(data);
-    customers_getcustomerpaymentmethods(data.customer_id, data.socketId);
+    customers_getcustomerpaymentmethods(data.customer_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
    
      socket.on('getwash30secondtimer', function(data){
       //console.log(data);
-    washing_getwash30secondtimer(data.wash_request_id, data.socketId);
+    washing_getwash30secondtimer(data.wash_request_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
    
 

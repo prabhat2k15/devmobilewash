@@ -2876,7 +2876,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -2891,7 +2891,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 Agents::model()->updateAll(array('device_token' => '', 'status'=> 'offline', 'available_for_new_order'=> 0));
 Customers::model()->updateAll(array('online_status' => 'offline'));
@@ -6054,7 +6076,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -6069,7 +6091,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 	$newclients = Yii::app()->db->createCommand("SELECT * FROM customers WHERE is_first_wash = 0 AND is_firstwash_reminder_push_sent = 0")->queryAll();
 
@@ -6202,7 +6246,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -6217,7 +6261,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 	$clientlist = Yii::app()->db->createCommand("SELECT * FROM customers WHERE is_first_wash = 1 AND (is_nextwash_reminder_push_sent = 0 OR is_30days_reminder_push_sent = 0)")->queryAll();
 
@@ -6564,7 +6630,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -6579,7 +6645,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 	$clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1), array('limit'=> 1000));
 
@@ -6917,7 +7005,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -6932,7 +7020,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 $all_washes = Yii::app()->db->createCommand()
                 ->select('*')
@@ -8632,10 +8742,10 @@ die();
 $api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
-$user_type = Yii::app()->request->getParam('user_type');
-$user_id = Yii::app()->request->getParam('user_id');
+$user_type_security = Yii::app()->request->getParam('user_type_security');
+$user_id_security = Yii::app()->request->getParam('user_id_security');
 
-$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type_security, $user_id_security, AES256CBC_API_PASS );
 
 if(!$token_check){
  $json = array(
@@ -8792,7 +8902,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -8807,7 +8917,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
     $customer_online_devices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE device_status = 'online'")->queryAll();
     $agent_online_devices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE device_status = 'online'")->queryAll();
@@ -10228,7 +10360,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -10243,7 +10375,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
           
 	  //$allclients = Customers::model()->findAllByAttributes(array('is_pushmsg_pending'=> 1));
@@ -10297,7 +10451,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -10312,7 +10466,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
           
 	  $allagents = Yii::app()->db->createCommand('SELECT * FROM agents WHERE is_pushmsg_pending = 1 ORDER BY total_wash DESC LIMIT 2000')->queryAll();
@@ -10419,7 +10595,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -10434,7 +10610,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 //$all_agents = Agents::model()->findAll();
 $all_agents = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE washer_position = '".APP_ENV."' AND is_carerating_update_pending = 1 ORDER BY id ASC LIMIT 50")->queryAll();
@@ -10518,7 +10716,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -10533,7 +10731,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 Agents::model()->updateAll(array("is_carerating_update_pending" => 1), 'block_washer=0');
 //Agents::model()->updateAll(array("is_carerating_update_pending" => 1));

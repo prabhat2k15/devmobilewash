@@ -6690,7 +6690,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -6705,7 +6705,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 $result= 'false';
 $response= 'error in logout operation';
@@ -7114,7 +7136,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -7129,7 +7151,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
     
 $washers_exists = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE (DATEDIFF(CURDATE(), last_activity) >= 30) AND block_washer = 0")->queryAll();
 
@@ -7211,7 +7255,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -7226,7 +7270,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
     
 $all_washers = Agents::model()->findAll(array("condition"=>"rating > 5"));
 

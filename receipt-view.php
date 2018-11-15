@@ -7,7 +7,7 @@ ini_set("date.timezone", "America/Los_Angeles");
 /* --- washing kart call --- */
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
-$data = array('wash_request_id' => $_GET['orderid'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'coupon_discount' => 0, 'api_password' => '', 'show_payment_method' => 'true');
+$data = array('wash_request_id' => $_GET['orderid'], 'key' => API_KEY, 'coupon_discount' => 0, 'api_password' => '', 'api_token' => $_GET['api_token'], 't1' => $_GET['t1'], 't2' => $_GET['t2'], 'user_type' => $_GET['user_type'], 'user_id' => $_GET['user_id'], 'show_payment_method' => 'true');
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

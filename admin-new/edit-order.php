@@ -3588,7 +3588,7 @@ return false;
 });
 
 $(".company-receipt-send").click(function(){
- window.open("<?php echo ROOT_URL; ?>/company-full-receipt.php?orderid=<?php echo $getorder->id; ?>",'_blank');
+ window.open("<?php echo ROOT_URL; ?>/company-full-receipt.php?orderid=<?php echo $getorder->id; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>",'_blank');
 
 });
 

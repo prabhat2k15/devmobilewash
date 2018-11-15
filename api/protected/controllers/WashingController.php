@@ -5627,7 +5627,7 @@ if(Yii::app()->request->getParam('key') != API_KEY_CRON){
 echo "Invalid api key";
 die();
 }
-
+/*
 $api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
@@ -5643,7 +5643,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+} */
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 $pendingrequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE status = 0 AND is_scheduled = 0")->queryAll();
 
@@ -13259,7 +13281,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -13274,7 +13296,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 
         $allschedwashes = Washingrequests::model()->findAllByAttributes(array('is_scheduled' => 1, 'status' => 0));
@@ -13587,7 +13631,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -13602,7 +13646,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
        $allschedwashes = Washingrequests::model()->findAll(array("condition"=>"is_scheduled = 1 AND status = 0"));
 
@@ -13948,7 +14014,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -13963,7 +14029,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 $allschedwashes = Washingrequests::model()->findAllByAttributes(array('status' => 4, 'is_feedback_email_sent' => 0));
 
@@ -14411,7 +14499,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -14426,7 +14514,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
        $allwashes = Washingrequests::model()->findAll(array("condition"=>"is_feedback_sent = 0 AND status = 4"));
 
@@ -14900,7 +15010,7 @@ echo "Invalid api key";
 die();
 }
 
-$api_token = Yii::app()->request->getParam('api_token');
+/*$api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
@@ -14915,7 +15025,29 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
-}
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }
 
 $pendingwashes =  Washingrequests::model()->findAll(array("condition"=>"status = 4 AND washer_payment_status != 1 AND washer_payment_status != 3"));
 

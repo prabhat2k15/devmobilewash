@@ -13,6 +13,7 @@ define("API_KEY_CRON","zCWJmjHOlZDbsyiLwhwM0bDdB9sUo2yo");
 define("ROOT_URL","http://www.devmobilewash.com");
 define("ROOT_WEBFOLDER","/home/devmobilewash");
 define("APP_ENV",""); // real or blank
+define("MW_SERVER_IP","209.95.41.9");
 
 define("ENV","sandbox");//sandbox or production
 define("MERCHANT_ID","czckz7jkzcnny4jj");
