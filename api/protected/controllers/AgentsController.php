@@ -2070,7 +2070,7 @@ exit;*/
                         $jsondata = json_decode($kartapiresult);
                         //var_dump($jsondata);*/
                         
-                        $kartapiresult = $this->washingkart($wrequest['id'], 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 0, AES256CBC_API_PASS);
+                        $kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
 

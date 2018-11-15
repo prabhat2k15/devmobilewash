@@ -994,7 +994,7 @@ Washingrequests::model()->updateByPk($washrequestid, array('surge_price_vehicles
 
     /* ------- kart details ----------- */
 
-$kartapiresult = $this->washingkart($washrequestid, API_KEY, 0, AES256CBC_API_PASS);
+$kartapiresult = $this->washingkart($washrequestid, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
 /* ------- kart details end ----------- */
@@ -1962,7 +1962,7 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 		    WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$washrequestid));
 
                     $wash_details = Washingrequests::model()->findByPk($washrequestid);
-                    $kartapiresult = $this->washingkart($washrequestid, API_KEY, 0, AES256CBC_API_PASS);
+                    $kartapiresult = $this->washingkart($washrequestid, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                     $kartdata = json_decode($kartapiresult);
                     if($wash_details->net_price != $kartdata->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=".$washrequestid);
                     else WashPricingHistory::model()->updateAll(array('status'=>0), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$washrequestid));
@@ -2222,7 +2222,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
 WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
 
                     $wash_details = Washingrequests::model()->findByPk($wash_request_id);
-                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                     $kartdata = json_decode($kartapiresult);
                     if($wash_details->net_price != $kartdata->net_price) WashPricingHistory::model()->deleteAll("wash_request_id = :wash_request_id", array(':wash_request_id' => $wash_request_id));
                     else WashPricingHistory::model()->updateAll(array('status'=>0), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
@@ -2924,7 +2924,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                     }
 		    
 if(!$wrequest_id_check->is_scheduled){
-$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
 foreach($kartdata->vehicles as $ind=>$vehicle){
@@ -4040,7 +4040,7 @@ try {
 
 		     WashPricingHistory::model()->updateAll(array('status'=>1), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
 
-                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                     $kartdetails = json_decode($kartapiresult);
 
                     if($wrequest_id_check->net_price != $kartdetails->net_price) WashPricingHistory::model()->deleteAll("wash_request_id = :wash_request_id", array(':wash_request_id' => $wash_request_id));
@@ -5208,7 +5208,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
 						$receiptdetails = json_decode($receiptresult);
 						//var_dump($jsondata);*/
 
-							$receiptresult = $this->actionsendorderreceipts($wash_request_id, $customer_id, $washrequest_id_check->agent_id, 'true', API_KEY);
+							$receiptresult = $this->actionsendorderreceipts($wash_request_id, $customer_id, $washrequest_id_check->agent_id, 'true', API_KEY, $api_token, $t1, $t2, $user_type, $user_id);
 $receiptdetails = json_decode($receiptresult);
 Washingrequests::model()->updateByPk($wash_request_id, array('is_order_receipt_sent' => 1));
 
@@ -5264,7 +5264,7 @@ else $logcomment = $comments;
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
             }
 	
-	$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+	$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
         $kartdetails = json_decode($kartapiresult);
 		    
 	/* ----------- update pricing details -------------- */
@@ -5748,7 +5748,7 @@ $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices W
 	//if(($result == 'true') && ($wash_now_canceled == 1)){
 		 $mobile_receipt = '';
 		 
-		  $kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS);
+		  $kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
 foreach($kartdata->vehicles as $ind=>$vehicle){
@@ -7331,7 +7331,7 @@ if(!$token_check){
          exit;
     }
 
-    public function actionsendorderreceipts($wash_request_id = 0, $customer_id = 0, $agent_id = 0, $return_val = 'false',$api_token = '', $t1 = '', $t2 = '', $user_type = '', $user_id = '', $key = '')
+    public function actionsendorderreceipts($wash_request_id = 0, $customer_id = 0, $agent_id = 0, $return_val = 'false', $key = '', $api_token = '', $t1 = '', $t2 = '', $user_type = '', $user_id = '')
     {
 
 if((Yii::app()->request->getParam('key') != API_KEY) && ($key != API_KEY)){
@@ -7379,7 +7379,7 @@ if(!$token_check){
 
                     /* ------- kart details ----------- */
 
-	$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+	$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
 /* ------- kart details end ----------- */
@@ -9391,7 +9391,7 @@ $cust_detail = Customers::model()->findByAttributes(array("id"=>$wrequest_id_che
 	//if(($result == 'true') && ($wash_now_canceled == 1)){
 		 $mobile_receipt = '';
 		 
-		  $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+		  $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
 foreach($kartdata->vehicles as $ind=>$vehicle){
@@ -11578,7 +11578,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
 
              /* ------- kart details ----------- */
              
-             $kartapiresult = $this->washingkart($id, API_KEY, 0, AES256CBC_API_PASS);
+             $kartapiresult = $this->washingkart($id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
             $kartdata = json_decode($kartapiresult);
 
 /* ------- kart details end ----------- */
@@ -13755,7 +13755,7 @@ $message = "<h2 style='margin-top: 10px;'>Greetings ".$cust_firstname.",</h2>";
 					
 					if(APP_ENV == 'real'){
 						
-					$kartapiresult = $this->washingkart($schedwash->id, API_KEY, 0, AES256CBC_API_PASS);
+					$kartapiresult = $this->washingkart($schedwash->id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 					$kartdata = json_decode($kartapiresult);
 
                     $this->layout = "xmlLayout";
@@ -15335,7 +15335,7 @@ $admin_username  = Yii::app()->request->getParam('admin_username');
 
              /* ------- kart details ----------- */
              
-             $kartapiresult = $this->washingkart($id, API_KEY, 0, AES256CBC_API_PASS);
+             $kartapiresult = $this->washingkart($id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
             $kartdata = json_decode($kartapiresult);
 
 /* ------- kart details end ----------- */

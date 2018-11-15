@@ -3482,7 +3482,7 @@ if($admin_command == 'update-order'){
     
                     WashPricingHistory::model()->updateAll(array('status'=>1),'wash_request_id=:wash_request_id', array(":wash_request_id" => $wash_request_id));
 
-                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                     $kartdetails = json_decode($kartapiresult);
 
                     if($wrequest_id_check->net_price != $kartdetails->net_price) {
@@ -3541,7 +3541,7 @@ $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
 
 
 
-					 $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+					 $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                     $kartdetails = json_decode($kartapiresult);
 
                     if($wrequest_id_check->net_price != $kartdetails->net_price) WashPricingHistory::model()->deleteAll("wash_request_id=:wash_request_id", array(":wash_request_id" => $wash_request_id));
@@ -5163,7 +5163,7 @@ $transaction_status = $payresult['status'];
 }
 
 
-$kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS);
+$kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
 
@@ -6944,7 +6944,7 @@ $all_washes = Yii::app()->db->createCommand()
 
                 foreach($all_washes as $ind=>$wash){
                  $is_flagged = 0;
-                   $kartapiresult = $this->washingkart($wash['id'], API_KEY, 0, AES256CBC_API_PASS);
+                   $kartapiresult = $this->washingkart($wash['id'], API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
 $cust_detail = Customers::model()->findByPk($wash['customer_id']);
@@ -7222,7 +7222,7 @@ if(!$token_check){
                  $washingpricecheck = WashPricingHistory::model()->findByAttributes(array('wash_request_id'=>$wash->id));
 
                  if(!count($washingpricecheck)){
-                    $kartapiresult = $this->washingkart($wash->id, API_KEY, 0, AES256CBC_API_PASS);
+                    $kartapiresult = $this->washingkart($wash->id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                     $kartdata = json_decode($kartapiresult);
 
                     foreach($kartdata->vehicles as $ind=>$car)
@@ -7299,7 +7299,7 @@ if(!$token_check){
                  $washingpricecheck = WashPricingHistory::model()->findByAttributes(array('wash_request_id'=>$wash_request_id));
 
                  if(!count($washingpricecheck)){
-                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+                    $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                     $kartdata = json_decode($kartapiresult);
 
                     foreach($kartdata->vehicles as $ind=>$car)
@@ -8021,7 +8021,7 @@ if(!$token_check){
             else{
 
                 $token = '';
-                $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+                $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                 $kartdetails = json_decode($kartapiresult);
 
                 if($customer_check->client_position == 'real') $Bresult = Yii::app()->braintree->getCustomerById_real($customer_check->braintree_id);
@@ -8211,7 +8211,7 @@ if(!$token_check){
 		       }
 		       
 $mobile_receipt = '';
-$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS);
+$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
 foreach($kartdata->vehicles as $ind=>$vehicle){
@@ -8434,7 +8434,7 @@ if(count($all_washes) > 0){
 			$response= 'all washes';
 			
 			foreach($all_washes as $ind => $wash){
-				$kartapiresult = $this->washingkart($wash['id'], API_KEY, 0, AES256CBC_API_PASS);
+				$kartapiresult = $this->washingkart($wash['id'], API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 				$kartdata = json_decode($kartapiresult);
 				$all_washes_arr[$ind]['id'] = $wash['id'];
 				$all_washes_arr[$ind]['transaction_id'] = $wash['transaction_id'];
@@ -10910,7 +10910,7 @@ if(!$token_check){
         $_event = 'csv_total_orders';
         $month = Yii::app()->request->getParam('month');
         $handle = curl_init($url);
-        $data = array('event'=>$_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id, 'day' => '', 'month' => $month);
+        $data = array('event'=>$_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id, 'day' => '', 'month' => $month);
 
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);

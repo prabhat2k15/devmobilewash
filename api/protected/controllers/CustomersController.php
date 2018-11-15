@@ -5891,7 +5891,7 @@ $total_pages = ceil($total_entries / $limit);
                         //var_dump($jsondata);
 */
 
-$kartapiresult = $this->washingkart($wrequest['id'], 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 0, AES256CBC_API_PASS);
+$kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdata = json_decode($kartapiresult);
 
                         /* ----- total and discounts end ------- */
@@ -11164,7 +11164,7 @@ if(is_array($Bresult)){
 				curl_close($handle);
 				$kartdetails = json_decode($kartresult);*/
 
-				$kartapiresult = $this->washingkart($wash_request_id, 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 0, AES256CBC_API_PASS);
+				$kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
 $kartdetails = json_decode($kartapiresult);
 
 				if($wash_check->transaction_id)
