@@ -10499,7 +10499,10 @@ if($orderbycustomer['zipcode']) {
                 $json['time'] =  $totalminutes;
                 $json['address_type'] =  $address_type;
                 $json['start'] = date('Y-m-d',strtotime($created_date));
-
+                $get_befor_count = Yii::app()->db->createCommand("SELECT count(id) as total_count FROM washing_requests WHERE customer_id = '".$orderbycustomer['customer_id']."' AND order_for < '".$created_date."' AND status = 4")->queryAll();
+                if($get_befor_count[0]['total_count'] == 0){
+                	$orderbycustomer['total_wash'] = 0;
+                }
                 if($wash_request_position == APP_ENV){
                     $orderview[] = array(
                         "start"     =>  date('Y-m-d',strtotime($created_date)),
