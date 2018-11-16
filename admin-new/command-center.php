@@ -597,16 +597,16 @@ socketId = socket.io.engine.id;
   //console.log(socketId);
   socketintvaltimer = setInterval(function(){
     
-    socket.emit('get_appstat',{socketId:socketId});
-    socket.emit('get_pendingwashesdetails',{socketId:socketId});
-    socket.emit('get_agentsbystatus',{socketId:socketId});
-    socket.emit('get_clientsbystatus',{socketId:socketId});
+    socket.emit('get_appstat',{socketId:socketId, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"});
+    socket.emit('get_pendingwashesdetails',{socketId:socketId, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"});
+    socket.emit('get_agentsbystatus',{socketId:socketId, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"});
+    socket.emit('get_clientsbystatus',{socketId:socketId, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"});
     
     }, 60000);
   
 });
 $(window).load(function(){
-    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/wash30secondrunning", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/wash30secondrunning", {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
             $.each(markers, function(i, marker) {
 
                 if(marker.category == 'onlineagents'){
@@ -619,7 +619,7 @@ $(window).load(function(){
 
             });
     });
-    $.getJSON("<?php echo ROOT_URL;?>/api/index.php?r=agents/washernotifycc", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+    $.getJSON("<?php echo ROOT_URL;?>/api/index.php?r=agents/washernotifycc", {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
         if(data.result){
             var data_show = data.response;
                 location_arr[0] = data_show[0].agent_id;
@@ -631,7 +631,7 @@ $(window).load(function(){
     });
 });
 setInterval(function(){
-    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/wash30secondrunning", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/wash30secondrunning", {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
             $.each(markers, function(i, marker) {
 
                 if(marker.category == 'onlineagents'){
@@ -649,7 +649,7 @@ setInterval(function(){
 }, 60000);
     
 setInterval(function(){
-    $.getJSON("<?php echo ROOT_URL;?>/api/index.php?r=agents/washernotifycc", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+    $.getJSON("<?php echo ROOT_URL;?>/api/index.php?r=agents/washernotifycc", {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
         if(data.result){
             var data_show = data.response;
             if(location_arr.length > 0){
@@ -874,11 +874,11 @@ socket.on('get clientsbystatus', UpdateClients);
 
 function initialize_map(){
 
-$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/agentsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, PlotAgents);
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/agentsbystatus", {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, PlotAgents);
 
-$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/clientsbystatus", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, PlotClients);
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/clientsbystatus", {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, PlotClients);
 
-$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
   $(".client-online .count").html(data.Online_Customers);
   $(".pending-order .count").html(data.Pending_Orders);
   $(".sched-orders .count").html(data.Schedule_Orders);
@@ -895,7 +895,7 @@ $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/Appstat", {key: 'Tva4hw
 
 });
 
-$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/pendingwashesdetails", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/pendingwashesdetails", {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
     var no_avail_agent = 0;
 if(data.pending_washes.length){
     pending_data = '';
@@ -1876,7 +1876,7 @@ var th = $(this);
 //alert(wash_id+" "+agent_id);
 $(this).html('Assigning...');
 
-$.post( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+$.post( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>" }, function( data ) {
   $(th).html('Assigned');
 $("#container .note-message").fadeIn();
 $("#container .note-message").html('Order assigned successfully');
@@ -1896,7 +1896,7 @@ var th = $(this);
 //alert(wash_id+" "+agent_id);
 $(this).html('Assigning...');
 
-$.post( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+$.post( "<?php echo ROOT_URL; ?>/api/index.php?r=users/adminorderassign", { wash_request_id: wash_id, agent_id: agent_id, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>" }, function( data ) {
   $(th).html('Assigned');
 $("#container .note-message").fadeIn();
 $("#container .note-message").html('Order assigned successfully');
@@ -1910,7 +1910,7 @@ setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
 $(".menu-container .search-cc").on('keyup', '#cc-search-text', function(){
 var search_q = $("#cc-search-text").val();
 if(search_q){
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/searchagentsclients", { search_query: search_q, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/searchagentsclients", { search_query: search_q, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>" }, function( data ) {
 if(data.result == 'true'){
 $(".menu-container .search-cc .search-autocomplete-box").show();
 search_data = '';
@@ -1994,7 +1994,7 @@ $('body').on('click', '.send-client-notify', function(){
       $("#container .note-message").fadeIn();
 $("#container .note-message").html('Sending...');
 
-    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/cccustomerpushnotify", { customer_id: cust_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/cccustomerpushnotify", { customer_id: cust_id, message: notifymsg, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>" }, function( data ) {
        $("#container .note-message").html(data.response);
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });
@@ -2010,7 +2010,7 @@ $('body').on('click', '.send-agent-notify', function(){
       $("#container .note-message").fadeIn();
 $("#container .note-message").html('Sending...');
 
-    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/cccagentpushnotify", { agent_id: agent_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/cccagentpushnotify", { agent_id: agent_id, message: notifymsg, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>" }, function( data ) {
        $("#container .note-message").html(data.response);
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });
@@ -2026,7 +2026,7 @@ $('body').on('click', '.send-client-sms', function(){
       $("#container .note-message").fadeIn();
 $("#container .note-message").html('Sending...');
 
-    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/cccustomersendsms", { customer_id: cust_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/cccustomersendsms", { customer_id: cust_id, message: notifymsg, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>" }, function( data ) {
        $("#container .note-message").html(data.response);
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });
@@ -2042,7 +2042,7 @@ $('body').on('click', '.send-agent-sms', function(){
       $("#container .note-message").fadeIn();
 $("#container .note-message").html('Sending...');
 
-    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/ccagentsendsms", { agent_id: agent_id, message: notifymsg, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4' }, function( data ) {
+    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/ccagentsendsms", { agent_id: agent_id, message: notifymsg, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>" }, function( data ) {
        $("#container .note-message").html(data.response);
 setTimeout(function(){$("#container .note-message").fadeOut();}, 3000);
     });

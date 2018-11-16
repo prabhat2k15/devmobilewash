@@ -1,25 +1,13 @@
 <?php include('header.php') ?>
 <?php
 
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
-
 $page_number = 1;
 if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
 if(($_GET['search_area'] == 'Order Number') || ($_GET['search_area'] == 'Created Date') || ($_GET['search_area'] == 'Scheduled Date') || ($_GET['search_area'] == 'On-Demand') || ($_GET['search_area'] == 'Scheduled')) $url = ROOT_URL.'/api/index.php?r=site/searchorders';
 if(($_GET['search_area'] == 'Customer Name') || ($_GET['search_area'] == 'Customer Email') || ($_GET['search_area'] == 'Customer Phone')) $url = ROOT_URL.'/api/index.php?r=customers/searchcustomers';
 if(($_GET['search_area'] == 'Washer Badge') || ($_GET['search_area'] == 'Washer Name') || ($_GET['search_area'] == 'Washer Phone')) $url = ROOT_URL.'/api/index.php?r=agents/searchagents';
         $handle = curl_init($url);
-        $data = array('query' => $_GET['q'], 'limit' => 10, 'search_area' => $_GET['search_area'], 'page_number' => $page_number, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('query' => $_GET['q'], 'limit' => 10, 'search_area' => $_GET['search_area'], 'page_number' => $page_number, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -517,7 +505,7 @@ echo "</ol>";
               $(".cust-sms-pop .action-btns").show();
               $(".cust-sms-pop .sms-content").html('Loading...');
                cust_id = $(this).data('id');
-              $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminpreviewcustpasssms", { customer_id: cust_id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+              $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminpreviewcustpasssms", { customer_id: cust_id, key: API_KEY, api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function(data){
 //console.log(data);
 if(data.result == 'true'){
     cust_email = data.customer_email;
@@ -544,7 +532,7 @@ cust_email = '';
              var th = $(this);
               $(this).html('Sending...');
 
-              $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminsmscustpass", { customer_id: cust_id, customer_email: cust_email, customer_password: cust_pass, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function(data){
+              $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/adminsmscustpass", { customer_id: cust_id, customer_email: cust_email, customer_password: cust_pass, key: API_KEY, api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function(data){
 //console.log(data);
 if(data.result == 'true'){
      $(".cust-sms-pop .sms-content").html(data.response);

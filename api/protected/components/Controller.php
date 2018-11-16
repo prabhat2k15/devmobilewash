@@ -1157,7 +1157,10 @@ $timestamp_fct = $decodestrarr[1];
 $decodedstr2 = substr($decodestrarr[0],25);
 $user_token_str = substr($decodedstr2,0,-25);
 
-if((time()-$timestamp_fct) > 300){
+$expired_time = 300;
+
+if($user_type == 'admin') $expired_time = 86400;
+if((time()-$timestamp_fct) > $expired_time){
     return 0;
 }
 
