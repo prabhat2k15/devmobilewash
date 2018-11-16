@@ -3,7 +3,7 @@ include('header.php');
  $url = ROOT_URL.'/api/index.php?r=site/getallnewslettersubscribers';
 
     $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -23,7 +23,7 @@ array_push($mw_all_subscribers_arr,$ss->email);
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=site/getnewsletterbyid");
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('id' => $_GET['id'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
             $result = curl_exec($handle);
             curl_close($handle);
@@ -192,7 +192,7 @@ return false;
 function send_newsletter(email, id){
 
 
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/sendnewsletter", {email: email, newsletter_id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/sendnewsletter", {email: email, newsletter_id: id, key: "<?php echo API_KEY; ?>",  api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 
 if(data.result == 'true') {
 $(".scan-details").append("<pre>"+email+" - <span style='background: green; color: #fff;'>Send Successful</span></pre>");

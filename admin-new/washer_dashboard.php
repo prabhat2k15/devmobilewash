@@ -1,17 +1,4 @@
 <?php include('header.php') ?>
-<?php
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
-?>
 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />

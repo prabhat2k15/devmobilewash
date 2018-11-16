@@ -25,7 +25,7 @@ if(isset($_POST['notify-form-submit'])){
 if((isset($_POST['schedule_notify'])) && ($_POST['schedule_notify'] == 1)){
 
  $handle = curl_init(ROOT_URL."/api/index.php?r=site/adminaddschedulenotify");
-		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>'customer', 'schedule_date' => $_POST['notify_schedule_date'], 'schedule_time' => $_POST['notify_schedule_time'], 'receiver_ids' => '', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>'customer', 'schedule_date' => $_POST['notify_schedule_date'], 'schedule_time' => $_POST['notify_schedule_time'], 'receiver_ids' => '', 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -37,7 +37,7 @@ $result_code = $jsondata->result;
 }
 else{
  $handle = curl_init(ROOT_URL."/api/index.php?r=users/adminnotify");
-		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>'clients', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+		$data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>'clients', 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

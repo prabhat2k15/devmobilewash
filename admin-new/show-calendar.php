@@ -1,25 +1,12 @@
 <?php
 include('header.php') ?>
-<?php
-if (isset($_COOKIE['mw_admin_auth'])) {
-	$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
-?>
 
 <?php include('right-sidebar.php') ?>
 
 <?php
 	$url = ROOT_URL.'/api/index.php?r=customers/getallpreclients';
 	$handle = curl_init($url);
-	$data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+	$data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 	curl_setopt($handle, CURLOPT_POST, true);
 	curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 	curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -30,7 +17,7 @@ $jsondata_permission = json_decode($result_permission);
 
 	$url_trash = ROOT_URL.'/api/index.php?r=customers/getpreclientstrashdata';
 	$handle_trash = curl_init($url_trash);
-	$data_trash = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+	$data_trash = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 	curl_setopt($handle_trash, CURLOPT_POST, true);
 	curl_setopt($handle_trash, CURLOPT_POSTFIELDS, $data_trash);
 	curl_setopt($handle_trash,CURLOPT_RETURNTRANSFER,1);
@@ -140,7 +127,8 @@ $(document).ready(function() {
 						// our hypothetical feed requires UNIX timestamps
 						start: start,
 						end: end,
-						key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'
+						key: "<?php echo API_KEY; ?>",
+						api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"
 					},
 					success: function(doc) {
 					    //console.log(doc);
@@ -717,12 +705,12 @@ function refreshCal(){
 }, 10000);*/
 $(document).ready(function(){
 	month = <?php echo date('m');?>;
-	$('.csv-link').attr('href', "http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&month="+month);
+	$('.csv-link').attr('href', "http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=<?php echo API_KEY; ?>&month="+month+"&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>");
 	$('.fc-prev-button').click(function(){
-		$('.csv-link').attr('href', "http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&month="+month);
+		$('.csv-link').attr('href', "http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=<?php echo API_KEY; ?>&month="+month+"&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>");
 	});
 	$('.fc-next-button').click(function(){
-		$('.csv-link').attr('href', "http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&month="+month);
+		$('.csv-link').attr('href', "http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=<?php echo API_KEY; ?>&month="+month+"&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>");
 	});
 
 });
@@ -742,7 +730,7 @@ $(document).ready(function(){
 							<span class="caption-subject bold uppercase">
 								Order Calendar
 							</span>
-                            <a style="margin-left: 20px;" class="csv-link" href="http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4" target="_blank">Download CSV</a>
+                            <a style="margin-left: 20px;" class="csv-link" href="http://www.devmobilewash.com/api/index.php?r=site/testingcsv&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>" target="_blank">Download CSV</a>
 						</div>
 						<div style="margin: -20px 0px 0px 100px; display: none;" class="caption font-dark" id="copy_clients">
 							<span class="caption-subject bold uppercase"> <img width="84" src="images/loader.gif" class="copy_clients"></span>

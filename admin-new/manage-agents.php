@@ -5,7 +5,7 @@ if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
 if($_GET['type']) $url = ROOT_URL.'/api/index.php?r=agents/getallagents&type='.$_GET['type'];
 else $url = ROOT_URL.'/api/index.php?r=agents/getallagents';
         $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4', 'page_number' => $page_number);
+        $data = array('key' => API_KEY, 'page_number' => $page_number, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -19,7 +19,7 @@ $total_pages = $allagents->total_pages;
         $agentID = $_GET['agentID'];
         $url = ROOT_URL.'/api/index.php?r=agents/deleteagents&id='.$agentID;
         $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -40,7 +40,7 @@ $total_pages = $allagents->total_pages;
             $handle = curl_init($url);
             $data = '';
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
             $result = curl_exec($handle);
             curl_close($handle);
@@ -115,7 +115,7 @@ $total_pages = $allagents->total_pages;
        $url = ROOT_URL.'/api/index.php?r=agents/agentsadmin';
 
         $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -136,7 +136,7 @@ $total_pages = $allagents->total_pages;
         $type = $_GET['type'];
         $url = ROOT_URL.'/api/index.php?r=agents/viewagent&type='.$type;
         $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -283,7 +283,7 @@ $('#late_drivers').click(function(){
                                     <div class="caption font-dark" style="padding: 10px 0px 0px 20px; padding-top: 3px; display: <?php echo $add_washer; ?>">
                                         <span class="caption-subject bold uppercase"><a href="add-agent.php"> Add New Agent</a></span>
 <?php /*<button class="btn blue all-agents-logout" style="margin-left: 15px;">Logout All Agents</button>*/ ?>
-<select name="washer-type" class="washer-type" style="margin-left: 15px; font-size: 16px; padding: 5px;"><option value="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?type=real">Real Washer</option><option <?php if($_GET['type'] == 'demo') echo 'selected'; ?> value="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?type=demo">Demo Washer<option></select> <a style="margin-left: 20px;" target="_blank" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/washerscsvexport&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4">Download CSV</a>                                    
+<select name="washer-type" class="washer-type" style="margin-left: 15px; font-size: 16px; padding: 5px;"><option value="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?type=real">Real Washer</option><option <?php if($_GET['type'] == 'demo') echo 'selected'; ?> value="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?type=demo">Demo Washer<option></select> <a style="margin-left: 20px;" target="_blank" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/washerscsvexport&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>">Download CSV</a>                                    
 </div>
                                     <div class="actions">
                                          <i class="icon-calendar"></i>&nbsp;
@@ -417,7 +417,7 @@ var th = $(this);
 var r = confirm('Are you sure you want to logout all agents?');
 if (r == true) {
 $(th).html('Logging out...');
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=agents/allagentslogout", {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=agents/allagentslogout", {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 //console.log(data);
 if(data.result == 'true'){
 window.location.href="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?action=allaglogout-success";
@@ -447,7 +447,7 @@ $(".load-more").click(function(){
 	var th = $(this);
 	$(this).removeClass('.load-more');
 	$(this).html('Loading...');
-  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=agents/getallagents&page_number="+page_number+"&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4&type=<?php echo $_GET['type']; ?>", function( data ) {
+  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=agents/getallagents&page_number="+page_number+"&key=<?php echo API_KEY; ?>&type=<?php echo $_GET['type']; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>", function( data ) {
 //    console.log(data);
 if(data.result == 'true'){
 	page_number++;

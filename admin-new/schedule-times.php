@@ -1,17 +1,5 @@
 <?php
 include('header.php');
-$device_token = '';
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
 
 if(isset($_POST['schedule_times_submit'])){
 
@@ -19,13 +7,13 @@ if(isset($_POST['schedule_times_submit'])){
 
     $handle = curl_init($url);
 curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, array('mon' => $_POST['mon_time'], 'tue' => $_POST['tue_time'], 'wed' => $_POST['wed_time'], 'thurs' => $_POST['thurs_time'], 'fri' => $_POST['fri_time'], 'sat' => $_POST['sat_time'], 'sun' => $_POST['sun_time'], 'mon_spec' => $_POST['mon_spec_time'], 'tue_spec' => $_POST['tue_spec_time'], 'wed_spec' => $_POST['wed_spec_time'], 'thurs_spec' => $_POST['thurs_spec_time'], 'fri_spec' => $_POST['fri_spec_time'], 'sat_spec' => $_POST['sat_spec_time'], 'sun_spec' => $_POST['sun_spec_time'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle, CURLOPT_POSTFIELDS, array('mon' => $_POST['mon_time'], 'tue' => $_POST['tue_time'], 'wed' => $_POST['wed_time'], 'thurs' => $_POST['thurs_time'], 'fri' => $_POST['fri_time'], 'sat' => $_POST['sat_time'], 'sun' => $_POST['sun_time'], 'mon_spec' => $_POST['mon_spec_time'], 'tue_spec' => $_POST['tue_spec_time'], 'wed_spec' => $_POST['wed_spec_time'], 'thurs_spec' => $_POST['thurs_spec_time'], 'fri_spec' => $_POST['fri_spec_time'], 'sat_spec' => $_POST['sat_spec_time'], 'sun_spec' => $_POST['sun_spec_time'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
 curl_close($handle);
 $jsondata = json_decode($result);
 
- $data = array('ios_wash_later_fee'=> $_POST['custom_surge'], 'android_wash_later_fee'=> $_POST['custom_surge'], 'ios_wash_now_fee'=> 'dontpass', 'android_wash_now_fee'=> 'dontpass', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+ $data = array('ios_wash_later_fee'=> $_POST['custom_surge'], 'android_wash_later_fee'=> $_POST['custom_surge'], 'ios_wash_now_fee'=> 'dontpass', 'android_wash_now_fee'=> 'dontpass', 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
             // END COLLECT POST VALUE //
 
@@ -60,7 +48,7 @@ $jsondata = json_decode($result);
 
     $handle = curl_init($url);
 curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
 curl_close($handle);
@@ -71,7 +59,7 @@ $sched_times = $jsondata->schedule_times;
             $handle = curl_init($url);
             $data = '';
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
             $result = curl_exec($handle);
             curl_close($handle);

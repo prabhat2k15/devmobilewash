@@ -19,7 +19,7 @@ include('header.php');
 
             $url = ROOT_URL.'/api/index.php?r=site/sheduleresult';
             $handle = curl_init($url);
-            $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -684,7 +684,13 @@ $date = date('m/d/Y h:i:s a', time());
 
 										<div class="clear" style="height: 10px;"></div>
                                         <div class="row" style="padding: 0px 0px 0px 20px; margin-top: 25px; display: <?php echo $add_company; ?>">
-                                            <input type="hidden" name="key" value="Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4" />
+                                            <input type="hidden" name="key" value="<?php echo API_KEY; ?>" />
+                                            <input type="hidden" name="api_token" value="<?php echo $finalusertoken; ?>" />
+                                            <input type="hidden" name="t1" value="<?php echo $mw_admin_auth_arr[2]; ?>" />
+                                            <input type="hidden" name="t2" value="<?php echo $mw_admin_auth_arr[3]; ?>" />
+                                            <input type="hidden" name="user_type" value="admin" />
+                                            <input type="hidden" name="user_type" value="<?php echo $mw_admin_auth_arr[4]; ?>" />
+                                            
 										<input type="submit" style="color: rgb(255, 255, 255); background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 7px 20px 7px 20px; border-radius: 3px;" name="submit" value="Update">
                                         </div>
 

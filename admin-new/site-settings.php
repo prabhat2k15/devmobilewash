@@ -12,7 +12,7 @@ include('header.php');
             $message = $message;     
             // COLLECT POST VALUE //
             
-            $data = array('from_date'=> $from_date,'to_date'=> $to_date,'site_settings'=> $site_settings,'message'=> $message, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('from_date'=> $from_date,'to_date'=> $to_date,'site_settings'=> $site_settings,'message'=> $message, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
           
             // END COLLECT POST VALUE //
             
@@ -44,7 +44,7 @@ include('header.php');
         
         $url = ROOT_URL.'/api/index.php?r=site/getsiteconfiguration'; 
             $handle = curl_init($url);
-            $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

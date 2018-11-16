@@ -4,7 +4,7 @@ include('header.php');
         $agentID = $_GET['id'];
         $url = ROOT_URL.'/api/index.php?r=agents/restoreprewasher&id='.$agentID;
         $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -20,19 +20,6 @@ include('header.php');
             die();
             }
     }
-?>
-<?php
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
 ?>
 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -72,7 +59,7 @@ $jsondata_permission = json_decode($result_permission);
     
        $url = ROOT_URL.'/api/index.php?r=agents/getalltrashprewashers'; 
             $handle = curl_init($url);
-            $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

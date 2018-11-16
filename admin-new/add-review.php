@@ -1,20 +1,7 @@
 <?php include('header.php') ?>
 <?php
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
-?>
-<?php
 if(isset($_POST['add-car-regular-submit'])){
-$vehdata = array("make"=>$_POST['regular-make'], "model"=>$_POST['regular-model'], "type"=>$_POST['regular-type'], "category"=>$_POST['regular-cat'], "vehicle_build"=>'regular', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$vehdata = array("make"=>$_POST['regular-make'], "model"=>$_POST['regular-model'], "type"=>$_POST['regular-type'], "category"=>$_POST['regular-cat'], "vehicle_build"=>'regular', 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=vehicles/addvehicle");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
@@ -45,7 +32,7 @@ $vehadddata = json_decode($result);
 
             $url = ROOT_URL.'/api/index.php?r=agents/prewasherdetails';
             $handle = curl_init($url);
-            $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('id'=>$_GET['id'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

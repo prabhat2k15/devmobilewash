@@ -1,18 +1,5 @@
 <?php include('header.php') ?>
 <?php
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
-?>
-<?php
 $errmsg = $msg='';
 if(isset($_POST['add-review-submit'])){
 		$action = $_POST['action'];
@@ -40,7 +27,7 @@ if(isset($_POST['add-review-submit'])){
 				$up = move_uploaded_file($filedata,$target_dir.$filename);
 				if($up == 1){
 					
-					$revdata = array("target" => $target_dir,"filename" => $filename,"cust_review"=>$_POST['customer-review'],"action"=>$action, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+					$revdata = array("target" => $target_dir,"filename" => $filename,"cust_review"=>$_POST['customer-review'],"action"=>$action, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
 
 					$handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/AddUpdateReview");
@@ -94,11 +81,11 @@ if(isset($_POST['add-review-submit'])){
 					
 					$up = move_uploaded_file($filedata,$target_dir.$filename);
 					if($up == 1){
-						$revdata = array("review_id"=>$review_id,"target" => $target_dir,"filename" => $filename,"old_img" => $old_img,"cust_review"=>$cust_review,"action"=>$action, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+						$revdata = array("review_id"=>$review_id,"target" => $target_dir,"filename" => $filename,"old_img" => $old_img,"cust_review"=>$cust_review,"action"=>$action, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 					}
 				}
 			}else{
-				$revdata = array("review_id"=>$review_id,"cust_review"=>$cust_review,"old_img" => $old_img, "action"=>$action, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+				$revdata = array("review_id"=>$review_id,"cust_review"=>$cust_review,"old_img" => $old_img, "action"=>$action, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 			}
 			
 			$handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/AddUpdateReview");
@@ -125,7 +112,7 @@ if($_GET['action'] != 'add' && !isset($_POST['add-review-submit'])){
 
 	
 	// Assign POST data
-	$data = array('id' => $review_id, 'action'=>'view', 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+	$data = array('id' => $review_id, 'action'=>'view', 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 	curl_setopt($handle_data, CURLOPT_POST, true);
 	curl_setopt($handle_data, CURLOPT_POSTFIELDS, $data);
 	curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
@@ -162,7 +149,7 @@ $baseURL = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].'/';
 
             $url = ROOT_URL.'/api/index.php?r=agents/prewasherdetails';
             $handle = curl_init($url);
-            $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('id'=>$_GET['id'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

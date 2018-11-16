@@ -2,7 +2,7 @@
 include('header.php');
   $handle = curl_init(ROOT_URL."/api/index.php?r=site/getallpromopopups");
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
             $result = curl_exec($handle);
             curl_close($handle);
@@ -25,7 +25,7 @@ if($_POST['home_promo_status']){
                 $homepromoimg = ROOT_URL.'/admin-new/images/promo-img/'.$picname;
 }
 
-            $data = array('id'=> 1,'promo_img_url'=> $homepromoimg,'promo_status'=> $_POST['home_promo_status'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('id'=> 1,'promo_img_url'=> $homepromoimg,'promo_status'=> $_POST['home_promo_status'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
           
             // END COLLECT POST VALUE //
             

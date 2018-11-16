@@ -8,7 +8,7 @@ include('header.php');
           
             // COLLECT POST VALUE //
             
-            $data = array('title'=> $title,'id'=> $id,'content'=> $content, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('title'=> $title,'id'=> $id,'content'=> $content, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
           
             // END COLLECT POST VALUE //
             

@@ -1,19 +1,5 @@
 <?php include('header.php') ?>
-<?php
 
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
-
-?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
@@ -58,7 +44,7 @@ $jsondata_permission = json_decode($result_permission);
 $err = '';
  $handle = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('agent_id' => $_GET['id'], 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('agent_id' => $_GET['id'], 'api_password' => AES256CBC_API_PASS, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
             $result = curl_exec($handle);
             curl_close($handle);
@@ -255,7 +241,7 @@ else{
 	     $sms_control = $_POST['sms_control'];
             $decals_installed = $_POST['decals_installed'];
 
-            $data = array('agent_id' => strip_tags($_GET['id']), 'first_name'=> strip_tags($first_name),'last_name'=> strip_tags($last_name),'email'=> strip_tags($email),'phone_number'=> strip_tags($phone_number),'date_of_birth'=> strip_tags($date_of_birth),'new_password'=> strip_tags($password),'confirm_password'=> strip_tags($password),'street_address'=> strip_tags($street_address),'suite_apt'=> strip_tags($suite_apt),'city'=> strip_tags($city),'state'=> strip_tags($state),'zipcode'=> strip_tags($zipcode),'wash_experience'=> strip_tags($wash_experience),'rating'=> strip_tags($rating),'driver_license'=> strip_tags($driver_license),'business_license'=> strip_tags($business_license),'proof_insurance'=> strip_tags($proof_insurance),'agent_profile_img'=> strip_tags($profileimg),'agreement_prof'=>strip_tags($agreement_prof),'privacy_policy'=>strip_tags($privacy_policy),'notice_standard'=>strip_tags($notice_standard),'notice_card_security'=>strip_tags($notice_card_security),'mobile_type'=>strip_tags($mobile_type),'bank_account_number'=>strip_tags($bank_account_number),'routing_number'=>strip_tags($routing_number),'legally_eligible'=>strip_tags($legally_eligible),'own_vehicle'=>strip_tags($own_vehicle),'waterless_wash_product'=>strip_tags($waterless_wash_product),'operate_area'=>strip_tags($operate_area),'work_schedule'=>strip_tags($work_schedule),'operating_as'=>strip_tags($operating_as),'company_name'=>strip_tags($company_name),'email_alerts'=>strip_tags($email_alerts),'push_notifications'=>strip_tags($push_notifications),'agent_location'=>strip_tags($agent_location),'bt_submerchant_id'=>strip_tags($bt_submerchant_id),'status'=>strip_tags($status),'total_wash'=>strip_tags($total_wash),'account_status'=>strip_tags($account_status),'available_for_new_order'=>strip_tags($available_for_new_order),'driver_license_expiration'=>strip_tags($driverlicense_expiration), 'insurance_expiration'=>strip_tags($insurance_expiration), 'washer_position'=>strip_tags($_POST['washer_position']), 'real_washer_id'=>strip_tags($_POST['real_washer_id']), 'block_washer' => $block_washer, 'admin_edit' => 'true', 'notes' => strip_tags($notes), 'hours_opt_check' => strip_tags($hours_opt_check), 'rating_control' => strip_tags($rating_control), 'sms_control' => strip_tags($sms_control), 'admin_username' => $jsondata_permission->user_name, 'api_password' => AES256CBC_API_PASS,'decals_installed'=>strip_tags($decals_installed), 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('agent_id' => strip_tags($_GET['id']), 'first_name'=> strip_tags($first_name),'last_name'=> strip_tags($last_name),'email'=> strip_tags($email),'phone_number'=> strip_tags($phone_number),'date_of_birth'=> strip_tags($date_of_birth),'new_password'=> strip_tags($password),'confirm_password'=> strip_tags($password),'street_address'=> strip_tags($street_address),'suite_apt'=> strip_tags($suite_apt),'city'=> strip_tags($city),'state'=> strip_tags($state),'zipcode'=> strip_tags($zipcode),'wash_experience'=> strip_tags($wash_experience),'rating'=> strip_tags($rating),'driver_license'=> strip_tags($driver_license),'business_license'=> strip_tags($business_license),'proof_insurance'=> strip_tags($proof_insurance),'agent_profile_img'=> strip_tags($profileimg),'agreement_prof'=>strip_tags($agreement_prof),'privacy_policy'=>strip_tags($privacy_policy),'notice_standard'=>strip_tags($notice_standard),'notice_card_security'=>strip_tags($notice_card_security),'mobile_type'=>strip_tags($mobile_type),'bank_account_number'=>strip_tags($bank_account_number),'routing_number'=>strip_tags($routing_number),'legally_eligible'=>strip_tags($legally_eligible),'own_vehicle'=>strip_tags($own_vehicle),'waterless_wash_product'=>strip_tags($waterless_wash_product),'operate_area'=>strip_tags($operate_area),'work_schedule'=>strip_tags($work_schedule),'operating_as'=>strip_tags($operating_as),'company_name'=>strip_tags($company_name),'email_alerts'=>strip_tags($email_alerts),'push_notifications'=>strip_tags($push_notifications),'agent_location'=>strip_tags($agent_location),'bt_submerchant_id'=>strip_tags($bt_submerchant_id),'status'=>strip_tags($status),'total_wash'=>strip_tags($total_wash),'account_status'=>strip_tags($account_status),'available_for_new_order'=>strip_tags($available_for_new_order),'driver_license_expiration'=>strip_tags($driverlicense_expiration), 'insurance_expiration'=>strip_tags($insurance_expiration), 'washer_position'=>strip_tags($_POST['washer_position']), 'real_washer_id'=>strip_tags($_POST['real_washer_id']), 'block_washer' => $block_washer, 'admin_edit' => 'true', 'notes' => strip_tags($notes), 'hours_opt_check' => strip_tags($hours_opt_check), 'rating_control' => strip_tags($rating_control), 'sms_control' => strip_tags($sms_control), 'admin_username' => $jsondata_permission->user_name, 'api_password' => AES256CBC_API_PASS,'decals_installed'=>strip_tags($decals_installed), 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
 
             $handle = curl_init(ROOT_URL."/api/index.php?r=agents/profileupdate");
@@ -278,7 +264,7 @@ else{
 
      $handle = curl_init(ROOT_URL."/api/index.php?r=agents/profiledetails");
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('agent_id' => $_GET['id'], 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('agent_id' => $_GET['id'], 'api_password' => AES256CBC_API_PASS, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
             $result = curl_exec($handle);
             curl_close($handle);
