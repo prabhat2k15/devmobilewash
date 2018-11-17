@@ -4,7 +4,7 @@ include('header.php');
         $agentID = $_GET['id'];
         $url = ROOT_URL.'/api/index.php?r=agents/trashprewasher&id='.$agentID;
         $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -20,19 +20,6 @@ include('header.php');
             die();
             }
     }
-?>
-<?php
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
 ?>
 
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -69,7 +56,7 @@ $jsondata_permission = json_decode($result_permission);
     
        $url = ROOT_URL.'/api/index.php?r=agents/getallprewashers'; 
             $handle = curl_init($url);
-            $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -79,7 +66,7 @@ $jsondata_permission = json_decode($result_permission);
             
        $url_trash = ROOT_URL.'/api/index.php?r=agents/getprewashertrashdata'; 
             $handle_trash = curl_init($url_trash);
-            $data_trash = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data_trash = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle_trash, CURLOPT_POST, true);
             curl_setopt($handle_trash, CURLOPT_POSTFIELDS, $data_trash);
             curl_setopt($handle_trash,CURLOPT_RETURNTRANSFER,1);
@@ -138,7 +125,7 @@ cursor: pointer !important;
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> Manage Pre-Registered Washers</span> <a style="margin-left: 20px;" target="_blank" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/prewasherexport&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4">Download CSV</a>
+                                        <span class="caption-subject bold uppercase"> Manage Pre-Registered Washers</span> <a style="margin-left: 20px;" target="_blank" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/prewasherexport&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo ($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>">Download CSV</a>
                                     </div>
                                     <div style="margin: -20px 0px 0px 100px; display: none;" class="caption font-dark" id="copy_washers">
                                         <span class="caption-subject bold uppercase"> <img width="84" src="images/loader.gif" class="copy_clients"></span>
@@ -289,7 +276,7 @@ jQuery(document).ready(function() {
            
           
            
-            $.getJSON('<?php echo ROOT_URL; ?>/api/index.php?r=agents/MovePreToRealWasher&agentsid='+x+'&'+z+'='+y, {key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+            $.getJSON('<?php echo ROOT_URL; ?>/api/index.php?r=agents/MovePreToRealWasher&agentsid='+x+'&'+z+'='+y, {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
                 if(data.response == 'move successfully'){
                     window.location.href = "manage-pre-washers.php?act=move";
                 }

@@ -1,19 +1,5 @@
 <?php include('header.php') ?>
-<?php
 
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
-
-?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
@@ -58,7 +44,7 @@ $jsondata_permission = json_decode($result_permission);
 <?php
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=customers/profiledetails");
 curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customerid' => $_GET['customerID'], 'api_password' => AES256CBC_API_PASS, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, array('customerid' => $_GET['customerID'], 'api_password' => AES256CBC_API_PASS, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
 curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
@@ -112,7 +98,7 @@ else{
 
             // COLLECT POST VALUE //
 
-            $data = array('id'=> strip_tags($_GET['customerID']),'firstname' => $firstname, 'lastname' => $lastname, 'customername'=> strip_tags($customername),'email'=> strip_tags($email),'contact_number'=> strip_tags($contact_number),'email_alerts'=> strip_tags($email_alerts),'push_notifications'=> strip_tags($push_notifications),'total_wash'=> strip_tags($total_wash),'time_zone'=> strip_tags($time_zone),'account_status'=> strip_tags($account_status),'created_date'=> strip_tags($created_date),'updated_date'=> strip_tags($updated_date),'online_status'=> strip_tags($online_status),'rating'=> strip_tags($rating),'image'=> strip_tags($profileimg), 'password'=> strip_tags($password), 'how_hear_mw'=> strip_tags($_POST['how_hear_mw']), 'hours_opt_check' => strip_tags($hours_opt_check), 'sms_control' => strip_tags($sms_control), 'block_client' => strip_tags($block_client), 'notes' => strip_tags($notes), 'admin_username' => $jsondata_permission->user_name, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('id'=> strip_tags($_GET['customerID']),'firstname' => $firstname, 'lastname' => $lastname, 'customername'=> strip_tags($customername),'email'=> strip_tags($email),'contact_number'=> strip_tags($contact_number),'email_alerts'=> strip_tags($email_alerts),'push_notifications'=> strip_tags($push_notifications),'total_wash'=> strip_tags($total_wash),'time_zone'=> strip_tags($time_zone),'account_status'=> strip_tags($account_status),'created_date'=> strip_tags($created_date),'updated_date'=> strip_tags($updated_date),'online_status'=> strip_tags($online_status),'rating'=> strip_tags($rating),'image'=> strip_tags($profileimg), 'password'=> strip_tags($password), 'how_hear_mw'=> strip_tags($_POST['how_hear_mw']), 'hours_opt_check' => strip_tags($hours_opt_check), 'sms_control' => strip_tags($sms_control), 'block_client' => strip_tags($block_client), 'notes' => strip_tags($notes), 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
             // END COLLECT POST VALUE //
 
@@ -139,7 +125,7 @@ else{
             $customerID = $_GET['customerID'];
             $url = ROOT_URL.'/api/index.php?r=customers/EditCustomers&customerID='.$customerID;
             $handle = curl_init($url);
-            $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -175,7 +161,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
 
 			$url = ROOT_URL.'/api/index.php?r=customers/getcustomerlogindetail&customerID='.$customerID;
             $handle = curl_init($url);
-            $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

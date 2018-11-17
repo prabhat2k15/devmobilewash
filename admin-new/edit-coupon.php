@@ -6,7 +6,7 @@ $couponid = $_GET['couponid'];
 if(isset($_POST['updatecoupon-form-submit'])){
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=coupons/editcoupon");
-        $data = array("id"=> $_GET['couponid'], "coupon_name"=>$_POST['coupon_name'], "coupon_code"=>$_POST['coupon_code'], "express_amount"=>$_POST['discount_express'], "deluxe_amount"=>$_POST['discount_deluxe'], "premium_amount"=>$_POST['discount_premium'], "discount_unit"=>$_POST['discount_unit'], "coupon_status"=>$_POST['coupon_status'], "usage_limit"=>$_POST['coupon_use_limit'], "expire_date"=>$_POST['expire_date'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array("id"=> $_GET['couponid'], "coupon_name"=>$_POST['coupon_name'], "coupon_code"=>$_POST['coupon_code'], "express_amount"=>$_POST['discount_express'], "deluxe_amount"=>$_POST['discount_deluxe'], "premium_amount"=>$_POST['discount_premium'], "discount_unit"=>$_POST['discount_unit'], "coupon_status"=>$_POST['coupon_status'], "usage_limit"=>$_POST['coupon_use_limit'], "expire_date"=>$_POST['expire_date'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -20,7 +20,7 @@ $coupon_result_code = $jsondata->result;
 }
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=coupons/getcouponbyid");
-		$data = array("id"=>$_GET['couponid'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+		$data = array("id"=>$_GET['couponid'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

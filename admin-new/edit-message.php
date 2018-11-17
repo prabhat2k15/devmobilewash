@@ -28,7 +28,7 @@
 		   $media = $media;     
             // COLLECT POST VALUE //
             
-            $data = array('to'=> $to,'phone'=> $phone,'message'=> $message,'media'=> $media, 'id'=>$id, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('to'=> $to,'phone'=> $phone,'message'=> $message,'media'=> $media, 'id'=>$id, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
           
 
             // END COLLECT POST VALUE //
@@ -62,7 +62,7 @@
         $id = $_GET['id'];
         $url = ROOT_URL.'/api/index.php?r=twilio/getsinglemessage&id='.$id; 
             $handle = curl_init($url);
-            $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

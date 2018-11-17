@@ -20,7 +20,7 @@
 		$id = $_GET['id'];
 		$url = ROOT_URL.'/api/index.php?r=twilio/deletemessage&id='.$id;
 		$handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 		curl_setopt($handle, CURLOPT_POST, true);
 		curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -56,7 +56,12 @@ $fromindex = 0;
 		   $message_data = array();
 		   $message_data['message'] = $message;
 		    $message_data['media'] = $media;
-$message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
+$message_data['key'] = API_KEY;
+$message_data['api_token'] = $finalusertoken;
+$message_data['t1'] = $mw_admin_auth_arr[2];
+$message_data['t2'] = $mw_admin_auth_arr[3];
+$message_data['user_type'] = 'admin';
+$message_data['user_id'] = $mw_admin_auth_arr[4];
 
 			//$message_data['media'] = $media;
 			$message_data = http_build_query($message_data);
@@ -84,7 +89,7 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
 		if($result_code == "queued"){
 				$url = ROOT_URL.'/api/index.php?r=twilio/reportchange&id='.$id;
 		$handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -111,7 +116,7 @@ $message_data['key'] = 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4';
     $url = ROOT_URL.'/api/index.php?r=twilio/getmessges';
        
     $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);

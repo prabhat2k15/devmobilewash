@@ -20,7 +20,7 @@ include('header.php');
     $url = ROOT_URL.'/api/index.php?r=site/getallcoverageareacities';
 
     $handle = curl_init($url);
-        $data = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -134,7 +134,7 @@ city = $(this).data('city');
 var r = confirm('Are you sure you want to delete '+city+'?');
 if (r == true) {
 $(th).html('Deleting...');
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/deletecoverageareacity", {id: id, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/deletecoverageareacity", {id: id, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 if(data.result == 'true'){
 //console.log(data2);
 window.location.href="<?php echo ROOT_URL; ?>/admin-new/coverage-area-cities.php?action=delete-success&nid="+id;

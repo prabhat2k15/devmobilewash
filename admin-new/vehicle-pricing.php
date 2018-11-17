@@ -1,18 +1,7 @@
 <?php include('header.php') ?>
 <?php
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
 
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$userdata = array("user_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=vehicles/allcustomervehicles");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
@@ -26,7 +15,7 @@ $allcarsdata = json_decode($result);
 if(isset($_POST['pricing_submit'])){
 for($i = 1, $j=0; $i <= count($_POST['price']); $i++, $j++){
  
-$vehdata = array('id'=> $i, 'duration' => $_POST['duration'][$j], 'wash_time' => $_POST['wash_time'][$j], 'price' => $_POST['price'][$j], 'price2' => $_POST['price2'][$j], 'price3' => $_POST['price3'][$j], 'price4' => $_POST['price4'][$j], 'description' => $_POST['description'][$j], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$vehdata = array('id'=> $i, 'duration' => $_POST['duration'][$j], 'wash_time' => $_POST['wash_time'][$j], 'price' => $_POST['price'][$j], 'price2' => $_POST['price2'][$j], 'price3' => $_POST['price3'][$j], 'price4' => $_POST['price4'][$j], 'description' => $_POST['description'][$j], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=washing/updatevehicleplan");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
@@ -37,7 +26,7 @@ curl_close($handle_data);
 }
 }
 
-$vehdata = array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$vehdata = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=washing/getvehicleplans");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
@@ -337,7 +326,7 @@ $pricingdata = json_decode($result);
     count = 0;
     percent_completed = 0;
      $.each(allcars, function( index, item ) {
-         $.post( "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/updatecustomervehsmle", {vehicle_id: item, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( data ) {
+         $.post( "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/updatecustomervehsmle", {vehicle_id: item, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
  //console.log(data);
  count++;
   //console.log(count);

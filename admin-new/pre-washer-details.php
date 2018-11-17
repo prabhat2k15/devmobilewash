@@ -16,7 +16,7 @@ margin-top: 50px !important;
 
  $url = ROOT_URL.'/api/index.php?r=agents/prewasherdetails';
             $handle = curl_init($url);
-            $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('id'=>$_GET['id'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -26,7 +26,7 @@ margin-top: 50px !important;
 
 }
 
-$data = array("id"=> 16, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("id"=> 16, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -38,7 +38,7 @@ $contracttext = $contracttext->content;
 
 
 
-$data = array("id"=> 15, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("id"=> 15, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -49,7 +49,7 @@ $contracttext_sec = json_decode($result);
 $contracttext_sec = $contracttext_sec->content;
 
 
-$data = array("id"=> 13, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("id"=> 13, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -59,7 +59,7 @@ curl_close($handle);
 $contracttext_rating = json_decode($result);
 $contracttext_rating = $contracttext_rating->content;
 
-$data = array("id"=> 11, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("id"=> 11, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -69,7 +69,7 @@ curl_close($handle);
 $contracttext_privacy = json_decode($result);
 $contracttext_privacy = $contracttext_privacy->content;
 
-$data = array("id"=> 10, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("id"=> 10, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle = curl_init(ROOT_URL."/api/index.php?r=site/getcmsdata");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -315,7 +315,7 @@ $w9_name = 'w9_'.$_GET['id']."_".$md5.".".$w9_type;
 move_uploaded_file($w9, '../api/images/agent_img/agent_docs/'.$w9_name);
 }
 
-$data = array("id"=> $_GET['id'], "first_name" => $_POST['fname'], "last_name" => $_POST['lname'], "email" => $_POST['email'], "phone" => $_POST['phoneno'], "city" => $_POST['city'], "state" => $_POST['state'], "zipcode" => $_POST['zipcode'], "hear_mw_how" => $_POST['hear_mw_how'], "date_of_birth" => $_POST['dob'], "street_address" => $_POST['staddr'], "suite_apt" => $_POST['suiteno'], "legally_eligible" => $_POST['legally_eligible'], "own_vehicle" => $_POST['own_vehicle'], "waterless_wash_product" => $_POST['waterless_wash_product'], "operate_area" => $_POST['operate_area'], "work_schedule" => $_POST['work_schedule'], "operating_as" => $_POST['operationmethod'], "company_name" => $_POST['companyname'], "wash_experience" => $_POST['wash_exp'], "liable_insurance" => $piname, "ssn_image" => $ssnname,"vehicle_front_img" => $vehicle_front_name, "vehicle_back_img" => $vehicle_back_name, "vehicle_left_img" => $vehicle_left_name, "vehicle_right_img" => $vehicle_right_name, "equipment_img" => $equipment_name, "driver_license" => $driver_license_name, "vehicle_insurance" => $vehicle_insurance_name, "vehicle_register" => $vehicle_register_name, "cl_insurance" => $cl_insurance_name, "w9" => $w9_name, "insurance_expire_date"=> $_POST['insure_exp_date'], "ssn_expire_date"=> $_POST['ssn_exp_date'], "bank_name" => $_POST['bank_name'], "bank_account_name" => $_POST['bank_account_name'], "routing_number" => $_POST['routing_no'], "bank_account_number" => $_POST['bank_account_no'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("id"=> $_GET['id'], "first_name" => $_POST['fname'], "last_name" => $_POST['lname'], "email" => $_POST['email'], "phone" => $_POST['phoneno'], "city" => $_POST['city'], "state" => $_POST['state'], "zipcode" => $_POST['zipcode'], "hear_mw_how" => $_POST['hear_mw_how'], "date_of_birth" => $_POST['dob'], "street_address" => $_POST['staddr'], "suite_apt" => $_POST['suiteno'], "legally_eligible" => $_POST['legally_eligible'], "own_vehicle" => $_POST['own_vehicle'], "waterless_wash_product" => $_POST['waterless_wash_product'], "operate_area" => $_POST['operate_area'], "work_schedule" => $_POST['work_schedule'], "operating_as" => $_POST['operationmethod'], "company_name" => $_POST['companyname'], "wash_experience" => $_POST['wash_exp'], "liable_insurance" => $piname, "ssn_image" => $ssnname,"vehicle_front_img" => $vehicle_front_name, "vehicle_back_img" => $vehicle_back_name, "vehicle_left_img" => $vehicle_left_name, "vehicle_right_img" => $vehicle_right_name, "equipment_img" => $equipment_name, "driver_license" => $driver_license_name, "vehicle_insurance" => $vehicle_insurance_name, "vehicle_register" => $vehicle_register_name, "cl_insurance" => $cl_insurance_name, "w9" => $w9_name, "insurance_expire_date"=> $_POST['insure_exp_date'], "ssn_expire_date"=> $_POST['ssn_exp_date'], "bank_name" => $_POST['bank_name'], "bank_account_name" => $_POST['bank_account_name'], "routing_number" => $_POST['routing_no'], "bank_account_number" => $_POST['bank_account_no'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
 $handle = curl_init(ROOT_URL."/api/index.php?r=agents/prewasherupdate");
 curl_setopt($handle, CURLOPT_POST, true);
@@ -328,7 +328,7 @@ $updatedata = json_decode($result);
 
  $url = ROOT_URL.'/api/index.php?r=agents/prewasherdetails';
             $handle = curl_init($url);
-            $data = array('id'=>$_GET['id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('id'=>$_GET['id'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -1053,7 +1053,7 @@ $(".resend-email").click(function(){
 th = $(this);
 $(this).text('Sending...');
 
-$.getJSON( "/api/index.php?r=agents/resendprewasherverifyemail", {id: <?php echo $_GET['id']; ?>, key: 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'}, function( json ) {
+$.getJSON( "/api/index.php?r=agents/resendprewasherverifyemail", {id: <?php echo $_GET['id']; ?>, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( json ) {
   if(json.result == 'true'){
 $(th).text('Email sent successfully');
 }

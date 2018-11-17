@@ -26,7 +26,7 @@ if(isset($_POST['notify-form-submit'])){
      if(($_POST['receiver_type'] == 'single-client') || ($_POST['receiver_type'] == 'single-agent')){
 
      $handle = curl_init(ROOT_URL."/api/index.php?r=users/adminnotify");
-    $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'user_id' => $_POST['user_id'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+    $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'user_id' => $_POST['user_id'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
      curl_setopt($handle, CURLOPT_POST, true);
     curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
     curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -42,7 +42,7 @@ if(isset($_POST['notify-form-submit'])){
     if(($_POST['receiver_type'] == 'all-clients') || ($_POST['receiver_type'] == 'all-agents'))
     {
         $handle = curl_init(ROOT_URL."/api/index.php?r=site/adminaddschedulenotify");
-        $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+        $data = array("msg"=>$_POST['notify_msg'], "receiver_type"=>$_POST['receiver_type'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
    
     
     curl_setopt($handle, CURLOPT_POST, true);

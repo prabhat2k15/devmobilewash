@@ -4,7 +4,7 @@ include('header.php');
     {
 
 
-            $data = array('ios_app_version_check'=> $_POST['ios_app_version_check'], 'ios_app_version'=> $_POST['ios_app_version'],'ios_app_link'=> $_POST['ios_app_link'],'ios_order_wait_time'=> $_POST['ios_order_wait_time'],'ios_order_rotate_time'=> $_POST['ios_order_rotate_time'],'ios_washer_search_radius'=> $_POST['ios_washer_search_radius'], 'android_app_version_check'=> $_POST['android_app_version_check'], 'android_app_version'=> $_POST['android_app_version'], 'android_app_link'=> $_POST['android_app_link'], 'android_order_wait_time'=> $_POST['android_order_wait_time'],'android_order_rotate_time'=> $_POST['android_order_rotate_time'], 'android_washer_search_radius'=> $_POST['android_washer_search_radius'], 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+            $data = array('ios_app_version_check'=> $_POST['ios_app_version_check'], 'ios_app_version'=> $_POST['ios_app_version'],'ios_app_link'=> $_POST['ios_app_link'],'ios_order_wait_time'=> $_POST['ios_order_wait_time'],'ios_order_rotate_time'=> $_POST['ios_order_rotate_time'],'ios_washer_search_radius'=> $_POST['ios_washer_search_radius'], 'android_app_version_check'=> $_POST['android_app_version_check'], 'android_app_version'=> $_POST['android_app_version'], 'android_app_link'=> $_POST['android_app_link'], 'android_order_wait_time'=> $_POST['android_order_wait_time'],'android_order_rotate_time'=> $_POST['android_order_rotate_time'], 'android_washer_search_radius'=> $_POST['android_washer_search_radius'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
             // END COLLECT POST VALUE //
 
@@ -38,7 +38,7 @@ include('header.php');
             $handle = curl_init($url);
             $data = '';
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4'));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
             curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
             $result = curl_exec($handle);
             curl_close($handle);

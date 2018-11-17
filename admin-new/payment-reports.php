@@ -1,18 +1,4 @@
 <?php include('header.php') ?>
-<?php
-$voice_print = '';
-if (isset($_COOKIE['mw_admin_auth'])) {
-$device_token = $_COOKIE["mw_admin_auth"];
-}
-$userdata = array("user_token"=>$device_token, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
-$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
-curl_setopt($handle_data, CURLOPT_POST, true);
-curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
-curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
-$result_permission = curl_exec($handle_data);
-curl_close($handle_data);
-$jsondata_permission = json_decode($result_permission);
-?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
@@ -49,7 +35,7 @@ if(isset($_GET['customer_id'])) $cust_id = $_GET['customer_id'];
 if(isset($_GET['agent_id'])) $agent_id = $_GET['agent_id'];
 if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
 $handle = curl_init($url);
-$data = array('customer_id' => $cust_id, 'agent_id' => $agent_id, 'page_number' => $page_number, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array('customer_id' => $cust_id, 'agent_id' => $agent_id, 'page_number' => $page_number, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -604,7 +590,7 @@ $(".load-more").click(function(){
 	var th = $(this);
 	$(this).removeClass('.load-more');
 	$(this).html('Loading...');
-  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getpaymentreports&page_number="+page_number+"&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4", function( data ) {
+  $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=site/getpaymentreports&page_number="+page_number+"&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>", function( data ) {
     
 if(data.result == 'true'){
 	page_number++;

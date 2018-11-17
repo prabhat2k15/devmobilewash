@@ -10,7 +10,7 @@ $token = $_GET['token'];
 if(isset($_POST['pass-reset-ad-submit'])){
 $newpassword = $_POST['pass'];
 $cnfpassword = $_POST['cpass'];
-$data = array("token"=> $token, "id"=> $id, "newpassword"=> $newpassword, "cnfpassword"=> $cnfpassword, 'key' => 'Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4');
+$data = array("token"=> $token, "id"=> $id, "newpassword"=> $newpassword, "cnfpassword"=> $cnfpassword, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle = curl_init(ROOT_URL."/api/index.php?r=users/resetpassword");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
