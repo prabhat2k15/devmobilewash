@@ -2755,22 +2755,23 @@ if ($('#site_statistics_9').size() != 0) {
 // end script
 
 </script>
-	<?php /*<script>
+	<script>
+
 	    $(function(){
-		setTimeout(function(){
+		
+		setInterval(function(){
 		    
-		    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/logout", { device_token: "<?php echo $device_token; ?>", key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function(data){
-//console.log(data);
-if(data.result == 'true'){
+		    $.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/checkadminuserlastactivetime", { device_token: "<?php echo $device_token; ?>", key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function(data){
+if((data.result == 'true') && (data.response == 'logout user')){
+    document.cookie = "mw_admin_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 window.location.href = "<?php echo ROOT_URL; ?>/admin-new/login.php";
 }
 
-
 });
 		    
-		    }, 120000); //10800000
+		    }, 600000); // 10 mins interval
 	    });
-	</script>*/ ?>
+	</script>
     </body>
 <style>
 #site_activities_content > div {

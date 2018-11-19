@@ -44,6 +44,23 @@ else{
  header("Location: ".ROOT_URL."/admin-new/login.php");
 die();   
 }
+
+$data = array("device_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+$handle = curl_init(ROOT_URL."/api/index.php?r=users/authenticate");
+curl_setopt($handle, CURLOPT_POST, true);
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle);
+curl_close($handle);
+$jsondata = json_decode($result);
+$response = $jsondata->response;
+$result_code = $jsondata->result;
+
+if($response == "error" && $result_code == "false"){
+header("Location: ".ROOT_URL."/admin-new/login.php");
+die();
+}
+
 $userdata = array("user_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=users/getusertypebytoken");
 curl_setopt($handle_data, CURLOPT_POST, true);

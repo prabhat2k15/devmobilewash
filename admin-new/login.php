@@ -146,13 +146,13 @@ if(($_GET['step'] == 'mobile-verification') && ($_SESSION['step1_passed'] == 'tr
 	if($result_code == "true"){
 $admin_auth_text = $device_token."@@009654A!*csT=".$jsondata->token."@@009654A!*csT=".$jsondata->t1."@@009654A!*csT=".$jsondata->t2."@@009654A!*csT=".$jsondata->user_id;
 		if($_SESSION["rememberme"]){
-		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time()+86400, "/" ) ;
+		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time()+172800, "/" ) ;
 		//setcookie( "mw_username", $username, time() + (86400 * 7), "/" ) ;
 		//setcookie( "mw_uid", $uid, time() + (86400 * 7), "/" ) ;
 		
 		}
 		else{
-		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time()+86400, "/" ) ;
+		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time()+172800, "/" ) ;
 		//setcookie( "mw_username", $username, time()+3600, "/" ) ;
 		//setcookie( "mw_uid", $uid, time()+3600, "/" ) ;
 		
@@ -175,7 +175,8 @@ else{
   	$email = $_POST['email'];
 	$password = $_POST['password'];
 	$error = '';
-	$data = array("email"=>$email, "password"=>$password, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $gettempaccesstoken_result->t1, 't2' => $gettempaccesstoken_result->t2);
+	$device_data = 'IP: '.$ip.' Device data: '.$_SERVER['HTTP_USER_AGENT'];
+	$data = array("email"=>$email, "password"=>$password, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $gettempaccesstoken_result->t1, 't2' => $gettempaccesstoken_result->t2, 'device_data' => $device_data);
 	
 	$handle = curl_init(ROOT_URL."/api/index.php?r=users/login");
 	curl_setopt($handle, CURLOPT_POST, true);

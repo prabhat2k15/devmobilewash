@@ -56,7 +56,11 @@ $recruiter_permit_pages = array('index.php', 'all-orders.php', 'vehicles-package
 $scheduler_permit_pages = array('index.php', 'all-orders.php', 'edit-order.php', 'command-center.php', 'notifications.php', 'manage-promotions.php', 'vehicles-packages.php', 'schedule-times.php', 'ondemand-surge-times.php', 'payment-reports.php', 'vehicle-addons-pricing.php', 'add-vehicle.php', 'modern-vehicles.php', 'classic-vehicles.php', 'hours-of-operation.php', 'messagess.php', 'heatmap.php', 'client_dashboard.php', 'manage-pre-clients.php', 'manage-customers.php', 'edit-customer.php', 'non-return-customers.php', 'edit-agent.php', 'inactive-customers.php', 'feedbacks.php', 'mobilewasher-service-feedbacks.php', 'top-customers.php', 'washer_dashboard.php', 'manage-pre-washers.php',
 				'manage-agents.php', 'top-washers.php', 'add-new-bug.php', 'search.php', 'order_calendar.php', 'add-coupon.php', 'edit-coupon.php', 'edit-vehicle.php', 'add-message.php', 'edit-message.php', 'heatmap-list.php', 'pre-clients-details.php', 'edit-customer.php', 'add-agent.php');
 
-$data = array("device_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+if (strpos($_SERVER['HTTP_REFERER'], 'admin-new/login.php') !== false) {
+$data = array("device_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4], 'extra_data' => 'ignorelastactiveadmintimecheck');
+}
+else $data = array("device_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+
 $handle = curl_init(ROOT_URL."/api/index.php?r=users/authenticate");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -71,6 +75,7 @@ if($response == "error" && $result_code == "false"){
 header("Location: ".ROOT_URL."/admin-new/login.php");
 die();
 }
+
 
 
 $uri = $_SERVER['REQUEST_URI'];

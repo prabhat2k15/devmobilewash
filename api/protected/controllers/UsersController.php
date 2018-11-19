@@ -54,8 +54,9 @@ Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindV
 }
 
 		$username = Yii::app()->request->getParam('email');
+		$device_data = Yii::app()->request->getParam('device_data');
 		$password = md5(Yii::app()->request->getParam('password'));
-	
+	$failed_try = 0;
 
 		if((isset($username) && !empty($username)) && (isset($password) && !empty($password))){
 			$user_id = Users::model()->findByAttributes(array("email"=>$username));
@@ -116,6 +117,7 @@ $model= Users::model()->findByAttributes(array('id'=>$user_id->id));
 						'result'=> $result,
 						'response'=> $response,
 					);
+					$failed_try = 1;
 				}
 			}else{
 				$result= "false";
@@ -124,13 +126,44 @@ $model= Users::model()->findByAttributes(array('id'=>$user_id->id));
 					'result'=> $result,
 					'response'=> $response
 				);
+				$failed_try = 1;
 			}
 		}else{
 			$json = array(
 				'result'=> 'false',
 				'response'=> 'Pass the required parameters'
 			);
+			$failed_try = 1;
 		}
+		
+		if($failed_try == 1){
+		$this->layout = "xmlLayout";
+         
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+            require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+            /* Instantiate a new Twilio Rest Client */
+
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+
+            $message = "Admin failed login attempt--\r\nEmail: ".$username."\r\n".$device_data;
+ 
+             try {
+            $sendmessage = $client->account->messages->create(array(
+                'To' =>  '8183313631',
+                'From' => '+13106834902',
+                'Body' => $message,
+            ));
+ }
+ catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+} 	
+		}
+		
 		echo json_encode($json);
 		die();
 	}
@@ -145,6 +178,7 @@ die();
 $api_token = Yii::app()->request->getParam('api_token');
 $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
+$failed_try = 0;
 
 $token_check = $this->verifyapitemptoken( $api_token, $t1, $t2, AES256CBC_API_PASS );
 
@@ -268,6 +302,7 @@ $ciphertext_iv_base64 = base64_encode($ciphertext_iv);
 						'result'=> $result,
 						'response'=> $response,
 					);
+					$failed_try = 1;
 				}
 			}else{
 				$result= "false";
@@ -276,13 +311,17 @@ $ciphertext_iv_base64 = base64_encode($ciphertext_iv);
 					'result'=> $result,
 					'response'=> $response
 				);
+				$failed_try = 1;
 			}
 		}else{
 			$json = array(
 				'result'=> 'false',
 				'response'=> 'Pass the required parameters'
 			);
+			$failed_try = 1;
 		}
+		
+
 		echo json_encode($json);
 		die();
 	}
@@ -633,6 +672,8 @@ $t1 = Yii::app()->request->getParam('t1');
 $t2 = Yii::app()->request->getParam('t2');
 $user_type = Yii::app()->request->getParam('user_type');
 $user_id = Yii::app()->request->getParam('user_id');
+$extra_data = '';
+$extra_data = Yii::app()->request->getParam('extra_data');
 
 $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
 
@@ -653,6 +694,26 @@ if(!$token_check){
 		$model= Users::model()->findByAttributes(array('id' => $user_id, 'device_token'=>$device_token));
 		$json= array();
 		if(count($model)>0){
+if($extra_data != 'ignorelastactiveadmintimecheck'){		
+$last_active_time = strtotime($model->last_active_at);
+
+$min_diff = round((time() - $last_active_time) / 60,2);
+
+if($min_diff > 180){
+	
+               $result= 'false';
+	$response= 'error';
+		
+		Users::model()->updateByPk($user_id, array('device_token' => '', 'access_token' => '', 'access_key' => '', 'access_vector' => ''));
+		
+		$json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+		die();
+}
+		}
 		$result= 'true';
 				$response= 'success';
 
@@ -6983,6 +7044,84 @@ if((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user
 $json= array(
 				'result'=> $result,
 				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+    }
+    
+    
+               public function actioncheckadminuserlastactivetime(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
+        $user_type = Yii::app()->request->getParam('user_type');
+	$user_id = Yii::app()->request->getParam('user_id');
+	$min_diff = 0;
+
+           $result  = 'false';
+$response = 'pass the required fields';
+
+
+if((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user_id))){
+	$user_check = Users::model()->findByPk($user_id);
+
+   
+	if(!count($user_check)){
+                $result= 'false';
+                $response= 'No user found';
+        }
+        else{
+		
+$last_active_time = strtotime($user_check->last_active_at);
+
+
+$min_diff = round((time() - $last_active_time) / 60,2);
+
+if($min_diff > 180){
+                $result = 'true';
+		$response = 'logout user';
+		
+		Users::model()->updateByPk($user_id, array('device_token' => '', 'access_token' => '', 'access_key' => '', 'access_vector' => ''));
+}
+else{
+                $result = 'true';
+		$response = 'stay logged in';	
+}
+
+
+  
+        }
+
+
+
+}
+
+
+$json= array(
+				'result'=> $result,
+				'response'=> $response,
+				'min_diff' => $min_diff
 			);
 		echo json_encode($json);
 
