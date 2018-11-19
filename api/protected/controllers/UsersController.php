@@ -6927,6 +6927,67 @@ $json= array(
     }
 
     }
+    
+           public function actionupdateadminuserlastactivetime(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
+        $user_type = Yii::app()->request->getParam('user_type');
+	$user_id = Yii::app()->request->getParam('user_id');
+	
+
+           $result  = 'false';
+$response = 'pass the required fields';
+
+
+if((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user_id))){
+	$user_check = Users::model()->findByPk($user_id);
+
+   
+	if(!count($user_check)){
+                $result= 'false';
+                $response= 'No user found';
+        }
+        else{
+                $result = 'true';
+		$response = 'update successful';
+		Users::model()->updateByPk($user_id, array("last_active_at" => date('Y-m-d H:i:s')));
+  
+        }
+
+
+
+}
+
+
+$json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+    }
 
 
 

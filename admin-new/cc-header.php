@@ -61,6 +61,14 @@ if($jsondata_permission->users_type == 'recruiter'){
 
 }
 
+$userdata = array("user_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+$handle_data = curl_init(ROOT_URL."/api/index.php?r=users/updateadminuserlastactivetime");
+curl_setopt($handle_data, CURLOPT_POST, true);
+curl_setopt($handle_data, CURLOPT_POSTFIELDS, $userdata);
+curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
+$result = curl_exec($handle_data);
+curl_close($handle_data);
+
 
 /* -------- logged in auth end --------- */
 
