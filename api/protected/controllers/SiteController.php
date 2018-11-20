@@ -6200,7 +6200,15 @@ else{
 
 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '52' ")->queryAll();
 $message = $pushmsg[0]['message'];
-$message = str_replace("[CUSTNAME]",$custname, $message);
+//$message = str_replace("[CUSTNAME]",$custname, $message);
+
+$emailfrom = Vargas::Obj()->getAdminFromEmail();
+
+$subject = 'Welcome from MobileWash';
+
+					$emailbody = "<p style='color: #333;'>".$message."</p>";
+				if($cust_details->email) Vargas::Obj()->SendMail($cust_details->email,$emailfrom,$emailbody,$subject, 'mail-receipt');	
+
 
  if(((APP_ENV == 'real') || (APP_ENV == '')) && ($cust_details->sms_control)){
 	

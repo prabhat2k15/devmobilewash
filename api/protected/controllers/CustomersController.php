@@ -11254,23 +11254,7 @@ $customer_id = $this->aes256cbc_crypt( $customer_id, 'd', AES256CBC_API_PASS );
 }
            $customer_check = Customers::model()->findByPk($customer_id);
 
-             /* ------- get nearest agents --------- */
-
-/*$handle = curl_init(ROOT_URL."/api/index.php?r=agents/getnearestagents");
-$data = array('cust_lat' => $latitude, 'cust_lng' => $longitude, "key" => API_KEY);
-curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-$output = curl_exec($handle);
-curl_close($handle);
-$nearagentsdetails = json_decode($output);*/
-
-
-            /* ------- get nearest agents end --------- */
-
-            /* -------- hours of operation -------- */
-
-
+/*
         $current_day = strtolower(date('l'));
         //$current_time = date('g:i:s A');
         //echo $current_day;
@@ -11278,15 +11262,15 @@ $nearagentsdetails = json_decode($output);*/
 
         $hours_op_check =  Shedule::model()->findByAttributes(array('day'=>$current_day));
         $hours_op_response =  Shedule::model()->findByAttributes(array('id'=>8));
+*/
 
-         /* -------- hours of operation end -------- */
 
            if(!count($customer_check)){
                     $response = "Invalid customer id";
                     $result = "false";
            }
 
-            else if(($customer_check->hours_opt_check == 1) && ($hours_op_check->status == 'off') && (!$is_scheduled)){
+            /*else if(($customer_check->hours_opt_check == 1) && ($hours_op_check->status == 'off') && (!$is_scheduled)){
                 $result= 'false';
                 $response= $hours_op_response->status;
 
@@ -11296,7 +11280,7 @@ else if( ($customer_check->hours_opt_check == 1) && ($hours_op_check->open_all_d
     $result= 'false';
                 $response= $hours_op_response->status;
 
-        }
+        }*/
 
             /*else if((!$is_scheduled) && ($nearagentsdetails->result == 'false')){
 
