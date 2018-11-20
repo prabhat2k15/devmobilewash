@@ -12,6 +12,7 @@ define("API_KEY","m4b5WB0h0HXUK8fTvPw5O1nIDDmEAt4c");
 define("API_KEY_CRON","zCWJmjHOlZDbsyiLwhwM0bDdB9sUo2yo");
 define("ROOT_URL","http://www.devmobilewash.com");
 define("ROOT_WEBFOLDER","/home/devmobilewash");
+define("COOKIE_DOMAIN",".devmobilewash.com");
 define("APP_ENV",""); // real or blank
 define("MW_SERVER_IP","209.95.41.9");
 

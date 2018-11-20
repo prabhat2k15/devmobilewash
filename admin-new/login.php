@@ -146,13 +146,13 @@ if(($_GET['step'] == 'mobile-verification') && ($_SESSION['step1_passed'] == 'tr
 	if($result_code == "true"){
 $admin_auth_text = $device_token."@@009654A!*csT=".$jsondata->token."@@009654A!*csT=".$jsondata->t1."@@009654A!*csT=".$jsondata->t2."@@009654A!*csT=".$jsondata->user_id;
 		if($_SESSION["rememberme"]){
-		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time()+172800, "/" ) ;
+		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time()+172800, "/", COOKIE_DOMAIN ) ;
 		//setcookie( "mw_username", $username, time() + (86400 * 7), "/" ) ;
 		//setcookie( "mw_uid", $uid, time() + (86400 * 7), "/" ) ;
 		
 		}
 		else{
-		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time()+172800, "/" ) ;
+		setcookie( "mw_admin_auth", base64_encode($admin_auth_text), time()+172800, "/", COOKIE_DOMAIN ) ;
 		//setcookie( "mw_username", $username, time()+3600, "/" ) ;
 		//setcookie( "mw_uid", $uid, time()+3600, "/" ) ;
 		

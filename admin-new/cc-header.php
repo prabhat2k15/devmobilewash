@@ -56,7 +56,9 @@ $jsondata = json_decode($result);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
 
-if($response == "error" && $result_code == "false"){
+if($result_code == "false"){
+setcookie("mw_admin_auth", "", time() - 3600, "/", COOKIE_DOMAIN);
+unset($_COOKIE['mw_admin_auth']);
 header("Location: ".ROOT_URL."/admin-new/login.php");
 die();
 }
@@ -69,6 +71,13 @@ curl_setopt($handle_data,CURLOPT_RETURNTRANSFER,1);
 $result_permission = curl_exec($handle_data);
 curl_close($handle_data);
 $jsondata_permission = json_decode($result_permission);
+
+if($jsondata_permission->result == "false"){
+setcookie("mw_admin_auth", "", time() - 3600, "/", COOKIE_DOMAIN);
+unset($_COOKIE['mw_admin_auth']);
+header("Location: ".ROOT_URL."/admin-new/login.php");
+die();
+}
 
 if($jsondata_permission->users_type == 'recruiter'){
 
@@ -103,14 +112,15 @@ $jsondata = json_decode($result);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
 
-if($response == "Successfully logout" && $result_code == "true"){
-//unset($_COOKIE['mw_admin_auth']);
-setcookie("mw_admin_auth", "", time() - 3600);
-header("Location: ".ROOT_URL."/admin/login.php");
+if($result_code == "true"){
+setcookie("mw_admin_auth", "", time() - 3600, "/", COOKIE_DOMAIN);
+unset($_COOKIE['mw_admin_auth']);
+header("Location: ".ROOT_URL."/admin-new/login.php");
 die();
 }
 else{
 header("Location: ".ROOT_URL."/admin/login.php");
+die();
 }
 }
 ?>
