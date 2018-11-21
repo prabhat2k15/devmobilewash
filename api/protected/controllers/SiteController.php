@@ -4209,92 +4209,75 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
 
   public function actiongetallwashrequestsnew(){
 
-        if(Yii::app()->request->getParam('key') != API_KEY){
+           if(Yii::app()->request->getParam('key') != API_KEY){
             echo "Invalid api key";
             die();
         }
-	
-	$api_token = Yii::app()->request->getParam('api_token');
-$t1 = Yii::app()->request->getParam('t1');
-$t2 = Yii::app()->request->getParam('t2');
-$user_type = Yii::app()->request->getParam('user_type');
-$user_id = Yii::app()->request->getParam('user_id');
-
-$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-if(!$token_check){
- $json = array(
-                    'result'=> 'false',
-                    'response'=> 'Invalid request'
-                );
- echo json_encode($json);
- die();
-}
-		/* Checking for post(day) parameters */
-		$order_day='';
-		if(!empty(Yii::app()->request->getParam('event'))){
-			$day = Yii::app()->request->getParam('day');
-			$event = Yii::app()->request->getParam('event');
-			
-			$status_qr = '';
-			if($event == 'pending'){
-				$status = 0;
-				$status_qr = ' AND w.status="'.$status.'"';
-			} elseif($event == 'total_orders'){
-                $status_qr = " AND w.status IN(0,4,3,2)";
+        /* Checking for post(day) parameters */
+        $order_day='';
+        if(!empty(Yii::app()->request->getParam('event'))){
+            $day = Yii::app()->request->getParam('day');
+            $event = Yii::app()->request->getParam('event');
+            
+            $status_qr = '';
+            if($event == 'pending'){
+                $status = 0;
+                $status_qr = ' AND w.status="'.$status.'"';
+            }elseif($event == 'total_orders'){
+                $status_qr = " AND w.status IN(0,4,3,2,1)";
             } elseif($event == 'csv_total_orders'){
                 $status_qr = " AND w.status IN(0,4,3,2,1,5,6)";
             } elseif($event == 'completed'){
-				$status = 4;
-				$status_qr = ' AND w.status="'.$status.'"';
-			} elseif($event == 'processing'){
-				$status = 3;
-				$status_qr = ' AND (w.status >=1 && w.status <=3)';
+                $status = 4;
+                $status_qr = ' AND w.status="'.$status.'"';
+            } elseif($event == 'processing'){
+                $status = 3;
+                $status_qr = ' AND (w.status >=1 && w.status <=3)';
                 //$status_qr = ' AND (w.status = 3)';
-			} elseif($event == 'canceled'){
-				$status_qr = ' AND (w.status=5 || w.status=6)';
-			} elseif($event == 'declined'){
+            } elseif($event == 'canceled'){
+                $status_qr = ' AND (w.status=5 || w.status=6)';
+            } elseif($event == 'declined'){
                 $status_qr = " AND (w.failed_transaction_id != '')";
             } elseif($event == 'express' || $event == 'deluxe' || $event == 'premium'){
                 $status_qr=" AND (FIND_IN_SET('".$event."', w.package_list)>0 AND w.status IN('0','4'))";
             } elseif($event == 'coupon_code'){
                 $status_qr = " AND w.coupon_code <> ''";
             } elseif($event == 'tip_amount'){
-				$status_qr=" AND (w.tip_amount <> '' && w.tip_amount <> '0.00' && w.tip_amount <> '0')";
-			}
-			elseif($event == 'addoncompleted'){
-				$status_qr=" AND (w.pet_hair_vehicles != '' OR  w.lifted_vehicles != '' OR  w.exthandwax_vehicles != '' OR  w.extplasticdressing_vehicles != '' OR  w.extclaybar_vehicles != '' OR  w.waterspotremove_vehicles != '' OR  w.upholstery_vehicles != '' OR  w.floormat_vehicles != '') AND w.status = 4";
-			}
-			elseif($event == 'ondemandcompleted'){
-				$status_qr=" AND w.is_scheduled = 0 AND w.status = 4";
-			}
-			elseif($event == 'schedulecompleted'){
-				$status_qr=" AND w.is_scheduled = 1 AND w.status = 4";
-			}
-			elseif($event == 'schedulecanceled'){
-				$status_qr=" AND w.is_scheduled = 1 AND (w.status=5 || w.status=6)";
-			}
-			elseif($event == 'ondemandcanceled'){
-				$status_qr=" AND w.is_scheduled = 0 AND (w.status=5 || w.status=6)";
-			}
-			elseif($event == 'newcustomer'){
-				$status_qr=" AND c.total_wash = 0";
-			}elseif(in_array($event, array('yelloworders', 'blueorders', 'redorders', 'purpleorders'))){
+                $status_qr=" AND (w.tip_amount <> '' && w.tip_amount <> '0.00' && w.tip_amount <> '0')";
+            }
+            elseif($event == 'addoncompleted'){
+                $status_qr=" AND (w.pet_hair_vehicles != '' OR  w.lifted_vehicles != '' OR  w.exthandwax_vehicles != '' OR  w.extplasticdressing_vehicles != '' OR  w.extclaybar_vehicles != '' OR  w.waterspotremove_vehicles != '' OR  w.upholstery_vehicles != '' OR  w.floormat_vehicles != '') AND w.status = 4";
+            }
+            elseif($event == 'ondemandcompleted'){
+                $status_qr=" AND w.is_scheduled = 0 AND w.status = 4";
+            }
+            elseif($event == 'schedulecompleted'){
+                $status_qr=" AND w.is_scheduled = 1 AND w.status = 4";
+            }
+            elseif($event == 'schedulecanceled'){
+                $status_qr=" AND w.is_scheduled = 1 AND (w.status=5 || w.status=6)";
+            }
+            elseif($event == 'ondemandcanceled'){
+                $status_qr=" AND w.is_scheduled = 0 AND (w.status=5 || w.status=6)";
+            }
+            elseif($event == 'newcustomer'){
+                $status_qr=" AND w.status = 4";
+            }elseif(in_array($event, array('yelloworders', 'blueorders', 'redorders', 'purpleorders'))){
                 $status_qr = " AND w.status IN('0','4','3','2','1')";
             }
-			else {
-				$status_qr = '';
-			}
+            else {
+                $status_qr = '';
+            }
 
-			if(empty(Yii::app()->request->getParam('day'))){
-                $month_start = date('Y').'-'.Yii::app()->request->getParam('month').'-01';
-                $month_end = date('Y').'-'.Yii::app()->request->getParam('month').'-31';
+            if(empty(Yii::app()->request->getParam('day'))){
+                $month_start = Yii::app()->request->getParam('year').'-'.Yii::app()->request->getParam('month').'-01';
+                $month_end = Yii::app()->request->getParam('year').'-'.Yii::app()->request->getParam('month').'-31';
                 $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$month_start."' AND '".$month_end."'".$status_qr;
             }else{    
-			    $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '".$day."'".$status_qr;
+                $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '".$day."'".$status_qr;
             }
-		}
-		/* END */
+        }
+        /* END */
 
 
 
@@ -4315,8 +4298,8 @@ if(!$token_check){
         $limit = Yii::app()->request->getParam('limit');
         $customer_id = Yii::app()->request->getParam('customer_id');
         $agent_id = Yii::app()->request->getParam('agent_id');
-	$admin_username = '';
-	$admin_username = Yii::app()->request->getParam('admin_username');
+    $admin_username = '';
+    $admin_username = Yii::app()->request->getParam('admin_username');
 $pendingorderscount = 0;
 $cust_query = '';
 $agent_query = '';
@@ -4331,11 +4314,14 @@ if($customer_id > 0){
     $cust_check = Customers::model()->findByPk($customer_id);
 }
 
-		//if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
+        //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
 //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
-  if($filter == 'testorders'){
-
+if($event == 'newcustomer'){
+     if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id ASC LIMIT ".$limit)->queryAll();
+else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id ASC")->queryAll();
+  }   
+  elseif($filter == 'testorders'){
     if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC LIMIT ".$limit)->queryAll();
 else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 0 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
   }
@@ -4344,8 +4330,7 @@ else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reque
 else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$cust_query.$agent_query."c.hours_opt_check = 1 AND w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id DESC")->queryAll();
   }
 
-   //print_r($qrRequests);
-
+   
         if(count($qrRequests)>0){
 $ios_count = $other_count = $android_count =0;
             foreach($qrRequests as $ind=> $wrequest)
@@ -4357,39 +4342,39 @@ $ios_count = $other_count = $android_count =0;
                     $android_count++;
                 }
 
-	if($event == 'blueorders'){
-		$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
-	
-		if(count($coveragezipcheck)){
-			$zipcolor = $coveragezipcheck->zip_color;
-			if(($zipcolor != '') && ($zipcolor != 'blue')) continue;
-		}
-		
-	}
-	
-	if($event == 'yelloworders'){
-		$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
-	
-		if(count($coveragezipcheck)){
-			$zipcolor = $coveragezipcheck->zip_color;
-			if(($zipcolor != 'yellow')) continue;
-		}
-		else{
-			continue;
-		}
-	}
-	
-	if($event == 'redorders'){
-		$coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
-	
-		if(count($coveragezipcheck)){
-			$zipcolor = $coveragezipcheck->zip_color;
-			if(($zipcolor != 'red')) continue;
-		}
-		else{
-			continue;
-		}
-	}
+    if($event == 'blueorders'){
+        $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
+    
+        if(count($coveragezipcheck)){
+            $zipcolor = $coveragezipcheck->zip_color;
+            if(($zipcolor != '') && ($zipcolor != 'blue')) continue;
+        }
+        
+    }
+    
+    if($event == 'yelloworders'){
+        $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
+    
+        if(count($coveragezipcheck)){
+            $zipcolor = $coveragezipcheck->zip_color;
+            if(($zipcolor != 'yellow')) continue;
+        }
+        else{
+            continue;
+        }
+    }
+    
+    if($event == 'redorders'){
+        $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
+    
+        if(count($coveragezipcheck)){
+            $zipcolor = $coveragezipcheck->zip_color;
+            if(($zipcolor != 'red')) continue;
+        }
+        else{
+            continue;
+        }
+    }
                 
     if($event == 'purpleorders'){
         $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode'=>$wrequest['zipcode']));
@@ -4476,14 +4461,14 @@ $total_days_diff += $day_diff->format("%a");
                 $cust_details = Customers::model()->findByAttributes(array("id"=>$wrequest['customer_id']));
                 $agent_details = Agents::model()->findByAttributes(array("id"=>$wrequest['agent_id']));
                 $cars =  explode(",",$wrequest['car_list']);
-				$packs =  explode(",",$wrequest['package_list']);
-				$vehicles = array();
-				foreach($cars as $ind=>$car){
+                $packs =  explode(",",$wrequest['package_list']);
+                $vehicles = array();
+                foreach($cars as $ind=>$car){
                     $car_details = Vehicle::model()->findByAttributes(array("id"=>$car));
-		    
-		    $veh_addons = '';
-		    
-		    $pet_hair_vehicles_arr = explode(",", $wrequest['pet_hair_vehicles']);
+            
+            $veh_addons = '';
+            
+            $pet_hair_vehicles_arr = explode(",", $wrequest['pet_hair_vehicles']);
 if (in_array($car, $pet_hair_vehicles_arr)) $veh_addons .= 'Extra Cleaning, ';
 
 $lifted_vehicles_arr = explode(",", $wrequest['lifted_vehicles']);
@@ -4510,29 +4495,29 @@ if (in_array($car, $floormat_addon_arr)) $veh_addons .= 'Floor Mat Cleaning, ';
 $veh_addons = rtrim($veh_addons, ", ");
 
                     $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind], 'addons' => $veh_addons);
-				}
+                }
 
-				
-				if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
-						$customername = '';
-						$cust_name = explode(" ", trim($cust_details->last_name));
-						$customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
-						
-					}
-					else{
-						$customername = '';
-				$cust_name = explode(" ", trim($cust_details->customername));
-				if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
-				else $customername = $cust_name[0];
-					}
-					
-					$customername = strtolower($customername);
+                
+                if(($cust_details->first_name != '') && ($cust_details->last_name != '')){
+                        $customername = '';
+                        $cust_name = explode(" ", trim($cust_details->last_name));
+                        $customername = $cust_details->first_name." ".strtoupper(substr($cust_name[0], 0, 1)).".";
+                        
+                    }
+                    else{
+                        $customername = '';
+                $cust_name = explode(" ", trim($cust_details->customername));
+                if(count($cust_name > 1)) $customername = $cust_name[0]." ".strtoupper(substr($cust_name[1], 0, 1)).".";
+                else $customername = $cust_name[0];
+                    }
+                    
+                    $customername = strtolower($customername);
 $customername = ucwords($customername);
 
-								$agent_info = array();
-				if(count($agent_details)){
-					   $agent_info = array('agent_id'=>$wrequest['agent_id'], 'real_washer_id'=>$agent_details->real_washer_id, 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
-				}
+                                $agent_info = array();
+                if(count($agent_details)){
+                       $agent_info = array('agent_id'=>$wrequest['agent_id'], 'real_washer_id'=>$agent_details->real_washer_id, 'agent_name'=>$agent_details->first_name." ".$agent_details->last_name, 'agent_phoneno'=>$agent_details->phone_number, 'agent_email'=>$agent_details->email);
+                }
 $payment_status = '';
 $submerchant_id = '';
 $transaction_status = '';
@@ -4576,42 +4561,53 @@ $transaction_status = $payresult['status'];
  }
 }
 
+$show_result = 0;
+if($event == 'newcustomer'){
+    $get_befor_count = Yii::app()->db->createCommand("SELECT id, order_for FROM washing_requests WHERE customer_id = '".$wrequest['customer_id']."' AND status = 4 ORDER BY id ASC LIMIT 1")->queryAll();
+
+    if(count($get_befor_count) > 0 && date('Y-m-d',strtotime($get_befor_count[0]['order_for'])) == $day){
+    }else{
+        continue;
+    }
+}
+
+
 if(($wrequest['status'] >=1) && ($wrequest['status'] <= 3)){
-	$total_rows =  Yii::app()->db->createCommand("SELECT COUNT(*) as total FROM activity_logs WHERE action = 'customeracceptupgrade' AND admin_username = '' AND wash_request_id = ".$wrequest['id'])->queryAll();
-	$washer_change_pack = $total_rows[0]['total'];
+    $total_rows =  Yii::app()->db->createCommand("SELECT COUNT(*) as total FROM activity_logs WHERE action = 'customeracceptupgrade' AND admin_username = '' AND wash_request_id = ".$wrequest['id'])->queryAll();
+    $washer_change_pack = $total_rows[0]['total'];
 }
 
 if(($wrequest['status'] == 1) && (!$wrequest['is_scheduled'])){
-	$min_diff2 = 0;
-	$current_time = strtotime(date('Y-m-d H:i:s'));
+    $min_diff2 = 0;
+    $current_time = strtotime(date('Y-m-d H:i:s'));
 
-	if($current_time > strtotime($wrequest['wash_begin'])){
-		$min_diff2 = round(($current_time - strtotime($wrequest['wash_begin'])) / 60,2);
-	}
-	
-	if($min_diff2 >= 30) $washer_30_min_noarrive = 1;
+    if($current_time > strtotime($wrequest['wash_begin'])){
+        $min_diff2 = round(($current_time - strtotime($wrequest['wash_begin'])) / 60,2);
+    }
+    
+    if($min_diff2 >= 30) $washer_30_min_noarrive = 1;
 }
 
 if(($wrequest['status'] == 2) && ($wrequest['meet_washer_outside'] != 'yes')){
-	$min_diff2 = 0;
-	$current_time = strtotime(date('Y-m-d H:i:s'));
+    $min_diff2 = 0;
+    $current_time = strtotime(date('Y-m-d H:i:s'));
 
-	if($current_time > strtotime($wrequest['washer_arrived_at'])){
-		$min_diff2 = round(($current_time - strtotime($wrequest['washer_arrived_at'])) / 60,2);
-	}
-	
-	if($min_diff2 >= 10) $washercustnomeet = 1;
+    if($current_time > strtotime($wrequest['washer_arrived_at'])){
+        $min_diff2 = round(($current_time - strtotime($wrequest['washer_arrived_at'])) / 60,2);
+    }
+    
+    if($min_diff2 >= 10) $washercustnomeet = 1;
 }
 
 if(($wrequest['status'] == 3) && (!$wrequest['washer_wash_activity'])){
-	$min_diff2 = 0;
-	$current_time = strtotime(date('Y-m-d H:i:s'));
+    $min_diff2 = 0;
+    $current_time = strtotime(date('Y-m-d H:i:s'));
 
-	if($current_time > strtotime($wrequest['meet_or_nomeet_washer_outside_at'])){
-		$min_diff2 = round(($current_time - strtotime($wrequest['meet_or_nomeet_washer_outside_at'])) / 60,2);
-	}
-	
-	if($min_diff2 >= 10) $washer_wash_activity = 0;
+    if($current_time > strtotime($wrequest['meet_or_nomeet_washer_outside_at'])){
+        $min_diff2 = round(($current_time - strtotime($wrequest['meet_or_nomeet_washer_outside_at'])) / 60,2);
+    }
+    
+    if($min_diff2 >= 10) $washer_wash_activity = 0;
 }
 
 if(($wrequest['admin_notify_view']) && ($admin_username)){
@@ -4637,7 +4633,6 @@ $washercustnomeet = 0;
 
 
 if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
-
  if(($min_diff < 0) && ($wrequest['status'] == 0)){
     $resched_date = '';
     $resched_time = '';
@@ -4656,9 +4651,9 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
                     'vehicles' => $vehicles,
                     'address'=>$wrequest['address'],
                     'street_name'=>$wrequest['street_name'],
-		            'city'=>$wrequest['city'],
-			        'state'=>$wrequest['state'],
-			        'zipcode'=>$wrequest['zipcode'],
+                    'city'=>$wrequest['city'],
+                    'state'=>$wrequest['state'],
+                    'zipcode'=>$wrequest['zipcode'],
                     'address_type'=>$wrequest['address_type'],
                     'latitude'=>$wrequest['latitude'],
                     'longitude'=>$wrequest['longitude'],
@@ -4669,21 +4664,21 @@ if($wrequest['is_flagged'] == 1) $payment_status = 'Check Fraud';
                     'is_scheduled'=>$wrequest['is_scheduled'],
                     'schedule_date'=>date('Y-m-d',strtotime($wrequest['schedule_date'])),
                     'schedule_time'=>date('h:i A', strtotime($wrequest['schedule_time'])),
-					'reschedule_date'=>$resched_date,
-					'checklist'=>$wrequest['checklist'],
+                    'reschedule_date'=>$resched_date,
+                    'checklist'=>$wrequest['checklist'],
                     'reschedule_time'=>$resched_time,
-					'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
+                    'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
                     'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
-					'transaction_id'=>$wrequest['transaction_id'],
-					'failed_transaction_id'=>$wrequest['failed_transaction_id'],
-					'transaction_status'=>$transaction_status,
-					'submerchant_id' => $submerchant_id,
+                    'transaction_id'=>$wrequest['transaction_id'],
+                    'failed_transaction_id'=>$wrequest['failed_transaction_id'],
+                    'transaction_status'=>$transaction_status,
+                    'submerchant_id' => $submerchant_id,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
-					'wash_request_position'=>$wrequest['wash_request_position'],
-					'net_price'=>$wrequest['net_price'],
+                    'wash_request_position'=>$wrequest['wash_request_position'],
+                    'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff,
 'washer_pay_status' => $washer_payment_status,
@@ -4714,9 +4709,9 @@ if($min_diff >= 0){
                     'vehicles' => $vehicles,
                     'address'=>$wrequest['address'],
                     'street_name'=>$wrequest['street_name'],
-		    'city'=>$wrequest['city'],
-			'state'=>$wrequest['state'],
-			'zipcode'=>$wrequest['zipcode'],
+            'city'=>$wrequest['city'],
+            'state'=>$wrequest['state'],
+            'zipcode'=>$wrequest['zipcode'],
                     'address_type'=>$wrequest['address_type'],
                     'latitude'=>$wrequest['latitude'],
                     'longitude'=>$wrequest['longitude'],
@@ -4727,21 +4722,21 @@ if($min_diff >= 0){
                     'is_scheduled'=>$wrequest['is_scheduled'],
                     'schedule_date'=>date('Y-m-d',strtotime($wrequest['schedule_date'])),
                     'schedule_time'=>date('h:i A', strtotime($wrequest['schedule_time'])),
-					'reschedule_date'=>$resched_date,
-					'checklist'=>$wrequest['checklist'],
+                    'reschedule_date'=>$resched_date,
+                    'checklist'=>$wrequest['checklist'],
                     'reschedule_time'=>$resched_time,
-					'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
+                    'created_date'=>date('Y-m-d',strtotime($wrequest['created_date']))." ".date('h:i A', strtotime($wrequest['created_date'])),
                     'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
-					'transaction_id'=>$wrequest['transaction_id'],
-					'failed_transaction_id'=>$wrequest['failed_transaction_id'],
-					'transaction_status'=>$transaction_status,
-					'submerchant_id' => $submerchant_id,
+                    'transaction_id'=>$wrequest['transaction_id'],
+                    'failed_transaction_id'=>$wrequest['failed_transaction_id'],
+                    'transaction_status'=>$transaction_status,
+                    'submerchant_id' => $submerchant_id,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
-					'wash_request_position'=>$wrequest['wash_request_position'],
-					'net_price'=>$wrequest['net_price'],
+                    'wash_request_position'=>$wrequest['wash_request_position'],
+                    'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff,
 'washer_pay_status' => $washer_payment_status,
@@ -4765,9 +4760,9 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'vehicles' => $vehicles,
                     'address'=>$wrequest['address'],
                     'street_name'=>$wrequest['street_name'],
-		    'city'=>$wrequest['city'],
-			'state'=>$wrequest['state'],
-			'zipcode'=>$wrequest['zipcode'],
+            'city'=>$wrequest['city'],
+            'state'=>$wrequest['state'],
+            'zipcode'=>$wrequest['zipcode'],
                     'address_type'=>$wrequest['address_type'],
                     'latitude'=>$wrequest['latitude'],
                     'longitude'=>$wrequest['longitude'],
@@ -4778,21 +4773,21 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'is_scheduled'=>$wrequest['is_scheduled'],
                     'schedule_date'=>$wrequest['schedule_date'],
                     'schedule_time'=>$wrequest['schedule_time'],
-					'reschedule_date'=>$wrequest['reschedule_date'],
-					'checklist'=>$wrequest['checklist'],
+                    'reschedule_date'=>$wrequest['reschedule_date'],
+                    'checklist'=>$wrequest['checklist'],
                     'reschedule_time'=>$wrequest['reschedule_time'],
-					'created_date'=>$wrequest['created_date'],
+                    'created_date'=>$wrequest['created_date'],
                     'order_for'=>date('Y-m-d h:i A',strtotime($wrequest['order_for'])),
-					'transaction_id'=>$wrequest['transaction_id'],
-					'failed_transaction_id'=>$wrequest['failed_transaction_id'],
-					'submerchant_id' => $submerchant_id,
-					'transaction_status'=>$transaction_status,
+                    'transaction_id'=>$wrequest['transaction_id'],
+                    'failed_transaction_id'=>$wrequest['failed_transaction_id'],
+                    'submerchant_id' => $submerchant_id,
+                    'transaction_status'=>$transaction_status,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
-					'wash_request_position'=>$wrequest['wash_request_position'],
-					'net_price'=>$wrequest['net_price'],
+                    'wash_request_position'=>$wrequest['wash_request_position'],
+                    'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff,
 'washer_pay_status' => $washer_payment_status,
@@ -4805,7 +4800,7 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 
 }
 
-				$pendingwashrequests[] = array('id'=>$wrequest['id'],
+                $pendingwashrequests[] = array('id'=>$wrequest['id'],
                     'customer_id'=>$wrequest['customer_id'],
                     'customer_name'=>$cust_details->first_name." ".$cust_details->last_name,
                     'customer_email'=>$cust_details->email,
@@ -4816,9 +4811,9 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'vehicles' => $vehicles,
                     'address'=>$wrequest['address'],
                     'street_name'=>$wrequest['street_name'],
-		    'city'=>$wrequest['city'],
-			'state'=>$wrequest['state'],
-			'zipcode'=>$wrequest['zipcode'],
+            'city'=>$wrequest['city'],
+            'state'=>$wrequest['state'],
+            'zipcode'=>$wrequest['zipcode'],
                     'address_type'=>$wrequest['address_type'],
                     'latitude'=>$wrequest['latitude'],
                     'longitude'=>$wrequest['longitude'],
@@ -4829,19 +4824,19 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
                     'is_scheduled'=>$wrequest['is_scheduled'],
                     'schedule_date'=>$wrequest['schedule_date'],
                     'schedule_time'=>$wrequest['schedule_time'],
-					'reschedule_date'=>$wrequest['reschedule_date'],
-					'checklist'=>$wrequest['checklist'],'street_name'=>$wrequest['street_name'],
+                    'reschedule_date'=>$wrequest['reschedule_date'],
+                    'checklist'=>$wrequest['checklist'],'street_name'=>$wrequest['street_name'],
                     'reschedule_time'=>$wrequest['reschedule_time'],
-					'created_date'=>$wrequest['created_date'],
-					'transaction_id'=>$wrequest['transaction_id'],
-					'failed_transaction_id'=>$wrequest['failed_transaction_id'],
-					'transaction_status'=>$transaction_status,
+                    'created_date'=>$wrequest['created_date'],
+                    'transaction_id'=>$wrequest['transaction_id'],
+                    'failed_transaction_id'=>$wrequest['failed_transaction_id'],
+                    'transaction_status'=>$transaction_status,
                     'scheduled_cars_info'=>$wrequest['scheduled_cars_info'],
                     'schedule_total'=>$wrequest['schedule_total'],
                     'schedule_company_total'=>$wrequest['schedule_company_total'],
                     'schedule_agent_total'=>$wrequest['schedule_agent_total'],
-					'wash_request_position'=>$wrequest['wash_request_position'],
-					'net_price'=>$wrequest['net_price'],
+                    'wash_request_position'=>$wrequest['wash_request_position'],
+                    'net_price'=>$wrequest['net_price'],
 'payment_status' => $payment_status,
 'min_diff' => $min_diff,
 'washer_pay_status' => $washer_payment_status,
@@ -4851,7 +4846,6 @@ if(($min_diff < 0) && ($wrequest['status'] > 0)){
 'washer_wash_activity' => $washer_wash_activity,
 'washer_30_min_noarrive' => $washer_30_min_noarrive
                 );
-
 
             }
 
@@ -4870,7 +4864,7 @@ usort($pendingwashrequests_upcoming, array('SiteController','sortById'));
         }
         else{
            $result= 'false';
-			$response= 'no wash requests found';
+            $response= 'no wash requests found';
         }
 
 

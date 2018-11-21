@@ -586,7 +586,7 @@ $android_count = $jsondata->android_count;
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> <?php if($_GET['filter'] == 'upcoming') echo 'Upcoming'; if($_GET['filter'] == 'nonupcoming') echo 'Non-Upcoming'; ?> All Orders </span><?php if(isset($_GET['event']) && $_GET['event'] == 'total_orders'){ ?><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                                        <span class="caption-subject bold uppercase"> <?php if($_GET['filter'] == 'upcoming') echo 'Upcoming'; if($_GET['filter'] == 'nonupcoming') echo 'Non-Upcoming'; ?> All Orders </span><?php if((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')){ ?><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                                         <?php } ?>
                                     </div>
                                     <div class="caption font-dark">
@@ -631,6 +631,13 @@ $android_count = $jsondata->android_count;
 												<!--th> Agent Email </th-->
                                                 <th> Agent Phone </th>
                                                 <th style='min-width: 115px;'> Address </th>
+                                                <?php if((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')){?>
+                                                <th style="display: none;"> House Number </th>
+                                                <th style="display: none;"> Street </th>
+                                                <th style="display: none;"> City </th>
+                                                <th style="display: none;"> State </th>
+                                                <th style="display: none;"> ZipCode </th>
+                                                <?php } ?>
                                                 <th> Schedule Datetime </th>
 <th> Starts </th>
                                                 <th> Vehicles </th>
@@ -703,6 +710,22 @@ else echo "N/A";
 ?>
 </td>
                     <td><?php echo $order->address." (".$order->address_type.")"; ?></td>
+                     <?php if((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')){
+                    $addressArr = explode(',', $order->address); 
+                    //$Arr_field['field_value']['address'] = $order->address; 
+                    //print_r($addressArr);
+                    $house_name = preg_replace('/[^0-9]/', '', $addressArr[0]);
+                    $street = str_replace($house_name, '', $addressArr[0]);
+                    $zipcode = preg_replace('/[^0-9]/', '', $addressArr[2]);
+                    $state = str_replace($zipcode, '', $addressArr[2]);
+                    
+                      ?>
+                    <td style="display: none;"> <?php echo $house_name;?> </td>
+                    <td style="display: none;"> <?php echo (!empty($order->street_name))? $order->street_name: $street;?> </td>
+                    <td style="display: none;"> <?php echo (!empty($order->city))? $order->city: $addressArr[1];?> </td>
+                    <td style="display: none;"> <?php echo (!empty($order->state))? $order->state: $state;?> </td>
+                    <td style="display: none;"> <?php echo (!empty($order->zipcode))? $order->zipcode: $zipcode;?> </td>
+                    <?php } ?>
 
 <td>
     <?php if($order->is_scheduled): ?>
@@ -827,15 +850,19 @@ $.fn.dataTableExt.oSort['nullable-desc'] = function(a,b) {
 
         });
         </script>
-<?php if(isset($_GET['event']) && $_GET['event'] == 'total_orders'){?>
+<?php if((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')){?>
 <script type="text/javascript">
   dt_table = $('#example1, #example2').DataTable({
         "pageLength": 20,
         "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
         "aaSorting": [],
         "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        buttons: [
-            'csvHtml5'
+        buttons: [{
+            extend: 'csv',
+            exportOptions: {
+                columns: [1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21] // indexes of the columns that should be printed,
+            } 
+          }
         ]
     });
     $(document).ready(function(){
