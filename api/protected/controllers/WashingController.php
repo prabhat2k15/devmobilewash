@@ -10355,10 +10355,28 @@ if(!$token_check){
 
 	/* App Order */
 	public function Actionorder_schedule_app(){
-         if(Yii::app()->request->getParam('key') != API_KEY){
+
+        if(Yii::app()->request->getParam('key') != API_KEY){
             echo "Invalid api key";
             die();
         }
+	
+	$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
         /* Checking for post(month) parameters */
         $order_month='';
         if(!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))){
@@ -10373,7 +10391,7 @@ if(!$token_check){
 
         $count = $total_order[0]['countid'];
 
-        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id,b.created_date as customer_date FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."' AND a.status != 7 $order_month")
+        $customers_order =  Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='".APP_ENV."' AND a.status != 7 $order_month")
 	->bindValue(':last_month', $last_month, PDO::PARAM_STR)
 	->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
 	->queryAll();
@@ -10394,6 +10412,15 @@ if(!$token_check){
         			$ondemandautocancelArr[] = $value['wash_request_id'];
         		}       		
         	}
+            
+            $get_befor_count = Yii::app()->db->createCommand("SELECT customer_id, order_for FROM washing_requests WHERE status = 4 GROUP BY customer_id ORDER BY id ASC")->queryAll();
+        	$ArrCustomers_date = array();
+        	if(count($get_befor_count) > 0){
+        		foreach ($get_befor_count as $key => $value) {
+        			$ArrCustomers_date[$value['customer_id']] = date('Y-m-d',strtotime($value['order_for']));
+        		}
+        	}
+            
             foreach($customers_order as $orderbycustomer){
 
                 //$counttype = array_count_values($package_list_explode);
@@ -10481,11 +10508,8 @@ if($orderbycustomer['zipcode']) {
                 $json['time'] =  $totalminutes;
                 $json['address_type'] =  $address_type;
                 $json['start'] = date('Y-m-d',strtotime($created_date));
-                //echo "SELECT id, order_for FROM washing_requests WHERE customer_id = '".$orderbycustomer['customer_id']."' AND status = 4 ORDER BY id ASC LIMIT 1";
-
-                $get_befor_count = Yii::app()->db->createCommand("SELECT id, order_for FROM washing_requests WHERE customer_id = '".$orderbycustomer['customer_id']."' AND status = 4 ORDER BY id ASC LIMIT 1")->queryAll();
                 $orderbycustomer['total_wash'] = 1;
-                if(count($get_befor_count) > 0 && date('Y-m-d',strtotime($get_befor_count[0]['order_for'])) == date('Y-m-d',strtotime($created_date))){
+                if($ArrCustomers_date[$orderbycustomer['customer_id']] == date('Y-m-d',strtotime($created_date))){
                 	$orderbycustomer['total_wash'] = 0;
                 }
                 if($wash_request_position == APP_ENV){
@@ -10508,8 +10532,7 @@ if($orderbycustomer['zipcode']) {
 			"upholstery_vehicles" => $orderbycustomer['upholstery_vehicles'],
 			"floormat_vehicles" => $orderbycustomer['floormat_vehicles'],
             "total_wash" => $orderbycustomer['total_wash'],
-	    "zip_color" => $zipcolor,
-	    "customer_id" => $orderbycustomer['customer_id']
+	    "zip_color" => $zipcolor
                     );
                 }
             }
@@ -10674,7 +10697,7 @@ if($orderbycustomer['zipcode']) {
                     }
                 }
                  if(count($val['pending'])>0 || count($val['processing']) >0 || count($val['complete'])>0 || count($val['canceled'])>0 || count($val['scheduled_auto'])>0 || count($val['ondemandautocanceled'])>0 ){
-                    $total_orders = count($val['pending'])+count($val['processing'])+count($val['complete']);
+                    $total_orders = count($val['pending'])+count($val['processing'])+count($val['complete']);//+count($val['canceled'])+count($val['scheduled_auto'])+count($val['ondemandautocanceled'])+count($val['declined']);
                     $dt[$key]['total_orders']['count']= $total_orders;
                     $dt[$key]['total_orders']['color']= '#9c64b7';
                 }
