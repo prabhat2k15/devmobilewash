@@ -5,7 +5,10 @@
 //require_once('braintree/lib/Braintree.php');
 
 require ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio-php-master/Twilio/autoload.php';
+require ROOT_WEBFOLDER.'/public_html/api/protected/extensions/amazon-sdk/aws-autoloader.php';
 use Twilio\Rest\Client;
+use Aws\Sns\SnsClient;
+use Aws\Credentials\Credentials;
 
 class CustomersController extends Controller{
 
@@ -11937,6 +11940,7 @@ $device_id = Yii::app()->request->getParam('device_id');
 $device_token = Yii::app()->request->getParam('device_token');
 $os_details = Yii::app()->request->getParam('os_details');
 $device_type = Yii::app()->request->getParam('device_type');
+$aws_platformarn = '';
 
 if((isset($customer_id) && !empty($customer_id)) && (isset($device_id) && !empty($device_id)) && (isset($device_token) && !empty($device_token))){
 	
@@ -11949,6 +11953,52 @@ $device_exists =  Yii::app()->db->createCommand("SELECT * FROM customer_devices 
 ->queryAll();
 
         if(count($device_exists)>0){
+		
+		if($device_exists[0]['endpoint_arn']){
+			$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+$aws_result = $aws_client->setEndpointAttributes([
+    'Attributes' => array("Token" => $device_token),
+    'EndpointArn' => $device_exists[0]['endpoint_arn'],
+]);	
+		}
+		else{
+	$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+if($device_type == 'IOS') $aws_platformarn = AWS_CUST_IOS_PLATFORM_ARN;
+else $aws_platformarn = AWS_CUST_ANDROID_PLATFORM_ARN;
+
+$aws_result = $aws_client->createPlatformEndpoint([
+    'CustomUserData' => base64_encode($this->aes256cbc_crypt( $customer_id, 'e', AES256CBC_API_PASS )),
+    'PlatformApplicationArn' => $aws_platformarn,
+    'Token' => $device_token,
+]);	
+		}
+
+if(!$device_exists[0]['endpoint_arn']){
+Yii::app()->db->createCommand("UPDATE customer_devices SET customer_id=:customer_id, device_token=:device_token, device_name=:device_name, os_details=:os_details, device_type=:device_type, endpoint_arn=:endpoint_arn, last_used='".date("Y-m-d H:i:s")."' WHERE device_id = :device_id")
+->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
+->bindValue(':device_token', $device_token, PDO::PARAM_STR)
+->bindValue(':device_name', $device_name, PDO::PARAM_STR)
+->bindValue(':os_details', $os_details, PDO::PARAM_STR)
+->bindValue(':device_type', $device_type, PDO::PARAM_STR)
+->bindValue(':device_id', $device_id, PDO::PARAM_STR)
+->bindValue(':endpoint_arn', $endpoint_arn, PDO::PARAM_STR)
+->execute();
+}
+else{
 Yii::app()->db->createCommand("UPDATE customer_devices SET customer_id=:customer_id, device_token=:device_token, device_name=:device_name, os_details=:os_details, device_type=:device_type, last_used='".date("Y-m-d H:i:s")."' WHERE device_id = :device_id")
 ->bindValue(':customer_id', $customer_id, PDO::PARAM_STR)
 ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
@@ -11956,12 +12006,31 @@ Yii::app()->db->createCommand("UPDATE customer_devices SET customer_id=:customer
 ->bindValue(':os_details', $os_details, PDO::PARAM_STR)
 ->bindValue(':device_type', $device_type, PDO::PARAM_STR)
 ->bindValue(':device_id', $device_id, PDO::PARAM_STR)
-->execute();
+->execute();	
+}
+
 $result= 'true';
 $response= 'device updated';
 }
 else{
-$data = array('customer_id'=> $customer_id, 'device_name'=> $device_name, 'device_id'=> $device_id, 'device_token'=> $device_token, 'os_details'=> $os_details, 'device_type'=> $device_type, 'device_add_date'=> date("Y-m-d H:i:s"), 'last_used'=> date("Y-m-d H:i:s"));
+	$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+if($device_type == 'IOS') $aws_platformarn = AWS_CUST_IOS_PLATFORM_ARN;
+else $aws_platformarn = AWS_CUST_ANDROID_PLATFORM_ARN;
+
+$aws_result = $aws_client->createPlatformEndpoint([
+    'CustomUserData' => base64_encode($this->aes256cbc_crypt( $customer_id, 'e', AES256CBC_API_PASS )),
+    'PlatformApplicationArn' => $aws_platformarn,
+    'Token' => $device_token,
+]);
+
+$data = array('customer_id'=> $customer_id, 'device_name'=> $device_name, 'device_id'=> $device_id, 'device_token'=> $device_token, 'os_details'=> $os_details, 'device_type'=> $device_type, 'device_add_date'=> date("Y-m-d H:i:s"), 'last_used'=> date("Y-m-d H:i:s"), 'endpoint_arn' => $aws_result['EndpointArn']);
 
                     Yii::app()->db->createCommand()->insert('customer_devices', $data);
 $result= 'true';

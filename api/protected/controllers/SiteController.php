@@ -2,8 +2,11 @@
 //error_reporting(E_ALL);
 //ini_set('display_errors', 'On');
 require ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio-php-master/Twilio/autoload.php';
+require ROOT_WEBFOLDER.'/public_html/api/protected/extensions/amazon-sdk/aws-autoloader.php';
 	// Use the REST API Client to make requests to the Twilio REST API
 use Twilio\Rest\Client;
+use Aws\Sns\SnsClient;
+use Aws\Credentials\Credentials;
 
 class SiteController extends Controller
 {
@@ -7257,12 +7260,42 @@ if(!$token_check){
 		$receiver_type = Yii::app()->request->getParam('receiver_type');
         $receiver_ids = Yii::app()->request->getParam('receiver_ids');
         $receiver_str = '';
+	$topic_arn = '';
 	if($receiver_type == 'all-clients') $receiver_str = 'clients';
 	if($receiver_type == 'all-agents') $receiver_str = 'agents';
 
 		if((isset($msg) && !empty($msg)) && (isset($receiver_type) && !empty($receiver_type))){
+			
+		$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
 
-		$pending_job_check =  Yii::app()->db->createCommand("SELECT * FROM `scheduled_notifications` WHERE status = 0 AND notification_type = '".$receiver_str."'")->queryAll();
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+if($receiver_str == 'clients') $topic_arn = 'arn:aws:sns:us-west-2:461900685840:custschedpush';
+else $topic_arn = 'arn:aws:sns:us-west-2:461900685840:washerschedpush';
+
+$aws_result = $aws_client->publish([
+	'Message' => $msg,
+	'TopicArn' => $topic_arn,
+]);
+
+if($aws_result['MessageId']){
+$json = array(
+				'result'=> 'true',
+				'response'=> 'schedule notification added'
+			);	
+}
+else{
+	$json = array(
+				'result'=> 'false',
+				'response'=> 'Error in delivering notification'
+			);
+}
+
+		/*$pending_job_check =  Yii::app()->db->createCommand("SELECT * FROM `scheduled_notifications` WHERE status = 0 AND notification_type = '".$receiver_str."'")->queryAll();
 		
 		if(count($pending_job_check)){
 		$json = array(
@@ -7290,6 +7323,7 @@ if(!$token_check){
 				'result'=> 'true',
 				'response'=> 'schedule notification added'
 			);
+		*/
 
 		}else{
 			$json = array(

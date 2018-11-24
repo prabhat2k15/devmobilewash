@@ -65,7 +65,7 @@ if(isset($_POST['notify-form-submit'])){
                         <span class="caption-subject font-dark bold uppercase" style="font-size: 18px !important;">Mobile Wash Notifications</span>
                         <p style="margin-top: 10px;">Push Notification Dashboard</p>
                         <?php if(isset($_POST['notify-form-submit']) && $result_code == 'true'): ?>
-        <p class="success" style="background: #33A232; color: #fff; padding: 10px; box-sizing: border-box;"><i class="icon-check" style="margin-right: 10px; vertical-align: middle;"></i><?php if($_POST['receiver_type'] == 'clients') {echo "Notification delivery scheduled successfully";} else {echo "Notification sent successfully";} ?></p>
+        <p class="success" style="background: #33A232; color: #fff; padding: 10px; box-sizing: border-box;"><i class="icon-check" style="margin-right: 10px; vertical-align: middle;"></i><?php echo "Notification sent successfully"; ?></p>
         <?php endif; ?>
         <?php if(isset($_POST['notify-form-submit']) && $result_code == 'false'): ?>
 <p class="error" style="background: rgb(228, 58, 58);color: #fff;padding: 10px;box-sizing: border-box;"><i class="icon-close" style="margin-right: 10px; vertical-align: middle;"></i><?php echo $response; ?></p>
