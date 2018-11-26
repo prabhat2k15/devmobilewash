@@ -6784,6 +6784,8 @@ $device_id = Yii::app()->request->getParam('device_id');
 $device_token = Yii::app()->request->getParam('device_token');
 $os_details = Yii::app()->request->getParam('os_details');
 $device_type = Yii::app()->request->getParam('device_type');
+$aws_platformarn = '';
+$endpoint_arn = '';
 
 if((isset($agent_id) && !empty($agent_id)) && (isset($device_id) && !empty($device_id)) && (isset($device_token) && !empty($device_token))){
   
@@ -6795,7 +6797,8 @@ $device_exists =  Yii::app()->db->createCommand("SELECT * FROM agent_devices WHE
 
         if(count($device_exists)>0){
 	  		if($device_exists[0]['endpoint_arn']){
-			$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+try{
+$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
 
 $aws_client = SnsClient::factory(array(
      'credentials' => $aws_credentials,
@@ -6814,9 +6817,14 @@ $aws_subscribe_result = $aws_client->subscribe([
     'ReturnSubscriptionArn' => true,
     'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
 ]);
+$endpoint_arn = $aws_result['EndpointArn'];
+} catch(exception $e) {
+	
+}
 		}
 		else{
-	$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+try{
+$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
 
 $aws_client = SnsClient::factory(array(
      'credentials' => $aws_credentials,
@@ -6839,6 +6847,10 @@ $aws_subscribe_result = $aws_client->subscribe([
     'ReturnSubscriptionArn' => true,
     'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
 ]);
+$endpoint_arn = $aws_result['EndpointArn'];
+} catch(exception $e) {
+	
+}
 		}
 		
 if(!$device_exists[0]['endpoint_arn']){
@@ -6849,7 +6861,7 @@ Yii::app()->db->createCommand("UPDATE agent_devices SET agent_id=:agent_id, devi
 ->bindValue(':os_details', $os_details, PDO::PARAM_STR)
 ->bindValue(':device_type', $device_type, PDO::PARAM_STR)
 ->bindValue(':device_id', $device_id, PDO::PARAM_STR)
-->bindValue(':endpoint_arn', $aws_result['EndpointArn'], PDO::PARAM_STR)
+->bindValue(':endpoint_arn', $endpoint_arn, PDO::PARAM_STR)
 ->execute(); 
 		}
 		else{
@@ -6867,7 +6879,7 @@ $result= 'true';
 $response= 'device updated';
 }
 else{
-  
+  try{
  $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
 
 $aws_client = SnsClient::factory(array(
@@ -6891,8 +6903,12 @@ $aws_subscribe_result = $aws_client->subscribe([
     'ReturnSubscriptionArn' => true,
     'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
 ]);
+$endpoint_arn = $aws_result['EndpointArn'];
+} catch(exception $e) {
+	
+}
 
-$data = array('agent_id'=> $agent_id, 'device_name'=> $device_name, 'device_id'=> $device_id, 'device_token'=> $device_token, 'os_details'=> $os_details, 'device_type'=> $device_type, 'device_add_date'=> date("Y-m-d H:i:s"), 'last_used'=> date("Y-m-d H:i:s"), 'endpoint_arn' => $aws_result['EndpointArn']);
+$data = array('agent_id'=> $agent_id, 'device_name'=> $device_name, 'device_id'=> $device_id, 'device_token'=> $device_token, 'os_details'=> $os_details, 'device_type'=> $device_type, 'device_add_date'=> date("Y-m-d H:i:s"), 'last_used'=> date("Y-m-d H:i:s"), 'endpoint_arn' => $endpoint_arn);
 
                     Yii::app()->db->createCommand()->insert('agent_devices', $data);
 $result= 'true';
@@ -7591,4 +7607,134 @@ else{
 }
    
     }
+    
+        public function actionsubscribeagentdevicetosns(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+/*if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}*/
+
+$limit = 500;
+if(Yii::app()->request->getParam('limit')) $limit = Yii::app()->request->getParam('limit');
+$page = 1;
+if(Yii::app()->request->getParam('page')) $page = Yii::app()->request->getParam('page');
+$total_entries = 0;
+$total_pages = 0;
+
+	        $json= array();
+
+$all_wash_requests_count =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM agent_devices order by id asc")
+->queryAll();
+              $total_entries = $all_wash_requests_count[0]['count'];
+
+if($total_entries) {
+$total_pages = ceil($total_entries / $limit);
+}
+echo "total page: ".$total_pages."<br>";
+
+                $all_devices = Yii::app()->db->createCommand()
+			->select('*')
+			->from('agent_devices')
+->limit($limit)
+->offset(($page-1) * $limit)
+->order(array('id asc'))
+->queryAll();
+
+            if(count($all_devices)){
+		
+	$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+            foreach($all_devices as $index => $device){
+		$endpoint_arn = '';
+		$subscribe_arn = '';
+		//echo $device['id'];
+if($device['device_type'] == 'IOS') $aws_platformarn = AWS_WASHER_IOS_PLATFORM_ARN;
+else $aws_platformarn = AWS_WASHER_ANDROID_PLATFORM_ARN;
+if(trim($device['device_token'])){
+try {
+$aws_result = $aws_client->createPlatformEndpoint([
+    'CustomUserData' => base64_encode($this->aes256cbc_crypt( $device['agent_id'], 'e', AES256CBC_API_PASS )),
+    'PlatformApplicationArn' => $aws_platformarn,
+    'Token' => $device['device_token'],
+]);
+if($aws_result['EndpointArn']) $endpoint_arn = $aws_result['EndpointArn'];
+} catch(exception $e) {
+	//echo $e->getAwsErrorMessage();
+		/*switch ($e->getAwsErrorCode()) {
+        case 'EndpointDisabled':
+        case 'InvalidParameter':
+		echo "invalid parameter";
+		continue;
+        case 'NotFound':
+            /// do something
+            break;
+    }*/
+}
+
+
+	    }
+
+if($aws_result['EndpointArn']){
+	try {
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $aws_result['EndpointArn'],
+    'Protocol' => 'application',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
+]);
+if($aws_subscribe_result['SubscriptionArn']) $subscribe_arn = $aws_subscribe_result['SubscriptionArn'];
+} catch(exception $e) {
+	//echo $e->getAwsErrorMessage();
+	/*switch ($e->getAwsErrorCode()) {
+        case 'EndpointDisabled':
+        case 'InvalidParameter':
+        case 'NotFound':
+            /// do something
+            break;
+    }*/
+}
+
+
+
+Yii::app()->db->createCommand("UPDATE agent_devices SET endpoint_arn=:endpoint_arn WHERE id = :id")
+->bindValue(':id', $device['id'], PDO::PARAM_STR)
+->bindValue(':endpoint_arn', $aws_result['EndpointArn'], PDO::PARAM_STR)
+->execute(); 
+}
+
+
+echo "id: ".$device['id']." token: ".$device['device_token']." agent id: ".$device['agent_id']." end arn: ".$endpoint_arn." subsc arn: ". $subscribe_arn;
+echo "<br>";
+
+ 
+        }
+
+            }
+
+
+     }
 }
