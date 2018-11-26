@@ -444,7 +444,7 @@ if(!$token_check){
 					'response'=> $response
 				);
 				
-				 Agents::model()->updateByPk($agent_id, array('forced_logout' => 0, 'access_token' => '', 'access_key' => '', 'access_vector' => ''));
+				 if(!Yii::app()->request->getParam('go_offline')) Agents::model()->updateByPk($agent_id, array('forced_logout' => 0, 'access_token' => '', 'access_key' => '', 'access_vector' => ''));
 
 Yii::app()->db->createCommand("UPDATE agent_devices SET device_status='offline' WHERE agent_id = :agent_id AND device_token = :device_token")
 ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
@@ -6806,7 +6806,14 @@ $aws_client = SnsClient::factory(array(
 $aws_result = $aws_client->setEndpointAttributes([
     'Attributes' => array("Token" => $device_token),
     'EndpointArn' => $device_exists[0]['endpoint_arn'],
-]);	
+]);
+
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $aws_result['EndpointArn'],
+    'Protocol' => 'application',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
+]);
 		}
 		else{
 	$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
@@ -6824,7 +6831,14 @@ $aws_result = $aws_client->createPlatformEndpoint([
     'CustomUserData' => base64_encode($this->aes256cbc_crypt( $agent_id, 'e', AES256CBC_API_PASS )),
     'PlatformApplicationArn' => $aws_platformarn,
     'Token' => $device_token,
-]);	
+]);
+
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $aws_result['EndpointArn'],
+    'Protocol' => 'application',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
+]);
 		}
 		
 if(!$device_exists[0]['endpoint_arn']){
@@ -6835,7 +6849,7 @@ Yii::app()->db->createCommand("UPDATE agent_devices SET agent_id=:agent_id, devi
 ->bindValue(':os_details', $os_details, PDO::PARAM_STR)
 ->bindValue(':device_type', $device_type, PDO::PARAM_STR)
 ->bindValue(':device_id', $device_id, PDO::PARAM_STR)
-->bindValue(':endpoint_arn', $endpoint_arn, PDO::PARAM_STR)
+->bindValue(':endpoint_arn', $aws_result['EndpointArn'], PDO::PARAM_STR)
 ->execute(); 
 		}
 		else{
@@ -6869,6 +6883,13 @@ $aws_result = $aws_client->createPlatformEndpoint([
     'CustomUserData' => base64_encode($this->aes256cbc_crypt( $customer_id, 'e', AES256CBC_API_PASS )),
     'PlatformApplicationArn' => $aws_platformarn,
     'Token' => $device_token,
+]);
+
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $aws_result['EndpointArn'],
+    'Protocol' => 'application',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
 ]);
 
 $data = array('agent_id'=> $agent_id, 'device_name'=> $device_name, 'device_id'=> $device_id, 'device_token'=> $device_token, 'os_details'=> $os_details, 'device_type'=> $device_type, 'device_add_date'=> date("Y-m-d H:i:s"), 'last_used'=> date("Y-m-d H:i:s"), 'endpoint_arn' => $aws_result['EndpointArn']);
