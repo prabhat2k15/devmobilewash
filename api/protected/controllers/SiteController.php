@@ -4267,16 +4267,21 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
                 $status_qr=" AND w.status = 4";
             }elseif(in_array($event, array('yelloworders', 'blueorders', 'redorders', 'purpleorders'))){
                 $status_qr = " AND w.status IN('0','4','3','2','1')";
+            }elseif($event == 'washer_history'){
+                $from = Yii::app()->request->getParam('from');
+                $to = Yii::app()->request->getParam('to');
+                $agent_id = Yii::app()->request->getParam('agent_id');
+                $order_day = " AND w.agent_id = '".$agent_id."' AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."'";
             }
             else {
                 $status_qr = '';
             }
 
-            if(empty(Yii::app()->request->getParam('day'))){
+            if(empty(Yii::app()->request->getParam('day')) && $event != 'washer_history'){
                 $month_start = Yii::app()->request->getParam('year').'-'.Yii::app()->request->getParam('month').'-01';
                 $month_end = Yii::app()->request->getParam('year').'-'.Yii::app()->request->getParam('month').'-31';
                 $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$month_start."' AND '".$month_end."'".$status_qr;
-            }else{    
+            }elseif($event != 'washer_history'){    
                 $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '".$day."'".$status_qr;
             }
         }
@@ -4320,7 +4325,7 @@ if($customer_id > 0){
         //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
 //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
-if($event == 'newcustomer'){
+if($event == 'newcustomer' || $event == 'washer_history'){
      if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id ASC LIMIT ".$limit)->queryAll();
 else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id ASC")->queryAll();
   }   
@@ -8665,6 +8670,7 @@ $i = 0;
 foreach($topwashers_arr as $key=>$washer){
 	$agent_det = Agents::model()->findByPk($key);
 	$topwashers_det_arr[$i]['id'] = $key;
+    $topwashers_det_arr[$i]['washer_id'] = $agent_det->id;
 	$topwashers_det_arr[$i]['company_id'] = $agent_det->real_washer_id;
 	$topwashers_det_arr[$i]['name'] = $agent_det->first_name." ".$agent_det->last_name;
 	$topwashers_det_arr[$i]['total_washes'] = $washer;

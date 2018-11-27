@@ -95,7 +95,7 @@ $washers_data = json_decode($result);
 <tr>
     <td><?php echo $washer->id; ?></td>
     <td><?php echo $washer->company_id; ?></td>
-    <td><?php echo $washer->name; ?></td>
+    <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>"><?php echo $washer->name; ?></a></td>
     <td style="display: none;"><?php echo $washer->street; ?></td>
     <td style="display: none;"><?php echo $washer->city; ?></td>
     <td style="display: none;"><?php echo $washer->state; ?></td>
