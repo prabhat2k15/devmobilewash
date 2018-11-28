@@ -6892,7 +6892,7 @@ if($device_type == 'IOS') $aws_platformarn = AWS_WASHER_IOS_PLATFORM_ARN;
 else $aws_platformarn = AWS_WASHER_ANDROID_PLATFORM_ARN;
 
 $aws_result = $aws_client->createPlatformEndpoint([
-    'CustomUserData' => base64_encode($this->aes256cbc_crypt( $customer_id, 'e', AES256CBC_API_PASS )),
+    'CustomUserData' => base64_encode($this->aes256cbc_crypt( $agent_id, 'e', AES256CBC_API_PASS )),
     'PlatformApplicationArn' => $aws_platformarn,
     'Token' => $device_token,
 ]);
