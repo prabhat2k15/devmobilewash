@@ -87,6 +87,8 @@ $washers_data = json_decode($result);
                                                 <th style="display: none;"> city </th>
                                                 <th style="display: none;"> state </th>
                                                 <th style="display: none;"> zip </th>
+                                                <th> Total Scheduled </th>
+                                                <th> Total On Demand </th>
                                                 <th> Total Washes </th>
                                             </tr>
                                         </thead>
@@ -100,6 +102,8 @@ $washers_data = json_decode($result);
     <td style="display: none;"><?php echo $washer->city; ?></td>
     <td style="display: none;"><?php echo $washer->state; ?></td>
     <td style="display: none;"><?php echo $washer->zip; ?></td>
+    <td><?php echo $washer->total_scheduled; ?></td>
+    <td><?php echo $washer->total_demand; ?></td>
     <td><?php echo $washer->total_washes; ?></td>
 </tr>
 <?php endforeach; ?>

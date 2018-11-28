@@ -4271,7 +4271,7 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
                 $from = Yii::app()->request->getParam('from');
                 $to = Yii::app()->request->getParam('to');
                 $agent_id = Yii::app()->request->getParam('agent_id');
-                $order_day = " AND w.agent_id = '".$agent_id."' AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."'";
+                $order_day = " w.agent_id = '".$agent_id."' AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."'";
             }
             else {
                 $status_qr = '';
@@ -4325,7 +4325,10 @@ if($customer_id > 0){
         //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
 //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
-if($event == 'newcustomer' || $event == 'washer_history'){
+if($event == 'washer_history'){
+     if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$order_day." ORDER BY w.id ASC LIMIT ".$limit)->queryAll();
+else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$order_day." ORDER BY w.id ASC")->queryAll();
+  }elseif($event == 'newcustomer'){
      if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id ASC LIMIT ".$limit)->queryAll();
 else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id ASC")->queryAll();
   }   
@@ -8650,9 +8653,10 @@ $to  = Yii::app()->request->getParam('to');
 			$topwashers_arr = array();
 			$topwashers_det_arr = array();
 			$all_washes =  Yii::app()->db->createCommand()
-						->select('agent_id')
+						->select('COUNT(id) as total, agent_id, COUNT(CASE WHEN is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN is_scheduled = 1 THEN null ELSE 1 END) as total_demand')
 						->from('washing_requests')
-						->where("(order_for >= :from AND order_for <= :to) AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
+						->where("DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN :from AND :to AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
+                        ->group('agent_id')
 						->queryAll();
 
 if(count($all_washes) > 0){
@@ -8660,25 +8664,22 @@ if(count($all_washes) > 0){
 			$response= 'topmost washers';
 			
 
-foreach($all_washes as $wash){
-$washer_ids[] = $wash['agent_id'];	
-}
-
-$topwashers_arr = array_count_values($washer_ids);
-arsort($topwashers_arr);
 $i = 0;
-foreach($topwashers_arr as $key=>$washer){
-	$agent_det = Agents::model()->findByPk($key);
-	$topwashers_det_arr[$i]['id'] = $key;
+foreach($all_washes as $key => $wash ){
+//$washer_ids[] = $wash['agent_id'];	
+$agent_det = Agents::model()->findByPk($wash['agent_id']);
+    $topwashers_det_arr[$i]['id'] = $key;
+    $topwashers_det_arr[$i]['company_id'] = $agent_det->real_washer_id;
     $topwashers_det_arr[$i]['washer_id'] = $agent_det->id;
-	$topwashers_det_arr[$i]['company_id'] = $agent_det->real_washer_id;
-	$topwashers_det_arr[$i]['name'] = $agent_det->first_name." ".$agent_det->last_name;
-	$topwashers_det_arr[$i]['total_washes'] = $washer;
+    $topwashers_det_arr[$i]['name'] = $agent_det->first_name." ".$agent_det->last_name;
+    $topwashers_det_arr[$i]['total_washes'] = $wash['total'];
+    $topwashers_det_arr[$i]['total_demand'] = $wash['total_demand'];
+    $topwashers_det_arr[$i]['total_scheduled'] = $wash['total_scheduled'];
     $topwashers_det_arr[$i]['street'] = $agent_det->street_address;
     $topwashers_det_arr[$i]['city'] = $agent_det->city;
     $topwashers_det_arr[$i]['state'] = $agent_det->state;
     $topwashers_det_arr[$i]['zip'] = $agent_det->zipcode;
-$i++;	
+$i++;   
 }
 
 }
