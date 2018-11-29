@@ -8652,12 +8652,13 @@ $to  = Yii::app()->request->getParam('to');
 			$washer_ids = array();
 			$topwashers_arr = array();
 			$topwashers_det_arr = array();
-			$all_washes =  Yii::app()->db->createCommand()
+			/*$all_washes =  Yii::app()->db->createCommand()
 						->select('COUNT(id) as total, agent_id, COUNT(CASE WHEN is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN is_scheduled = 1 THEN null ELSE 1 END) as total_demand')
 						->from('washing_requests')
 						->where("DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN :from AND :to AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
                         ->group('agent_id')
-						->queryAll();
+						->queryAll();*/
+        $all_washes =  Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 AND a.account_status = 0 GROUP BY a.id")->queryAll();
 
 if(count($all_washes) > 0){
     $result= 'true';
@@ -8667,18 +8668,18 @@ if(count($all_washes) > 0){
 $i = 0;
 foreach($all_washes as $key => $wash ){
 //$washer_ids[] = $wash['agent_id'];	
-$agent_det = Agents::model()->findByPk($wash['agent_id']);
+//$agent_det = Agents::model()->findByPk($wash['agent_id']);
     $topwashers_det_arr[$i]['id'] = $key;
-    $topwashers_det_arr[$i]['company_id'] = $agent_det->real_washer_id;
-    $topwashers_det_arr[$i]['washer_id'] = $agent_det->id;
-    $topwashers_det_arr[$i]['name'] = $agent_det->first_name." ".$agent_det->last_name;
+    $topwashers_det_arr[$i]['company_id'] = $wash['real_washer_id'];
+    $topwashers_det_arr[$i]['washer_id'] = $wash['id'];
+    $topwashers_det_arr[$i]['name'] = $wash['first_name']." ".$wash['last_name'];
     $topwashers_det_arr[$i]['total_washes'] = $wash['total'];
-    $topwashers_det_arr[$i]['total_demand'] = $wash['total_demand'];
+    $topwashers_det_arr[$i]['total_demand'] = ($wash['total'] == 0)? 0:$wash['total_demand'];
     $topwashers_det_arr[$i]['total_scheduled'] = $wash['total_scheduled'];
-    $topwashers_det_arr[$i]['street'] = $agent_det->street_address;
-    $topwashers_det_arr[$i]['city'] = $agent_det->city;
-    $topwashers_det_arr[$i]['state'] = $agent_det->state;
-    $topwashers_det_arr[$i]['zip'] = $agent_det->zipcode;
+    $topwashers_det_arr[$i]['street'] = $wash['street_address'];
+    $topwashers_det_arr[$i]['city'] = $wash['city'];
+    $topwashers_det_arr[$i]['state'] = $wash['state'];
+    $topwashers_det_arr[$i]['zip'] = $wash['zipcode'];
 $i++;   
 }
 
