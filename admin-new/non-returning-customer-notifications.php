@@ -322,7 +322,7 @@ margin-bottom: 30px;
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-5">
-                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="message" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"></textarea> </span> </div>
+                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="message" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"></textarea> </span> </div>
                                     <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="message" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"></textarea> </span>
                                         </div>
                                         <div>
@@ -379,7 +379,7 @@ margin-bottom: 30px;
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-5">
-                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="message" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"></textarea> </span> </div>
+                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="message" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"></textarea> </span> </div>
                                     <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="message" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"></textarea> </span>
                                         </div>
                                         <div>

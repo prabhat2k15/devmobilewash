@@ -71,11 +71,12 @@ padding: 0;
 
 .deluxe-pop .popup-content ul li {
     display: block;
-    background: url(images/tick-blue.png) no-repeat 0 4px;
+    background: url(images/blue_check.png) no-repeat 0 4px;
     padding-left: 30px;
     font-size: 18px;
     margin-bottom: 12px;
     font-weight: 400;
+    background-size: 15px;
 }
 
 </style>

@@ -12908,6 +12908,79 @@ echo "<br>";
 
 
      }
+     
+     
+         public function actionupdatecustomerspecnotifiations(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+/*if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}*/
+
+        $notify_cat = Yii::app()->request->getParam('notify_cat');
+        $sms_text = '';
+        $sms_text = Yii::app()->request->getParam('sms_text');
+	$notify_text = '';
+        $notify_text = Yii::app()->request->getParam('notify_text');
+	$email_img_url = '';
+        $email_img_url = Yii::app()->request->getParam('email_img_url');
+	$notify_trigger_time = '';
+	$notify_trigger_time = Yii::app()->request->getParam('notify_trigger_time');
+
+        $json = array();
+
+        $result= 'false';
+        $response= 'Pass the required parameters';
+
+        if(isset($notify_cat) && !empty($notify_cat)) {
+            $notify_check =  Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+		->bindValue(':notify_cat', $notify_cat, PDO::PARAM_STR)
+		->queryAll();
+
+            if(!count($notify_check)){
+                $response= "Notification doesn't exists";
+            }
+
+            else{
+
+     Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET notify_trigger_time=:notify_trigger_time, notify_text=:notify_text, sms_text = :sms_text, email_image_url = :email_img_url, last_updated_at = '".date('Y-m-d H:i:s')."' WHERE notify_cat = :notify_cat ")
+		     ->bindValue(':notify_trigger_time', $notify_trigger_time, PDO::PARAM_STR)
+		     ->bindValue(':notify_text', $notify_text, PDO::PARAM_STR)
+		     ->bindValue(':sms_text', $sms_text, PDO::PARAM_STR)
+		     ->bindValue(':email_img_url', $email_img_url, PDO::PARAM_STR)
+		     ->bindValue(':notify_cat', $notify_cat, PDO::PARAM_STR)
+		     ->execute();
+
+                $result= 'true';
+                $response= "Notification updated successfully";
+
+            }
+        }
+
+        $json = array(
+            'result'=> $result,
+            'response'=> $response,
+        );
+
+        echo json_encode($json); die();
+    }
 
 
 
