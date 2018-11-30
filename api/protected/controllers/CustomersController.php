@@ -12925,14 +12925,14 @@ $user_id = Yii::app()->request->getParam('user_id');
 
 $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
 
-/*if(!$token_check){
+if(!$token_check){
  $json = array(
                     'result'=> 'false',
                     'response'=> 'Invalid request'
                 );
  echo json_encode($json);
  die();
-}*/
+}
 
         $notify_cat = Yii::app()->request->getParam('notify_cat');
         $sms_text = '';
@@ -12959,6 +12959,10 @@ $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id
             }
 
             else{
+		
+		if(!$email_img_url){
+			$email_img_url = $notify_check[0]['email_image_url'];
+		}
 
      Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET notify_trigger_time=:notify_trigger_time, notify_text=:notify_text, sms_text = :sms_text, email_image_url = :email_img_url, last_updated_at = '".date('Y-m-d H:i:s')."' WHERE notify_cat = :notify_cat ")
 		     ->bindValue(':notify_trigger_time', $notify_trigger_time, PDO::PARAM_STR)
@@ -12980,6 +12984,47 @@ $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id
         );
 
         echo json_encode($json); die();
+    }
+    
+    
+         public function Actiongetcustomerspecnotifiations(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
+        $spec_notifications =  Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications")->queryAll();
+	
+	foreach($spec_notifications as $notify){
+		$notify_array[$notify['notify_cat']] = array('id' => $notify['id'], 'notify_trigger_time' => $notify['notify_trigger_time'], 'sms_text' => $notify['sms_text'], 'notify_text' => $notify['notify_text'], 'email_image_url' => $notify['email_image_url'], 'last_updated_at' => $notify['last_updated_at']);
+		
+	}
+
+ $json = array(
+            'result'=> 'true',
+            'response'=> 'all notifications',
+	    'spec_notifications' => $notify_array
+        );
+ 
+ echo json_encode($json); die();
     }
 
 
