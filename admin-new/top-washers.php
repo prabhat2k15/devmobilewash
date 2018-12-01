@@ -90,6 +90,8 @@ $washers_data = json_decode($result);
                                                 <th> Total Scheduled </th>
                                                 <th> Total On Demand </th>
                                                 <th> Total Washes </th>
+                                                <th> Total cancel </th>
+                                                <th> Total Earned </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -105,6 +107,8 @@ $washers_data = json_decode($result);
     <td><?php echo $washer->total_scheduled; ?></td>
     <td><?php echo $washer->total_demand; ?></td>
     <td><?php echo $washer->total_washes; ?></td>
+    <td><?php echo $washer->total_cancel; ?></td>
+    <td><?php echo ($washer->total_sum > 0)? '$'.round($washer->total_sum,2):'$0.00'; ?></td>
 </tr>
 <?php endforeach; ?>
              

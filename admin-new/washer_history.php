@@ -581,8 +581,7 @@ $android_count = $jsondata->android_count;
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> <?php if($_GET['filter'] == 'upcoming') echo 'Upcoming'; if($_GET['filter'] == 'nonupcoming') echo 'Non-Upcoming'; ?> All Orders </span><?php if((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')){ ?><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
-                                        <?php } ?>
+                                        <span class="caption-subject bold uppercase"> <?php if($_GET['filter'] == 'upcoming') echo 'Upcoming'; if($_GET['filter'] == 'nonupcoming') echo 'Non-Upcoming'; ?> All Orders </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                                     </div>
                                     <div class="caption font-dark">
 
@@ -624,13 +623,11 @@ $android_count = $jsondata->android_count;
 												<!--th> Agent Email </th-->
                                                 <th> Agent Phone </th>
                                                 <th style='min-width: 115px;'> Address </th>
-                                                <?php if((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer' || $_GET['event'] == 'washer_history')){?>
                                                 <th style="display: none;"> House Number </th>
                                                 <th style="display: none;"> Street </th>
                                                 <th style="display: none;"> City </th>
                                                 <th style="display: none;"> State </th>
                                                 <th style="display: none;"> ZipCode </th>
-                                                <?php } ?>
                                                 <th> Schedule Datetime </th>
 <th> Starts </th>
                                                 <th> Vehicles </th>
@@ -703,7 +700,6 @@ else echo "N/A";
 ?>
 </td>
                     <td><?php echo $order->address." (".$order->address_type.")"; ?></td>
-                    <?php if((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer' || $_GET['event'] == 'washer_history')){
                     $addressArr = explode(',', $order->address); 
                     //$Arr_field['field_value']['address'] = $order->address; 
                     //print_r($addressArr);
@@ -718,7 +714,6 @@ else echo "N/A";
                     <td style="display: none;"> <?php echo (!empty($order->city))? $order->city: $addressArr[1];?> </td>
                     <td style="display: none;"> <?php echo (!empty($order->state))? $order->state: $state;?> </td>
                     <td style="display: none;"> <?php echo (!empty($order->zipcode))? $order->zipcode: $zipcode;?> </td>
-                    <?php } ?>
 <td>
     <?php if($order->is_scheduled): ?>
 <?php if(strtotime($order->reschedule_date) > 0): ?>
@@ -852,7 +847,7 @@ $.fn.dataTableExt.oSort['nullable-desc'] = function(a,b) {
         buttons: [{
             extend: 'csv',
             exportOptions: {
-                columns: [1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21] // indexes of the columns that should be printed,
+                columns: [1,2,3,4,5,6,7,8,9,10,11,12,15,17,18,19,20,21,22] // indexes of the columns that should be printed,
             } 
           }
         ]
