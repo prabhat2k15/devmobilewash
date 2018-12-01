@@ -8670,6 +8670,7 @@ foreach($all_washes as $key => $wash ){
 //$washer_ids[] = $wash['agent_id'];	
 //$agent_det = Agents::model()->findByPk($wash['agent_id']);
     $get_cancel_count = Yii::app()->db->createCommand("SELECT COUNT(id) as total_cancel FROM activity_logs WHERE DATE_FORMAT(action_date,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND action IN('admindropjob', 'cancelorderwasher', 'washerenroutecancel','Dropschedule') AND agent_id = ".$wash['id']."")->queryAll();
+    $total_earn =  Yii::app()->db->createCommand("SELECT SUM(CASE WHEN status =7 THEN washer_cancel_fee ELSE agent_total END) as total_sum FROM washing_requests wr WHERE wr.agent_id = ".$wash['id']." AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND wr.status IN (4,5,7)")->queryAll(); 
     $topwashers_det_arr[$i]['id'] = $key;
     $topwashers_det_arr[$i]['company_id'] = $wash['real_washer_id'];
     $topwashers_det_arr[$i]['washer_id'] = $wash['id'];
@@ -8678,7 +8679,7 @@ foreach($all_washes as $key => $wash ){
     $topwashers_det_arr[$i]['total_demand'] = ($wash['total'] == 0)? 0:$wash['total_demand'];
     $topwashers_det_arr[$i]['total_scheduled'] = $wash['total_scheduled'];
     $topwashers_det_arr[$i]['total_cancel'] = (count($get_cancel_count) > 0)? $get_cancel_count[0]['total_cancel']:0;
-    $topwashers_det_arr[$i]['total_sum'] = $wash['total_sum'];
+    $topwashers_det_arr[$i]['total_sum'] = (count($total_earn) > 0)? $total_earn[0]['total_sum']:0;
     $topwashers_det_arr[$i]['street'] = $wash['street_address'];
     $topwashers_det_arr[$i]['city'] = $wash['city'];
     $topwashers_det_arr[$i]['state'] = $wash['state'];
