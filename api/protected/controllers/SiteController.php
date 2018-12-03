@@ -6682,10 +6682,132 @@ if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
  die();
     }
 
+    $nonreturn30_topic_arn = '';
+    $nonreturn60_topic_arn = '';
+    $nonreturn90_topic_arn = '';
+    
 	$clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1), array('limit'=> 1000));
 
 	if(count($clientlist)){
+		
+		$nonreturn30_notify_check =  Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+		->bindValue(':notify_cat', 'non-return-31st-day', PDO::PARAM_STR)
+		->queryAll();
+		
+		$nonreturn60_notify_check =  Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+		->bindValue(':notify_cat', 'non-return-61st-day', PDO::PARAM_STR)
+		->queryAll();
+		
+		$nonreturn90_notify_check =  Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+		->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
+		->queryAll();
+		
+		if((count($nonreturn30_notify_check)) && (!$nonreturn30_notify_check[0]['topic_arn'])){
+			
+			try{
+$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+
+$aws_topic_result = $aws_client->createTopic([
+   'Attributes' => array("DisplayName" => 'MobileWash'),
+    'Name' => 'custnonreturn30',
+]);
+
+$nonreturn30_topic_arn = $aws_topic_result['TopicArn'];
+
+}catch(exception $e) {
+	
+}
+			
+		Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET topic_arn = :topic_arn WHERE notify_cat = :notify_cat")
+		     ->bindValue(':topic_arn', $nonreturn30_topic_arn, PDO::PARAM_STR)
+		     ->bindValue(':notify_cat', 'non-return-31st-day', PDO::PARAM_STR)
+		     ->execute();
+		}
+		else{
+			$nonreturn30_topic_arn = $nonreturn30_notify_check[0]['topic_arn'];
+		}
+		
+		if((count($nonreturn60_notify_check)) && (!$nonreturn60_notify_check[0]['topic_arn'])){
+			
+			try{
+$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+
+$aws_topic_result = $aws_client->createTopic([
+   'Attributes' => array("DisplayName" => 'MobileWash'),
+    'Name' => 'custnonreturn60',
+]);
+
+$nonreturn60_topic_arn = $aws_topic_result['TopicArn'];
+
+}catch(exception $e) {
+	
+}
+			
+		Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET topic_arn = :topic_arn WHERE notify_cat = :notify_cat")
+		     ->bindValue(':topic_arn', $nonreturn60_topic_arn, PDO::PARAM_STR)
+		     ->bindValue(':notify_cat', 'non-return-61st-day', PDO::PARAM_STR)
+		     ->execute();
+		}
+		else{
+			$nonreturn60_topic_arn = $nonreturn60_notify_check[0]['topic_arn'];
+		}
+		
+		if((count($nonreturn90_notify_check)) && (!$nonreturn90_notify_check[0]['topic_arn'])){
+			
+			try{
+$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+
+$aws_topic_result = $aws_client->createTopic([
+   'Attributes' => array("DisplayName" => 'MobileWash'),
+    'Name' => 'custnonreturn90',
+]);
+
+$nonreturn90_topic_arn = $aws_topic_result['TopicArn'];
+
+}catch(exception $e) {
+	
+}
+			
+		Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET topic_arn = :topic_arn WHERE notify_cat = :notify_cat")
+		     ->bindValue(':topic_arn', $nonreturn90_topic_arn, PDO::PARAM_STR)
+		     ->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
+		     ->execute();
+		}
+		else{
+			$nonreturn90_topic_arn = $nonreturn90_notify_check[0]['topic_arn'];
+		}
+		
 	    foreach($clientlist as $client){
+		
+		$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
 		//echo $client->id."<br>";
 	       // echo $client['id']."<br>";
 	        $wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$client->id, 'status' => 4),array('order'=>'id DESC'));
@@ -6704,9 +6826,139 @@ $min_diff = round(($current_time - $create_time) / 60,2);
 //more than 30 days
 if($min_diff >= 43200){
 
-	if(($min_diff >= 43200) && ($min_diff < 86400)) Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30));
-	if(($min_diff >= 86400) && ($min_diff < 129600)) Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60));
-	if($min_diff >= 129600) Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90));
+	if(($min_diff >= 43200) && ($min_diff < 86400)) {
+		
+		$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id='.$client->id)->queryAll();
+		
+		if(count($clientdevices)){
+		foreach($clientdevices as $ctdevice)
+		{
+try{
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $ctdevice['endpoint_arn'],
+    'Protocol' => 'application',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => $nonreturn30_topic_arn,
+]);
+}catch(exception $e) {
+	
+}
+			}
+		}
+
+try{		
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $client->email,
+    'Protocol' => 'email',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => $nonreturn30_topic_arn,
+]);
+}catch(exception $e) {
+	
+}
+
+try{
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $client->contact_number,
+    'Protocol' => 'sms',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => $nonreturn30_topic_arn,
+]);
+}catch(exception $e) {
+	
+}
+		
+Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30));	
+	}
+	
+	if(($min_diff >= 86400) && ($min_diff < 129600)) {
+		
+	$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id='.$client->id)->queryAll();
+		
+		if(count($clientdevices)){
+		foreach($clientdevices as $ctdevice)
+		{
+try{
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $ctdevice['endpoint_arn'],
+    'Protocol' => 'application',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => $nonreturn60_topic_arn,
+]);
+}catch(exception $e) {
+	
+}
+			}
+		}
+
+try{		
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $client->email,
+    'Protocol' => 'email',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => $nonreturn60_topic_arn,
+]);
+}catch(exception $e) {
+	
+}
+
+try{
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $client->contact_number,
+    'Protocol' => 'sms',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => $nonreturn60_topic_arn,
+]);
+}catch(exception $e) {
+	
+}
+		
+	Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60));
+	}
+	if($min_diff >= 129600) {
+		
+	$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id='.$client->id)->queryAll();
+		
+		if(count($clientdevices)){
+		foreach($clientdevices as $ctdevice)
+		{
+try{
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $ctdevice['endpoint_arn'],
+    'Protocol' => 'application',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => $nonreturn90_topic_arn,
+]);
+}catch(exception $e) {
+	
+}
+			}
+		}
+
+try{		
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $client->email,
+    'Protocol' => 'email',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => $nonreturn90_topic_arn,
+]);
+}catch(exception $e) {
+	
+}
+
+try{
+$aws_subscribe_result = $aws_client->subscribe([
+    'Endpoint' => $client->contact_number,
+    'Protocol' => 'sms',
+    'ReturnSubscriptionArn' => true,
+    'TopicArn' => $nonreturn90_topic_arn,
+]);
+}catch(exception $e) {
+	
+}
+		
+	Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90));	
+	}
 
 
 }
@@ -6720,7 +6972,22 @@ Customers::model()->updateByPk($client->id, array("non_return_check" => 0));
 	    }
 	}
 	else{
-		Customers::model()->updateAll(array('non_return_check' => 1));
+		//Customers::model()->updateAll(array('non_return_check' => 1));
+		
+		Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
+		     ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
+		     ->bindValue(':notify_cat', 'non-return-31st-day', PDO::PARAM_STR)
+		     ->execute();
+		     
+		     Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
+		     ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
+		     ->bindValue(':notify_cat', 'non-return-61st-day', PDO::PARAM_STR)
+		     ->execute();
+		     
+		     Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
+		     ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
+		     ->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
+		     ->execute();
 
 	}
 
