@@ -581,7 +581,7 @@ $android_count = $jsondata->android_count;
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> <?php if($_GET['filter'] == 'upcoming') echo 'Upcoming'; if($_GET['filter'] == 'nonupcoming') echo 'Non-Upcoming'; ?> All Orders </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                                        <span class="caption-subject bold uppercase"> <?php if($_GET['filter'] == 'upcoming') echo 'Upcoming'; if($_GET['filter'] == 'nonupcoming') echo 'Non-Upcoming'; ?> All Orders </span><a style="margin-left: 20px;" href="<?php echo ROOT_URL;?>/api/index.php?r=site/washerhistorycsv&key=<?php echo API_KEY;?>&from=<?php echo $from;?>&to=<?php echo $to;?>&washer_id=<?php echo $agent_id;?>">Download CSV</a>
                                     </div>
                                     <div class="caption font-dark">
 

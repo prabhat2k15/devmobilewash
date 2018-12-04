@@ -4271,17 +4271,22 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
                 $from = Yii::app()->request->getParam('from');
                 $to = Yii::app()->request->getParam('to');
                 $agent_id = Yii::app()->request->getParam('agent_id');
-                $order_day = " w.agent_id = '".$agent_id."' AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."'";
+                $order_day = "(w.agent_id = ". $agent_id . " OR w.canceled_washer_id = ".$agent_id.") AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."'";
+            }elseif ($event == 'washer_history_csv') {
+                $from = Yii::app()->request->getParam('from');
+                $to = Yii::app()->request->getParam('to');
+                $agent_id = Yii::app()->request->getParam('agent_id');
+                $order_day = " (w.agent_id = ". $agent_id . " OR w.canceled_washer_id = ".$agent_id.") AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND status IN (4,5,7)";
             }
             else {
                 $status_qr = '';
             }
 
-            if(empty(Yii::app()->request->getParam('day')) && $event != 'washer_history'){
+            if(empty(Yii::app()->request->getParam('day')) && $event != 'washer_history' && $event != 'washer_history_csv'){
                 $month_start = Yii::app()->request->getParam('year').'-'.Yii::app()->request->getParam('month').'-01';
                 $month_end = Yii::app()->request->getParam('year').'-'.Yii::app()->request->getParam('month').'-31';
                 $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$month_start."' AND '".$month_end."'".$status_qr;
-            }elseif($event != 'washer_history'){    
+            }elseif($event != 'washer_history' && $event != 'washer_history_csv'){    
                 $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '".$day."'".$status_qr;
             }
         }
@@ -4325,7 +4330,7 @@ if($customer_id > 0){
         //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
 //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
-if($event == 'washer_history'){
+if($event == 'washer_history' && $event == 'washer_history_csv'){
      if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$order_day." ORDER BY w.id ASC LIMIT ".$limit)->queryAll();
 else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$order_day." ORDER BY w.id ASC")->queryAll();
   }elseif($event == 'newcustomer'){
@@ -8937,7 +8942,7 @@ foreach($all_washes as $key => $wash ){
 //$washer_ids[] = $wash['agent_id'];	
 //$agent_det = Agents::model()->findByPk($wash['agent_id']);
     $get_cancel_count = Yii::app()->db->createCommand("SELECT COUNT(id) as total_cancel FROM activity_logs WHERE DATE_FORMAT(action_date,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND action IN('admindropjob', 'cancelorderwasher', 'washerenroutecancel','Dropschedule') AND agent_id = ".$wash['id']."")->queryAll();
-    $total_earn =  Yii::app()->db->createCommand("SELECT SUM(CASE WHEN status =7 THEN washer_cancel_fee ELSE agent_total END) as total_sum FROM washing_requests wr WHERE wr.agent_id = ".$wash['id']." AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND wr.status IN (4,5,7)")->queryAll(); 
+    $total_earn =  Yii::app()->db->createCommand("SELECT SUM(CASE status WHEN 7 THEN washer_cancel_fee WHEN 5 THEN washer_cancel_fee ELSE agent_total END) as total_sum FROM washing_requests wr WHERE wr.agent_id = ".$wash['id']." AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND wr.status IN (4,5,7)")->queryAll(); 
     $topwashers_det_arr[$i]['id'] = $key;
     $topwashers_det_arr[$i]['company_id'] = $wash['real_washer_id'];
     $topwashers_det_arr[$i]['washer_id'] = $wash['id'];
@@ -11566,6 +11571,155 @@ if(!$token_check){
                 }
             }
             fclose($file);
+        die();
+    }
+    
+    public function actionwasherhistorycsv() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        ob_end_clean();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=Current_monthtask.csv');
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $file = fopen('php://output', 'w');
+
+        $url = ROOT_URL . '/api/index.php?r=site/getallwashrequestsnew';
+        $cust_id = 0;
+        $agent_id = 0;
+        $_event = 'washer_history_csv';
+        if(isset($_GET['from'])) $from = $_GET['from'];
+        if(isset($_GET['to'])) $to = $_GET['to'];
+        if(isset($_GET['washer_id'])) $agent_id = $_GET['washer_id'];
+        $handle = curl_init($url);
+        $data = array('event' => $_event, 'filter' => '', 'limit' => '', 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, "api_token" => $api_token, 'from' => $from, 'to' => $to);
+
+        curl_setopt($handle, CURLOPT_POST, true);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec($handle);
+        curl_close($handle);
+        $jsondata = json_decode($result);
+        $s_orders_response = $jsondata->response;
+        $s_orders_result_code = $jsondata->result;
+        $s_mw_all_orders = $jsondata->wash_requests;
+        //echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; 
+        $pending_order_count = '';
+        if (!$jsondata->pending_wash_count)
+            $pending_order_count = "no orders";
+        if ($jsondata->pending_wash_count == 1)
+            $pending_order_count = "1 order";
+        if ($jsondata->pending_wash_count > 1)
+            $pending_order_count = $jsondata->pending_wash_count . " orders";
+        $voice_print = "Hello " . $jsondata_permission->user_name . "! You have " . $pending_order_count . " pending.";
+        $cust_avg_order_frequency = $jsondata->cust_avg_order_frequency;
+        $android_count = $jsondata->android_count;
+        $ios_count = $jsondata->ios_count;
+
+        if (count($s_mw_all_orders) > 0) {
+            $Arr_field['field_name']['order_id'] = 'ID';
+            $Arr_field['field_name']['order_type'] = 'Order Type';
+            $Arr_field['field_name']['status'] = 'Status';
+            $Arr_field['field_name']['payment'] = 'Payment';
+            $Arr_field['field_name']['trans_id'] = 'Transaction ID';
+            $Arr_field['field_name']['declined_trans_id'] = 'Declined Transaction ID';
+            $Arr_field['field_name']['customer'] = 'Customer Name';
+            $Arr_field['field_name']['customer_phone'] = 'Customer Phone';
+            $Arr_field['field_name']['badge'] = 'Badge';
+            $Arr_field['field_name']['agent_name'] = 'Agent Name';
+            $Arr_field['field_name']['agent_phone'] = 'Agent Phone';
+            $Arr_field['field_name']['address'] = 'Address';
+            //$Arr_field['field_name']['street'] = 'Street';
+            $Arr_field['field_name']['city'] = 'City';
+            //$Arr_field['field_name']['state'] = 'State';
+            $Arr_field['field_name']['zip_code'] = 'Zip Code';
+            $Arr_field['field_name']['schedule_date'] = 'Schedule Datetime';
+            $Arr_field['field_name']['start'] = 'Starts';
+            $Arr_field['field_name']['vehicles'] = 'Vehicles';
+            $Arr_field['field_name']['total_price'] = 'Total Earned';
+            $Arr_field['field_name']['create_date'] = 'Created Date';
+
+            fputcsv($file, $Arr_field['field_name']);
+
+            foreach ($s_mw_all_orders as $key => $order) {
+                //print_r($order);
+                $Arr_field['field_value']['order_id'] = $order->id;
+                $order_type = ($order->is_scheduled == 1) ? 'Scheduled' : 'On-Demand';
+                $Arr_field['field_value']['order_type'] = $order_type;
+                if ($order->status == 5 || $order->status == 6) {
+                    $status = 'Cancelled';
+                } elseif (!$order->status) {
+                    $status = 'Pending';
+                } elseif ($order->status == 1) {
+                    $status = 'En Route';
+                } elseif ($order->status == 2) {
+                    $status = 'Arrived';
+                } elseif ($order->status == 3) {
+                    $status = 'In Process';
+                } elseif ($order->status == 4) {
+                    $status = 'Completed';
+                } elseif ($order->status == 7) {
+                    $status = 'CNR';
+                }
+                $Arr_field['field_value']['status'] = $status;
+                $fee_wash = ($order->payment_type == 'free') ? 'Free Wash' : '';
+                $Arr_field['field_value']['payment'] = $order->payment_status . $fee_wash;
+                $Arr_field['field_value']['trans_id'] = $order->transaction_id;
+                $Arr_field['field_value']['declined_trans_id'] = $order->failed_transaction_id;
+                $Arr_field['field_value']['customer'] = $order->customer_name;
+                $Arr_field['field_value']['customer_phone'] = $order->customer_phoneno;
+                $Arr_field['field_value']['badge'] = $order->agent_details->real_washer_id;
+                $Arr_field['field_value']['agent_name'] = $order->agent_details->agent_name;
+                $Arr_field['field_value']['agent_phone'] = $order->agent_details->agent_phoneno;
+                $addressArr = explode(',', $order->address);
+                //print_r($addressArr);
+                $house_name = preg_replace('/[^0-9]/', '', $addressArr[0]);
+                $Arr_field['field_value']['address'] = $order->address;
+                //$Arr_field['field_value']['street'] = $order->street_name;
+                $Arr_field['field_value']['city'] = $order->city;
+                //$Arr_field['field_value']['state'] = $order->state;
+                $Arr_field['field_value']['zip_code'] = $order->zipcode;
+                if ($order->is_scheduled) {
+                    if (strtotime($order->reschedule_date) > 0) {
+                        $datetime = "Rescheduled to " . $order->reschedule_date . " " . $order->reschedule_time;
+                    }
+                    if (strtotime($order->schedule_date) > 0) {
+                        $datetime = $order->schedule_date . " " . $order->schedule_time;
+                    }
+                } else {
+                    $datetime = 'N/A';
+                }
+                $Arr_field['field_value']['schedule_date'] = $datetime;
+                if ($order->min_diff > 0) {
+                    $start = $order->min_diff;
+                } else {
+                    $start = "-";
+                }
+                $Arr_field['field_value']['start'] = $start;
+                if (count($order->vehicles)) {
+                    $vehicle = "";
+                    foreach ($order->vehicles as $car) {
+                        $vehicle .= $car->make . " " . $car->model . " (" . $car->pack . ")";
+                        if ($car->addons)
+                            $vehicle .= " - Addons: " . $car->addons;
+                    }
+                }
+                $Arr_field['field_value']['vehicles'] = $vehicle;
+                $agent_count = ($order->status == 7 || $order->status == 5)? $order->washer_cancel_fee:$order->agent_total; 
+                $Arr_field['field_value']['total_price'] = ($order->status == 4)? $order->agent_total:$agent_count;
+                if($Arr_field['field_value']['total_price'] == 0){
+                    continue;
+                }
+                $Arr_field['field_value']['create_date'] = $order->created_date; //order_for;
+                //print_r($Arr_field['field_value']);
+                fputcsv($file, $Arr_field['field_value']);
+            }
+        }
+        fclose($file);
         die();
     }
     
