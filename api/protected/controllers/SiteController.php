@@ -6678,14 +6678,14 @@ if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
       $ip=$_SERVER['REMOTE_ADDR'];
     }
 
-    if($ip != MW_SERVER_IP){
+    /*if($ip != MW_SERVER_IP){
 	 $json = array(
                     'result'=> 'false',
                     'response'=> 'Invalid request'
                 );
  echo json_encode($json);
  die();
-    }
+    }*/
 
     $nonreturn30_topic_arn = '';
     $nonreturn60_topic_arn = '';
@@ -11722,5 +11722,94 @@ if(!$token_check){
         fclose($file);
         die();
     }
+    
+        public function actionnonreturn_inactive_push_delivery_cron(){
+  if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
+
+/*$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}*/
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+    /*if($ip != MW_SERVER_IP){
+	 $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+    }*/
+    
+    $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+    $noti_array = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE topic_arn != ''")
+		->queryAll();
+		
+	foreach($noti_array as $noti){
+		if(($noti['notify_trigger_time'] == date('h:i A')) && ($noti['delivery_ready'] == 1)){
+			 $aws_result = $aws_client->publish([
+				'Message' => json_encode(array("default" => $noti['notify_text'], "sms" => $noti['sms_text'], "email" => "<img src='".ROOT_URL."/admin-new/images/cust-spec-notify-img/".$noti['email_image_url']."' />")),
+				'TopicArn' => $noti['topic_arn'],
+				'MessageStructure' => 'json',
+				'Subject' => 'MobileWash',
+			]);
+			 
+			 if ($aws_result['MessageId']) {
+				Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, last_delivery_date = '".date('Y-m-d H:i:s')."' WHERE id = ".$noti['id'])->execute();
+			 
+			 }
+			
+		}
+		
+	if(((time() - strtotime($noti['last_delivery_date'])) >= 3600) && ($noti['last_delivery_date'] != '0000-00-00 00:00:00')){
+
+		$aws_deltopic_result = $aws_client->deleteTopic([
+			'TopicArn' => $noti['topic_arn'],
+		]);
+		
+		Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, topic_arn = '' WHERE id = ".$noti['id'])->execute();
+		Customers::model()->updateAll(array('non_return_check' => 1));
+			 
+	}	
+	
+	}
+
+
+
+}
     
 }
