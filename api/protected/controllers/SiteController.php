@@ -6116,14 +6116,14 @@ if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
       $ip=$_SERVER['REMOTE_ADDR'];
     }
 
-    if($ip != MW_SERVER_IP){
+   /* if($ip != MW_SERVER_IP){
 	 $json = array(
                     'result'=> 'false',
                     'response'=> 'Invalid request'
                 );
  echo json_encode($json);
  die();
-    }
+    }*/
 
 	$newclients = Yii::app()->db->createCommand("SELECT * FROM customers WHERE is_first_wash = 0 AND is_firstwash_reminder_push_sent = 0")->queryAll();
 
@@ -6216,7 +6216,8 @@ $emailfrom = Vargas::Obj()->getAdminFromEmail();
 
 $subject = 'Welcome from MobileWash';
 
-					$emailbody = "<p style='color: #333;'>".$message."</p>";
+					//$emailbody = "<p style='color: #333;'>".$message."</p>";
+					$emailbody = "<img src='".WEBSITE_URL."/images/new_cust_welcome_1_HOUR.jpg' />";
 				if($cust_details->email) Vargas::Obj()->SendMail($cust_details->email,$emailfrom,$emailbody,$subject, 'mail-receipt');	
 
 
@@ -6851,7 +6852,7 @@ $aws_subscribe_result = $aws_client->subscribe([
 			}
 		}
 
-try{		
+/*try{		
 $aws_subscribe_result = $aws_client->subscribe([
     'Endpoint' => $client->email,
     'Protocol' => 'email',
@@ -6860,9 +6861,9 @@ $aws_subscribe_result = $aws_client->subscribe([
 ]);
 }catch(exception $e) {
 	
-}
+}*/
 
-try{
+/*try{
 $aws_subscribe_result = $aws_client->subscribe([
     'Endpoint' => $client->contact_number,
     'Protocol' => 'sms',
@@ -6871,7 +6872,7 @@ $aws_subscribe_result = $aws_client->subscribe([
 ]);
 }catch(exception $e) {
 	
-}
+}*/
 		
 Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30));	
 	}
@@ -6896,7 +6897,7 @@ $aws_subscribe_result = $aws_client->subscribe([
 			}
 		}
 
-try{		
+/*try{		
 $aws_subscribe_result = $aws_client->subscribe([
     'Endpoint' => $client->email,
     'Protocol' => 'email',
@@ -6916,7 +6917,7 @@ $aws_subscribe_result = $aws_client->subscribe([
 ]);
 }catch(exception $e) {
 	
-}
+}*/
 		
 	Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60));
 	}
@@ -6940,7 +6941,7 @@ $aws_subscribe_result = $aws_client->subscribe([
 			}
 		}
 
-try{		
+/*try{		
 $aws_subscribe_result = $aws_client->subscribe([
     'Endpoint' => $client->email,
     'Protocol' => 'email',
@@ -6960,7 +6961,7 @@ $aws_subscribe_result = $aws_client->subscribe([
 ]);
 }catch(exception $e) {
 	
-}
+}*/
 		
 	Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90));	
 	}
@@ -11795,7 +11796,7 @@ $aws_client = SnsClient::factory(array(
 			
 		}
 		
-	if(((time() - strtotime($noti['last_delivery_date'])) >= 3600) && ($noti['last_delivery_date'] != '0000-00-00 00:00:00')){
+	if(((time() - strtotime($noti['last_delivery_date'])) >= 3600) && ($noti['last_delivery_date'] != '0000-00-00 00:00:00') && (!$noti['delivery_ready'])){
 
 		$aws_deltopic_result = $aws_client->deleteTopic([
 			'TopicArn' => $noti['topic_arn'],
