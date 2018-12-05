@@ -8947,7 +8947,7 @@ $to  = Yii::app()->request->getParam('to');
 						->where("DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN :from AND :to AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
                         ->group('agent_id')
 						->queryAll();*/
-        $all_washes =  Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 AND a.account_status = 0 GROUP BY a.id")->queryAll();
+        $all_washes =  Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 AND a.account_status = 0 GROUP BY a.id")->queryAll();
 
 if(count($all_washes) > 0){
     $result= 'true';
@@ -8963,6 +8963,7 @@ foreach($all_washes as $key => $wash ){
     $topwashers_det_arr[$i]['id'] = $key;
     $topwashers_det_arr[$i]['company_id'] = $wash['real_washer_id'];
     $topwashers_det_arr[$i]['washer_id'] = $wash['id'];
+    $topwashers_det_arr[$i]['image'] = $wash['image'];
     $topwashers_det_arr[$i]['name'] = $wash['first_name']." ".$wash['last_name'];
     $topwashers_det_arr[$i]['total_washes'] = $wash['total'];
     $topwashers_det_arr[$i]['total_demand'] = ($wash['total'] == 0)? 0:$wash['total_demand'];

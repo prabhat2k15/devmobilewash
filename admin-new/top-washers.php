@@ -80,9 +80,9 @@ $washers_data = json_decode($result);
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                         <thead>
                                             <tr>
-						<th> ID </th>
+						<!--<th> ID </th>-->
                                                 <th> Real Washer ID </th>
-                                                <th> Name </th>
+                                                <th>  Washer Photo </th>
                                                 <th style="display: none;"> Street </th>
                                                 <th style="display: none;"> city </th>
                                                 <th style="display: none;"> state </th>
@@ -97,8 +97,9 @@ $washers_data = json_decode($result);
                                         <tbody>
 <?php foreach($washers_data->top_washers as $washer): ?>
 <tr>
-    <td><?php echo $washer->id; ?></td>
+    <!--<td><?php //echo $washer->id; ?></td>-->
     <td><?php echo $washer->company_id; ?></td>
+    <td><img src="<?php if($washer->image) {echo $washer->image;} else{echo "images/image_icon.png";} ?>" style="width: 100px; height: 100px;"></td>
     <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>"><?php echo $washer->name; ?></a></td>
     <td style="display: none;"><?php echo $washer->street; ?></td>
     <td style="display: none;"><?php echo $washer->city; ?></td>
