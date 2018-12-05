@@ -6692,7 +6692,7 @@ if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
     $nonreturn60_topic_arn = '';
     $nonreturn90_topic_arn = '';
     
-	$clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1), array('limit'=> 1000));
+	$clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1), array('limit'=> 700));
 
 	if(count($clientlist)){
 		
@@ -6852,18 +6852,24 @@ $aws_subscribe_result = $aws_client->subscribe([
 			}
 		}
 
-/*try{		
-$aws_subscribe_result = $aws_client->subscribe([
+try{		
+$aws_email_subscribe_result = $aws_client->subscribe([
     'Endpoint' => $client->email,
     'Protocol' => 'email',
-    'ReturnSubscriptionArn' => true,
+    'ReturnSubscriptionArn' => false,
     'TopicArn' => $nonreturn30_topic_arn,
 ]);
+
+$aws_csubscribe_result = $aws_client->confirmSubscription([
+    'Token' => $aws_email_subscribe_result['SubscriptionArn'],
+    'TopicArn' => $nonreturn30_topic_arn,
+]);
+
 }catch(exception $e) {
 	
-}*/
+}
 
-/*try{
+try{
 $aws_subscribe_result = $aws_client->subscribe([
     'Endpoint' => $client->contact_number,
     'Protocol' => 'sms',
@@ -6872,7 +6878,7 @@ $aws_subscribe_result = $aws_client->subscribe([
 ]);
 }catch(exception $e) {
 	
-}*/
+}
 		
 Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30));	
 	}
@@ -6897,11 +6903,16 @@ $aws_subscribe_result = $aws_client->subscribe([
 			}
 		}
 
-/*try{		
-$aws_subscribe_result = $aws_client->subscribe([
+try{		
+$aws_email_subscribe_result = $aws_client->subscribe([
     'Endpoint' => $client->email,
     'Protocol' => 'email',
-    'ReturnSubscriptionArn' => true,
+    'ReturnSubscriptionArn' => false,
+    'TopicArn' => $nonreturn60_topic_arn,
+]);
+
+$aws_csubscribe_result = $aws_client->confirmSubscription([
+    'Token' => $aws_email_subscribe_result['SubscriptionArn'],
     'TopicArn' => $nonreturn60_topic_arn,
 ]);
 }catch(exception $e) {
@@ -6917,7 +6928,7 @@ $aws_subscribe_result = $aws_client->subscribe([
 ]);
 }catch(exception $e) {
 	
-}*/
+}
 		
 	Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60));
 	}
@@ -6941,11 +6952,16 @@ $aws_subscribe_result = $aws_client->subscribe([
 			}
 		}
 
-/*try{		
-$aws_subscribe_result = $aws_client->subscribe([
+try{		
+$aws_email_subscribe_result = $aws_client->subscribe([
     'Endpoint' => $client->email,
     'Protocol' => 'email',
-    'ReturnSubscriptionArn' => true,
+    'ReturnSubscriptionArn' => false,
+    'TopicArn' => $nonreturn90_topic_arn,
+]);
+
+$aws_csubscribe_result = $aws_client->confirmSubscription([
+    'Token' => $aws_email_subscribe_result['SubscriptionArn'],
     'TopicArn' => $nonreturn90_topic_arn,
 ]);
 }catch(exception $e) {
@@ -6961,7 +6977,7 @@ $aws_subscribe_result = $aws_client->subscribe([
 ]);
 }catch(exception $e) {
 	
-}*/
+}
 		
 	Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90));	
 	}
@@ -11809,6 +11825,52 @@ $aws_client = SnsClient::factory(array(
 	
 	}
 
+
+
+}
+
+
+public function actionnonreturn_inactive_notifytest(){
+  if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
+
+/*$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}*/
+
+    
+    $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+$aws_client = SnsClient::factory(array(
+     'credentials' => $aws_credentials,
+    'region'  => 'us-west-2',
+    'version' => 'latest'
+));
+
+$noti_array = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications")
+		->queryAll();
+		
+$aws_result = $aws_client->publish([
+				'Message' => json_encode(array("default" => $noti_array[1]['notify_text'], "sms" => $noti_array[1]['sms_text'], "email" => "<img src='".ROOT_URL."/admin-new/images/cust-spec-notify-img/".$noti_array[1]['email_image_url']."' />")),
+				'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:testpushtopic',
+				'MessageStructure' => 'json',
+				'Subject' => 'MobileWash',
+			]);
 
 
 }

@@ -682,8 +682,15 @@ else echo $order->payment_status; ?>
 <span class="label label-sm label-complete">Free Wash</span>
 <?php endif; ?>
 </td>
- <td><?php echo $order->transaction_id; ?></td>
- <td><?php echo $order->failed_transaction_id; ?></td>
+ <td><?php if($order->transaction_id): ?>
+ <a target="_blank" href="<?php echo BT_TRANSACTION_URL.$order->transaction_id; ?>"><?php echo $order->transaction_id; ?></a>
+ <?php endif; ?>
+ </td>
+ <td>
+<?php if($order->failed_transaction_id): ?>
+ <a target="_blank" href="<?php echo BT_TRANSACTION_URL.$order->failed_transaction_id; ?>"><?php echo $order->failed_transaction_id; ?></a>
+ <?php endif; ?>
+ </td>
                     <td><a target="_blank" href="<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                     <td><?php echo $order->customer_phoneno; ?></td>
                     <?php if($_GET['customer_id']): ?>
@@ -1150,8 +1157,11 @@ payment_status_str += "<span class='label label-sm label-fraud'>"+value.payment_
       if(value.payment_type == 'free') payment_status_str += "<span class='label label-sm label-complete'>Free Wash</span>";
      upcomingwashes.push(payment_status_str);
 
-upcomingwashes.push(value.transaction_id);
-upcomingwashes.push(value.failed_transaction_id);
+if(value.transaction_id) upcomingwashes.push("<a target='_blank' href='<?php echo BT_TRANSACTION_URL; ?>"+value.transaction_id+"'>"+value.transaction_id+"</a>");
+else upcomingwashes.push('');
+if(value.failed_transaction_id) upcomingwashes.push("<a target='_blank' href='<?php echo BT_TRANSACTION_URL; ?>"+value.failed_transaction_id+"'>"+value.failed_transaction_id+"</a>");
+else upcomingwashes.push('');
+
 upcomingwashes.push("<a target='_blank' href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id="+value.customer_id+"'>"+value.customer_name+"</a>");
 upcomingwashes.push(value.customer_phoneno);
 if(value.agent_details.real_washer_id) upcomingwashes.push(value.agent_details.real_washer_id);
