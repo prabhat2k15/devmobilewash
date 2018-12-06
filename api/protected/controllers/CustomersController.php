@@ -1553,7 +1553,7 @@ class CustomersController extends Controller {
         }
 
         if($customerid){
-                $CustomerExpansionRequestExist = CustomerExpansionRequest::model()->findByPk($customerid);
+                $CustomerExpansionRequestExist = CustomerExpansionRequest::model()->findByAttributes(['customer_id'=>$customerid]);
                 if($CustomerExpansionRequestExist){
                     $CustomerExpansionRequestStatus = "1";
                 } else {
@@ -12657,5 +12657,98 @@ class CustomersController extends Controller {
         echo json_encode($json);
         die();
     }
+    
+    public function actionCustomerExpansionRequestList(){
+        $result =  CustomerExpansionRequest::model()->findAll();
+        print_r($result); die;
+    }
+    
+    
+    public function actionCustomerExpansionRequestSave(){
+        
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        $customerid = Yii::app()->request->getParam('customer_id');
+        $api_password = '';
+        if (Yii::app()->request->getParam('api_password'))
+            $api_password = Yii::app()->request->getParam('api_password');
+
+        if ((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)) {
+            $customerid = $this->aes256cbc_crypt($customerid, 'd', AES256CBC_API_PASS);
+        }
+            $country = Yii::app()->request->getParam('country');
+            $city = Yii::app()->request->getParam('city');
+            $state = Yii::app()->request->getParam('state');
+            $zipcode = Yii::app()->request->getParam('zipcode');
+            $CustomerExpansionRequestExist = CustomerExpansionRequest::model()->findByAttributes(array('customer_id'=>$customerid,'state'=>$state));
+            if($CustomerExpansionRequestExist){
+                $response['status'] = '0';
+                $response['message'] = 'Customer already exist.';
+                echo json_encode($response);   
+                die;
+            }
+            if($customerid == ""){
+                $response['status'] = '0';
+                $response['message'] = 'Please enter customer id';
+                echo json_encode($response);   
+                die;
+            }
+            if($country == ""){
+                $response['status'] = '0';
+                $response['message'] = 'Please enter country ';
+                echo json_encode($response);   
+                die;
+            }
+            if($state == ""){
+                $response['status'] = '0';
+                $response['message'] = 'Please enter state ';
+                echo json_encode($response);   
+                die;
+            }
+            if($city == ""){
+                $response['status'] = '0';
+                $response['message'] = 'Please enter city';
+                echo json_encode($response);   
+                die;
+            }
+            $customer = new CustomerExpansionRequest;
+            $customer->customer_id = $customerid;
+            $customer->country    = $country;
+            $customer->city   = $city;
+            $customer->zipcode =$zipcode;
+            $customer->state   = $state;
+            if($customer->save()){
+               $data['status'] = "1"; 
+               $data['message'] ="Data saved Successfully.";
+               echo json_encode($data);   
+                die;
+            } else {
+                $data['status'] = "0"; 
+                $data['message'] ="something went wrong";
+               echo json_encode($data);   
+                die;
+            }
+    }
+
 
 }

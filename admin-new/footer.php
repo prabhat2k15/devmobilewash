@@ -6,8 +6,27 @@
                 <i class="icon-arrow-up"></i>
             </div>
         </div>
-
-
+        <div class="loader" id="loader">
+            <img src="images/loading.gif">
+        </div>
+<style>
+    .loader {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,.9);
+    z-index: 9999999;
+    text-align: center;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+}
+.loader img{
+    margin:0 auto;
+}
+</style>
         <!-- END FOOTER -->
         <!--[if lt IE 9]>
 <script src="assets/global/plugins/respond.min.js"></script>
@@ -33,7 +52,15 @@
         <script src="assets/layouts/layout/scripts/demo.min.js" type="text/javascript"></script>
         <script src="assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
-
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js" ></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.js"></script>
+        <!-- validation  -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/jquery.validate.min.js" ></script>
+        <script src="js/validation.js" type="text/javascript"></script>
+        <script src="js/emoji/emojionearea.js" type="text/javascript"></script>
+        <script src="js/emoji/emoji_custom.js" type="text/javascript"></script>
         <script>
 
 $(function(){
@@ -2772,6 +2799,7 @@ window.location.href = "<?php echo ROOT_URL; ?>/admin-new/login.php";
 		    }, 600000); // 10 mins interval
 	    });
 	</script>
+     
     </body>
 <style>
 #site_activities_content > div {
