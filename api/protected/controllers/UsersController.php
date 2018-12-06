@@ -7127,6 +7127,83 @@ $json= array(
 
 
     }
+    
+    
+    public function actionwaivedfeeupdate(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+        $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+	$waived_fee = 0;
+
+           $result  = 'false';
+$response = 'Enter wash request id';
+
+$admin_username = '';
+$admin_username  = Yii::app()->request->getParam('admin_username');
+
+            $json    = array();
+
+if((isset($wash_request_id) && !empty($wash_request_id))){
+
+    $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id'=>$wash_request_id));
+
+			if(!count($wrequest_id_check)){
+                $result= 'false';
+                $response= 'Invalid wash request id';
+            }
+            else{
+                $result = 'true';
+$response = 'waived fee updated';
+
+if($wrequest_id_check->wash_now_fee > 0) $waived_fee = $wrequest_id_check->wash_now_fee;
+if($wrequest_id_check->wash_later_fee > 0) $waived_fee = $wrequest_id_check->wash_later_fee;
+
+                  Washingrequests::model()->updateByPk($wash_request_id, array("waived_fee" => $waived_fee, "wash_now_fee" => 0, "wash_later_fee" => 0));
+				 $washeractionlogdata = array(
+
+                        'wash_request_id'=> $wash_request_id,
+
+                        'admin_username' => $admin_username,
+                        'action'=> 'waivedfee',
+                        'action_date'=> date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+
+            }
+
+
+
+}
+
+
+$json= array(
+				'result'=> $result,
+				'response'=> $response
+			);
+		echo json_encode($json);
+
+
+    }
 
 
 

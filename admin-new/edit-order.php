@@ -816,7 +816,11 @@ display: none;
 
 <span style="font-weight: 500;font-size: 22px; display: block; float: right;"><?php if($getorder->status == 5 || $getorder->status == 6 || $getorder->status == 7) {echo "$".number_format($getorder->cancel_fee, 2); }else{if($getorder->net_price > 0) {$net_total = $getorder->net_price - $getorder->company_discount; echo "$".$net_total;} else {echo "N/A";}} ?></span>
 <span style="display: block; float: right; margin-top: 4px; margin-right: 5px;">TOTAL PRICE:</span>
-<?php if(($getorder->wash_now_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Wash Now Fee: <?php echo "+$".number_format($getorder->wash_now_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->wash_later_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Surge Fee: <?php echo "+$".number_format($getorder->wash_later_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->transaction_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Transaction Fee: <?php echo "$".number_format($getorder->transaction_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Service Fee: +$1.00)</span><?php endif; ?><?php if(($getorder->tip_amount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Tip: <?php echo "+$".number_format($getorder->tip_amount, 2); ?>)</span><?php endif; ?><?php if(($getorder->coupon_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(<?php echo $getorder->coupon_code; ?>: <?php echo "-$".number_format($getorder->coupon_discount, 2); ?>)</span><?php endif; ?><?php if(($getorder->company_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">Company Discount: <?php echo "-$".number_format($getorder->company_discount, 2); ?></span><?php endif; ?><?php if(($getorder->fifth_wash_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(5th Wash Discount: <?php echo "-$".number_format($getorder->fifth_wash_discount, 2); ?>)</span><?php endif; ?>
+<?php if(($getorder->wash_now_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Wash Now Fee: <?php echo "+$".number_format($getorder->wash_now_fee, 2); ?>)</span><?php endif; ?>
+<?php if(($getorder->wash_later_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Surge Fee: <?php echo "+$".number_format($getorder->wash_later_fee, 2); ?>)</span><?php endif; ?>
+<?php if(($getorder->waived_fee > 0)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Waived Fee: <?php echo "-$".number_format($getorder->waived_fee, 2); ?>)</span><?php endif; ?>
+
+<?php if(($getorder->transaction_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Transaction Fee: <?php echo "$".number_format($getorder->transaction_fee, 2); ?>)</span><?php endif; ?><?php if(($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Service Fee: +$1.00)</span><?php endif; ?><?php if(($getorder->tip_amount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Tip: <?php echo "+$".number_format($getorder->tip_amount, 2); ?>)</span><?php endif; ?><?php if(($getorder->coupon_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(<?php echo $getorder->coupon_code; ?>: <?php echo "-$".number_format($getorder->coupon_discount, 2); ?>)</span><?php endif; ?><?php if(($getorder->company_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">Company Discount: <?php echo "-$".number_format($getorder->company_discount, 2); ?></span><?php endif; ?><?php if(($getorder->fifth_wash_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(5th Wash Discount: <?php echo "-$".number_format($getorder->fifth_wash_discount, 2); ?>)</span><?php endif; ?>
 <span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right; margin-top: 10px;">Agent Total: <?php if($getorder->status == 5 || $getorder->status == 6  || $getorder->status == 7) {echo "$".number_format($getorder->washer_cancel_fee, 2); } else{if($getorder->agent_total > 0) {echo "$".$getorder->agent_total;} else {echo "N/A";}} ?></span>
 <span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right;">Company Total: <?php if(($getorder->status == 5 || $getorder->status == 6) && ($getorder->status != 7)) {if($getorder->washer_cancel_fee > 0) {echo "$".number_format($getorder->washer_cancel_fee / 2, 2);} else {echo "$".number_format($getorder->cancel_fee, 2);}}elseif($getorder->status == 7){ echo "$".number_format($getorder->company_cancel, 2); } else{if($getorder->company_total > 0) {$net_company_total = $getorder->company_total - $getorder->company_discount; echo "$".number_format($net_company_total, 2);} else {echo "N/A";}} ?></span><div style="clear: both;"></div>
 <?php if($getorder->payment_type == 'free'): ?>
@@ -827,9 +831,14 @@ display: none;
 <p style="margin: 0; font-size: 16px; text-align: center; font-weight: bold; margin-top: 8px; color: red;">Braintree Custom Payment</p>
 <?php endif; ?>
 </div>
+
+<?php if(($getorder->wash_now_fee > 0) || ($getorder->wash_later_fee > 0)): ?>
+<div class="waived-fee-trigger" style="float: right; cursor: pointer; font-size: 18px; margin-top: 3px; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">Waive Fee</div>
+<?php endif; ?>
+
 <?php if($getorder->status == 4): ?>
 <div style="float: right; font-size: 18px; margin-top: 3px; background: #05b500; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">Order Complete</div>
-<?php elseif($getorder->status == 5 || $getorder->status == 6     || $getorder->status == 7): ?>
+<?php elseif($getorder->status == 5 || $getorder->status == 6 || $getorder->status == 7): ?>
 <div class="process-payment-trigger" style="float: right; font-size: 18px; margin-top: 3px; background: #999; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">Cancelled <?php if($getorder->cancel_fee) echo "($".number_format($getorder->cancel_fee, 2).")"; ?></div>
 <?php elseif($getorder->status == 0): ?>
 <div class="process-payment-trigger" style="float: right; font-size: 18px; margin-top: 3px; background: red; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">Pending</div>
@@ -1875,6 +1884,9 @@ if($savedroplogdata->result == 'true'):?>
                                                           <?php endif; ?>
                                                           <?php if($log->action == 'washerfinishwash'): ?>
                                                           <p style='margin-bottom: 10px;'>#<?php echo $log->agent_company_id; ?> completed wash for <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                          <?php endif; ?>
+                                                          <?php if($log->action == 'waivedfee'): ?>
+                                                          <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> Waived Fee at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                           <?php endif; ?>
                                                           <?php endforeach; ?>
                                                           </div>
@@ -3495,6 +3507,33 @@ return false;
 
 });
 
+$(".waived-fee-trigger").click(function(){
+var c = confirm('Are you sure you want to waive the fee?');
+if(c){
+var th = $(this);
+$(this).html('Processing, please wait...');
+$(this).removeClass('waived-fee-trigger');
+$(".err-text").hide();
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/waivedfeeupdate", { wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function(data){
+//console.log(data);
+if(data.result == 'true'){
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+}
+else{
+$(".err-text").html(data.response);
+$(".err-text").show();
+$(th).html('Waived Fee');
+$(th).addClass('waived-fee-trigger');
+
+}
+
+});
+}
+
+return false;
+
+});
+
 $(".wash-uncancel").click(function(){
 var c = confirm('Are you sure you want to un-cancel this wash?');
 if(c){
@@ -4374,6 +4413,12 @@ if(data.result == 'true'){
        if(log.action == 'washerfinishwash'){
         contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" completed wash for "+ log.addi_detail +" at "+log.formatted_action_date+"</p>";
        }
+       
+       if(log.action == 'waivedfee'){
+        contents += "<p style='margin-bottom: 10px;  color:red;'>"+log.admin_username+" Waived Fee at "+log.formatted_action_date+"</p>";
+       }
+                                                          
+   }
        
 
    });
