@@ -4271,12 +4271,13 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
                 $from = Yii::app()->request->getParam('from');
                 $to = Yii::app()->request->getParam('to');
                 $agent_id = Yii::app()->request->getParam('agent_id');
-                $order_day = "(w.agent_id = ". $agent_id . " OR w.canceled_washer_id = ".$agent_id.") AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."'";
+                $order_day = "(w.agent_id = ". $agent_id . ") AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."'";
+
             }elseif ($event == 'washer_history_csv') {
                 $from = Yii::app()->request->getParam('from');
                 $to = Yii::app()->request->getParam('to');
                 $agent_id = Yii::app()->request->getParam('agent_id');
-                $order_day = " (w.agent_id = ". $agent_id . " OR w.canceled_washer_id = ".$agent_id.") AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND status IN (4,5,7)";
+                $order_day = " (w.agent_id = ". $agent_id . ") AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND status IN (4,5,7)";
             }
             else {
                 $status_qr = '';
@@ -8947,7 +8948,7 @@ $to  = Yii::app()->request->getParam('to');
 						->where("DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN :from AND :to AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
                         ->group('agent_id')
 						->queryAll();*/
-        $all_washes =  Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 AND a.account_status = 0 GROUP BY a.id")->queryAll();
+        $all_washes =  Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 GROUP BY a.id")->queryAll();
 
 if(count($all_washes) > 0){
     $result= 'true';
@@ -9149,7 +9150,7 @@ $response = 'device updated';
 
             
 		if($user_type == 'customer'){
-			if($user_check->forced_logout == 1) $response = 'offline';
+			if($user_check->forced_logout == 1 || $user_check->block_client == 1) $response = 'offline';
 			else $response = 'online';
 			
 			$user_photo = $user_check->image;
@@ -11863,9 +11864,9 @@ $aws_client = SnsClient::factory(array(
     'version' => 'latest'
 ));
 
-$noti_array = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications")
+$noti_array = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE topic_arn != ''")
 		->queryAll();
-		
+
 $aws_result = $aws_client->publish([
 				'Message' => json_encode(array("default" => $noti_array[1]['notify_text'], "sms" => $noti_array[1]['sms_text'], "email" => "<img src='".ROOT_URL."/admin-new/images/cust-spec-notify-img/".$noti_array[1]['email_image_url']."' />")),
 				'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:testpushtopic',
@@ -11875,5 +11876,714 @@ $aws_result = $aws_client->publish([
 
 
 }
+
+public function actiongetallFlaggedIssues() {
+//        if (Yii::app()->request->getParam('key') != API_KEY) {
+//            echo "Invalid api key";
+//            die();
+//        }
+        /* Checking for post(day) parameters */
+        $order_day = '';
+        if (!empty(Yii::app()->request->getParam('event'))) {
+            $day = Yii::app()->request->getParam('day');
+            $event = Yii::app()->request->getParam('event');
+
+            $status_qr = '';
+            if ($event == 'pending') {
+                $status = 0;
+                $status_qr = ' AND w.status="' . $status . '"';
+            } elseif ($event == 'total_orders') {
+                $status_qr = " AND w.status IN(0,4,3,2,1)";
+            } elseif ($event == 'csv_total_orders') {
+                $status_qr = " AND w.status IN(0,4,3,2,1,5,6)";
+            } elseif ($event == 'completed') {
+                $status = 4;
+                $status_qr = ' AND w.status="' . $status . '"';
+            } elseif ($event == 'processing') {
+                $status = 3;
+                $status_qr = ' AND (w.status >=1 && w.status <=3)';
+                //$status_qr = ' AND (w.status = 3)';
+            } elseif ($event == 'canceled') {
+                $status_qr = ' AND (w.status=5 || w.status=6)';
+            } elseif ($event == 'declined') {
+                $status_qr = " AND (w.failed_transaction_id != '')";
+            } elseif ($event == 'express' || $event == 'deluxe' || $event == 'premium') {
+                $status_qr = " AND (FIND_IN_SET('" . $event . "', w.package_list)>0 AND w.status IN('0','4'))";
+            } elseif ($event == 'coupon_code') {
+                $status_qr = " AND w.coupon_code <> ''";
+            } elseif ($event == 'tip_amount') {
+                $status_qr = " AND (w.tip_amount <> '' && w.tip_amount <> '0.00' && w.tip_amount <> '0')";
+            } elseif ($event == 'addoncompleted') {
+                $status_qr = " AND (w.pet_hair_vehicles != '' OR  w.lifted_vehicles != '' OR  w.exthandwax_vehicles != '' OR  w.extplasticdressing_vehicles != '' OR  w.extclaybar_vehicles != '' OR  w.waterspotremove_vehicles != '' OR  w.upholstery_vehicles != '' OR  w.floormat_vehicles != '') AND w.status = 4";
+            } elseif ($event == 'ondemandcompleted') {
+                $status_qr = " AND w.is_scheduled = 0 AND w.status = 4";
+            } elseif ($event == 'schedulecompleted') {
+                $status_qr = " AND w.is_scheduled = 1 AND w.status = 4";
+            } elseif ($event == 'schedulecanceled') {
+                $status_qr = " AND w.is_scheduled = 1 AND (w.status=5 || w.status=6)";
+            } elseif ($event == 'ondemandcanceled') {
+                $status_qr = " AND w.is_scheduled = 0 AND (w.status=5 || w.status=6)";
+            } elseif ($event == 'newcustomer') {
+                $status_qr = " AND w.status = 4";
+            } elseif (in_array($event, array('yelloworders', 'blueorders', 'redorders', 'purpleorders'))) {
+                $status_qr = " AND w.status IN('0','4','3','2','1')";
+            } elseif ($event == 'washer_history') {
+                $from = Yii::app()->request->getParam('from');
+                $to = Yii::app()->request->getParam('to');
+                $agent_id = Yii::app()->request->getParam('agent_id');
+                $order_day = " w.agent_id = '" . $agent_id . "' AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND status = 4";
+            } else {
+                $status_qr = '';
+            }
+
+            if (empty(Yii::app()->request->getParam('day')) && $event != 'washer_history') {
+                $month_start = Yii::app()->request->getParam('year') . '-' . Yii::app()->request->getParam('month') . '-01';
+                $month_end = Yii::app()->request->getParam('year') . '-' . Yii::app()->request->getParam('month') . '-31';
+                $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '" . $month_start . "' AND '" . $month_end . "'" . $status_qr;
+            } elseif ($event != 'washer_history') {
+                $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '" . $day . "'" . $status_qr;
+            }
+        }
+        /* END */
+
+
+
+        $json = array();
+
+        $result = 'true';
+        $response = 'all wash requests';
+        $pendingwashrequests = array();
+        $pendingwashrequests_flashing = array();
+        $pendingwashrequests_upcoming = array();
+        $pendingwashrequests_nonupcoming = array();
+        $last_cust_id = '';
+        $last_cust_lat = '';
+        $last_cust_lng = '';
+        $filter = '';
+        $limit = 0;
+        $filter = Yii::app()->request->getParam('filter');
+        $flaggedIssueStatus = Yii::app()->request->getParam('flaggedIssueStatus');
+        $limit = Yii::app()->request->getParam('limit');
+        $customer_id = Yii::app()->request->getParam('customer_id');
+        $agent_id = Yii::app()->request->getParam('agent_id');
+        $admin_username = '';
+        $admin_username = Yii::app()->request->getParam('admin_username');
+        $pendingorderscount = 0;
+        $cust_query = '';
+        $agent_query = '';
+        $avg_order_frequency = 0;
+        $total_days_diff = 0;
+        $completed_orders = 0;
+
+        if ($customer_id > 0)
+            $cust_query = "w.customer_id=" . $customer_id . " AND ";
+        if ($agent_id > 0)
+            $agent_query = "w.agent_id=" . $agent_id . " AND ";
+
+        if ($customer_id > 0) {
+            $cust_check = Customers::model()->findByPk($customer_id);
+        }
+        if ($flaggedIssueStatus) {
+            $flag_query = "w.flagged_issue_status=" . $flaggedIssueStatus . " ";
+        } else {
+            $flag_query = " w.flagged_issue_status IN(1,2) ";
+        }
+        if ($filter == 'flaggedIssues') {
+            if ($limit > 0) {
+                // $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . $flag_query . "c.hours_opt_check = 0 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . $flag_query . "  ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
+            } else {
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . $flag_query . " ORDER BY w.id DESC")->queryAll();
+            }
+        }
+        //print_r($qrRequests);
+        //die;
+        //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
+//else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
+//echo "SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id ASC";
+//        if ($event == 'washer_history') {
+//            if ($limit > 0)
+//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $order_day . " ORDER BY w.id ASC LIMIT " . $limit)->queryAll();
+//            else
+//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $order_day . " ORDER BY w.id ASC")->queryAll();
+//        }elseif ($event == 'newcustomer') {
+//            if ($limit > 0)
+//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id ASC LIMIT " . $limit)->queryAll();
+//            else
+//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id ASC")->queryAll();
+//        }
+//        elseif ($filter == 'testorders') {
+//            if ($limit > 0)
+//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 0 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
+//            else
+//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 0 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC")->queryAll();
+//        }
+//        else {
+//            if ($limit > 0)
+//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
+//            else
+//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC")->queryAll();
+//        }
+        if (count($qrRequests) > 0) {
+          // print_r($qrRequests); die;
+            $ios_count = $other_count = $android_count = 0;
+            foreach ($qrRequests as $ind => $wrequest) {
+
+                if ($wrequest['mobile_type'] == 'IOS') {
+                    $ios_count++;
+                } else {
+                    $android_count++;
+                }
+
+                if ($event == 'blueorders') {
+                    $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode' => $wrequest['zipcode']));
+
+                    if (count($coveragezipcheck)) {
+                        $zipcolor = $coveragezipcheck->zip_color;
+                        if (($zipcolor != '') && ($zipcolor != 'blue'))
+                            continue;
+                    }
+                }
+
+                if ($event == 'yelloworders') {
+                    $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode' => $wrequest['zipcode']));
+
+                    if (count($coveragezipcheck)) {
+                        $zipcolor = $coveragezipcheck->zip_color;
+                        if (($zipcolor != 'yellow'))
+                            continue;
+                    }
+                    else {
+                        continue;
+                    }
+                }
+
+                if ($event == 'redorders') {
+                    $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode' => $wrequest['zipcode']));
+
+                    if (count($coveragezipcheck)) {
+                        $zipcolor = $coveragezipcheck->zip_color;
+                        if (($zipcolor != 'red'))
+                            continue;
+                    }
+                    else {
+                        continue;
+                    }
+                }
+
+                if ($event == 'purpleorders') {
+                    $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode' => $wrequest['zipcode']));
+
+                    if (count($coveragezipcheck)) {
+                        $zipcolor = $coveragezipcheck->zip_color;
+                        if (($zipcolor != 'purple'))
+                            continue;
+                    }
+                    else {
+                        continue;
+                    }
+                }
+
+                if ($event == 'scheduleauto') {
+                    $check_auto_canceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'scheduleauto-canceled' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
+                    //print_r($check_auto_canceled);
+                    if (count($check_auto_canceled) == 0 || $wrequest['is_scheduled'] == 0) {
+                        continue;
+                    }
+                } elseif ($event == 'schedulecanceled') {
+                    $ondemandautocanceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'scheduleauto-canceled' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
+                    if (count($ondemandautocanceled) != 0 || $wrequest['status'] == 7) {
+                        continue;
+                    }
+                }
+
+                if ($event == 'ondemandauto') {
+                    $ondemandautocanceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'ondemandautocancel' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
+                    //print_r($check_auto_canceled);
+                    if (count($ondemandautocanceled) == 0 || $wrequest['is_scheduled'] == 1) {
+                        continue;
+                    }
+                } elseif ($event == 'ondemandcanceled') {
+                    $ondemandautocanceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'ondemandautocancel' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
+                    //print_r($check_auto_canceled);
+                    if (count($ondemandautocanceled) != 0 || $wrequest['status'] == 7) {
+                        continue;
+                    }
+                }
+
+                if ($wrequest['is_scheduled']) {
+                    if ($wrequest['reschedule_time'])
+                        $scheduledatetime = $wrequest['reschedule_date'] . " " . $wrequest['reschedule_time'];
+                    else
+                        $scheduledatetime = $wrequest['schedule_date'] . " " . $wrequest['schedule_time'];
+
+                    $to_time = strtotime(date('Y-m-d g:i A'));
+                    $from_time = strtotime($scheduledatetime);
+                    $min_diff = 0;
+
+                    $min_diff = round(($from_time - $to_time) / 60, 2);
+
+//$min_diff = abs($min_diff);
+                }
+                else {
+                    if ($wrequest['status'] >= 0 && $wrequest['status'] < 4)
+                        $min_diff = 0;
+                    else {
+
+                        $to_time = strtotime(date('Y-m-d g:i A'));
+                        $from_time = strtotime($wrequest['order_for']);
+                        $min_diff = 0;
+
+                        $min_diff = round(($from_time - $to_time) / 60, 2);
+                    }
+                }
+
+                if ($wrequest['status'] == 0)
+                    $pendingorderscount++;
+
+                if (($customer_id > 0) && ($wrequest['status'] == 4)) {
+//echo $wrequest['id']." ".$wrequest['order_for']." "."<br>";
+                    //echo $qrRequests[$ind+1]['id']." ".$qrRequests[$ind+1]['order_for']." "."<br>";
+                    if (isset($qrRequests[$ind + 1])) {
+                        $order1_date = date("Y-m-d", strtotime($wrequest['order_for']));
+                        $order2_date = date("Y-m-d", strtotime($qrRequests[$ind + 1]['order_for']));
+                        //echo $order1_date." ".$order2_date."<br>";
+                        $day_diff = date_diff(new DateTime($order1_date), new DateTime($order2_date));
+                        //echo $day_diff->format("%a")."<br>";
+                        //echo "working<br>";
+                        $total_days_diff += $day_diff->format("%a");
+                    }
+
+                    $completed_orders++;
+                }
+
+                $cust_details = Customers::model()->findByAttributes(array("id" => $wrequest['customer_id']));
+                $agent_details = Agents::model()->findByAttributes(array("id" => $wrequest['agent_id']));
+                $cars = explode(",", $wrequest['car_list']);
+                $packs = explode(",", $wrequest['package_list']);
+                $vehicles = array();
+                foreach ($cars as $ind => $car) {
+                    $car_details = Vehicle::model()->findByAttributes(array("id" => $car));
+
+                    $veh_addons = '';
+
+                    $pet_hair_vehicles_arr = explode(",", $wrequest['pet_hair_vehicles']);
+                    if (in_array($car, $pet_hair_vehicles_arr))
+                        $veh_addons .= 'Extra Cleaning, ';
+
+                    $lifted_vehicles_arr = explode(",", $wrequest['lifted_vehicles']);
+                    if (in_array($car, $lifted_vehicles_arr))
+                        $veh_addons .= 'Lifted Truck, ';
+
+                    $exthandwax_addon_arr = explode(",", $wrequest['exthandwax_vehicles']);
+                    if (in_array($car, $exthandwax_addon_arr))
+                        $veh_addons .= 'Liquid Hand Wax, ';
+
+                    $extplasticdressing_addon_arr = explode(",", $wrequest['extplasticdressing_vehicles']);
+                    if (in_array($car, $extplasticdressing_addon_arr))
+                        $veh_addons .= 'Exterior Plastic Dressing, ';
+
+                    $extclaybar_addon_arr = explode(",", $wrequest['extclaybar_vehicles']);
+                    if (in_array($car, $extclaybar_addon_arr))
+                        $veh_addons .= 'Clay Bar & Paste Wax, ';
+
+                    $waterspotremove_addon_arr = explode(",", $wrequest['waterspotremove_vehicles']);
+                    if (in_array($car, $waterspotremove_addon_arr))
+                        $veh_addons .= 'Water Spot Removal, ';
+
+                    $upholstery_addon_arr = explode(",", $wrequest['upholstery_vehicles']);
+                    if (in_array($car, $upholstery_addon_arr))
+                        $veh_addons .= 'Upholstery Conditioning, ';
+
+                    $floormat_addon_arr = explode(",", $wrequest['floormat_vehicles']);
+                    if (in_array($car, $floormat_addon_arr))
+                        $veh_addons .= 'Floor Mat Cleaning, ';
+
+                    $veh_addons = rtrim($veh_addons, ", ");
+
+                    $vehicles[] = array('id' => $car, 'make' => $car_details->brand_name, 'model' => $car_details->model_name, 'pack' => $packs[$ind], 'addons' => $veh_addons);
+                }
+
+
+                if (($cust_details->first_name != '') && ($cust_details->last_name != '')) {
+                    $customername = '';
+                    $cust_name = explode(" ", trim($cust_details->last_name));
+                    $customername = $cust_details->first_name . " " . strtoupper(substr($cust_name[0], 0, 1)) . ".";
+                } else {
+                    $customername = '';
+                    $cust_name = explode(" ", trim($cust_details->customername));
+                    if (count($cust_name > 1))
+                        $customername = $cust_name[0] . " " . strtoupper(substr($cust_name[1], 0, 1)) . ".";
+                    else
+                        $customername = $cust_name[0];
+                }
+
+                $customername = strtolower($customername);
+                $customername = ucwords($customername);
+
+                $agent_info = array();
+                if (count($agent_details)) {
+                    $agent_info = array('agent_id' => $wrequest['agent_id'], 'real_washer_id' => $agent_details->real_washer_id, 'agent_name' => $agent_details->first_name . " " . $agent_details->last_name, 'agent_phoneno' => $agent_details->phone_number, 'agent_email' => $agent_details->email);
+                }
+                $payment_status = '';
+                $submerchant_id = '';
+                $transaction_status = '';
+                $washer_payment_status = '';
+                $washer_change_pack = 0;
+                $washercustnomeet = 0;
+                $washer_wash_activity = 1;
+                $washer_30_min_noarrive = 0;
+
+                if (($wrequest['status'] == 4) && (!$wrequest['washer_payment_status'])) {
+                    $end = time();
+                    $start = strtotime($wrequest['order_for']);
+
+                    $days_between = ceil(abs($end - $start) / 86400);
+//echo $wrequest['id']." ".$days_between."<br>"; 
+                    if ($days_between > 1)
+                        $washer_payment_status = 'pending';
+                }
+                if ($wrequest['failed_transaction_id']) {
+                    $payment_status = 'Declined';
+                } else {
+                    if ($wrequest['transaction_id']) {
+
+                        if ($wrequest['escrow_status'] == 'hold_pending' || $wrequest['escrow_status'] == 'held') {
+                            $payment_status = 'Processed';
+                        } else if ($wrequest['escrow_status'] == 'release_pending' || $wrequest['escrow_status'] == 'released') {
+                            $payment_status = 'Released';
+                        }
+
+
+                        /* if($cust_details->client_position == 'real') $payresult = Yii::app()->braintree->getTransactionById_real($wrequest['transaction_id']);
+                          else $payresult = Yii::app()->braintree->getTransactionById($wrequest['transaction_id']);
+                          if($payresult['success'] == 1) {
+                          //$submerchant_id = $payresult['merchant_id'];
+                          $transaction_status = $payresult['status'];
+                          } */
+                    }
+                }
+
+                $show_result = 0;
+                if ($event == 'newcustomer') {
+                    $get_befor_count = Yii::app()->db->createCommand("SELECT id, order_for FROM washing_requests WHERE customer_id = '" . $wrequest['customer_id'] . "' AND status = 4 ORDER BY id ASC LIMIT 1")->queryAll();
+
+                    if (count($get_befor_count) > 0 && date('Y-m-d', strtotime($get_befor_count[0]['order_for'])) == $day) {
+                        
+                    } else {
+                        continue;
+                    }
+                }
+
+
+                if (($wrequest['status'] >= 1) && ($wrequest['status'] <= 3)) {
+                    $total_rows = Yii::app()->db->createCommand("SELECT COUNT(*) as total FROM activity_logs WHERE action = 'customeracceptupgrade' AND admin_username = '' AND wash_request_id = " . $wrequest['id'])->queryAll();
+                    $washer_change_pack = $total_rows[0]['total'];
+                }
+
+                if (($wrequest['status'] == 1) && (!$wrequest['is_scheduled'])) {
+                    $min_diff2 = 0;
+                    $current_time = strtotime(date('Y-m-d H:i:s'));
+
+                    if ($current_time > strtotime($wrequest['wash_begin'])) {
+                        $min_diff2 = round(($current_time - strtotime($wrequest['wash_begin'])) / 60, 2);
+                    }
+
+                    if ($min_diff2 >= 30)
+                        $washer_30_min_noarrive = 1;
+                }
+
+                if (($wrequest['status'] == 2) && ($wrequest['meet_washer_outside'] != 'yes')) {
+                    $min_diff2 = 0;
+                    $current_time = strtotime(date('Y-m-d H:i:s'));
+
+                    if ($current_time > strtotime($wrequest['washer_arrived_at'])) {
+                        $min_diff2 = round(($current_time - strtotime($wrequest['washer_arrived_at'])) / 60, 2);
+                    }
+
+                    if ($min_diff2 >= 10)
+                        $washercustnomeet = 1;
+                }
+
+                if (($wrequest['status'] == 3) && (!$wrequest['washer_wash_activity'])) {
+                    $min_diff2 = 0;
+                    $current_time = strtotime(date('Y-m-d H:i:s'));
+
+                    if ($current_time > strtotime($wrequest['meet_or_nomeet_washer_outside_at'])) {
+                        $min_diff2 = round(($current_time - strtotime($wrequest['meet_or_nomeet_washer_outside_at'])) / 60, 2);
+                    }
+
+                    if ($min_diff2 >= 10)
+                        $washer_wash_activity = 0;
+                }
+
+                if (($wrequest['admin_notify_view']) && ($admin_username)) {
+                    $admin_action_check = json_decode($wrequest['admin_notify_view'], true);
+
+                    if (array_key_exists($admin_username, $admin_action_check)) {
+                        if (in_array("washer_change_pack", $admin_action_check[$admin_username])) {
+                            $washer_change_pack = 0;
+                        }
+
+                        if (in_array("washer_wash_activity", $admin_action_check[$admin_username])) {
+                            $washer_wash_activity = 1;
+                        }
+
+                        if (in_array("washercustnomeet", $admin_action_check[$admin_username])) {
+                            $washercustnomeet = 0;
+                        }
+                    }
+                }
+
+
+
+                if ($wrequest['is_flagged'] == 1)
+                    $payment_status = 'Check Fraud';
+                if (($min_diff < 0) && ($wrequest['status'] == 0)) {
+                    $resched_date = '';
+                    $resched_time = '';
+                    if (strtotime($wrequest['reschedule_date']) > 0) {
+                        $resched_date = date('Y-m-d', strtotime($wrequest['reschedule_date']));
+                        $resched_time = date('h:i A', strtotime($wrequest['reschedule_time']));
+                    }
+                    $pendingwashrequests_flashing[] = array('id' => $wrequest['id'],
+                        'customer_id' => $wrequest['customer_id'],
+                        'customer_name' => $cust_details->first_name . " " . $cust_details->last_name,
+                        'customer_email' => $cust_details->email,
+                        'customer_phoneno' => $cust_details->contact_number,
+                        'agent_details' => $agent_info,
+                        'car_list' => $wrequest['car_list'],
+                        'package_list' => $wrequest['package_list'],
+                        'vehicles' => $vehicles,
+                        'address' => $wrequest['address'],
+                        'street_name' => $wrequest['street_name'],
+                        'city' => $wrequest['city'],
+                        'state' => $wrequest['state'],
+                        'zipcode' => $wrequest['zipcode'],
+                        'address_type' => $wrequest['address_type'],
+                        'latitude' => $wrequest['latitude'],
+                        'longitude' => $wrequest['longitude'],
+                        'payment_type' => $wrequest['payment_type'],
+                        'nonce' => $wrequest['nonce'],
+                        'estimate_time' => $wrequest['estimate_time'],
+                        'status' => $wrequest['status'],
+                        'is_scheduled' => $wrequest['is_scheduled'],
+                        'schedule_date' => date('Y-m-d', strtotime($wrequest['schedule_date'])),
+                        'schedule_time' => date('h:i A', strtotime($wrequest['schedule_time'])),
+                        'reschedule_date' => $resched_date,
+                        'checklist' => $wrequest['checklist'],
+                        'reschedule_time' => $resched_time,
+                        'created_date' => date('Y-m-d', strtotime($wrequest['created_date'])) . " " . date('h:i A', strtotime($wrequest['created_date'])),
+                        'order_for' => date('Y-m-d h:i A', strtotime($wrequest['order_for'])),
+                        'transaction_id' => $wrequest['transaction_id'],
+                        'failed_transaction_id' => $wrequest['failed_transaction_id'],
+                        'transaction_status' => $transaction_status,
+                        'submerchant_id' => $submerchant_id,
+                        'scheduled_cars_info' => $wrequest['scheduled_cars_info'],
+                        'schedule_total' => $wrequest['schedule_total'],
+                        'schedule_company_total' => $wrequest['schedule_company_total'],
+                        'schedule_agent_total' => $wrequest['schedule_agent_total'],
+                        'wash_request_position' => $wrequest['wash_request_position'],
+                        'net_price' => $wrequest['net_price'],
+                        'payment_status' => $payment_status,
+                        'min_diff' => $min_diff,
+                        'washer_pay_status' => $washer_payment_status,
+                        'admin_submit_for_settle' => $wrequest['admin_submit_for_settle'],
+                        'washer_change_pack' => $washer_change_pack,
+                        'washercustnomeet' => $washercustnomeet,
+                        'washer_wash_activity' => $washer_wash_activity,
+                        'washer_30_min_noarrive' => $washer_30_min_noarrive
+                    );
+                }
+
+                if ($min_diff >= 0) {
+                    $resched_date = '';
+                    $resched_time = '';
+                    if (strtotime($wrequest['reschedule_date']) > 0) {
+                        $resched_date = date('Y-m-d', strtotime($wrequest['reschedule_date']));
+                        $resched_time = date('h:i A', strtotime($wrequest['reschedule_time']));
+                    }
+                    $pendingwashrequests_upcoming[] = array('id' => $wrequest['id'],
+                        'customer_id' => $wrequest['customer_id'],
+                        'customer_name' => $cust_details->first_name . " " . $cust_details->last_name,
+                        'customer_email' => $cust_details->email,
+                        'customer_phoneno' => $cust_details->contact_number,
+                        'agent_details' => $agent_info,
+                        'car_list' => $wrequest['car_list'],
+                        'package_list' => $wrequest['package_list'],
+                        'vehicles' => $vehicles,
+                        'address' => $wrequest['address'],
+                        'street_name' => $wrequest['street_name'],
+                        'city' => $wrequest['city'],
+                        'state' => $wrequest['state'],
+                        'zipcode' => $wrequest['zipcode'],
+                        'address_type' => $wrequest['address_type'],
+                        'latitude' => $wrequest['latitude'],
+                        'longitude' => $wrequest['longitude'],
+                        'payment_type' => $wrequest['payment_type'],
+                        'nonce' => $wrequest['nonce'],
+                        'estimate_time' => $wrequest['estimate_time'],
+                        'status' => $wrequest['status'],
+                        'is_scheduled' => $wrequest['is_scheduled'],
+                        'schedule_date' => date('Y-m-d', strtotime($wrequest['schedule_date'])),
+                        'schedule_time' => date('h:i A', strtotime($wrequest['schedule_time'])),
+                        'reschedule_date' => $resched_date,
+                        'checklist' => $wrequest['checklist'],
+                        'reschedule_time' => $resched_time,
+                        'created_date' => date('Y-m-d', strtotime($wrequest['created_date'])) . " " . date('h:i A', strtotime($wrequest['created_date'])),
+                        'order_for' => date('Y-m-d h:i A', strtotime($wrequest['order_for'])),
+                        'transaction_id' => $wrequest['transaction_id'],
+                        'failed_transaction_id' => $wrequest['failed_transaction_id'],
+                        'transaction_status' => $transaction_status,
+                        'submerchant_id' => $submerchant_id,
+                        'scheduled_cars_info' => $wrequest['scheduled_cars_info'],
+                        'schedule_total' => $wrequest['schedule_total'],
+                        'schedule_company_total' => $wrequest['schedule_company_total'],
+                        'schedule_agent_total' => $wrequest['schedule_agent_total'],
+                        'wash_request_position' => $wrequest['wash_request_position'],
+                        'net_price' => $wrequest['net_price'],
+                        'payment_status' => $payment_status,
+                        'min_diff' => $min_diff,
+                        'washer_pay_status' => $washer_payment_status,
+                        'admin_submit_for_settle' => $wrequest['admin_submit_for_settle'],
+                        'washer_change_pack' => $washer_change_pack,
+                        'washercustnomeet' => $washercustnomeet,
+                        'washer_wash_activity' => $washer_wash_activity,
+                        'washer_30_min_noarrive' => $washer_30_min_noarrive
+                    );
+                }
+                if (($min_diff < 0) && ($wrequest['status'] > 0)) {
+                    $pendingwashrequests_nonupcoming[] = array('id' => $wrequest['id'],
+                        'customer_id' => $wrequest['customer_id'],
+                        'customer_name' => $cust_details->first_name . " " . $cust_details->last_name,
+                        'customer_email' => $cust_details->email,
+                        'customer_phoneno' => $cust_details->contact_number,
+                        'agent_details' => $agent_info,
+                        'car_list' => $wrequest['car_list'],
+                        'package_list' => $wrequest['package_list'],
+                        'vehicles' => $vehicles,
+                        'address' => $wrequest['address'],
+                        'street_name' => $wrequest['street_name'],
+                        'city' => $wrequest['city'],
+                        'state' => $wrequest['state'],
+                        'zipcode' => $wrequest['zipcode'],
+                        'address_type' => $wrequest['address_type'],
+                        'latitude' => $wrequest['latitude'],
+                        'longitude' => $wrequest['longitude'],
+                        'payment_type' => $wrequest['payment_type'],
+                        'nonce' => $wrequest['nonce'],
+                        'estimate_time' => $wrequest['estimate_time'],
+                        'status' => $wrequest['status'],
+                        'is_scheduled' => $wrequest['is_scheduled'],
+                        'schedule_date' => $wrequest['schedule_date'],
+                        'schedule_time' => $wrequest['schedule_time'],
+                        'reschedule_date' => $wrequest['reschedule_date'],
+                        'checklist' => $wrequest['checklist'],
+                        'reschedule_time' => $wrequest['reschedule_time'],
+                        'created_date' => $wrequest['created_date'],
+                        'order_for' => date('Y-m-d h:i A', strtotime($wrequest['order_for'])),
+                        'transaction_id' => $wrequest['transaction_id'],
+                        'failed_transaction_id' => $wrequest['failed_transaction_id'],
+                        'submerchant_id' => $submerchant_id,
+                        'transaction_status' => $transaction_status,
+                        'scheduled_cars_info' => $wrequest['scheduled_cars_info'],
+                        'schedule_total' => $wrequest['schedule_total'],
+                        'schedule_company_total' => $wrequest['schedule_company_total'],
+                        'schedule_agent_total' => $wrequest['schedule_agent_total'],
+                        'wash_request_position' => $wrequest['wash_request_position'],
+                        'net_price' => $wrequest['net_price'],
+                        'payment_status' => $payment_status,
+                        'min_diff' => $min_diff,
+                        'washer_pay_status' => $washer_payment_status,
+                        'admin_submit_for_settle' => $wrequest['admin_submit_for_settle'],
+                        'washer_change_pack' => $washer_change_pack,
+                        'washercustnomeet' => $washercustnomeet,
+                        'washer_wash_activity' => $washer_wash_activity,
+                        'washer_30_min_noarrive' => $washer_30_min_noarrive
+                    );
+                }
+
+                $pendingwashrequests[] = array('id' => $wrequest['id'],
+                    'customer_id' => $wrequest['customer_id'],
+                    'customer_name' => $cust_details->first_name . " " . $cust_details->last_name,
+                    'customer_email' => $cust_details->email,
+                    'customer_phoneno' => $cust_details->contact_number,
+                    'agent_details' => $agent_info,
+                    'car_list' => $wrequest['car_list'],
+                    'package_list' => $wrequest['package_list'],
+                    'vehicles' => $vehicles,
+                    'address' => $wrequest['address'],
+                    'street_name' => $wrequest['street_name'],
+                    'city' => $wrequest['city'],
+                    'state' => $wrequest['state'],
+                    'zipcode' => $wrequest['zipcode'],
+                    'address_type' => $wrequest['address_type'],
+                    'latitude' => $wrequest['latitude'],
+                    'longitude' => $wrequest['longitude'],
+                    'payment_type' => $wrequest['payment_type'],
+                    'nonce' => $wrequest['nonce'],
+                    'estimate_time' => $wrequest['estimate_time'],
+                    'status' => $wrequest['status'],
+                    'is_scheduled' => $wrequest['is_scheduled'],
+                    'schedule_date' => $wrequest['schedule_date'],
+                    'schedule_time' => $wrequest['schedule_time'],
+                    'reschedule_date' => $wrequest['reschedule_date'],
+                    'checklist' => $wrequest['checklist'], 'street_name' => $wrequest['street_name'],
+                    'reschedule_time' => $wrequest['reschedule_time'],
+                    'created_date' => $wrequest['created_date'],
+                    'transaction_id' => $wrequest['transaction_id'],
+                    'failed_transaction_id' => $wrequest['failed_transaction_id'],
+                    'transaction_status' => $transaction_status,
+                    'scheduled_cars_info' => $wrequest['scheduled_cars_info'],
+                    'schedule_total' => $wrequest['schedule_total'],
+                    'schedule_company_total' => $wrequest['schedule_company_total'],
+                    'schedule_agent_total' => $wrequest['schedule_agent_total'],
+                    'wash_request_position' => $wrequest['wash_request_position'],
+                    'net_price' => $wrequest['net_price'],
+                    'payment_status' => $payment_status,
+                    'min_diff' => $min_diff,
+                    'washer_pay_status' => $washer_payment_status,
+                    'admin_submit_for_settle' => $wrequest['admin_submit_for_settle'],
+                    'washer_change_pack' => $washer_change_pack,
+                    'washercustnomeet' => $washercustnomeet,
+                    'washer_wash_activity' => $washer_wash_activity,
+                    'washer_30_min_noarrive' => $washer_30_min_noarrive
+                );
+            }
+
+            //echo "total: ".$total_days_diff."<br>";
+            //echo "total orders done: ".$completed_orders."<br>";
+            //echo "average order frequency: ".round($total_days_diff/($completed_orders-1))."<br>";
+            if ($completed_orders > 1)
+                $avg_order_frequency = round($total_days_diff / ($completed_orders - 1));
+
+            usort($pendingwashrequests_flashing, array('SiteController', 'sortById'));
+            usort($pendingwashrequests_upcoming, array('SiteController', 'sortById'));
+            usort($pendingwashrequests_nonupcoming, array('SiteController', 'sortById'));
+
+            $pendingwashrequests = array_merge($pendingwashrequests_flashing, $pendingwashrequests_upcoming, $pendingwashrequests_nonupcoming);
+        }
+        else {
+            $result = 'false';
+            $response = 'no wash requests found';
+        }
+
+
+
+        $json = array(
+            'result' => $result,
+            'response' => $response,
+            'wash_requests' => $pendingwashrequests,
+            'pending_wash_count' => $pendingorderscount,
+            'cust_avg_order_frequency' => $avg_order_frequency,
+            'ios_count' => $ios_count,
+            'android_count' => $android_count
+                //'upcoming' => $pendingwashrequests_upcoming,
+                //'nonupcoming' => $pendingwashrequests_nonupcoming,
+        );
+
+        echo json_encode($json);
+        die();
+    }
     
 }
