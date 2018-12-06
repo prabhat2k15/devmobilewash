@@ -100,7 +100,7 @@ $washers_data = json_decode($result);
     <!--<td><?php //echo $washer->id; ?></td>-->
     <td><?php echo $washer->company_id; ?></td>
     <td><img src="<?php if($washer->image) {echo $washer->image;} else{echo "images/image_icon.png";} ?>" style="width: 100px; height: 100px;"></td>
-    <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>"><?php echo $washer->name; ?></a></td>
+    <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>&event=washer_history"><?php echo $washer->name; ?></a></td>
     <td style="display: none;"><?php echo $washer->street; ?></td>
     <td style="display: none;"><?php echo $washer->city; ?></td>
     <td style="display: none;"><?php echo $washer->state; ?></td>
@@ -108,7 +108,11 @@ $washers_data = json_decode($result);
     <td><?php echo $washer->total_scheduled; ?></td>
     <td><?php echo $washer->total_demand; ?></td>
     <td><?php echo $washer->total_washes; ?></td>
-    <td><?php echo $washer->total_cancel; ?></td>
+    <?php if($washer->total_cancel > 0){?>
+    <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>&event=washer_history_cancel"><?php echo $washer->total_cancel; ?></a></td>
+    <?php }else{
+        echo "<td>".$washer->total_cancel."</td>";
+    }?>
     <td><?php echo ($washer->total_sum > 0)? '$'.round($washer->total_sum,2):'$0.00'; ?></td>
 </tr>
 <?php endforeach; ?>

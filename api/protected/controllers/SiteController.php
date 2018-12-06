@@ -4273,6 +4273,20 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
                 $agent_id = Yii::app()->request->getParam('agent_id');
                 $order_day = "(w.agent_id = ". $agent_id . ") AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."'";
 
+            }elseif($event == 'washer_history_cancel'){
+                $from = Yii::app()->request->getParam('from');
+                $to = Yii::app()->request->getParam('to');
+                $agent_id = Yii::app()->request->getParam('agent_id');
+                
+                $get_cancel_count = Yii::app()->db->createCommand("SELECT wash_request_id FROM activity_logs WHERE DATE_FORMAT(action_date,'%Y-%m-%d') BETWEEN '".$from."' AND '".$to."' AND action IN('admindropjob', 'cancelorderwasher', 'washerenroutecancel','Dropschedule') AND agent_id = ".$agent_id." GROUP BY wash_request_id")->queryAll();
+                $washer_request_ids = array();
+                if(count($get_cancel_count) > 0){
+                    foreach ($get_cancel_count as $key => $value) {
+                        $washer_request_ids[] = $value['wash_request_id'];
+                    }
+                $order_day = " w.id IN (".implode(',', $washer_request_ids).")";    
+                }
+
             }elseif ($event == 'washer_history_csv') {
                 $from = Yii::app()->request->getParam('from');
                 $to = Yii::app()->request->getParam('to');
@@ -4283,11 +4297,11 @@ $all_washes = Yii::app()->db->createCommand()->select('*')->from('washing_reques
                 $status_qr = '';
             }
 
-            if(empty(Yii::app()->request->getParam('day')) && $event != 'washer_history' && $event != 'washer_history_csv'){
+            if(empty(Yii::app()->request->getParam('day')) && $event != 'washer_history' && $event != 'washer_history_csv' && $event != 'washer_history_cancel'){
                 $month_start = Yii::app()->request->getParam('year').'-'.Yii::app()->request->getParam('month').'-01';
                 $month_end = Yii::app()->request->getParam('year').'-'.Yii::app()->request->getParam('month').'-31';
                 $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$month_start."' AND '".$month_end."'".$status_qr;
-            }elseif($event != 'washer_history' && $event != 'washer_history_csv'){    
+            }elseif($event != 'washer_history' && $event != 'washer_history_csv' && $event != 'washer_history_cancel'){    
                 $order_day = " AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '".$day."'".$status_qr;
             }
         }
@@ -4331,7 +4345,7 @@ if($customer_id > 0){
         //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
 //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
-if($event == 'washer_history' && $event == 'washer_history_csv'){
+if($event == 'washer_history' || $event == 'washer_history_csv' || $event == 'washer_history_cancel'){
      if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$order_day." ORDER BY w.id ASC LIMIT ".$limit)->queryAll();
 else $qrRequests =  Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE ".$order_day." ORDER BY w.id ASC")->queryAll();
   }elseif($event == 'newcustomer'){
@@ -11643,9 +11657,9 @@ if(!$token_check){
             $Arr_field['field_name']['order_id'] = 'ID';
             $Arr_field['field_name']['order_type'] = 'Order Type';
             $Arr_field['field_name']['status'] = 'Status';
-            $Arr_field['field_name']['payment'] = 'Payment';
-            $Arr_field['field_name']['trans_id'] = 'Transaction ID';
-            $Arr_field['field_name']['declined_trans_id'] = 'Declined Transaction ID';
+//            $Arr_field['field_name']['payment'] = 'Payment';
+//            $Arr_field['field_name']['trans_id'] = 'Transaction ID';
+//            $Arr_field['field_name']['declined_trans_id'] = 'Declined Transaction ID';
             $Arr_field['field_name']['customer'] = 'Customer Name';
             $Arr_field['field_name']['customer_phone'] = 'Customer Phone';
             $Arr_field['field_name']['badge'] = 'Badge';
@@ -11657,7 +11671,7 @@ if(!$token_check){
             //$Arr_field['field_name']['state'] = 'State';
             $Arr_field['field_name']['zip_code'] = 'Zip Code';
             $Arr_field['field_name']['schedule_date'] = 'Schedule Datetime';
-            $Arr_field['field_name']['start'] = 'Starts';
+            //$Arr_field['field_name']['start'] = 'Starts';
             $Arr_field['field_name']['vehicles'] = 'Vehicles';
             $Arr_field['field_name']['total_price'] = 'Total Earned';
             $Arr_field['field_name']['create_date'] = 'Created Date';
@@ -11686,9 +11700,9 @@ if(!$token_check){
                 }
                 $Arr_field['field_value']['status'] = $status;
                 $fee_wash = ($order->payment_type == 'free') ? 'Free Wash' : '';
-                $Arr_field['field_value']['payment'] = $order->payment_status . $fee_wash;
-                $Arr_field['field_value']['trans_id'] = $order->transaction_id;
-                $Arr_field['field_value']['declined_trans_id'] = $order->failed_transaction_id;
+                //$Arr_field['field_value']['payment'] = $order->payment_status . $fee_wash;
+                //$Arr_field['field_value']['trans_id'] = $order->transaction_id;
+                //$Arr_field['field_value']['declined_trans_id'] = $order->failed_transaction_id;
                 $Arr_field['field_value']['customer'] = $order->customer_name;
                 $Arr_field['field_value']['customer_phone'] = $order->customer_phoneno;
                 $Arr_field['field_value']['badge'] = $order->agent_details->real_washer_id;
@@ -11713,12 +11727,12 @@ if(!$token_check){
                     $datetime = 'N/A';
                 }
                 $Arr_field['field_value']['schedule_date'] = $datetime;
-                if ($order->min_diff > 0) {
+                /*if ($order->min_diff > 0) {
                     $start = $order->min_diff;
                 } else {
                     $start = "-";
                 }
-                $Arr_field['field_value']['start'] = $start;
+                $Arr_field['field_value']['start'] = $start;*/
                 if (count($order->vehicles)) {
                     $vehicle = "";
                     foreach ($order->vehicles as $car) {
