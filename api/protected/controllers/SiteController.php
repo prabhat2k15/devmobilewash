@@ -7313,8 +7313,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $topic_arn = 'arn:aws:sns:us-west-2:461900685840:washerschedpush';
 
             $aws_result = $aws_client->publish([
-                'Message' => $msg,
+		'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"data\": { \"message\": \"".$msg."\" } }")),
                 'TopicArn' => $topic_arn,
+		'MessageStructure' => 'json',
             ]);
 
             if ($aws_result['MessageId']) {
