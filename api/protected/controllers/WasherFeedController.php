@@ -44,6 +44,7 @@ class washerFeedController extends Controller {
             die();
         }
         $washerFeeds = washerFeeds::model()->findAll();
+
         if (count($washerFeeds) > 0) {
             foreach ($washerFeeds as $key => $val) {
                 //print_r($val);
@@ -88,22 +89,23 @@ class washerFeedController extends Controller {
         }
         $washerFeeds = washerFeeds::model()->findAll();
         if (count($washerFeeds) > 0) {
+            $i = 0;
             foreach ($washerFeeds as $key => $val) {
-                $currentDate = date('Y-m-d h:i:s');
+                $currentDate = date('Y-m-d H:i:s');
                 $currentDate = strtotime($currentDate);
                 $fromDate = strtotime($val['from_date']);
                 $toDate = strtotime($val['to_date']);
                 if (($currentDate > $fromDate) && ($currentDate < $toDate)) {
-                    $data[$key]['id'] = $val['id'] ? $val['id'] : ' ';
-                    $data[$key]['title'] = $val['title'] ? $val['title'] : ' ';
-                    $data[$key]['message'] = $val['message'] ? $val['message'] : ' ';
-                    $data[$key]['image'] = $val['image'] ? $val['image'] : ' ';
-                    $data[$key]['image_link'] = $val['image_link'] ? $val['image_link'] : ' ';
-                    $data[$key]['from_date'] = $val['from_date'] ? $val['from_date'] : ' ';
-                    $data[$key]['to_date'] = $val['to_date'] ? $val['to_date'] : ' ';
+                    $data[$i]['id'] = $val['id'] ? $val['id'] : ' ';
+                    $data[$i]['title'] = $val['title'] ? $val['title'] : ' ';
+                    $data[$i]['message'] = $val['message'] ? $val['message'] : ' ';
+                    $data[$i]['image'] = $val['image'] ? $val['image'] : ' ';
+                    $data[$i]['image_link'] = $val['image_link'] ? $val['image_link'] : ' ';
+                    $data[$i]['from_date'] = $val['from_date'] ? $val['from_date'] : ' ';
+                    $data[$i]['to_date'] = $val['to_date'] ? $val['to_date'] : ' ';
+                    $i++;
                 }
             }
-
             if (count($data) > 0) {
                 echo json_encode(['status' => 1, 'data' => $data]);
             } else {
@@ -114,6 +116,7 @@ class washerFeedController extends Controller {
 
 //update feed form by id 
     public function actionUpdateFeedById() {
+
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -133,6 +136,12 @@ class washerFeedController extends Controller {
             );
             echo json_encode($json);
             die();
+        }
+        $stringfrom_date = strtotime($_POST['from_date']);
+        $stringTo_date = strtotime($_POST['to_date']);
+        if ($stringfrom_date > $stringTo_date) {
+            echo json_encode(['status' => 0, 'message' => 'To date should be Greater than From date']);
+            die;
         }
         $img = Yii::app()->request->getParam('image');
         $removeImage = Yii::app()->request->getParam('removeImage');

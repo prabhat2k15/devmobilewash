@@ -1552,15 +1552,14 @@ class CustomersController extends Controller {
             $customerid = $this->aes256cbc_crypt($customerid, 'd', AES256CBC_API_PASS);
         }
 
-        if($customerid){
-                $CustomerExpansionRequestExist = CustomerExpansionRequest::model()->findByAttributes(['customer_id'=>$customerid]);
-                if($CustomerExpansionRequestExist){
-                    $CustomerExpansionRequestStatus = "1";
-                } else {
-                    $CustomerExpansionRequestStatus = "0";
-                }
-                
+        if ($customerid) {
+            $CustomerExpansionRequestExist = CustomerExpansionRequest::model()->findByAttributes(['customer_id' => $customerid]);
+            if ($CustomerExpansionRequestExist) {
+                $CustomerExpansionRequestStatus = "1";
+            } else {
+                $CustomerExpansionRequestStatus = "0";
             }
+        }
 
         if ((isset($customerid) && !empty($customerid))) {
             $customers_id = Customers::model()->findByAttributes(array("id" => $customerid));
@@ -1638,7 +1637,7 @@ class CustomersController extends Controller {
                     'last_used_device' => $clientdevices,
                     'is_schedule_popup_shown' => $customers_id->is_schedule_popup_shown,
                     'customer_notes' => $customers_id->notes,
-                    'CustomerExpansionRequestStatus'=> $CustomerExpansionRequestStatus,
+                    'CustomerExpansionRequestStatus' => $CustomerExpansionRequestStatus,
                 );
             } else {
                 $json = array(
@@ -7617,27 +7616,27 @@ class CustomersController extends Controller {
 
     public function actionpreregister() {
 
-        if (Yii::app()->request->getParam('key') != API_KEY) {
-            echo "Invalid api key";
-            die();
-        }
-
-        $api_token = Yii::app()->request->getParam('api_token');
-        $t1 = Yii::app()->request->getParam('t1');
-        $t2 = Yii::app()->request->getParam('t2');
-        $user_type = Yii::app()->request->getParam('user_type');
-        $user_id = Yii::app()->request->getParam('user_id');
-
-        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
-
-        if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }
+//        if (Yii::app()->request->getParam('key') != API_KEY) {
+//            echo "Invalid api key";
+//            die();
+//        }
+//
+//        $api_token = Yii::app()->request->getParam('api_token');
+//        $t1 = Yii::app()->request->getParam('t1');
+//        $t2 = Yii::app()->request->getParam('t2');
+//        $user_type = Yii::app()->request->getParam('user_type');
+//        $user_id = Yii::app()->request->getParam('user_id');
+//
+//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+//
+//        if (!$token_check) {
+//            $json = array(
+//                'result' => 'false',
+//                'response' => 'Invalid request'
+//            );
+//            echo json_encode($json);
+//            die();
+//        }
 
         $first_name = Yii::app()->request->getParam('first_name');
         $last_name = Yii::app()->request->getParam('last_name');
@@ -7671,10 +7670,11 @@ class CustomersController extends Controller {
                 'phone' => $phone,
                 'city' => $city,
                 'state' => $state,
+                'zipcode' => $zipcode,
                 'register_date' => $register_date,
                 'how_hear_mw' => ''
             );
-
+            
             $model = new PreRegClients;
             $model->attributes = $clientdata;
             $model->save(false);
@@ -12657,15 +12657,19 @@ class CustomersController extends Controller {
         echo json_encode($json);
         die();
     }
-    
-    public function actionCustomerExpansionRequestList(){
-        $result =  CustomerExpansionRequest::model()->findAll();
-        print_r($result); die;
+
+    public function actionCustomerExpansionRequestList() {
+        $result = Yii::app()->db->createCommand('SELECT pre_registered_clients.* FROM pre_registered_clients ORDER BY id DESC')->queryAll();
+        $json = array(
+            'result' => 'true',
+            'data' => $result
+        );
+        echo json_encode($json);
+        die();
     }
-    
-    
-    public function actionCustomerExpansionRequestSave(){
-        
+
+    public function actionCustomerExpansionRequestSave() {
+
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -12696,59 +12700,58 @@ class CustomersController extends Controller {
         if ((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)) {
             $customerid = $this->aes256cbc_crypt($customerid, 'd', AES256CBC_API_PASS);
         }
-            $country = Yii::app()->request->getParam('country');
-            $city = Yii::app()->request->getParam('city');
-            $state = Yii::app()->request->getParam('state');
-            $zipcode = Yii::app()->request->getParam('zipcode');
-            $CustomerExpansionRequestExist = CustomerExpansionRequest::model()->findByAttributes(array('customer_id'=>$customerid,'state'=>$state));
-            if($CustomerExpansionRequestExist){
-                $response['status'] = '0';
-                $response['message'] = 'Customer already exist.';
-                echo json_encode($response);   
-                die;
-            }
-            if($customerid == ""){
-                $response['status'] = '0';
-                $response['message'] = 'Please enter customer id';
-                echo json_encode($response);   
-                die;
-            }
-            if($country == ""){
-                $response['status'] = '0';
-                $response['message'] = 'Please enter country ';
-                echo json_encode($response);   
-                die;
-            }
-            if($state == ""){
-                $response['status'] = '0';
-                $response['message'] = 'Please enter state ';
-                echo json_encode($response);   
-                die;
-            }
-            if($city == ""){
-                $response['status'] = '0';
-                $response['message'] = 'Please enter city';
-                echo json_encode($response);   
-                die;
-            }
-            $customer = new CustomerExpansionRequest;
-            $customer->customer_id = $customerid;
-            $customer->country    = $country;
-            $customer->city   = $city;
-            $customer->zipcode =$zipcode;
-            $customer->state   = $state;
-            if($customer->save()){
-               $data['status'] = "1"; 
-               $data['message'] ="Data saved Successfully.";
-               echo json_encode($data);   
-                die;
-            } else {
-                $data['status'] = "0"; 
-                $data['message'] ="something went wrong";
-               echo json_encode($data);   
-                die;
-            }
+        $country = Yii::app()->request->getParam('country');
+        $city = Yii::app()->request->getParam('city');
+        $state = Yii::app()->request->getParam('state');
+        $zipcode = Yii::app()->request->getParam('zipcode');
+        $CustomerExpansionRequestExist = CustomerExpansionRequest::model()->findByAttributes(array('customer_id' => $customerid, 'state' => $state));
+        if ($CustomerExpansionRequestExist) {
+            $response['status'] = '0';
+            $response['message'] = 'Customer already exist.';
+            echo json_encode($response);
+            die;
+        }
+        if ($customerid == "") {
+            $response['status'] = '0';
+            $response['message'] = 'Please enter customer id';
+            echo json_encode($response);
+            die;
+        }
+        if ($country == "") {
+            $response['status'] = '0';
+            $response['message'] = 'Please enter country ';
+            echo json_encode($response);
+            die;
+        }
+        if ($state == "") {
+            $response['status'] = '0';
+            $response['message'] = 'Please enter state ';
+            echo json_encode($response);
+            die;
+        }
+        if ($city == "") {
+            $response['status'] = '0';
+            $response['message'] = 'Please enter city';
+            echo json_encode($response);
+            die;
+        }
+        $customer = new CustomerExpansionRequest;
+        $customer->customer_id = $customerid;
+        $customer->country = $country;
+        $customer->city = $city;
+        $customer->zipcode = $zipcode;
+        $customer->state = $state;
+        if ($customer->save()) {
+            $data['status'] = "1";
+            $data['message'] = "Data saved Successfully.";
+            echo json_encode($data);
+            die;
+        } else {
+            $data['status'] = "0";
+            $data['message'] = "something went wrong";
+            echo json_encode($data);
+            die;
+        }
     }
-
 
 }

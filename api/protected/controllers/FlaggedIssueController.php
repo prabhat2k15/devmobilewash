@@ -50,7 +50,7 @@ class FlaggedIssueController extends Controller {
             'admin_username' => $admin_username,
             'action' => 'flagged_issue',
             'action_date' => date('Y-m-d H:i:s'));
-            Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
 //        $washRequestId = Yii::app()->request->getParam('washRequestId');
 //        $flagged_val = Yii::app()->request->getParam('flagged_val');
         $result = Yii::app()->db->createCommand("UPDATE washing_requests SET flagged_issue_status='" . $flagged_val . "'     WHERE id=" . $washRequestId)->queryAll();
@@ -60,6 +60,18 @@ class FlaggedIssueController extends Controller {
         $flagVal = Yii::app()->request->getParam('flagVal');
         $resolvedValue = Yii::app()->request->getParam('resolvedValue');
         $result = Yii::app()->db->createCommand("UPDATE washing_requests SET flagged_issue_status='" . $flagVal . "'     WHERE id in( " . $resolvedValue . ")")->queryAll();
+    }
+
+    public function actionUpdateFlagIssue() {
+        $flaggedVal = Yii::app()->request->getParam('flaggedVal');
+        $orderId = Yii::app()->request->getParam('orderId');
+        $upDateFlagg = new Washingrequests;
+        $Flagdata = $upDateFlagg->findByAttributes(array('id' => $orderId));
+        $Flagdata->attributes = array('flagged_issue_status' => $flaggedVal);
+
+        $Flagdata->save();
+        print_r($Flagdata);
+        die;
     }
 
 }
