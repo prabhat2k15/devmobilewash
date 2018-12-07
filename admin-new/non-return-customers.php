@@ -4,6 +4,10 @@
    .customcsv{
       opacity: 0;
    }
+   
+   .dataTables_info{
+      display: none;
+   }
 </style>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
@@ -149,7 +153,7 @@ display: none;
 
 .custom-pagination{
     text-align: center;
-    margin: 10px;
+    margin: 10px 0;
 }
 
 .custom-pagination a{
@@ -257,6 +261,14 @@ else echo $customer->total_wash;?> </td>
                                     </table>
                                       <?php if((!isset($_GET['range'])) || ($_GET['range'] == 30)): ?>
                                       <div class='custom-pagination'>
+                                       <?php if(count($allcustomers->nonreturncusts_30)): ?>
+                                       <?php if(isset($_GET['page_number']) && ($_GET['page_number'] > 1)): ?>
+                                          <p style="text-align: left;">Showing <?php echo ((($_GET['page_number']  - 1) * 100) + 1); ?> to <?php echo (($_GET['page_number']  - 1) * 100) + count($allcustomers->nonreturncusts_30); ?> of <?php echo $allcustomers->total_entries_30; ?> entries</p>
+                                       <?php else: ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->nonreturncusts_30); ?> of <?php echo $allcustomers->total_entries_30; ?> entries</p>
+                                       
+                                       <?php endif; ?>
+                                       <?php endif; ?>
                                     <?php 
                                     if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?page_number=1&range=30'>&laquo;</a> ";
                                     for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages_30; $i++, $j++){
@@ -267,8 +279,13 @@ else echo $customer->total_wash;?> </td>
                                     ?>
                                     </div>
                                       <?php else: ?>
+                                        <?php if(count($allcustomers->nonreturncusts_30)): ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->nonreturncusts_30); ?> of <?php echo $allcustomers->total_entries_30; ?> entries</p>
+                                       <?php endif; ?>
                                        <?php if($allcustomers->total_pages_30 >1): ?>
+                                         
                                        <div class='custom-pagination'>
+                                       
                                     <?php 
                                     
                                     for($i=1, $j=1; $i<=$allcustomers->total_pages_30; $i++, $j++){
@@ -328,6 +345,14 @@ else echo $customer->total_wash;?> </td>
                                     </table>
                                       <?php if(($_GET['range'] == 60)): ?>
                                       <div class='custom-pagination'>
+                                       <?php if(count($allcustomers->nonreturncusts_60)): ?>
+                                       <?php if(isset($_GET['page_number']) && ($_GET['page_number'] > 1)): ?>
+                                          <p style="text-align: left;">Showing <?php echo ((($_GET['page_number']  - 1) * 100) + 1); ?> to <?php echo (($_GET['page_number']  - 1) * 100) + count($allcustomers->nonreturncusts_60); ?> of <?php echo $allcustomers->total_entries_60; ?> entries</p>
+                                       <?php else: ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->nonreturncusts_60); ?> of <?php echo $allcustomers->total_entries_60; ?> entries</p>
+                                       
+                                       <?php endif; ?>
+                                       <?php endif; ?>
                                     <?php 
                                     if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?page_number=1&range=60'>&laquo;</a> ";
                                     for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages_60; $i++, $j++){
@@ -338,8 +363,12 @@ else echo $customer->total_wash;?> </td>
                                     ?>
                                     </div>
                                       <?php else: ?>
+                                       <?php if(count($allcustomers->nonreturncusts_60)): ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->nonreturncusts_60); ?> of <?php echo $allcustomers->total_entries_60; ?> entries</p>
+                                       <?php endif; ?>
                                       <?php if($allcustomers->total_pages_60 > 1): ?>
                                       <div class='custom-pagination'>
+                                       
                                     <?php 
                                     
                                     for($i=1, $j=1; $i<=$allcustomers->total_pages_60; $i++, $j++){
@@ -399,6 +428,14 @@ else echo $customer->total_wash;?> </td>
                                     </table>
                                        <?php if(($_GET['range'] == 90)): ?>
                                        <div class='custom-pagination'>
+                                          <?php if(count($allcustomers->nonreturncusts_90)): ?>
+                                       <?php if(isset($_GET['page_number']) && ($_GET['page_number'] > 1)): ?>
+                                          <p style="text-align: left;">Showing <?php echo ((($_GET['page_number']  - 1) * 100) + 1); ?> to <?php echo (($_GET['page_number']  - 1) * 100) + count($allcustomers->nonreturncusts_90); ?> of <?php echo $allcustomers->total_entries_90; ?> entries</p>
+                                       <?php else: ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->nonreturncusts_90); ?> of <?php echo $allcustomers->total_entries_90; ?> entries</p>
+                                       
+                                       <?php endif; ?>
+                                       <?php endif; ?>
                                     <?php 
                                     if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/non-return-customers.php?page_number=1&range=90'>&laquo;</a> ";
                                     for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages_90; $i++, $j++){
@@ -409,8 +446,13 @@ else echo $customer->total_wash;?> </td>
                                     ?>
                                     </div>
                                        <?php else: ?>
+                                          <?php if(count($allcustomers->nonreturncusts_90)): ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->nonreturncusts_90); ?> of <?php echo $allcustomers->total_entries_90; ?> entries</p>
+                                       <?php endif; ?>
                                        <?php if($allcustomers->total_pages_90 > 1): ?>
+                                       
                                        <div class='custom-pagination'>
+                                       
                                     <?php 
                                     
                                     for($i=1, $j=1; $i<=$allcustomers->total_pages_90; $i++, $j++){
