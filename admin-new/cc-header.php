@@ -1,4 +1,12 @@
 <?php
+const ROOT_URL = 'http://www.devmobilewash.com';
+if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") { 
+  header("Location: ".ROOT_URL."/admin-new/command-center.php");
+die();
+}
+
+
+
 require_once('../api/protected/config/constant.php');
 /* -------- logged in auth --------- */
 

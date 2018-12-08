@@ -10,7 +10,7 @@
 
 define("API_KEY","m4b5WB0h0HXUK8fTvPw5O1nIDDmEAt4c");
 define("API_KEY_CRON","zCWJmjHOlZDbsyiLwhwM0bDdB9sUo2yo");
-define("ROOT_URL","http://www.devmobilewash.com");
+define("ROOT_URL","https://www.devmobilewash.com");
 define("ROOT_WEBFOLDER","/home/devmobilewash");
 define("COOKIE_DOMAIN",".devmobilewash.com");
 define("WEBSITE_URL","https://www.mobilewash.com");
