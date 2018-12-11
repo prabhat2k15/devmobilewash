@@ -1049,7 +1049,8 @@ $q->addcondition("(last_name LIKE '".$search_query."%')");
 $q2 = new CDbCriteria();
 // AND online_status = 'online'
 $q2->addcondition("(customername LIKE '".$search_query."%')");
-
+//$q2->addcondition("(first_name LIKE '".$search_query."%')");
+//$q2->addcondition("(last_name LIKE '".$search_query."%')");
 $findagents = Agents::model()->findAll( $q );
 $findclients = Customers::model()->findAll( $q2 );
 
@@ -1080,7 +1081,7 @@ $processing_order_res =  Yii::app()->db->createCommand("SELECT COUNT(*) as count
 $clients_arr[$key]['id'] = $client['id'];
 $clients_arr[$key]['name'] = $client['first_name']." ".$client['last_name'];
 $clients_arr[$key]['status'] = $client['online_status'];
-$clients_arr[$key]['processing_orders'] = $client['processing_orders'];
+//$clients_arr[$key]['processing_orders'] = $client['processing_orders'];
 }
 }
 
@@ -6191,7 +6192,7 @@ if(!$token_check){
     
     
  public function actionConfirmPhone(){
-
+    
 if(Yii::app()->request->getParam('key') != API_KEY){
 echo "Invalid api key";
 die();

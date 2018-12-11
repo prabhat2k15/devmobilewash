@@ -51,26 +51,27 @@ class FlaggedIssueController extends Controller {
             'action' => 'flagged_issue',
             'action_date' => date('Y-m-d H:i:s'));
         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
-//        $washRequestId = Yii::app()->request->getParam('washRequestId');
-//        $flagged_val = Yii::app()->request->getParam('flagged_val');
-        $result = Yii::app()->db->createCommand("UPDATE washing_requests SET flagged_issue_status='" . $flagged_val . "'     WHERE id=" . $washRequestId)->queryAll();
+
+        $result = Yii::app()->db->createCommand("UPDATE washing_requests SET flagged_issue_status='" . $flagged_val . "'     WHERE id=" . $washRequestId)->query();
     }
 
     public function actionUpdateFlaggedIssueMultiple() {
         $flagVal = Yii::app()->request->getParam('flagVal');
         $resolvedValue = Yii::app()->request->getParam('resolvedValue');
-        $result = Yii::app()->db->createCommand("UPDATE washing_requests SET flagged_issue_status='" . $flagVal . "'     WHERE id in( " . $resolvedValue . ")")->queryAll();
+        $result = Yii::app()->db->createCommand("UPDATE washing_requests SET flagged_issue_status='" . $flagVal . "'     WHERE id in( " . $resolvedValue . ")")->query();
     }
 
     public function actionUpdateFlagIssue() {
         $flaggedVal = Yii::app()->request->getParam('flaggedVal');
         $orderId = Yii::app()->request->getParam('orderId');
-        $upDateFlagg = new Washingrequests;
-        $Flagdata = $upDateFlagg->findByAttributes(array('id' => $orderId));
-        $Flagdata->attributes = array('flagged_issue_status' => $flaggedVal);
+        $result = Yii::app()->db->createCommand("UPDATE washing_requests SET flagged_issue_status='" . $flaggedVal . "'     WHERE id=" . $orderId)->query();
+    }
 
-        $Flagdata->save();
-        print_r($Flagdata);
+    public function actionTest() {
+//        $result = Yii::app()->db->createCommand("mysqldump -u devmobil_mwuser -p9F;WPnZwCEscQ$*[K4 devmobil_mwmain > db_backup.sql")->query();
+        //$x = exec("mysqldump --opt -u devmobil_mwuser -p'9F;WPnZwCEscQ$*[K4' devmobil_mwmain customers > db_backup1.csv");
+        $x = exec("mysqldump --opt -u devmobil_mwuser -p'9F;WPnZwCEscQ$*[K4' devmobil_mwmain customers > db_backup1.csv");
+        print_r($x);
         die;
     }
 

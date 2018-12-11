@@ -645,17 +645,18 @@ if (isset($_POST['submitFlagged'])) {
                     </div>
                     <div class="portlet-body">
                         <p style="margin-bottom: 20px; font-size: 16px;">Limit <select class='order-limit'><option value="200" <?php if ($_GET['limit'] == 200) echo "selected"; ?>>200</option><option value="400" <?php if ($_GET['limit'] == 400) echo "selected"; ?>>400</option><option value="600" <?php if ($_GET['limit'] == 600) echo "selected"; ?>>600</option><option value="800" <?php if ($_GET['limit'] == 800) echo "selected"; ?>>800</option><option value="1000" <?php if ($_GET['limit'] == 1000) echo "selected"; ?>>1000</option><option value="0" <?php if (!$_GET['limit']) echo "selected"; ?>>none</option></select><span class="pull-right">Android Order <?php echo $android_count; ?></span></p>
-                     <!--<p style="margin-bottom: 20px; font-size: 16px;">Filter Orders <select class='order-filter'><option value="" <?php //if(!$_GET['filter']) echo "selected";                                                                                                       ?>>Real Orders</option><option value="testorders" <?php //if($_GET['filter'] == 'testorders') echo "selected";                                                                                                       ?>>Test Orders</option></select></p>-->
+                     <!--<p style="margin-bottom: 20px; font-size: 16px;">Filter Orders <select class='order-filter'><option value="" <?php //if(!$_GET['filter']) echo "selected";                                                                                                              ?>>Real Orders</option><option value="testorders" <?php //if($_GET['filter'] == 'testorders') echo "selected";                                                                                                              ?>>Test Orders</option></select></p>-->
                         <form method="post">
                             <div class="row">
                                 <div class="col-xs-6 col-sm-8 col-md-9">
                                     <ul class="add-new-btn-box">
 
                                         <li>
-                                            <input type="submit" disabled="" name="submitFlagged" value="TODO" class="btn btn-primary bold-txt buttonSubmit">
+                                            <a   href="<?php echo ROOT_URL; ?>/admin-new/flagged-issues.php?filter=flaggedIssues&flaggedIssueStatus=1&limit=<?= $_GET['limit'] ?>" class="btn btn-primary bold-txt buttonSubmit" >TO DO</a>
                                         </li>
                                         <li>
-                                            <input type="submit" disabled="" name="submitFlagged" value="Resolved" class="btn btn-primary bold-txt buttonSubmit">
+                                            <a    href="<?php echo ROOT_URL; ?>/admin-new/flagged-issues.php?filter=flaggedIssues&flaggedIssueStatus=2&limit=<?= $_GET['limit'] ?>" class="btn btn-primary bold-txt buttonSubmit" >Resolved</a>
+                                            
                                         </li>
 <!--                                        <li><input type="checkbox" id="checkAll">Select All</li>-->
                                     </ul>
@@ -715,9 +716,9 @@ if (isset($_POST['submitFlagged'])) {
                                         ?>
                                         <tr class="odd gradeX <?php if ($ind == 0) echo "flashro"; ?>" id="order-<?php echo $order->id; ?>">
                                             <td>
-                                                <?php echo $order->flagged_issue_status; ?>
+
                                                 <?php if ($order->flagged_issue_status == 2) { ?>
-                                                    <input type="button" value="Resolved"  name="submitFlagged1" id="<?= $order->id ?>" data-flag="0" class="btn btn-primary bold-txt buttonSubmit submitFlaggedIssue">
+                                                    <input type="button" value="Resolved"  name="submitFlagged1" id="<?= $order->id ?>" data-flag="1" class="btn btn-primary bold-txt buttonSubmit submitFlaggedIssue">
 
                                                 <?php } ?>
                                                 <?php if ($order->flagged_issue_status == 1) { ?>
@@ -841,7 +842,7 @@ if (isset($_POST['submitFlagged'])) {
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;                                                                                                     ?></td-->
+                                           <!--td><?php //echo $order->transaction_id;                                                                                                            ?></td-->
                                             <td>$<?php echo $order->net_price; ?></td>
                                             <td><?php echo $order->created_date; ?></td>
 
@@ -1331,7 +1332,7 @@ if (isset($_POST['submitFlagged'])) {
 <script>
 
     // $('.selectFlaggedIssues').on('change', function () {
-    //     window.location.href = "<?php //echo ROOT_URL;                                    ?>/admin-new/flagged-issues.php?filter=flaggedIssues&limit=<?php //echo $_GET['limit'];                                    ?>&flaggedIssueStatus=" + $(this).val();
+    //     window.location.href = "<?php //echo ROOT_URL;                                           ?>/admin-new/flagged-issues.php?filter=flaggedIssues&limit=<?php //echo $_GET['limit'];                                           ?>&flaggedIssueStatus=" + $(this).val();
     // });
     // $(document).ready(function () {
     //     var count = $(".countSelectBox:checked").length;
@@ -1369,14 +1370,13 @@ if (isset($_POST['submitFlagged'])) {
     $(".submitFlaggedIssue").click(function () {
         var id = $(this).attr('id');
         var flagVal = $(this).attr('data-flag');
-        var data = {};
         $.ajax({
             //data: data,
             type: "GET",
             url: "<?php echo ROOT_URL; ?>/api/index.php?r=FlaggedIssue/UpdateFlagIssue&orderId=" + id + "&flaggedVal=" + flagVal,
             success: function (data) {
-                alert("Data Save: " + data);
-            }
-        });
-    });
+                window.location.href = "<?php echo ROOT_URL; ?>/admin-new/flagged-issues.php?filter=flaggedIssues&flaggedIssueStatus=&limit=<?= $_GET['limit'] ?>"
+                            }
+                        });
+                    });
 </script>
