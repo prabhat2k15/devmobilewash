@@ -6807,7 +6807,7 @@ $aws_client = SnsClient::factory(array(
 ));
 
 $aws_result = $aws_client->setEndpointAttributes([
-    'Attributes' => array("Token" => $device_token),
+    'Attributes' => array("Token" => $device_token, "Enabled" => true),
     'EndpointArn' => $device_exists[0]['endpoint_arn'],
 ]);
 
