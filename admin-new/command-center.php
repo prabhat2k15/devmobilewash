@@ -569,7 +569,7 @@ setInterval("displaytime()", 1000)
         </div>
 	</div><!--container end-->
 <?php include_once('cc-footer.php'); ?>
-<script src="http://209.95.41.9:3000/socket.io/socket.io.js"></script>
+<script src="https://209.95.41.9:3000/socket.io/socket.io.js"></script>
 <script>
 var markers = [];
 var closest_markers = [];
@@ -583,7 +583,7 @@ var socketId;
 var socketintvaltimer;
 var location_arr = [];
 var total_stop_count = 0;
-var socket = io.connect("209.95.41.9:3000", { query: "action=commandcenter" });
+var socket = io.connect("https://209.95.41.9:3000", { query: "action=commandcenter", secure: true});
 var is_shiftpressed = 0;
 var selectedzips = '';
  var shiftPressed = false;

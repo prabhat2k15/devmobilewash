@@ -1,8 +1,9 @@
 <?php
-if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") { 
+/*if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") { 
   header("Location: http://www.devmobilewash.com/admin-new/edit-order.php?id=".$_GET['id']);
 die();
-}
+}*/
+
 require_once('../api/protected/vendors/braintree/lib/Braintree.php');
 include('header.php');
 
@@ -20,7 +21,6 @@ $clientToken = Braintree_ClientToken::generate();
 
 ?>
 <?php
-
 $rootpath = '/home/devmobilewash/public_html/admin-new/all-orders-img/';
 if(!is_dir($rootpath.$_GET['id'])){
 mkdir($rootpath.$_GET['id'], 0777, true);

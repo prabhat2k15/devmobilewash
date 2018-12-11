@@ -1,7 +1,9 @@
 var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+//var https = require('https').Server(app);
+var https  = require('https');
+//var io = require('socket.io')(https);
 var request = require('request');
+var fs = require( 'fs' );
 //var braintree = require("braintree");
 
 /*app.get('/', function(req, res){
@@ -19,7 +21,7 @@ function getAppstat(socket_id='', key = '', api_token='', t1='', t2='', user_typ
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=users/Appstat',
+  url:     'https://www.devmobilewash.com/api/index.php?r=users/Appstat',
   body:    "key="+key+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  // console.log(JSON.parse(body));
@@ -41,7 +43,7 @@ function getpendingwashesdetails(socket_id = '', key = '', api_token='', t1='', 
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=washing/pendingwashesdetails',
+  url:     'https://www.devmobilewash.com/api/index.php?r=washing/pendingwashesdetails',
   body:    "key="+key+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  // console.log(JSON.parse(body));
@@ -62,7 +64,7 @@ request.post({
 function washing_currentwashondemandalert(wash_request_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=washing/currentwashondemandalert',
+  url:     'https://www.devmobilewash.com/api/index.php?r=washing/currentwashondemandalert',
   body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -74,7 +76,7 @@ request.post({
 function washing_currentwashschedulealert(wash_request_id='', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=washing/currentwashschedulealert',
+  url:     'https://www.devmobilewash.com/api/index.php?r=washing/currentwashschedulealert',
   body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -86,7 +88,7 @@ request.post({
 function washing_washingkart(wash_request_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=washing/washingkart',
+  url:     'https://www.devmobilewash.com/api/index.php?r=washing/washingkart',
   body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -105,7 +107,7 @@ request.post({
 function washing_checkwashrequeststatus(wash_request_id='', customer_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=washing/checkwashrequeststatus',
+  url:     'https://www.devmobilewash.com/api/index.php?r=washing/checkwashrequeststatus',
   body:    "key="+key+"&wash_request_id="+wash_request_id+"&customer_id="+customer_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -125,7 +127,7 @@ function getagentsbystatus(socket_id = '', key = '', api_token='', t1='', t2='',
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=agents/agentsbystatus',
+  url:     'https://www.devmobilewash.com/api/index.php?r=agents/agentsbystatus',
   body:    "key="+key+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  // console.log(JSON.parse(body));
@@ -146,7 +148,7 @@ function getclientsbystatus(socket_id = '', key = '', api_token='', t1='', t2=''
 
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=customers/clientsbystatus',
+  url:     'https://www.devmobilewash.com/api/index.php?r=customers/clientsbystatus',
   body:    "key="+key+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  // console.log(JSON.parse(body));
@@ -167,7 +169,7 @@ function washing_getnewwashrequest(agent_id='', socket_id = '', key = '', api_to
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=washing/getnewwashrequest',
+  url:     'https://www.devmobilewash.com/api/index.php?r=washing/getnewwashrequest',
   body:    "key="+key+"&agent_id="+agent_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -191,7 +193,7 @@ function washing_getallschedulewashes(agent_id='', washer_position = '', agent_l
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=washing/getallschedulewashes',
+  url:     'https://www.devmobilewash.com/api/index.php?r=washing/getallschedulewashes',
   body:    "key="+key+"&agent_id="+agent_id+"&washer_position="+washer_position+"&agent_latitude="+agent_latitude+"&agent_longitude="+agent_longitude+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -214,7 +216,7 @@ request.post({
 function site_updatedevicestatus(user_type='', user_id='', device_token='', socket_id = '', key = '', api_token='', t1='', t2='', user_type_security='', user_id_security='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=site/updatedevicestatus',
+  url:     'https://www.devmobilewash.com/api/index.php?r=site/updatedevicestatus',
   body:    "key="+key+"&user_type="+user_type+"&user_id="+user_id+"&device_token="+device_token+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type_security="+user_type_security+"&user_id_security="+user_id_security
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -236,7 +238,7 @@ request.post({
 function agents_updateagentlocations(agent_id='', latitude=0, longitude=0, socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=agents/updateagentlocations',
+  url:     'https://www.devmobilewash.com/api/index.php?r=agents/updateagentlocations',
   body:    "key="+key+"&agent_id="+agent_id+"&latitude="+latitude+"&longitude="+longitude+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -249,7 +251,7 @@ request.post({
 function customers_updatecustomerlocations(customer_id='', latitude=0, longitude=0, socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=customers/updatecustomerlocations',
+  url:     'https://www.devmobilewash.com/api/index.php?r=customers/updatecustomerlocations',
   body:    "key="+key+"&customer_id="+customer_id+"&latitude="+latitude+"&longitude="+longitude+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -262,7 +264,7 @@ request.post({
 function customers_getclienttoken(customer_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=customers/getClientToken',
+  url:     'https://www.devmobilewash.com/api/index.php?r=customers/getClientToken',
   body:    "key="+key+"&customer_id="+customer_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -283,7 +285,7 @@ request.post({
 function customers_addcustomerpaymentmethod(customer_id='', nonce = '', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=customers/addcustomerpaymentmethod',
+  url:     'https://www.devmobilewash.com/api/index.php?r=customers/addcustomerpaymentmethod',
   body:    "key="+key+"&customer_id="+customer_id+"&nonce="+nonce+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -304,7 +306,7 @@ request.post({
 function customers_getcustomerpaymentmethods(customer_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=customers/getcustomerpaymentmethods',
+  url:     'https://www.devmobilewash.com/api/index.php?r=customers/getcustomerpaymentmethods',
   body:    "key="+key+"&customer_id="+customer_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
@@ -326,7 +328,7 @@ function washing_getwash30secondtimer(wash_request_id='', socket_id = '', key = 
 //console.log(agent_id);
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'http://www.devmobilewash.com/api/index.php?r=washing/wash30secondtimer',
+  url:     'https://www.devmobilewash.com/api/index.php?r=washing/wash30secondtimer',
   body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
   //console.log("inside 30 timer"+JSON.parse(body));
@@ -345,7 +347,20 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-io.on('connection', function(socket){
+var server = https.createServer({
+    key: fs.readFileSync('/home/devmobilewash/ssl/keys/e2d28_c9e8d_89b88bb84590416dfdcf0e774e73b971.key'),
+    cert: fs.readFileSync('/home/devmobilewash/ssl/certs/devmobilewash_com_e2d28_c9e8d_1548719999_dd90cb2446ad5a1e069143697a227a06.crt'),
+    //ca: fs.readFileSync('./test_ca.crt'),
+    requestCert: false,
+    rejectUnauthorized: false
+},app);
+server.listen(3000);
+
+var io = require('socket.io').listen(server);
+
+io.sockets.on('connection',function (socket) {
+
+//io.on('connection', function(socket){
 console.log(socket.handshake.query.auth_token);
 //connectedusers.push(socket.id);
 //console.log("user socket id connected: "+socket.id);
@@ -462,6 +477,6 @@ else{
   });
 });
 
-http.listen(3000, function(){
+/*https.listen(3000, function(){
   console.log('listening on *:3000');
-});
+});*/
