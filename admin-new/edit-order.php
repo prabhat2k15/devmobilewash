@@ -2194,7 +2194,7 @@ if ($getorder->transaction_id) {
 </div>
 
 <script src="assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-<script src="https://209.95.41.9:3000/socket.io/socket.io.js"></script>
+<script src="https://devmobilewash.com:3000/socket.io/socket.io.js"></script>
 <script>
                                                                             var current_vehicle_id;
                                                                             $(function () {
@@ -2246,7 +2246,7 @@ if ($getorder->transaction_id) {
                                                                                                                                                                 $(".cancel-order").html('Cancelling. Please wait...');
                                                                                                                                                                 $(".err-text").hide();
                                                                                                                                                                 
-                                                                                                                                                                var socket = io.connect("https://209.95.41.9:3000", { query: "action=commandcenter", secure: true});
+                                                                                                                                                                var socket = io.connect("https://devmobilewash.com:3000", { query: "action=commandcenter", secure: true});
                                                                                                                                                                 socket.on('connect', function () {
                                                                                                                                                                     $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", {wash_request_id: "<?php echo $getorder->id; ?>", agent_id: 0, washer_drop_job: 1, is_scheduled: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', admin_username: "<?php echo $jsondata_permission->user_name; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
@@ -3665,7 +3665,7 @@ if ($getorder->transaction_id) {
                                                                                                                                                                                                                                                                         $(this).removeClass('washer_update');
                                                                                                                                                                                                                                                                         $(".err-text").hide();
                                                                                                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                        var socket = io.connect("https://209.95.41.9:3000", { query: "action=commandcenter", secure: true});
+                                                                                                                                                                                                                                                                        var socket = io.connect("https://devmobilewash.com:3000", { query: "action=commandcenter", secure: true});
                                                                                                                                                                                                                                                                         socket.on('connect', function () {
 
                                                                                                                                                                                                                                                                             $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=site/adminchangewasher", {agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
