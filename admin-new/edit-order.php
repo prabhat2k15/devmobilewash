@@ -770,6 +770,7 @@ if ($getorder->transaction_id) {
 </style>
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
+    
     <div class="page-content" id="main">
         <!-- BEGIN PAGE HEADER-->
 
@@ -937,6 +938,7 @@ if ($getorder->transaction_id) {
                                     <?php endif; ?>
 
                                 </div>
+                                
                                 <div class="portlet-body">
                                     <div class="tab-content">
                                         <!-- PERSONAL INFO TAB -->
@@ -4344,6 +4346,8 @@ if ($getorder->transaction_id) {
                 url: "<?php echo ROOT_URL; ?>/api/index.php?r=FlaggedIssue/UpdateFlaggedIssueByOrderId&washRequestId=" + id + "&flagged_val=" + flagVal + "&admin_username=" + admin_username,
                 success: function (data) {
                     //alert("Data Save: " + data);
+                    location.reload();
+                    e.preventDefault();
                 }
             });
         } else {

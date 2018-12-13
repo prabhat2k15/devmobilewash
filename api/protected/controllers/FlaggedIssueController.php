@@ -68,11 +68,58 @@ class FlaggedIssueController extends Controller {
     }
 
     public function actionTest() {
-//        $result = Yii::app()->db->createCommand("mysqldump -u devmobil_mwuser -p9F;WPnZwCEscQ$*[K4 devmobil_mwmain > db_backup.sql")->query();
+        //$result = Yii::app()->db->createCommand("mysqldump -u devmobil_mwuser -p9F;WPnZwCEscQ$*[K4 devmobil_mwmain > db_backup.sql")->query();
         //$x = exec("mysqldump --opt -u devmobil_mwuser -p'9F;WPnZwCEscQ$*[K4' devmobil_mwmain customers > db_backup1.csv");
-        $x = exec("mysqldump --opt -u devmobil_mwuser -p'9F;WPnZwCEscQ$*[K4' devmobil_mwmain customers > db_backup1.csv");
-        print_r($x);
+        //$x = exec("SELECT * FROM customers  INTO OUTFILE '/var/www/public_html/orders1.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '' LINES TERMINATED BY '\n';");
+        // $x = exec("mysqldump --opt -u devmobil_mwuser -p'9F;WPnZwCEscQ$*[K4' devmobil_mwmain customers > db_backup1.csv");
+        // print_r($x);
+        //$file = '/var/www/public_html/file.csv';
+        // $file = 'file.csv';
+        //  $sql = 'SELECT * FROM customers';
+        //$cmd = 'mysql --host=localhost -u devmobil_mwuser -p9F;WPnZwCEscQ$*[K4 --quick  -e \''.$sql.'\' > '.$file.' 2>&1';
+//  print_r($cmd);
+        //$x=exec($cmd);
+        //$cmd="SELECT * FROM customers INTO OUTFILE '/var/www/public_html/orders1.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '#' LINES TERMINATED BY '/n' ";
+        //$y="SELECT * FROM customers  INTO OUTFILE 'orders.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '#' LINES TERMINATED BY '\n'  2>&1";
+        //$x= exec($y);
+        //print_r($x);
+        $result = Yii::app()->db->createCommand("SELECT * FROM customers  INTO OUTFILE 'orders.csv' FIELDS TERMINATED BY ',' ENCLOSED BY '#' LINES TERMINATED BY '\n'")->query();
+        //$cmd="mysql --host=localhost -u devmobil_mwuser -p9F;WPnZwCEscQ$*[K4 customers OUTFILE 'orders1.csv' --fields-enclosed-by=\" --fields-terminated-by=,> test123.csv  2>&1";
+        //$x= exec("mysqldump --opt -u devmobil_mwuser -p'9F;WPnZwCEscQ$*[K4' devmobil_mwmain customers --fields-enclosed-by='\' --fields-terminated-by=','> db_backup1.csv");
+        print_r($result);
         die;
+    }
+
+    public function actionGetAllCustomersInCsv() {
+        //$result = Customers::model()->findAll();
+        $result = Yii::app()->db->createCommand("SELECT * FROM customers")->queryAll();
+        //print_r($result); die;
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=data.csv');
+        $output = fopen("php://output", "w");
+        fputcsv($output, array('ID'));
+        //$result = mysqli_query($con, $query);
+        while ($row = $result) {
+            fputcsv($output, array($row['id']));
+        }
+        fclose($output);
+        ob_end_clean();
+    }
+
+    public function actionTestcsv() {
+        $result = Yii::app()->db->createCommand("SELECT * FROM customers")->queryAll();
+        $directorypath = realpath(Yii::app()->basePath . '/../images/cust_img');
+        $file = fopen($directorypath . '/file.csv', 'w');
+
+        $columns = array('id', 'Customer Name', 'Email', 'Zip code');
+        fputcsv($file, $columns);
+
+        foreach ($result as $val) {
+            fputcsv($file, array($val['id'], $val['first_name'] . " " . $val['last_name'], $val['email'], $val['zip']));
+        }
+        fclose($file);
+        ob_end_clean();
+        echo "done;";
     }
 
 }

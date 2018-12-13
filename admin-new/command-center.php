@@ -834,6 +834,7 @@ socket.on('get appstat', function (data) {
 });
 
 socket.on('get pendingwashesdetails', function (data) {
+    console.log(data);
        var no_avail_agent = 0;
 if(data.pending_washes.length){
     pending_data = '';
@@ -1926,7 +1927,7 @@ if(agt['pending_orders'] > 1 && agt['status'] == 'online'){
     search_data += "<li class='agent-busy' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";
 }else if(agt['available_for_new_order'] == 1 && agt['status'] == 'online'){
     search_data += "<li class='agent' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";
-}else if(agt['status'] == 'offline' && agr['block_washer'] == 0){
+}else if(agt['status'] == 'offline' && agt['block_washer'] == 0){
     search_data += "<li class='agent-offline' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";    
 }else{
     search_data += "<li class='agent' id='"+agt['id']+"'><a href='#'>"+agt['name']+"</a></li>";    
