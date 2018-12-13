@@ -74,6 +74,6 @@ return array(
 		'adminToEmail'=>'mobilewash8@gmail.com',*/
                 'adminEmail'=>'admin@mobilewash.com',
 		'adminToEmail'=>'admin@mobilewash.com',
-		'adminFromEmail'=>'info@devmobilewash.com'
+		'adminFromEmail'=>'info@mobilewash.com'
 	),
 );

@@ -11635,18 +11635,18 @@ class CustomersController extends Controller {
                         ));
 
                         $aws_result = $aws_client->setEndpointAttributes([
-                            'Attributes' => array("Token" => $device_token, "Enabled" => true),
+                            'Attributes' => array("Token" => $device_token, "Enabled" => 'true'),
                             'EndpointArn' => $device_exists[0]['endpoint_arn'],
                         ]);
 
                         $aws_subscribe_result = $aws_client->subscribe([
-                            'Endpoint' => $aws_result['EndpointArn'],
+                            'Endpoint' => $device_exists[0]['endpoint_arn'],
                             'Protocol' => 'application',
                             'ReturnSubscriptionArn' => true,
                             'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush',
                         ]);
 
-                        $endpoint_arn = $aws_result['EndpointArn'];
+                        $endpoint_arn = $device_exists[0]['endpoint_arn'];
                     } catch (exception $e) {
                         
                     }

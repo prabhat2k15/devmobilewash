@@ -23,7 +23,7 @@ class Vargas{
 		$mail = new YiiMailer();
 		/* $mail->setSmtp('smtp.sendgrid.net', 587, '', true, 'apikey2', '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'); */
 
-		//$mail->setSmtp('smtp.gmail.com', 587, 'tls', true, 'info@mobilewash.com', 'nightFLY17528$');
+		$mail->setSmtp('smtp.gmail.com', 587, 'tls', true, 'info@mobilewash.com', '6DX!%jEGwW%caQIJBOwX');
 
 		$mail->setFrom($from);
 		$mail->setLayout($layout);
