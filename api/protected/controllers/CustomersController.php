@@ -2653,10 +2653,16 @@ class CustomersController extends Controller {
                 $siteUrl = Yii::app()->getBaseUrl(true);
 
 
+//                $qrVehicles = Yii::app()->db->createCommand()
+//                        ->select('*')->from('customer_vehicals')
+//                        ->where("customer_id=:customer_id AND hide_vehicle = 0", array(":customer_id" => $customer_id))
+//                        ->order("id DESC")
+//                        ->queryAll();
                 $qrVehicles = Yii::app()->db->createCommand()
-                        ->select('*')->from('customer_vehicals')
+                        ->select('customer_vehicals.*')->from('customer_vehicals')
                         ->where("customer_id=:customer_id AND hide_vehicle = 0", array(":customer_id" => $customer_id))
-                        ->order("id DESC")
+                        ->join('all_vehicles v', 'customer_vehicals.vehicle_source_id=v.id')
+                        ->order("customer_vehicals.id DESC")
                         ->queryAll();
 
                 if (count($qrVehicles) > 0) {
