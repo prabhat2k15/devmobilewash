@@ -864,7 +864,7 @@ if ($getorder->transaction_id) {
                                         <div class="process-payment-trigger" style="float: right; font-size: 18px; margin-top: 3px; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;">In Process</div>
                                     <?php endif; ?>
                                     <?php if (!$getorder->admin_submit_for_settle): ?>
-                                        <?php if (($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin')): ?>
+                                        <?php if (($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'scheduler')): ?>
                                             <?php if (($getorder->status == 5) || ($getorder->status == 6)): ?>
                                                 <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="wash-uncancel">Un-Cancel</div>
                                             <?php endif; ?>
@@ -906,7 +906,7 @@ if ($getorder->transaction_id) {
                                         <?php endif; ?>
                                     <?php endif; ?>
                                     <?php if ($getorder->status != 5 && $getorder->status != 6 && $getorder->status != 7 && (!$getorder->admin_submit_for_settle)): ?>
-                                        <?php if ($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
+                                        <?php if ($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'scheduler'): ?>
 
                                             <div style="float: right; font-size: 18px; margin-top: 3px; background: #e47e00; cursor: pointer; color: #fff; padding: 8px 35px; margin-right: 20px;" class="<?php
                                             if ($getorder->status == 0) {
