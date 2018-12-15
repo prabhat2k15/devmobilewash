@@ -703,7 +703,7 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>Update successfu
 															<!--/span-->
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label class="control-label col-md-3">Rating</label>
+                                                                    <label class="control-label col-md-3">Rating <?php if (($jsondata_permission->users_type == 'admin')): ?><a href="#" class="reset-rating" style="margin-left: 10px; color: #337ab7 !important;">Reset</a><?php endif; ?></label>
                                                                     <div class="col-md-9">
                                                                         <input type="text" name="rating" value="<?php echo $profiledetail->rating; ?>" class="form-control"  /> </div>
                                                                 </div>
@@ -1003,4 +1003,31 @@ function chooseFile(fileid) {
 	}
 	
 	custprofilepicupload();
+	
         </script>
+	<?php if (($jsondata_permission->users_type == 'admin')): ?>
+	<script>
+	  	$(function(){
+$(".reset-rating").click(function () {
+var c = confirm("Are you sure you want to reset this washer's rating? This cannot be undone");
+if (c) {
+var th = $(this);
+$(this).html('Please wait...');
+$(this).removeClass('reset-rating');
+$.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/resetwasherrating", {agent_id: "<?php echo $_GET['id']; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+if (data.result == 'true') {
+window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-agent.php?id=<?php echo $_GET['id']; ?>";
+} else {
+    alert(data.response);
+$(th).html('Reset');
+$(th).addClass('reset-rating');
+}
+
+});
+}
+
+return false;
+});
+	});  
+	</script>
+	<?php endif; ?>

@@ -7410,7 +7410,7 @@ if(count($all_washers)){
                 $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $washer->id));
                 $total_rate = count($agent_feedbacks);
 		
-		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob'")->bindValue(':agent_id', $washer->id, PDO::PARAM_STR)->queryAll();
+		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob' AND status = 0")->bindValue(':agent_id', $washer->id, PDO::PARAM_STR)->queryAll();
                 
 		if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
                 if($total_rate){
@@ -7735,6 +7735,56 @@ echo "<br>";
 
             }
 
+
+     }
+     
+      public function actionresetwasherrating(){
+
+if(Yii::app()->request->getParam('key') != API_KEY){
+echo "Invalid api key";
+die();
+}
+
+$api_token = Yii::app()->request->getParam('api_token');
+$t1 = Yii::app()->request->getParam('t1');
+$t2 = Yii::app()->request->getParam('t2');
+$user_type = Yii::app()->request->getParam('user_type');
+$user_id = Yii::app()->request->getParam('user_id');
+
+$agent_id = Yii::app()->request->getParam('agent_id');
+
+$token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+if(!$token_check){
+ $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid request'
+                );
+ echo json_encode($json);
+ die();
+}
+
+$agent_check = Agents::model()->findByPk($agent_id);
+
+if(!count($agent_check)){
+   $json = array(
+                    'result'=> 'false',
+                    'response'=> 'Invalid washer id'
+                );
+ echo json_encode($json);
+ die();
+}
+
+Yii::app()->db->createCommand("UPDATE washing_feedbacks SET customer_ratings= '5.00' WHERE agent_id = ".$agent_id)->execute();
+Yii::app()->db->createCommand("UPDATE activity_logs SET status = 1 WHERE agent_id = '".$agent_id."' AND action='dropjob'")->execute();
+Agents::model()->updateByPk($agent_id, array('rating'=> 5.00));
+
+ $json = array(
+                    'result'=> 'true',
+                    'response'=> 'update successful'
+                );
+ echo json_encode($json);
+ die();
 
      }
 }

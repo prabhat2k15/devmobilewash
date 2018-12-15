@@ -3645,7 +3645,7 @@ $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices W
                 $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $wrequest_id_check->agent_id));
                 $total_rate = count($agent_feedbacks);
 		
-		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob'")->bindValue(':agent_id', $wrequest_id_check->agent_id, PDO::PARAM_STR)->queryAll();
+		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob' AND status = 0")->bindValue(':agent_id', $wrequest_id_check->agent_id, PDO::PARAM_STR)->queryAll();
                 
 		if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
                 if($total_rate){
@@ -5082,7 +5082,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
                 $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $washrequest_id_check->agent_id));
                 $total_rate = count($agent_feedbacks);
 		
-		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$washrequest_id_check->agent_id." AND action = 'dropjob'")->queryAll();
+		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$washrequest_id_check->agent_id." AND action = 'dropjob' AND status = 0")->queryAll();
                 if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
                 if($total_rate){
                     $rate = 50;
@@ -5130,7 +5130,7 @@ if($tip_amount == 'zero') $tip_amount = 0;
 		$agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $washrequest_id_check->agent_id));
                 $total_rate = count($agent_feedbacks);
 		
-		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$washrequest_id_check->agent_id." AND action = 'dropjob'")->queryAll();
+		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = ".$washrequest_id_check->agent_id." AND action = 'dropjob' AND status = 0")->queryAll();
                 if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
                 if($total_rate){
                     $rate = 50;
@@ -5409,7 +5409,7 @@ $wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_
                 $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $agent_id));
                 $total_rate = count($agent_feedbacks);
 		
-		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob'")->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
+		$washerdropjobs =  Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = :agent_id AND action = 'dropjob' AND status = 0")->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)->queryAll();
                 
 		if(!empty($washerdropjobs)) $washer_total_dropjobs = $washerdropjobs[0]['count'];
 		if($simulate_rating) $washer_total_dropjobs += 1;
