@@ -44,6 +44,7 @@ $getorder_result_code = $jsondata->result;
 $getorder = $jsondata;
 
 
+
 $handle = curl_init(ROOT_URL . "/api/index.php?r=agents/profiledetails");
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, array('agent_id' => $getorder->agent_id, 'api_password' => AES256CBC_API_PASS, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
@@ -770,7 +771,7 @@ if ($getorder->transaction_id) {
 </style>
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
-    
+
     <div class="page-content" id="main">
         <!-- BEGIN PAGE HEADER-->
 
@@ -798,14 +799,17 @@ if ($getorder->transaction_id) {
                                                 if ($getorder->status == 5 || $getorder->status == 6 || $getorder->status == 7) {
                                                     echo "$" . number_format($getorder->cancel_fee, 2);
                                                 } else {
+
                                                     if ($getorder->net_price > 0) {
-                                                        $net_total = $getorder->net_price - $getorder->company_discount;
-                                                        echo "$" . $net_total;
+
+                                                        $net_total = str_replace(',', '', $getorder->net_price) - $getorder->company_discount;
+                                                        echo "$" . number_format($net_total, 2);
                                                     } else {
                                                         echo "N/A";
                                                     }
                                                 }
                                                 ?></span>
+
                                             <span style="display: block; float: right; margin-top: 4px; margin-right: 5px;">TOTAL PRICE:</span>
                                             <?php if (($getorder->wash_now_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Wash Now Fee: <?php echo "+$" . number_format($getorder->wash_now_fee, 2); ?>)</span><?php endif; ?>
                                             <?php if (($getorder->wash_later_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Surge Fee: <?php echo "+$" . number_format($getorder->wash_later_fee, 2); ?>)</span><?php endif; ?>
@@ -938,7 +942,7 @@ if ($getorder->transaction_id) {
                                     <?php endif; ?>
 
                                 </div>
-                                
+
                                 <div class="portlet-body">
                                     <div class="tab-content">
                                         <!-- PERSONAL INFO TAB -->
@@ -1207,7 +1211,9 @@ if ($getorder->transaction_id) {
                                                                             <div class="upload_form" style="width:37%; float: left; margin: 84px 5px;"> 
                                                                                 Upload Image
                                                                                 <input type="button" value="Browse" onclick="$(this).next().click();" />
-                                                                                <input type="file" name="vehicle_image" class="vehicle_image" style="display: none;">
+                                                                                <br>
+                                                                                <input type="file" name="vehicle_image" class="vehicle_image changeDefaultName" style="display: none;">
+                                                                                <span class="disply-img-name img-name-box" title=""></span>
                                                                                 <br>
                                                                                 <input type="hidden" value="<?php echo $veh->id; ?>" name="vehicle_id" class="vehicle_id">
                                                                                 <input type="button" value="SAVE" class="submit_vih_image">
@@ -1822,7 +1828,7 @@ if ($getorder->transaction_id) {
                                                                         <?php endif; ?>
                                                                     <?php endif; ?>
                                                                     <?php if ((($log->action == 'dropjob_ratingunchange')) && ($getorder->is_scheduled)): ?>
-            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                  ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                  ?>. Reason: <?php //echo $log->addi_detail;                  ?></p>-->
+            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                             ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                             ?>. Reason: <?php //echo $log->addi_detail;                             ?></p>-->
                                                                         <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'dropjob' && ($getorder->is_scheduled) && (!$log->admin_username)): ?>
@@ -1849,7 +1855,7 @@ if ($getorder->transaction_id) {
                                                                     <?php if ($log->action == 'editorder'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> edited order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
-                                                                        <?php if ($log->action == 'flagged_issue'): ?>
+                                                                    <?php if ($log->action == 'flagged_issue'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> flagged order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'refundpayment'): ?>
@@ -2247,8 +2253,8 @@ if ($getorder->transaction_id) {
                                                                                                                                                                 $(this).dialog("close");
                                                                                                                                                                 $(".cancel-order").html('Cancelling. Please wait...');
                                                                                                                                                                 $(".err-text").hide();
-                                                                                                                                                                
-                                                                                                                                                                var socket = io.connect("https://devmobilewash.com:3000", { query: "action=commandcenter", secure: true});
+
+                                                                                                                                                                var socket = io.connect("https://devmobilewash.com:3000", {query: "action=commandcenter", secure: true});
                                                                                                                                                                 socket.on('connect', function () {
                                                                                                                                                                     $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", {wash_request_id: "<?php echo $getorder->id; ?>", agent_id: 0, washer_drop_job: 1, is_scheduled: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', admin_username: "<?php echo $jsondata_permission->user_name; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
@@ -3666,8 +3672,8 @@ if ($getorder->transaction_id) {
                                                                                                                                                                                                                                                                         $(this).val('Saving...');
                                                                                                                                                                                                                                                                         $(this).removeClass('washer_update');
                                                                                                                                                                                                                                                                         $(".err-text").hide();
-                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                        var socket = io.connect("https://devmobilewash.com:3000", { query: "action=commandcenter", secure: true});
+
+                                                                                                                                                                                                                                                                        var socket = io.connect("https://devmobilewash.com:3000", {query: "action=commandcenter", secure: true});
                                                                                                                                                                                                                                                                         socket.on('connect', function () {
 
                                                                                                                                                                                                                                                                             $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=site/adminchangewasher", {agent_id: agent_id, admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
@@ -4009,7 +4015,7 @@ if ($getorder->transaction_id) {
                                             if (log.action == 'editorder') {
                                                 contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " edited order at " + log.formatted_action_date + "</p>";
                                             }
-                                             if (log.action == 'flagged_issue') {
+                                            if (log.action == 'flagged_issue') {
                                                 contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + "flagged order at " + log.formatted_action_date + "</p>";
                                             }
 
@@ -4353,7 +4359,15 @@ if ($getorder->transaction_id) {
         } else {
             e.preventDefault();
         }
-    });</script>
+    });
+
+    $('.changeDefaultName').on('change', function (e) {
+        var fileName = e.target.files[0].name;
+        $('.img-name-box').html(fileName);
+        $('.img-name-box').attr('title', fileName);
+    });
+
+</script>
 
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->

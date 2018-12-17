@@ -137,7 +137,7 @@
                                             <div class="form-group" id="message">
                                                 <label class="control-label col-md-3">Message</label>
                                                 <div class="col-md-3">
-                                                    <textarea class="form-control" name="message" rows="3" required><?php echo $message; ?></textarea>
+                                                    <textarea class="form-control emoji" name="message" rows="3" required><?php echo $message; ?></textarea>
                                                 </div>
                                             </div>
 											<div class="form-group" id="media">
