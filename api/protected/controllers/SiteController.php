@@ -6615,25 +6615,10 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 }
                             }
 
-                            try {
-                                $aws_email_subscribe_result = $aws_client->subscribe([
-                                    'Endpoint' => $client->email,
-                                    'Protocol' => 'email',
-                                    'ReturnSubscriptionArn' => false,
-                                    'TopicArn' => $nonreturn30_topic_arn,
-                                ]);
-
-                                $aws_csubscribe_result = $aws_client->confirmSubscription([
-                                    'Token' => $aws_email_subscribe_result['SubscriptionArn'],
-                                    'TopicArn' => $nonreturn30_topic_arn,
-                                ]);
-                            } catch (exception $e) {
-                                
-                            }
 
                             try {
                                 $aws_subscribe_result = $aws_client->subscribe([
-                                    'Endpoint' => $client->contact_number,
+                                    'Endpoint' => "+1".$client->contact_number,
                                     'Protocol' => 'sms',
                                     'ReturnSubscriptionArn' => true,
                                     'TopicArn' => $nonreturn30_topic_arn,
@@ -6664,7 +6649,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 }
                             }
 
-                            try {
+                            /*try {
                                 $aws_email_subscribe_result = $aws_client->subscribe([
                                     'Endpoint' => $client->email,
                                     'Protocol' => 'email',
@@ -6678,11 +6663,11 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 ]);
                             } catch (exception $e) {
                                 
-                            }
+                            }*/
 
                             try {
                                 $aws_subscribe_result = $aws_client->subscribe([
-                                    'Endpoint' => $client->contact_number,
+                                    'Endpoint' => "+1".$client->contact_number,
                                     'Protocol' => 'sms',
                                     'ReturnSubscriptionArn' => true,
                                     'TopicArn' => $nonreturn60_topic_arn,
@@ -6712,25 +6697,10 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 }
                             }
 
-                            try {
-                                $aws_email_subscribe_result = $aws_client->subscribe([
-                                    'Endpoint' => $client->email,
-                                    'Protocol' => 'email',
-                                    'ReturnSubscriptionArn' => false,
-                                    'TopicArn' => $nonreturn90_topic_arn,
-                                ]);
-
-                                $aws_csubscribe_result = $aws_client->confirmSubscription([
-                                    'Token' => $aws_email_subscribe_result['SubscriptionArn'],
-                                    'TopicArn' => $nonreturn90_topic_arn,
-                                ]);
-                            } catch (exception $e) {
-                                
-                            }
-
+                          
                             try {
                                 $aws_subscribe_result = $aws_client->subscribe([
-                                    'Endpoint' => $client->contact_number,
+                                    'Endpoint' => "+1".$client->contact_number,
                                     'Protocol' => 'sms',
                                     'ReturnSubscriptionArn' => true,
                                     'TopicArn' => $nonreturn90_topic_arn,
@@ -11277,7 +11247,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         foreach ($noti_array as $noti) {
             if (($noti['notify_trigger_time'] == date('h:i A')) && ($noti['delivery_ready'] == 1)) {
                 $aws_result = $aws_client->publish([
-                    'Message' => json_encode(array("default" => $noti['notify_text'], "sms" => $noti['sms_text'], "email" => "<img src='" . ROOT_URL . "/admin-new/images/cust-spec-notify-img/" . $noti['email_image_url'] . "' />")),
+                    'Message' => json_encode(array("default" => $noti['notify_text'], "sms" => $noti['sms_text'])),
                     'TopicArn' => $noti['topic_arn'],
                     'MessageStructure' => 'json',
                     'Subject' => 'MobileWash',

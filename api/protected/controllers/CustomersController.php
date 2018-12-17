@@ -11,6 +11,8 @@ require ROOT_WEBFOLDER . '/public_html/api/protected/extensions/amazon-sdk/aws-a
 use Twilio\Rest\Client;
 use Aws\Sns\SnsClient;
 use Aws\Credentials\Credentials;
+use Aws\Ses\SesClient;
+use Aws\Exception\AwsException;
 
 //use Aws\Sns\Exception;
 
@@ -12400,6 +12402,7 @@ class CustomersController extends Controller {
             'phone' => $_POST['phone-number'],
             'city' => $_POST['city'],
             'state' => $_POST['state'],
+	    'zipcode' => $_POST['pre_zipcode'],
             'register_date' => date('Y-m-d H:i:s'),
             'trash_status' => 0
         );
@@ -12758,6 +12761,156 @@ class CustomersController extends Controller {
             echo json_encode($data);
             die;
         }
+    }
+    
+        public function actioncustsesmailtest() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        /*if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }*/
+
+
+
+
+$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+                        $SesClient = SesClient::factory(array(
+                                    'credentials' => $aws_credentials,
+                                    'region' => 'us-west-2',
+                                    'version' => 'latest'
+                        ));
+
+
+$sender_email = 'MobileWash <admin@mobilewash.com>';
+
+$recipient_emails = ['nazmur.r@gmail.com','nazmur_r@yahoo.com'];
+
+// Specify a configuration set. If you do not want to use a configuration
+// set, comment the following variable, and the
+// 'ConfigurationSetName' => $configuration_set argument below.
+//$configuration_set = 'ConfigSet';
+
+$subject = 'Amazon SES test (AWS SDK for PHP)';
+$plaintext_body = 'This email was sent with Amazon SES using the AWS SDK for PHP.' ;
+$html_body =  "<html>
+<head></head>
+<body style='margin: 0; padding: 0;'>
+<div style='/*background: #c6c6c6;*/ width: 100%; height: 100%; /*padding-top: 50px;*/'>
+<div style='width: 650px; background: #fff; margin: 0 auto;'>
+<div style='padding: 20px; text-align: center;'>
+<p style='margin: 0;'><a href='https://www.mobilewash.com'><img src='https://www.mobilewash.com/images/drop_on_top_logo2.png' width='360' /></a></p>
+<div style='margin-top: 20px;'>
+                <a href='https://www.facebook.com/getmobilewash/'><img style='margin-left: 2px;' src='https://www.mobilewash.com/images/fb.png' alt=''></a>
+               <a href='https://twitter.com/getmobilewash'><img style='margin-left: 2px;' src='https://www.mobilewash.com/images/tw.png' alt=''></a>
+               <a href='https://plus.google.com/114985712775567009759/about'><img style='margin-left: 2px;' src='https://www.mobilewash.com/images/gp.png' alt=''></a>
+                <a href='https://www.instagram.com/getmobilewash/'><img style='margin-left: 2px;' src='https://www.mobilewash.com/images/ins.png' alt=''></a>
+                </div>
+                <div style='clear: both;'></div>
+                </div>
+                <div style='background: #fff; padding: 20px; font-size: 16px; font-family: arial, sans-serif; line-height: 26px;'>
+               <img src='".ROOT_URL."/admin-new/images/cust-spec-notify-img/non-return-31st-day_email_image.jpg' />
+                </div>
+</div>
+<p style='text-align: center; font-size: 16px; font-family: arial, sans-serif; line-height: 20px; margin: 12px auto; padding-bottom: 25px; margin-top: 20px;'>Thank you for choosing MobileWash!</p>
+
+<p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; ".date("Y")." MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
+</div>
+</body>
+</html>";
+$char_set = 'UTF-8';
+
+try {
+    $result = $SesClient->sendEmail([
+        'Destination' => [
+            'ToAddresses' => $recipient_emails,
+        ],
+        'ReplyToAddresses' => [$sender_email],
+        'Source' => $sender_email,
+        'Message' => [
+          'Body' => [
+              'Html' => [
+                  'Charset' => $char_set,
+                  'Data' => $html_body,
+              ],
+              /*'Text' => [
+                  'Charset' => $char_set,
+                  'Data' => $plaintext_body,
+              ],*/
+          ],
+          'Subject' => [
+              'Charset' => $char_set,
+              'Data' => $subject,
+          ],
+        ],
+        // If you aren't using a configuration set, comment or delete the
+        // following line
+        //'ConfigurationSetName' => $configuration_set,
+    ]);
+    $messageId = $result['MessageId'];
+    echo("Email sent! Message ID: $messageId"."\n");
+} catch (AwsException $e) {
+    // output error message if fails
+    echo $e->getMessage();
+    echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
+    echo "\n";
+}
+
+
+
+
+    }
+    
+        public function actionsendnonreturnemails() {
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+	//$json_str = file_get_contents('php://input');
+
+# Get as an object
+//$json_obj = json_decode($json_str);
+//$url = $json_obj->SubscribeURL;
+//mail("nazmur_r@yahoo.com", "test", $url);
+
+
+        /* $api_token = Yii::app()->request->getParam('api_token');
+          $t1 = Yii::app()->request->getParam('t1');
+          $t2 = Yii::app()->request->getParam('t2');
+          $user_type = Yii::app()->request->getParam('user_type');
+          $user_id = Yii::app()->request->getParam('user_id');
+
+          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+          if(!$token_check){
+          $json = array(
+          'result'=> 'false',
+          'response'=> 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
+
+
+
     }
 
 }
