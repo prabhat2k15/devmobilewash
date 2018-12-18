@@ -10,9 +10,23 @@
             "pageLength": 20,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
             "order": [[0, 'dsc']],
+            "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [{
+                extend: 'csv',
+                /*exportOptions: {
+                    columns: [1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21] // indexes of the columns that should be printed,
+                } */
+              }
+            ]
         });
 
     });
+    $(document).ready(function(){
+
+    $('.csv-link').on('click',function(){
+        $('.buttons-csv').trigger('click');
+    });
+});
 </script>
 <?php include('right-sidebar.php') ?>
 <?php
@@ -36,6 +50,7 @@ $data = $jsondata->data;
     .label-offline {
         background-color: #FF0202 !important;
     }
+    .dt-button.buttons-csv.buttons-html5 { opacity: 0; }
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -52,7 +67,7 @@ $data = $jsondata->data;
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase"> Expansion Requests</span>
+                            <span class="caption-subject bold uppercase"> Expansion Requests</span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                         </div>
                         <div class="caption font-dark">
 
@@ -77,27 +92,28 @@ $data = $jsondata->data;
                         <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                             <thead>
                                 <tr>
-                                    <th style="display:none"> S.No </th>
+                                    <!-- <th style="display:none"> S.No </th> -->
                                     <th> ID </th>
-                                    <th> Email </th>
                                     <th> Customer Name </th>
+                                    <th> Email </th>
+                                    <!-- <th> Address </th> -->
                                     <th> City </th>
                                     <th> State </th>
-
                                     <th> Zipcode </th>
+                                    <th> Create Date </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($data as $key => $val) { ?> 
                                     <tr>
-                                        <td style="display:none"><?= $val->id ?></td>
-                                        <td><?= $key + 1 ?></td>
-                                        <td><?= $val->email ?></td>
+                                        <!-- <td style="display:none">$val->id ?></td> -->
+                                        <td><?= $val->id ?></td>
                                         <td><?= $val->first_name . " " . $val->last_name ?></td>
+                                        <td><?= $val->email ?></td>
                                         <td><?= $val->city ?></td>
                                         <td><?= $val->state ?></td>
-
                                         <td><?= $val->zipcode ?></td>
+                                        <td><?= $val->register_date?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
