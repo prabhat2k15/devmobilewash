@@ -6100,6 +6100,7 @@ class AgentsController extends Controller {
                     $json = array(
                         'result' => $result,
                         'response' => $response,
+			'id' => $agentid,
                         'first_name' => $first_name,
                         'last_name' => $last_name,
                         'email' => $emailid,

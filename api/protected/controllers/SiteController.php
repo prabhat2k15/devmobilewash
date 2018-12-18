@@ -7726,8 +7726,17 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } else {
                 $result = 'true';
                 $response = 'wash request uncanceled';
+		
+		 if(strtotime($wrequest_id_check->wash_begin) > 0) {
+			
+			Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "wash_begin" => date('Y-m-d H:i:s'), "washer_late_cancel" => 0, "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
+		}
+                 else {
+			
+			Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "washer_late_cancel" => 0, "created_date" => date('Y-m-d H:i:s'), "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
+		}
 
-                Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "washer_late_cancel" => 0, "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
+ 
                 $washeractionlogdata = array(
                     'wash_request_id' => $wash_request_id,
                     'admin_username' => $admin_username,

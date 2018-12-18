@@ -239,7 +239,7 @@ else{
 
             if($result_code == "true"){
             ?>
-            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?cnf=done"</script>
+            <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-agent.php?id=<?php echo $jsondata->id; ?>"</script>
             <?php
             die();
             }
