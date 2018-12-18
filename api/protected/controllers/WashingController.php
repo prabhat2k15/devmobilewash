@@ -13000,8 +13000,9 @@ $allschedwashes =  Yii::app()->db->createCommand("SELECT w.* FROM washing_reques
             $dist = rad2deg($dist);
             $miles = $dist * 60 * 1.1515;
             //$unit = strtoupper($unit);
-
+            if($agent_detail->unlimited_schedule_range == 0){ 
 	    if($miles > 50) continue;
+            }
 			}
 	    
 				$schdDateTime = date('Y-m-d h:i:s', strtotime($schedwash['schedule_date'].' '.$schedwash['schedule_time']));

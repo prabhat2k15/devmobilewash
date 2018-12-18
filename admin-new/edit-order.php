@@ -1211,9 +1211,11 @@ if ($getorder->transaction_id) {
                                                                             <div class="upload_form" style="width:37%; float: left; margin: 84px 5px;"> 
                                                                                 Upload Image
                                                                                 <input type="button" value="Browse" onclick="$(this).next().click();" />
-                                                                                <br>
+
                                                                                 <input type="file" name="vehicle_image" class="vehicle_image changeDefaultName" style="display: none;">
+                                                                                <br>
                                                                                 <span class="disply-img-name img-name-box" title=""></span>
+
                                                                                 <br>
                                                                                 <input type="hidden" value="<?php echo $veh->id; ?>" name="vehicle_id" class="vehicle_id">
                                                                                 <input type="button" value="SAVE" class="submit_vih_image">
@@ -1828,7 +1830,7 @@ if ($getorder->transaction_id) {
                                                                         <?php endif; ?>
                                                                     <?php endif; ?>
                                                                     <?php if ((($log->action == 'dropjob_ratingunchange')) && ($getorder->is_scheduled)): ?>
-            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                             ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                             ?>. Reason: <?php //echo $log->addi_detail;                             ?></p>-->
+            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                                    ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                                    ?>. Reason: <?php //echo $log->addi_detail;                                    ?></p>-->
                                                                         <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'dropjob' && ($getorder->is_scheduled) && (!$log->admin_username)): ?>
@@ -2077,11 +2079,12 @@ if ($getorder->transaction_id) {
 
                                                     <div class="form-group" style="float:left; width:100%;">
                                                         <?php if ($getorder->flagged_issue_status == 0 || $getorder->flagged_issue_status == 2) { ?>
-                                                            <button type="" data-flag="1" data-washer_id="<?= $getorder->id ?>" class="flaggedIssuseSubmit"><i class="fa fa-flag" style="color:#FF0202;"></i> Flag Order</button>
+
+                                                            <span  data-flag="1" data-washer_id="<?= $getorder->id ?>" class="flaggedIssuseSubmit btn" style="float: left; font-size:14px; margin-top: 3px; cursor: pointer; background: #e2e2e2; color: #000; padding:3px 15px; margin-right: 20px; border:none; border-radius:4px;"><i class="fa fa-flag" style="color:#FF0202;"></i> Flag Order</span>
                                                             <!-- <input type="button" id="flaggedIssuseSubmit" value="Flag"  style="float: left; font-size:14px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 3px 15px; margin-right: 20px; border:none; border-radius:4px;" /> -->
                                                         <?php } ?>
                                                         <?php if ($getorder->flagged_issue_status == 1) { ?>
-                                                            <button type="" data-flag="0" data-washer_id="<?= $getorder->id ?>" class="flaggedIssuseSubmit" style="float: left; font-size:14px; margin-top: 3px; cursor: pointer; background: #FF0202; color: #fff; padding:3px 15px; margin-right: 20px; border:none; border-radius:4px;"><i class="fa fa-flag"></i> Flagged</button>
+                                                            <span  data-flag="0" data-washer_id="<?= $getorder->id ?>" class="flaggedIssuseSubmit btn" style="float: left; font-size:14px; margin-top: 3px; cursor: pointer; background: #FF0202; color: #fff; padding:3px 15px; margin-right: 20px; border:none; border-radius:4px;"><i class="fa fa-flag"></i> Flagged</span>
                                                             <!-- <input type="button"  value="Flagged" name="Flagged" style="float: left; font-size:14px; margin-top: 3px; cursor: pointer; background: #FF0202; color: #fff; padding:3px 15px; margin-right: 20px; border:none; border-radius:4px;" /> -->
                                                         <?php } ?>
                                                     </div>
@@ -4334,7 +4337,7 @@ if ($getorder->transaction_id) {
                                 });
                             });</script>
 <script>
-    $(".flaggedIssuseSubmit").click(function (e) {
+    $(".flaggedIssuseSubmit").on("click", function (e) {
         var id = $(this).attr('data-washer_id');
         var flagVal = $(this).attr('data-flag');
         var admin_username = "<?php echo $jsondata_permission->user_name ?>";
@@ -4351,7 +4354,6 @@ if ($getorder->transaction_id) {
                 type: "GET",
                 url: "<?php echo ROOT_URL; ?>/api/index.php?r=FlaggedIssue/UpdateFlaggedIssueByOrderId&washRequestId=" + id + "&flagged_val=" + flagVal + "&admin_username=" + admin_username,
                 success: function (data) {
-                    //alert("Data Save: " + data);
                     location.reload();
                     e.preventDefault();
                 }

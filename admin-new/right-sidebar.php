@@ -623,7 +623,7 @@
                                     <span class="title">MobileWasher Service Feedbacks</span>
                                 </a>
                             </li>
-                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }              ?>">
+                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }                 ?>">
                                 <a href="customer-notifications.php" class="nav-link ">
                                     <span class="title">Customer Push Notifications</span>
                                 </a>
@@ -643,7 +643,7 @@
                 </li>
 
                 <li class="nav-item  <?php
-                if ($url == 'manage-pre-washers.php' || $url == 'washer-feed.php' || $newurl_page[0] == 'manage-pre-washers.php' || $url == 'add-new-washer.php' || $url == 'washer-notifications.php' || $url == 'top-washers.php' || $newurl_page[0] == 'add-new-washer.php' || $newurl_page[0] == 'manage-agents.php' || $url == 'trash-pre-washers.php' || $url == 'washer_dashboard.php' || $newurl_page[0] == 'pre-washer-details.php' || $url == 'manage-agents.php' || $newurl_page[0] == 'edit-agent.php' || $url == 'act-washer-details.php' || $newurl_page[0] == 'act-washer-details.php' || $url == 'active-washers.php' || $newurl_page[0] == 'active-washers.php' || $newurl[1] == 'add-agent.php') {
+                if ($url == 'unlimited-schedule-range-washer.php' || $newurl_page[0] == 'unlimited-schedule-range-washer.php' || $url == 'manage-pre-washers.php' || $url == 'washer-feed.php' || $newurl_page[0] == 'manage-pre-washers.php' || $url == 'add-new-washer.php' || $url == 'washer-notifications.php' || $url == 'top-washers.php' || $newurl_page[0] == 'add-new-washer.php' || $newurl_page[0] == 'manage-agents.php' || $url == 'trash-pre-washers.php' || $url == 'washer_dashboard.php' || $newurl_page[0] == 'pre-washer-details.php' || $url == 'manage-agents.php' || $newurl_page[0] == 'edit-agent.php' || $url == 'act-washer-details.php' || $newurl_page[0] == 'act-washer-details.php' || $url == 'active-washers.php' || $newurl_page[0] == 'active-washers.php' || $newurl[1] == 'add-agent.php') {
                     $open_agent = 'open';
                     echo 'active open';
                 }
@@ -674,6 +674,15 @@
                             ?>">
                                 <a href="<?php echo ROOT_URL; ?>/admin-new/manage-agents.php?type=demo" class="nav-link ">
                                     <span class="title">Manage Washers</span>
+                                </a>
+                            </li>
+                            <li class="nav-item  <?php
+                            if ($url == 'unlimited-schedule-range-washer.php' || $newurl_page[0] == 'unlimited-schedule-range-washer.php') {
+                                echo 'active open';
+                            }
+                            ?>">
+                                <a href="<?php echo ROOT_URL; ?>/admin-new/unlimited-schedule-range-washer.php?type=demo" class="nav-link ">
+                                    <span class="title">Unlimited Scheduled Range</span>
                                 </a>
                             </li>
                             <li class="nav-item  <?php
