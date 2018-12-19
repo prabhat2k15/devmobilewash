@@ -14060,16 +14060,17 @@ if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
       $ip=$_SERVER['REMOTE_ADDR'];
     }
 
-    if($ip != MW_SERVER_IP){
+    /*if($ip != MW_SERVER_IP){
 	 $json = array(
                     'result'=> 'false',
                     'response'=> 'Invalid request'
                 );
  echo json_encode($json);
  die();
-    }
+    }*/
 
-$allschedwashes = Washingrequests::model()->findAllByAttributes(array('status' => 4, 'is_feedback_email_sent' => 0));
+
+$allschedwashes = Washingrequests::model()->findAllByAttributes(array('status' => 4, 'is_feedback_email_sent' => 0, 'is_feedback_sent' => 0));
 
  if(count($allschedwashes)){
                foreach($allschedwashes as $schedwash){
@@ -14078,13 +14079,15 @@ $allschedwashes = Washingrequests::model()->findAllByAttributes(array('status' =
 $checkfeedbacks = Washingfeedbacks::model()->findAllByAttributes(array('wash_request_id' => $schedwash->id, 'customer_id' => $schedwash->customer_id));
 
 if(count($checkfeedbacks)) continue;
-if($schedwash->schedule_time){
+/*if($schedwash->schedule_time){
  if($schedwash->reschedule_time) $scheduledatetime = $schedwash->reschedule_date." ".$schedwash->reschedule_time;
 else $scheduledatetime = $schedwash->schedule_date." ".$schedwash->schedule_time;
 }
 else{
    $scheduledatetime = $schedwash->complete_order;
-}
+}*/
+
+$scheduledatetime = $schedwash->order_for;
                $to_time = strtotime(date('Y-m-d g:i A'));
 $from_time = strtotime($scheduledatetime);
 
@@ -14110,7 +14113,7 @@ $message = "<div class='block-content' style='background: #fff; text-align: left
 <p style='text-align:center;font-size: 24px;margin-top: 25px;'>Hello ".$cname."</p>
 <h2 style='text-align:center;font-size: 24px;line-height: normal;'>How was your experience with our<br>MobileWasher?</h2>
 <p style='text-align:center;line-height: 24px;margin-top: 25px;'>We would like to make sure that you always have a great experience. Please help us make it the best service possible by letting us know how we did today.</p>
-<p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='".ROOT_URL."/customer-feedback.php?order_id=".$schedwash->id."'>LEAVE FEEDBACK</a></p>
+<p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='".WEBSITE_URL."/feedback/?order_id=".$this->aes256cbc_crypt($schedwash->id, 'e', AES256CBC_API_PASS)."'>LEAVE FEEDBACK</a></p>
 <div style='margin-top: 20px; text-align: center;'>
 <a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://twitter.com/getmobilewash'><div style='background: transparent url(".ROOT_URL."/images/hi-res-social-icons.png) no-repeat -1px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a>
 <a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://www.facebook.com/getmobilewash'><div style='background: transparent url(".ROOT_URL."/images/hi-res-social-icons.png) no-repeat -43px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a>
