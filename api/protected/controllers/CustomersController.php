@@ -12231,20 +12231,20 @@ class CustomersController extends Controller {
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        if (!$token_check) {
+        /*if (!$token_check) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }
+        }*/
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $comments = '';
         $comments = Yii::app()->request->getParam('comments');
         $ratings = '';
-        $ratings = Yii::app()->request->getParam('ratings');
+        if(Yii::app()->request->getParam('ratings')) $ratings = Yii::app()->request->getParam('ratings');
         $fb_id = '';
         $fb_id = Yii::app()->request->getParam('fb_id');
 
@@ -12255,49 +12255,23 @@ class CustomersController extends Controller {
         $response = 'Pass the required parameters';
 
         if (isset($wash_request_id) && !empty($wash_request_id)) {
+		$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
             $washrequest_id_check = Washingrequests::model()->findByAttributes(array("id" => $wash_request_id));
 
             if (!count($washrequest_id_check)) {
                 $response = 'Invalid wash request id';
             } else {
 
-                $cust_feedback_check = Yii::app()->db->createCommand("SELECT * FROM `mobilewasher_service_feedbacks` WHERE `wash_request_id` = :wash_request_id")
+                $cust_feedback_check = Yii::app()->db->createCommand("SELECT * FROM `washing_feedbacks` WHERE `wash_request_id` = :wash_request_id")
                         ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
                         ->queryAll();
 
                 $customers_id_check = Customers::model()->findByAttributes(array("id" => $washrequest_id_check->customer_id));
 
-                if (!count($cust_feedback_check)) {
-                    $feedbackdata = array(
-                        'wash_request_id' => $wash_request_id,
-                        'customer_id' => $washrequest_id_check->customer_id,
-                        'agent_id' => $washrequest_id_check->agent_id,
-                        'comments' => $comments,
-                        'ratings' => $ratings,
-                        'social_id' => $fb_id,
-                        'created_date' => date('Y-m-d H:i:s')
-                    );
-
-                    Yii::app()->db->createCommand()->insert('mobilewasher_service_feedbacks', $feedbackdata);
-                } else {
-
-                    if (!$ratings) {
-                        $ratings = $cust_feedback_check[0]['ratings'];
-                    }
-
-                    if (!$comments) {
-                        $comments = $cust_feedback_check[0]['comments'];
-                    }
-
-                    if (!$fb_id) {
-                        $fb_id = $cust_feedback_check[0]['social_id'];
-                    }
-
-
-                    Yii::app()->db->createCommand("UPDATE mobilewasher_service_feedbacks SET comments=:comments, ratings = :ratings, social_id = :social_id WHERE wash_request_id = :wash_request_id ")
+                if (count($cust_feedback_check)) {
+                    Yii::app()->db->createCommand("UPDATE washing_feedbacks SET customer_comments=:comments WHERE wash_request_id = :wash_request_id ")
                             ->bindValue(':comments', $comments, PDO::PARAM_STR)
-                            ->bindValue(':ratings', $ratings, PDO::PARAM_STR)
-                            ->bindValue(':social_id', $fb_id, PDO::PARAM_STR)
+                            
                             ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
                             ->execute();
                 }
@@ -12314,14 +12288,13 @@ class CustomersController extends Controller {
 <p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000" . $wash_request_id . "</p>
 <p><b>Customer Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
 <p><b>Customer Email:</b> " . $customers_id_check->email . "</p>
-<p><b>Rating by Customer:</b> " . $ratings . "</p>
-<p><b>Comments:</b> " . $comments . "</p>
-<p><b>Facebook/Instagram handle:</b> " . $fb_id . "</p>";
+<p><b>Customer Phone:</b> " . $customers_id_check->contact_number . "</p>
+<p><b>Comments:</b> " . $comments . "</p>";
 
                 $to = Vargas::Obj()->getAdminToEmail();
                 $from = Vargas::Obj()->getAdminFromEmail();
 
-                Vargas::Obj()->SendMail($to, $from, $message, "Customer Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
+                Vargas::Obj()->SendMail('feedback@mobilewash.com', $from, $message, "Customer Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
             }
         }
 
