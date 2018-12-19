@@ -229,7 +229,7 @@ if (empty($_GET['type'])) {
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">
         <!-- BEGIN PAGE HEADER-->
-        <div class="row" style="background-color: #000; color: #fff; margin-left: -20px ! important; margin-right: -20px;">
+        <div class="row hidden" style="background-color: #000; color: #fff; margin-left: -20px ! important; margin-right: -20px;">
             <div class="col-md-1 col-sm-1 <?php echo $totalagetns; ?>" id="totalagetns" style="padding: 13px 0px 0px 10px; cursor: pointer; border-top: 5px solid #5407e2;">
                 <div style="font-size: 20px;" class="total_agetns">0</div>
                 <div>Total Washers</div>
@@ -279,9 +279,9 @@ if (empty($_GET['type'])) {
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase"> Managed Schedule Range</span>
+                            <span class="caption-subject bold uppercase"> Managed Unlimited Scheduled Range</span>
                         </div>
-                        <div class="caption font-dark" style="padding: 10px 0px 0px 20px; padding-top: 3px; display: <?php echo $add_washer; ?>">
+                        <div class="caption font-dark hidden" style="padding: 10px 0px 0px 20px; padding-top: 3px; display: <?php echo $add_washer; ?>">
                             <span class="caption-subject bold uppercase"><a href="add-agent.php"> Add New Agent</a></span>
                             <?php /* <button class="btn blue all-agents-logout" style="margin-left: 15px;">Logout All Agents</button> */ ?>
                             <select name="washer-type" class="washer-type" style="margin-left: 15px; font-size: 16px; padding: 5px;"><option value="<?php echo ROOT_URL; ?>/admin-new/unlimited-schedule-range-washer.php?type=real">Real Washer</option><option <?php if ($_GET['type'] == 'demo') echo 'selected'; ?> value="<?php echo ROOT_URL; ?>/admin-new/unlimited-schedule-range-washer.php?type=demo">Demo Washer<option></select> <a style="margin-left: 20px;" target="_blank" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/washerscsvexport&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>">Download CSV</a>                                    
@@ -340,7 +340,7 @@ if (empty($_GET['type'])) {
                                     <tr class="odd gradeX">
                                         <td> 
                                             <a href="edit-agent.php?id=<?php echo $washer->id; ?>">Edit</a> 
-                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;          ?>">View</a-->
+                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;            ?>">View</a-->
                                         </td>
                                         <td> <?php echo $washer->id; ?> </td>
                                         <td> <?php echo $washer->real_washer_id; ?> </td>

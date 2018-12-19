@@ -1555,11 +1555,11 @@ class CustomersController extends Controller {
         }
 
         if ($customerid) {
-            $CustomerExpansionRequestExist = CustomerExpansionRequest::model()->findByAttributes(['customer_id' => $customerid]);
+            $CustomerExpansionRequestExist = Download::model()->findByAttributes(['customer_id' => $customerid]);
             if ($CustomerExpansionRequestExist) {
-                $CustomerExpansionRequestStatus = "1";
+                $Download = "1";
             } else {
-                $CustomerExpansionRequestStatus = "0";
+                $Download = "0";
             }
         }
 
@@ -1639,7 +1639,7 @@ class CustomersController extends Controller {
                     'last_used_device' => $clientdevices,
                     'is_schedule_popup_shown' => $customers_id->is_schedule_popup_shown,
                     'customer_notes' => $customers_id->notes,
-                    'CustomerExpansionRequestStatus' => $CustomerExpansionRequestStatus,
+                    'Download' => $Download,
                 );
             } else {
                 $json = array(
@@ -7624,27 +7624,27 @@ class CustomersController extends Controller {
 
     public function actionpreregister() {
 
-//        if (Yii::app()->request->getParam('key') != API_KEY) {
-//            echo "Invalid api key";
-//            die();
-//        }
-//
-//        $api_token = Yii::app()->request->getParam('api_token');
-//        $t1 = Yii::app()->request->getParam('t1');
-//        $t2 = Yii::app()->request->getParam('t2');
-//        $user_type = Yii::app()->request->getParam('user_type');
-//        $user_id = Yii::app()->request->getParam('user_id');
-//
-//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
-//
-//        if (!$token_check) {
-//            $json = array(
-//                'result' => 'false',
-//                'response' => 'Invalid request'
-//            );
-//            echo json_encode($json);
-//            die();
-//        }
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
 
         $first_name = Yii::app()->request->getParam('first_name');
         $last_name = Yii::app()->request->getParam('last_name');
@@ -7653,12 +7653,14 @@ class CustomersController extends Controller {
         $phone = Yii::app()->request->getParam('phone');
         $city = Yii::app()->request->getParam('city');
         $state = Yii::app()->request->getParam('state');
-        $zipcode = Yii::app()->request->getParam('zipcode');
+        $zipcode = Yii::app()->request->getParam('zipcode'); 
+        $source = Yii::app()->request->getParam('source');
+        $address = Yii::app()->request->getParam('address');
         $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
         $register_date = date("Y-m-d H:i:s");
         $result = 'false';
         $response = 'All fields are required';
-
+        
 
         if ((isset($name) && !empty($name)) && (isset($email) && !empty($email)) && (isset($phone) && !empty($phone)) && (isset($city) && !empty($city)) && (isset($state) && !empty($state))) {
 
@@ -7679,6 +7681,8 @@ class CustomersController extends Controller {
                 'city' => $city,
                 'state' => $state,
                 'zipcode' => $zipcode,
+                'address' =>$address,
+                'source'=>$source,
                 'register_date' => $register_date,
                 'how_hear_mw' => ''
             );
@@ -12912,5 +12916,7 @@ try {
 
 
     }
+    
+    
 
 }

@@ -187,7 +187,10 @@ $result_code = $jsondata->result;
 
                                             <td><?php echo $responsemesage->to; ?></td>
                                             <td><?php echo str_replace(',', ', ', $responsemesage->phone); ?></td>
-                                            <td><?php echo $responsemesage->message; ?></td>
+                                            <td>
+                                                <textarea class="emoji" disabled=""><?php echo $responsemesage->message; ?></textarea>
+                                            </td>
+
                                             <td><?php echo $responsemesage->media; ?></td>
                                             <?php if ($responsemesage->report == 'sent') { ?>
                                                 <td><span id="" style="color: #00AFF0; cursor: pointer;">Already sent</span></td>

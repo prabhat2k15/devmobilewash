@@ -12,21 +12,21 @@
             "order": [[0, 'dsc']],
             "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
             buttons: [{
-                extend: 'csv',
-                /*exportOptions: {
-                    columns: [1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21] // indexes of the columns that should be printed,
-                } */
-              }
+                    extend: 'csv',
+                    /*exportOptions: {
+                     columns: [1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21] // indexes of the columns that should be printed,
+                     } */
+                }
             ]
         });
 
     });
-    $(document).ready(function(){
+    $(document).ready(function () {
 
-    $('.csv-link').on('click',function(){
-        $('.buttons-csv').trigger('click');
+        $('.csv-link').on('click', function () {
+            $('.buttons-csv').trigger('click');
+        });
     });
-});
 </script>
 <?php include('right-sidebar.php') ?>
 <?php
@@ -51,6 +51,9 @@ $data = $jsondata->data;
         background-color: #FF0202 !important;
     }
     .dt-button.buttons-csv.buttons-html5 { opacity: 0; }
+    .scrollable-table tr th{
+        white-space:nowrap;
+    }
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -88,36 +91,40 @@ $data = $jsondata->data;
                         <?php endif; ?>
                     </div>
                     <div class="portlet-body">
-
-                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
-                            <thead>
-                                <tr>
-                                    <!-- <th style="display:none"> S.No </th> -->
-                                    <th> ID </th>
-                                    <th> Customer Name </th>
-                                    <th> Email </th>
-                                    <!-- <th> Address </th> -->
-                                    <th> City </th>
-                                    <th> State </th>
-                                    <th> Zipcode </th>
-                                    <th> Create Date </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($data as $key => $val) { ?> 
+                        <div class="table-responsive scrollable-table">
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
+                                <thead>
                                     <tr>
-                                        <!-- <td style="display:none">$val->id ?></td> -->
-                                        <td><?= $val->id ?></td>
-                                        <td><?= $val->first_name . " " . $val->last_name ?></td>
-                                        <td><?= $val->email ?></td>
-                                        <td><?= $val->city ?></td>
-                                        <td><?= $val->state ?></td>
-                                        <td><?= $val->zipcode ?></td>
-                                        <td><?= $val->register_date?></td>
+                                        <!-- <th style="display:none"> S.No </th> -->
+                                        <th> ID </th>
+                                        <th> Customer Name </th>
+                                        <th> Email </th>
+                                        <th> Address </th>
+                                        <th> City </th>
+                                        <th> State </th>
+                                        <th> Zipcode </th>
+                                        <th> Create Date </th>
+                                        <th>Source</th>
                                     </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($data as $key => $val) { ?> 
+                                        <tr>
+                                            <!-- <td style="display:none">$val->id ?></td> -->
+                                            <td><?= $val->id ?></td>
+                                            <td><?= $val->first_name . " " . $val->last_name ?></td>
+                                            <td><?= $val->email ?></td>
+                                            <td><?= $val->address ?></td>
+                                            <td><?= $val->city ?></td>
+                                            <td><?= $val->state ?></td>
+                                            <td><?= $val->zipcode ?></td>
+                                            <td><?= $val->register_date ?></td>
+                                            <td><?= $val->source ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
 
                     </div>
                 </div>

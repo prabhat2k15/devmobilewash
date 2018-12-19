@@ -61,7 +61,7 @@
                     </a>
                 </li>-->
                 <li class="nav-item  <?php
-                if ($url == 'customer-expansion-rquest.php' || $newurl_page[0] == 'customer-expansion-rquest.php' || $url == 'flagged-issues.php' || $newurl_page[0] == 'flagged-issues.php' || $url == 'all-orders.php' || $newurl_page[0] == 'all-orders.php' || $url == 'payment-reports.php' || $url == 'manage-orders.php' || $url == 'phone-orders.php' || $url == 'zipcode-pricing.php' || $url == 'coverage-area-cities.php' || $url == 'merge-orders.php' || $url == 'schedule-orders.php' || $url == 'bug-report.php' || $url == 'surge-pricing.php' || $newurl_page[0] == 'schedule-orders.php' || $url == 'reply-message.php' || $url == 'command-center.php' || $url == 'heatmap.php' || $url == 'index.php' || $url == 'db-backup.php' || $url == 'manage-user.php' || $url == 'company_dashboard.php' || $newurl_page[0] == 'edit-order.php' || $newurl_page[0] == 'add-user.php' || $url == 'vehicles-packages.php' || $url == 'vehicle-pricing.php' || $url == 'vehicle-addons-pricing.php' || $url == 'manage-promotions.php' || $url == 'promo-popups.php' || $newurl[1] == 'add-coupon.php' || $url == 'opening-hours.php' || $url == 'site-settings.php' || $url == 'messagess.php' || $url == 'push-messages.php' || $newurl_page[0] == 'edit-message.php' || $newurl[1] == 'add-message.php' || $url == 'notifications.php' || $url == 'cms.php' || $newurl_page[0] == 'edit-cms.php' || $newurl_page[0] == 'manage-orders.php' || $newurl_page[0] == 'cms.php' || $newurl_page[0] == 'manage-user.php' || $newurl_page[0] == 'manage-promotions.php' || $newurl_page[0] == 'messagess.php' || $newurl_page[0] == 'app-settings.php' || $url == 'reminder-client.php' || $url == 'reminder-washer.php' || $newurl_page[0] == 'reminder-washer.php' || $url == 'newsletter-subscribers.php' || $newurl_page[0] == 'newsletter-subscribers.php' || $url == 'add-newsletter.php' || $url == 'discount-settings.php' || $newurl_page[0] == 'add-newsletter.php' || $url == 'newsletters.php' || $newurl_page[0] == 'coverage-area-zipcodes.php' || $url == 'coverage-area-zipcodes.php' || $newurl_page[0] == 'newsletters.php' || $newurl_page[0] == 'reminder-client.php' || $url == 'show-calendar.php' || $url == 'list-review.php' || $url == 'add-edit-review.php') {
+                if ($url == 'downloads.php' || $newurl_page[0] == 'downloads.php' || $url == 'customer-expansion-rquest.php' || $newurl_page[0] == 'customer-expansion-rquest.php' || $url == 'flagged-issues.php' || $newurl_page[0] == 'flagged-issues.php' || $url == 'all-orders.php' || $newurl_page[0] == 'all-orders.php' || $url == 'payment-reports.php' || $url == 'manage-orders.php' || $url == 'phone-orders.php' || $url == 'zipcode-pricing.php' || $url == 'coverage-area-cities.php' || $url == 'merge-orders.php' || $url == 'schedule-orders.php' || $url == 'bug-report.php' || $url == 'surge-pricing.php' || $newurl_page[0] == 'schedule-orders.php' || $url == 'reply-message.php' || $url == 'command-center.php' || $url == 'heatmap.php' || $url == 'index.php' || $url == 'db-backup.php' || $url == 'manage-user.php' || $url == 'company_dashboard.php' || $newurl_page[0] == 'edit-order.php' || $newurl_page[0] == 'add-user.php' || $url == 'vehicles-packages.php' || $url == 'vehicle-pricing.php' || $url == 'vehicle-addons-pricing.php' || $url == 'manage-promotions.php' || $url == 'promo-popups.php' || $newurl[1] == 'add-coupon.php' || $url == 'opening-hours.php' || $url == 'site-settings.php' || $url == 'messagess.php' || $url == 'push-messages.php' || $newurl_page[0] == 'edit-message.php' || $newurl[1] == 'add-message.php' || $url == 'notifications.php' || $url == 'cms.php' || $newurl_page[0] == 'edit-cms.php' || $newurl_page[0] == 'manage-orders.php' || $newurl_page[0] == 'cms.php' || $newurl_page[0] == 'manage-user.php' || $newurl_page[0] == 'manage-promotions.php' || $newurl_page[0] == 'messagess.php' || $newurl_page[0] == 'app-settings.php' || $url == 'reminder-client.php' || $url == 'reminder-washer.php' || $newurl_page[0] == 'reminder-washer.php' || $url == 'newsletter-subscribers.php' || $newurl_page[0] == 'newsletter-subscribers.php' || $url == 'add-newsletter.php' || $url == 'discount-settings.php' || $newurl_page[0] == 'add-newsletter.php' || $url == 'newsletters.php' || $newurl_page[0] == 'coverage-area-zipcodes.php' || $url == 'coverage-area-zipcodes.php' || $newurl_page[0] == 'newsletters.php' || $newurl_page[0] == 'reminder-client.php' || $url == 'show-calendar.php' || $url == 'list-review.php' || $url == 'add-edit-review.php') {
                     $open_company = 'open';
                     echo 'active open';
                 }
@@ -103,6 +103,16 @@
                             ?>">
                                 <a href="<?php echo ROOT_URL; ?>/admin-new/flagged-issues.php?filter=flaggedIssues&&flaggedIssueStatus=1&limit=400" class="nav-link ">
                                     <span class="title">Flagged Issues</span>
+                                </a>
+                            </li>
+                            <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php
+                            if ($url == 'downloads.php' || $newurl_page[0] == 'downloads.php') {
+                                $open_agent = 'open';
+                                echo 'active open';
+                            }
+                            ?>">
+                                <a href="<?php echo ROOT_URL; ?>/admin-new/downloads.php" class="nav-link ">
+                                    <span class="title">Downloads</span>
                                 </a>
                             </li>
                         <?php endif; ?>
@@ -623,7 +633,7 @@
                                     <span class="title">MobileWasher Service Feedbacks</span>
                                 </a>
                             </li>
-                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }                 ?>">
+                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }                   ?>">
                                 <a href="customer-notifications.php" class="nav-link ">
                                     <span class="title">Customer Push Notifications</span>
                                 </a>
