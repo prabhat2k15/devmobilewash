@@ -58,12 +58,39 @@ class FlaggedIssueController extends Controller {
     public function actionUpdateFlaggedIssueMultiple() {
         $flagVal = Yii::app()->request->getParam('flagVal');
         $resolvedValue = Yii::app()->request->getParam('resolvedValue');
+
         $result = Yii::app()->db->createCommand("UPDATE washing_requests SET flagged_issue_status='" . $flagVal . "'     WHERE id in( " . $resolvedValue . ")")->query();
     }
 
     public function actionUpdateFlagIssue() {
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
         $flaggedVal = Yii::app()->request->getParam('flaggedVal');
         $orderId = Yii::app()->request->getParam('orderId');
+        $user_name = Yii::app()->request->getParam('user_name');
+        if ($flaggedVal == 2) {
+            $washeractionlogdata = array(
+                'wash_request_id' => $orderId,
+                'admin_username' => $user_name,
+                'action' => 'resolved_flagged',
+                'action_date' => date('Y-m-d H:i:s'));
+            Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+        }
         $result = Yii::app()->db->createCommand("UPDATE washing_requests SET flagged_issue_status='" . $flaggedVal . "'     WHERE id=" . $orderId)->query();
     }
 

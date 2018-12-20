@@ -102,7 +102,7 @@
                             }
                             ?>">
                                 <a href="<?php echo ROOT_URL; ?>/admin-new/flagged-issues.php?filter=flaggedIssues&&flaggedIssueStatus=1&limit=400" class="nav-link ">
-                                    <span class="title">Flagged Issues</span>
+                                    <span class="title">Flagged Orders</span>
                                 </a>
                             </li>
                             <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php

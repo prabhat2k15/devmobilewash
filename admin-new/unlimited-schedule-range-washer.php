@@ -279,7 +279,7 @@ if (empty($_GET['type'])) {
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase"> Managed Unlimited Scheduled Range</span>
+                            <span class="caption-subject bold uppercase">Unlimited Scheduled Range</span>
                         </div>
                         <div class="caption font-dark hidden" style="padding: 10px 0px 0px 20px; padding-top: 3px; display: <?php echo $add_washer; ?>">
                             <span class="caption-subject bold uppercase"><a href="add-agent.php"> Add New Agent</a></span>
@@ -340,7 +340,7 @@ if (empty($_GET['type'])) {
                                     <tr class="odd gradeX">
                                         <td> 
                                             <a href="edit-agent.php?id=<?php echo $washer->id; ?>">Edit</a> 
-                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;            ?>">View</a-->
+                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;              ?>">View</a-->
                                         </td>
                                         <td> <?php echo $washer->id; ?> </td>
                                         <td> <?php echo $washer->real_washer_id; ?> </td>

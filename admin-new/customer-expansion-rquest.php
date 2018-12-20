@@ -118,7 +118,7 @@ $data = $jsondata->data;
                                             <td><?= $val->city ?></td>
                                             <td><?= $val->state ?></td>
                                             <td><?= $val->zipcode ?></td>
-                                            <td><?= $val->register_date ?></td>
+                                            <td><?= date("Y-m-d h:i A", strtotime($val->register_date)) ?></td>
                                             <td><?= $val->source ?></td>
                                         </tr>
                                     <?php } ?>

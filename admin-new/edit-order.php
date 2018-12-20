@@ -1830,7 +1830,7 @@ if ($getorder->transaction_id) {
                                                                         <?php endif; ?>
                                                                     <?php endif; ?>
                                                                     <?php if ((($log->action == 'dropjob_ratingunchange')) && ($getorder->is_scheduled)): ?>
-            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                                    ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                                    ?>. Reason: <?php //echo $log->addi_detail;                                    ?></p>-->
+            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                                      ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                                      ?>. Reason: <?php //echo $log->addi_detail;                                      ?></p>-->
                                                                         <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'dropjob' && ($getorder->is_scheduled) && (!$log->admin_username)): ?>
@@ -1859,6 +1859,9 @@ if ($getorder->transaction_id) {
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'flagged_issue'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> flagged order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                    <?php endif; ?>
+                                                                    <?php if ($log->action == 'resolved_flagged'): ?>
+                                                                        <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> resolved flagged order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'refundpayment'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> refunded payment at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -4020,6 +4023,9 @@ if ($getorder->transaction_id) {
                                             }
                                             if (log.action == 'flagged_issue') {
                                                 contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + "flagged order at " + log.formatted_action_date + "</p>";
+                                            }
+                                            if (log.action == 'resolved_flagged') {
+                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + "resolved flagged order at " + log.formatted_action_date + "</p>";
                                             }
 
                                             if (log.action == 'refundpayment') {

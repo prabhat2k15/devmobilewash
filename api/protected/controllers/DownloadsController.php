@@ -56,7 +56,8 @@ class DownloadsController extends Controller {
         $city = Yii::app()->request->getParam('city');
         $state = Yii::app()->request->getParam('state');
         $zipcode = Yii::app()->request->getParam('zipcode');
-        $CustomerExpansionRequestExist = Download::model()->findByAttributes(array('customer_id' => $customerid, 'state' => $state));
+        $source = Yii::app()->request->getParam('source');
+        $CustomerExpansionRequestExist = Download::model()->findByAttributes(array('customer_id' => $customerid));
         if ($CustomerExpansionRequestExist) {
             $response['status'] = '0';
             $response['message'] = 'Customer already exist.';
@@ -87,13 +88,15 @@ class DownloadsController extends Controller {
             echo json_encode($response);
             die;
         }
-        $customer = new Download;
-        $customer->customer_id = $customerid;
-        $customer->country = $country;
-        $customer->city = $city;
-        $customer->zipcode = $zipcode;
-        $customer->state = $state;
-        if ($customer->save()) {
+        $Download = new Download;
+        $Download->customer_id = $customerid;
+        $Download->country = $country;
+        $Download->city = $city;
+        $Download->zipcode = $zipcode;
+        $Download->state = $state;
+        $Download->source = $source;
+        $Download->created_at = date('Y-m-d H:i:s');
+        if ($Download->save()) {
             $data['status'] = "1";
             $data['message'] = "Data saved Successfully.";
             echo json_encode($data);
@@ -128,19 +131,41 @@ class DownloadsController extends Controller {
             echo json_encode($json);
             die();
         }
-        $all_city = Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM downloads  GROUP BY city ORDER BY COUNT(id) DESC")
+        $from = Yii::app()->request->getParam('from');
+        $to = Yii::app()->request->getParam('to');
+        $from = $from . " 00:00:00";
+        $to = $to . " 23:59:59";
+        $purple = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM downloads d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') AND z.zip_color='purple'")
+                ->queryRow();
+        $red = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM downloads d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') AND z.zip_color='red'")
+                ->queryRow();
+        $yellow = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM downloads d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') AND z.zip_color='yellow'")
+                ->queryRow();
+        $blue = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM downloads d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') AND z.zip_color='blue'")
+                ->queryRow();
+        $all_city = Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM downloads  WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') GROUP BY city ORDER BY COUNT(id) DESC")
                 ->queryAll();
-        $all_zipcode = Yii::app()->db->createCommand("SELECT zipcode, COUNT(id) as total FROM downloads  GROUP BY zipcode ORDER BY COUNT(id) DESC")
+        $all_zipcode = Yii::app()->db->createCommand("SELECT zipcode, COUNT(id) as total FROM downloads  WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') GROUP BY zipcode ORDER BY COUNT(id) DESC")
+                ->queryAll();
+        $all_country = Yii::app()->db->createCommand("SELECT country, COUNT(id) as total FROM downloads WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') GROUP BY country ORDER BY COUNT(id) DESC")
+                ->queryAll();
+        $all_state = Yii::app()->db->createCommand("SELECT state, COUNT(id) as total FROM downloads WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "')  GROUP BY state ORDER BY COUNT(id) DESC")
+                ->queryAll();
+        $all_source = Yii::app()->db->createCommand("SELECT source, COUNT(id) as total FROM downloads WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') GROUP BY source ORDER BY COUNT(id) DESC")
+                ->queryAll();
+        $all_data = Yii::app()->db->createCommand("SELECT * FROM downloads WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "')  ORDER BY id DESC")
                 ->queryAll();
         $json = array(
-            'result' => $result,
-            'response' => $response,
-            'all_washes_city' => $all_city,
-            'all_washes_zipcode' => $all_zipcode,
-            'blue' => $blue,
-            'yellow' => $yellow,
-            'red' => $red,
-            'purple' => $purple,
+            'all_data' => $all_data,
+            'all_city' => $all_city,
+            'all_state' => $all_state,
+            'all_source' => $all_source,
+            'all_country' => $all_country,
+            'all_zipcode' => $all_zipcode,
+            'blue' => $blue['total'],
+            'yellow' => $yellow['total'],
+            'red' => $red['total'],
+            'purple' => $purple['total'],
         );
         echo json_encode($json);
     }

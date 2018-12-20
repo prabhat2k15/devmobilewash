@@ -37,6 +37,44 @@ $download_data = json_decode($result);
 
 <style>
     .dt-button.buttons-csv.buttons-html5 { opacity: 0;}
+    .border-box{
+        float: left;
+        width: 100%;
+        border: 1px solid #ccc;
+        padding: 0px 20px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+    .border-box h4,
+    .fontBold{
+        font-weight:600;
+    }
+    .border-box table tr th:last-child,
+    .border-box table tr td:last-child{
+        text-align:right;
+        padding-right: 20px;
+    }
+    input[type="date"].form-control, input[type="time"].form-control, input[type="datetime-local"].form-control, input[type="month"].form-control {
+    line-height: inherit;
+    }
+    .input-group-sm > .input-group-btn > select.btn, .input-group-sm > select.form-control, .input-group-sm > select.input-group-addon, select.input-sm{
+        line-height: inherit;
+    }
+    .dataTables_length{
+        text-transform: capitalize;
+    }
+
+    .dataTables_info {
+        float:left;
+        line-height: 30px;
+    }
+    .dataTables_paginate {
+        float: right;
+
+    }
+    .dataTables_paginate ul.pagination{
+      margin-top:0px;
+    }
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -54,104 +92,247 @@ $download_data = json_decode($result);
                     <div class="portlet-title tabbable-line">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase">Manage Download List  </span>
+                            <span class="caption-subject bold uppercase">Manage Download List  </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                         </div>
-                        <ul class="nav nav-tabs">
-                            <li class="active">
-                                <a href="#tab_1_1" data-toggle="tab">City</a>
-                            </li>
-                            <li>
-                                <a href="#tab_1_5" data-toggle="tab">Zipcode</a>
-                            </li>
-                        </ul>
-
-                        <div style="clear: both;"></div>
-
-
-
                     </div>
+                    <form action="" method="get">
+                        <p>From: <input class="form-control form-control-inline input-medium date-picker" style="display: inline; width: 180px !important;" name="from" size="16" type="date" value="<?php echo $from; ?>" placeholder="format: YYYY-MM-DD" pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))" required> To: <input class="form-control form-control-inline input-medium date-picker" name="to" size="16" style="display: inline; width: 180px !important;" type="date" placeholder="format: YYYY-MM-DD" pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))" value="<?php echo $to; ?>" required><input style="margin-left: 10px;" type="submit" value="Search" /></p>
 
+                    </form>
                     <div class="portlet-body">
-
-
-                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example3">
-                            <thead>
-                                <tr>
-                                    <th> Zone </th>
-                                    <th> Total# of Downloads </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Blue</td>
-                                    <td><?php echo $download_data->blue; ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Yellow</td>
-                                    <td><?php echo $download_data->yellow; ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Red</td>
-                                    <td><?php echo $download_data->red; ?></td>
-                                </tr>
-                                <tr>
-                                    <td>Purple</td>
-                                    <td><?php echo $download_data->purple; ?></td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-
-
-                        <div class="tab-content">
-                            <!-- PERSONAL INFO TAB -->
-                            <div class="tab-pane active" id="tab_1_1">
-
-                                <?php if (count($download_data->all_washes_city)): ?>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top Zone</h4>
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                         <thead>
                                             <tr>
+                                                <th style="width:50px;"> #</th>
+                                                <th> Zone </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="width:50px">1</td>
+                                                <td>Blue</td>
+                                                <td><?php echo $download_data->blue; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:50px">2</td>
+                                                <td>Yellow</td>
+                                                <td><?php echo $download_data->yellow; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:50px">3</td>
+                                                <td>Red</td>
+                                                <td><?php echo $download_data->red; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:50px">4</td>
+                                                <td>Purple</td>
+                                                <td><?php echo $download_data->purple; ?></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top City</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example2">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:50px;"> #</th>
                                                 <th> City Name </th>
                                                 <th> Total# of Downloads </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($download_data->all_washes_city as $washbycity): ?>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($download_data->all_city as $city):
+                                                ?>
                                                 <tr>
-                                                    <td><?php echo $washbycity->city; ?></td>
-                                                    <td><?php echo $washbycity->total; ?></td>
+                                                    <td style="width:50px;"><?= $i ?></td>
+                                                    <td><?php echo $city->city; ?></td>
+                                                    <td><?php echo $city->total; ?></td>
                                                 </tr>
-                                            <?php endforeach; ?>
+                                                <?php
+                                                $i++;
+                                            endforeach;
+                                            ?>
 
                                         </tbody>
                                     </table>
-                                <?php else: ?>
-                                    <h2>Nothing Found</h2>
-                                <?php endif; ?> 
+                                </div>
                             </div>
-
-                            <div class="tab-pane" id="tab_1_5">
-                                <?php if (count($download_data->all_washes_zipcode)): ?>
-                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example2">
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top State</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example3">
                                         <thead>
                                             <tr>
+                                                <th style="width:50px;">#</th>
+                                                <th> State </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($download_data->all_state as $state):
+                                                ?>
+                                                <tr>
+                                                    <td style="width:50px;"><?= $i; ?></td>
+                                                    <td><?php echo $state->state; ?></td>
+                                                    <td><?php echo $state->total; ?></td>
+                                                </tr>
+                                                <?php
+                                                $i++;
+                                            endforeach;
+                                            ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top Country</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example4">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th> Country </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($download_data->all_country as $country):
+                                                ?>
+                                                <tr>
+                                                    <td style="width:50px"><?= $i; ?></td>
+                                                    <td><?php echo $country->country; ?></td>
+                                                    <td><?php echo $country->total; ?></td>
+                                                </tr>
+                                                <?php
+                                                $i++;
+                                            endforeach;
+                                            ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Zipcode</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example5">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
                                                 <th> Zipcode </th>
                                                 <th> Total# of Downloads </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($download_data->all_washes_zipcode as $washbyzip): ?>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($download_data->all_zipcode as $zipcode):
+                                                ?>
                                                 <tr>
-                                                    <td><?php echo $washbyzip->zipcode; ?></td>
-                                                    <td><?php echo $washbyzip->total; ?></td>
+                                                    <td style="width:50px;"> <?= $i ?></td>
+                                                    <td><?php echo $zipcode->zipcode; ?></td>
+                                                    <td><?php echo $zipcode->total; ?></td>
                                                 </tr>
-                                            <?php endforeach; ?>
+                                                <?php
+                                                $i++;
+                                            endforeach;
+                                            ?>
 
                                         </tbody>
                                     </table>
-                                <?php else: ?>
-                                    <h2>Nothing Found</h2>
-                                <?php endif; ?> 
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top Platform</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example6">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th> Platform </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($download_data->all_source as $source):
+                                                ?>
+                                                <tr>
+                                                    <td style="width:50px"><?= $i ?></td>
+                                                    <td><?php echo $source->source; ?></td>
+                                                    <td><?php echo $source->total; ?></td>
+                                                </tr>
+                                                <?php
+                                                $i++;
+                                            endforeach;
+                                            ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h4 class="fontBold">Latest Downloads</h4>
+                                <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example7">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Download Time </th>
+                                            <th>Platform</th>
+                                            <th>Zipcode</th>
+                                            <th>Zone</th>
+                                            <th>City</th>
+                                            <th>State</th>
+                                            <th>Country</th>
+                                            <th>Source</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $i = 0;
+                                        foreach ($download_data->all_data as $val):
+                                            ?>
+                                            <tr>
+                                                <td><?= $i + 1; ?></td>
+                                                <td><?= date("Y-m-d h:i A", strtotime($val->created_at)) ?></td>
+                                                <td><?= $val->source ?></td>
+                                                <td><?= $val->zipcode ?></td>
+                                                <td></td>
+                                                <td><?= $val->city ?></td>
+                                                <td><?= $val->state ?></td>
+                                                <td><?= $val->country ?></td>
+
+                                                <td></td>
+                                            </tr>
+                                            <?php
+                                            $i++;
+                                        endforeach;
+                                        ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -175,14 +356,26 @@ $download_data = json_decode($result);
 
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script type="text/javascript">
-    $('#example1, #example2').DataTable({
-        pageLength: 25,
-
+    $('#example1, #example2, #example3, #example4, #example5, #example6').DataTable({
+        pageLength: 5,
         "aaSorting": [],
+//        buttons: [
+//            'csvHtml5'
+//        ]
+
+    });
+    $('#example7').DataTable({
+        pageLength: 5,
+        dom: 'Bfrtip',
+        "aaSorting": [],
+//        buttons: [
+//            'csvHtml5'
+//        ]
         buttons: [
-            'csvHtml5'
+            'csv',
         ]
     });
+
     $(document).ready(function () {
 
         $('.csv-link').on('click', function () {
