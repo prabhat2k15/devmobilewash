@@ -12295,6 +12295,32 @@ class CustomersController extends Controller {
                 $from = Vargas::Obj()->getAdminFromEmail();
 
                 Vargas::Obj()->SendMail('feedback@mobilewash.com', $from, $message, "Customer Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
+		
+		if(((APP_ENV == 'real') || (APP_ENV == '')) && (!$customers_id_check->block_client) && ($customers_id_check->sms_control)){
+ $this->layout = "xmlLayout";
+
+            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+            $account_sid = TWILIO_SID;
+            $auth_token = TWILIO_AUTH_TOKEN;
+            $client = new Services_Twilio($account_sid, $auth_token);
+
+ $message = "Thank you for entering to win a FREE Deluxe Wash from MobileWash! We'll notify you if you've been selected as the winner! Message and data rates may apply.";
+
+           try {
+             $sendmessage = $client->account->messages->create(array(
+                'To' =>  $customers_id_check->contact_number,
+                'From' => '+13108890719',
+                'Body' => $message,
+            ));
+	      }catch (Services_Twilio_RestException $e) {
+            //echo  $e;
+}
+
+	    }
             }
         }
 

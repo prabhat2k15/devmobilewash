@@ -14070,13 +14070,13 @@ if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
     }*/
 
 
-$allschedwashes = Washingrequests::model()->findAllByAttributes(array('status' => 4, 'is_feedback_email_sent' => 0, 'is_feedback_sent' => 0));
+$allschedwashes = Washingrequests::model()->findAllByAttributes(array('status' => 4, 'is_feedback_email_sent' => 0));
 
  if(count($allschedwashes)){
                foreach($allschedwashes as $schedwash){
 
+$checkfeedbacks = Washingfeedbacks::model()->findAllByAttributes(array('wash_request_id' => $schedwash->id, 'customer_id' => $schedwash->customer_id), array('condition'=>"customer_comments != ''"));
 
-$checkfeedbacks = Washingfeedbacks::model()->findAllByAttributes(array('wash_request_id' => $schedwash->id, 'customer_id' => $schedwash->customer_id));
 
 if(count($checkfeedbacks)) continue;
 /*if($schedwash->schedule_time){
