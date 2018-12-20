@@ -850,10 +850,8 @@ $longitude = $geojsondata->results[0]->geometry->location->lng;
                     /* ---------- insert transaction id -------------- */
 
                     if((isset($transaction_id) && !empty($transaction_id))){
-
-                        $update_request = Washingrequests::model()->findByPk($washrequestid);
-                        $update_request->transaction_id = $transaction_id;
-                        $update_request->save(false);
+			
+			Washingrequests::model()->updateByPk($washrequestid, array("transaction_id" => $transaction_id, "upfront_transaction_id" => $transaction_id));
                     }
 
                       /* ---------- insert transaction id end -------------- */

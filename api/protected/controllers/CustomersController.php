@@ -11065,7 +11065,7 @@ class CustomersController extends Controller {
                 $min_diff = round(($current_time - $last_edit_time) / 60, 2);
 
 
-                if ((strtotime($customer_check->last_upfront_payment_cut) > 0) && ($min_diff <= 60)) {
+                if ((strtotime($customer_check->last_upfront_payment_cut) > 0) && ($min_diff <= 30)) {
                     $response = "Payment successful";
                     $result = "true";
 
