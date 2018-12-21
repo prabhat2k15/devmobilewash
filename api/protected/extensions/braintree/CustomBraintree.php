@@ -1460,7 +1460,7 @@ if(!$all_errors_mob) $all_errors_mob = $result->message;
                 'success' => 1,
                 'transaction_id' => $transaction->id,
                 'amount' => $transaction->amount,
-
+'serviceFeeAmount' => $transaction->serviceFeeAmount,
                 'type' => $transaction->type,
  'status' => $transaction->status,
                 'escrow_status' => $transaction->escrowStatus,
@@ -1498,7 +1498,7 @@ Braintree_Configuration::environment('production');
                 'success' => 1,
 'transaction_id' => $transaction->id,
                 'amount' => $transaction->amount,
-
+'serviceFeeAmount' => $transaction->serviceFeeAmount,
                 'type' => $transaction->type,
  'status' => $transaction->status,
                 'escrow_status' => $transaction->escrowStatus,

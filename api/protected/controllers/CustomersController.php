@@ -10887,6 +10887,56 @@ class CustomersController extends Controller {
 
                 $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                 $kartdetails = json_decode($kartapiresult);
+		
+		if ($wash_check->upfront_transaction_id) {
+			if ($customer_check->client_position == 'real') $transaction_check = Yii::app()->braintree->getTransactionById_real($wash_check->upfront_transaction_id);
+			else $transaction_check = Yii::app()->braintree->getTransactionById($wash_check->upfront_transaction_id);
+			if ($transaction_check['success'] == 1){
+				if ($kartdetails->net_price > $transaction_check['amount']) {
+					$amount = $kartdetails->net_price - $transaction_check['amount'];
+					$company_total = $kartdetails->company_total - $transaction_check['serviceFeeAmount'];
+				if ($customer_check->client_position == 'real') {
+
+                                        $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $company_total, 'amount' => $amount, 'paymentMethodToken' => $token];
+                                        $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
+                                    } else {
+
+                                        $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $company_total, 'amount' => $amount, 'paymentMethodToken' => $token];
+                                        $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
+                                    }
+
+                                    if ($payresult['success'] == 1) {
+                                        Washingrequests::model()->updateByPk($wash_check->id, array('second_transaction_id' => $payresult['transaction_id']));
+                                    } else {
+                                        Washingrequests::model()->updateByPk($wash_check->id, array('failed_transaction_id' => $payresult['transaction_id']));
+                                    }
+				}
+				
+				if ($kartdetails->net_price < $transaction_check['amount']) {
+					if ($customer_check->client_position == 'real') $voidresult = Yii::app()->braintree->void_real($wash_check->upfront_transaction_id);
+                                    else $voidresult = Yii::app()->braintree->void($wash_check->upfront_transaction_id);
+				    
+				if ($voidresult['success'] == 1) {	
+				if ($customer_check->client_position == 'real') {
+
+                                        $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => str_replace(",", "", $kartdetails->net_price), 'paymentMethodToken' => $token];
+                                        $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
+                                    } else {
+
+                                        $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash_request_id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => str_replace(",", "", $kartdetails->net_price), 'paymentMethodToken' => $token];
+                                        $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
+                                    }
+
+                                    if ($payresult['success'] == 1) {
+                                        Washingrequests::model()->updateByPk($wash_check->id, array('transaction_id' => $payresult['transaction_id'], 'upfront_transaction_id' => '', 'second_transaction_id' => ''));
+                                    } else {
+                                        Washingrequests::model()->updateByPk($wash_check->id, array('failed_transaction_id' => $payresult['transaction_id']));
+                                    }
+				}
+				}
+			}
+		}
+		else{
 
                 if ($wash_check->transaction_id) {
                     if ($customer_check->client_position == 'real')
@@ -10918,6 +10968,7 @@ class CustomersController extends Controller {
                     $response = $payresult['message_mob'];
                     Washingrequests::model()->updateByPk($wash_request_id, array('failed_transaction_id' => $payresult['transaction_id']));
                 }
+	    }
             }
         }
 
@@ -11059,18 +11110,18 @@ class CustomersController extends Controller {
                 }
 
 
-                $current_time = strtotime(date('Y-m-d H:i:s'));
+               /* $current_time = strtotime(date('Y-m-d H:i:s'));
                 $last_edit_time = strtotime($customer_check->last_upfront_payment_cut);
 
-                $min_diff = round(($current_time - $last_edit_time) / 60, 2);
+                $min_diff = round(($current_time - $last_edit_time) / 60, 2);*/
 
 
-                if ((strtotime($customer_check->last_upfront_payment_cut) > 0) && ($min_diff <= 30)) {
+                /*if ((strtotime($customer_check->last_upfront_payment_cut) > 0) && ($min_diff <= 30)) {
                     $response = "Payment successful";
                     $result = "true";
 
                     $tid = '';
-                } else {
+                } else {*/
 
                     $total = preg_replace("/[^0-9\.]/", "", $total);
                     $total = number_format($total, 2, '.', '');
@@ -11114,7 +11165,7 @@ class CustomersController extends Controller {
                         $result = "false";
                         $response = $payresult['message_mob'];
                     }
-                }
+               // }
             }
         }
 

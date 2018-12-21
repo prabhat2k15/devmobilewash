@@ -4269,6 +4269,11 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                                     $voidresult = Yii::app()->braintree->void_real($wash->transaction_id);
                                 else
                                     $voidresult = Yii::app()->braintree->void($wash->transaction_id);
+				    
+				if($wash->second_transaction_id){
+					if ($customer_check->client_position == 'real') $voidresult2 = Yii::app()->braintree->void_real($wash->second_transaction_id);
+					else $voidresult2 = Yii::app()->braintree->void($wash->second_transaction_id);
+				}
 
                                 if ($voidresult['success'] == 1) {
                                     if ($customer_check->client_position == 'real') {
@@ -4287,6 +4292,10 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                                         Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id' => $payresult['transaction_id']));
                                     }
                                 }
+				
+				 if ($voidresult2['success'] == 1) {
+				Washingrequests::model()->updateByPk($wash->id, array('second_transaction_id' => ''));	
+				 }
                             } else {
 
                                 if ($transaction_check['merchant_id'] != $agent_check->bt_submerchant_id) {
@@ -4294,6 +4303,11 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                                         $voidresult = Yii::app()->braintree->void_real($wash->transaction_id);
                                     else
                                         $voidresult = Yii::app()->braintree->void($wash->transaction_id);
+					
+					if($wash->second_transaction_id){
+					if ($customer_check->client_position == 'real') $voidresult2 = Yii::app()->braintree->void_real($wash->second_transaction_id);
+					else $voidresult2 = Yii::app()->braintree->void($wash->second_transaction_id);
+				}
 
                                     if ($voidresult['success'] == 1) {
                                         if ($customer_check->client_position == 'real') {
@@ -4312,11 +4326,17 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                                             Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id' => $payresult['transaction_id']));
                                         }
                                     }
+				     if ($voidresult2['success'] == 1) {
+					Washingrequests::model()->updateByPk($wash->id, array('second_transaction_id' => ''));	
+				}
                                 } else {
-                                    if ($customer_check->client_position == 'real')
-                                        $payresult = Yii::app()->braintree->submitforsettlement_real($wash->transaction_id);
-                                    else
-                                        $payresult = Yii::app()->braintree->submitforsettlement($wash->transaction_id);
+                                    if ($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->submitforsettlement_real($wash->transaction_id);
+                                    else $payresult = Yii::app()->braintree->submitforsettlement($wash->transaction_id);
+					
+				if($wash->second_transaction_id){
+					if ($customer_check->client_position == 'real') $payresult2 = Yii::app()->braintree->submitforsettlement_real($wash->second_transaction_id);
+					else $payresult2 = Yii::app()->braintree->submitforsettlement($wash->second_transaction_id);
+				}
 
                                     if ($payresult['success'] == 1) {
                                         Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id' => ''));
