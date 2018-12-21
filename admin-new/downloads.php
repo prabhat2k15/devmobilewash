@@ -301,7 +301,6 @@ $download_data = json_decode($result);
                                         <tr>
                                             <th>#</th>
                                             <th>Download Time </th>
-                                            <th>Platform</th>
                                             <th>Zipcode</th>
                                             <th>Zone</th>
                                             <th>City</th>
@@ -318,14 +317,13 @@ $download_data = json_decode($result);
                                             <tr>
                                                 <td><?= $i + 1; ?></td>
                                                 <td><?= date("Y-m-d h:i A", strtotime($val->created_at)) ?></td>
-                                                <td><?= $val->source ?></td>
                                                 <td><?= $val->zipcode ?></td>
                                                 <td></td>
                                                 <td><?= $val->city ?></td>
                                                 <td><?= $val->state ?></td>
                                                 <td><?= $val->country ?></td>
 
-                                                <td></td>
+                                                <td><?= $val->source ?></td>
                                             </tr>
                                             <?php
                                             $i++;

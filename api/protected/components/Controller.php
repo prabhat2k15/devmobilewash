@@ -649,7 +649,8 @@ if((count($total_cars) > 1) && ($carindex==0) && ($wash_id_check->coupon_discoun
 						'vehicle_cat'=>$vehicle_details->vehicle_build,
 						'vehicle_image'=>$vehicle_details->vehicle_image,
 						'vehicle_inspect_image'=>$inspect_img,
-                        'eco_friendly'=>$vehicle_inspect_details->eco_friendly,
+                        //'eco_friendly'=>$vehicle_inspect_details->eco_friendly,
+                                        'eco_friendly'=>($vehicle_inspect_details->eco_friendly) ? $vehicle_inspect_details->eco_friendly : " ",
 						'vehicle_inspect_image_temp'=>$vehicle_details->damage_pic,
 						'vehicle_type'=>$vehicle_details->vehicle_type,
 						'vehicle_washing_package' => $total_packs[$carindex],
@@ -1037,7 +1038,8 @@ $is_startable = 1;
             'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom_amount,
 	    'company_cancel' => $wash_id_check->company_cancel,
 	    'canceled_washer_id' => $canceled_washer_id,
-	    'is_startable'=>$is_startable
+	    'is_startable'=>$is_startable,
+             'flagged_issue_status'=>$wash_id_check->flagged_issue_status,
         );
 			
 			if((AES256CBC_STATUS == 1) && ($api_password == AES256CBC_API_PASS)){
