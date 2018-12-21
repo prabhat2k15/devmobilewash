@@ -11951,7 +11951,7 @@ $sendmessage = $client->account->messages->create(array(
 
 
 
-	       if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
+	       if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control) && ($agent_det->available_for_new_order > 0)){
               try {
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
@@ -12277,7 +12277,7 @@ $sendmessage = $client->account->messages->create(array(
             //echo  $e;
 }
 
-            if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control)){
+            if(($result == 'true') && ($response == 'Order canceled') && ($order_exists->agent_id) && (!$agent_det->block_washer) && ($agent_det->sms_control) && ($agent_det->available_for_new_order > 0)){
              try{
              $sendmessage = $client->account->messages->create(array(
                 'To' =>  $agent_det->phone_number,
@@ -14782,7 +14782,7 @@ $mins_since_last_use = round((time() - strtotime($agentdevices[0]['last_used']))
 						
 			if($current_mile <= 10){
 				$agent_det =  Agents::model()->findByPk($agid);
-				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer) && ($agent_det->sms_control) && ($mins_since_last_use < 10080)){
+				if((count($agent_det)) && ($agent_det->phone_number) && (!$agent_det->block_washer) && ($agent_det->sms_control) && ($mins_since_last_use < 10080) && ($agent_det->available_for_new_order > 0)){
 				  if((APP_ENV == 'real')){
                     $this->layout = "xmlLayout";
                    
