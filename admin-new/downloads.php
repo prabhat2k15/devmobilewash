@@ -55,7 +55,7 @@ $download_data = json_decode($result);
         padding-right: 20px;
     }
     input[type="date"].form-control, input[type="time"].form-control, input[type="datetime-local"].form-control, input[type="month"].form-control {
-    line-height: inherit;
+        line-height: inherit;
     }
     .input-group-sm > .input-group-btn > select.btn, .input-group-sm > select.form-control, .input-group-sm > select.input-group-addon, select.input-sm{
         line-height: inherit;
@@ -73,7 +73,7 @@ $download_data = json_decode($result);
 
     }
     .dataTables_paginate ul.pagination{
-      margin-top:0px;
+        margin-top:0px;
     }
 </style>
 <!-- BEGIN CONTENT -->
@@ -234,7 +234,7 @@ $download_data = json_decode($result);
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <div class="border-box">
-                                    <h4 class="text-center">Zipcode</h4>
+                                    <h4 class="text-center">Top Zipcode</h4>
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example5">
                                         <thead>
                                             <tr>
@@ -318,7 +318,7 @@ $download_data = json_decode($result);
                                                 <td><?= $i + 1; ?></td>
                                                 <td><?= date("Y-m-d h:i A", strtotime($val->created_at)) ?></td>
                                                 <td><?= $val->zipcode ?></td>
-                                                <td></td>
+                                                <td><?= $val->zip_color ?></td>
                                                 <td><?= $val->city ?></td>
                                                 <td><?= $val->state ?></td>
                                                 <td><?= $val->country ?></td>

@@ -1,4 +1,12 @@
 <?php include('header.php') ?>
+<style>
+    .input-group-sm .input-group-btn select.btn, 
+    .input-group-sm select.form-control,
+    .input-group-sm select.input-group-addon,
+    select.input-sm{
+        line-height:inherit;
+    }
+</style>
 
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
 <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>

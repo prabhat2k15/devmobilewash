@@ -105,29 +105,9 @@
                                     <span class="title">Flagged Orders</span>
                                 </a>
                             </li>
-                            <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php
-                            if ($url == 'downloads.php' || $newurl_page[0] == 'downloads.php') {
-                                $open_agent = 'open';
-                                echo 'active open';
-                            }
-                            ?>">
-                                <a href="<?php echo ROOT_URL; ?>/admin-new/downloads.php" class="nav-link ">
-                                    <span class="title">Downloads</span>
-                                </a>
-                            </li>
+                            
                         <?php endif; ?>
-                        <?php if ($jsondata_permission->users_type == 'admin'): ?> 
-                            <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php
-                            if ($url == 'customer-expansion-rquest.php') {
-                                $open_agent = 'open';
-                                echo 'active open';
-                            }
-                            ?>">
-                                <a href="<?php echo ROOT_URL; ?>/admin-new/customer-expansion-rquest.php" class="nav-link ">
-                                    <span class="title">Expansion Requests</span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
+                        
                         <?php if (($jsondata_permission->users_type == 'recruiter') || ($jsondata_permission->users_type == 'scheduler')): ?> 
                             <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php
                             if ($url == 'order_calendar.php') {
@@ -218,6 +198,26 @@
                             ?>">
                                 <a href="<?php echo ROOT_URL; ?>/admin-new/ondemand-surge-times.php" class="nav-link ">
                                     <span class="title">On-Demand Surge Times</span>
+                                </a>
+                            </li>
+                            <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php
+                            if ($url == 'customer-expansion-rquest.php') {
+                                $open_agent = 'open';
+                                echo 'active open';
+                            }
+                            ?>">
+                                <a href="<?php echo ROOT_URL; ?>/admin-new/customer-expansion-rquest.php" class="nav-link ">
+                                    <span class="title">Expansion Requests</span>
+                                </a>
+                            </li>
+                            <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php
+                            if ($url == 'downloads.php' || $newurl_page[0] == 'downloads.php') {
+                                $open_agent = 'open';
+                                echo 'active open';
+                            }
+                            ?>">
+                                <a href="<?php echo ROOT_URL; ?>/admin-new/downloads.php" class="nav-link ">
+                                    <span class="title">Downloads</span>
                                 </a>
                             </li>
 
@@ -633,7 +633,7 @@
                                     <span class="title">MobileWasher Service Feedbacks</span>
                                 </a>
                             </li>
-                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }                   ?>">
+                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }                    ?>">
                                 <a href="customer-notifications.php" class="nav-link ">
                                     <span class="title">Customer Push Notifications</span>
                                 </a>
