@@ -1033,8 +1033,8 @@ class UsersController extends Controller {
 // AND online_status = 'online'
          //$q2->addcondition("(customername LIKE '%" . $search_query . "%')");
         $q2->addcondition("(customername LIKE '%" . $search_query . "%')");
-        //$q2->addcondition("(first_name LIKE '%" . $search_query . "%')", "OR");
-        //$q2->addcondition("(last_name LIKE '%" . $search_query . "%')", "OR");
+        $q2->addcondition("(first_name LIKE '%" . $search_query . "%')", "OR");
+        $q2->addcondition("(last_name LIKE '%" . $search_query . "%')", "OR");
         $findagents = Agents::model()->findAll($q);
         $findclients = Customers::model()->findAll($q2);
         //$result = Yii::app()->db->createCommand("SELECT *  FROM customers WHERE MATCH(first_name, last_name) AGAINST('" . $search_query . "' IN BOOLEAN MODE)")->queryAll();
@@ -3229,6 +3229,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
         $result = "false";
 
         $app_settings = Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
+        $active_washer = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE `block_washer` = 0")->queryAll();
 
         if (count($app_settings)) {
 
@@ -3255,6 +3256,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                 'android_wash_now_fee' => $wash_now_fee_json,
                 'android_wash_later_fee' => $app_settings[1]['wash_later_fee'],
                 'mw_care_rating' => $app_settings[0]['mw_care_rating'],
+                'mw_active_washer' => count($active_washer)
             );
         } else {
             $result = "false";
