@@ -475,6 +475,11 @@ if(!$token_check){
 		$phone = Yii::app()->request->getParam('phone');
 		$message = Yii::app()->request->getParam('message');
 		$media = Yii::app()->request->getParam('media');
+		
+		if($to == 'all_washers'){
+		  $all_phones =  Yii::app()->db->createCommand("SELECT id, block_washer, GROUP_CONCAT(phone_number SEPARATOR ',') FROM agents WHERE block_washer = 0 AND phone_number != ''")->queryAll();
+		  if(count($all_phones)) $phone = $all_phones[0]["GROUP_CONCAT(phone_number SEPARATOR ',')"];
+		}
 		$messagedata= array(
 					'to'=> $to,
 					'phone'=> $phone,

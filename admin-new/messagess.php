@@ -185,7 +185,7 @@ $result_code = $jsondata->result;
                                         ?>
                                         <tr class="odd gradeX">
 
-                                            <td><?php echo $responsemesage->to; ?></td>
+                                            <td><?php if($responsemesage->to == 'all_washers') {echo 'All Active Washers';} else {echo $responsemesage->to;} ?></td>
                                             <td><?php echo str_replace(',', ', ', $responsemesage->phone); ?></td>
                                             <td>
                                                 <textarea class="emoji" disabled=""><?php echo $responsemesage->message; ?></textarea>

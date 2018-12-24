@@ -111,8 +111,8 @@ $message = $jsondata->message;
                                     <div class="col-md-3">
                                         <select class="form-control input-medium" onchange="getval(this);" name="to" required>
                                             <option value="">Select</option>
-                                            <option value="customer">Customer</option>
-                                            <option value="washer">Washer</option>
+                                            
+                                            <option value="all_washers">All Active Washers</option>
                                             <option value="custom">Custom</option>
                                         </select>
                                     </div>
@@ -162,16 +162,20 @@ $message = $jsondata->message;
 <script type="text/javascript">
                                             function getval(sel) {
                                                 var val = sel.value;
-                                                if (val == 'custom') {
+                                                if ((val == 'custom')) {
                                                     $('#phone').show();
+						    $('#phone input[name=phone]').attr('required', 'required');
                                                     $('#message').show();
                                                     $('#media').show();
                                                     $('#save').show();
-                                                } else {
-                                                    $('#phone').hide();
-                                                    $('#message').hide();
-                                                    $('#media').hide();
-                                                    $('#save').hide();
                                                 }
+						
+						if ((val == 'all_washers')) {
+                                                    $('#phone').hide();
+						    $('#phone input[name=phone]').removeAttr('required');
+                                                    $('#message').show();
+                                                    $('#media').show();
+                                                    $('#save').show();
+                                                } 
                                             }
 </script>

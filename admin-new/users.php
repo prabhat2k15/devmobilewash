@@ -139,7 +139,7 @@ id = $(this).data('id');
 var r = confirm('Are you sure you want to delete user #'+id+'?');
 if (r == true) {
 $(th).html('Deleting...');
-$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/deleteuser", {id: id, key: API_KEY, api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
+$.getJSON( "<?php echo ROOT_URL; ?>/api/index.php?r=users/deleteuser", {id: id, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function( data ) {
 if(data.result == 'true'){
 window.location.href="<?php echo ROOT_URL; ?>/admin-new/users.php?action=delete-success&nid="+id;
 }

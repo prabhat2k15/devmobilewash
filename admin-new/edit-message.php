@@ -78,25 +78,7 @@
     }
 ?>
 
-<?php if($to != 'custom') { 
-?>
-<style>
-#phone{
-	display: none;
-}
-#message{
-	display: none;
-}
-#media{
-	display: none;
-}
-#save{
-	display: none;
-}
-</style>
-<?php
 
-} ?>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
@@ -122,9 +104,9 @@
                                                 <div class="col-md-3">
                                                     <select class="form-control input-medium" onchange="getval(this);" name="to" required>
                                                         <option value="">Select</option>
-                                                        <option value="customer" <?php if($to == 'customer') { echo 'selected="selected"'; } ?>>Customer</option>
-                                                        <option value="washer" <?php if($to == 'washer') { echo 'selected="selected"'; } ?>>Washer</option>
-                                                        <option value="custom" <?php if($to == 'custom') { echo 'selected="selected"'; } ?>>Custom</option>
+							<option <?php if($to == 'all_washers') { echo 'selected="selected"'; } ?> value="all_washers">All Active Washers</option>
+                                            <option value="custom" <?php if($to == 'custom') { echo 'selected="selected"'; } ?>>Custom</option>
+                                                        
                                                     </select>
                                                 </div>
                                             </div>
@@ -174,16 +156,14 @@
 			<script type="text/javascript">
 				function getval(sel) {
 				   var val = sel.value;
-				   if(val == 'custom'){
-					   $('#phone').show();
-					   $('#message').show();
-					   $('#media').show();
-					   $('#save').show();
-				   }else{
-					   $('#phone').hide();
-					   $('#message').hide();
-					   $('#media').hide();
-					   $('#save').hide();
-				   }
+				   if ((val == 'custom') || (val == 'all_washers')) {
+                                                    $('#phone').show();
+						    
+                                                    $('#message').show();
+                                                    $('#media').show();
+                                                    $('#save').show();
+                                                }
+						
+		
 				}
 			</script>
