@@ -4513,7 +4513,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'washer_change_pack' => $washer_change_pack,
                         'washercustnomeet' => $washercustnomeet,
                         'washer_wash_activity' => $washer_wash_activity,
-                        'washer_30_min_noarrive' => $washer_30_min_noarrive
+                        'washer_30_min_noarrive' => $washer_30_min_noarrive,
+                        'company_total' => $wrequest['company_total'],
+                        'agent_total' => $wrequest['agent_total'],
                     );
                 }
 
@@ -4570,7 +4572,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'washer_change_pack' => $washer_change_pack,
                         'washercustnomeet' => $washercustnomeet,
                         'washer_wash_activity' => $washer_wash_activity,
-                        'washer_30_min_noarrive' => $washer_30_min_noarrive
+                        'washer_30_min_noarrive' => $washer_30_min_noarrive,
+                        'company_total' => $wrequest['company_total'],
+                        'agent_total' => $wrequest['agent_total'],
                     );
                 }
                 if (($min_diff < 0) && ($wrequest['status'] > 0)) {
@@ -4620,7 +4624,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'washer_change_pack' => $washer_change_pack,
                         'washercustnomeet' => $washercustnomeet,
                         'washer_wash_activity' => $washer_wash_activity,
-                        'washer_30_min_noarrive' => $washer_30_min_noarrive
+                        'washer_30_min_noarrive' => $washer_30_min_noarrive,
+                        'company_total' => $wrequest['company_total'],
+                        'agent_total' => $wrequest['agent_total'],
                     );
                 }
 
@@ -4668,7 +4674,10 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     'washer_change_pack' => $washer_change_pack,
                     'washercustnomeet' => $washercustnomeet,
                     'washer_wash_activity' => $washer_wash_activity,
-                    'washer_30_min_noarrive' => $washer_30_min_noarrive
+                    'washer_30_min_noarrive' => $washer_30_min_noarrive,
+                    'company_total' => $wrequest['company_total'],
+                    'agent_total' => $wrequest['agent_total'],
+                    
                 );
             }
 

@@ -796,6 +796,7 @@ if ($getorder->transaction_id) {
                                         <div style="font-size: 18px; background: #006fcf; color: #fff; padding: 5px 10px;">
 
                                             <span style="font-weight: 500;font-size: 22px; display: block; float: right;"><?php
+                                                
                                                 if ($getorder->status == 5 || $getorder->status == 6 || $getorder->status == 7) {
                                                     echo "$" . number_format($getorder->cancel_fee, 2);
                                                 } else {
@@ -808,6 +809,7 @@ if ($getorder->transaction_id) {
                                                         echo "N/A";
                                                     }
                                                 }
+                                               
                                                 ?></span>
 
                                             <span style="display: block; float: right; margin-top: 4px; margin-right: 5px;">TOTAL PRICE:</span>
