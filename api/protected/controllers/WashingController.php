@@ -14058,14 +14058,14 @@ if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
       $ip=$_SERVER['REMOTE_ADDR'];
     }
 
-    /*if($ip != MW_SERVER_IP){
+    if($ip != MW_SERVER_IP){
 	 $json = array(
                     'result'=> 'false',
                     'response'=> 'Invalid request'
                 );
  echo json_encode($json);
  die();
-    }*/
+    }
 
 
 $allschedwashes = Washingrequests::model()->findAllByAttributes(array('status' => 4, 'is_feedback_email_sent' => 0));
@@ -14118,7 +14118,7 @@ $message = "<div class='block-content' style='background: #fff; text-align: left
 <a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://www.instagram.com/getmobilewash/'><div style='background: transparent url(".ROOT_URL."/images/hi-res-social-icons.png) no-repeat -86px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a>
 <!--a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://www.youtube.com/watch?v=pE30OSfeDH0'><div style='background: transparent url(".ROOT_URL."/images/hi-res-social-icons.png) no-repeat -128px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a-->
 <!--a style='display: inline-block; width: 32px; height: 32px;' href='https://plus.google.com/114985712775567009759/about'><div style='background: transparent url(".ROOT_URL."/images/hi-res-social-icons.png) no-repeat -171px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a-->
-<p style='padding: 6px 10px;border:1px solid #0880e6;text-align:center;width: 365px;margin-left:auto;margin-right:auto;margin-bottom: 0;border-radius: 8px;line-height: 22px;'>By providing feedback, you are eligible to win a Fee Deluxe Wash every week.</p>
+<p style='padding: 6px 10px;border:1px solid #0880e6;text-align:center;width: 365px;margin-left:auto;margin-right:auto;margin-bottom: 0;border-radius: 8px;line-height: 22px;'>By providing feedback, you are eligible to win a Fee Deluxe Wash.</p>
 </div>";
 
 

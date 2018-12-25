@@ -12325,7 +12325,17 @@ class CustomersController extends Controller {
                             
                             ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
                             ->execute();
-                }
+if(is_numeric($cust_feedback_check[0]['customer_ratings'])) $logcomment = $comments." (Ratings: ".$cust_feedback_check[0]['customer_ratings'].")";
+else $logcomment = $comments;
+                $washeractionlogdata= array(
+                            'agent_id'=> $washrequest_id_check->agent_id,
+                            'wash_request_id'=> $wash_request_id,
+                            'action'=> 'customerfeedback',
+			    'addi_detail' => $logcomment,
+                            'action_date'=> date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+		}
 
                 $result = 'true';
                 $response = "Feeback added";
