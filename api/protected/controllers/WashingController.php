@@ -6219,7 +6219,7 @@ $status = -1 * abs($status);
 
                     //else Washingrequests::model()->updateByPk($wash_request_id, array( 'agent_reject_ids' => $status_text, 'order_temp_assigned' => 0 ));
                }
-                 if($wash_id_check->agent_id){
+                 /*if($wash_id_check->agent_id){
 		 $agent_detail = Agents::model()->findByAttributes(array("id"=>$wash_id_check->agent_id));
             $washeractionlogdata = array(
             'wash_request_id'=> $wash_request_id,
@@ -6228,7 +6228,7 @@ $status = -1 * abs($status);
             'agent_company_id'=> $agent_detail->real_washer_id,
             'action_date'=> date('Y-m-d H:i:s'));
             Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
-	    }
+	    }*/
             }
         }
 
