@@ -8623,7 +8623,6 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
             $result = 'true';
             $response = 'topmost washers';
 
-
             $i = 0;
             foreach ($all_washes as $key => $wash) {
 //$washer_ids[] = $wash['agent_id'];	
@@ -8657,80 +8656,129 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
         echo json_encode($json);
     }
 
+//    public function actiongettopmostcustomers() {
+//
+//        if (Yii::app()->request->getParam('key') != API_KEY) {
+//            echo "Invalid api key";
+//            die();
+//        }
+//
+//        $api_token = Yii::app()->request->getParam('api_token');
+//        $t1 = Yii::app()->request->getParam('t1');
+//        $t2 = Yii::app()->request->getParam('t2');
+//        $user_type = Yii::app()->request->getParam('user_type');
+//        $user_id = Yii::app()->request->getParam('user_id');
+//
+//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+//
+//        if (!$token_check) {
+//            $json = array(
+//                'result' => 'false',
+//                'response' => 'Invalid request'
+//            );
+//            echo json_encode($json);
+//            die();
+//        }
+//
+//        $from = Yii::app()->request->getParam('from');
+//        $to = Yii::app()->request->getParam('to');
+//
+//        $result = 'false';
+//        $response = 'nothing found';
+//        $cust_ids = array();
+//        $topcusts_arr = array();
+//        $topcusts_det_arr = array();
+//        $all_washes = Yii::app()->db->createCommand()
+//                ->select('customer_id')
+//                ->from('washing_requests')
+//                ->where("(order_for >= :from AND order_for <= :to) AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
+//                ->queryAll();
+//
+//        if (count($all_washes) > 0) {
+//            $result = 'true';
+//            $response = 'topmost customers';
+//
+//
+//            foreach ($all_washes as $wash) {
+//                $cust_ids[] = $wash['customer_id'];
+//            }
+//
+//            $topcusts_arr = array_count_values($cust_ids);
+//            arsort($topcusts_arr);
+//            $i = 0;
+//            foreach ($topcusts_arr as $key => $cust) {
+//                $cust_det = Customers::model()->findByPk($key);
+//                if (((!$cust_det->first_name) && (!$cust_det->last_name)) && (!$cust_det->customername))
+//                    continue;
+//                $location = CustomerLocation::model()->findByPk($key);
+//                $topcusts_det_arr[$i]['id'] = $key;
+//                $topcusts_det_arr[$i]['name'] = $cust_det->first_name . " " . $cust_det->last_name;
+//                $topcusts_det_arr[$i]['email'] = $cust_det->email;
+//                $topcusts_det_arr[$i]['phone'] = $cust_det->contact_number;
+//                $topcusts_det_arr[$i]['address'] = $location->location_address;
+//                //$topcusts_det_arr[$i]['street'] = $location->street_name;
+//                $topcusts_det_arr[$i]['city'] = $location->city;
+//                $topcusts_det_arr[$i]['state'] = $location->state;
+//                $topcusts_det_arr[$i]['zip'] = $location->zipcode;
+//                $topcusts_det_arr[$i]['total_washes'] = $cust;
+//                $i++;
+//            }
+//        }
+//
+//
+//        $json = array(
+//            'result' => $result,
+//            'response' => $response,
+//            'top_customers' => $topcusts_det_arr
+//        );
+//        echo json_encode($json);
+//    }
+    
     public function actiongettopmostcustomers() {
-
-        if (Yii::app()->request->getParam('key') != API_KEY) {
-            echo "Invalid api key";
-            die();
-        }
-
-        $api_token = Yii::app()->request->getParam('api_token');
-        $t1 = Yii::app()->request->getParam('t1');
-        $t2 = Yii::app()->request->getParam('t2');
-        $user_type = Yii::app()->request->getParam('user_type');
-        $user_id = Yii::app()->request->getParam('user_id');
-
-        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
-
-        if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }
-
         $from = Yii::app()->request->getParam('from');
         $to = Yii::app()->request->getParam('to');
-
+        $limit = $_REQUEST['limit'];
         $result = 'false';
         $response = 'nothing found';
-        $cust_ids = array();
-        $topcusts_arr = array();
-        $topcusts_det_arr = array();
-        $all_washes = Yii::app()->db->createCommand()
-                ->select('customer_id')
-                ->from('washing_requests')
-                ->where("(order_for >= :from AND order_for <= :to) AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
-                ->queryAll();
+        $washer_ids = array();
+        $topwashers_arr = array();
+        $topwashers_det_arr = array();
+        if ($limit != "") {
+            $all_customers = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, c.id,c.image,c.first_name,c.last_name,c.contact_number,c.email, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, COUNT(wr.status = 4) as total_completed, image FROM customers as c LEFT JOIN washing_requests wr ON c.id = wr.customer_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "'  AND wr.customer_id != 0 WHERE c.block_client = 0 GROUP BY c.id ORDER BY total DESC LIMIT " . $limit)->queryAll();
+        } else {
+            $all_customers = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, c.id,c.image,c.first_name,c.last_name,c.contact_number,c.last_name,c.email, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, COUNT(wr.status = 4) as total_completed, image FROM customers as c LEFT JOIN washing_requests wr ON c.id = wr.customer_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "'  AND wr.customer_id != 0 WHERE c.block_client = 0 GROUP BY c.id ORDER BY total DESC")->queryAll();
+        }
 
-        if (count($all_washes) > 0) {
+        if (count($all_customers) > 0) {
             $result = 'true';
             $response = 'topmost customers';
-
-
-            foreach ($all_washes as $wash) {
-                $cust_ids[] = $wash['customer_id'];
-            }
-
-            $topcusts_arr = array_count_values($cust_ids);
-            arsort($topcusts_arr);
             $i = 0;
-            foreach ($topcusts_arr as $key => $cust) {
-                $cust_det = Customers::model()->findByPk($key);
-                if (((!$cust_det->first_name) && (!$cust_det->last_name)) && (!$cust_det->customername))
-                    continue;
-                $location = CustomerLocation::model()->findByPk($key);
-                $topcusts_det_arr[$i]['id'] = $key;
-                $topcusts_det_arr[$i]['name'] = $cust_det->first_name . " " . $cust_det->last_name;
-                $topcusts_det_arr[$i]['email'] = $cust_det->email;
-                $topcusts_det_arr[$i]['phone'] = $cust_det->contact_number;
-                $topcusts_det_arr[$i]['address'] = $location->location_address;
-                //$topcusts_det_arr[$i]['street'] = $location->street_name;
-                $topcusts_det_arr[$i]['city'] = $location->city;
-                $topcusts_det_arr[$i]['state'] = $location->state;
-                $topcusts_det_arr[$i]['zip'] = $location->zipcode;
-                $topcusts_det_arr[$i]['total_washes'] = $cust;
+            foreach ($all_customers as $key => $val) {
+                //$washer_ids[] = $wash['agent_id'];	
+                //$agent_det = Agents::model()->findByPk($wash['agent_id']);
+                // $get_cancel_count = Yii::app()->db->createCommand("SELECT COUNT(id) as total_cancel FROM activity_logs WHERE DATE_FORMAT(action_date,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND action IN('admindropjob', 'cancelorderwasher', 'washerenroutecancel','Dropschedule') AND customer_id = " . $wash['id'] . "")->queryAll();
+                $total_earn = Yii::app()->db->createCommand("SELECT SUM(net_price) as total_sum FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4)")->queryAll();
+                $topcustomers_det_arr[$i]['id'] = $key;
+                //$topwashers_det_arr[$i]['company_id'] = $wash['real_washer_id'];
+                $topcustomers_det_arr[$i]['customer_id'] = $val['id'];
+                $topcustomers_det_arr[$i]['image'] = $val['image'];
+                $topcustomers_det_arr[$i]['email'] = $val['email'];
+                $topcustomers_det_arr[$i]['name'] = $val['first_name'] . " " . $val['last_name'];
+                $topcustomers_det_arr[$i]['total_washes'] = $val['total'];
+                $topcustomers_det_arr[$i]['total'] = $val['total'];
+                $topcustomers_det_arr[$i]['total_demand'] = $val['total_demand'];
+                $topcustomers_det_arr[$i]['total_scheduled'] = $val['total_scheduled'];
+                $topcustomers_det_arr[$i]['total_completed'] = $val['total_completed'];
+                //$topwashers_det_arr[$i]['total_cancel'] = (count($get_cancel_count) > 0) ? $get_cancel_count[0]['total_cancel'] : 0;
+                $topcustomers_det_arr[$i]['total_sum'] = (count($total_earn) > 0) ? $total_earn[0]['total_sum'] : 0;
                 $i++;
             }
         }
 
-
         $json = array(
             'result' => $result,
             'response' => $response,
-            'top_customers' => $topcusts_det_arr
+            'top_customers' => $topcustomers_det_arr
         );
         echo json_encode($json);
     }

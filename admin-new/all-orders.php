@@ -595,7 +595,7 @@ $ios_count = $jsondata->ios_count;
                                     echo 'Upcoming';
                                 if ($_GET['filter'] == 'nonupcoming')
                                     echo 'Non-Upcoming';
-                                ?> All Orders </span><?php if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')) { ?><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                                ?> All Orders </span><?php if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer' || $_GET['event'] == "topCustomerOrder")) { ?><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                                 <?php } ?>
                         </div>
                         <div class="caption font-dark">
@@ -786,7 +786,7 @@ $ios_count = $jsondata->ios_count;
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;         ?></td-->
+                                           <!--td><?php //echo $order->transaction_id;             ?></td-->
                                             <?php $sum = $order->agent_total + $order->company_total ?>
                                             <td>$<?php echo number_format($sum, 2); ?>   </td>
                                             <td><?php echo $order->created_date; ?></td>
@@ -876,7 +876,7 @@ $ios_count = $jsondata->ios_count;
 
     });
 </script>
-<?php if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')) { ?>
+<?php if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer' || $_GET['topCustomerOrder'])) { ?>
     <script type="text/javascript">
         dt_table = $('#example1, #example2').DataTable({
             "pageLength": 20,
@@ -1055,20 +1055,20 @@ $ios_count = $jsondata->ios_count;
              if ($(this).hasClass("addonupgrade-view")) {
              return false;
              }
-             
+                 
              var wash_id = $(this).attr('data-id');
-             
+                 
              $(this).parent().remove();
              if ($(".spec-order-list").children().length < 1){
              $(".spec-order-list").remove();
              }
-             
+                 
              if ($(".alert-box-wrap").children().length < 1){
              $(".alert-box-wrap").hide();
              }
              window.open('edit-order.php?id='+wash_id, '_blank');
              return false;
-             
+                 
              });*/
 
         });
@@ -1084,11 +1084,11 @@ $ios_count = $jsondata->ios_count;
             var popuptextorange = '';
             var popuptextblue = '';
             var popuptextfull = '';
-    //console.log(params);
+            //console.log(params);
             $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=site/getallwashrequestsnew", params, function (data) {
 
                 if (data.result == 'true') {
-    //console.log(data);
+                    //console.log(data);
                     $(".portlet-body table tr").removeClass('flashrow');
                     $.each(data.wash_requests, function (index, value) {
 
@@ -1097,7 +1097,7 @@ $ios_count = $jsondata->ios_count;
                     });
 
                     alldata = dt_table.fnGetData();
-    //console.log(alldata);
+                    //console.log(alldata);
                     dt_table.fnClearTable();
 
                     $.each(data.wash_requests, function (index, value) {
@@ -1243,7 +1243,7 @@ $ios_count = $jsondata->ios_count;
                     //dt_table.fnDraw();
                 }
 
-    //console.log(processordeclined_washes);
+                //console.log(processordeclined_washes);
                 popuptextfull = popuptextred + popuptextgreen + popuptextblue + popuptextorange;
                 if (popuptextfull != '') {
                     popuptextfull = "<ul class='spec-order-list'>" + popuptextfull + "</ul>";
@@ -1257,11 +1257,11 @@ $ios_count = $jsondata->ios_count;
 
 
             });
-    //console.log('working');
+            //console.log('working');
 
         }
 
-    //pendingflashingorder();
+        //pendingflashingorder();
         ajaxorderlist();
         var refreshId = setInterval(ajaxorderlist, 60000);
 

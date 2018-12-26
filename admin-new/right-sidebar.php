@@ -105,9 +105,9 @@
                                     <span class="title">Flagged Orders</span>
                                 </a>
                             </li>
-                            
+
                         <?php endif; ?>
-                        
+
                         <?php if (($jsondata_permission->users_type == 'recruiter') || ($jsondata_permission->users_type == 'scheduler')): ?> 
                             <li style="display: <?php echo $checked_show_calendar_display; ?>" class="nav-item  <?php
                             if ($url == 'order_calendar.php') {
@@ -633,7 +633,7 @@
                                     <span class="title">MobileWasher Service Feedbacks</span>
                                 </a>
                             </li>
-                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }                    ?>">
+                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }                      ?>">
                                 <a href="customer-notifications.php" class="nav-link ">
                                     <span class="title">Customer Push Notifications</span>
                                 </a>
@@ -644,7 +644,7 @@
                                 echo 'active open';
                             }
                             ?>">
-                                <a href="<?php echo ROOT_URL; ?>/admin-new/top-customers.php" class="nav-link ">
+                                <a href="<?php echo ROOT_URL; ?>/admin-new/top-customers.php?limit=400" class="nav-link ">
                                     <span class="title">Top Customers</span>
                                 </a>
                             </li>
