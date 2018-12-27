@@ -7178,6 +7178,38 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             }
         }
 	
+	$all_washes = Yii::app()->db->createCommand()
+                ->select('*')
+                ->from('washing_requests')
+                ->where("upfront_transaction_id != ''", array())
+                ->queryAll();
+		
+	if (count($all_washes)) {
+
+            foreach ($all_washes as $ind => $wash) {
+		 $current_time = strtotime(date('Y-m-d H:i:s'));
+                    $create_time = strtotime( $wash['order_for']);
+                    $min_diff = 0;
+                    if ($current_time > $create_time) {
+                        $min_diff = round(($current_time - $create_time) / 60, 2);
+                    }
+		    
+		    if (($min_diff >= 30)){
+		$customer_check = Customers::model()->findByPk($wash['customer_id']);
+			if ($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->void_real($wash['upfront_transaction_id']);
+			else $payresult = Yii::app()->braintree->void($wash['upfront_transaction_id']);
+
+			if ($payresult['success'] == 1) {
+if($wash['upfront_transaction_id'] == $wash['transaction_id']) Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => '', 'transaction_id' => ''));
+else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => ''));
+			} else {
+                        Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => ''));
+			}
+               
+		}
+	    }
+	}
+		
 		
     }
 
@@ -8724,9 +8756,10 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             foreach ($all_customers as $key => $val) {
                 //$washer_ids[] = $wash['agent_id'];	
                 //$agent_det = Agents::model()->findByPk($wash['agent_id']);
-                // $get_cancel_count = Yii::app()->db->createCommand("SELECT COUNT(id) as total_cancel FROM activity_logs WHERE DATE_FORMAT(action_date,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND action IN('admindropjob', 'cancelorderwasher', 'washerenroutecancel','Dropschedule') AND customer_id = " . $wash['id'] . "")->queryAll();
-                $total_earn = Yii::app()->db->createCommand("SELECT SUM(net_price) as total_sum FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4)")->queryAll();
+                $last_wash = Yii::app()->db->createCommand("SELECT wr.id FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) ORDER BY wr.id DESC LIMIT 1")->queryAll();
+                $total_earn = Yii::app()->db->createCommand("SELECT SUM(net_price) as total_sum,wr.id FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) ORDER BY wr.id DESC")->queryAll();
                 $topcustomers_det_arr[$i]['id'] = $key;
+               
                 //$topwashers_det_arr[$i]['company_id'] = $wash['real_washer_id'];
                 $topcustomers_det_arr[$i]['customer_id'] = $val['id'];
                 $topcustomers_det_arr[$i]['image'] = $val['image'];
@@ -8737,6 +8770,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $topcustomers_det_arr[$i]['total_demand'] = $val['total_demand'];
                 $topcustomers_det_arr[$i]['total_scheduled'] = $val['total_scheduled'];
                 $topcustomers_det_arr[$i]['total_completed'] = $val['total_completed'];
+                $topcustomers_det_arr[$i]['last_wash'] = $last_wash[0]['id'];
                 //$topwashers_det_arr[$i]['total_cancel'] = (count($get_cancel_count) > 0) ? $get_cancel_count[0]['total_cancel'] : 0;
                 $topcustomers_det_arr[$i]['total_sum'] = (count($total_earn) > 0) ? $total_earn[0]['total_sum'] : 0;
                 $i++;

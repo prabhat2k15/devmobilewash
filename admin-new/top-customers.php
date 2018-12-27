@@ -99,6 +99,7 @@ $customers_data = json_decode($result);
                                         <th> Total Scheduled </th>
                                         <th> Total On Demand </th>
                                         <th> Total Washes </th>
+                                        <th> Last Wash Id</th>
                                         <th> Total Spent </th>
                                     </tr>
                                 </thead>
@@ -113,8 +114,8 @@ $customers_data = json_decode($result);
                                                     echo "images/image_icon.png";
                                                 }
                                                 ?>" style="width: 100px; height: 100px;"></td>
-                                            <td><a href="<?php echo ROOT_URL; ?>/admin-new/all-orders.php?event=topCustomerOrder&customer_id=<?php echo $cust->customer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>"><?php echo $cust->name; ?></a></td>
-                                           <!--td><?php //echo $cust->contact_number;                     ?></td-->
+                                            <td><a href="<?php echo ROOT_URL; ?>/admin-new/customer_history.php?event=topCustomerOrder&customer_id=<?php echo $cust->customer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>"><?php echo $cust->name; ?></a></td>
+                                           <!--td><?php //echo $cust->contact_number;                      ?></td-->
                                             <td><?php echo $cust->email; ?></td>
                                             <td style="display: none;"><?php echo $cust->address; ?></td>
 
@@ -123,6 +124,7 @@ $customers_data = json_decode($result);
                                             <td><?php echo $cust->total_scheduled; ?></td>
                                             <td><?php echo $cust->total_demand; ?></td>
                                             <td><?php echo $cust->total_washes; ?></td>
+                                            <td><?php echo $cust->last_wash; ?></td>
                                             <td><?php echo ($cust->total_sum > 0) ? '$' . number_format($cust->total_sum, 2) : '$00.00'; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -148,12 +150,18 @@ $customers_data = json_decode($result);
     .fullwidth{
         width: 14% !important;
     }
+    table tr th{
+        white-space:nowrap;
+        padding-left:10px !important; 
+        padding-right:20px !important;
+    }
 </style>
 <?php include('footer.php') ?>
 
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script type="text/javascript">
     $('#example1').DataTable({
+        order: [[6, "desc"]],
         pageLength: 25,
         stateSave: true,
         //lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
