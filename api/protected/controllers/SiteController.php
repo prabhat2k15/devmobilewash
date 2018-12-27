@@ -6603,7 +6603,14 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 //echo $min_diff;
 //echo "<br>";
 //more than 30 days
-                    if ($min_diff >= 43200) {
+
+
+                    if ($min_diff >= 28800) {
+			
+			  if (($min_diff > 28800)) {
+
+                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 20));
+                        }
 
                         if (($min_diff >= 43200) && ($min_diff < 86400)) {
 

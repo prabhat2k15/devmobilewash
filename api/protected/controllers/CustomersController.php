@@ -12923,6 +12923,94 @@ try {
 
     }
     
+        public function actionnonreturn20daynotify() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        /*if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }*/
+	
+	$agent_id = Yii::app()->request->getParam('agent_id');
+	$agent_lat = Yii::app()->request->getParam('agent_lat');
+	$agent_lng = Yii::app()->request->getParam('agent_lng');
+	
+	 if (AES256CBC_STATUS == 1) {
+            $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
+        }
+
+ $clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1, 'nonreturn_20day_notify' => 0), array('limit' => 100));
+       // print_r($wash_id_check);
+        if (count($clientlist)) {
+		foreach($clientlist as $client){
+			$miles = 0;
+			$customer_lng = 0;
+			$customer_lat = 0;
+			$customerlocation = Yii::app()->db->createCommand("SELECT * FROM customer_live_locations WHERE customer_id = '" . $client->id . "'")->queryAll();
+			
+			if(count($customerlocation)){
+				$customer_lng = $customerlocation[0]['longitude'];
+				$customer_lat = $customerlocation[0]['latitude'];
+			}
+			
+			/* --------- distance calculation ------------ */
+
+                $theta = $customer_lng - $agent_lng;
+                $dist = sin(deg2rad($customer_lat)) * sin(deg2rad($agent_lat)) + cos(deg2rad($customer_lat)) * cos(deg2rad($agent_lat)) * cos(deg2rad($theta));
+                $dist = acos($dist);
+                $dist = rad2deg($dist);
+                $miles = $dist * 60 * 1.1515;
+                $unit = strtoupper($unit);
+
+			/* --------- distance calculation end ------------ */
+		
+		if(($miles <= 10) && ($miles > 0)){
+		$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '53' ")->queryAll();
+			$message = $pushmsg[0]['message'];
+			$customerdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $client->id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
+			foreach ($customerdevices as $ctdevice) {
+				$device_type = strtolower($ctdevice['device_type']);
+                        $notify_token = $ctdevice['device_token'];
+                        $alert_type = "default";
+
+                        $notify_msg = urlencode($message);
+
+                        $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                        //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                        //print_r($notifyurl);
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, $notifyurl);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                        if ($notify_msg)
+                            $notifyresult = curl_exec($ch);
+                        curl_close($ch);	
+			}
+			Customers::model()->updateByPk($client->id, array("nonreturn_20day_notify" => 1));	
+		}
+		
+			
+		}
+            
+        }
+    }
+    
     
 
 }

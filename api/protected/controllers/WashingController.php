@@ -3981,7 +3981,7 @@ class WashingController extends Controller {
                     $car_ids = $wrequest_id_check->car_list;
                     $car_ids_arr = explode(",", $car_ids);
 
-                    Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 1, "is_nextwash_reminder_push_sent" => 0, "is_non_returning" => 0));
+                    Customers::model()->updateByPk($wrequest_id_check->customer_id, array("is_first_wash" => 1, "is_nextwash_reminder_push_sent" => 0, "is_non_returning" => 0, "nonreturn_20day_notify" => 0));
 
                     foreach ($kartdetails->vehicles as $car) {
 
@@ -14503,6 +14503,7 @@ class WashingController extends Controller {
             Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 1));
         }
     }
+    
 
     public function actionwash30secondrunning() {
 

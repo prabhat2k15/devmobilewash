@@ -85,6 +85,18 @@ request.post({
 });
 }
 
+function customers_nonreturn20daynotify(agent_id='', agent_lat = '', agent_lng = '', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded'},
+  url:     'https://www.devmobilewash.com/api/index.php?r=customers/nonreturn20daynotify',
+  body:    "key="+key+"&agent_id="+agent_id+"&agent_lat="+agent_lat+"&agent_lng="+agent_lng+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
+}, function(error, response, body){
+ //console.log(JSON.parse(body));
+ //console.log('pendingwash func');
+//io.emit('get pendingwashesdetails', JSON.parse(body));
+});
+}
+
 function washing_washingkart(wash_request_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -408,6 +420,11 @@ else{
      socket.on('currentwashschedulealert', function(data){
       //console.log(data);
     washing_currentwashschedulealert(data.wash_request_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
+  });
+     
+   socket.on('nonreturn20daynotify', function(data){
+      //console.log(data);
+    customers_nonreturn20daynotify(data.agent_id, data.agent_lat, data.agent_lng, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
   socket.on('washingkart', function(data){
