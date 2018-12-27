@@ -4161,13 +4161,13 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
         echo json_encode($json);
         die();
     }
+    
+    public function actioncronwasherpaymentscheck(){
 
-    public function actioncronwasherpaymentscheck() {
-
-        if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
-            echo "Invalid api key";
-            die();
-        }
+if(Yii::app()->request->getParam('key') != API_KEY_CRON){
+echo "Invalid api key";
+die();
+}
 
         /* $api_token = Yii::app()->request->getParam('api_token');
           $t1 = Yii::app()->request->getParam('t1');
@@ -4203,198 +4203,186 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             die();
         }
 
-        $pendingwashes = Washingrequests::model()->findAll(array("condition" => "status = 4 AND washer_payment_status != 1 AND washer_payment_status != 3"));
+     $pendingwashes =  Washingrequests::model()->findAll(array("condition"=>"status = 4 AND washer_payment_status != 1 AND washer_payment_status != 3"));
 
-        if (count($pendingwashes)) {
-            foreach ($pendingwashes as $wash) {
+           if(count($pendingwashes)){
+                   foreach($pendingwashes as $wash){
 
-                //if($wash->id != 10530) continue;
+                       //if($wash->id != 10530) continue;
 
-                $customer_check = Customers::model()->findByPk($wash->customer_id);
-                $agent_check = Agents::model()->findByPk($wash->agent_id);
-                $token = '';
+                    $customer_check = Customers::model()->findByPk($wash->customer_id);
+                           $agent_check = Agents::model()->findByPk($wash->agent_id);
+                      $token = '';
 
-                if (!$wash->transaction_id)
-                    continue;
+                     if(!$wash->transaction_id) continue;
 
-                else if (!count($customer_check))
-                    continue;
+                   else if(!count($customer_check)) continue;
 
-                else if (!$customer_check->braintree_id)
-                    continue;
+                   else if(!$customer_check->braintree_id) continue;
 
-                else if (!count($agent_check))
-                    continue;
+           else if(!count($agent_check)) continue;
 
-                else if (!$agent_check->bt_submerchant_id)
-                    continue;
+            else if(!$agent_check->bt_submerchant_id) continue;
 
-                if ($customer_check->client_position == 'real')
-                    $Bresult = Yii::app()->braintree->getCustomerById_real($customer_check->braintree_id);
-                else
-                    $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintree_id);
+                if($customer_check->client_position == 'real') $Bresult = Yii::app()->braintree->getCustomerById_real($customer_check->braintree_id);
+else $Bresult = Yii::app()->braintree->getCustomerById($customer_check->braintree_id);
 
-                if (count($Bresult->paymentMethods)) {
-                    foreach ($Bresult->paymentMethods as $index => $paymethod) {
-                        $payment_methods[$index]['title'] = get_class($paymethod);
-                        if ($payment_methods[$index]['title'] == 'Braintree\\CreditCard') {
-                            if ($paymethod->isDefault()) {
+                  if(count($Bresult->paymentMethods)){
+                    foreach($Bresult->paymentMethods as $index=>$paymethod){
+                         $payment_methods[$index]['title'] = get_class($paymethod);
+                         if($payment_methods[$index]['title'] == 'Braintree\\CreditCard'){
+                            if($paymethod->isDefault()){
                                 $token = $paymethod->token;
                                 break;
                             }
                         }
+
+
                     }
-                } else {
-                    continue;
+                  }
+                else{
+                  continue;
                 }
 
-                if (!$token)
-                    continue;
+                if(!$token) continue;
 
-                if (!$wash->washer_payment_status) {
-
-                    if ($customer_check->client_position == 'real')
-                        $transaction_check = Yii::app()->braintree->getTransactionById_real($wash->transaction_id);
-                    else
-                        $transaction_check = Yii::app()->braintree->getTransactionById($wash->transaction_id);
-
-                    if ($transaction_check['success'] == 1) {
-                        if (($transaction_check['status'] == 'submitted_for_settlement') || ($transaction_check['status'] == 'settling') || ($transaction_check['status'] == 'settled')) {
-                            Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id' => ''));
-                        } else {
-
-                            $kartapiresult = $this->washingkart($wash->id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
-                            $kartdata = json_decode($kartapiresult);
-                            if ($kartdata->net_price != $transaction_check['amount']) {
-
-                                if ($customer_check->client_position == 'real')
-                                    $voidresult = Yii::app()->braintree->void_real($wash->transaction_id);
-                                else
-                                    $voidresult = Yii::app()->braintree->void($wash->transaction_id);
-				    
-				if($wash->second_transaction_id){
-					if ($customer_check->client_position == 'real') $voidresult2 = Yii::app()->braintree->void_real($wash->second_transaction_id);
-					else $voidresult2 = Yii::app()->braintree->void($wash->second_transaction_id);
-				}
-
-                                if ($voidresult['success'] == 1) {
-                                    if ($customer_check->client_position == 'real') {
-
-                                        $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
-                                        $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
-                                    } else {
-
-                                        $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
-                                        $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
-                                    }
-
-                                    if ($payresult['success'] == 1) {
-                                        Washingrequests::model()->updateByPk($wash->id, array('transaction_id' => $payresult['transaction_id'], 'failed_transaction_id' => '', 'washer_payment_status' => 1));
-                                    } else {
-                                        Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id' => $payresult['transaction_id']));
-                                    }
-                                }
+                           if(!$wash->washer_payment_status){
 				
-				 if ($voidresult2['success'] == 1) {
-				Washingrequests::model()->updateByPk($wash->id, array('second_transaction_id' => ''));	
-				 }
-                            } else {
+				if($customer_check->client_position == 'real') $transaction_check = Yii::app()->braintree->getTransactionById_real($wash->transaction_id);
+				else $transaction_check = Yii::app()->braintree->getTransactionById($wash->transaction_id);
+				
+				if($transaction_check['success'] == 1) {
+					if(($transaction_check['status'] == 'submitted_for_settlement') || ($transaction_check['status'] == 'settling') || ($transaction_check['status'] == 'settled')){
+						Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id'=>''));	
+					}
+					else{
+						
+					$kartapiresult = $this->washingkart($wash->id, API_KEY, 0, AES256CBC_API_PASS);
+					$kartdata = json_decode($kartapiresult);
+					if($kartdata->net_price != $transaction_check['amount']){
+						
+						if($customer_check->client_position == 'real') $voidresult = Yii::app()->braintree->void_real($wash->transaction_id);
+						else $voidresult = Yii::app()->braintree->void($wash->transaction_id);
 
-                                if ($transaction_check['merchant_id'] != $agent_check->bt_submerchant_id) {
-                                    if ($customer_check->client_position == 'real')
-                                        $voidresult = Yii::app()->braintree->void_real($wash->transaction_id);
-                                    else
-                                        $voidresult = Yii::app()->braintree->void($wash->transaction_id);
-					
-					if($wash->second_transaction_id){
-					if ($customer_check->client_position == 'real') $voidresult2 = Yii::app()->braintree->void_real($wash->second_transaction_id);
-					else $voidresult2 = Yii::app()->braintree->void($wash->second_transaction_id);
-				}
+						if($voidresult['success'] == 1) {
+							if($customer_check->client_position == 'real'){
 
-                                    if ($voidresult['success'] == 1) {
-                                        if ($customer_check->client_position == 'real') {
+								$request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+								$payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
+							}
+							else{
+								
+								$request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+								$payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
+							}
 
-                                            $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
-                                            $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
-                                        } else {
+							if($payresult['success'] == 1) {
+								Washingrequests::model()->updateByPk($wash->id, array('transaction_id' => $payresult['transaction_id'], 'failed_transaction_id'=>'', 'washer_payment_status' => 1));
 
-                                            $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
-                                            $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
-                                        }
+							}
+							else{
+								Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id'=>$payresult['transaction_id']));
 
-                                        if ($payresult['success'] == 1) {
-                                            Washingrequests::model()->updateByPk($wash->id, array('transaction_id' => $payresult['transaction_id'], 'failed_transaction_id' => '', 'washer_payment_status' => 1));
-                                        } else {
-                                            Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id' => $payresult['transaction_id']));
-                                        }
-                                    }
-				     if ($voidresult2['success'] == 1) {
-					Washingrequests::model()->updateByPk($wash->id, array('second_transaction_id' => ''));	
-				}
-                                } else {
-                                    if ($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->submitforsettlement_real($wash->transaction_id);
-                                    else $payresult = Yii::app()->braintree->submitforsettlement($wash->transaction_id);
-					
-				if($wash->second_transaction_id){
-					if ($customer_check->client_position == 'real') $payresult2 = Yii::app()->braintree->submitforsettlement_real($wash->second_transaction_id);
-					else $payresult2 = Yii::app()->braintree->submitforsettlement($wash->second_transaction_id);
-				}
+							}
 
-                                    if ($payresult['success'] == 1) {
-                                        Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id' => ''));
-                                    } else {
-                                        Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id' => $payresult['transaction_id']));
-                                    }
                                 }
-                            }
-                        }
-                    }
-                }
+						
+					}
+					else{
+						
+						if($transaction_check['merchant_id'] != $agent_check->bt_submerchant_id){
+							if($customer_check->client_position == 'real') $voidresult = Yii::app()->braintree->void_real($wash->transaction_id);
+							else $voidresult = Yii::app()->braintree->void($wash->transaction_id);
 
-                if ($wash->washer_payment_status == 2) {
+							if($voidresult['success'] == 1) {
+								if($customer_check->client_position == 'real'){
 
-                    $handle = curl_init(ROOT_URL . "/api/index.php?r=washing/washingkart");
-                    $data = array('wash_request_id' => $wash->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
-                    curl_setopt($handle, CURLOPT_POST, true);
-                    curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-                    curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
-                    $kartresult = curl_exec($handle);
-                    curl_close($handle);
-                    $kartdetails = json_decode($kartresult);
+								$request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+								$payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
+								}
+								else{
+								
+								$request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdata->company_total, 'amount' => $kartdata->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+								$payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
+								}
 
-                    if ($customer_check->client_position == 'real')
-                        $voidresult = Yii::app()->braintree->void_real($wash->transaction_id);
-                    else
-                        $voidresult = Yii::app()->braintree->void($wash->transaction_id);
+								if($payresult['success'] == 1) {
+								Washingrequests::model()->updateByPk($wash->id, array('transaction_id' => $payresult['transaction_id'], 'failed_transaction_id'=>'', 'washer_payment_status' => 1));
 
-                    if ($voidresult['success'] == 1) {
-                        if ($customer_check->client_position == 'real') {
+								}
+								else{
+								Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id'=>$payresult['transaction_id']));
 
-                            if ($wash->schedule_total > 0)
-                                $request_data = ['merchantAccountId' => 'al_davi_instant_4pjkk25r', 'orderId' => $wash->id, 'serviceFeeAmount' => $wash->schedule_company_total, 'amount' => $wash->schedule_total, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
-                            else
-                                $request_data = ['merchantAccountId' => 'al_davi_instant_4pjkk25r', 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => $kartdetails->net_price, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
-                            $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
-                        }
-                        else {
-                            if ($wash->schedule_total > 0)
-                                $request_data = ['merchantAccountId' => 'mobilewash_payment_inst_m59bj2b6', 'orderId' => $wash->id, 'serviceFeeAmount' => $wash->schedule_company_total, 'amount' => $wash->schedule_total, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
-                            else
-                                $request_data = ['merchantAccountId' => 'mobilewash_payment_inst_m59bj2b6', 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => $kartdetails->net_price, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
-                            $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
-                        }
+								}
 
-                        if ($payresult['success'] == 1) {
-                            Washingrequests::model()->updateByPk($wash->id, array('transaction_id' => $payresult['transaction_id'], 'failed_transaction_id' => '', 'washer_payment_status' => 3));
-                        } else {
-                            Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id' => $payresult['transaction_id']));
-                        }
-                    }
-                }
-            }
-        }
-    }
+							}
+						}
+						else{
+							if($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->submitforsettlement_real($wash->transaction_id);
+							else $payresult = Yii::app()->braintree->submitforsettlement($wash->transaction_id);
 
+							if($payresult['success'] == 1) {
+							Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id'=>''));
+
+							}
+							else{
+							Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id'=>$payresult['transaction_id']));
+							}
+						}
+					}
+				}	
+				}
+			   
+
+                           }
+
+                           if($wash->washer_payment_status == 2){
+
+                                                               $handle = curl_init(ROOT_URL."/api/index.php?r=washing/washingkart");
+$data = array('wash_request_id' => $wash->id, "api_password" => AES256CBC_API_PASS, "key" => API_KEY);
+curl_setopt($handle, CURLOPT_POST, true);
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
+$kartresult = curl_exec($handle);
+curl_close($handle);
+$kartdetails = json_decode($kartresult);
+
+                               if($customer_check->client_position == 'real') $voidresult = Yii::app()->braintree->void_real($wash->transaction_id);
+                               else $voidresult = Yii::app()->braintree->void($wash->transaction_id);
+
+                                if($voidresult['success'] == 1) {
+if($customer_check->client_position == 'real'){
+
+   if($wash->schedule_total > 0) $request_data = ['merchantAccountId' => 'al_davi_instant_4pjkk25r', 'orderId' => $wash->id, 'serviceFeeAmount' => $wash->schedule_company_total, 'amount' => $wash->schedule_total,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+else $request_data = ['merchantAccountId' => 'al_davi_instant_4pjkk25r', 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => $kartdetails->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+                                $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
+                                }
+                                else{
+                                    if($wash->schedule_total > 0) $request_data = ['merchantAccountId' => 'mobilewash_payment_inst_m59bj2b6', 'orderId' => $wash->id, 'serviceFeeAmount' => $wash->schedule_company_total, 'amount' => $wash->schedule_total,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+else $request_data = ['merchantAccountId' => 'mobilewash_payment_inst_m59bj2b6', 'orderId' => $wash->id, 'serviceFeeAmount' => $kartdetails->company_total, 'amount' => $kartdetails->net_price,'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => True]];
+                                $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
+                                }
+
+if($payresult['success'] == 1) {
+  Washingrequests::model()->updateByPk($wash->id, array('transaction_id' => $payresult['transaction_id'], 'failed_transaction_id'=>'', 'washer_payment_status' => 3));
+
+}
+else{
+   Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id'=>$payresult['transaction_id']));
+
+}
+
+                                }
+                           }
+
+
+
+                   }
+           }
+
+ }
+
+    
     public function actionsendclientappreceipt() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {

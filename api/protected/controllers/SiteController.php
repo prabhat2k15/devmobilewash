@@ -7178,38 +7178,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             }
         }
 	
-	$all_washes = Yii::app()->db->createCommand()
-                ->select('*')
-                ->from('washing_requests')
-                ->where("upfront_transaction_id != ''", array())
-                ->queryAll();
-		
-	if (count($all_washes)) {
-
-            foreach ($all_washes as $ind => $wash) {
-		 $current_time = strtotime(date('Y-m-d H:i:s'));
-                    $create_time = strtotime( $wash['order_for']);
-                    $min_diff = 0;
-                    if ($current_time > $create_time) {
-                        $min_diff = round(($current_time - $create_time) / 60, 2);
-                    }
-		    
-		    if (($min_diff >= 30)){
-		$customer_check = Customers::model()->findByPk($wash['customer_id']);
-			if ($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->void_real($wash['upfront_transaction_id']);
-			else $payresult = Yii::app()->braintree->void($wash['upfront_transaction_id']);
-
-			if ($payresult['success'] == 1) {
-if($wash['upfront_transaction_id'] == $wash['transaction_id']) Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => '', 'transaction_id' => ''));
-else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => ''));
-			} else {
-                        Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => ''));
-			}
-               
-		}
-	    }
-	}
-		
 		
     }
 
