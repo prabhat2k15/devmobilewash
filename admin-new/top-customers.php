@@ -99,7 +99,7 @@ $customers_data = json_decode($result);
                                         <th> Total Scheduled </th>
                                         <th> Total On Demand </th>
                                         <th> Total Washes </th>
-                                        <th> Last Wash Id</th>
+                                        <th> Last Wash</th>
                                         <th> Total Spent </th>
                                     </tr>
                                 </thead>
@@ -115,7 +115,7 @@ $customers_data = json_decode($result);
                                                 }
                                                 ?>" style="width: 100px; height: 100px;"></td>
                                             <td><a href="<?php echo ROOT_URL; ?>/admin-new/customer_history.php?event=topCustomerOrder&customer_id=<?php echo $cust->customer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>"><?php echo $cust->name; ?></a></td>
-                                           <!--td><?php //echo $cust->contact_number;                      ?></td-->
+                                           <!--td><?php //echo $cust->contact_number;                       ?></td-->
                                             <td><?php echo $cust->email; ?></td>
                                             <td style="display: none;"><?php echo $cust->address; ?></td>
 
@@ -124,7 +124,7 @@ $customers_data = json_decode($result);
                                             <td><?php echo $cust->total_scheduled; ?></td>
                                             <td><?php echo $cust->total_demand; ?></td>
                                             <td><?php echo $cust->total_washes; ?></td>
-                                            <td><?php echo $cust->last_wash; ?></td>
+                                            <td><?= date("Y-m-d h:i A", strtotime($cust->last_wash)) ?></td>
                                             <td><?php echo ($cust->total_sum > 0) ? '$' . number_format($cust->total_sum, 2) : '$00.00'; ?></td>
                                         </tr>
                                     <?php endforeach; ?>

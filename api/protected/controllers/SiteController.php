@@ -8763,7 +8763,7 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
             foreach ($all_customers as $key => $val) {
                 //$washer_ids[] = $wash['agent_id'];	
                 //$agent_det = Agents::model()->findByPk($wash['agent_id']);
-                $last_wash = Yii::app()->db->createCommand("SELECT wr.id FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) ORDER BY wr.id DESC LIMIT 1")->queryAll();
+                $last_wash = Yii::app()->db->createCommand("SELECT wr.order_for FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) ORDER BY wr.id DESC LIMIT 1")->queryAll();
                 $total_earn = Yii::app()->db->createCommand("SELECT SUM(net_price) as total_sum,wr.id FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) ORDER BY wr.id DESC")->queryAll();
                 $topcustomers_det_arr[$i]['id'] = $key;
                
@@ -8777,7 +8777,7 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
                 $topcustomers_det_arr[$i]['total_demand'] = $val['total_demand'];
                 $topcustomers_det_arr[$i]['total_scheduled'] = $val['total_scheduled'];
                 $topcustomers_det_arr[$i]['total_completed'] = $val['total_completed'];
-                $topcustomers_det_arr[$i]['last_wash'] = $last_wash[0]['id'];
+                $topcustomers_det_arr[$i]['last_wash'] = $last_wash[0]['order_for'];
                 //$topwashers_det_arr[$i]['total_cancel'] = (count($get_cancel_count) > 0) ? $get_cancel_count[0]['total_cancel'] : 0;
                 $topcustomers_det_arr[$i]['total_sum'] = (count($total_earn) > 0) ? $total_earn[0]['total_sum'] : 0;
                 $i++;

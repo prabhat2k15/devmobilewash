@@ -1447,7 +1447,6 @@ class AgentsController extends Controller {
         $wash_experience = Yii::app()->request->getParam('wash_experience');
         $bank_account_number = Yii::app()->request->getParam('bank_account_number');
         $routing_number = Yii::app()->request->getParam('routing_number');
-        $unlimited_schedule_range = Yii::app()->request->getParam('unlimited_schedule_range');
         $account_status = '';
         $account_status = Yii::app()->request->getParam('account_status');
         $status = Yii::app()->request->getParam('status');
@@ -1847,10 +1846,11 @@ class AgentsController extends Controller {
                     'routing_number' => $routing_number,
                     'last_edited_admin' => $admin_username,
                     'decals_installed' => $decals_installed,
-                    'unlimited_schedule_range' => $unlimited_schedule_range,
                     'updated_date' => date('Y-m-d h:i:s')
                 );
-
+                if (Yii::app()->request->getParam('update_by') == "WEB") {
+                    $data['unlimited_schedule_range'] = Yii::app()->request->getParam('unlimited_schedule_range');
+                }
                 if ($admin_edit == 'true')
                     $data['phone_number'] = $phone_number;
 
@@ -1987,19 +1987,16 @@ class AgentsController extends Controller {
         $result = 'false';
         $response = 'Pass the required parameters';
         $json = array();
-
         if ((isset($agent_id) && !empty($agent_id))) {
 
             if (AES256CBC_STATUS == 1) {
                 $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
             }
-
             $agent_id_check = Agents::model()->findByAttributes(array('id' => $agent_id));
             if (!count($agent_id_check)) {
                 $result = 'false';
                 $response = 'Invalid agent id';
             } else {
-
                 $all_wash_requests_count = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM washing_requests WHERE (agent_id=:agent_id OR canceled_washer_id = :agent_id) AND ((status='4' OR status='5' OR status='6' OR status='7')) order by order_for desc")
                         ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
                         ->queryAll();
@@ -2031,6 +2028,7 @@ class AgentsController extends Controller {
                   echo count($all_wash_requests);
                   print_r($all_wash_requests);
                   exit; */
+                //print_r($all_wash_requests); die;
                 if (count($all_wash_requests)) {
                     foreach ($all_wash_requests as $index => $wrequest) {
 
@@ -3748,22 +3746,19 @@ class AgentsController extends Controller {
           $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'real'")->queryAll();
           if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
           } */
-
-        if (Yii::app()->request->getParam('type') == 'demo') {
-            $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE (washer_position = 'demo' OR washer_position = '') AND (unlimited_schedule_range = '1') ")->queryAll();
-            if ($limit > 0)
-                $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE (washer_position = 'demo' OR washer_position = '') AND (unlimited_schedule_range = '1') ORDER BY id DESC")->queryAll();
-            //$washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'demo' OR washer_position = '' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
-        }
-        else {
-            $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE (washer_position = 'real') AND (unlimited_schedule_range = '1') ")->queryAll();
-            if ($limit > 0)
-                $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE (washer_position = 'real') AND (unlimited_schedule_range = '1') ORDER BY id DESC")->queryAll();
-//$washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
-        }
-
-
-
+        $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE (unlimited_schedule_range = '1') ORDER BY id DESC")->queryAll();
+//        if (Yii::app()->request->getParam('type') == 'demo') {
+//            $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE (washer_position = 'demo' OR washer_position = '') AND (unlimited_schedule_range = '1') ")->queryAll();
+//            if ($limit > 0)
+//                $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE (washer_position = 'demo' OR washer_position = '') AND (unlimited_schedule_range = '1') ORDER BY id DESC")->queryAll();
+//            //$washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'demo' OR washer_position = '' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+//        }
+//        else {
+//            $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE (washer_position = 'real') AND (unlimited_schedule_range = '1') ")->queryAll();
+//            if ($limit > 0)
+//                $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE (washer_position = 'real') AND (unlimited_schedule_range = '1') ORDER BY id DESC")->queryAll();
+////$washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
+//        }
         //$total_entries = $total_rows[0]['countid'];
         //if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
 
@@ -6100,7 +6095,7 @@ class AgentsController extends Controller {
                     $json = array(
                         'result' => $result,
                         'response' => $response,
-			'id' => $agentid,
+                        'id' => $agentid,
                         'first_name' => $first_name,
                         'last_name' => $last_name,
                         'email' => $emailid,
