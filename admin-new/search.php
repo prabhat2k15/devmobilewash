@@ -392,8 +392,10 @@ else echo $customer->total_wash;
 <td><?php 
 if(($order->payment_status == 'Declined') || ($order->payment_status == 'Check Fraud')) echo"<span class='label label-sm label-fraud'>".$order->payment_status."</span><br><br>";
 else echo $order->payment_status; ?></td>
- <td><?php echo $order->transaction_id; ?></td>
- <td><?php echo $order->failed_transaction_id; ?></td>
+ <td><?php if (APP_ENV == 'real') $bt_link = "https://www.braintreegateway.com/merchants/" . MERCHANT_ID_REAL . "/transactions/" . $order->transaction_id;
+ else $bt_link = "https://sandbox.braintreegateway.com/merchants/" . MERCHANT_ID . "/transactions/" . $order->transaction_id; ?><a href="<?php echo $bt_link; ?>" target="_blank"><?php echo $order->transaction_id; ?></a></td>
+ <td><?php if (APP_ENV == 'real') $bt_link = "https://www.braintreegateway.com/merchants/" . MERCHANT_ID_REAL . "/transactions/" . $order->failed_transaction_id;
+ else $bt_link = "https://sandbox.braintreegateway.com/merchants/" . MERCHANT_ID . "/transactions/" . $order->failed_transaction_id; ?><a href="<?php echo $bt_link; ?>" target="_blank"><?php echo $order->failed_transaction_id; ?></a></td>
                     <td><a target="_blank" href="/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
                     <td><?php echo $order->customer_phoneno; ?></td>
 <!--td><?php /*

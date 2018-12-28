@@ -14435,14 +14435,14 @@ class WashingController extends Controller {
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        if (!$token_check) {
+        /*if (!$token_check) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }
+        }*/
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $wash_request_id_org = Yii::app()->request->getParam('wash_request_id');
