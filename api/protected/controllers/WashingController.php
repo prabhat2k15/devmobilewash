@@ -3657,10 +3657,10 @@ class WashingController extends Controller {
                     $agentdevices = Yii::app()->db->createCommand('SELECT * FROM agent_devices WHERE agent_id = :agent_id ORDER BY last_used DESC LIMIT 1')->bindValue(':agent_id', $wrequest_id_check->agent_id, PDO::PARAM_STR)->queryAll();
 
                     if ((count($agentdevices)) && (!$agent_details->block_washer)) {
-                        //$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '20' ")->queryAll();
-                        $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '46' ")->queryAll();
-                        //$message = $pushmsg[0]['message'];
-                        $message = str_replace("[ORDER_ID]", "#" . $wash_request_id, $pushmsg[0]['message']);
+                        $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '20' ")->queryAll();
+                        //$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '46' ")->queryAll();
+                        $message = $pushmsg[0]['message'];
+                        //$message = str_replace("[ORDER_ID]", "#" . $wash_request_id, $pushmsg[0]['message']);
                         foreach ($agentdevices as $agdevice) {
                             //$message =  "You have a new scheduled wash request.";
                             //echo $agentdetails['mobile_type'];
