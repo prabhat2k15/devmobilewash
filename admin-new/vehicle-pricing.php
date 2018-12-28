@@ -15,7 +15,7 @@ $allcarsdata = json_decode($result);
 if(isset($_POST['pricing_submit'])){
 for($i = 1, $j=0; $i <= count($_POST['price']); $i++, $j++){
  
-$vehdata = array('id'=> $i, 'duration' => $_POST['duration'][$j], 'wash_time' => $_POST['wash_time'][$j], 'price' => $_POST['price'][$j], 'price2' => $_POST['price2'][$j], 'price3' => $_POST['price3'][$j], 'price4' => $_POST['price4'][$j], 'description' => $_POST['description'][$j], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+$vehdata = array('id'=> $i, 'duration' => $_POST['duration'][$j], 'wash_time' => $_POST['wash_time'][$j], 'price' => $_POST['price'][$j], 'price2' => $_POST['price2'][$j], 'price3' => $_POST['price3'][$j], 'price4' => $_POST['price4'][$j], 'description' => $_POST['description'][$j], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4], "admin_username" => $jsondata_permission->user_name);
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=washing/updatevehicleplan");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, $vehdata);
@@ -227,9 +227,12 @@ $pricingdata = json_decode($result);
                                     <div class="col-md-12">
                                         <div class="portlet light ">
                                             <div class="portlet-title tabbable-line">
-                                                <div class="caption caption-md">
+                                                <div class="caption caption-md col-md-7">
                                                     <i class="icon-globe theme-font hide"></i>
                                                     <span class="caption-subject font-blue-madison bold uppercase">Vehicle Pricing</span>
+                                                </div>
+                                                <div class="caption caption-md col-md-5">
+                                                <span class="last_edit"> Last edited by : (<?php echo $pricingdata->plans[0]->created_by;?> , <?php echo $pricingdata->plans[0]->Updated_date;?>) </span>
                                                 </div>
                                             </div>
                                             <div class="portlet-body">

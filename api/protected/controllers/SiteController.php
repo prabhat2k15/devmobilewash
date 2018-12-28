@@ -2276,6 +2276,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $fri_spec = Yii::app()->request->getParam('fri_spec');
         $sat_spec = Yii::app()->request->getParam('sat_spec');
         $sun_spec = Yii::app()->request->getParam('sun_spec');
+        
+        $admin_username = Yii::app()->request->getParam('admin_username');
+        $updated_date = date('Y-m-d H:i:s');
 
 
         $schedule_times = Yii::app()->db->createCommand()->select('*')->from('schedule_times')->where('id=1')->queryAll();
@@ -2348,7 +2351,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             'thurs' => $thurs,
             'fri' => $fri,
             'sat' => $sat,
-            'sun' => $sun
+            'sun' => $sun,
+            'edit_by' => $admin_username,
+            'updted_date' => $updated_date
         );
 
         $data2 = array('mon' => $mon_spec,
@@ -2357,7 +2362,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             'thurs' => $thurs_spec,
             'fri' => $fri_spec,
             'sat' => $sat_spec,
-            'sun' => $sun_spec
+            'sun' => $sun_spec,
+            'edit_by' => $admin_username,
+            'updted_date' => $updated_date
         );
 
 
@@ -2447,7 +2454,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $json = array(
             'result' => $result,
             'response' => $response,
-            'schedule_times' => $times
+            'schedule_times' => $times,
+            'edit_by' => $schedule_times[0]['edit_by'],
+            'updated_by' => $schedule_times[0]['updted_date']
         );
         echo json_encode($json);
     }
@@ -2487,6 +2496,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $sat = Yii::app()->request->getParam('sat');
         $sun = Yii::app()->request->getParam('sun');
         $message = Yii::app()->request->getParam('message');
+        
+        $admin_username = Yii::app()->request->getParam('admin_username');
+        $updated_date = date('Y-m-d H:i:s');
 
         $schedule_times = Yii::app()->db->createCommand()->select('*')->from('ondemand_surge_times')->where('id=1')->queryAll();
 
@@ -2532,7 +2544,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             'fri' => $fri,
             'sat' => $sat,
             'sun' => $sun,
-            'message' => $message
+            'message' => $message,
+            'edit_by' => $admin_username,
+            'updted_date' => $updated_date
         );
 
 
@@ -2609,7 +2623,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $json = array(
             'result' => $result,
             'response' => $response,
-            'schedule_times' => $times
+            'schedule_times' => $times,
+            'edit_by' => $schedule_times[0]['edit_by'],
+            'updated_by' => $schedule_times[0]['updted_date']
         );
         echo json_encode($json);
     }

@@ -258,7 +258,7 @@ $('#late_drivers').click(function(){
                             <div>Late Drivers</div>
                         </div>
 			            <div class="clearfix"></div>
-			            <div class="col-md-2 col-sm-2" id="care-rating" style="padding: 13px 0px 0px 10px; cursor: pointer;">
+			            <div class="col-md-1 col-sm-1" id="care-rating" style="padding: 13px 0px 0px 10px; cursor: pointer;">
                             <div style="font-size: 20px;" class="care_rating"><?php echo $appsettings->mw_care_rating; ?><?php if($appsettings->mw_care_rating > 0) echo "%"; ?></div>
                             <div>MW Care Rating</div>
                         </div>

@@ -504,11 +504,13 @@ class WashingController extends Controller {
         $price3 = Yii::app()->request->getParam('price3');
         $price4 = Yii::app()->request->getParam('price4');
         $description = Yii::app()->request->getParam('description');
+        $admin_username = Yii::app()->request->getParam('admin_username');
+        $updated_date = date('Y-m-d H:i:s');
 
         $result = 'false';
         $response = 'Pass the required parameters';
 
-        $update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration=:duration, wash_time=:wash_time, price=:price, tier2_price=:price2, tier3_price=:price3, tier4_price=:price4, description=:description WHERE id = :id")
+        $update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration=:duration, wash_time=:wash_time, price=:price, tier2_price=:price2, tier3_price=:price3, tier4_price=:price4, description=:description, Updated_date=:Updated_date, created_by=:created_by WHERE id = :id")
                 ->bindValue(':duration', $duration, PDO::PARAM_STR)
                 ->bindValue(':wash_time', $wash_time, PDO::PARAM_STR)
                 ->bindValue(':price', $price, PDO::PARAM_STR)
@@ -517,6 +519,8 @@ class WashingController extends Controller {
                 ->bindValue(':price4', $price4, PDO::PARAM_STR)
                 ->bindValue(':description', $description, PDO::PARAM_STR)
                 ->bindValue(':id', $id, PDO::PARAM_STR)
+                ->bindValue(':Updated_date', $updated_date, PDO::PARAM_STR)
+                ->bindValue(':created_by', $admin_username, PDO::PARAM_STR)
                 ->execute();
 
         $response = 'update success';

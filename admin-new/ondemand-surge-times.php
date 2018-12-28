@@ -12,7 +12,7 @@ $wash_now_fees_json['purple'] = $_POST['custom_surge_purple'];
 
     $handle = curl_init($url);
 curl_setopt($handle, CURLOPT_POST, true);
-curl_setopt($handle, CURLOPT_POSTFIELDS, array('mon' => $_POST['mon_time'], 'tue' => $_POST['tue_time'], 'wed' => $_POST['wed_time'], 'thurs' => $_POST['thurs_time'], 'fri' => $_POST['fri_time'], 'sat' => $_POST['sat_time'], 'sun' => $_POST['sun_time'], 'message' => $_POST['business_unavail_notice'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
+curl_setopt($handle, CURLOPT_POSTFIELDS, array('mon' => $_POST['mon_time'], 'tue' => $_POST['tue_time'], 'wed' => $_POST['wed_time'], 'thurs' => $_POST['thurs_time'], 'fri' => $_POST['fri_time'], 'sat' => $_POST['sat_time'], 'sun' => $_POST['sun_time'], 'message' => $_POST['business_unavail_notice'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4], "admin_username" => $jsondata_permission->user_name));
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
 $result = curl_exec($handle);
 curl_close($handle);
@@ -185,12 +185,15 @@ $date = date('m/d/Y h:i:s a', time());
 <?php } ?>
 
                                 <div class="portlet-title">
-                                    <div class="caption">
+                                    <div class="caption col-md-7">
                                         <i class="icon-clock font-dark"></i>
 
 										<span class="caption-subject font-dark bold uppercase">On-Demand Surge Times</span>
 
                                     </div>
+                                    <div class="caption caption-md col-md-5">
+                                                <span class="last_edit"> Last edited by : (<?php echo $jsondata->edit_by;?> , <?php echo $jsondata->updated_by;?>) </span>
+                                                </div>
                                 </div>
                                 <div class="portlet-body">
 
