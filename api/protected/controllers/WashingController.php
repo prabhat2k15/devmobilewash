@@ -510,7 +510,7 @@ class WashingController extends Controller {
         $result = 'false';
         $response = 'Pass the required parameters';
 
-        $update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration=:duration, wash_time=:wash_time, price=:price, tier2_price=:price2, tier3_price=:price3, tier4_price=:price4, description=:description, Updated_date=:Updated_date, created_by=:created_by WHERE id = :id")
+        $update_status = Yii::app()->db->createCommand("UPDATE washing_plans SET duration=:duration, wash_time=:wash_time, price=:price, tier2_price=:price2, tier3_price=:price3, tier4_price=:price4, description=:description, updated_date=:Updated_date, created_by=:created_by WHERE id = :id")
                 ->bindValue(':duration', $duration, PDO::PARAM_STR)
                 ->bindValue(':wash_time', $wash_time, PDO::PARAM_STR)
                 ->bindValue(':price', $price, PDO::PARAM_STR)

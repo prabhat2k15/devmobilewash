@@ -232,7 +232,7 @@ $pricingdata = json_decode($result);
                                                     <span class="caption-subject font-blue-madison bold uppercase">Vehicle Pricing</span>
                                                 </div>
                                                 <div class="caption caption-md col-md-5">
-                                                <span class="last_edit"> Last edited by : (<?php echo $pricingdata->plans[0]->created_by;?> , <?php echo $pricingdata->plans[0]->Updated_date;?>) </span>
+                                                <span class="last_edit"> Last edited by : (<?php echo $pricingdata->plans[0]->created_by;?> , <?php echo $pricingdata->plans[0]->updated_date;?>) </span>
                                                 </div>
                                             </div>
                                             <div class="portlet-body">
