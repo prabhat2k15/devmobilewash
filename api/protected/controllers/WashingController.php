@@ -13728,9 +13728,12 @@ class WashingController extends Controller {
 <p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000" . $schedwash->id . "</p>
 <p style='text-align:center;font-size: 24px;margin-top: 25px;'>Hello " . $cname . "</p>
 <h2 style='text-align:center;font-size: 24px;line-height: normal;'>How was your experience with our<br>MobileWasher?</h2>
-<p style='text-align:center;line-height: 24px;margin-top: 25px;'>We would like to make sure that you always have a great experience. Please help us make it the best service possible by letting us know how we did today.</p>
-<p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='" . WEBSITE_URL . "/feedback/?order_id=" . $this->aes256cbc_crypt($schedwash->id, 'e', AES256CBC_API_PASS) . "'>LEAVE FEEDBACK</a></p>
-<div style='margin-top: 20px; text-align: center;'>
+<p style='text-align:center;line-height: 24px;margin-top: 25px;'>We would like to make sure that you always have a great experience. Please help us make it the best service possible by letting us know how we did today.</p>";
+
+if(APP_ENV == 'real') $message .= "<p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='" . WEBSITE_URL . "/feedback/?order_id=" . $this->aes256cbc_crypt($schedwash->id, 'e', AES256CBC_API_PASS) . "'>LEAVE FEEDBACK</a></p>";
+else $message .= "<p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='" . WEBSITE_URL . "/feedback/?order_id=" . $this->aes256cbc_crypt($schedwash->id, 'e', AES256CBC_API_PASS) . "&pt=dev'>LEAVE FEEDBACK</a></p>";
+
+$message .= "<div style='margin-top: 20px; text-align: center;'>
 <a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://twitter.com/getmobilewash'><div style='background: transparent url(" . ROOT_URL . "/images/hi-res-social-icons.png) no-repeat -1px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a>
 <a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://www.facebook.com/getmobilewash'><div style='background: transparent url(" . ROOT_URL . "/images/hi-res-social-icons.png) no-repeat -43px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a>
 <a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://www.instagram.com/getmobilewash/'><div style='background: transparent url(" . ROOT_URL . "/images/hi-res-social-icons.png) no-repeat -86px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a>
@@ -14437,16 +14440,16 @@ class WashingController extends Controller {
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
 
-        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+       $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        /*if (!$token_check) {
+        if (!$token_check) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }*/
+        }
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $wash_request_id_org = Yii::app()->request->getParam('wash_request_id');
@@ -14505,6 +14508,8 @@ class WashingController extends Controller {
 
 
             Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 1));
+	    
+	   
         }
     }
     

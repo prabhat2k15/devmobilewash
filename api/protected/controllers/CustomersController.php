@@ -12291,7 +12291,7 @@ else $logcomment = $comments;
 
 
                 $message = "<div class='block-content' style='background: #fff; text-align: left;'>
-<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer Feedback</h2>
+<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer 3 Hour Feedback</h2>
 <p style='text-align:center;font-size:18px;margin-bottom:0;margin-top: 10px;'><b>Order Number:</b> #0000" . $wash_request_id . "</p>
 <p><b>Customer Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
 <p><b>Customer Email:</b> " . $customers_id_check->email . "</p>
@@ -12301,7 +12301,8 @@ else $logcomment = $comments;
                 $to = Vargas::Obj()->getAdminToEmail();
                 $from = Vargas::Obj()->getAdminFromEmail();
 
-                Vargas::Obj()->SendMail('feedback@mobilewash.com', $from, $message, "Customer Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
+                if(APP_ENV == 'real') Vargas::Obj()->SendMail('feedback@mobilewash.com', $from, $message, "Customer 3 Hour Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
+		else Vargas::Obj()->SendMail('mobilewash8@gmail.com', $from, $message, "Customer 3 Hour Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
 		
 		if(((APP_ENV == 'real') || (APP_ENV == '')) && (!$customers_id_check->block_client) && ($customers_id_check->sms_control)){
  $this->layout = "xmlLayout";

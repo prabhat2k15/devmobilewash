@@ -61,25 +61,34 @@ request.post({
 //getpendingwashesdetailstimer = setTimeout(getpendingwashesdetails, 5000);
 }
 
-function washing_currentwashondemandalert(wash_request_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
+function washing_currentwashondemandalert(wash_request_id='', key = '', socket_id = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'https://www.devmobilewash.com/api/index.php?r=washing/currentwashondemandalert',
   body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
+  /*console.log('ondemand alert'+" "+wash_request_id+" apikey "+key);
+   console.log("body "+body);
+  console.log("res "+response);
+  console.log("err "+error);*/
  //console.log('pendingwash func');
 //io.emit('get pendingwashesdetails', JSON.parse(body));
 });
 }
 
-function washing_currentwashschedulealert(wash_request_id='', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
+function washing_currentwashschedulealert(wash_request_id='', key = '', socket_id = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
   url:     'https://www.devmobilewash.com/api/index.php?r=washing/currentwashschedulealert',
   body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
+/*console.log('schedule alert'+" "+wash_request_id+" apikey "+key);
+  console.log("body "+body);
+  console.log("res "+response);
+  console.log("err "+error);*/
  //console.log(JSON.parse(body));
+
  //console.log('pendingwash func');
 //io.emit('get pendingwashesdetails', JSON.parse(body));
 });
@@ -414,12 +423,12 @@ else{
   
     socket.on('currentwashondemandalert', function(data){
       //console.log(data);
-    washing_currentwashondemandalert(data.wash_request_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
+    washing_currentwashondemandalert(data.wash_request_id, data.key, data.socketId, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   
      socket.on('currentwashschedulealert', function(data){
       //console.log(data);
-    washing_currentwashschedulealert(data.wash_request_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
+    washing_currentwashschedulealert(data.wash_request_id, data.key, data.socketId, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
      
    socket.on('nonreturn20daynotify', function(data){
