@@ -1426,6 +1426,7 @@ class AgentsController extends Controller {
         $agent_id = Yii::app()->request->getParam('agent_id');
         $first_name = Yii::app()->request->getParam('first_name');
         $last_name = Yii::app()->request->getParam('last_name');
+        $agentname = $first_name . " " . $last_name;
         $email = Yii::app()->request->getParam('email');
         $phone_number = Yii::app()->request->getParam('phone_number');
         $phone_number = preg_replace('/\D/', '', $phone_number);
@@ -1805,6 +1806,7 @@ class AgentsController extends Controller {
                 $data = array(
                     'first_name' => $first_name,
                     'last_name' => $last_name,
+                    'agentname' => $agentname,
                     'email' => $email,
                     'image' => $image,
                     //'phone_number'=> $phone_number,
@@ -3901,26 +3903,27 @@ class AgentsController extends Controller {
         }
 
         if ($search_area == "Washer Name") {
-            $query_arr = explode(" ", $query);
-            $query = join("', '", $query_arr);
-
-            if (count($query_arr) > 1)
-                $agent_query = "(first_name IN ('$query') OR last_name IN ('$query')) ";
-            else
-                $agent_query = "(first_name LIKE :query OR last_name LIKE :query) ";
+//            $query_arr = explode(" ", $query);
+//            $query = join("', '", $query_arr);
+            $agent_query = "agentname LIKE '%$query%' ";
+//            if (count($query_arr) > 1)
+//                $agent_query = "(first_name IN ('$query') OR last_name IN ('$query')) ";
+//            else
+//                $agent_query = "(first_name LIKE :query OR last_name LIKE :query) ";
         }
+        // && (count($query_arr) > 1
         if ($search_area == "Washer Phone")
             $agent_query = "(phone_number LIKE :query) ";
         if ($search_area == "Washer Badge")
             $agent_query = "(real_washer_id LIKE :query) ";
         if (($query) || is_numeric($query)) {
 
-            if (($search_area == "Washer Name") && (count($query_arr) > 1))
+            if (($search_area == "Washer Name"))
                 $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE " . $agent_query . "ORDER BY id DESC" . $limit_str)->queryAll();
             else
                 $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE " . $agent_query . "ORDER BY id DESC" . $limit_str)->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
 
-            if (($search_area == "Washer Name") && (count($query_arr) > 1))
+            if (($search_area == "Washer Name"))
                 $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE " . $agent_query . "ORDER BY id DESC")->queryAll();
             else
                 $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE " . $agent_query . "ORDER BY id DESC")->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
@@ -5931,7 +5934,6 @@ class AgentsController extends Controller {
     }
 
     public function actionaddagent() {
-
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -5956,6 +5958,7 @@ class AgentsController extends Controller {
 
         $first_name = Yii::app()->request->getParam('first_name');
         $last_name = Yii::app()->request->getParam('last_name');
+        $agentname = $first_name . " " . $last_name;
         $emailid = Yii::app()->request->getParam('email');
 
         $contact_number = Yii::app()->request->getParam('phone_number');
@@ -6051,6 +6054,7 @@ class AgentsController extends Controller {
                 $agentdata = array(
                     'first_name' => $first_name,
                     'last_name' => $last_name,
+                    'agentname' => $agentname,
                     'email' => $emailid,
                     'password' => md5($password),
                     'phone_number' => $contact_number,

@@ -276,7 +276,7 @@ $pricingdata = json_decode($result);
 
                                                             
                                                         <div class="clear" style="height: 10px;">&nbsp;</div>
-                                                         <a href="#" class="update-ct-vehicle-price update-price-btn">Update Customer Vehicles Price</a>   
+                                                         <!-- <a href="#" class="update-ct-vehicle-price update-price-btn">Update Customer Vehicles Price</a>    -->
                                                          <div class="meter">
 	<span style="width: 0%;"></span>
 </div>

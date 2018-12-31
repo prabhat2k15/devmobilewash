@@ -92,7 +92,7 @@ $download_data = json_decode($result);
                     <div class="portlet-title tabbable-line">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase">Manage Download List  </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                            <span class="caption-subject bold uppercase">Downloads  </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                         </div>
                     </div>
                     <form action="" method="get">

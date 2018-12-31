@@ -2276,7 +2276,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $fri_spec = Yii::app()->request->getParam('fri_spec');
         $sat_spec = Yii::app()->request->getParam('sat_spec');
         $sun_spec = Yii::app()->request->getParam('sun_spec');
-        
+
         $admin_username = Yii::app()->request->getParam('admin_username');
         $updated_date = date('Y-m-d H:i:s');
 
@@ -2364,7 +2364,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             'sat' => $sat_spec,
             'sun' => $sun_spec,
             'edit_by' => $admin_username,
-            'updted_date' => $updated_date
+            'updted_date' => $updated_date            
         );
 
 
@@ -2496,7 +2496,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $sat = Yii::app()->request->getParam('sat');
         $sun = Yii::app()->request->getParam('sun');
         $message = Yii::app()->request->getParam('message');
-        
+
         $admin_username = Yii::app()->request->getParam('admin_username');
         $updated_date = date('Y-m-d H:i:s');
 
@@ -2546,7 +2546,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             'sun' => $sun,
             'message' => $message,
             'edit_by' => $admin_username,
-            'updted_date' => $updated_date
+            'updted_date' => $updated_date 
         );
 
 

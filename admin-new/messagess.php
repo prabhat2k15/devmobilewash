@@ -221,7 +221,7 @@ $result_code = $jsondata->result;
                             foreach ($response as $responsemesage) {
                                 $i++;
                                 ?>
-                                <form method="post" action="">
+                                <form method="post" action="" style="display: none;">
                                     <table style="display: none;">
                                         <tr><td>
                                                 <input type="hidden" name="id" value="<?php echo $responsemesage->id; ?>"></td></tr>

@@ -46,13 +46,13 @@ if (!empty($_POST['hidden'])) {
 <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <script type="text/javascript">
-            $(document).ready(function () {
-                $('#example1').dataTable({
-                    "pageLength": 20,
-                    "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
-                });
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "pageLength": 20,
+            "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
+        });
 
-            });
+    });
 </script>
 <?php include('right-sidebar.php') ?>
 <?php
@@ -111,7 +111,7 @@ $message = $jsondata->message;
                                     <div class="col-md-3">
                                         <select class="form-control input-medium" onchange="getval(this);" name="to" required>
                                             <option value="">Select</option>
-                                            
+
                                             <option value="all_washers">All Active Washers</option>
                                             <option value="custom">Custom</option>
                                         </select>
@@ -129,7 +129,7 @@ $message = $jsondata->message;
                                         <textarea class="form-control emoji" name="message" rows="3" required></textarea>
                                     </div>
                                 </div>
-                                <div class="form-group" id="media">
+                                <div class="form-group hide" id="media">
                                     <label class="control-label col-md-3">Media</label>
                                     <div class="col-md-3">
                                         <input type="text" name="media" class="form-control form-control-inline input-medium">
@@ -164,18 +164,18 @@ $message = $jsondata->message;
                                                 var val = sel.value;
                                                 if ((val == 'custom')) {
                                                     $('#phone').show();
-						    $('#phone input[name=phone]').attr('required', 'required');
+                                                    $('#phone input[name=phone]').attr('required', 'required');
                                                     $('#message').show();
                                                     $('#media').show();
                                                     $('#save').show();
                                                 }
-						
-						if ((val == 'all_washers')) {
+
+                                                if ((val == 'all_washers')) {
                                                     $('#phone').hide();
-						    $('#phone input[name=phone]').removeAttr('required');
+                                                    $('#phone input[name=phone]').removeAttr('required');
                                                     $('#message').show();
                                                     $('#media').show();
                                                     $('#save').show();
-                                                } 
+                                                }
                                             }
 </script>
