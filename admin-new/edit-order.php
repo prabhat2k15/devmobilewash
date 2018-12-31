@@ -2016,7 +2016,7 @@ if ($getorder->transaction_id) {
                                                                         <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> buzzed customer at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'customeracceptupgrade'): ?>
-                                                                        <p style="margin-bottom: 10px;">Customer accepted package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                        <p style="margin-bottom: 10px;">Customer accepted package change <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'customerrejectupgrade'): ?>
                                                                         <p style="margin-bottom: 10px;">Customer declined package/addons <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>

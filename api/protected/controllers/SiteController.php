@@ -9,6 +9,7 @@ require ROOT_WEBFOLDER . '/public_html/api/protected/extensions/amazon-sdk/aws-a
 use Twilio\Rest\Client;
 use Aws\Sns\SnsClient;
 use Aws\Credentials\Credentials;
+use Aws\Exception\AwsException;
 
 class SiteController extends Controller {
 
@@ -6487,7 +6488,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $nonreturn60_topic_arn = '';
         $nonreturn90_topic_arn = '';
 
-        $clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1), array('limit' => 700));
+        $clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1, 'nonreturn_email_sms_notify_sent' => 0), array('limit' => 700));
 
         if (count($clientlist)) {
 
@@ -6659,7 +6660,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 
                             }
 
-                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30));
+                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30, "nonreturn_email_delivery_pending" => 1));
                         }
 
                         if (($min_diff >= 86400) && ($min_diff < 129600)) {
@@ -6708,7 +6709,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 
                             }
 
-                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60));
+                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60, "nonreturn_email_delivery_pending" => 1));
                         }
                         if ($min_diff >= 129600) {
 
@@ -6741,7 +6742,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 
                             }
 
-                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90));
+                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90, "nonreturn_email_delivery_pending" => 1));
                         }
                     } else {
                         Customers::model()->updateByPk($client->id, array("is_non_returning" => 0, "nonreturn_cat" => 0));
@@ -11358,6 +11359,7 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
           die();
           } */
 
+
         $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
 
         $aws_client = SnsClient::factory(array(
@@ -11377,20 +11379,32 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
                     'MessageStructure' => 'json',
                     'Subject' => 'MobileWash',
                 ]);
+		
+		 $aws_result2 = $aws_client->publish([
+                    'Message' => json_encode(array("default" => "test", "sms" => "test")),
+                    'TopicArn' => $noti['email_topic_arn'],
+                    'MessageStructure' => 'json',
+                    'Subject' => 'MobileWash',
+                ]);
 
                 if ($aws_result['MessageId']) {
                     Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, last_delivery_date = '" . date('Y-m-d H:i:s') . "' WHERE id = " . $noti['id'])->execute();
-                }
+                Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1));
+		}
             }
 
             if (((time() - strtotime($noti['last_delivery_date'])) >= 3600) && ($noti['last_delivery_date'] != '0000-00-00 00:00:00') && (!$noti['delivery_ready'])) {
-
-                $aws_deltopic_result = $aws_client->deleteTopic([
+                try {
+		$aws_deltopic_result = $aws_client->deleteTopic([
                     'TopicArn' => $noti['topic_arn'],
                 ]);
+		} catch (AwsException $e) {
+	
+
+}
 
                 Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, topic_arn = '' WHERE id = " . $noti['id'])->execute();
-                Customers::model()->updateAll(array('non_return_check' => 1));
+                if(($noti['notify_cat'] == 'non-return-31st-day') || ($noti['notify_cat'] == 'non-return-61st-day') || ($noti['notify_cat'] == 'non-return-90th-day')) {Customers::model()->updateAll(array('non_return_check' => 1));}
             }
         }
     }

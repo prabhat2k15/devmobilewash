@@ -3209,17 +3209,60 @@ class CustomersController extends Controller {
                     }
 
                     if ($upgrade_pack == 2) {
+			
+			$old_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
 
                         $cust_vehicle_data = CustomerDraftVehicle::model()->findByAttributes(array("id" => $draft_vehicle_id));
 
                         Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => $cust_vehicle_data->pet_hair, 'lifted_vehicle' => $cust_vehicle_data->lifted_vehicle, 'new_pack_name' => $cust_vehicle_data->wash_package, 'exthandwax_addon' => $cust_vehicle_data->exthandwax_addon, 'extplasticdressing_addon' => $cust_vehicle_data->extplasticdressing_addon, 'extclaybar_addon' => $cust_vehicle_data->extclaybar_addon, 'waterspotremove_addon' => $cust_vehicle_data->waterspotremove_addon, 'upholstery_addon' => $cust_vehicle_data->upholstery_addon, 'floormat_addon' => $cust_vehicle_data->floormat_addon));
 
                         //$cust_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
-                        $log_addon_detail = "Add-ons: ";
+                        $log_addon_detail = "";
                         $log_detail = "";
+                        $cars_arr_up = explode(",", $wash_request_exists->car_list);
+                        $packs_arr_up = explode(",", $wash_request_exists->package_list);
+                        $carkey = array_search($vehicle_id, $cars_arr_up);
+			$log_detail_olddata = "(".$packs_arr_up[$carkey]." ";
 
                         /* -------- pet hair / lift / addons check --------- */
+			
+			if ($old_vehicle_data->pet_hair) {
+			$log_detail_olddata .= "Extra cleaning, ";	
+			}
+			
+			if ($old_vehicle_data->lifted_vehicle) {
+			$log_detail_olddata .= "Lifted, ";	
+			}
+			
+			if ($old_vehicle_data->exthandwax_addon) {
+			$log_detail_olddata .= "Wax, ";	
+			}
+			
+			if ($old_vehicle_data->extplasticdressing_addon) {
+			$log_detail_olddata .= "Dressing, ";	
+			}
+			
+			if ($old_vehicle_data->extclaybar_addon) {
+			$log_detail_olddata .= "Clay bar, ";	
+			}
+			
+			if ($old_vehicle_data->waterspotremove_addon) {
+			$log_detail_olddata .= "Water spot, ";	
+			}
+			
+			if ($old_vehicle_data->upholstery_addon) {
+			$log_detail_olddata .= "Upholstery, ";	
+			}
+			
+			if ($old_vehicle_data->floormat_addon) {
+			$log_detail_olddata .= "Floormat, ";	
+			}
+			
+			
+			$log_detail_olddata = rtrim($log_detail_olddata, ', ');
+$log_detail_olddata = rtrim($log_detail_olddata, ' ');
 
+$log_detail_olddata = $log_detail_olddata.")";
 
                         if ($cust_vehicle_data->pet_hair) {
                             $pet_hair_vehicles_old = '';
@@ -3447,7 +3490,7 @@ class CustomersController extends Controller {
 
                         $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 
-                        $log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " " . $cust_vehicle_data->wash_package . " " . $log_addon_detail;
+                        $log_detail = "from ".$cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " " .$log_detail_olddata." to (". $cust_vehicle_data->wash_package . " " . $log_addon_detail.")";
 
                         $logdata = array(
                             'wash_request_id' => $wash_request_id,
@@ -12895,26 +12938,48 @@ try {
             die();
         }
 
-	//$json_str = file_get_contents('php://input');
+	/*$json_str = file_get_contents('php://input');
 
 # Get as an object
-//$json_obj = json_decode($json_str);
-//$url = $json_obj->SubscribeURL;
-//mail("nazmur_r@yahoo.com", "test", $url);
+$json_obj = json_decode($json_str);
+$url = $json_obj->SubscribeURL;
+mail("nazmur_r@yahoo.com", "test", $url);
 
+exit;*/
 
-$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+$clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1), array('limit' => 50));
+
+if(count($clientlist)){
+	$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+	$sender_email = 'MobileWash <admin@mobilewash.com>';
 
                         $SesClient = SesClient::factory(array(
                                     'credentials' => $aws_credentials,
                                     'region' => 'us-west-2',
                                     'version' => 'latest'
                         ));
-
-
-$sender_email = 'MobileWash <admin@mobilewash.com>';
-
-$recipient_emails = ['info@mobilewash.com'];
+	foreach($clientlist as $client){
+		if($client->nonreturn_cat == 30){
+		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+                    ->bindValue(':notify_cat', 'non-return-31st-day', PDO::PARAM_STR)
+                    ->queryAll();	
+		}
+		
+		if($client->nonreturn_cat == 60){
+		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+                    ->bindValue(':notify_cat', 'non-return-61st-day', PDO::PARAM_STR)
+                    ->queryAll();	
+		}
+		
+		if($client->nonreturn_cat == 90){
+		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+                    ->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
+                    ->queryAll();	
+		}
+		
+		    
+		$recipient_emails = array();
+		array_push($recipient_emails,$client->email);
 
 // Specify a configuration set. If you do not want to use a configuration
 // set, comment the following variable, and the
@@ -12938,9 +13003,9 @@ $html_body =  "<html>
                 </div>
                 <div style='clear: both;'></div>
                 </div>
-                <div style='background: #fff; padding: 20px; font-size: 16px; font-family: arial, sans-serif; line-height: 26px;'>
-               <img src='".ROOT_URL."/admin-new/images/cust-spec-notify-img/non-return-31st-day_email_image.jpg' />
-                </div>
+                <div style='background: #fff; padding: 20px; font-size: 16px; font-family: arial, sans-serif; line-height: 26px;'>";
+               $html_body .= "<img src='".ROOT_URL."/admin-new/images/cust-spec-notify-img/".$notify_check[0]['email_image_url']."' />";
+                $html_body .= "</div>
 </div>
 <p style='text-align: center; font-size: 16px; font-family: arial, sans-serif; line-height: 20px; margin: 12px auto; padding-bottom: 25px; margin-top: 20px;'>Thank you for choosing MobileWash!</p>
 
@@ -12978,11 +13043,17 @@ try {
        //'ConfigurationSetName' => $configuration_set,
     ]);
     $messageId = $result['MessageId'];
-   
+   Customers::model()->updateByPk($client->id, array('nonreturn_email_delivery_pending' => 0));
 } catch (AwsException $e) {
-	
+	 //echo $e->getMessage();
+    //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
+    //echo "\n";
 
 }
+		
+	}
+}
+
 
 
     }
