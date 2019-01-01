@@ -6488,7 +6488,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $nonreturn60_topic_arn = '';
         $nonreturn90_topic_arn = '';
 
-        $clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1, 'nonreturn_email_sms_notify_sent' => 0), array('limit' => 700));
+        $clientlist = Customers::model()->findAllByAttributes(array('non_return_check' => 1), array('limit' => 700));
 
         if (count($clientlist)) {
 
@@ -6624,13 +6624,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                     if ($min_diff >= 28800) {
 			
-			  if (($min_diff > 28800)) {
+			  if (($min_diff >= 28800) && ($min_diff < 43200)) {
 
                             Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 20));
                         }
 
                         if (($min_diff >= 43200) && ($min_diff < 86400)) {
-
+if($client->nonreturn_cat != 30){
                             $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
 
                             if (count($clientdevices)) {
@@ -6660,11 +6660,12 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 
                             }
 
-                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30, "nonreturn_email_delivery_pending" => 1));
-                        }
+                          Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30, "nonreturn_email_delivery_pending" => 1, 'nonreturn_email_sms_notify_sent' => 0));
+			}
+			}
 
                         if (($min_diff >= 86400) && ($min_diff < 129600)) {
-
+			if($client->nonreturn_cat != 60){
                             $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
 
                             if (count($clientdevices)) {
@@ -6709,10 +6710,11 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 
                             }
 
-                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60, "nonreturn_email_delivery_pending" => 1));
-                        }
+                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60, "nonreturn_email_delivery_pending" => 1, 'nonreturn_email_sms_notify_sent' => 0));
+			}
+		        }
                         if ($min_diff >= 129600) {
-
+if($client->nonreturn_cat != 90){
                             $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
 
                             if (count($clientdevices)) {
@@ -6742,17 +6744,18 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 
                             }
 
-                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90, "nonreturn_email_delivery_pending" => 1));
-                        }
+                          Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90, "nonreturn_email_delivery_pending" => 1, 'nonreturn_email_sms_notify_sent' => 0));
+			}
+			}
                     } else {
-                        Customers::model()->updateByPk($client->id, array("is_non_returning" => 0, "nonreturn_cat" => 0));
+                        Customers::model()->updateByPk($client->id, array("is_non_returning" => 0, "nonreturn_cat" => 0, "nonreturn_20day_notify" => 0, 'nonreturn_email_sms_notify_sent' => 0, 'nonreturn_email_delivery_pending' => 0));
                     }
                 }
 
                 Customers::model()->updateByPk($client->id, array("non_return_check" => 0));
             }
         } else {
-            //Customers::model()->updateAll(array('non_return_check' => 1));
+            Customers::model()->updateAll(array('non_return_check' => 1));
 
             Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
                     ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
@@ -11372,7 +11375,21 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
                 ->queryAll();
 
         foreach ($noti_array as $noti) {
-            if (($noti['notify_trigger_time'] == date('h:i A')) && ($noti['delivery_ready'] == 1)) {
+		 $pending_custs_count = 0;
+		if ($noti['notify_cat'] == 'non-return-31st-day') {
+			$pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 30 AND nonreturn_email_sms_notify_sent = 0")->queryAll();
+			$pending_custs_count = $pendingcustscheck[0]['count'];
+		}
+		if ($noti['notify_cat'] == 'non-return-61st-day') {
+			$pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 60 AND nonreturn_email_sms_notify_sent = 0")->queryAll();	
+			$pending_custs_count = $pendingcustscheck[0]['count'];
+		}
+		if ($noti['notify_cat'] == 'non-return-90th-day') {
+			$pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 90 AND nonreturn_email_sms_notify_sent = 0")->queryAll();	
+			$pending_custs_count = $pendingcustscheck[0]['count'];
+		}
+		
+            if (($noti['notify_trigger_time'] == date('h:i A')) && ($pending_custs_count > 0)) {
                 $aws_result = $aws_client->publish([
                     'Message' => json_encode(array("default" => $noti['notify_text'], "sms" => $noti['sms_text'])),
                     'TopicArn' => $noti['topic_arn'],
@@ -11388,12 +11405,34 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
                 ]);
 
                 if ($aws_result['MessageId']) {
-                    Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, last_delivery_date = '" . date('Y-m-d H:i:s') . "' WHERE id = " . $noti['id'])->execute();
-                Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1));
+			Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, last_delivery_date = '" . date('Y-m-d H:i:s') . "' WHERE id = " . $noti['id'])->execute();
+			if ($noti['notify_cat'] == 'non-return-31st-day') Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 30));
+			if ($noti['notify_cat'] == 'non-return-61st-day') Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 60));
+			if ($noti['notify_cat'] == 'non-return-90th-day') Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 90));
+
 		}
             }
 
-            if (((time() - strtotime($noti['last_delivery_date'])) >= 3600) && ($noti['last_delivery_date'] != '0000-00-00 00:00:00') && (!$noti['delivery_ready'])) {
+            if(!$pending_custs_count){
+		 try {
+		$aws_deltopic_result = $aws_client->deleteTopic([
+                    'TopicArn' => $noti['topic_arn'],
+                ]);
+		
+		Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, topic_arn = '' WHERE id = " . $noti['id'])->execute();
+		
+			//if ($noti['notify_cat'] == 'non-return-31st-day') Customers::model()->updateAll(array('non_return_check' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 30));
+			//if ($noti['notify_cat'] == 'non-return-61st-day') Customers::model()->updateAll(array('non_return_check' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 60));
+			//if ($noti['notify_cat'] == 'non-return-90th-day') Customers::model()->updateAll(array('non_return_check' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 90));
+			
+		} catch (AwsException $e) {
+	
+
+		}
+		
+	    }
+	    
+	    /*if (((time() - strtotime($noti['last_delivery_date'])) >= 3600) && ($noti['last_delivery_date'] != '0000-00-00 00:00:00') && (!$noti['delivery_ready'])) {
                 try {
 		$aws_deltopic_result = $aws_client->deleteTopic([
                     'TopicArn' => $noti['topic_arn'],
@@ -11405,7 +11444,7 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
 
                 Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, topic_arn = '' WHERE id = " . $noti['id'])->execute();
                 if(($noti['notify_cat'] == 'non-return-31st-day') || ($noti['notify_cat'] == 'non-return-61st-day') || ($noti['notify_cat'] == 'non-return-90th-day')) {Customers::model()->updateAll(array('non_return_check' => 1));}
-            }
+            }*/
         }
     }
 

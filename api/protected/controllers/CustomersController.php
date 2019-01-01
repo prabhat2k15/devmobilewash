@@ -12962,6 +12962,7 @@ exit;*/
 $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1), array('limit' => 50));
 
 if(count($clientlist)){
+	$subject = '';
 	$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
 	$sender_email = 'MobileWash <admin@mobilewash.com>';
 
@@ -12971,22 +12972,26 @@ if(count($clientlist)){
                                     'version' => 'latest'
                         ));
 	foreach($clientlist as $client){
+		
 		if($client->nonreturn_cat == 30){
 		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
                     ->bindValue(':notify_cat', 'non-return-31st-day', PDO::PARAM_STR)
-                    ->queryAll();	
+                    ->queryAll();
+		    $subject = "It's Time for a Shine! Treat Yourself!";
 		}
 		
 		if($client->nonreturn_cat == 60){
 		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
                     ->bindValue(':notify_cat', 'non-return-61st-day', PDO::PARAM_STR)
-                    ->queryAll();	
+                    ->queryAll();
+		    $subject = "It's been a while!";
 		}
 		
 		if($client->nonreturn_cat == 90){
 		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
                     ->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
-                    ->queryAll();	
+                    ->queryAll();
+		    $subject = "You've missed a lot in the last few months!";
 		}
 		
 		    
@@ -12998,7 +13003,6 @@ if(count($clientlist)){
 // 'ConfigurationSetName' => $configuration_set argument below.
 $configuration_set = 'test';
 
-$subject = 'MobileWash';
 $plaintext_body = 'MobileWash' ;
 $html_body =  "<html>
 <head></head>
@@ -13052,11 +13056,13 @@ try {
         ],
         // If you aren't using a configuration set, comment or delete the
         // following line
-       //'ConfigurationSetName' => $configuration_set,
+       'ConfigurationSetName' => $configuration_set,
     ]);
     $messageId = $result['MessageId'];
+    //echo $client->id." msg id: ".$messageId."<br>";
    Customers::model()->updateByPk($client->id, array('nonreturn_email_delivery_pending' => 0));
 } catch (AwsException $e) {
+	//echo $client->id."<br>";
 	 //echo $e->getMessage();
     //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
     //echo "\n";
