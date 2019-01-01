@@ -1029,12 +1029,14 @@ class UsersController extends Controller {
         $q = new CDbCriteria();
         //$q->addcondition("(first_name LIKE '" . $search_query . "%')", "OR");
         $q->addcondition("(agentname LIKE '" . $search_query . "%')", "OR");
+        $q->limit = 50;
         $q2 = new CDbCriteria();
 // AND online_status = 'online'
         //$q2->addcondition("(customername LIKE '%" . $search_query . "%')");
-        $q2->addcondition("(customername LIKE '" . $search_query . "%')");
+        $q2->addcondition("(customername LIKE '" . $search_query . "%')", "OR");
         $q2->addcondition("(first_name LIKE '" . $search_query . "%')", "OR");
         $q2->addcondition("(last_name LIKE '" . $search_query . "%')", "OR");
+        $q2->limit = 50;
         $findagents = Agents::model()->findAll($q);
         $findclients = Customers::model()->findAll($q2);
         //$result = Yii::app()->db->createCommand("SELECT *  FROM customers WHERE MATCH(first_name, last_name) AGAINST('" . $search_query . "' IN BOOLEAN MODE)")->queryAll();

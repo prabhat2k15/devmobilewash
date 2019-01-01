@@ -1806,7 +1806,7 @@ class AgentsController extends Controller {
                 $data = array(
                     'first_name' => $first_name,
                     'last_name' => $last_name,
-                    'agentname' => $agentname,
+                    //'agentname' => $agentname,
                     'email' => $email,
                     'image' => $image,
                     //'phone_number'=> $phone_number,
@@ -1852,7 +1852,9 @@ class AgentsController extends Controller {
                 );
                 if (Yii::app()->request->getParam('update_by') == "WEB") {
                     $data['unlimited_schedule_range'] = Yii::app()->request->getParam('unlimited_schedule_range');
+                    $data['agentname'] = $agentname;
                 }
+
                 if ($admin_edit == 'true')
                     $data['phone_number'] = $phone_number;
 
@@ -3905,7 +3907,7 @@ class AgentsController extends Controller {
         if ($search_area == "Washer Name") {
 //            $query_arr = explode(" ", $query);
 //            $query = join("', '", $query_arr);
-            $agent_query = "agentname LIKE '%$query%' ";
+            $agent_query = "agentname LIKE '%$query%' OR first_name LIKE '%$query%' OR last_name LIKE '%$query%' ";
 //            if (count($query_arr) > 1)
 //                $agent_query = "(first_name IN ('$query') OR last_name IN ('$query')) ";
 //            else
@@ -6082,7 +6084,9 @@ class AgentsController extends Controller {
                     'account_status' => 0,
                     'created_date' => $date,
                 );
-
+                // print_r($agentdata); 
+//                $data=Agents::model()->insert($agentdata);
+//                print_r($data);die;
                 $agentdata = array_filter($agentdata);
                 $model = new Agents;
                 $model->attributes = $agentdata;
@@ -6090,7 +6094,7 @@ class AgentsController extends Controller {
                     $agentid = Yii::app()->db->getLastInsertID();
 
                     if ($admin_username)
-                        Agents::model()->updateByPk($agentid, array('last_edited_admin' => $admin_username));
+                        Agents::model()->updateByPk($agentid, array('last_edited_admin' => $admin_username, 'agentname' => $agentname));
 
                     $result = 'true';
                     $response = 'Agent successfully registered';

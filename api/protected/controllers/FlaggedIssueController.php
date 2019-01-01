@@ -95,11 +95,17 @@ class FlaggedIssueController extends Controller {
     }
 
     public function actionTest() {
-        $agent = Agents::model()->findAll();
-        foreach ($agent as $val) {
-            $name = $val->first_name . " " . $val->last_name;
-            $result = Yii::app()->db->createCommand("UPDATE agents SET agentname='" . $name . "'     WHERE id=" . $val->id)->query();
-        }
+//        $agent = Agents::model()->findAll();
+//        foreach ($agent as $val) {
+//            $name = $val->first_name . " " . $val->last_name;
+//            $result = Yii::app()->db->createCommand("UPDATE agents SET agentname='" . $name . "'     WHERE id=" . $val->id)->query();
+//        }
+//        
+//        $Customers = Customers::model()->findAll();
+//        foreach ($Customers as $val) {
+//            $name = $val->first_name . " " . $val->last_name;
+//            $result = Yii::app()->db->createCommand('UPDATE customers SET customername="'.$name.'"    WHERE id=' . $val->id)->query();
+//        }
     }
 
     public function actionGetAllCustomersInCsv() {
