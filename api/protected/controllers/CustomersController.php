@@ -3222,43 +3222,46 @@ class CustomersController extends Controller {
                         $cars_arr_up = explode(",", $wash_request_exists->car_list);
                         $packs_arr_up = explode(",", $wash_request_exists->package_list);
                         $carkey = array_search($vehicle_id, $cars_arr_up);
-			$log_detail_olddata = "(".$packs_arr_up[$carkey]." ";
+			$log_detail_olddata = "(".$packs_arr_up[$carkey]." w/";
+			$log_addon_detail_olddata = "";
 
                         /* -------- pet hair / lift / addons check --------- */
 			
 			if ($old_vehicle_data->pet_hair) {
-			$log_detail_olddata .= "Extra cleaning, ";	
+			$log_addon_detail_olddata .= "Extra cleaning, ";	
 			}
 			
 			if ($old_vehicle_data->lifted_vehicle) {
-			$log_detail_olddata .= "Lifted, ";	
+			$log_addon_detail_olddata .= "Lifted, ";	
 			}
 			
 			if ($old_vehicle_data->exthandwax_addon) {
-			$log_detail_olddata .= "Wax, ";	
+			$log_addon_detail_olddata .= "Wax, ";	
 			}
 			
 			if ($old_vehicle_data->extplasticdressing_addon) {
-			$log_detail_olddata .= "Dressing, ";	
+			$log_addon_detail_olddata .= "Dressing, ";	
 			}
 			
 			if ($old_vehicle_data->extclaybar_addon) {
-			$log_detail_olddata .= "Clay bar, ";	
+			$log_addon_detail_olddata .= "Clay bar, ";	
 			}
 			
 			if ($old_vehicle_data->waterspotremove_addon) {
-			$log_detail_olddata .= "Water spot, ";	
+			$log_addon_detail_olddata .= "Water spot, ";	
 			}
 			
 			if ($old_vehicle_data->upholstery_addon) {
-			$log_detail_olddata .= "Upholstery, ";	
+			$log_addon_detail_olddata .= "Upholstery, ";	
 			}
 			
 			if ($old_vehicle_data->floormat_addon) {
-			$log_detail_olddata .= "Floormat, ";	
+			$log_addon_detail_olddata .= "Floormat, ";	
 			}
 			
-			
+			if(!$log_addon_detail_olddata) $log_addon_detail_olddata = " no addons";
+			$log_addon_detail_olddata = rtrim($log_addon_detail_olddata, ', ');
+			$log_detail_olddata .= " ".$log_addon_detail_olddata;
 			$log_detail_olddata = rtrim($log_detail_olddata, ', ');
 $log_detail_olddata = rtrim($log_detail_olddata, ' ');
 
@@ -3441,8 +3444,12 @@ $log_detail_olddata = $log_detail_olddata.")";
                             $floormat_addon_new = trim($floormat_addon_new, ",");
                             Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
                         }
+			
+			if(!$log_addon_detail) $log_addon_detail = ' no add-ons';
 
                         $log_addon_detail = rtrim($log_addon_detail, ', ');
+			
+			if($log_addon_detail != ' no add-ons') $log_addon_detail = " ".$log_addon_detail;
 
                         if ($cust_vehicle_data->wash_package == 'Premium') {
                             $surge_addon_arr = explode(",", $wash_request_exists->surge_price_vehicles);
@@ -3490,7 +3497,7 @@ $log_detail_olddata = $log_detail_olddata.")";
 
                         $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 
-                        $log_detail = "from ".$cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " " .$log_detail_olddata." to (". $cust_vehicle_data->wash_package . " " . $log_addon_detail.")";
+                        $log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " from " .$log_detail_olddata." to (". $cust_vehicle_data->wash_package . " w/" . $log_addon_detail.")";
 
                         $logdata = array(
                             'wash_request_id' => $wash_request_id,
@@ -7429,6 +7436,7 @@ $log_detail_olddata = $log_detail_olddata.")";
         $notes = Yii::app()->request->getParam('notes');
         $admin_username = '';
         $admin_username = Yii::app()->request->getParam('admin_username');
+	$force_logout = 0;
 
         $contact_number = preg_replace('/\D/', '', $contact_number);
 
@@ -7461,6 +7469,8 @@ $log_detail_olddata = $log_detail_olddata.")";
             }
 
 
+if($block_client == 1) $force_logout = 1;
+
             if (($block_client == 1) && (APP_ENV == 'real')) {
                 $curl = curl_init();
                 $url = "https://2f94ab1c39b710b2357f88158452c58a:x@api.createsend.com/api/v3.2/subscribers/616802d8a601cf1078b314335b206b7a.json?email=" . $email;
@@ -7488,7 +7498,7 @@ $log_detail_olddata = $log_detail_olddata.")";
                 curl_close($curl);
             }
 
-            $data = array('first_name' => $firstname, 'last_name' => $lastname, 'customername' => $firstname . " " . $lastname, 'email' => $email, 'contact_number' => $contact_number, 'email_alerts' => $email_alerts, 'push_notifications' => $push_notifications, 'online_status' => $online_status, 'image' => $image, 'password' => $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes, 'sms_control' => $sms_control, 'last_edited_admin' => $admin_username, 'updated_date' => date('Y-m-d h:i:s'));
+            $data = array('first_name' => $firstname, 'last_name' => $lastname, 'customername' => $firstname . " " . $lastname, 'email' => $email, 'contact_number' => $contact_number, 'email_alerts' => $email_alerts, 'push_notifications' => $push_notifications, 'online_status' => $online_status, 'image' => $image, 'password' => $password, 'how_hear_mw' => $how_hear_mw, 'hours_opt_check' => $hours_opt_check, 'block_client' => $block_client, 'notes' => $notes, 'sms_control' => $sms_control, 'last_edited_admin' => $admin_username, 'forced_logout' => $force_logout, 'updated_date' => date('Y-m-d h:i:s'));
             //$data = array_filter($data);
 
             if ($account_status == 0 || $account_status == 1) {
@@ -12307,6 +12317,7 @@ $log_detail_olddata = $log_detail_olddata.")";
                         ->queryAll();
 
                 $customers_id_check = Customers::model()->findByAttributes(array("id" => $washrequest_id_check->customer_id));
+		$agent_id_check = Agents::model()->findByAttributes(array("id" => $washrequest_id_check->agent_id));
 
                 if (count($cust_feedback_check)) {
                     Yii::app()->db->createCommand("UPDATE washing_feedbacks SET customer_comments=:comments WHERE wash_request_id = :wash_request_id ")
@@ -12339,6 +12350,7 @@ else $logcomment = $comments;
 <p><b>Customer Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
 <p><b>Customer Email:</b> " . $customers_id_check->email . "</p>
 <p><b>Customer Phone:</b> " . $customers_id_check->contact_number . "</p>
+<p><b>Washer Name & Badge:</b> " . $agent_id_check->first_name." ".$agent_id_check->last_name." (#".$agent_id_check->real_washer_id . ")</p>
 <p><b>Comments:</b> " . $comments . "</p>";
 
                 $to = Vargas::Obj()->getAdminToEmail();
