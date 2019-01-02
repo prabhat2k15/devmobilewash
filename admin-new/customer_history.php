@@ -30,7 +30,7 @@ if (isset($_GET['month']) && !empty($_GET['month'])) {
     $month = $_GET['month'];
     $_event = $_GET['event'];
 }
-
+//$_event = $_GET['event'];
 $url = ROOT_URL . '/api/index.php?r=site/getallwashrequestsnew';
 $cust_id = 0;
 $agent_id = 0;
@@ -48,7 +48,6 @@ $result = curl_exec($handle);
 
 curl_close($handle);
 $jsondata = json_decode($result);
-
 $s_orders_response = $jsondata->response;
 $s_orders_result_code = $jsondata->result;
 $s_mw_all_orders = $jsondata->wash_requests;
@@ -614,9 +613,9 @@ $ios_count = $jsondata->ios_count;
                         <p style="margin-bottom: 20px; font-size: 16px;" class="hidden">Filter Orders <select class='order-filter'><option value="" <?php if (!$_GET['filter']) echo "selected"; ?>>Real Orders</option><option value="testorders" <?php if ($_GET['filter'] == 'testorders') echo "selected"; ?>>Test Orders</option></select><span class="pull-right">IOS Order <?php echo $ios_count; ?></span></p>
 
                         <?php if ($s_orders_result_code == 'true') { ?>
-<!--                            <div class="large-table-fake-top-scroll-container-3">
-                                <div>&nbsp;</div>
-                            </div>-->
+                            <!--                            <div class="large-table-fake-top-scroll-container-3">
+                                                            <div>&nbsp;</div>
+                                                        </div>-->
                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                 <thead>
                                     <tr>
@@ -786,7 +785,7 @@ $ios_count = $jsondata->ios_count;
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;                  ?></td-->
+                                           <!--td><?php //echo $order->transaction_id;                   ?></td-->
                                             <?php $sum = $order->agent_total + $order->company_total ?>
                                             <td>$<?php echo number_format($sum, 2); ?>   </td>
                                             <td><?php echo $order->created_date; ?></td>
@@ -897,7 +896,7 @@ $ios_count = $jsondata->ios_count;
     $(document).ready(function () {
 
         $('.csv-link').on('click', function () {
-            
+
             $('.buttons-csv').trigger('click');
         });
     });
@@ -1048,20 +1047,20 @@ $ios_count = $jsondata->ios_count;
              if ($(this).hasClass("addonupgrade-view")) {
              return false;
              }
-                 
+             
              var wash_id = $(this).attr('data-id');
-                 
+             
              $(this).parent().remove();
              if ($(".spec-order-list").children().length < 1){
              $(".spec-order-list").remove();
              }
-                 
+             
              if ($(".alert-box-wrap").children().length < 1){
              $(".alert-box-wrap").hide();
              }
              window.open('edit-order.php?id='+wash_id, '_blank');
              return false;
-                 
+             
              });*/
 
         });

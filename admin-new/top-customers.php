@@ -18,7 +18,7 @@ if ($_GET['to']) {
 if ($_GET['limit']) {
     $limit = $_GET['limit'];
 } else {
-    $limit = 400;
+    $limit = 200;
 }
 $handle_data = curl_init(ROOT_URL . "/api/index.php?r=site/gettopmostcustomers");
 
@@ -115,8 +115,8 @@ $customers_data = json_decode($result);
                                                     echo "images/image_icon.png";
                                                 }
                                                 ?>" style="width: 100px; height: 100px;"></td>
-                                            <td><a href="<?php echo ROOT_URL; ?>/admin-new/customer_history.php?event=topCustomerOrder&customer_id=<?php echo $cust->customer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>"><?php echo $cust->name; ?></a></td>
-                                           <!--td><?php //echo $cust->contact_number;                        ?></td-->
+                                            <td><a target='_blank' href="<?php echo ROOT_URL; ?>/admin-new/customer_history.php?filter=topCustomerOrderHistory&event=topCustomerOrder&customer_id=<?php echo $cust->customer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>"><?php echo $cust->name; ?></a></td>
+                                           <!--td><?php //echo $cust->contact_number;                          ?></td-->
                                             <td><?php echo $cust->email; ?></td>
                                             <td style="display: none;"><?php echo $cust->address; ?></td>
 

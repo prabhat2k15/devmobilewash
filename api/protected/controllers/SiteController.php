@@ -2365,7 +2365,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             'sat' => $sat_spec,
             'sun' => $sun_spec,
             'edit_by' => $admin_username,
-            'updted_date' => $updated_date            
+            'updted_date' => $updated_date
         );
 
 
@@ -2547,7 +2547,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             'sun' => $sun,
             'message' => $message,
             'edit_by' => $admin_username,
-            'updted_date' => $updated_date 
+            'updted_date' => $updated_date
         );
 
 
@@ -4011,7 +4011,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
     }
 
     public function actiongetallwashrequestsnew() {
-
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -4126,8 +4125,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $total_days_diff = 0;
         $completed_orders = 0;
 
-        if ($customer_id > 0)
+        
+        if ($customer_id > 0) {
             $cust_query = "w.customer_id=" . $customer_id . " AND ";
+        }
+        if ($filter == "topCustomerOrderHistory") {
+            $cust_query = "w.customer_id=" . $customer_id . " AND w.status IN(4) AND ";
+        }
         if ($agent_id > 0)
             $agent_query = "w.agent_id=" . $agent_id . " AND ";
 
@@ -4694,7 +4698,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     'washer_30_min_noarrive' => $washer_30_min_noarrive,
                     'company_total' => $wrequest['company_total'],
                     'agent_total' => $wrequest['agent_total'],
-                    
                 );
             }
 
@@ -6623,130 +6626,130 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
 
                     if ($min_diff >= 28800) {
-			
-			  if (($min_diff >= 28800) && ($min_diff < 43200)) {
+
+                        if (($min_diff >= 28800) && ($min_diff < 43200)) {
 
                             Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 20));
                         }
 
                         if (($min_diff >= 43200) && ($min_diff < 86400)) {
-if($client->nonreturn_cat != 30){
-                            $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
+                            if ($client->nonreturn_cat != 30) {
+                                $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
 
-                            if (count($clientdevices)) {
-                                foreach ($clientdevices as $ctdevice) {
-                                    try {
-                                        $aws_subscribe_result = $aws_client->subscribe([
-                                            'Endpoint' => $ctdevice['endpoint_arn'],
-                                            'Protocol' => 'application',
-                                            'ReturnSubscriptionArn' => true,
-                                            'TopicArn' => $nonreturn30_topic_arn,
-                                        ]);
-                                    } catch (exception $e) {
-                                        
+                                if (count($clientdevices)) {
+                                    foreach ($clientdevices as $ctdevice) {
+                                        try {
+                                            $aws_subscribe_result = $aws_client->subscribe([
+                                                'Endpoint' => $ctdevice['endpoint_arn'],
+                                                'Protocol' => 'application',
+                                                'ReturnSubscriptionArn' => true,
+                                                'TopicArn' => $nonreturn30_topic_arn,
+                                            ]);
+                                        } catch (exception $e) {
+                                            
+                                        }
                                     }
                                 }
+
+
+                                try {
+                                    $aws_subscribe_result = $aws_client->subscribe([
+                                        'Endpoint' => "+1" . $client->contact_number,
+                                        'Protocol' => 'sms',
+                                        'ReturnSubscriptionArn' => true,
+                                        'TopicArn' => $nonreturn30_topic_arn,
+                                    ]);
+                                } catch (exception $e) {
+                                    
+                                }
+
+                                Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30, "nonreturn_email_delivery_pending" => 1, 'nonreturn_email_sms_notify_sent' => 0));
                             }
-
-
-                            try {
-                                $aws_subscribe_result = $aws_client->subscribe([
-                                    'Endpoint' => "+1".$client->contact_number,
-                                    'Protocol' => 'sms',
-                                    'ReturnSubscriptionArn' => true,
-                                    'TopicArn' => $nonreturn30_topic_arn,
-                                ]);
-                            } catch (exception $e) {
-                                
-                            }
-
-                          Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 30, "nonreturn_email_delivery_pending" => 1, 'nonreturn_email_sms_notify_sent' => 0));
-			}
-			}
+                        }
 
                         if (($min_diff >= 86400) && ($min_diff < 129600)) {
-			if($client->nonreturn_cat != 60){
-                            $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
+                            if ($client->nonreturn_cat != 60) {
+                                $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
 
-                            if (count($clientdevices)) {
-                                foreach ($clientdevices as $ctdevice) {
-                                    try {
-                                        $aws_subscribe_result = $aws_client->subscribe([
-                                            'Endpoint' => $ctdevice['endpoint_arn'],
-                                            'Protocol' => 'application',
-                                            'ReturnSubscriptionArn' => true,
-                                            'TopicArn' => $nonreturn60_topic_arn,
-                                        ]);
-                                    } catch (exception $e) {
-                                        
+                                if (count($clientdevices)) {
+                                    foreach ($clientdevices as $ctdevice) {
+                                        try {
+                                            $aws_subscribe_result = $aws_client->subscribe([
+                                                'Endpoint' => $ctdevice['endpoint_arn'],
+                                                'Protocol' => 'application',
+                                                'ReturnSubscriptionArn' => true,
+                                                'TopicArn' => $nonreturn60_topic_arn,
+                                            ]);
+                                        } catch (exception $e) {
+                                            
+                                        }
                                     }
                                 }
+
+                                /* try {
+                                  $aws_email_subscribe_result = $aws_client->subscribe([
+                                  'Endpoint' => $client->email,
+                                  'Protocol' => 'email',
+                                  'ReturnSubscriptionArn' => false,
+                                  'TopicArn' => $nonreturn60_topic_arn,
+                                  ]);
+
+                                  $aws_csubscribe_result = $aws_client->confirmSubscription([
+                                  'Token' => $aws_email_subscribe_result['SubscriptionArn'],
+                                  'TopicArn' => $nonreturn60_topic_arn,
+                                  ]);
+                                  } catch (exception $e) {
+
+                                  } */
+
+                                try {
+                                    $aws_subscribe_result = $aws_client->subscribe([
+                                        'Endpoint' => "+1" . $client->contact_number,
+                                        'Protocol' => 'sms',
+                                        'ReturnSubscriptionArn' => true,
+                                        'TopicArn' => $nonreturn60_topic_arn,
+                                    ]);
+                                } catch (exception $e) {
+                                    
+                                }
+
+                                Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60, "nonreturn_email_delivery_pending" => 1, 'nonreturn_email_sms_notify_sent' => 0));
                             }
-
-                            /*try {
-                                $aws_email_subscribe_result = $aws_client->subscribe([
-                                    'Endpoint' => $client->email,
-                                    'Protocol' => 'email',
-                                    'ReturnSubscriptionArn' => false,
-                                    'TopicArn' => $nonreturn60_topic_arn,
-                                ]);
-
-                                $aws_csubscribe_result = $aws_client->confirmSubscription([
-                                    'Token' => $aws_email_subscribe_result['SubscriptionArn'],
-                                    'TopicArn' => $nonreturn60_topic_arn,
-                                ]);
-                            } catch (exception $e) {
-                                
-                            }*/
-
-                            try {
-                                $aws_subscribe_result = $aws_client->subscribe([
-                                    'Endpoint' => "+1".$client->contact_number,
-                                    'Protocol' => 'sms',
-                                    'ReturnSubscriptionArn' => true,
-                                    'TopicArn' => $nonreturn60_topic_arn,
-                                ]);
-                            } catch (exception $e) {
-                                
-                            }
-
-                            Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 60, "nonreturn_email_delivery_pending" => 1, 'nonreturn_email_sms_notify_sent' => 0));
-			}
-		        }
+                        }
                         if ($min_diff >= 129600) {
-if($client->nonreturn_cat != 90){
-                            $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
+                            if ($client->nonreturn_cat != 90) {
+                                $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
 
-                            if (count($clientdevices)) {
-                                foreach ($clientdevices as $ctdevice) {
-                                    try {
-                                        $aws_subscribe_result = $aws_client->subscribe([
-                                            'Endpoint' => $ctdevice['endpoint_arn'],
-                                            'Protocol' => 'application',
-                                            'ReturnSubscriptionArn' => true,
-                                            'TopicArn' => $nonreturn90_topic_arn,
-                                        ]);
-                                    } catch (exception $e) {
-                                        
+                                if (count($clientdevices)) {
+                                    foreach ($clientdevices as $ctdevice) {
+                                        try {
+                                            $aws_subscribe_result = $aws_client->subscribe([
+                                                'Endpoint' => $ctdevice['endpoint_arn'],
+                                                'Protocol' => 'application',
+                                                'ReturnSubscriptionArn' => true,
+                                                'TopicArn' => $nonreturn90_topic_arn,
+                                            ]);
+                                        } catch (exception $e) {
+                                            
+                                        }
                                     }
                                 }
-                            }
 
-                          
-                            try {
-                                $aws_subscribe_result = $aws_client->subscribe([
-                                    'Endpoint' => "+1".$client->contact_number,
-                                    'Protocol' => 'sms',
-                                    'ReturnSubscriptionArn' => true,
-                                    'TopicArn' => $nonreturn90_topic_arn,
-                                ]);
-                            } catch (exception $e) {
-                                
-                            }
 
-                          Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90, "nonreturn_email_delivery_pending" => 1, 'nonreturn_email_sms_notify_sent' => 0));
-			}
-			}
+                                try {
+                                    $aws_subscribe_result = $aws_client->subscribe([
+                                        'Endpoint' => "+1" . $client->contact_number,
+                                        'Protocol' => 'sms',
+                                        'ReturnSubscriptionArn' => true,
+                                        'TopicArn' => $nonreturn90_topic_arn,
+                                    ]);
+                                } catch (exception $e) {
+                                    
+                                }
+
+                                Customers::model()->updateByPk($client->id, array("is_non_returning" => 1, "nonreturn_cat" => 90, "nonreturn_email_delivery_pending" => 1, 'nonreturn_email_sms_notify_sent' => 0));
+                            }
+                        }
                     } else {
                         Customers::model()->updateByPk($client->id, array("is_non_returning" => 0, "nonreturn_cat" => 0, "nonreturn_20day_notify" => 0, 'nonreturn_email_sms_notify_sent' => 0, 'nonreturn_email_delivery_pending' => 0));
                     }
@@ -7204,40 +7207,41 @@ if($client->nonreturn_cat != 90){
                 }
             }
         }
-	
-	$all_washes = Yii::app()->db->createCommand()
+
+        $all_washes = Yii::app()->db->createCommand()
                 ->select('*')
                 ->from('washing_requests')
                 ->where("upfront_transaction_id != ''", array())
                 ->queryAll();
-		
-	if (count($all_washes)) {
+
+        if (count($all_washes)) {
 
             foreach ($all_washes as $ind => $wash) {
-		 $current_time = strtotime(date('Y-m-d H:i:s'));
-                    $create_time = strtotime( $wash['order_for']);
-                    $min_diff = 0;
-                    if ($current_time > $create_time) {
-                        $min_diff = round(($current_time - $create_time) / 60, 2);
-                    }
-		    
-		    if (($min_diff >= 30)){
-		$customer_check = Customers::model()->findByPk($wash['customer_id']);
-			if ($customer_check->client_position == 'real') $payresult = Yii::app()->braintree->void_real($wash['upfront_transaction_id']);
-			else $payresult = Yii::app()->braintree->void($wash['upfront_transaction_id']);
+                $current_time = strtotime(date('Y-m-d H:i:s'));
+                $create_time = strtotime($wash['order_for']);
+                $min_diff = 0;
+                if ($current_time > $create_time) {
+                    $min_diff = round(($current_time - $create_time) / 60, 2);
+                }
 
-			if ($payresult['success'] == 1) {
-if($wash['upfront_transaction_id'] == $wash['transaction_id']) Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => '', 'transaction_id' => ''));
-else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => ''));
-			} else {
+                if (($min_diff >= 30)) {
+                    $customer_check = Customers::model()->findByPk($wash['customer_id']);
+                    if ($customer_check->client_position == 'real')
+                        $payresult = Yii::app()->braintree->void_real($wash['upfront_transaction_id']);
+                    else
+                        $payresult = Yii::app()->braintree->void($wash['upfront_transaction_id']);
+
+                    if ($payresult['success'] == 1) {
+                        if ($wash['upfront_transaction_id'] == $wash['transaction_id'])
+                            Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => '', 'transaction_id' => ''));
+                        else
+                            Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => ''));
+                    } else {
                         Washingrequests::model()->updateByPk($wash['id'], array('upfront_transaction_id' => ''));
-			}
-               
-		}
-	    }
-	}
-		
-		
+                    }
+                }
+            }
+        }
     }
 
     public function actionpassfraud() {
@@ -7353,9 +7357,9 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
                 $topic_arn = 'arn:aws:sns:us-west-2:461900685840:washerschedpush';
 
             $aws_result = $aws_client->publish([
-		'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"data\": { \"message\": \"".$msg."\" } }")),
+                'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"data\": { \"message\": \"" . $msg . "\" } }")),
                 'TopicArn' => $topic_arn,
-		'MessageStructure' => 'json',
+                'MessageStructure' => 'json',
             ]);
 
             if ($aws_result['MessageId']) {
@@ -7796,17 +7800,16 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
             } else {
                 $result = 'true';
                 $response = 'wash request uncanceled';
-		
-		 if(strtotime($wrequest_id_check->wash_begin) > 0) {
-			
-			Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "wash_begin" => date('Y-m-d H:i:s'), "washer_late_cancel" => 0, "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
-		}
-                 else {
-			
-			Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "washer_late_cancel" => 0, "created_date" => date('Y-m-d H:i:s'), "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
-		}
 
- 
+                if (strtotime($wrequest_id_check->wash_begin) > 0) {
+
+                    Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "wash_begin" => date('Y-m-d H:i:s'), "washer_late_cancel" => 0, "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
+                } else {
+
+                    Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "washer_late_cancel" => 0, "created_date" => date('Y-m-d H:i:s'), "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
+                }
+
+
                 $washeractionlogdata = array(
                     'wash_request_id' => $wash_request_id,
                     'admin_username' => $admin_username,
@@ -8683,85 +8686,8 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
         echo json_encode($json);
     }
 
-//    public function actiongettopmostcustomers() {
-//
-//        if (Yii::app()->request->getParam('key') != API_KEY) {
-//            echo "Invalid api key";
-//            die();
-//        }
-//
-//        $api_token = Yii::app()->request->getParam('api_token');
-//        $t1 = Yii::app()->request->getParam('t1');
-//        $t2 = Yii::app()->request->getParam('t2');
-//        $user_type = Yii::app()->request->getParam('user_type');
-//        $user_id = Yii::app()->request->getParam('user_id');
-//
-//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
-//
-//        if (!$token_check) {
-//            $json = array(
-//                'result' => 'false',
-//                'response' => 'Invalid request'
-//            );
-//            echo json_encode($json);
-//            die();
-//        }
-//
-//        $from = Yii::app()->request->getParam('from');
-//        $to = Yii::app()->request->getParam('to');
-//
-//        $result = 'false';
-//        $response = 'nothing found';
-//        $cust_ids = array();
-//        $topcusts_arr = array();
-//        $topcusts_det_arr = array();
-//        $all_washes = Yii::app()->db->createCommand()
-//                ->select('customer_id')
-//                ->from('washing_requests')
-//                ->where("(order_for >= :from AND order_for <= :to) AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
-//                ->queryAll();
-//
-//        if (count($all_washes) > 0) {
-//            $result = 'true';
-//            $response = 'topmost customers';
-//
-//
-//            foreach ($all_washes as $wash) {
-//                $cust_ids[] = $wash['customer_id'];
-//            }
-//
-//            $topcusts_arr = array_count_values($cust_ids);
-//            arsort($topcusts_arr);
-//            $i = 0;
-//            foreach ($topcusts_arr as $key => $cust) {
-//                $cust_det = Customers::model()->findByPk($key);
-//                if (((!$cust_det->first_name) && (!$cust_det->last_name)) && (!$cust_det->customername))
-//                    continue;
-//                $location = CustomerLocation::model()->findByPk($key);
-//                $topcusts_det_arr[$i]['id'] = $key;
-//                $topcusts_det_arr[$i]['name'] = $cust_det->first_name . " " . $cust_det->last_name;
-//                $topcusts_det_arr[$i]['email'] = $cust_det->email;
-//                $topcusts_det_arr[$i]['phone'] = $cust_det->contact_number;
-//                $topcusts_det_arr[$i]['address'] = $location->location_address;
-//                //$topcusts_det_arr[$i]['street'] = $location->street_name;
-//                $topcusts_det_arr[$i]['city'] = $location->city;
-//                $topcusts_det_arr[$i]['state'] = $location->state;
-//                $topcusts_det_arr[$i]['zip'] = $location->zipcode;
-//                $topcusts_det_arr[$i]['total_washes'] = $cust;
-//                $i++;
-//            }
-//        }
-//
-//
-//        $json = array(
-//            'result' => $result,
-//            'response' => $response,
-//            'top_customers' => $topcusts_det_arr
-//        );
-//        echo json_encode($json);
-//    }
-    
     public function actiongettopmostcustomers() {
+        //echo "here"; die; 
         $from = Yii::app()->request->getParam('from');
         $to = Yii::app()->request->getParam('to');
         $limit = $_REQUEST['limit'];
@@ -8771,9 +8697,9 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
         $topwashers_arr = array();
         $topwashers_det_arr = array();
         if ($limit != "") {
-            $all_customers = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, c.id,c.image,c.first_name,c.last_name,c.contact_number,c.email, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, COUNT(wr.status = 4) as total_completed, image FROM customers as c LEFT JOIN washing_requests wr ON c.id = wr.customer_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "'  AND wr.customer_id != 0 WHERE c.block_client = 0 GROUP BY c.id ORDER BY total DESC LIMIT " . $limit)->queryAll();
+            $all_customers = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, c.id,c.image,c.first_name,c.last_name,c.contact_number,c.email, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, COUNT(wr.status = 4) as total_completed, image FROM customers as c LEFT JOIN washing_requests wr ON c.id = wr.customer_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "'  AND wr.customer_id != 0 WHERE c.block_client = 0  AND wr.status IN(4) GROUP BY c.id ORDER BY total DESC LIMIT " . $limit)->queryAll();
         } else {
-            $all_customers = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, c.id,c.image,c.first_name,c.last_name,c.contact_number,c.last_name,c.email, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, COUNT(wr.status = 4) as total_completed, image FROM customers as c LEFT JOIN washing_requests wr ON c.id = wr.customer_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "'  AND wr.customer_id != 0 WHERE c.block_client = 0 GROUP BY c.id ORDER BY total DESC")->queryAll();
+            $all_customers = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, c.id,c.image,c.first_name,c.last_name,c.contact_number,c.last_name,c.email, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, COUNT(wr.status = 4) as total_completed, image FROM customers as c LEFT JOIN washing_requests wr ON c.id = wr.customer_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "'  AND wr.customer_id != 0 WHERE c.block_client = 0 AND wr.status IN(4) GROUP BY c.id ORDER BY total DESC")->queryAll();
         }
 
         if (count($all_customers) > 0) {
@@ -8783,10 +8709,10 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
             foreach ($all_customers as $key => $val) {
                 //$washer_ids[] = $wash['agent_id'];	
                 //$agent_det = Agents::model()->findByPk($wash['agent_id']);
-                $last_wash = Yii::app()->db->createCommand("SELECT wr.order_for FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) ORDER BY wr.id DESC LIMIT 1")->queryAll();
-                $total_earn = Yii::app()->db->createCommand("SELECT SUM(net_price) as total_sum,wr.id FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) ORDER BY wr.id DESC")->queryAll();
+                $last_wash = Yii::app()->db->createCommand("SELECT wr.order_for FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4)  ORDER BY wr.id DESC LIMIT 1")->queryAll();
+                $total_spent = Yii::app()->db->createCommand("SELECT SUM(net_price) as total_sum,wr.id FROM washing_requests wr WHERE wr.customer_id = " . $val['id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4)  ORDER BY wr.id DESC")->queryAll();
                 $topcustomers_det_arr[$i]['id'] = $key;
-               
+
                 //$topwashers_det_arr[$i]['company_id'] = $wash['real_washer_id'];
                 $topcustomers_det_arr[$i]['customer_id'] = $val['id'];
                 $topcustomers_det_arr[$i]['image'] = $val['image'];
@@ -8799,7 +8725,7 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
                 $topcustomers_det_arr[$i]['total_completed'] = $val['total_completed'];
                 $topcustomers_det_arr[$i]['last_wash'] = $last_wash[0]['order_for'];
                 //$topwashers_det_arr[$i]['total_cancel'] = (count($get_cancel_count) > 0) ? $get_cancel_count[0]['total_cancel'] : 0;
-                $topcustomers_det_arr[$i]['total_sum'] = (count($total_earn) > 0) ? $total_earn[0]['total_sum'] : 0;
+                $topcustomers_det_arr[$i]['total_sum'] = (count($total_spent) > 0) ? $total_spent[0]['total_sum'] : 0;
                 $i++;
             }
         }
@@ -11375,20 +11301,20 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
                 ->queryAll();
 
         foreach ($noti_array as $noti) {
-		 $pending_custs_count = 0;
-		if ($noti['notify_cat'] == 'non-return-31st-day') {
-			$pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 30 AND nonreturn_email_sms_notify_sent = 0")->queryAll();
-			$pending_custs_count = $pendingcustscheck[0]['count'];
-		}
-		if ($noti['notify_cat'] == 'non-return-61st-day') {
-			$pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 60 AND nonreturn_email_sms_notify_sent = 0")->queryAll();	
-			$pending_custs_count = $pendingcustscheck[0]['count'];
-		}
-		if ($noti['notify_cat'] == 'non-return-90th-day') {
-			$pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 90 AND nonreturn_email_sms_notify_sent = 0")->queryAll();	
-			$pending_custs_count = $pendingcustscheck[0]['count'];
-		}
-		
+            $pending_custs_count = 0;
+            if ($noti['notify_cat'] == 'non-return-31st-day') {
+                $pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 30 AND nonreturn_email_sms_notify_sent = 0")->queryAll();
+                $pending_custs_count = $pendingcustscheck[0]['count'];
+            }
+            if ($noti['notify_cat'] == 'non-return-61st-day') {
+                $pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 60 AND nonreturn_email_sms_notify_sent = 0")->queryAll();
+                $pending_custs_count = $pendingcustscheck[0]['count'];
+            }
+            if ($noti['notify_cat'] == 'non-return-90th-day') {
+                $pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 90 AND nonreturn_email_sms_notify_sent = 0")->queryAll();
+                $pending_custs_count = $pendingcustscheck[0]['count'];
+            }
+
             if (($noti['notify_trigger_time'] == date('h:i A')) && ($pending_custs_count > 0)) {
                 $aws_result = $aws_client->publish([
                     'Message' => json_encode(array("default" => $noti['notify_text'], "sms" => $noti['sms_text'])),
@@ -11396,8 +11322,8 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
                     'MessageStructure' => 'json',
                     'Subject' => 'MobileWash',
                 ]);
-		
-		 $aws_result2 = $aws_client->publish([
+
+                $aws_result2 = $aws_client->publish([
                     'Message' => json_encode(array("default" => "test", "sms" => "test")),
                     'TopicArn' => $noti['email_topic_arn'],
                     'MessageStructure' => 'json',
@@ -11405,46 +11331,45 @@ else Washingrequests::model()->updateByPk($wash['id'], array('upfront_transactio
                 ]);
 
                 if ($aws_result['MessageId']) {
-			Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, last_delivery_date = '" . date('Y-m-d H:i:s') . "' WHERE id = " . $noti['id'])->execute();
-			if ($noti['notify_cat'] == 'non-return-31st-day') Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 30));
-			if ($noti['notify_cat'] == 'non-return-61st-day') Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 60));
-			if ($noti['notify_cat'] == 'non-return-90th-day') Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 90));
-
-		}
+                    Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, last_delivery_date = '" . date('Y-m-d H:i:s') . "' WHERE id = " . $noti['id'])->execute();
+                    if ($noti['notify_cat'] == 'non-return-31st-day')
+                        Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 30));
+                    if ($noti['notify_cat'] == 'non-return-61st-day')
+                        Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 60));
+                    if ($noti['notify_cat'] == 'non-return-90th-day')
+                        Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 90));
+                }
             }
 
-            if(!$pending_custs_count){
-		 try {
-		$aws_deltopic_result = $aws_client->deleteTopic([
-                    'TopicArn' => $noti['topic_arn'],
-                ]);
-		
-		Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, topic_arn = '' WHERE id = " . $noti['id'])->execute();
-		
-			//if ($noti['notify_cat'] == 'non-return-31st-day') Customers::model()->updateAll(array('non_return_check' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 30));
-			//if ($noti['notify_cat'] == 'non-return-61st-day') Customers::model()->updateAll(array('non_return_check' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 60));
-			//if ($noti['notify_cat'] == 'non-return-90th-day') Customers::model()->updateAll(array('non_return_check' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 90));
-			
-		} catch (AwsException $e) {
-	
-
-		}
-		
-	    }
-	    
-	    /*if (((time() - strtotime($noti['last_delivery_date'])) >= 3600) && ($noti['last_delivery_date'] != '0000-00-00 00:00:00') && (!$noti['delivery_ready'])) {
+            if (!$pending_custs_count) {
                 try {
-		$aws_deltopic_result = $aws_client->deleteTopic([
-                    'TopicArn' => $noti['topic_arn'],
-                ]);
-		} catch (AwsException $e) {
-	
+                    $aws_deltopic_result = $aws_client->deleteTopic([
+                        'TopicArn' => $noti['topic_arn'],
+                    ]);
 
-}
+                    Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, topic_arn = '' WHERE id = " . $noti['id'])->execute();
 
-                Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, topic_arn = '' WHERE id = " . $noti['id'])->execute();
-                if(($noti['notify_cat'] == 'non-return-31st-day') || ($noti['notify_cat'] == 'non-return-61st-day') || ($noti['notify_cat'] == 'non-return-90th-day')) {Customers::model()->updateAll(array('non_return_check' => 1));}
-            }*/
+                    //if ($noti['notify_cat'] == 'non-return-31st-day') Customers::model()->updateAll(array('non_return_check' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 30));
+                    //if ($noti['notify_cat'] == 'non-return-61st-day') Customers::model()->updateAll(array('non_return_check' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 60));
+                    //if ($noti['notify_cat'] == 'non-return-90th-day') Customers::model()->updateAll(array('non_return_check' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 90));
+                } catch (AwsException $e) {
+                    
+                }
+            }
+
+            /* if (((time() - strtotime($noti['last_delivery_date'])) >= 3600) && ($noti['last_delivery_date'] != '0000-00-00 00:00:00') && (!$noti['delivery_ready'])) {
+              try {
+              $aws_deltopic_result = $aws_client->deleteTopic([
+              'TopicArn' => $noti['topic_arn'],
+              ]);
+              } catch (AwsException $e) {
+
+
+              }
+
+              Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready = 0, topic_arn = '' WHERE id = " . $noti['id'])->execute();
+              if(($noti['notify_cat'] == 'non-return-31st-day') || ($noti['notify_cat'] == 'non-return-61st-day') || ($noti['notify_cat'] == 'non-return-90th-day')) {Customers::model()->updateAll(array('non_return_check' => 1));}
+              } */
         }
     }
 
