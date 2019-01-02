@@ -3550,13 +3550,63 @@ $log_detail_olddata = $log_detail_olddata.")";
 //Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
 
                         $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
+			
+			$old_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
 
                         $cust_vehicle_data = CustomerDraftVehicle::model()->findByAttributes(array("id" => $draft_vehicle_id));
 
-
+                       
                         //$cust_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
-                        $log_addon_detail = "Add-ons: ";
+                        $log_addon_detail = "";
                         $log_detail = "";
+                        $cars_arr_up = explode(",", $wash_request_exists->car_list);
+                        $packs_arr_up = explode(",", $wash_request_exists->package_list);
+                        $carkey = array_search($vehicle_id, $cars_arr_up);
+			$log_detail_olddata = "(".$packs_arr_up[$carkey]." w/";
+			$log_addon_detail_olddata = "";
+
+                        /* -------- pet hair / lift / addons check --------- */
+			
+			if ($old_vehicle_data->pet_hair) {
+			$log_addon_detail_olddata .= "Extra cleaning, ";	
+			}
+			
+			if ($old_vehicle_data->lifted_vehicle) {
+			$log_addon_detail_olddata .= "Lifted, ";	
+			}
+			
+			if ($old_vehicle_data->exthandwax_addon) {
+			$log_addon_detail_olddata .= "Wax, ";	
+			}
+			
+			if ($old_vehicle_data->extplasticdressing_addon) {
+			$log_addon_detail_olddata .= "Dressing, ";	
+			}
+			
+			if ($old_vehicle_data->extclaybar_addon) {
+			$log_addon_detail_olddata .= "Clay bar, ";	
+			}
+			
+			if ($old_vehicle_data->waterspotremove_addon) {
+			$log_addon_detail_olddata .= "Water spot, ";	
+			}
+			
+			if ($old_vehicle_data->upholstery_addon) {
+			$log_addon_detail_olddata .= "Upholstery, ";	
+			}
+			
+			if ($old_vehicle_data->floormat_addon) {
+			$log_addon_detail_olddata .= "Floormat, ";	
+			}
+			
+			if(!$log_addon_detail_olddata) $log_addon_detail_olddata = " no addons";
+			$log_addon_detail_olddata = rtrim($log_addon_detail_olddata, ', ');
+			$log_detail_olddata .= " ".$log_addon_detail_olddata;
+			$log_detail_olddata = rtrim($log_detail_olddata, ', ');
+$log_detail_olddata = rtrim($log_detail_olddata, ' ');
+
+$log_detail_olddata = $log_detail_olddata.")";
+
 
                         /* -------- pet hair / lift / addons check --------- */
 
@@ -3600,11 +3650,16 @@ $log_detail_olddata = $log_detail_olddata.")";
 
                             $log_addon_detail .= "Floormat, ";
                         }
+			
+			if(!$log_addon_detail) $log_addon_detail = ' no add-ons';
+
+                        $log_addon_detail = rtrim($log_addon_detail, ', ');
+			
+			if($log_addon_detail != ' no add-ons') $log_addon_detail = " ".$log_addon_detail;
 
                         $log_addon_detail = rtrim($log_addon_detail, ', ');
 
-
-                        $log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " " . $cust_vehicle_data->wash_package . " " . $log_addon_detail;
+$log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " from " .$log_detail_olddata." to (". $cust_vehicle_data->wash_package . " w/" . $log_addon_detail.")";
 
                         $logdata = array(
                             'wash_request_id' => $wash_request_id,

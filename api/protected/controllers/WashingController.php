@@ -9381,7 +9381,8 @@ class WashingController extends Controller {
 
                 //Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
 
-                Washingrequests::model()->updateByPk($wrequest_id_check->id, array('status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
+                if($wrequest_id_check->is_scheduled) Washingrequests::model()->updateByPk($wrequest_id_check->id, array('status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0, 'is_create_schedulewash_push_sent' => 0));
+		else Washingrequests::model()->updateByPk($wrequest_id_check->id, array('status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
                 
                 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $wrequest_id_check->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -9409,7 +9410,8 @@ class WashingController extends Controller {
                     }
                 }
 
-                $app_settings = Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = 'IOS'")->queryAll();
+                if(!$wrequest_id_check->is_scheduled){
+		$app_settings = Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = 'IOS'")->queryAll();
                 $sql = "SELECT * FROM agent_locations";
                 $command = Yii::app()->db->createCommand($sql)->queryAll();
 
@@ -9461,6 +9463,7 @@ class WashingController extends Controller {
                         }
                     }
                 }
+	    }
 
                 $result = 'true';
                 $response = 'wash reset';
