@@ -3098,7 +3098,7 @@ class WashingController extends Controller {
             $device_type = strtolower($cust_details->mobile_type);
             $alert_type = "default";
 
-            $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
+            /*$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '10' ")->queryAll();
             $message = $pushmsg[0]['message'];
 
@@ -3121,7 +3121,7 @@ class WashingController extends Controller {
                         $notifyresult = curl_exec($ch);
                     curl_close($ch);
                 }
-            }
+            }*/
             /* End Notification */
 
             if ($resUpdate) {
@@ -4166,9 +4166,9 @@ class WashingController extends Controller {
                 }
 
                 if (($status == WASHREQUEST_STATUS_AGENTARRIVED) && (!$wrequest_id_check->meet_washer_push_sent)) {
-                    $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '10' ")->queryAll();
-                    $notify_msg = $pushmsg[0]['message'];
-
+                    //$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '10' ")->queryAll();
+                    //$notify_msg = $pushmsg[0]['message'];
+                    $notify_msg = '';
                     //$notify_msg = "Please meet your washer outside";
                     $alert_type = "soft";
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array("meet_washer_push_sent" => 1, "washer_arrived_at" => date('Y-m-d H:i:s')));
