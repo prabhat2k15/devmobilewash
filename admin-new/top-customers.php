@@ -59,7 +59,7 @@ $customers_data = json_decode($result);
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase"> Top Customers (<?php echo date("M j, Y", strtotime($from)); ?>  - <?php echo date("M j, Y", strtotime($to)); ?>) </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                            <span class="caption-subject bold uppercase"> Top Customers (<?php echo date("M j, Y", strtotime($from)); ?>  - <?php echo date("M j, Y", strtotime($to)); ?>) </span><a style="margin-left: 20px;" class="" href="<?php echo ROOT_URL;?>/api/index.php?r=site/exporttopmostcustomers&key=<?php echo API_KEY;?>&from=<?php echo $_GET['from'];?>&to=<?php echo $_GET['to'];?>">Download CSV</a>
                         </div>
                         <div class="caption font-dark">
 

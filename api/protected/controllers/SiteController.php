@@ -8968,6 +8968,101 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         echo json_encode($json);
     }
 
+    public function actionexporttopmostcustomers() {
+        //echo "here"; die; 
+        ob_end_clean();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=top_customers.csv');
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        $file = fopen('php://output', 'w');
+
+        $Arr_field['field_name']['id'] = 'ID';
+        $Arr_field['field_name']['name'] = 'Name';
+        $Arr_field['field_name']['email'] = 'Email';
+        $Arr_field['field_name']['address'] = 'Address';
+        $Arr_field['field_name']['city'] = 'City';
+        $Arr_field['field_name']['state'] = 'State';
+        $Arr_field['field_name']['total_s'] = 'Total Scheduled';
+        $Arr_field['field_name']['total_o_d'] = 'Total On Demand';
+        $Arr_field['field_name']['total_w'] = 'Total Washers';
+        $Arr_field['field_name']['last_wash'] = 'Last Wash';
+        $Arr_field['field_name']['total_spend'] = 'Total Spend';
+
+        fputcsv($file, $Arr_field['field_name']);
+        $from = Yii::app()->request->getParam('from');
+        $to = Yii::app()->request->getParam('to');
+        $result = 'false';
+        $response = 'nothing found';
+        $washer_ids = array();
+        $topwashers_arr = array();
+        $topwashers_det_arr = array();
+        //$all_customers = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, c.id,c.image,c.first_name,c.last_name,c.contact_number,c.last_name,c.email, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, COUNT(wr.status = 4) as total_completed, image FROM customers as c LEFT JOIN washing_requests wr ON c.id = wr.customer_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "'  AND wr.customer_id != 0 WHERE c.block_client = 0 AND wr.status IN(4) GROUP BY c.id ORDER BY total DESC")->queryAll();
+        $all_customers = Yii::app()->db->createCommand("SELECT c.id as customer_id,c.image,c.first_name,c.last_name,c.contact_number,c.last_name,c.email,c.image, cl.location_address as address, cl.city, cl.state FROM customers as c LEFT JOIN customer_locations cl ON c.id = cl.customer_id WHERE c.block_client = 0 GROUP BY c.id")->queryAll();
+
+        $total_spent = Yii::app()->db->createCommand("SELECT SUM(net_price) as total_sum,wr.id, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, COUNT(wr.id) as total,customer_id FROM washing_requests wr WHERE DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) GROUP BY customer_id")->queryAll();
+        $totalSpend_data = array();
+        if(COUNT($total_spent) > 0){
+            foreach ($total_spent as $key => $value) {
+                $totalSpend_data[$value['customer_id']] = $value; 
+            }
+        }
+        
+        if (count($all_customers) > 0) {
+        
+
+            foreach ($all_customers as $key => $val) {
+                if(!isset($totalSpend_data[$val['customer_id']])){
+                    continue;
+                }
+                //$washer_ids[] = $wash['agent_id'];    
+                //$agent_det = Agents::model()->findByPk($wash['agent_id']);
+                $last_wash = Yii::app()->db->createCommand("SELECT wr.order_for FROM washing_requests wr WHERE wr.customer_id = " . $val['customer_id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4)  ORDER BY wr.id DESC LIMIT 1")->queryAll();
+                
+                $Arr_field['field_value']['id'] = $key;
+                $Arr_field['field_value']['name'] = $val['first_name'] . " " . $val['last_name'];
+                $Arr_field['field_value']['email'] = $val['email'];
+                $Arr_field['field_value']['address'] = $val['address'];
+                $Arr_field['field_value']['city'] = $val['city'];
+                $Arr_field['field_value']['state'] = $val['state'];
+                $Arr_field['field_value']['total_s'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_scheduled']:0;
+                $Arr_field['field_value']['total_o_d'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_demand']:0;
+                $Arr_field['field_value']['total_w'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total']:0;
+                $Arr_field['field_value']['last_wash'] = $last_wash[0]['order_for'];
+                $Arr_field['field_value']['total_spend'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_sum']:0;
+
+                fputcsv($file, $Arr_field['field_value']);
+                //$i++;
+            }
+            foreach ($all_customers as $key => $val) {
+                if(isset($totalSpend_data[$val['customer_id']])){
+                    continue;
+                }
+                //$washer_ids[] = $wash['agent_id'];    
+                //$agent_det = Agents::model()->findByPk($wash['agent_id']);
+                $last_wash = Yii::app()->db->createCommand("SELECT wr.order_for FROM washing_requests wr WHERE wr.customer_id = " . $val['customer_id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4)  ORDER BY wr.id DESC LIMIT 1")->queryAll();
+                
+                $Arr_field['field_value']['id'] = $key;
+                $Arr_field['field_value']['name'] = $val['first_name'] . " " . $val['last_name'];
+                $Arr_field['field_value']['email'] = $val['email'];
+                $Arr_field['field_value']['address'] = $val['address'];
+                $Arr_field['field_value']['city'] = $val['city'];
+                $Arr_field['field_value']['state'] = $val['state'];
+                $Arr_field['field_value']['total_s'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_scheduled']:0;
+                $Arr_field['field_value']['total_o_d'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_demand']:0;
+                $Arr_field['field_value']['total_w'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total']:0;
+                $Arr_field['field_value']['last_wash'] = $last_wash[0]['order_for'];
+                $Arr_field['field_value']['total_spend'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_sum']:0;
+
+                fputcsv($file, $Arr_field['field_value']);
+                //$i++;
+            }
+        }
+
+        
+        die;
+    }
+    
     public function actionupdatedevicestatus() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
