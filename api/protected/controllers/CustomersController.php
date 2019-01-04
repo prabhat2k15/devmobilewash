@@ -12902,7 +12902,6 @@ exit;*/
 
 $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1), array('order' => 'id DESC', 'limit' => 50));
 
-print_r($clientlist);
 
 if(count($clientlist)){
 	$subject = '';
@@ -13002,11 +13001,11 @@ try {
        'ConfigurationSetName' => $configuration_set,
     ]);
     $messageId = $result['MessageId'];
-    echo $client->id." msg id: ".$messageId."<br>";
+    //echo $client->id." msg id: ".$messageId."<br>";
    Customers::model()->updateByPk($client->id, array('nonreturn_email_delivery_pending' => 0));
 } catch (AwsException $e) {
-	echo $client->id."<br>";
-	 echo $e->getMessage();
+	//echo $client->id."<br>";
+	 //echo $e->getMessage();
     //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
     //echo "\n";
 
