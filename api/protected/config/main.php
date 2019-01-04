@@ -72,6 +72,7 @@ return array(
 		//	Global Admin Email
 		/*'adminEmail'=>'mobilewash8@gmail.com',
 		'adminToEmail'=>'mobilewash8@gmail.com',*/
+                'AdminToEmailFeedBack'=>'feedback@mobilewash.com',
                 'adminEmail'=>'admin@mobilewash.com',
 		'adminToEmail'=>'admin@mobilewash.com',
 		'adminFromEmail'=>'info@mobilewash.com'

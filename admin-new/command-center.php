@@ -339,7 +339,34 @@
     .color-block.red{
         background: #ff5722;
     }
+    .loader {
+        display:none;
+        height: 4px;
+        width: 100%;
+        position: absolute;
+        top: 34px;
+        overflow: hidden;
+        background-color: #ddd;
+    }
+    .loader:before{
+        display: block;
+        position: absolute;
+        content: "";
+        left: -200px;
+        width: 200px;
+        height: 4px;
+        background-color: #2980b9;
+        animation: loading 2s linear infinite;
+    }
 
+    @keyframes loading {
+        from {left: -200px; width: 30%;}
+        50% {width: 30%;}
+        70% {width: 70%;}
+        80% { left: 50%;}
+        95% {left: 120%;}
+        to {left: 100%;}
+    }
 </style>
 <script type="text/javascript">
     var currenttime = '<?php echo date("F d, Y H:i:s", time()) ?>'
@@ -426,6 +453,7 @@
                         <li class="agent"><a href="#">John Doe</a></li>
                     </ul>
                 </div>
+                <div class="loader"></div>
             </div>
             <div class="tabs">
                 <h2 id="pending-tab">Pending Orders</h2>
@@ -1911,6 +1939,7 @@
 
 
             $(".menu-container .search-cc").on('keyup', '#cc-search-text', function () {
+                $('.loader').css('display', 'block');
                 var search_q = $("#cc-search-text").val();
                 if (search_q) {
                     $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/searchagentsclients", {search_query: search_q, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
@@ -1954,16 +1983,21 @@
                             search_data += "</ul>";
 
                             $(".menu-container .search-cc .search-autocomplete-box").html(search_data);
+                            $('.loader').hide();
 
                         } else {
                             $(".menu-container .search-cc .search-autocomplete-box").html('');
                             $(".menu-container .search-cc .search-autocomplete-box").hide();
+                            $('.loader').hide();
                         }
 
                     });
+
                 } else {
                     $(".menu-container .search-cc .search-autocomplete-box").html('');
                     $(".menu-container .search-cc .search-autocomplete-box").hide();
+                    $('.loader').hide();
+
                 }
             });
 

@@ -982,8 +982,9 @@ class AgentsController extends Controller {
         $agent_id = Yii::app()->request->getParam('agent_id');
 
         $comments = '';
+        $title = '';
         $comments = Yii::app()->request->getParam('comments');
-
+        $title = Yii::app()->request->getParam('title');
 
         $json = array();
 
@@ -994,29 +995,38 @@ class AgentsController extends Controller {
             if (AES256CBC_STATUS == 1) {
                 $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
             }
+
             $agent_id_check = Agents::model()->findByAttributes(array("id" => $agent_id));
-
-            $agent_feedback_check = Appfeedbacks::model()->findByAttributes(array("agent_id" => $agent_id));
             if (!count($agent_id_check)) {
-                $response = 'Invalid agent';
-            } else {
-                if (!count($agent_feedback_check)) {
-                    $washfeedbackdata = array(
-                        'agent_id' => $agent_id,
-                        'comments' => $comments
-                    );
+                $json = array(
+                    'result' => "false",
+                    'response' => "agent not exist",
+                );
 
-                    Yii::app()->db->createCommand()->insert('app_feedbacks', $washfeedbackdata);
-                } else {
-                    $washfeedbackdata = array(
-                        'agent_id' => $agent_id,
-                        'comments' => $comments
-                    );
-                    $washfeedbackmodel = new Appfeedbacks;
+                echo json_encode($json);
+                die();
+            }
+            $agent_feedback_check = Appfeedbacks::model()->findByAttributes(array("agent_id" => $agent_id));
 
-                    $washfeedbackmodel->attributes = $washfeedbackdata;
-                    $washfeedbackmodel->updateAll($washfeedbackdata, 'agent_id=:agent_id', array(':agent_id' => $agent_id));
-                }
+            if ($agent_id_check) {
+
+                $washfeedbackdata = array(
+                    'agent_id' => $agent_id,
+                    'comments' => $comments,
+                    'title' => $title,
+                );
+
+                Yii::app()->db->createCommand()->insert('app_feedbacks', $washfeedbackdata);
+//                } else {
+//                    $washfeedbackdata = array(
+//                        'agent_id' => $agent_id,
+//                        'comments' => $comments
+//                    );
+//                    $washfeedbackmodel = new Appfeedbacks;
+//
+//                    $washfeedbackmodel->attributes = $washfeedbackdata;
+//                    $washfeedbackmodel->updateAll($washfeedbackdata, 'agent_id=:agent_id', array(':agent_id' => $agent_id));
+//                }
 
                 $result = 'true';
                 $response = "Feeback added";
@@ -1027,9 +1037,11 @@ class AgentsController extends Controller {
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Washer App Feedback</h2>
 <p><b>Washer Name:</b> " . $agent_id_check->first_name . " " . $agent_id_check->last_name . "</p>
 <p><b>Washer Email:</b> " . $agent_id_check->email . "</p>
+<p><b>Title:</b> " . $title . "</p>
 <p><b>Comments:</b> " . $comments . "</p>";
 
-                $to = Vargas::Obj()->getAdminToEmail();
+                //$to = Vargas::Obj()->getAdminToEmail();
+                $to = Vargas::Obj()->getAdminToEmailFeedBack();
                 $from = Vargas::Obj()->getAdminFromEmail();
 
                 Vargas::Obj()->SendMail($to, $from, $message, "Washer App Feedback", 'mail-receipt');
