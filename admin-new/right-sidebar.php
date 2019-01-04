@@ -704,7 +704,8 @@
                                     <span class="title">Washer Feed</span>
                                 </a>
                             </li>
-
+<?php endif; ?>
+<?php if (($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
                             <li class="nav-item  <?php
                             if ($url == 'top-washers.php') {
                                 $open_agent = 'open';
