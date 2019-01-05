@@ -68,10 +68,10 @@ request.post({
   body:    "key="+key+"&wash_request_id="+wash_request_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
 }, function(error, response, body){
  //console.log(JSON.parse(body));
-  /*console.log('ondemand alert'+" "+wash_request_id+" apikey "+key);
+  console.log('ondemand alert'+" "+wash_request_id+" apikey "+key);
    console.log("body "+body);
   console.log("res "+response);
-  console.log("err "+error);*/
+  console.log("err "+error);
  //console.log('pendingwash func');
 //io.emit('get pendingwashesdetails', JSON.parse(body));
 });
@@ -422,7 +422,7 @@ else{
   });
   
     socket.on('currentwashondemandalert', function(data){
-      //console.log(data);
+      console.log(data);
     washing_currentwashondemandalert(data.wash_request_id, data.key, data.socketId, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
   

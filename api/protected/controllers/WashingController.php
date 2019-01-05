@@ -14427,7 +14427,7 @@ $message .= "<div style='margin-top: 20px; text-align: center;'>
                 }
 
                 Washingrequests::model()->updateByPk($wash_request_id, array("ondemand_create_push_sent" => 1));
-		//file_put_contents("ondemandnotify_log",$wash_request_id."\r\n",FILE_APPEND);
+		file_put_contents("ondemandnotify_log",$wash_request_id."\r\n",FILE_APPEND);
             }
         }
     }
