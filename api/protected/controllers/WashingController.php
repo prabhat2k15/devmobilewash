@@ -2920,6 +2920,12 @@ class WashingController extends Controller {
             if (($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id)) {
                 $result = 'false';
                 $response = 'Sorry, this order is already assigned to another washer';
+		
+		Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE agent_id = :agent_id AND wash_request_id = :wash_request_id AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")
+                ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+		->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+                ->execute();
+		
                 $json = array('result' => $result, 'response' => $response);
                 echo json_encode($json);
                 die();
@@ -3151,6 +3157,12 @@ class WashingController extends Controller {
                     if (($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id)) {
                         $result = 'false';
                         $response = 'Sorry, this order is already taken by another washer';
+			
+			Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE agent_id = :agent_id AND wash_request_id = :wash_request_id AND action = 'savejob' ORDER BY action_date DESC LIMIT 1")
+                ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+		->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+                ->execute();
+
                         $json = array('result' => $result, 'response' => $response);
                         echo json_encode($json);
                         die();
@@ -8831,14 +8843,14 @@ class WashingController extends Controller {
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        if (!$token_check) {
+        /*if (!$token_check) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }
+        }*/
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $status = Yii::app()->request->getParam('status');
@@ -8991,6 +9003,35 @@ class WashingController extends Controller {
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 }
             } else {
+		if (($wrequest_id_check->is_scheduled == 1) && ($status == 6)){
+		$sched_time = '';
+		$sched_date = '';
+                    if ($wrequest_id_check->reschedule_time) {
+                        $sched_date = $wrequest_id_check->reschedule_date;
+                        $sched_time = $wrequest_id_check->reschedule_time;
+                    } else {
+                        $sched_date = $wrequest_id_check->schedule_date;
+                        $sched_time = $wrequest_id_check->schedule_time;
+                    }
+
+                    $scheduledatetime = $sched_date . " " . $sched_time;
+                    $to_time = strtotime(date('Y-m-d g:i A'));
+                    $from_time = strtotime($scheduledatetime);
+                    $min_diff = 0;
+
+                    $min_diff = round(($from_time - $to_time) / 60, 2);
+		    
+		    if($min_diff <= 60){
+			 $json = array(
+			'result' => 'false',
+			'response' => "You may not cancel a scheduled order within 1 hour of start time. If you must cancel due to emergency, please contact MobileWash at (888) 209-5585"
+			);
+
+			echo json_encode($json);
+			die();
+		    }
+	
+		}
                 if (($wrequest_id_check->status > 1) && ($wrequest_id_check->status <= 3)) {
 
                     $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $wrequest_id_check->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
