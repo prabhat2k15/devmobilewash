@@ -6542,6 +6542,44 @@ class AgentsController extends Controller {
                                 $premprice = intval($jsondata->plans->premium[0]->wash_time);
                                 $washtime += $premprice;
                             }
+			    
+			         /* --- addons time ----- */
+
+
+
+                    $pet_hair_vehicles_arr = explode(",", $schedwash['pet_hair_vehicles']);
+                    if (in_array($car, $pet_hair_vehicles_arr))
+                        $washtime += 5;
+
+                    $lifted_vehicles_arr = explode(",", $schedwash['lifted_vehicles']);
+                    if (in_array($car, $lifted_vehicles_arr))
+                        $washtime += 5;
+
+                    $exthandwax_vehicles_arr = explode(",", $schedwash['exthandwax_vehicles']);
+                    if (in_array($car, $exthandwax_vehicles_arr))
+                        $washtime += 10;
+
+                    $extplasticdressing_vehicles_arr = explode(",", $schedwash['extplasticdressing_vehicles']);
+                    if (in_array($car, $extplasticdressing_vehicles_arr))
+                        $washtime += 5;
+
+                    $extclaybar_vehicles_arr = explode(",", $schedwash['extclaybar_vehicles']);
+                    if (in_array($car, $extclaybar_vehicles_arr))
+                        $washtime += 15;
+
+                    $waterspotremove_vehicles_arr = explode(",", $schedwash['waterspotremove_vehicles']);
+                    if (in_array($car, $waterspotremove_vehicles_arr))
+                        $washtime += 10;
+
+                    $upholstery_vehicles_arr = explode(",", $schedwash['upholstery_vehicles']);
+                    if (in_array($car, $upholstery_vehicles_arr))
+                        $washtime += 10;
+
+                    $floormat_vehicles_arr = explode(",", $schedwash['floormat_vehicles']);
+                    if (in_array($car, $floormat_vehicles_arr))
+                        $washtime += 10;
+
+                    /* --- addons time end ----- */
                         }
 
                         //$washtime += 30;
