@@ -630,10 +630,10 @@
                             }
                             ?>">
                                 <a href="<?php echo ROOT_URL; ?>/admin-new/mobilewasher-service-feedbacks.php" class="nav-link ">
-                                    <span class="title">MobileWasher Service Feedbacks</span>
+                                    <span class="title">Customer 3 Hour Email Feedbacks</span>
                                 </a>
                             </li>
-                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }                      ?>">
+                            <!--<li class="nav-item  <?php //if($url == 'customer-notifications.php') { $open_agent = 'open'; echo 'active open'; }                          ?>">
                                 <a href="customer-notifications.php" class="nav-link ">
                                     <span class="title">Customer Push Notifications</span>
                                 </a>
@@ -704,8 +704,8 @@
                                     <span class="title">Washer Feed</span>
                                 </a>
                             </li>
-<?php endif; ?>
-<?php if (($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
+                        <?php endif; ?>
+                        <?php if (($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
                             <li class="nav-item  <?php
                             if ($url == 'top-washers.php') {
                                 $open_agent = 'open';

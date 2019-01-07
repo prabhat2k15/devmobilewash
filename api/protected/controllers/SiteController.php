@@ -9062,7 +9062,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         
         die;
     }
-    
+
     public function actionupdatedevicestatus() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {

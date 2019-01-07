@@ -3209,8 +3209,8 @@ class CustomersController extends Controller {
                     }
 
                     if ($upgrade_pack == 2) {
-			
-			$old_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
+
+                        $old_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
 
                         $cust_vehicle_data = CustomerDraftVehicle::model()->findByAttributes(array("id" => $draft_vehicle_id));
 
@@ -3222,50 +3222,51 @@ class CustomersController extends Controller {
                         $cars_arr_up = explode(",", $wash_request_exists->car_list);
                         $packs_arr_up = explode(",", $wash_request_exists->package_list);
                         $carkey = array_search($vehicle_id, $cars_arr_up);
-			$log_detail_olddata = "(".$packs_arr_up[$carkey]." w/";
-			$log_addon_detail_olddata = "";
+                        $log_detail_olddata = "(" . $packs_arr_up[$carkey] . " w/";
+                        $log_addon_detail_olddata = "";
 
                         /* -------- pet hair / lift / addons check --------- */
-			
-			if ($old_vehicle_data->pet_hair) {
-			$log_addon_detail_olddata .= "Extra cleaning, ";	
-			}
-			
-			if ($old_vehicle_data->lifted_vehicle) {
-			$log_addon_detail_olddata .= "Lifted, ";	
-			}
-			
-			if ($old_vehicle_data->exthandwax_addon) {
-			$log_addon_detail_olddata .= "Wax, ";	
-			}
-			
-			if ($old_vehicle_data->extplasticdressing_addon) {
-			$log_addon_detail_olddata .= "Dressing, ";	
-			}
-			
-			if ($old_vehicle_data->extclaybar_addon) {
-			$log_addon_detail_olddata .= "Clay bar, ";	
-			}
-			
-			if ($old_vehicle_data->waterspotremove_addon) {
-			$log_addon_detail_olddata .= "Water spot, ";	
-			}
-			
-			if ($old_vehicle_data->upholstery_addon) {
-			$log_addon_detail_olddata .= "Upholstery, ";	
-			}
-			
-			if ($old_vehicle_data->floormat_addon) {
-			$log_addon_detail_olddata .= "Floormat, ";	
-			}
-			
-			if(!$log_addon_detail_olddata) $log_addon_detail_olddata = " no addons";
-			$log_addon_detail_olddata = rtrim($log_addon_detail_olddata, ', ');
-			$log_detail_olddata .= " ".$log_addon_detail_olddata;
-			$log_detail_olddata = rtrim($log_detail_olddata, ', ');
-$log_detail_olddata = rtrim($log_detail_olddata, ' ');
 
-$log_detail_olddata = $log_detail_olddata.")";
+                        if ($old_vehicle_data->pet_hair) {
+                            $log_addon_detail_olddata .= "Extra cleaning, ";
+                        }
+
+                        if ($old_vehicle_data->lifted_vehicle) {
+                            $log_addon_detail_olddata .= "Lifted, ";
+                        }
+
+                        if ($old_vehicle_data->exthandwax_addon) {
+                            $log_addon_detail_olddata .= "Wax, ";
+                        }
+
+                        if ($old_vehicle_data->extplasticdressing_addon) {
+                            $log_addon_detail_olddata .= "Dressing, ";
+                        }
+
+                        if ($old_vehicle_data->extclaybar_addon) {
+                            $log_addon_detail_olddata .= "Clay bar, ";
+                        }
+
+                        if ($old_vehicle_data->waterspotremove_addon) {
+                            $log_addon_detail_olddata .= "Water spot, ";
+                        }
+
+                        if ($old_vehicle_data->upholstery_addon) {
+                            $log_addon_detail_olddata .= "Upholstery, ";
+                        }
+
+                        if ($old_vehicle_data->floormat_addon) {
+                            $log_addon_detail_olddata .= "Floormat, ";
+                        }
+
+                        if (!$log_addon_detail_olddata)
+                            $log_addon_detail_olddata = " no addons";
+                        $log_addon_detail_olddata = rtrim($log_addon_detail_olddata, ', ');
+                        $log_detail_olddata .= " " . $log_addon_detail_olddata;
+                        $log_detail_olddata = rtrim($log_detail_olddata, ', ');
+                        $log_detail_olddata = rtrim($log_detail_olddata, ' ');
+
+                        $log_detail_olddata = $log_detail_olddata . ")";
 
                         if ($cust_vehicle_data->pet_hair) {
                             $pet_hair_vehicles_old = '';
@@ -3444,12 +3445,14 @@ $log_detail_olddata = $log_detail_olddata.")";
                             $floormat_addon_new = trim($floormat_addon_new, ",");
                             Washingrequests::model()->updateByPk($wash_request_id, array('floormat_vehicles' => $floormat_addon_new));
                         }
-			
-			if(!$log_addon_detail) $log_addon_detail = ' no add-ons';
+
+                        if (!$log_addon_detail)
+                            $log_addon_detail = ' no add-ons';
 
                         $log_addon_detail = rtrim($log_addon_detail, ', ');
-			
-			if($log_addon_detail != ' no add-ons') $log_addon_detail = " ".$log_addon_detail;
+
+                        if ($log_addon_detail != ' no add-ons')
+                            $log_addon_detail = " " . $log_addon_detail;
 
                         if ($cust_vehicle_data->wash_package == 'Premium') {
                             $surge_addon_arr = explode(",", $wash_request_exists->surge_price_vehicles);
@@ -3497,7 +3500,7 @@ $log_detail_olddata = $log_detail_olddata.")";
 
                         $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
 
-                        $log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " from " .$log_detail_olddata." to (". $cust_vehicle_data->wash_package . " w/" . $log_addon_detail.")";
+                        $log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " from " . $log_detail_olddata . " to (" . $cust_vehicle_data->wash_package . " w/" . $log_addon_detail . ")";
 
                         $logdata = array(
                             'wash_request_id' => $wash_request_id,
@@ -3550,62 +3553,63 @@ $log_detail_olddata = $log_detail_olddata.")";
 //Vehicle::model()->updateByPk($vehicle_id, array('pet_hair' => 0, 'lifted_vehicle' => 0, 'new_pack_name' => '', 'exthandwax_addon' => 0, 'extplasticdressing_addon' => 0, 'extclaybar_addon' => 0, 'waterspotremove_addon' => 0, 'upholstery_addon' => 0, 'floormat_addon' => 0));
 
                         $agent_detail = Agents::model()->findByPk($wash_request_exists->agent_id);
-			
-			$old_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
+
+                        $old_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
 
                         $cust_vehicle_data = CustomerDraftVehicle::model()->findByAttributes(array("id" => $draft_vehicle_id));
 
-                       
+
                         //$cust_vehicle_data = Vehicle::model()->findByPk($vehicle_id);
                         $log_addon_detail = "";
                         $log_detail = "";
                         $cars_arr_up = explode(",", $wash_request_exists->car_list);
                         $packs_arr_up = explode(",", $wash_request_exists->package_list);
                         $carkey = array_search($vehicle_id, $cars_arr_up);
-			$log_detail_olddata = "(".$packs_arr_up[$carkey]." w/";
-			$log_addon_detail_olddata = "";
+                        $log_detail_olddata = "(" . $packs_arr_up[$carkey] . " w/";
+                        $log_addon_detail_olddata = "";
 
                         /* -------- pet hair / lift / addons check --------- */
-			
-			if ($old_vehicle_data->pet_hair) {
-			$log_addon_detail_olddata .= "Extra cleaning, ";	
-			}
-			
-			if ($old_vehicle_data->lifted_vehicle) {
-			$log_addon_detail_olddata .= "Lifted, ";	
-			}
-			
-			if ($old_vehicle_data->exthandwax_addon) {
-			$log_addon_detail_olddata .= "Wax, ";	
-			}
-			
-			if ($old_vehicle_data->extplasticdressing_addon) {
-			$log_addon_detail_olddata .= "Dressing, ";	
-			}
-			
-			if ($old_vehicle_data->extclaybar_addon) {
-			$log_addon_detail_olddata .= "Clay bar, ";	
-			}
-			
-			if ($old_vehicle_data->waterspotremove_addon) {
-			$log_addon_detail_olddata .= "Water spot, ";	
-			}
-			
-			if ($old_vehicle_data->upholstery_addon) {
-			$log_addon_detail_olddata .= "Upholstery, ";	
-			}
-			
-			if ($old_vehicle_data->floormat_addon) {
-			$log_addon_detail_olddata .= "Floormat, ";	
-			}
-			
-			if(!$log_addon_detail_olddata) $log_addon_detail_olddata = " no addons";
-			$log_addon_detail_olddata = rtrim($log_addon_detail_olddata, ', ');
-			$log_detail_olddata .= " ".$log_addon_detail_olddata;
-			$log_detail_olddata = rtrim($log_detail_olddata, ', ');
-$log_detail_olddata = rtrim($log_detail_olddata, ' ');
 
-$log_detail_olddata = $log_detail_olddata.")";
+                        if ($old_vehicle_data->pet_hair) {
+                            $log_addon_detail_olddata .= "Extra cleaning, ";
+                        }
+
+                        if ($old_vehicle_data->lifted_vehicle) {
+                            $log_addon_detail_olddata .= "Lifted, ";
+                        }
+
+                        if ($old_vehicle_data->exthandwax_addon) {
+                            $log_addon_detail_olddata .= "Wax, ";
+                        }
+
+                        if ($old_vehicle_data->extplasticdressing_addon) {
+                            $log_addon_detail_olddata .= "Dressing, ";
+                        }
+
+                        if ($old_vehicle_data->extclaybar_addon) {
+                            $log_addon_detail_olddata .= "Clay bar, ";
+                        }
+
+                        if ($old_vehicle_data->waterspotremove_addon) {
+                            $log_addon_detail_olddata .= "Water spot, ";
+                        }
+
+                        if ($old_vehicle_data->upholstery_addon) {
+                            $log_addon_detail_olddata .= "Upholstery, ";
+                        }
+
+                        if ($old_vehicle_data->floormat_addon) {
+                            $log_addon_detail_olddata .= "Floormat, ";
+                        }
+
+                        if (!$log_addon_detail_olddata)
+                            $log_addon_detail_olddata = " no addons";
+                        $log_addon_detail_olddata = rtrim($log_addon_detail_olddata, ', ');
+                        $log_detail_olddata .= " " . $log_addon_detail_olddata;
+                        $log_detail_olddata = rtrim($log_detail_olddata, ', ');
+                        $log_detail_olddata = rtrim($log_detail_olddata, ' ');
+
+                        $log_detail_olddata = $log_detail_olddata . ")";
 
 
                         /* -------- pet hair / lift / addons check --------- */
@@ -3650,16 +3654,18 @@ $log_detail_olddata = $log_detail_olddata.")";
 
                             $log_addon_detail .= "Floormat, ";
                         }
-			
-			if(!$log_addon_detail) $log_addon_detail = ' no add-ons';
 
-                        $log_addon_detail = rtrim($log_addon_detail, ', ');
-			
-			if($log_addon_detail != ' no add-ons') $log_addon_detail = " ".$log_addon_detail;
+                        if (!$log_addon_detail)
+                            $log_addon_detail = ' no add-ons';
 
                         $log_addon_detail = rtrim($log_addon_detail, ', ');
 
-$log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " from " .$log_detail_olddata." to (". $cust_vehicle_data->wash_package . " w/" . $log_addon_detail.")";
+                        if ($log_addon_detail != ' no add-ons')
+                            $log_addon_detail = " " . $log_addon_detail;
+
+                        $log_addon_detail = rtrim($log_addon_detail, ', ');
+
+                        $log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " from " . $log_detail_olddata . " to (" . $cust_vehicle_data->wash_package . " w/" . $log_addon_detail . ")";
 
                         $logdata = array(
                             'wash_request_id' => $wash_request_id,
@@ -7491,7 +7497,7 @@ $log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_n
         $notes = Yii::app()->request->getParam('notes');
         $admin_username = '';
         $admin_username = Yii::app()->request->getParam('admin_username');
-	$force_logout = 0;
+        $force_logout = 0;
 
         $contact_number = preg_replace('/\D/', '', $contact_number);
 
@@ -7524,7 +7530,8 @@ $log_detail = $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_n
             }
 
 
-if($block_client == 1) $force_logout = 1;
+            if ($block_client == 1)
+                $force_logout = 1;
 
             if (($block_client == 1) && (APP_ENV == 'real')) {
                 $curl = curl_init();
@@ -7761,14 +7768,14 @@ if($block_client == 1) $force_logout = 1;
         $phone = Yii::app()->request->getParam('phone');
         $city = Yii::app()->request->getParam('city');
         $state = Yii::app()->request->getParam('state');
-        $zipcode = Yii::app()->request->getParam('zipcode'); 
+        $zipcode = Yii::app()->request->getParam('zipcode');
         $source = Yii::app()->request->getParam('source');
         $address = Yii::app()->request->getParam('address');
         $how_hear_mw = Yii::app()->request->getParam('how_hear_mw');
         $register_date = date("Y-m-d H:i:s");
         $result = 'false';
         $response = 'All fields are required';
-        
+
 
         if ((isset($name) && !empty($name)) && (isset($email) && !empty($email)) && (isset($phone) && !empty($phone)) && (isset($city) && !empty($city)) && (isset($state) && !empty($state))) {
 
@@ -7789,12 +7796,12 @@ if($block_client == 1) $force_logout = 1;
                 'city' => $city,
                 'state' => $state,
                 'zipcode' => $zipcode,
-                'address' =>$address,
-                'source'=>$source,
+                'address' => $address,
+                'source' => $source,
                 'register_date' => $register_date,
                 'how_hear_mw' => ''
             );
-            
+
             $model = new PreRegClients;
             $model->attributes = $clientdata;
             $model->save(false);
@@ -10874,23 +10881,23 @@ if($block_client == 1) $force_logout = 1;
             echo "Invalid api key";
             die();
         }
-	
-	 $api_token = Yii::app()->request->getParam('api_token');		
-	        $t1 = Yii::app()->request->getParam('t1');		
-	        $t2 = Yii::app()->request->getParam('t2');		
-	        $user_type = Yii::app()->request->getParam('user_type');		
-	        $user_id = Yii::app()->request->getParam('user_id');		
-			
-	        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);		
-			
-	        if (!$token_check) {		
-	            $json = array(		
-	                'result' => 'false',		
-	                'response' => 'Invalid request'		
-	            );		
-	            echo json_encode($json);		
-	            die();		
-	        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
 
         $customer_id = Yii::app()->request->getParam('customer_id');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
@@ -11040,23 +11047,23 @@ if($block_client == 1) $force_logout = 1;
             echo "Invalid api key";
             die();
         }
-	
-	 $api_token = Yii::app()->request->getParam('api_token');		
- $t1 = Yii::app()->request->getParam('t1');		
-	        $t2 = Yii::app()->request->getParam('t2');		
-	        $user_type = Yii::app()->request->getParam('user_type');		
-	        $user_id = Yii::app()->request->getParam('user_id');		
-			
-	        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);		
-			
-	        if (!$token_check) {		
-	            $json = array(		
-	                'result' => 'false',		
-	                'response' => 'Invalid request'		
-	            );		
-	            echo json_encode($json);		
-	            die();		
-	        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
 
         $customer_id = Yii::app()->request->getParam('customer_id');
         $total = Yii::app()->request->getParam('total');
@@ -12336,20 +12343,21 @@ if($block_client == 1) $force_logout = 1;
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        /*if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }*/
+        /* if (!$token_check) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $comments = '';
         $comments = Yii::app()->request->getParam('comments');
         $ratings = '';
-        if(Yii::app()->request->getParam('ratings')) $ratings = Yii::app()->request->getParam('ratings');
+        if (Yii::app()->request->getParam('ratings'))
+            $ratings = Yii::app()->request->getParam('ratings');
         $fb_id = '';
         $fb_id = Yii::app()->request->getParam('fb_id');
 
@@ -12360,7 +12368,7 @@ if($block_client == 1) $force_logout = 1;
         $response = 'Pass the required parameters';
 
         if (isset($wash_request_id) && !empty($wash_request_id)) {
-		$wash_request_id = $this->aes256cbc_crypt( $wash_request_id, 'd', AES256CBC_API_PASS );
+            $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
             $washrequest_id_check = Washingrequests::model()->findByAttributes(array("id" => $wash_request_id));
 
             if (!count($washrequest_id_check)) {
@@ -12372,25 +12380,26 @@ if($block_client == 1) $force_logout = 1;
                         ->queryAll();
 
                 $customers_id_check = Customers::model()->findByAttributes(array("id" => $washrequest_id_check->customer_id));
-		$agent_id_check = Agents::model()->findByAttributes(array("id" => $washrequest_id_check->agent_id));
+                $agent_id_check = Agents::model()->findByAttributes(array("id" => $washrequest_id_check->agent_id));
 
                 if (count($cust_feedback_check)) {
                     Yii::app()->db->createCommand("UPDATE washing_feedbacks SET customer_comments=:comments WHERE wash_request_id = :wash_request_id ")
                             ->bindValue(':comments', $comments, PDO::PARAM_STR)
-                            
                             ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
                             ->execute();
-if(is_numeric($cust_feedback_check[0]['customer_ratings'])) $logcomment = $comments." (Ratings: ".$cust_feedback_check[0]['customer_ratings'].")";
-else $logcomment = $comments;
-                $washeractionlogdata= array(
-                            'agent_id'=> $washrequest_id_check->agent_id,
-                            'wash_request_id'=> $wash_request_id,
-                            'action'=> 'customerfeedback',
-			    'addi_detail' => $logcomment,
-                            'action_date'=> date('Y-m-d H:i:s'));
+                    if (is_numeric($cust_feedback_check[0]['customer_ratings']))
+                        $logcomment = $comments . " (Ratings: " . $cust_feedback_check[0]['customer_ratings'] . ")";
+                    else
+                        $logcomment = $comments;
+                    $washeractionlogdata = array(
+                        'agent_id' => $washrequest_id_check->agent_id,
+                        'wash_request_id' => $wash_request_id,
+                        'action' => 'customerfeedback',
+                        'addi_detail' => $logcomment,
+                        'action_date' => date('Y-m-d H:i:s'));
 
-                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
-		}
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                }
 
                 $result = 'true';
                 $response = "Feeback added";
@@ -12405,40 +12414,41 @@ else $logcomment = $comments;
 <p><b>Customer Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
 <p><b>Customer Email:</b> " . $customers_id_check->email . "</p>
 <p><b>Customer Phone:</b> " . $customers_id_check->contact_number . "</p>
-<p><b>Washer Name & Badge:</b> " . $agent_id_check->first_name." ".$agent_id_check->last_name." (#".$agent_id_check->real_washer_id . ")</p>
+<p><b>Washer Name & Badge:</b> " . $agent_id_check->first_name . " " . $agent_id_check->last_name . " (#" . $agent_id_check->real_washer_id . ")</p>
 <p><b>Comments:</b> " . $comments . "</p>";
 
                 $to = Vargas::Obj()->getAdminToEmail();
                 $from = Vargas::Obj()->getAdminFromEmail();
 
-                if(APP_ENV == 'real') Vargas::Obj()->SendMail('feedback@mobilewash.com', $from, $message, "Customer 3 Hour Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
-		else Vargas::Obj()->SendMail('mobilewash8@gmail.com', $from, $message, "Customer 3 Hour Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
-		
-		if(((APP_ENV == 'real') || (APP_ENV == '')) && (!$customers_id_check->block_client) && ($customers_id_check->sms_control)){
- $this->layout = "xmlLayout";
+                if (APP_ENV == 'real')
+                    Vargas::Obj()->SendMail('feedback@mobilewash.com', $from, $message, "Customer 3 Hour Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
+                else
+                    Vargas::Obj()->SendMail('mobilewash8@gmail.com', $from, $message, "Customer 3 Hour Feedback - Order #0000" . $wash_request_id, 'mail-receipt');
 
-            //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+                if (((APP_ENV == 'real') || (APP_ENV == '')) && (!$customers_id_check->block_client) && ($customers_id_check->sms_control)) {
+                    $this->layout = "xmlLayout";
 
-             require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
-                require_once(ROOT_WEBFOLDER.'/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+                    //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-            $account_sid = TWILIO_SID;
-            $auth_token = TWILIO_AUTH_TOKEN;
-            $client = new Services_Twilio($account_sid, $auth_token);
+                    require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                    require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
- $message = "Thank you for entering to win a FREE Deluxe Wash from MobileWash! We'll notify you if you've been selected as the winner! Message and data rates may apply.";
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
+                    $client = new Services_Twilio($account_sid, $auth_token);
 
-           try {
-             $sendmessage = $client->account->messages->create(array(
-                'To' =>  $customers_id_check->contact_number,
-                'From' => '+13108890719',
-                'Body' => $message,
-            ));
-	      }catch (Services_Twilio_RestException $e) {
-            //echo  $e;
-}
+                    $message = "Thank you for entering to win a FREE Deluxe Wash from MobileWash! We'll notify you if you've been selected as the winner! Message and data rates may apply.";
 
-	    }
+                    try {
+                        $sendmessage = $client->account->messages->create(array(
+                            'To' => $customers_id_check->contact_number,
+                            'From' => '+13108890719',
+                            'Body' => $message,
+                        ));
+                    } catch (Services_Twilio_RestException $e) {
+                        //echo  $e;
+                    }
+                }
             }
         }
 
@@ -12475,24 +12485,32 @@ else $logcomment = $comments;
             die();
         }
 
-        $feedbacks = Yii::app()->db->createCommand("SELECT * FROM mobilewasher_service_feedbacks")->queryAll();
+        $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedbacks.*,agents.agentname,customer_locations.*,customers.customername,customers.email,customers.contact_number FROM mobilewasher_service_feedbacks Left JOIN customers ON mobilewasher_service_feedbacks.customer_id=customers.id JOIN customer_locations ON customer_locations.customer_id=customers.id JOIN agents ON mobilewasher_service_feedbacks.agent_id=agents.id WHERE customer_locations.location_title='Home' ")->queryAll();
 
-        $i = 0;
-        foreach ($feedbacks as $feedback) {
-            $i++;
+//        $i = 0;
+//        foreach ($feedbacks as $feedback) {
+//            $i++;
+//
+//            $json = array();
+//            $json['id'] = $feedback['id'];
+//            $json['washingid'] = $feedback['wash_request_id'];
+//            $json['customer_comments'] = $feedback['comments'];
+//            $json['customername'] = $feedback['customername'];
+//            $json['location_address'] = $feedback['location_address'];
+//            $json['city'] = $feedback['city'];
+//            $json['state'] = $feedback['state'];
+//            $json['zipcode'] = $feedback['zipcode'];
+//            $json['email'] = $feedback['email'];
+//            $json['contact_number'] = $feedback['contact_number'];
+//            $json['customer_comments'] = $feedback['comments'];
+//            $json['customer_ratings'] = $feedback['ratings'];
+//            $json['customer_id'] = $feedback['customer_id'];
+//            $json['agent_id'] = $feedback['agent_id'];
+//            $json['customer_social_id'] = $feedback['social_id'];
+//            $feedview[] = $json;
+//        }
 
-            $json = array();
-            $json['id'] = $feedback['id'];
-            $json['washingid'] = $feedback['wash_request_id'];
-            $json['customer_comments'] = $feedback['comments'];
-            $json['customer_ratings'] = $feedback['ratings'];
-            $json['customer_id'] = $feedback['customer_id'];
-            $json['agent_id'] = $feedback['agent_id'];
-            $json['customer_social_id'] = $feedback['social_id'];
-            $feedview[] = $json;
-        }
-
-        $feedbackadmin['order'] = $feedview;
+        $feedbackadmin['order'] = $feedbacks;
 
         echo json_encode($feedbackadmin, JSON_PRETTY_PRINT);
         exit;
@@ -12523,7 +12541,7 @@ else $logcomment = $comments;
             'phone' => $_POST['phone-number'],
             'city' => $_POST['city'],
             'state' => $_POST['state'],
-	    'zipcode' => $_POST['pre_zipcode'],
+            'zipcode' => $_POST['pre_zipcode'],
             'register_date' => date('Y-m-d H:i:s'),
             'trash_status' => 0
         );
@@ -12883,70 +12901,69 @@ else $logcomment = $comments;
             die;
         }
     }
-    
-        
-        public function actionsendnonreturnemails() {
+
+    public function actionsendnonreturnemails() {
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
         }
 
-	/*$json_str = file_get_contents('php://input');
+        /* $json_str = file_get_contents('php://input');
 
-# Get as an object
-$json_obj = json_decode($json_str);
-$url = $json_obj->SubscribeURL;
-mail("nazmur_r@yahoo.com", "test", $url);
+          # Get as an object
+          $json_obj = json_decode($json_str);
+          $url = $json_obj->SubscribeURL;
+          mail("nazmur_r@yahoo.com", "test", $url);
 
-exit;*/
+          exit; */
 
-$clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1), array('order' => 'id DESC', 'limit' => 50));
+        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1), array('order' => 'id DESC', 'limit' => 50));
 
 
-if(count($clientlist)){
-	$subject = '';
-	$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
-	$sender_email = 'MobileWash <admin@mobilewash.com>';
+        if (count($clientlist)) {
+            $subject = '';
+            $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+            $sender_email = 'MobileWash <admin@mobilewash.com>';
 
-                        $SesClient = SesClient::factory(array(
-                                    'credentials' => $aws_credentials,
-                                    'region' => 'us-west-2',
-                                    'version' => 'latest'
-                        ));
-	foreach($clientlist as $client){
-		
-		if($client->nonreturn_cat == 30){
-		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
-                    ->bindValue(':notify_cat', 'non-return-31st-day', PDO::PARAM_STR)
-                    ->queryAll();
-		    $subject = "It's Time for a Shine! Treat Yourself!";
-		}
-		
-		if($client->nonreturn_cat == 60){
-		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
-                    ->bindValue(':notify_cat', 'non-return-61st-day', PDO::PARAM_STR)
-                    ->queryAll();
-		    $subject = "It's been a while!";
-		}
-		
-		if($client->nonreturn_cat == 90){
-		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
-                    ->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
-                    ->queryAll();
-		    $subject = "You've missed a lot in the last few months!";
-		}
-		
-		    
-		$recipient_emails = array();
-		array_push($recipient_emails,$client->email);
+            $SesClient = SesClient::factory(array(
+                        'credentials' => $aws_credentials,
+                        'region' => 'us-west-2',
+                        'version' => 'latest'
+            ));
+            foreach ($clientlist as $client) {
+
+                if ($client->nonreturn_cat == 30) {
+                    $notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+                            ->bindValue(':notify_cat', 'non-return-31st-day', PDO::PARAM_STR)
+                            ->queryAll();
+                    $subject = "It's Time for a Shine! Treat Yourself!";
+                }
+
+                if ($client->nonreturn_cat == 60) {
+                    $notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+                            ->bindValue(':notify_cat', 'non-return-61st-day', PDO::PARAM_STR)
+                            ->queryAll();
+                    $subject = "It's been a while!";
+                }
+
+                if ($client->nonreturn_cat == 90) {
+                    $notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+                            ->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
+                            ->queryAll();
+                    $subject = "You've missed a lot in the last few months!";
+                }
+
+
+                $recipient_emails = array();
+                array_push($recipient_emails, $client->email);
 
 // Specify a configuration set. If you do not want to use a configuration
 // set, comment the following variable, and the
 // 'ConfigurationSetName' => $configuration_set argument below.
-$configuration_set = 'test';
+                $configuration_set = 'test';
 
-$plaintext_body = 'MobileWash' ;
-$html_body =  "<html>
+                $plaintext_body = 'MobileWash';
+                $html_body = "<html>
 <head></head>
 <body style='margin: 0; padding: 0;'>
 <div style='/*background: #c6c6c6;*/ width: 100%; height: 100%; /*padding-top: 50px;*/'>
@@ -12962,126 +12979,122 @@ $html_body =  "<html>
                 <div style='clear: both;'></div>
                 </div>
                 <div style='background: #fff; padding: 20px; font-size: 16px; font-family: arial, sans-serif; line-height: 26px;'>";
-               $html_body .= "<img src='".ROOT_URL."/admin-new/images/cust-spec-notify-img/".$notify_check[0]['email_image_url']."' />";
+                $html_body .= "<img src='" . ROOT_URL . "/admin-new/images/cust-spec-notify-img/" . $notify_check[0]['email_image_url'] . "' />";
                 $html_body .= "</div>
 </div>
 <p style='text-align: center; font-size: 16px; font-family: arial, sans-serif; line-height: 20px; margin: 12px auto; padding-bottom: 25px; margin-top: 20px;'>Thank you for choosing MobileWash!</p>
 
-<p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; ".date("Y")." MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
+<p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; " . date("Y") . " MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
 </div>
 </body>
 </html>";
-$char_set = 'UTF-8';
+                $char_set = 'UTF-8';
 
-try {
-    $result = $SesClient->sendEmail([
-        'Destination' => [
-            'ToAddresses' => $recipient_emails,
-        ],
-        'ReplyToAddresses' => [$sender_email],
-        'Source' => $sender_email,
-        'Message' => [
-          'Body' => [
-              'Html' => [
-                  'Charset' => $char_set,
-                  'Data' => $html_body,
-              ],
-              /*'Text' => [
-                  'Charset' => $char_set,
-                  'Data' => $plaintext_body,
-              ],*/
-          ],
-          'Subject' => [
-              'Charset' => $char_set,
-              'Data' => $subject,
-          ],
-        ],
-        // If you aren't using a configuration set, comment or delete the
-        // following line
-       'ConfigurationSetName' => $configuration_set,
-    ]);
-    $messageId = $result['MessageId'];
-    //echo $client->id." msg id: ".$messageId."<br>";
-   Customers::model()->updateByPk($client->id, array('nonreturn_email_delivery_pending' => 0));
-} catch (AwsException $e) {
-	//echo $client->id."<br>";
-	 //echo $e->getMessage();
-    //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
-    //echo "\n";
-
-}
-		
-	}
-}
-
-
-
+                try {
+                    $result = $SesClient->sendEmail([
+                        'Destination' => [
+                            'ToAddresses' => $recipient_emails,
+                        ],
+                        'ReplyToAddresses' => [$sender_email],
+                        'Source' => $sender_email,
+                        'Message' => [
+                            'Body' => [
+                                'Html' => [
+                                    'Charset' => $char_set,
+                                    'Data' => $html_body,
+                                ],
+                            /* 'Text' => [
+                              'Charset' => $char_set,
+                              'Data' => $plaintext_body,
+                              ], */
+                            ],
+                            'Subject' => [
+                                'Charset' => $char_set,
+                                'Data' => $subject,
+                            ],
+                        ],
+                        // If you aren't using a configuration set, comment or delete the
+                        // following line
+                        'ConfigurationSetName' => $configuration_set,
+                    ]);
+                    $messageId = $result['MessageId'];
+                    //echo $client->id." msg id: ".$messageId."<br>";
+                    Customers::model()->updateByPk($client->id, array('nonreturn_email_delivery_pending' => 0));
+                } catch (AwsException $e) {
+                    //echo $client->id."<br>";
+                    //echo $e->getMessage();
+                    //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
+                    //echo "\n";
+                }
+            }
+        }
     }
-    
-            public function actionsendinactivecustemails() {
+
+    public function actionsendinactivecustemails() {
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
         }
 
-	/*$json_str = file_get_contents('php://input');
+        /* $json_str = file_get_contents('php://input');
 
-# Get as an object
-$json_obj = json_decode($json_str);
-$url = $json_obj->SubscribeURL;
-mail("nazmur_r@yahoo.com", "test", $url);
+          # Get as an object
+          $json_obj = json_decode($json_str);
+          $url = $json_obj->SubscribeURL;
+          mail("nazmur_r@yahoo.com", "test", $url);
 
-exit;*/
+          exit; */
 
-$clientlist = Customers::model()->findAllByAttributes(array('is_inactive' => 1, 'inactive_email_delivery_pending' => 1), array('order' => 'id DESC', 'limit' => 50));
+        $clientlist = Customers::model()->findAllByAttributes(array('is_inactive' => 1, 'inactive_email_delivery_pending' => 1), array('order' => 'id DESC', 'limit' => 50));
 
-if(count($clientlist)){
-	$subject = '';
-	$aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
-	$sender_email = 'MobileWash <admin@mobilewash.com>';
+        if (count($clientlist)) {
+            $subject = '';
+            $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+            $sender_email = 'MobileWash <admin@mobilewash.com>';
 
-                        $SesClient = SesClient::factory(array(
-                                    'credentials' => $aws_credentials,
-                                    'region' => 'us-west-2',
-                                    'version' => 'latest'
-                        ));
-	foreach($clientlist as $client){
-		
-		if(!$client->email) continue;
-		//echo $client->id."<br>";
-		
-		if($client->inactive_cat == 5){
-		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
-                    ->bindValue(':notify_cat', 'inactive-6th-day', PDO::PARAM_STR)
-                    ->queryAll();
-		    $subject = "Forget Something?";
-		}
-		
-		if($client->inactive_cat == 10){
-		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
-                    ->bindValue(':notify_cat', 'inactive-11th-day', PDO::PARAM_STR)
-                    ->queryAll();
-		    $subject = "Go ahead. \"Tap\" that app.";
-		}
-		
-		if($client->inactive_cat == 30){
-		$notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
-                    ->bindValue(':notify_cat', 'inactive-31st-day', PDO::PARAM_STR)
-                    ->queryAll();
-		    $subject = "There's Still Time!";
-		}
-		
-		    
-		$recipient_emails = array();
-		array_push($recipient_emails,$client->email);
+            $SesClient = SesClient::factory(array(
+                        'credentials' => $aws_credentials,
+                        'region' => 'us-west-2',
+                        'version' => 'latest'
+            ));
+            foreach ($clientlist as $client) {
+
+                if (!$client->email)
+                    continue;
+                //echo $client->id."<br>";
+
+                if ($client->inactive_cat == 5) {
+                    $notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+                            ->bindValue(':notify_cat', 'inactive-6th-day', PDO::PARAM_STR)
+                            ->queryAll();
+                    $subject = "Forget Something?";
+                }
+
+                if ($client->inactive_cat == 10) {
+                    $notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+                            ->bindValue(':notify_cat', 'inactive-11th-day', PDO::PARAM_STR)
+                            ->queryAll();
+                    $subject = "Go ahead. \"Tap\" that app.";
+                }
+
+                if ($client->inactive_cat == 30) {
+                    $notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+                            ->bindValue(':notify_cat', 'inactive-31st-day', PDO::PARAM_STR)
+                            ->queryAll();
+                    $subject = "There's Still Time!";
+                }
+
+
+                $recipient_emails = array();
+                array_push($recipient_emails, $client->email);
 
 // Specify a configuration set. If you do not want to use a configuration
 // set, comment the following variable, and the
 // 'ConfigurationSetName' => $configuration_set argument below.
-$configuration_set = 'inactivecustemail';
+                $configuration_set = 'inactivecustemail';
 
-$plaintext_body = 'MobileWash' ;
-$html_body =  "<html>
+                $plaintext_body = 'MobileWash';
+                $html_body = "<html>
 <head></head>
 <body style='margin: 0; padding: 0;'>
 <div style='/*background: #c6c6c6;*/ width: 100%; height: 100%; /*padding-top: 50px;*/'>
@@ -13097,64 +13110,59 @@ $html_body =  "<html>
                 <div style='clear: both;'></div>
                 </div>
                 <div style='background: #fff; padding: 20px; font-size: 16px; font-family: arial, sans-serif; line-height: 26px;'>";
-               $html_body .= "<img src='".ROOT_URL."/admin-new/images/cust-spec-notify-img/".$notify_check[0]['email_image_url']."' />";
+                $html_body .= "<img src='" . ROOT_URL . "/admin-new/images/cust-spec-notify-img/" . $notify_check[0]['email_image_url'] . "' />";
                 $html_body .= "</div>
 </div>
 <p style='text-align: center; font-size: 16px; font-family: arial, sans-serif; line-height: 20px; margin: 12px auto; padding-bottom: 25px; margin-top: 20px;'>Thank you for choosing MobileWash!</p>
 
-<p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; ".date("Y")." MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
+<p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; " . date("Y") . " MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
 </div>
 </body>
 </html>";
-$char_set = 'UTF-8';
+                $char_set = 'UTF-8';
 
-try {
-    $result = $SesClient->sendEmail([
-        'Destination' => [
-            'ToAddresses' => $recipient_emails,
-        ],
-        'ReplyToAddresses' => [$sender_email],
-        'Source' => $sender_email,
-        'Message' => [
-          'Body' => [
-              'Html' => [
-                  'Charset' => $char_set,
-                  'Data' => $html_body,
-              ],
-              /*'Text' => [
-                  'Charset' => $char_set,
-                  'Data' => $plaintext_body,
-              ],*/
-          ],
-          'Subject' => [
-              'Charset' => $char_set,
-              'Data' => $subject,
-          ],
-        ],
-        // If you aren't using a configuration set, comment or delete the
-        // following line
-       'ConfigurationSetName' => $configuration_set,
-    ]);
-    $messageId = $result['MessageId'];
-    //echo $client->id." msg id: ".$messageId."<br>";
-   Customers::model()->updateByPk($client->id, array('inactive_email_delivery_pending' => 0));
-} catch (AwsException $e) {
-	//echo "clinet id: ".$client->id." ";
-	 //echo $e->getMessage();
-	 //echo "<br>";
-    //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
-    //echo "\n";
-
-}
-		
-	}
-}
-
-
-
+                try {
+                    $result = $SesClient->sendEmail([
+                        'Destination' => [
+                            'ToAddresses' => $recipient_emails,
+                        ],
+                        'ReplyToAddresses' => [$sender_email],
+                        'Source' => $sender_email,
+                        'Message' => [
+                            'Body' => [
+                                'Html' => [
+                                    'Charset' => $char_set,
+                                    'Data' => $html_body,
+                                ],
+                            /* 'Text' => [
+                              'Charset' => $char_set,
+                              'Data' => $plaintext_body,
+                              ], */
+                            ],
+                            'Subject' => [
+                                'Charset' => $char_set,
+                                'Data' => $subject,
+                            ],
+                        ],
+                        // If you aren't using a configuration set, comment or delete the
+                        // following line
+                        'ConfigurationSetName' => $configuration_set,
+                    ]);
+                    $messageId = $result['MessageId'];
+                    //echo $client->id." msg id: ".$messageId."<br>";
+                    Customers::model()->updateByPk($client->id, array('inactive_email_delivery_pending' => 0));
+                } catch (AwsException $e) {
+                    //echo "clinet id: ".$client->id." ";
+                    //echo $e->getMessage();
+                    //echo "<br>";
+                    //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
+                    //echo "\n";
+                }
+            }
+        }
     }
-    
-        public function actionnonreturn20daynotify() {
+
+    public function actionnonreturn20daynotify() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -13169,38 +13177,38 @@ try {
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        /*if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }*/
-	
-	$agent_id = Yii::app()->request->getParam('agent_id');
-	$agent_lat = Yii::app()->request->getParam('agent_lat');
-	$agent_lng = Yii::app()->request->getParam('agent_lng');
-	
-	 if (AES256CBC_STATUS == 1) {
+        /* if (!$token_check) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
+
+        $agent_id = Yii::app()->request->getParam('agent_id');
+        $agent_lat = Yii::app()->request->getParam('agent_lat');
+        $agent_lng = Yii::app()->request->getParam('agent_lng');
+
+        if (AES256CBC_STATUS == 1) {
             $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
         }
 
- $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_20day_notify' => 0), array('limit' => 100));
-       // print_r($wash_id_check);
+        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_20day_notify' => 0), array('limit' => 100));
+        // print_r($wash_id_check);
         if (count($clientlist)) {
-		foreach($clientlist as $client){
-			$miles = 0;
-			$customer_lng = 0;
-			$customer_lat = 0;
-			$customerlocation = Yii::app()->db->createCommand("SELECT * FROM customer_live_locations WHERE customer_id = '" . $client->id . "'")->queryAll();
-			
-			if(count($customerlocation)){
-				$customer_lng = $customerlocation[0]['longitude'];
-				$customer_lat = $customerlocation[0]['latitude'];
-			}
-			
-			/* --------- distance calculation ------------ */
+            foreach ($clientlist as $client) {
+                $miles = 0;
+                $customer_lng = 0;
+                $customer_lat = 0;
+                $customerlocation = Yii::app()->db->createCommand("SELECT * FROM customer_live_locations WHERE customer_id = '" . $client->id . "'")->queryAll();
+
+                if (count($customerlocation)) {
+                    $customer_lng = $customerlocation[0]['longitude'];
+                    $customer_lat = $customerlocation[0]['latitude'];
+                }
+
+                /* --------- distance calculation ------------ */
 
                 $theta = $customer_lng - $agent_lng;
                 $dist = sin(deg2rad($customer_lat)) * sin(deg2rad($agent_lat)) + cos(deg2rad($customer_lat)) * cos(deg2rad($agent_lat)) * cos(deg2rad($theta));
@@ -13209,14 +13217,14 @@ try {
                 $miles = $dist * 60 * 1.1515;
                 $unit = strtoupper($unit);
 
-			/* --------- distance calculation end ------------ */
-		
-		if(($miles <= 10) && ($miles > 0)){
-		$pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '53' ")->queryAll();
-			$message = $pushmsg[0]['message'];
-			$customerdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $client->id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
-			foreach ($customerdevices as $ctdevice) {
-				$device_type = strtolower($ctdevice['device_type']);
+                /* --------- distance calculation end ------------ */
+
+                if (($miles <= 10) && ($miles > 0)) {
+                    $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '53' ")->queryAll();
+                    $message = $pushmsg[0]['message'];
+                    $customerdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $client->id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                    foreach ($customerdevices as $ctdevice) {
+                        $device_type = strtolower($ctdevice['device_type']);
                         $notify_token = $ctdevice['device_token'];
                         $alert_type = "default";
 
@@ -13231,17 +13239,12 @@ try {
 
                         if ($notify_msg)
                             $notifyresult = curl_exec($ch);
-                        curl_close($ch);	
-			}
-			Customers::model()->updateByPk($client->id, array("nonreturn_20day_notify" => 1));	
-		}
-		
-			
-		}
-            
+                        curl_close($ch);
+                    }
+                    Customers::model()->updateByPk($client->id, array("nonreturn_20day_notify" => 1));
+                }
+            }
         }
     }
-    
-    
 
 }

@@ -2920,12 +2920,12 @@ class WashingController extends Controller {
             if (($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id)) {
                 $result = 'false';
                 $response = 'Sorry, this order is already assigned to another washer';
-		
-		Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE agent_id = :agent_id AND wash_request_id = :wash_request_id AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")
-                ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
-		->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
-                ->execute();
-		
+
+                Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE agent_id = :agent_id AND wash_request_id = :wash_request_id AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")
+                        ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+                        ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+                        ->execute();
+
                 $json = array('result' => $result, 'response' => $response);
                 echo json_encode($json);
                 die();
@@ -3104,30 +3104,30 @@ class WashingController extends Controller {
             $device_type = strtolower($cust_details->mobile_type);
             $alert_type = "default";
 
-            /*$clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
-            $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '10' ")->queryAll();
-            $message = $pushmsg[0]['message'];
+            /* $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
+              $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '10' ")->queryAll();
+              $message = $pushmsg[0]['message'];
 
-            if (count($clientdevices)) {
-                foreach ($clientdevices as $ctdevice) {
-                    //$message =  "You have a new scheduled wash request.";
-                    //echo $agentdetails['mobile_type'];
-                    $device_type = strtolower($ctdevice['device_type']);
-                    $notify_token = $ctdevice['device_token'];
-                    $alert_type = "default";
-                    $notify_msg = urlencode($message);
+              if (count($clientdevices)) {
+              foreach ($clientdevices as $ctdevice) {
+              //$message =  "You have a new scheduled wash request.";
+              //echo $agentdetails['mobile_type'];
+              $device_type = strtolower($ctdevice['device_type']);
+              $notify_token = $ctdevice['device_token'];
+              $alert_type = "default";
+              $notify_msg = urlencode($message);
 
-                    $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
-                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, $notifyurl);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+              $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+              //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+              $ch = curl_init();
+              curl_setopt($ch, CURLOPT_URL, $notifyurl);
+              curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-                    if ($notify_msg)
-                        $notifyresult = curl_exec($ch);
-                    curl_close($ch);
-                }
-            }*/
+              if ($notify_msg)
+              $notifyresult = curl_exec($ch);
+              curl_close($ch);
+              }
+              } */
             /* End Notification */
 
             if ($resUpdate) {
@@ -3157,11 +3157,11 @@ class WashingController extends Controller {
                     if (($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id)) {
                         $result = 'false';
                         $response = 'Sorry, this order is already taken by another washer';
-			
-			Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE agent_id = :agent_id AND wash_request_id = :wash_request_id AND action = 'savejob' ORDER BY action_date DESC LIMIT 1")
-                ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
-		->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
-                ->execute();
+
+                        Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE agent_id = :agent_id AND wash_request_id = :wash_request_id AND action = 'savejob' ORDER BY action_date DESC LIMIT 1")
+                                ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
+                                ->bindValue(':wash_request_id', $wash_request_id, PDO::PARAM_STR)
+                                ->execute();
 
                         $json = array('result' => $result, 'response' => $response);
                         echo json_encode($json);
@@ -8843,14 +8843,14 @@ class WashingController extends Controller {
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        /*if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }*/
+        /* if (!$token_check) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $status = Yii::app()->request->getParam('status');
@@ -9003,9 +9003,9 @@ class WashingController extends Controller {
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 }
             } else {
-		if (($wrequest_id_check->is_scheduled == 1) && ($status == 6)){
-		$sched_time = '';
-		$sched_date = '';
+                if (($wrequest_id_check->is_scheduled == 1) && ($status == 6)) {
+                    $sched_time = '';
+                    $sched_date = '';
                     if ($wrequest_id_check->reschedule_time) {
                         $sched_date = $wrequest_id_check->reschedule_date;
                         $sched_time = $wrequest_id_check->reschedule_time;
@@ -9020,18 +9020,17 @@ class WashingController extends Controller {
                     $min_diff = 0;
 
                     $min_diff = round(($from_time - $to_time) / 60, 2);
-		    
-		    if($min_diff <= 60){
-			 $json = array(
-			'result' => 'false',
-			'response' => "You may not cancel a scheduled order within 1 hour of start time. If you must cancel due to emergency, please contact MobileWash at (888) 209-5585"
-			);
 
-			echo json_encode($json);
-			die();
-		    }
-	
-		}
+                    if ($min_diff <= 60) {
+                        $json = array(
+                            'result' => 'false',
+                            'response' => "You may not cancel a scheduled order within 1 hour of start time. If you must cancel due to emergency, please contact MobileWash at (888) 209-5585"
+                        );
+
+                        echo json_encode($json);
+                        die();
+                    }
+                }
                 if (($wrequest_id_check->status > 1) && ($wrequest_id_check->status <= 3)) {
 
                     $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $wrequest_id_check->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
@@ -9422,9 +9421,11 @@ class WashingController extends Controller {
 
                 //Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
 
-                if($wrequest_id_check->is_scheduled) Washingrequests::model()->updateByPk($wrequest_id_check->id, array('status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0, 'is_create_schedulewash_push_sent' => 0));
-		else Washingrequests::model()->updateByPk($wrequest_id_check->id, array('status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
-                
+                if ($wrequest_id_check->is_scheduled)
+                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array('status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0, 'is_create_schedulewash_push_sent' => 0));
+                else
+                    Washingrequests::model()->updateByPk($wrequest_id_check->id, array('status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
+
                 $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $wrequest_id_check->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
                 $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '29' ")->queryAll();
@@ -9451,60 +9452,60 @@ class WashingController extends Controller {
                     }
                 }
 
-                if(!$wrequest_id_check->is_scheduled){
-		$app_settings = Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = 'IOS'")->queryAll();
-                $sql = "SELECT * FROM agent_locations";
-                $command = Yii::app()->db->createCommand($sql)->queryAll();
+                if (!$wrequest_id_check->is_scheduled) {
+                    $app_settings = Yii::app()->db->createCommand("SELECT * FROM `app_settings` WHERE `app_type` = 'IOS'")->queryAll();
+                    $sql = "SELECT * FROM agent_locations";
+                    $command = Yii::app()->db->createCommand($sql)->queryAll();
 
-                foreach ($command as $loc) {
-                    /* --------- distance calculation ------------ */
-                    $theta = $wrequest_id_check->longitude - $loc['longitude'];
-                    $dist = sin(deg2rad($wrequest_id_check->latitude)) * sin(deg2rad($loc['latitude'])) + cos(deg2rad($wrequest_id_check->latitude)) * cos(deg2rad($loc['latitude'])) * cos(deg2rad($theta));
-                    $dist = acos($dist);
-                    $dist = rad2deg($dist);
-                    $miles = $dist * 60 * 1.1515;
-                    $unit = strtoupper($unit);
-                    if (($miles > 0) && ($miles <= 10)) {
-                        $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='" . $loc['agent_id'] . "' AND block_washer = 0")->queryAll();
-                        if ((count($isavailable) > 0) && ($wrequest_id_check->agent_id != $loc['agent_id'])) {
-                            $distance_array[$loc['agent_id']] = $miles;
+                    foreach ($command as $loc) {
+                        /* --------- distance calculation ------------ */
+                        $theta = $wrequest_id_check->longitude - $loc['longitude'];
+                        $dist = sin(deg2rad($wrequest_id_check->latitude)) * sin(deg2rad($loc['latitude'])) + cos(deg2rad($wrequest_id_check->latitude)) * cos(deg2rad($loc['latitude'])) * cos(deg2rad($theta));
+                        $dist = acos($dist);
+                        $dist = rad2deg($dist);
+                        $miles = $dist * 60 * 1.1515;
+                        $unit = strtoupper($unit);
+                        if (($miles > 0) && ($miles <= 10)) {
+                            $isavailable = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id='" . $loc['agent_id'] . "' AND block_washer = 0")->queryAll();
+                            if ((count($isavailable) > 0) && ($wrequest_id_check->agent_id != $loc['agent_id'])) {
+                                $distance_array[$loc['agent_id']] = $miles;
+                            }
                         }
                     }
-                }
 
-                if (count($distance_array)) {
-                    asort($distance_array);
-                    //print_r($distance_array);
-                    foreach ($distance_array as $aid => $dist) {
+                    if (count($distance_array)) {
+                        asort($distance_array);
+                        //print_r($distance_array);
+                        foreach ($distance_array as $aid => $dist) {
 
-                        $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
-                        $message = $pushmsg[0]['message'];
-                        $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $aid . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
-                        $message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wrequest_id_check->city), number_format($wrequest_id_check->agent_total, 2)), $message);
-                        //echo $agid." ".$message2."<br>";
-                        if (count($agentdevices) > 0) {
-                            foreach ($agentdevices as $agdevice) {
+                            $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
+                            $message = $pushmsg[0]['message'];
+                            $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $aid . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                            $message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wrequest_id_check->city), number_format($wrequest_id_check->agent_total, 2)), $message);
+                            //echo $agid." ".$message2."<br>";
+                            if (count($agentdevices) > 0) {
+                                foreach ($agentdevices as $agdevice) {
 
-                                $device_type = strtolower($agdevice['device_type']);
-                                $notify_token = $agdevice['device_token'];
-                                $alert_type = "default";
+                                    $device_type = strtolower($agdevice['device_type']);
+                                    $notify_token = $agdevice['device_token'];
+                                    $alert_type = "default";
 
-                                $notify_msg = urlencode($message2);
+                                    $notify_msg = urlencode($message2);
 
-                                $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
-                                //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-                                $ch = curl_init();
-                                curl_setopt($ch, CURLOPT_URL, $notifyurl);
-                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                                    $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                                    $ch = curl_init();
+                                    curl_setopt($ch, CURLOPT_URL, $notifyurl);
+                                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-                                if ($notify_msg)
-                                    $notifyresult = curl_exec($ch);
-                                curl_close($ch);
+                                    if ($notify_msg)
+                                        $notifyresult = curl_exec($ch);
+                                    curl_close($ch);
+                                }
                             }
                         }
                     }
                 }
-	    }
 
                 $result = 'true';
                 $response = 'wash reset';
@@ -13775,10 +13776,12 @@ class WashingController extends Controller {
 <h2 style='text-align:center;font-size: 24px;line-height: normal;'>How was your experience with our<br>MobileWasher?</h2>
 <p style='text-align:center;line-height: 24px;margin-top: 25px;'>We would like to make sure that you always have a great experience. Please help us make it the best service possible by letting us know how we did today.</p>";
 
-if(APP_ENV == 'real') $message .= "<p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='" . WEBSITE_URL . "/feedback/?order_id=" . $this->aes256cbc_crypt($schedwash->id, 'e', AES256CBC_API_PASS) . "'>LEAVE FEEDBACK</a></p>";
-else $message .= "<p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='" . WEBSITE_URL . "/feedback/?order_id=" . $this->aes256cbc_crypt($schedwash->id, 'e', AES256CBC_API_PASS) . "&pt=dev'>LEAVE FEEDBACK</a></p>";
+                    if (APP_ENV == 'real')
+                        $message .= "<p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='" . WEBSITE_URL . "/feedback/?order_id=" . $this->aes256cbc_crypt($schedwash->id, 'e', AES256CBC_API_PASS) . "'>LEAVE FEEDBACK</a></p>";
+                    else
+                        $message .= "<p style='text-align:center; margin-top: 25px; margin-bottom: 3px;'><a style='background: #30a0ff; color: #fff; padding: 10px; display: block; width: 210px; margin: 0 auto; text-decoration: none; font-weight: bold; font-size: 20px; border-radius: 15px;' href='" . WEBSITE_URL . "/feedback/?order_id=" . $this->aes256cbc_crypt($schedwash->id, 'e', AES256CBC_API_PASS) . "&pt=dev'>LEAVE FEEDBACK</a></p>";
 
-$message .= "<div style='margin-top: 20px; text-align: center;'>
+                    $message .= "<div style='margin-top: 20px; text-align: center;'>
 <a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://twitter.com/getmobilewash'><div style='background: transparent url(" . ROOT_URL . "/images/hi-res-social-icons.png) no-repeat -1px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a>
 <a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://www.facebook.com/getmobilewash'><div style='background: transparent url(" . ROOT_URL . "/images/hi-res-social-icons.png) no-repeat -43px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a>
 <a style='display: inline-block; width: 32px; height: 32px; margin-right: 6px;' href='https://www.instagram.com/getmobilewash/'><div style='background: transparent url(" . ROOT_URL . "/images/hi-res-social-icons.png) no-repeat -86px 0px; background-size: 203px 32px !important; display: block; width: 32px; height: 32px;'></div></a>
@@ -14369,7 +14372,7 @@ $message .= "<div style='margin-top: 20px; text-align: center;'>
             $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
         }
         $wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
-       // print_r($wash_id_check);
+        // print_r($wash_id_check);
         if (count($wash_id_check) && (!$wash_id_check->ondemand_create_push_sent)) {
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
             //$app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
@@ -14399,7 +14402,7 @@ $message .= "<div style='margin-top: 20px; text-align: center;'>
 //echo $agid." ".$nearagentdis." ";
                     //print_r($agid);
                     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $agid . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
-                   // print_r($agentdevices);
+                    // print_r($agentdevices);
                     $mins_since_last_use = 0;
 
                     $mins_since_last_use = round((time() - strtotime($agentdevices[0]['last_used'])) / 60, 2);
@@ -14468,7 +14471,7 @@ $message .= "<div style='margin-top: 20px; text-align: center;'>
                 }
 
                 Washingrequests::model()->updateByPk($wash_request_id, array("ondemand_create_push_sent" => 1));
-		file_put_contents("ondemandnotify_log",$wash_request_id."\r\n",FILE_APPEND);
+                file_put_contents("ondemandnotify_log", $wash_request_id . "\r\n", FILE_APPEND);
             }
         }
     }
@@ -14486,7 +14489,7 @@ $message .= "<div style='margin-top: 20px; text-align: center;'>
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
 
-       $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
         if (!$token_check) {
             $json = array(
@@ -14554,11 +14557,8 @@ $message .= "<div style='margin-top: 20px; text-align: center;'>
 
 
             Washingrequests::model()->updateByPk($wash_request_id, array("is_create_schedulewash_push_sent" => 1));
-	    
-	   
         }
     }
-    
 
     public function actionwash30secondrunning() {
 
