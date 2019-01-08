@@ -3129,8 +3129,9 @@ class WashingController extends Controller {
             $device_type = strtolower($cust_details->mobile_type);
             $alert_type = "default";
 
-            /* $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
-              $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '10' ")->queryAll();
+            if($buzz_status == 1){
+	    $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
+              $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '60' ")->queryAll();
               $message = $pushmsg[0]['message'];
 
               if (count($clientdevices)) {
@@ -3152,7 +3153,8 @@ class WashingController extends Controller {
               $notifyresult = curl_exec($ch);
               curl_close($ch);
               }
-              } */
+              }
+	}
             /* End Notification */
 
             if ($resUpdate) {
