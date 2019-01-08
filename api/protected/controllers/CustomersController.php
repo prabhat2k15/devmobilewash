@@ -12399,14 +12399,23 @@ class CustomersController extends Controller {
                         'action_date' => date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+		    
+		    $feed_data = array(
+                        'agent_id' => $washrequest_id_check->agent_id,
+                        'wash_request_id' => $wash_request_id,
+			'customer_id' => $washrequest_id_check->customer_id,
+                        'comments' => $comments,
+			'ratings' => $cust_feedback_check[0]['customer_ratings'],
+			'social_id' => '',
+                        'created_date' => date('Y-m-d H:i:s'));
+
+                    Yii::app()->db->createCommand()->insert('mobilewasher_service_feedbacks', $feed_data);
                 }
 
                 $result = 'true';
                 $response = "Feeback added";
 
                 $washrequests_data = Washingrequests::model()->findByAttributes(array("id" => $wash_request_id));
-
-
 
                 $message = "<div class='block-content' style='background: #fff; text-align: left;'>
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer 3 Hour Feedback</h2>

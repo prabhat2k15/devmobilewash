@@ -2920,6 +2920,8 @@ class WashingController extends Controller {
             if (($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id)) {
                 $result = 'false';
                 $response = 'Sorry, this order is already assigned to another washer';
+		
+		//file_put_contents("ondemandtwowasher_log", $wash_request_id." ".$agent_id . "\r\n", FILE_APPEND);
 
                 Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE agent_id = :agent_id AND wash_request_id = :wash_request_id AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")
                         ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)
@@ -14471,7 +14473,7 @@ class WashingController extends Controller {
                 }
 
                 Washingrequests::model()->updateByPk($wash_request_id, array("ondemand_create_push_sent" => 1));
-                file_put_contents("ondemandnotify_log", $wash_request_id . "\r\n", FILE_APPEND);
+                //file_put_contents("ondemandnotify_log", $wash_request_id . "\r\n", FILE_APPEND);
             }
         }
     }
