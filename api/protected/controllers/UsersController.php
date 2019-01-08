@@ -5003,7 +5003,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             echo json_encode($json);
             die();
         }
-
+//echo "here"; die;
 
         /* ---- check ---- */
         /*
@@ -5352,6 +5352,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                         $totalcompletedwashes = Washingrequests::model()->countByAttributes(array("agent_id" => $model->id, "status" => 4));
 
                         if ($model->status == 'online') {
+
 
                             /* ------------- check if agent available for new order ------------- */
 
@@ -5970,6 +5971,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             $agent_login_status = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id=:user_id AND device_status = 'online'")->bindValue(':user_id', $userid, PDO::PARAM_STR)->queryAll();
 
 
+
         if (count($customer_login_status)) {
             $result = "false";
             $response = "There is no permission for log in with same account on 2 devices";
@@ -6055,10 +6057,13 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                 't1' => base64_encode($cryptokeyencode),
                 't2' => base64_encode($ivencode)
             );
+            if ($user_type == 'agent') {
+                $update_response_Washer_SMS = Yii::app()->db->createCommand("UPDATE agents SET sms_control=1  WHERE id=" . $userid)->query();
+            }
+
             echo json_encode($data);
             exit;
-        }
-        else {
+        } else {
             $data = array(
                 'result' => 'false',
                 'response' => 'Incorrect verification code'

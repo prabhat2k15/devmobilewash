@@ -6542,44 +6542,44 @@ class AgentsController extends Controller {
                                 $premprice = intval($jsondata->plans->premium[0]->wash_time);
                                 $washtime += $premprice;
                             }
-			    
-			         /* --- addons time ----- */
+
+                            /* --- addons time ----- */
 
 
 
-                    $pet_hair_vehicles_arr = explode(",", $schedwash['pet_hair_vehicles']);
-                    if (in_array($car, $pet_hair_vehicles_arr))
-                        $washtime += 5;
+                            $pet_hair_vehicles_arr = explode(",", $schedwash['pet_hair_vehicles']);
+                            if (in_array($car, $pet_hair_vehicles_arr))
+                                $washtime += 5;
 
-                    $lifted_vehicles_arr = explode(",", $schedwash['lifted_vehicles']);
-                    if (in_array($car, $lifted_vehicles_arr))
-                        $washtime += 5;
+                            $lifted_vehicles_arr = explode(",", $schedwash['lifted_vehicles']);
+                            if (in_array($car, $lifted_vehicles_arr))
+                                $washtime += 5;
 
-                    $exthandwax_vehicles_arr = explode(",", $schedwash['exthandwax_vehicles']);
-                    if (in_array($car, $exthandwax_vehicles_arr))
-                        $washtime += 10;
+                            $exthandwax_vehicles_arr = explode(",", $schedwash['exthandwax_vehicles']);
+                            if (in_array($car, $exthandwax_vehicles_arr))
+                                $washtime += 10;
 
-                    $extplasticdressing_vehicles_arr = explode(",", $schedwash['extplasticdressing_vehicles']);
-                    if (in_array($car, $extplasticdressing_vehicles_arr))
-                        $washtime += 5;
+                            $extplasticdressing_vehicles_arr = explode(",", $schedwash['extplasticdressing_vehicles']);
+                            if (in_array($car, $extplasticdressing_vehicles_arr))
+                                $washtime += 5;
 
-                    $extclaybar_vehicles_arr = explode(",", $schedwash['extclaybar_vehicles']);
-                    if (in_array($car, $extclaybar_vehicles_arr))
-                        $washtime += 15;
+                            $extclaybar_vehicles_arr = explode(",", $schedwash['extclaybar_vehicles']);
+                            if (in_array($car, $extclaybar_vehicles_arr))
+                                $washtime += 15;
 
-                    $waterspotremove_vehicles_arr = explode(",", $schedwash['waterspotremove_vehicles']);
-                    if (in_array($car, $waterspotremove_vehicles_arr))
-                        $washtime += 10;
+                            $waterspotremove_vehicles_arr = explode(",", $schedwash['waterspotremove_vehicles']);
+                            if (in_array($car, $waterspotremove_vehicles_arr))
+                                $washtime += 10;
 
-                    $upholstery_vehicles_arr = explode(",", $schedwash['upholstery_vehicles']);
-                    if (in_array($car, $upholstery_vehicles_arr))
-                        $washtime += 10;
+                            $upholstery_vehicles_arr = explode(",", $schedwash['upholstery_vehicles']);
+                            if (in_array($car, $upholstery_vehicles_arr))
+                                $washtime += 10;
 
-                    $floormat_vehicles_arr = explode(",", $schedwash['floormat_vehicles']);
-                    if (in_array($car, $floormat_vehicles_arr))
-                        $washtime += 10;
+                            $floormat_vehicles_arr = explode(",", $schedwash['floormat_vehicles']);
+                            if (in_array($car, $floormat_vehicles_arr))
+                                $washtime += 10;
 
-                    /* --- addons time end ----- */
+                            /* --- addons time end ----- */
                         }
 
                         //$washtime += 30;
@@ -7779,6 +7779,70 @@ class AgentsController extends Controller {
         );
         echo json_encode($json);
         die();
+    }
+
+    public function actionCronJobUninstallApp() {
+        if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
+            echo "Invalid api key";
+            die();
+        }
+        $user_devices = Yii::app()->db->createCommand("SELECT  agent_devices.agent_id FROM agent_devices WHERE  device_type='ANDROID' group by agent_id ORDER BY last_used DESC ")->queryAll();
+        $wash_id = "";
+        if (count($user_devices)) {
+
+            foreach ($user_devices as $device) {
+                /* --- notification call --- */
+                $user_devices_detail = Yii::app()->db->createCommand("SELECT agent_devices.* FROM  agent_devices   WHERE agent_id=" . $device['agent_id'] . " AND  device_type='ANDROID'  ORDER BY last_used DESC LIMIT 1")->queryRow();
+                //define('API_ACCESS_KEY', 'AAAAKHWvBtc:APA91bH7eWGNgvoZQxe56zzxeE2cxW4qVG_5dc9iwpF73R0ph0govruyXQ-1QK-pE_VxLeBewkXsnKWecuVp42IZKJSB0Z6yo5x44w6ytelM7HXWHSItSViPO4TmzscYddTEmcqNi3ae');
+                $registrationIds = array($user_devices_detail['device_token']);
+
+                // prep the bundle
+                $msg = array
+                    (
+                    'message' => "test blank notify",
+                    'title' => '',
+                    'subtitle' => '',
+                    'tickerText' => '',
+                    'vibrate' => 1,
+                    'sound' => "strong",
+                    'largeIcon' => 'large_icon',
+                    'wash_id' => $wash_id,
+                    'smallIcon' => 'small_icon'
+                );
+                $fields = array
+                    (
+                    'registration_ids' => $registrationIds,
+                    'data' => $msg
+                );
+
+                $headers = array
+                    (
+                    'Authorization: key=' . API_ACCESS_KEY_ANDRIOD,
+                    'Content-Type: application/json'
+                );
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+                $result = curl_exec($ch);
+                $result = json_decode($result);
+                if ($result->success == 0) {
+                    //echo "SMS disabled FOR Agent";
+                    $result = Yii::app()->db->createCommand("UPDATE agents SET sms_control=0  WHERE id=" . $user_devices_detail['agent_id'])->query();
+                }
+                curl_close($ch);
+                echo "SMS enabled FOR Agent";
+                /* --- notification call end --- */
+
+
+                //echo $result;
+                //die;
+            }
+        }
     }
 
 }

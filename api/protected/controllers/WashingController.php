@@ -608,6 +608,8 @@ class WashingController extends Controller {
             echo json_encode($json);
             die();
         }
+        $dateChack = Yii::app()->request->getParam('ScheduleDateVal');
+
 
         $customer_id = Yii::app()->request->getParam('customer_id');
         $car_ids = Yii::app()->request->getParam('car_ids');
@@ -629,7 +631,18 @@ class WashingController extends Controller {
         if (Yii::app()->request->getParam('is_scheduled'))
             $is_scheduled = Yii::app()->request->getParam('is_scheduled');
 
-        $schedule_date = Yii::app()->request->getParam('schedule_date');
+        //$schedule_date = Yii::app()->request->getParam('schedule_date');
+        if (Yii::app()->request->getParam('is_scheduled') == 1) {
+            if ($dateChack == "tomorrow") {
+                $datetime = new DateTime('tomorrow');
+                $schedule_date = $datetime->format('Y-m-d');
+            }
+            if ($dateChack == "today") {
+                $schedule_date = $currentDate = Date("Y-m-d");
+            }
+        }
+
+
         $schedule_time = Yii::app()->request->getParam('schedule_time');
         $schedule_cars_info = Yii::app()->request->getParam('schedule_cars_info');
         $schedule_total = Yii::app()->request->getParam('schedule_total');
@@ -2084,6 +2097,16 @@ class WashingController extends Controller {
         $schedule_time = Yii::app()->request->getParam('schedule_time');
         $ondemand_10_min_cancel_schedule = Yii::app()->request->getParam('ondemand_10_min_cancel_schedule');
         $is_rescheduled = Yii::app()->request->getParam('is_rescheduled');
+        $dateChack = Yii::app()->request->getParam('ScheduleDateVal');
+
+        if ($dateChack == "tomorrow") {
+            $datetime = new DateTime('tomorrow');
+            $schedule_date = $datetime->format('Y-m-d');
+        }
+        if ($dateChack == "today") {
+            $schedule_date = $currentDate = Date("Y-m-d");
+        }
+
         $wash_now_reschedule = 0;
         if (Yii::app()->request->getParam('wash_now_reschedule'))
             $wash_now_reschedule = Yii::app()->request->getParam('wash_now_reschedule');
@@ -2920,8 +2943,8 @@ class WashingController extends Controller {
             if (($wrequest_id_check->agent_id != 0) && ($wrequest_id_check->agent_id != $agent_id)) {
                 $result = 'false';
                 $response = 'Sorry, this order is already assigned to another washer';
-		
-		//file_put_contents("ondemandtwowasher_log", $wash_request_id." ".$agent_id . "\r\n", FILE_APPEND);
+
+                //file_put_contents("ondemandtwowasher_log", $wash_request_id." ".$agent_id . "\r\n", FILE_APPEND);
 
                 Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE agent_id = :agent_id AND wash_request_id = :wash_request_id AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")
                         ->bindValue(':agent_id', $agent_id, PDO::PARAM_STR)

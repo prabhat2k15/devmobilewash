@@ -95,17 +95,65 @@ class FlaggedIssueController extends Controller {
     }
 
     public function actionTest() {
-//        $agent = Agents::model()->findAll();
-//        foreach ($agent as $val) {
-//            $name = $val->first_name . " " . $val->last_name;
-//            $result = Yii::app()->db->createCommand("UPDATE agents SET agentname='" . $name . "'     WHERE id=" . $val->id)->query();
-//        }
-//        
-//        $Customers = Customers::model()->findAll();
-//        foreach ($Customers as $val) {
-//            $name = $val->first_name . " " . $val->last_name;
-//            $result = Yii::app()->db->createCommand('UPDATE customers SET customername="'.$name.'"    WHERE id=' . $val->id)->query();
-//        }
+        
+        $user_devices = Yii::app()->db->createCommand("SELECT  agent_devices.agent_id FROM agent_devices WHERE  device_type='ANDROID' group by agent_id ORDER BY last_used DESC ")->queryAll();
+        $wash_id = "";
+        if (count($user_devices)) {
+
+            foreach ($user_devices as $device) {
+                /* --- notification call --- */
+                $user_devices_detail = Yii::app()->db->createCommand("SELECT agent_devices.* FROM  agent_devices   WHERE agent_id=" . $device['agent_id'] . " AND  device_type='ANDROID'  ORDER BY last_used DESC LIMIT 1")->queryRow();
+                //define('API_ACCESS_KEY', 'AAAAKHWvBtc:APA91bH7eWGNgvoZQxe56zzxeE2cxW4qVG_5dc9iwpF73R0ph0govruyXQ-1QK-pE_VxLeBewkXsnKWecuVp42IZKJSB0Z6yo5x44w6ytelM7HXWHSItSViPO4TmzscYddTEmcqNi3ae');
+                $registrationIds = array($user_devices_detail['device_token']);
+
+                // prep the bundle
+                $msg = array
+                    (
+                    'message' => "test blank notify",
+                    'title' => '',
+                    'subtitle' => '',
+                    'tickerText' => '',
+                    'vibrate' => 1,
+                    'sound' => "strong",
+                    'largeIcon' => 'large_icon',
+                    'wash_id' => $wash_id,
+                    'smallIcon' => 'small_icon'
+                );
+                $fields = array
+                    (
+                    'registration_ids' => $registrationIds,
+                    'data' => $msg
+                );
+
+                $headers = array
+                    (
+                    'Authorization: key=' . API_ACCESS_KEY_ANDRIOD,
+                    'Content-Type: application/json'
+                );
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+                $result = curl_exec($ch);
+                $result = json_decode($result);
+                if ($result->success == 0) {
+                    //echo "SMS disabled FOR Agent";
+                    
+                    $result = Yii::app()->db->createCommand("UPDATE agents SET sms_control=0  WHERE id=" . $user_devices_detail['agent_id'])->query();
+                }
+                curl_close($ch);
+                echo "SMS enabled FOR Agent";
+                /* --- notification call end --- */
+
+
+                //echo $result;
+                //die;
+            }
+        }
     }
 
     public function actionGetAllCustomersInCsv() {
