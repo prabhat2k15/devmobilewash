@@ -15561,5 +15561,74 @@ class WashingController extends Controller {
 
         echo json_encode($json);
     }
+    
+        public function actionremoveduplicatewashnowstartlog() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        /*if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }*/
+
+        $result = 'false';
+        $response = 'Pass the required parameters';
+
+        $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+
+        if (!empty($wash_request_id) && isset($wash_request_id)) {
+
+            if ((AES256CBC_STATUS == 1)) {
+                $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
+            }
+
+            $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $wash_request_id));
+	   
+
+            $currentwasherwashnowstartlog = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE agent_id = '" . $wrequest_id_check->agent_id . "' AND wash_request_id = '".$wash_request_id."' AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")->queryAll();
+
+            if(count($currentwasherwashnowstartlog)){
+		$otherwasherswashnowstartlogs = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE agent_id != '" . $wrequest_id_check->agent_id . "' AND wash_request_id = '".$wash_request_id."' AND action = 'washerstartjob' ORDER BY action_date DESC")->queryAll();
+		
+		if(count($otherwasherswashnowstartlogs)){
+			foreach($otherwasherswashnowstartlogs as $log){
+				$sec_diff = 0;
+				$sec_diff = abs(strtotime($currentwasherwashnowstartlog[0]['action_date']) - strtotime($log['action_date']));
+				
+				if(($sec_diff <= 2) && ($sec_diff >= 0)){
+					Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE id = ".$log['id'])->execute();
+				}
+				
+			}
+		}
+	    }
+	    
+
+
+            $result = 'true';
+            $response = 'done';
+        }
+
+        $json = array(
+            'result' => $result,
+            'response' => $response
+        );
+        echo json_encode($json);
+    }
 
 }

@@ -67,8 +67,8 @@ $result_code = $jsondata->result;
                         <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                             <thead>
                                 <tr>
-                                    <th class="row1"> ID </th>
-                                    <th class="row1"> Wash ID </th>
+                                    
+                                    <th class="row1" style="min-width: 120px !important;"> Order Number </th>
                                     <th class="row2"> Customer name </th>
                                     <th class="row2"> Customer Email </th>
                                     <th class="row2"> Customer Phone </th>
@@ -94,8 +94,8 @@ $result_code = $jsondata->result;
                                             ?>
                                             <tr class="odd gradeX">
 
-                                                <td><?php echo $responseagents->id; ?></td>      
-                                                <td><?php echo $responseagents->wash_request_id; ?></td>  
+                                                    
+                                                <td><a target="_blank" href="edit-order.php?id=<?php echo $responseagents->wash_request_id; ?>"><?php echo $responseagents->wash_request_id; ?></a></td>  
                                                 <td><?php echo $responseagents->customername; ?></td>
                                                 <td><?php echo $responseagents->email; ?></td>
                                                 <td><?php echo $responseagents->contact_number; ?></td>
