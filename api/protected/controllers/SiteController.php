@@ -2458,7 +2458,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             'schedule_times' => $times,
             'edit_by' => $schedule_times[0]['edit_by'],
             'updated_by' => $schedule_times[0]['updted_date'],
-            'server_time' => date('Y-m-d h:i'),
+            'server_time' => date('Y-m-d h:i A'),
         );
         echo json_encode($json);
     }
