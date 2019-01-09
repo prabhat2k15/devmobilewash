@@ -2457,7 +2457,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             'response' => $response,
             'schedule_times' => $times,
             'edit_by' => $schedule_times[0]['edit_by'],
-            'updated_by' => $schedule_times[0]['updted_date']
+            'updated_by' => $schedule_times[0]['updted_date'],
+            'server_time' => date('Y-m-d h:i'),
         );
         echo json_encode($json);
     }
@@ -4011,6 +4012,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
     }
 
     public function actiongetallwashrequestsnew() {
+
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -4125,7 +4127,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $total_days_diff = 0;
         $completed_orders = 0;
 
-        
+
         if ($customer_id > 0) {
             $cust_query = "w.customer_id=" . $customer_id . " AND ";
         }
@@ -4165,7 +4167,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             else
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC")->queryAll();
         }
-
 
         if (count($qrRequests) > 0) {
             $ios_count = $other_count = $android_count = 0;
@@ -6490,8 +6491,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $nonreturn30_topic_arn = '';
         $nonreturn60_topic_arn = '';
         $nonreturn90_topic_arn = '';
-	
-	 $inactive5_topic_arn = '';
+
+        $inactive5_topic_arn = '';
         $inactive10_topic_arn = '';
         $inactive30_topic_arn = '';
 
@@ -6510,16 +6511,16 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             $nonreturn90_notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
                     ->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
                     ->queryAll();
-		    
-	$inactive5_notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+
+            $inactive5_notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
                     ->bindValue(':notify_cat', 'inactive-6th-day', PDO::PARAM_STR)
                     ->queryAll();
-		    
-	$inactive10_notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+
+            $inactive10_notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
                     ->bindValue(':notify_cat', 'inactive-11th-day', PDO::PARAM_STR)
                     ->queryAll();
-		    
-		    $inactive30_notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
+
+            $inactive30_notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
                     ->bindValue(':notify_cat', 'inactive-31st-day', PDO::PARAM_STR)
                     ->queryAll();
 
@@ -6612,8 +6613,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } else {
                 $nonreturn90_topic_arn = $nonreturn90_notify_check[0]['topic_arn'];
             }
-	    
-	  if ((count($inactive5_notify_check)) && (!$inactive5_notify_check[0]['topic_arn'])) {
+
+            if ((count($inactive5_notify_check)) && (!$inactive5_notify_check[0]['topic_arn'])) {
 
                 try {
                     $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
@@ -6642,8 +6643,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } else {
                 $inactive5_topic_arn = $inactive5_notify_check[0]['topic_arn'];
             }
-	    
-	     if ((count($inactive10_notify_check)) && (!$inactive10_notify_check[0]['topic_arn'])) {
+
+            if ((count($inactive10_notify_check)) && (!$inactive10_notify_check[0]['topic_arn'])) {
 
                 try {
                     $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
@@ -6672,8 +6673,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } else {
                 $inactive10_topic_arn = $inactive10_notify_check[0]['topic_arn'];
             }
-	    
-	 if ((count($inactive30_notify_check)) && (!$inactive30_notify_check[0]['topic_arn'])) {
+
+            if ((count($inactive30_notify_check)) && (!$inactive30_notify_check[0]['topic_arn'])) {
 
                 try {
                     $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
@@ -6860,150 +6861,148 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         Customers::model()->updateByPk($client->id, array("is_non_returning" => 0, "nonreturn_cat" => 0, "nonreturn_20day_notify" => 0, 'nonreturn_email_sms_notify_sent' => 0, 'nonreturn_email_delivery_pending' => 0));
                     }
                 }
-		
-		/* -- inactive cust check --*/
-		
-		if (!count($wash_check)) {
-			
-		$inc_current_time = strtotime(date('Y-m-d H:i:s'));
+
+                /* -- inactive cust check -- */
+
+                if (!count($wash_check)) {
+
+                    $inc_current_time = strtotime(date('Y-m-d H:i:s'));
 
                     $inc_create_time = strtotime($client->created_date);
                     $inc_min_diff = 0;
                     if ($inc_current_time > $inc_create_time) {
                         $inc_min_diff = round(($inc_current_time - $inc_create_time) / 60, 2);
-		    }
-		    
-		        if (($inc_min_diff >= 7200) && ($inc_min_diff < 14400)) {
-                            if ($client->inactive_cat != 5) {
-                                $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
+                    }
 
-                                if (count($clientdevices)) {
-                                    foreach ($clientdevices as $ctdevice) {
-                                        try {
-                                            $aws_subscribe_result = $aws_client->subscribe([
-                                                'Endpoint' => $ctdevice['endpoint_arn'],
-                                                'Protocol' => 'application',
-                                                'ReturnSubscriptionArn' => true,
-                                                'TopicArn' => $inactive5_topic_arn,
-                                            ]);
-                                        } catch (exception $e) {
-                                            
-                                        }
+                    if (($inc_min_diff >= 7200) && ($inc_min_diff < 14400)) {
+                        if ($client->inactive_cat != 5) {
+                            $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
+
+                            if (count($clientdevices)) {
+                                foreach ($clientdevices as $ctdevice) {
+                                    try {
+                                        $aws_subscribe_result = $aws_client->subscribe([
+                                            'Endpoint' => $ctdevice['endpoint_arn'],
+                                            'Protocol' => 'application',
+                                            'ReturnSubscriptionArn' => true,
+                                            'TopicArn' => $inactive5_topic_arn,
+                                        ]);
+                                    } catch (exception $e) {
+                                        
                                     }
                                 }
-
-
-                                try {
-                                    $aws_subscribe_result = $aws_client->subscribe([
-                                        'Endpoint' => "+1" . $client->contact_number,
-                                        'Protocol' => 'sms',
-                                        'ReturnSubscriptionArn' => true,
-                                        'TopicArn' => $inactive5_topic_arn,
-                                    ]);
-                                } catch (exception $e) {
-                                    
-                                }
-
-                                Customers::model()->updateByPk($client->id, array("is_inactive" => 1, "inactive_cat" => 5, "inactive_email_delivery_pending" => 1, 'inactive_email_sms_notify_sent' => 0));
                             }
-                        }
-			
-			if (($inc_min_diff >= 14400) && ($inc_min_diff < 43200)) {
-                            if ($client->inactive_cat != 10) {
-                                $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
 
-                                if (count($clientdevices)) {
-                                    foreach ($clientdevices as $ctdevice) {
-                                        try {
-                                            $aws_subscribe_result = $aws_client->subscribe([
-                                                'Endpoint' => $ctdevice['endpoint_arn'],
-                                                'Protocol' => 'application',
-                                                'ReturnSubscriptionArn' => true,
-                                                'TopicArn' => $inactive10_topic_arn,
-                                            ]);
-                                        } catch (exception $e) {
-                                            
-                                        }
+
+                            try {
+                                $aws_subscribe_result = $aws_client->subscribe([
+                                    'Endpoint' => "+1" . $client->contact_number,
+                                    'Protocol' => 'sms',
+                                    'ReturnSubscriptionArn' => true,
+                                    'TopicArn' => $inactive5_topic_arn,
+                                ]);
+                            } catch (exception $e) {
+                                
+                            }
+
+                            Customers::model()->updateByPk($client->id, array("is_inactive" => 1, "inactive_cat" => 5, "inactive_email_delivery_pending" => 1, 'inactive_email_sms_notify_sent' => 0));
+                        }
+                    }
+
+                    if (($inc_min_diff >= 14400) && ($inc_min_diff < 43200)) {
+                        if ($client->inactive_cat != 10) {
+                            $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
+
+                            if (count($clientdevices)) {
+                                foreach ($clientdevices as $ctdevice) {
+                                    try {
+                                        $aws_subscribe_result = $aws_client->subscribe([
+                                            'Endpoint' => $ctdevice['endpoint_arn'],
+                                            'Protocol' => 'application',
+                                            'ReturnSubscriptionArn' => true,
+                                            'TopicArn' => $inactive10_topic_arn,
+                                        ]);
+                                    } catch (exception $e) {
+                                        
                                     }
                                 }
-
-
-                                try {
-                                    $aws_subscribe_result = $aws_client->subscribe([
-                                        'Endpoint' => "+1" . $client->contact_number,
-                                        'Protocol' => 'sms',
-                                        'ReturnSubscriptionArn' => true,
-                                        'TopicArn' => $inactive10_topic_arn,
-                                    ]);
-                                } catch (exception $e) {
-                                    
-                                }
-
-                                Customers::model()->updateByPk($client->id, array("is_inactive" => 1, "inactive_cat" => 10, "inactive_email_delivery_pending" => 1, 'inactive_email_sms_notify_sent' => 0));
                             }
-                        }
-			
-			if (($inc_min_diff >= 43200)) {
-                            if ($client->inactive_cat != 30) {
-                                $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
 
-                                if (count($clientdevices)) {
-                                    foreach ($clientdevices as $ctdevice) {
-                                        try {
-                                            $aws_subscribe_result = $aws_client->subscribe([
-                                                'Endpoint' => $ctdevice['endpoint_arn'],
-                                                'Protocol' => 'application',
-                                                'ReturnSubscriptionArn' => true,
-                                                'TopicArn' => $inactive30_topic_arn,
-                                            ]);
-                                        } catch (exception $e) {
-                                            
-                                        }
+
+                            try {
+                                $aws_subscribe_result = $aws_client->subscribe([
+                                    'Endpoint' => "+1" . $client->contact_number,
+                                    'Protocol' => 'sms',
+                                    'ReturnSubscriptionArn' => true,
+                                    'TopicArn' => $inactive10_topic_arn,
+                                ]);
+                            } catch (exception $e) {
+                                
+                            }
+
+                            Customers::model()->updateByPk($client->id, array("is_inactive" => 1, "inactive_cat" => 10, "inactive_email_delivery_pending" => 1, 'inactive_email_sms_notify_sent' => 0));
+                        }
+                    }
+
+                    if (($inc_min_diff >= 43200)) {
+                        if ($client->inactive_cat != 30) {
+                            $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id=' . $client->id)->queryAll();
+
+                            if (count($clientdevices)) {
+                                foreach ($clientdevices as $ctdevice) {
+                                    try {
+                                        $aws_subscribe_result = $aws_client->subscribe([
+                                            'Endpoint' => $ctdevice['endpoint_arn'],
+                                            'Protocol' => 'application',
+                                            'ReturnSubscriptionArn' => true,
+                                            'TopicArn' => $inactive30_topic_arn,
+                                        ]);
+                                    } catch (exception $e) {
+                                        
                                     }
                                 }
-
-
-                                try {
-                                    $aws_subscribe_result = $aws_client->subscribe([
-                                        'Endpoint' => "+1" . $client->contact_number,
-                                        'Protocol' => 'sms',
-                                        'ReturnSubscriptionArn' => true,
-                                        'TopicArn' => $inactive30_topic_arn,
-                                    ]);
-                                } catch (exception $e) {
-                                    
-                                }
-
-                                Customers::model()->updateByPk($client->id, array("is_inactive" => 1, "inactive_cat" => 30, "inactive_email_delivery_pending" => 1, 'inactive_email_sms_notify_sent' => 0));
                             }
-                        }
-			
-		}
-		else{
-		Customers::model()->updateByPk($client->id, array("is_inactive" => 0, "inactive_cat" => 0, "inactive_email_delivery_pending" => 0, 'inactive_email_sms_notify_sent' => 0));	
-		}
 
-		/* -- inactive cust check end --*/
-		
+
+                            try {
+                                $aws_subscribe_result = $aws_client->subscribe([
+                                    'Endpoint' => "+1" . $client->contact_number,
+                                    'Protocol' => 'sms',
+                                    'ReturnSubscriptionArn' => true,
+                                    'TopicArn' => $inactive30_topic_arn,
+                                ]);
+                            } catch (exception $e) {
+                                
+                            }
+
+                            Customers::model()->updateByPk($client->id, array("is_inactive" => 1, "inactive_cat" => 30, "inactive_email_delivery_pending" => 1, 'inactive_email_sms_notify_sent' => 0));
+                        }
+                    }
+                } else {
+                    Customers::model()->updateByPk($client->id, array("is_inactive" => 0, "inactive_cat" => 0, "inactive_email_delivery_pending" => 0, 'inactive_email_sms_notify_sent' => 0));
+                }
+
+                /* -- inactive cust check end -- */
+
                 Customers::model()->updateByPk($client->id, array("non_return_check" => 0));
             }
         } else {
             Customers::model()->updateAll(array('non_return_check' => 1));
 
-            /*Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
-                    ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
-                    ->bindValue(':notify_cat', 'non-return-31st-day', PDO::PARAM_STR)
-                    ->execute();
+            /* Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
+              ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
+              ->bindValue(':notify_cat', 'non-return-31st-day', PDO::PARAM_STR)
+              ->execute();
 
-            Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
-                    ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
-                    ->bindValue(':notify_cat', 'non-return-61st-day', PDO::PARAM_STR)
-                    ->execute();
+              Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
+              ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
+              ->bindValue(':notify_cat', 'non-return-61st-day', PDO::PARAM_STR)
+              ->execute();
 
-            Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
-                    ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
-                    ->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
-                    ->execute();*/
+              Yii::app()->db->createCommand("UPDATE customer_spec_notifications SET delivery_ready=:delivery_ready WHERE notify_cat = :notify_cat ")
+              ->bindValue(':delivery_ready', 1, PDO::PARAM_STR)
+              ->bindValue(':notify_cat', 'non-return-90th-day', PDO::PARAM_STR)
+              ->execute(); */
         }
     }
 
@@ -9002,64 +9001,64 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
         $total_spent = Yii::app()->db->createCommand("SELECT SUM(net_price) as total_sum,wr.id, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, COUNT(wr.id) as total,customer_id FROM washing_requests wr WHERE DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) GROUP BY customer_id")->queryAll();
         $totalSpend_data = array();
-        if(COUNT($total_spent) > 0){
+        if (COUNT($total_spent) > 0) {
             foreach ($total_spent as $key => $value) {
-                $totalSpend_data[$value['customer_id']] = $value; 
+                $totalSpend_data[$value['customer_id']] = $value;
             }
         }
-        
+
         if (count($all_customers) > 0) {
-        
+
 
             foreach ($all_customers as $key => $val) {
-                if(!isset($totalSpend_data[$val['customer_id']])){
+                if (!isset($totalSpend_data[$val['customer_id']])) {
                     continue;
                 }
                 //$washer_ids[] = $wash['agent_id'];    
                 //$agent_det = Agents::model()->findByPk($wash['agent_id']);
                 $last_wash = Yii::app()->db->createCommand("SELECT wr.order_for FROM washing_requests wr WHERE wr.customer_id = " . $val['customer_id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4)  ORDER BY wr.id DESC LIMIT 1")->queryAll();
-                
+
                 $Arr_field['field_value']['id'] = $key;
                 $Arr_field['field_value']['name'] = $val['first_name'] . " " . $val['last_name'];
                 $Arr_field['field_value']['email'] = $val['email'];
                 $Arr_field['field_value']['address'] = $val['address'];
                 $Arr_field['field_value']['city'] = $val['city'];
                 $Arr_field['field_value']['state'] = $val['state'];
-                $Arr_field['field_value']['total_s'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_scheduled']:0;
-                $Arr_field['field_value']['total_o_d'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_demand']:0;
-                $Arr_field['field_value']['total_w'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total']:0;
+                $Arr_field['field_value']['total_s'] = (isset($totalSpend_data[$val['customer_id']])) ? $totalSpend_data[$val['customer_id']]['total_scheduled'] : 0;
+                $Arr_field['field_value']['total_o_d'] = (isset($totalSpend_data[$val['customer_id']])) ? $totalSpend_data[$val['customer_id']]['total_demand'] : 0;
+                $Arr_field['field_value']['total_w'] = (isset($totalSpend_data[$val['customer_id']])) ? $totalSpend_data[$val['customer_id']]['total'] : 0;
                 $Arr_field['field_value']['last_wash'] = $last_wash[0]['order_for'];
-                $Arr_field['field_value']['total_spend'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_sum']:0;
+                $Arr_field['field_value']['total_spend'] = (isset($totalSpend_data[$val['customer_id']])) ? $totalSpend_data[$val['customer_id']]['total_sum'] : 0;
 
                 fputcsv($file, $Arr_field['field_value']);
                 //$i++;
             }
             foreach ($all_customers as $key => $val) {
-                if(isset($totalSpend_data[$val['customer_id']])){
+                if (isset($totalSpend_data[$val['customer_id']])) {
                     continue;
                 }
                 //$washer_ids[] = $wash['agent_id'];    
                 //$agent_det = Agents::model()->findByPk($wash['agent_id']);
                 $last_wash = Yii::app()->db->createCommand("SELECT wr.order_for FROM washing_requests wr WHERE wr.customer_id = " . $val['customer_id'] . " AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4)  ORDER BY wr.id DESC LIMIT 1")->queryAll();
-                
+
                 $Arr_field['field_value']['id'] = $key;
                 $Arr_field['field_value']['name'] = $val['first_name'] . " " . $val['last_name'];
                 $Arr_field['field_value']['email'] = $val['email'];
                 $Arr_field['field_value']['address'] = $val['address'];
                 $Arr_field['field_value']['city'] = $val['city'];
                 $Arr_field['field_value']['state'] = $val['state'];
-                $Arr_field['field_value']['total_s'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_scheduled']:0;
-                $Arr_field['field_value']['total_o_d'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_demand']:0;
-                $Arr_field['field_value']['total_w'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total']:0;
+                $Arr_field['field_value']['total_s'] = (isset($totalSpend_data[$val['customer_id']])) ? $totalSpend_data[$val['customer_id']]['total_scheduled'] : 0;
+                $Arr_field['field_value']['total_o_d'] = (isset($totalSpend_data[$val['customer_id']])) ? $totalSpend_data[$val['customer_id']]['total_demand'] : 0;
+                $Arr_field['field_value']['total_w'] = (isset($totalSpend_data[$val['customer_id']])) ? $totalSpend_data[$val['customer_id']]['total'] : 0;
                 $Arr_field['field_value']['last_wash'] = $last_wash[0]['order_for'];
-                $Arr_field['field_value']['total_spend'] = (isset($totalSpend_data[$val['customer_id']]))? $totalSpend_data[$val['customer_id']]['total_sum']:0;
+                $Arr_field['field_value']['total_spend'] = (isset($totalSpend_data[$val['customer_id']])) ? $totalSpend_data[$val['customer_id']]['total_sum'] : 0;
 
                 fputcsv($file, $Arr_field['field_value']);
                 //$i++;
             }
         }
 
-        
+
         die;
     }
 
@@ -11639,18 +11638,18 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 90 AND nonreturn_email_sms_notify_sent = 0")->queryAll();
                 $pending_custs_count = $pendingcustscheck[0]['count'];
             }
-	    
-	    if ($noti['notify_cat'] == 'inactive-6th-day') {
+
+            if ($noti['notify_cat'] == 'inactive-6th-day') {
                 $pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_inactive = 1 AND inactive_cat = 5 AND inactive_email_sms_notify_sent = 0")->queryAll();
                 $pending_custs_count = $pendingcustscheck[0]['count'];
             }
-	    
-	    if ($noti['notify_cat'] == 'inactive-11th-day') {
+
+            if ($noti['notify_cat'] == 'inactive-11th-day') {
                 $pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_inactive = 1 AND inactive_cat = 10 AND inactive_email_sms_notify_sent = 0")->queryAll();
                 $pending_custs_count = $pendingcustscheck[0]['count'];
             }
-	    
-	    if ($noti['notify_cat'] == 'inactive-31st-day') {
+
+            if ($noti['notify_cat'] == 'inactive-31st-day') {
                 $pendingcustscheck = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM customers WHERE is_inactive = 1 AND inactive_cat = 30 AND inactive_email_sms_notify_sent = 0")->queryAll();
                 $pending_custs_count = $pendingcustscheck[0]['count'];
             }
@@ -11678,10 +11677,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 60));
                     if ($noti['notify_cat'] == 'non-return-90th-day')
                         Customers::model()->updateAll(array('nonreturn_email_sms_notify_sent' => 1), 'nonreturn_cat=:nonreturn_cat', array(':nonreturn_cat' => 90));
-		
-		if ($noti['notify_cat'] == 'inactive-6th-day') Customers::model()->updateAll(array('inactive_email_sms_notify_sent' => 1), 'inactive_cat=:inactive_cat', array(':inactive_cat' => 5));
-		if ($noti['notify_cat'] == 'inactive-11th-day') Customers::model()->updateAll(array('inactive_email_sms_notify_sent' => 1), 'inactive_cat=:inactive_cat', array(':inactive_cat' => 10));
-		if ($noti['notify_cat'] == 'inactive-31st-day') Customers::model()->updateAll(array('inactive_email_sms_notify_sent' => 1), 'inactive_cat=:inactive_cat', array(':inactive_cat' => 30));
+
+                    if ($noti['notify_cat'] == 'inactive-6th-day')
+                        Customers::model()->updateAll(array('inactive_email_sms_notify_sent' => 1), 'inactive_cat=:inactive_cat', array(':inactive_cat' => 5));
+                    if ($noti['notify_cat'] == 'inactive-11th-day')
+                        Customers::model()->updateAll(array('inactive_email_sms_notify_sent' => 1), 'inactive_cat=:inactive_cat', array(':inactive_cat' => 10));
+                    if ($noti['notify_cat'] == 'inactive-31st-day')
+                        Customers::model()->updateAll(array('inactive_email_sms_notify_sent' => 1), 'inactive_cat=:inactive_cat', array(':inactive_cat' => 30));
                 }
             }
 
@@ -12470,6 +12472,32 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         );
 
         echo json_encode($json);
+        die();
+    }
+
+    public function actionGetServerTime() {
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+        echo json_encode(array('server_time' => date('Y-m-d h:i')));
         die();
     }
 
