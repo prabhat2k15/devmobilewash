@@ -631,16 +631,16 @@ class WashingController extends Controller {
         if (Yii::app()->request->getParam('is_scheduled'))
             $is_scheduled = Yii::app()->request->getParam('is_scheduled');
 
-        //$schedule_date = Yii::app()->request->getParam('schedule_date');
-        if (Yii::app()->request->getParam('is_scheduled') == 1) {
-            if ($dateChack == "tomorrow") {
-                $datetime = new DateTime('tomorrow');
-                $schedule_date = $datetime->format('Y-m-d');
-            }
-            if ($dateChack == "today") {
-                $schedule_date = $currentDate = Date("Y-m-d");
-            }
-        }
+        $schedule_date = Yii::app()->request->getParam('schedule_date');
+//        if (Yii::app()->request->getParam('is_scheduled') == 1) {
+//            if ($dateChack == "tomorrow") {
+//                $datetime = new DateTime('tomorrow');
+//                $schedule_date = $datetime->format('Y-m-d');
+//            }
+//            if ($dateChack == "today") {
+//                $schedule_date = $currentDate = Date("Y-m-d");
+//            }
+//        }
 
 
         $schedule_time = Yii::app()->request->getParam('schedule_time');
@@ -3129,32 +3129,32 @@ class WashingController extends Controller {
             $device_type = strtolower($cust_details->mobile_type);
             $alert_type = "default";
 
-            if($buzz_status == 1){
-	    $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
-              $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '60' ")->queryAll();
-              $message = $pushmsg[0]['message'];
+            if ($buzz_status == 1) {
+                $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
+                $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '60' ")->queryAll();
+                $message = $pushmsg[0]['message'];
 
-              if (count($clientdevices)) {
-              foreach ($clientdevices as $ctdevice) {
-              //$message =  "You have a new scheduled wash request.";
-              //echo $agentdetails['mobile_type'];
-              $device_type = strtolower($ctdevice['device_type']);
-              $notify_token = $ctdevice['device_token'];
-              $alert_type = "default";
-              $notify_msg = urlencode($message);
+                if (count($clientdevices)) {
+                    foreach ($clientdevices as $ctdevice) {
+                        //$message =  "You have a new scheduled wash request.";
+                        //echo $agentdetails['mobile_type'];
+                        $device_type = strtolower($ctdevice['device_type']);
+                        $notify_token = $ctdevice['device_token'];
+                        $alert_type = "default";
+                        $notify_msg = urlencode($message);
 
-              $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
-              //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-              $ch = curl_init();
-              curl_setopt($ch, CURLOPT_URL, $notifyurl);
-              curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                        //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, $notifyurl);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-              if ($notify_msg)
-              $notifyresult = curl_exec($ch);
-              curl_close($ch);
-              }
-              }
-	}
+                        if ($notify_msg)
+                            $notifyresult = curl_exec($ch);
+                        curl_close($ch);
+                    }
+                }
+            }
             /* End Notification */
 
             if ($resUpdate) {
