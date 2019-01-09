@@ -73,25 +73,21 @@ $result_code = $jsondata->result;
                                     <th class="row2"> Customer Email </th>
                                     <th class="row2"> Customer Phone </th>
                                     <th class="row2"> Customer Address </th>
-                                    <th class="row2"> Customer City </th>
-                                    <th class="row2"> Customer Sate </th>
-                                    <th class="row2"> Customer Zipcode </th>
-                                    <th class="row2"> Washer Name </th>
-                                    <th class="row2"> Customer Feedback </th>
-                                    <th> Customer Ratings </th>
-                                    <th> Customer Social ID</th>
+                                     <th class="row2"> Customer Feedback </th>
+                                    <th class="row2"> Washer Name & Badge</th>
+                                    <th class="row2"> Create Date</th>
+
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
 
-                                function is_iterable($var) {
+                                /*function is_iterable($var) {
                                     return $var !== null && (is_array($var) || $var instanceof Traversable || $var instanceof Iterator || $var instanceof IteratorAggregate
                                             );
-                                }
+                                }*/
 
                                 foreach ($jsondata as $responseage) {
-                                    if (is_iterable($responseage)) {
                                         foreach ($responseage as $responseagents) {
 
                                             //$totalrecord = $responseagents->totalrecorc;  
@@ -103,38 +99,23 @@ $result_code = $jsondata->result;
                                                 <td><?php echo $responseagents->customername; ?></td>
                                                 <td><?php echo $responseagents->email; ?></td>
                                                 <td><?php echo $responseagents->contact_number; ?></td>
-                                                <td><?php echo $responseagents->location_address; ?></td>
-                                                <td><?php echo $responseagents->city; ?></td>
-                                                <td><?php echo $responseagents->state; ?></td>
-                                                <td><?php echo $responseagents->zipcode; ?></td>
-                                                <td><?php echo $responseagents->agentname; ?></td> 
+                                                <td><?php echo $responseagents->address; ?></td>
+                                                
+                                             
                                                 <td><?php
                                                     if (!empty($responseagents->comments)) {
                                                         echo $responseagents->comments;
                                                     } else {
                                                         echo 'N/A';
                                                     }
-                                                    ?></td>   
-                                                <td><?php
-                                                    if (!empty($responseagents->ratings)) {
-                                                        echo $responseagents->ratings;
-                                                    } else {
-                                                        echo 'N/A';
-                                                    }
-                                                    ?></td>   
-                                                <td><?php
-                                                    if (!empty($responseagents->social_id)) {
-                                                        echo $responseagents->social_id;
-                                                    } else {
-                                                        echo 'N/A';
-                                                    }
-                                                    ?></td>  
-
-
+                                                    ?>
+                                                    </td>
+                                                   <td><?php echo $responseagents->agentname." (#".$responseagents->real_washer_id.")"; ?></td>
+                                                   <td><?php echo date('Y-m-d g:i A', strtotime($responseagents->created_date)); ?></td>
                                             </tr>
                                             <?php
                                         }
-                                    }
+                                  
                                 }
                                 ?>
                             </tbody>

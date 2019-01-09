@@ -12494,7 +12494,8 @@ class CustomersController extends Controller {
             die();
         }
 
-        $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedbacks.*,agents.agentname,customer_locations.*,customers.customername,customers.email,customers.contact_number FROM mobilewasher_service_feedbacks Left JOIN customers ON mobilewasher_service_feedbacks.customer_id=customers.id JOIN customer_locations ON customer_locations.customer_id=customers.id JOIN agents ON mobilewasher_service_feedbacks.agent_id=agents.id WHERE customer_locations.location_title='Home' ")->queryAll();
+        //$feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedbacks.*,agents.agentname,agents.real_washer_id, customer_locations.*,customers.customername,customers.email,customers.contact_number FROM mobilewasher_service_feedbacks Left JOIN customers ON mobilewasher_service_feedbacks.customer_id=customers.id JOIN customer_locations ON customer_locations.customer_id=customers.id JOIN agents ON mobilewasher_service_feedbacks.agent_id=agents.id WHERE customer_locations.location_title='Home' ")->queryAll();
+$feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedbacks.*,agents.agentname,agents.real_washer_id, customer_locations.*,customers.customername,customers.email,customers.contact_number, washing_requests.address FROM mobilewasher_service_feedbacks Left JOIN customers ON mobilewasher_service_feedbacks.customer_id=customers.id JOIN customer_locations ON customer_locations.customer_id=customers.id JOIN agents ON mobilewasher_service_feedbacks.agent_id=agents.id JOIN washing_requests ON mobilewasher_service_feedbacks.wash_request_id=washing_requests.id WHERE customer_locations.location_title='Home'")->queryAll();
 
 //        $i = 0;
 //        foreach ($feedbacks as $feedback) {
