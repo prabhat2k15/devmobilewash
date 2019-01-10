@@ -58,7 +58,7 @@ if ($jsondata_permission->result == "false") {
     die();
 }
 
-$recruiter_permit_pages = array('index.php', 'all-orders.php', 'vehicles-packages.php', 'order_calendar.php', 'manage-pre-clients.php', 'client_dashboard.php', 'washer_dashboard.php', 'pre-clients-details.php', 'edit-customer.php', 'manage-customers.php', 'manage-pre-washers.php', 'add-new-bug.php', 'top-washers.php', 'top-customers.php');
+$recruiter_permit_pages = array('index.php', 'all-orders.php', 'vehicles-packages.php', 'order_calendar.php', 'manage-pre-clients.php', 'client_dashboard.php', 'washer_dashboard.php', 'pre-clients-details.php', 'edit-customer.php', 'manage-customers.php', 'manage-pre-washers.php', 'add-new-bug.php', 'top-washers.php', 'top-customers.php', 'mobilewasher-service-feedbacks.php');
 $scheduler_permit_pages = array('index.php', 'all-orders.php', 'edit-order.php', 'command-center.php', 'notifications.php', 'manage-promotions.php', 'vehicles-packages.php', 'schedule-times.php', 'ondemand-surge-times.php', 'payment-reports.php', 'vehicle-addons-pricing.php', 'add-vehicle.php', 'modern-vehicles.php', 'classic-vehicles.php', 'hours-of-operation.php', 'messagess.php', 'heatmap.php', 'client_dashboard.php', 'manage-pre-clients.php', 'manage-customers.php', 'edit-customer.php', 'non-return-customers.php', 'edit-agent.php', 'inactive-customers.php', 'feedbacks.php', 'mobilewasher-service-feedbacks.php', 'top-customers.php', 'washer_dashboard.php', 'manage-pre-washers.php',
     'manage-agents.php', 'top-washers.php', 'add-new-bug.php', 'search.php', 'order_calendar.php', 'add-coupon.php', 'edit-coupon.php', 'edit-vehicle.php', 'add-message.php', 'edit-message.php', 'heatmap-list.php', 'pre-clients-details.php', 'edit-customer.php', 'add-agent.php');
 

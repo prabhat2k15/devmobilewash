@@ -623,6 +623,8 @@
                                     <span class="title">Feedbacks</span>
                                 </a>
                             </li>
+			     <?php endif; ?>
+			     <?php if (($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
                             <li class="nav-item  <?php
                             if ($url == 'mobilewasher-service-feedbacks.php') {
                                 $open_agent = 'open';
@@ -634,8 +636,7 @@
                                 </a>
                             </li>
                        
-			    <?php endif; ?>
-			     <?php if (($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
+			   
                             <li class="nav-item  <?php
                             if ($url == 'top-customers.php') {
                                 $open_agent = 'open';
