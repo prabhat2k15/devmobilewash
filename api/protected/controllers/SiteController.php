@@ -8882,7 +8882,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
           ->where("DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN :from AND :to AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
           ->group('agent_id')
           ->queryAll(); */
-        $all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 GROUP BY a.id")->queryAll();
+        //$all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 GROUP BY a.id")->queryAll();
+$all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 GROUP BY a.id")->queryAll();
 
         if (count($all_washes) > 0) {
             $result = 'true';
@@ -8900,6 +8901,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $topwashers_det_arr[$i]['image'] = $wash['image'];
                 $topwashers_det_arr[$i]['name'] = $wash['first_name'] . " " . $wash['last_name'];
                 $topwashers_det_arr[$i]['total_washes'] = $wash['total'];
+		$topwashers_det_arr[$i]['block_washer'] = $wash['block_washer'];
                 $topwashers_det_arr[$i]['total_demand'] = ($wash['total'] == 0) ? 0 : $wash['total_demand'];
                 $topwashers_det_arr[$i]['total_scheduled'] = $wash['total_scheduled'];
                 $topwashers_det_arr[$i]['total_cancel'] = (count($get_cancel_count) > 0) ? $get_cancel_count[0]['total_cancel'] : 0;
@@ -8908,6 +8910,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $topwashers_det_arr[$i]['city'] = $wash['city'];
                 $topwashers_det_arr[$i]['state'] = $wash['state'];
                 $topwashers_det_arr[$i]['zip'] = $wash['zipcode'];
+		$topwashers_det_arr[$i]['phonenumber'] = $wash['phone_number'];
+                $topwashers_det_arr[$i]['email'] = $wash['email'];
                 $i++;
             }
         }

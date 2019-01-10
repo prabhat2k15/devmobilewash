@@ -9,8 +9,17 @@
     $(document).ready(function () {
         $('#example1').dataTable({
             "pageLength": 20,
-            "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
+            "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+                    "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [
+            'csvHtml5'
+        ]
         });
+        
+
+    $('.csv-link').on('click',function(){
+        $('.buttons-csv').trigger('click');
+    });
 
     });
 </script>
@@ -29,7 +38,7 @@ $jsondata = json_decode($result);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
 ?>
-<style>
+<!--<style>
     table.dataTable thead .sorting_asc {
         background: rgba(0, 0, 0, 0) url("<?php echo ROOT_URL; ?>/admin-new/assets/global/css/../plugins/datatables/images/sort_both.png") no-repeat scroll right center !important;
         padding-right: 50px !important;
@@ -38,6 +47,21 @@ $result_code = $jsondata->result;
         background: rgba(0, 0, 0, 0) url("<?php echo ROOT_URL; ?>/admin-new/assets/global/css/../plugins/datatables/images/sort_both.png") no-repeat scroll right center !important;
         padding-right: 50px !important;
     }
+    
+</style>-->
+<style>
+.dt-button.buttons-csv.buttons-html5 { opacity: 0;}
+.table thead tr th{
+    white-space: nowrap;
+}
+.table-scrollable {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    border: 1px solid #e7ecf1;
+    margin: 10px 0 !important;
+    max-height: 800px;
+}
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -56,7 +80,7 @@ $result_code = $jsondata->result;
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase"> Customer 3 hour email feedbacks</span>
+                            <span class="caption-subject bold uppercase"> Customer 3 hour email feedbacks</span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                         </div>
                         <div class="actions">
                             <i class="icon-calendar"></i>&nbsp;
@@ -64,6 +88,7 @@ $result_code = $jsondata->result;
                         </div>
                     </div>
                     <div class="portlet-body">
+                        <div class="table-scrollable">
                         <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                             <thead>
                                 <tr>
@@ -120,6 +145,7 @@ $result_code = $jsondata->result;
                                 ?>
                             </tbody>
                         </table>
+                    </div>
                     </div>
                 </div>
                 <!-- END EXAMPLE TABLE PORTLET-->

@@ -8,7 +8,7 @@ if($_GET['from']){
  $from = $_GET['from'];   
 }
 else{
-  $from = "2017-01-01";  
+  $from = date('Y-m-d',strtotime("-1 month"));  
 }
 
 if($_GET['to']){
@@ -81,12 +81,76 @@ $washers_data = json_decode($result);
                                         <thead>
                                             <tr>
 						<!--<th> ID </th>-->
-                                                <th> Real Washer ID </th>
+                                                <th> Badge ID </th>
                                                 <th>  Washer Photo </th>
+                                               <th> Name </th>
+					       <th> Phone Number </th>
+                                                <th> Email </th>
+						<th style="display: none;"> Address </th>
                                                 <th style="display: none;"> Street </th>
-                                                <th style="display: none;"> city </th>
-                                                <th style="display: none;"> state </th>
-                                                <th style="display: none;"> zip </th>
+                                                <th style="display: none;"> Home Number </th>
+                                                <th style="display: none;"> City </th>
+                                                <th style="display: none;"> State </th>
+                                                <th style="display: none;"> Zip Code </th>
+                                                <th> Total Scheduled </th>
+                                                <th> Total On Demand </th>
+                                                <th> Total Washes </th>
+                                                <th> Total cancel </th>
+                                                <th> Total Earned </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+<?php foreach($washers_data->top_washers as $washer): ?>
+<?php if($washer->block_washer) continue; ?>
+<tr>
+    <!--<td><?php //echo $washer->id; ?></td>-->
+    <td><?php echo $washer->company_id; ?></td>
+    <td><img class="washer_default_background" src="<?php if($washer->image) {echo $washer->image;} else{echo "images/image_icon.png";} ?>" style="width: 100px; height: 100px;"></td>
+    <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>&event=washer_history"><?php echo $washer->name; ?></a></td>
+    <td><?php echo $washer->phonenumber; ?></td>
+    <td><?php echo $washer->email; ?></td>
+    <td style="display: none;"><?php echo $washer->address; ?></td>
+    <td style="display: none;"><?php echo $washer->street; ?></td>
+    <?php $home = explode(',', $washer->street); ?>
+    <td style="display: none;"><?php echo (int) filter_var($home[0], FILTER_SANITIZE_NUMBER_INT);?></td>
+    <td style="display: none;"><?php echo $washer->city; ?></td>
+    <td style="display: none;"><?php echo $washer->state; ?></td>
+    <td style="display: none;"><?php echo $washer->zip; ?></td>
+    <td><?php echo $washer->total_scheduled; ?></td>
+    <td><?php echo $washer->total_demand; ?></td>
+    <td><?php echo $washer->total_washes; ?></td>
+    <?php if($washer->total_cancel > 0){?>
+    <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>&event=washer_history_cancel"><?php echo $washer->total_cancel; ?></a></td>
+    <?php }else{
+        echo "<td>".$washer->total_cancel."</td>";
+    }?>
+    <td><?php echo ($washer->total_sum > 0)? '$'.number_format($washer->total_sum,2):'$00.00'; ?></td>
+</tr>
+<?php endforeach; ?>
+             
+                                      </tbody>
+                                    </table>
+				    <?php else: ?>
+				    <h2>Nothing Found</h2>
+                                    <?php endif; ?> 
+                                </div>
+				                                <div class="portlet-body" style="display: none;">
+                                  <?php if(count($washers_data->top_washers)): ?>
+                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example2">
+                                        <thead>
+                                            <tr>
+						<!--<th> ID </th>-->
+                                                <th> Badge ID </th>
+                                                <th>  Washer Photo </th>
+                                               <th> Name </th>
+					       <th> Phone Number </th>
+                                                <th> Email </th>
+						<th style="display: none;"> Address </th>
+                                                <th style="display: none;"> Street </th>
+                                                <th style="display: none;"> Home Number </th>
+                                                <th style="display: none;"> City </th>
+                                                <th style="display: none;"> State </th>
+                                                <th style="display: none;"> Zip Code </th>
                                                 <th> Total Scheduled </th>
                                                 <th> Total On Demand </th>
                                                 <th> Total Washes </th>
@@ -99,9 +163,14 @@ $washers_data = json_decode($result);
 <tr>
     <!--<td><?php //echo $washer->id; ?></td>-->
     <td><?php echo $washer->company_id; ?></td>
-    <td><img src="<?php if($washer->image) {echo $washer->image;} else{echo "images/image_icon.png";} ?>" style="width: 100px; height: 100px;"></td>
+    <td><img class="washer_default_background" src="<?php if($washer->image) {echo $washer->image;} else{echo "images/image_icon.png";} ?>" style="width: 100px; height: 100px;"></td>
     <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>&event=washer_history"><?php echo $washer->name; ?></a></td>
+    <td><?php echo $washer->phonenumber; ?></td>
+    <td><?php echo $washer->email; ?></td>
+    <td style="display: none;"><?php echo $washer->address; ?></td>
     <td style="display: none;"><?php echo $washer->street; ?></td>
+    <?php $home = explode(',', $washer->street); ?>
+    <td style="display: none;"><?php echo (int) filter_var($home[0], FILTER_SANITIZE_NUMBER_INT);?></td>
     <td style="display: none;"><?php echo $washer->city; ?></td>
     <td style="display: none;"><?php echo $washer->state; ?></td>
     <td style="display: none;"><?php echo $washer->zip; ?></td>
@@ -113,7 +182,7 @@ $washers_data = json_decode($result);
     <?php }else{
         echo "<td>".$washer->total_cancel."</td>";
     }?>
-    <td><?php echo ($washer->total_sum > 0)? '$'.round($washer->total_sum,2):'$0.00'; ?></td>
+    <td><?php echo ($washer->total_sum > 0)? '$'.number_format($washer->total_sum,2):'$00.00'; ?></td>
 </tr>
 <?php endforeach; ?>
              
@@ -144,6 +213,13 @@ $washers_data = json_decode($result);
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script type="text/javascript">
                 $('#example1').DataTable({
+        pageLength: 25,
+        stateSave: true,
+        //lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+
+    });
+		
+		                $('#example2').DataTable({
         pageLength: 25,
         stateSave: true,
         //lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
