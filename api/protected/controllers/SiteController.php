@@ -4041,7 +4041,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } elseif ($event == 'canceled') {
                 $status_qr = ' AND (w.status=5 || w.status=6)';
             } elseif ($event == 'declined') {
-                $status_qr = " AND (w.failed_transaction_id != '')";
+                $status_qr = " AND (w.failed_transaction_id != '') ";
             } elseif ($event == 'express' || $event == 'deluxe' || $event == 'premium') {
                 $status_qr = " AND (FIND_IN_SET('" . $event . "', w.package_list)>0 AND w.status IN('0','4'))";
             } elseif ($event == 'coupon_code') {
@@ -4161,7 +4161,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             else
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 0 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC")->queryAll();
         }
-        else {
+        elseif ($event == 'declined') {
+            if ($limit > 0) {
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' AND (DATE_FORMAT(w.order_for,'%Y-%m-%d')= '" . $day . "' OR DATE_FORMAT(w.complete_order,'%Y-%m-%d')= '" . $day . "') AND (w.failed_transaction_id != '')  ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
+            } else {
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' AND (DATE_FORMAT(w.order_for,'%Y-%m-%d')= '" . $day . "' OR DATE_FORMAT(w.complete_order,'%Y-%m-%d')= '" . $day . "') AND (w.failed_transaction_id != '')  ORDER BY w.id DESC")->queryAll();
+            }
+        } else {
             if ($limit > 0)
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
             else
