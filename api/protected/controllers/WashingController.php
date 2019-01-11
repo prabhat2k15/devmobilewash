@@ -12726,7 +12726,8 @@ class WashingController extends Controller {
 
                 $min_diff = round(($from_time - $to_time) / 60, 2);
 
-                if (($min_diff < 0) && ($min_diff <= -1440)) {
+                //if (($min_diff < 0) && ($min_diff <= -1440)) {
+		if (($min_diff < 0)) {
                     continue;
                 }
 
@@ -13427,7 +13428,7 @@ class WashingController extends Controller {
                             $message2 = "You have a scheduled car wash within 1 minute";
                         else if (($min_diff <= 0) && (!$schedwash->network_error_push_sent)) {
 
-                            $message2 = "You missed your appointment. This may affect your ratings.";
+                            //$message2 = "You missed your appointment. This may affect your ratings.";
 
                             //Washingrequests::model()->updateByPk($schedwash->id, array("status" => 6, "washer_late_cancel" => 1));
                             Washingrequests::model()->updateByPk($schedwash->id, array("network_error_push_sent" => 1));
@@ -13438,7 +13439,7 @@ class WashingController extends Controller {
                               }
                              */
 
-                            $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $schedwash->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                            /*$clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $schedwash->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
                             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '19' ")->queryAll();
                             $message = $pushmsg[0]['message'];
@@ -13462,10 +13463,10 @@ class WashingController extends Controller {
                                         $notifyresult = curl_exec($ch);
                                     curl_close($ch);
                                 }
-                            }
+                            }*/
                         }
 
-                        if (!$agent_detail->block_washer) {
+                        if ((!$agent_detail->block_washer)) {
                             foreach ($agentdevices as $agdevice) {
                                 //$message =  "You have a new scheduled wash request.";
                                 //echo $agentdetails['mobile_type'];
@@ -13490,14 +13491,15 @@ class WashingController extends Controller {
 
                         if (($min_diff <= 0) && ($schedwash->schedule_time) && (!$schedwash->network_error_push_sent)) {
 
-                            Washingrequests::model()->updateByPk($schedwash->id, array("status" => 5, "no_washer_cancel" => 1));
-                            Washingrequests::model()->updateByPk($schedwash->id, array("network_error_push_sent" => 1));
-                            if ($schedwash->transaction_id) {
+                            //Washingrequests::model()->updateByPk($schedwash->id, array("status" => 5, "no_washer_cancel" => 1, "network_error_push_sent" => 1));
+			    Washingrequests::model()->updateByPk($schedwash->id, array("network_error_push_sent" => 1));
+                            
+                            /*if ($schedwash->transaction_id) {
                                 if ($schedwash->wash_request_position == 'real')
                                     $voidresult = Yii::app()->braintree->void_real($schedwash->transaction_id);
                                 else
                                     $voidresult = Yii::app()->braintree->void($schedwash->transaction_id);
-                            }
+                            }*/
 
                             /* $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -13542,10 +13544,10 @@ class WashingController extends Controller {
 					<p style='color: #333;'>Thank you for your consideration.</p>
 					<p style='color: #333;'>MobileWash</p>";
 
-                            Vargas::Obj()->SendMail($customers_details->email, $from, $message, "MobileWash", 'mail-receipt');
+                            //Vargas::Obj()->SendMail($customers_details->email, $from, $message, "MobileWash", 'mail-receipt');
 
 
-                            if (APP_ENV == 'real') {
+                            /*if (APP_ENV == 'real') {
 
                                 $kartapiresult = $this->washingkart($schedwash->id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
                                 $kartdata = json_decode($kartapiresult);
@@ -13701,14 +13703,14 @@ class WashingController extends Controller {
                                 } catch (Services_Twilio_RestException $e) {
                                     //echo  $e;
                                 }
-                            }
+                            }*/
 
                             $logdata = array(
                                 'wash_request_id' => $schedwash->id,
                                 'action' => 'scheduleauto-canceled',
                                 'action_date' => date('Y-m-d H:i:s'));
 
-                            Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+                            //Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
                         }
                     }
                 }
