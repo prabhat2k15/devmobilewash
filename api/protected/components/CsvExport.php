@@ -66,6 +66,7 @@ class CsvExport {
                 if(isset($row[$col])){
 
                     $val = $row[$col];
+                    //$val = str_replace(",",";",$row[$col]);
 
                     foreach($config as $conf)
                         if(!empty($conf))

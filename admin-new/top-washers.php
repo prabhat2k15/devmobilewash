@@ -56,7 +56,7 @@ $washers_data = json_decode($result);
                                 <div class="portlet-title">
                                     <div class="caption font-dark">
                                         <i class="icon-settings font-dark"></i>
-                                        <span class="caption-subject bold uppercase"> Top Washers (<?php echo date("M j, Y",strtotime($from)); ?>  - <?php echo date("M j, Y",strtotime($to)); ?>) </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                                        <span class="caption-subject bold uppercase"> Top Washers (<?php echo date("M j, Y",strtotime($from)); ?>  - <?php echo date("M j, Y",strtotime($to)); ?>) </span><a style="margin-left: 20px;" target="_blank" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/gettopmostwashers&key=<?php echo API_KEY; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>&csv_export=1&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>">Download CSV</a>
                                     </div>
                                     <div class="caption font-dark">
 
@@ -134,64 +134,7 @@ $washers_data = json_decode($result);
 				    <h2>Nothing Found</h2>
                                     <?php endif; ?> 
                                 </div>
-				                                <div class="portlet-body" style="display: none;">
-                                  <?php if(count($washers_data->top_washers)): ?>
-                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example2">
-                                        <thead>
-                                            <tr>
-						<!--<th> ID </th>-->
-                                                <th> Badge ID </th>
-                                                <th>  Washer Photo </th>
-                                               <th> Name </th>
-					       <th> Phone Number </th>
-                                                <th> Email </th>
-						<th style="display: none;"> Address </th>
-                                                <th style="display: none;"> Street </th>
-                                                <th style="display: none;"> Home Number </th>
-                                                <th style="display: none;"> City </th>
-                                                <th style="display: none;"> State </th>
-                                                <th style="display: none;"> Zip Code </th>
-                                                <th> Total Scheduled </th>
-                                                <th> Total On Demand </th>
-                                                <th> Total Washes </th>
-                                                <th> Total cancel </th>
-                                                <th> Total Earned </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-<?php foreach($washers_data->top_washers as $washer): ?>
-<tr>
-    <!--<td><?php //echo $washer->id; ?></td>-->
-    <td><?php echo $washer->company_id; ?></td>
-    <td><img class="washer_default_background" src="<?php if($washer->image) {echo $washer->image;} else{echo "images/image_icon.png";} ?>" style="width: 100px; height: 100px;"></td>
-    <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>&event=washer_history"><?php echo $washer->name; ?></a></td>
-    <td><?php echo $washer->phonenumber; ?></td>
-    <td><?php echo $washer->email; ?></td>
-    <td style="display: none;"><?php echo $washer->address; ?></td>
-    <td style="display: none;"><?php echo $washer->street; ?></td>
-    <?php $home = explode(',', $washer->street); ?>
-    <td style="display: none;"><?php echo (int) filter_var($home[0], FILTER_SANITIZE_NUMBER_INT);?></td>
-    <td style="display: none;"><?php echo $washer->city; ?></td>
-    <td style="display: none;"><?php echo $washer->state; ?></td>
-    <td style="display: none;"><?php echo $washer->zip; ?></td>
-    <td><?php echo $washer->total_scheduled; ?></td>
-    <td><?php echo $washer->total_demand; ?></td>
-    <td><?php echo $washer->total_washes; ?></td>
-    <?php if($washer->total_cancel > 0){?>
-    <td><a href="<?php echo ROOT_URL;?>/admin-new/washer_history.php?washer_id=<?php echo $washer->washer_id; ?>&from=<?php echo $from; ?>&to=<?php echo $to; ?>&event=washer_history_cancel"><?php echo $washer->total_cancel; ?></a></td>
-    <?php }else{
-        echo "<td>".$washer->total_cancel."</td>";
-    }?>
-    <td><?php echo ($washer->total_sum > 0)? '$'.number_format($washer->total_sum,2):'$00.00'; ?></td>
-</tr>
-<?php endforeach; ?>
-             
-                                      </tbody>
-                                    </table>
-				    <?php else: ?>
-				    <h2>Nothing Found</h2>
-                                    <?php endif; ?> 
-                                </div>
+
                             </div>
                             <!-- END EXAMPLE TABLE PORTLET-->
                         </div>
@@ -219,21 +162,6 @@ $washers_data = json_decode($result);
 
     });
 		
-		                $('#example2').DataTable({
-        pageLength: 25,
-        stateSave: true,
-        //lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        buttons: [
-            'csvHtml5'
-        ]
-    });
-$(document).ready(function(){
-
-    $('.csv-link').on('click',function(){
-        $('.buttons-csv').trigger('click');
-    });
-});
             </script>
              <!--<script src='js/jquery.voicerss-tts.min.js'></script>-->
       

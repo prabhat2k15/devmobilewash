@@ -64,6 +64,7 @@ if (!empty($_POST['submit'])) {
 
     //$message_data['media'] = $media;
     $message_data = http_build_query($message_data);
+
     foreach ($phone as $phonenumber) {
         $phonenumber = trim($phonenumber);
         //echo $phonenumber;
@@ -229,7 +230,7 @@ $result_code = $jsondata->result;
                                         <tr><td>
                                                 <input type="hidden" name="phone" value="<?php echo $responsemesage->phone; ?>"></td></tr>
                                         <tr><td>
-                                                <input type="hidden" name="message" value="<?php echo $responsemesage->message; ?>"></td></tr>
+                                                <input type="hidden" name="message" value="<?php echo str_replace('"', '”', $responsemesage->message); ?>"></td></tr>
                                         <tr><td>
                                                 <input type="hidden" name="media" value="<?php echo $responsemesage->media; ?>"></td></tr>
                                         <tr><td>
