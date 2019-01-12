@@ -4417,6 +4417,7 @@ class WashingController extends Controller {
         $del_surge_factor = 0;
         $prem_surge_factor = 0;
         $zipcode_price_factor = 0;
+	$admin_wash_complete = 0;
         if ((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))) {
 
             if (AES256CBC_STATUS == 1) {
@@ -4868,6 +4869,13 @@ class WashingController extends Controller {
                 $sched_time = $wrequest_id_check->schedule_time;
             }
         }
+	
+	if($wrequest_id_check->status == 4){
+		$completelogcheck = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = '" . $wrequest_id_check->id . "' AND (action = 'appcompletejob' OR action = 'completejob') ORDER BY action_date DESC LIMIT 1")->queryAll();	
+		if(count($completelogcheck)){
+			if($completelogcheck[0]['action'] == 'completejob') $admin_wash_complete = 1;  			
+		}
+	}
 
         if ($response) {
             $json = array(
@@ -4900,6 +4908,7 @@ class WashingController extends Controller {
                 'net_price' => $wrequest_id_check->net_price,
                 'agent_total' => $wrequest_id_check->agent_total,
                 'company_total' => $wrequest_id_check->company_total,
+		'admin_wash_complete' => $admin_wash_complete
             );
         } else {
             $json = array(
@@ -13167,7 +13176,7 @@ class WashingController extends Controller {
                 /* --- send no washer before 30 mins alert end ------- */
 
                 /* --- send reschedule wash alert ------- */
-
+/*
                 if ((!$schedwash->is_reschedulewash_push_sent) && $schedwash->reschedule_time) {
 
                     if ($schedwash->agent_id) {
@@ -13262,7 +13271,7 @@ class WashingController extends Controller {
 
                     Washingrequests::model()->updateByPk($schedwash->id, array("is_reschedulewash_push_sent" => 1));
                 }
-
+*/
                 /* --- send reschedule wash alert end ------- */
 
                 if ($schedwash->reschedule_time)
@@ -13428,10 +13437,31 @@ class WashingController extends Controller {
                             $message2 = "You have a scheduled car wash within 1 minute";
                         else if (($min_diff <= 0) && (!$schedwash->network_error_push_sent)) {
 
-                            //$message2 = "You missed your appointment. This may affect your ratings.";
+                            $message2 = "You missed your appointment. This may affect your ratings.";
 
                             //Washingrequests::model()->updateByPk($schedwash->id, array("status" => 6, "washer_late_cancel" => 1));
                             Washingrequests::model()->updateByPk($schedwash->id, array("network_error_push_sent" => 1));
+			    
+			    if(count($agentdevices)){
+			    foreach ($agentdevices as $agdevice) {
+                                //$message =  "You have a new scheduled wash request.";
+                                //echo $agentdetails['mobile_type'];
+                                $device_type = strtolower($agdevice['device_type']);
+                                $notify_token = $agdevice['device_token'];
+                                $alert_type = "strong";
+                                $notify_msg = urlencode($message2);
+
+                                $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                                //file_put_contents("android_notificaiton.log", $notifyurl, FILE_APPEND);
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, $notifyurl);
+                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                                if ($notify_msg)
+                                    $notifyresult = curl_exec($ch);
+                                curl_close($ch);
+                            }
+			}
 
                             /* if($schedwash->transaction_id) {
                               if($schedwash->wash_request_position == 'real') $voidresult = Yii::app()->braintree->void_real($schedwash->transaction_id);
@@ -13466,7 +13496,7 @@ class WashingController extends Controller {
                             }*/
                         }
 
-                        if ((!$agent_detail->block_washer)) {
+                        if ((!$agent_detail->block_washer) && ($min_diff > 0)) {
                             foreach ($agentdevices as $agdevice) {
                                 //$message =  "You have a new scheduled wash request.";
                                 //echo $agentdetails['mobile_type'];
@@ -13476,7 +13506,7 @@ class WashingController extends Controller {
                                 $notify_msg = urlencode($message2);
 
                                 $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
-                                file_put_contents("android_notificaiton.log", $notifyurl, FILE_APPEND);
+                                //file_put_contents("android_notificaiton.log", $notifyurl, FILE_APPEND);
                                 $ch = curl_init();
                                 curl_setopt($ch, CURLOPT_URL, $notifyurl);
                                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -13813,7 +13843,7 @@ class WashingController extends Controller {
                     $message .= "<div style='margin-top: 20px; text-align: center;'>
 <a style='display: inline-block; width: 48px; height: 48px; margin-right: 6px;' href='https://www.facebook.com/getmobilewash'><div style='background: transparent url(" . ROOT_URL . "/images/facebook_circle.png) no-repeat top left; background-size: 48px !important; display: block; width: 48px; height: 48px;'></div></a>
 <a style='display: inline-block; width: 48px; height: 48px;' href='https://www.instagram.com/getmobilewash/'><div style='background: transparent url(" . ROOT_URL . "/images/instagram_circle.png) no-repeat top left; background-size: 48px !important; display: block; width: 48px; height: 48px;'></div></a>
-<p style='padding: 10px 10px;border:1px solid #0880e6;text-align:center;width: 100%;margin-left:auto;margin-right:auto;margin-bottom:0;border-radius:8px;line-height:22px;box-sizing: border-box;'><span style='font-size: 20px;margin-bottom: 10px;display: block;'><strong>By providing feedback and following us on Facebook or Instagram, you will be entered for our weekly Free Deluxe Wash drawing!</strong></span>Please provide your social media handle(s) along with your order number for selection process.</p></div>";
+<p style='padding: 10px 10px;border:1px solid #0880e6;text-align:center;width: 100%;margin-left:auto;margin-right:auto;margin-bottom:0;border-radius:8px;line-height:22px;box-sizing: border-box;'><span style='font-size: 18px;margin-bottom: 10px;display: block;'><strong>By providing feedback and following us on Facebook or Instagram, you will be entered for our weekly Free Deluxe Wash drawing!</strong></span>Please provide your social media handle(s) along with your order number for selection process.</p></div>";
 
 
                     Vargas::Obj()->SendMail($custdetail->email, $from, $message, "Customer Feedback - Order #0000" . $schedwash->id, 'mail-feedback');
