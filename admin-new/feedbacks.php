@@ -68,13 +68,15 @@ table.dataTable thead .sorting_desc {
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                         <thead>
                                             <tr>
-                                                <th class="row1"> Washing ID </th>
-                                                <th class="row2"> Customer Comments </th>
+                                                <th class="row1"> Order Number </th>
+                                                <th class="row1"> Customer Name </th>
+                                                <th class="row1"> Customer Number </th>
+                                                <th class="row1"> Address </th>
+                                                <th class="row2"> Customer Feedback </th>
                                                 <th> Customer Ratings </th>
-                                                <th> Agent Comments </th>
+                                                <th> Agent name/badge # </th>
                                                 <th> Agent Ratings </th>
-                                                <th> Customer Name </th>
-                                                <th> Agent Name </th>
+                                                <th> Creat Date </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -105,12 +107,15 @@ table.dataTable thead .sorting_desc {
                     
                        
                     <td><?php echo $responseagents->washingid; ?></td>   
+                    <td><?php if(!empty($responseagents->customername)){ echo $responseagents->customername; } else { echo 'N/A'; } ?></td> 
+                    <td><?php if(!empty($responseagents->phone)){ echo $responseagents->phone; } else { echo 'N/A'; } ?></td> 
+                    <td><?php if(!empty($responseagents->address)){ echo $responseagents->address; } else { echo 'N/A'; } ?></td> 
                     <td><?php if(!empty($responseagents->customer_comments)){ echo $responseagents->customer_comments; } else { echo 'N/A'; } ?></td>   
-                    <td><?php if(!empty($responseagents->customer_ratings)){ echo $responseagents->customer_ratings; } else { echo 'N/A'; } ?></td>   
-                    <td><?php if(!empty($responseagents->agent_comments)){ echo $responseagents->agent_comments; } else { echo 'N/A'; }  ?></td>   
+                    <td><?php if(!empty($responseagents->customer_ratings)){ echo $responseagents->customer_ratings; } else { echo 'N/A'; } ?></td>  
+                    <td><?php if(!empty($responseagents->agentfname) || !empty($responseagents->agentlname)){ echo $responseagents->agentname; if(!empty($responseagents->real_washer_id)){ echo '#'.$responseagents->real_washer_id; }} else { echo 'N/A'; } ?></td> 
+                    
                     <td><?php if(!empty($responseagents->agent_ratings)){ echo $responseagents->agent_ratings; } else { echo 'N/A'; } ?></td>   
-                    <td><?php if(!empty($responseagents->customername)){ echo $responseagents->customername; } else { echo 'N/A'; } ?></td>   
-                    <td><?php if(!empty($responseagents->agentfname) || !empty($responseagents->agentlname)){ echo $responseagents->agentname; } else { echo 'N/A'; } ?></td>   
+                    <td><?php if(!empty($responseagents->complete_order)){ echo $responseagents->complete_order; } else { echo 'N/A'; } ?></td>      
                     
                 </tr>
                 <?php   }

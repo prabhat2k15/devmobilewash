@@ -4877,6 +4877,12 @@ class WashingController extends Controller {
 		}
 	}
 
+         $check_admin_cancel = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = ".$wrequest_id_check->id." AND action IN('admindropjob', 'cancelorder') AND admin_username != '' LIMIT 1")->queryAll();
+        $admin_wash_complete = 0;
+        if(count($check_admin_cancel) > 0){
+          $admin_wash_complete = 1;
+        }
+        
         if ($response) {
             $json = array(
                 'result' => $result,
@@ -8429,7 +8435,7 @@ class WashingController extends Controller {
         /*        get the total */
         $total_feed = Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_feedbacks w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN agents a ON w.agent_id = a.id")->queryAll();
         $feeds = $total_feed[0]['countid'];
-        $feedback = Yii::app()->db->createCommand("SELECT w.id, w.customer_comments, w.customer_ratings, w.agent_comments, w.agent_ratings, c.customername, a.first_name, a.last_name FROM washing_feedbacks w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN agents a ON w.agent_id = a.id ")->queryAll();
+        $feedback = Yii::app()->db->createCommand("SELECT w.wash_request_id as id, wr.address, c.contact_number, wr.complete_order, a.real_washer_id, w.customer_comments, w.customer_ratings, w.agent_comments, w.agent_ratings, c.customername, a.first_name, a.last_name FROM washing_feedbacks w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN agents a ON w.agent_id = a.id LEFT JOIN washing_requests wr ON w.wash_request_id = wr.id")->queryAll();
         /* echo "SELECT w.id, w.customer_comments, w.customer_ratings, w.agent_comments, w.agent_ratings, c.customername, a.first_name, a.last_name FROM washing_feedbacks w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN agents a ON w.agent_id = a.id ORDER BY ". ($set) ." ". ($des) ." LIMIT ". ($startpage)." ,  ". ($endpage). " "; */
         $i = 0;
         foreach ($feedback as $feedbacks) {
@@ -8443,7 +8449,10 @@ class WashingController extends Controller {
             $agentname = $feedbacks['first_name'] . '&nbsp;' . $feedbacks['last_name'];
             $agentfname = $feedbacks['first_name'];
             $agentlname = $feedbacks['last_name'];
-
+            $address = $feedbacks['address'];
+            $real_wash_id = $feedbacks['real_washer_id'];
+            $complete_order = $feedbacks['complete_order'];
+            $contact_number = $feedbacks['contact_number'];
 
             $key = 'feed_' . $id;
             $json = array();
@@ -8456,6 +8465,10 @@ class WashingController extends Controller {
             $json['agentname'] = $agentname;
             $json['agentfname'] = $agentfname;
             $json['agentlname'] = $agentlname;
+            $json['address'] = $address;
+            $json['real_washer_id'] = $real_washer_id;
+            $json['complete_order'] = $complete_order;
+            $json['phone'] = $contact_number;
             $feedview[] = $json;
         }
 
