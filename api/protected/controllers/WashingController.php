@@ -14911,7 +14911,13 @@ class WashingController extends Controller {
             }
 
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $washer_request_id));
-
+            
+            $check_admin_cancel = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = ".$washer_request_id." AND action IN('completejob') AND admin_username != '' LIMIT 1")->queryAll();
+            $admin_wash_complete = 0;
+            if(count($check_admin_cancel) > 0){
+              $admin_wash_complete = 1;
+            }
+            
             $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $wrequest_id_check->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 
@@ -14919,24 +14925,25 @@ class WashingController extends Controller {
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '43' ")->queryAll();
             $message = $pushmsg[0]['message'];
+            if($admin_wash_complete == 0){
+                foreach ($clientdevices as $ctdevice) {
 
-            foreach ($clientdevices as $ctdevice) {
+                    //echo $agentdetails['mobile_type'];
+                    $device_type = strtolower($ctdevice['device_type']);
+                    $notify_token = $ctdevice['device_token'];
+                    $alert_type = "schedule";
+                    $notify_msg = urlencode($message);
 
-                //echo $agentdetails['mobile_type'];
-                $device_type = strtolower($ctdevice['device_type']);
-                $notify_token = $ctdevice['device_token'];
-                $alert_type = "schedule";
-                $notify_msg = urlencode($message);
+                    $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $notifyurl);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-                $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
-                //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $notifyurl);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-                if ($notify_msg)
-                    $notifyresult = curl_exec($ch);
-                curl_close($ch);
+                    if ($notify_msg)
+                        $notifyresult = curl_exec($ch);
+                    curl_close($ch);
+                }
             }
             $result = 'true';
             $response = 'notification sent';
