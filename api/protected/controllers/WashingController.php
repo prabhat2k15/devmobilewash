@@ -4417,7 +4417,6 @@ class WashingController extends Controller {
         $del_surge_factor = 0;
         $prem_surge_factor = 0;
         $zipcode_price_factor = 0;
-	$admin_wash_complete = 0;
         if ((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))) {
 
             if (AES256CBC_STATUS == 1) {
@@ -4869,20 +4868,18 @@ class WashingController extends Controller {
                 $sched_time = $wrequest_id_check->schedule_time;
             }
         }
-	
-	if($wrequest_id_check->status == 4){
-		$completelogcheck = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = '" . $wrequest_id_check->id . "' AND (action = 'appcompletejob' OR action = 'completejob') ORDER BY action_date DESC LIMIT 1")->queryAll();	
-		if(count($completelogcheck)){
-			if($completelogcheck[0]['action'] == 'completejob') $admin_wash_complete = 1;  			
-		}
-	}
 
-         $check_admin_cancel = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = ".$wrequest_id_check->id." AND action IN('admindropjob', 'cancelorder') AND admin_username != '' LIMIT 1")->queryAll();
+//        $check_admin_cancel = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = ".$wrequest_id_check->id." AND action IN('admindropjob', 'cancelorder') AND admin_username != '' LIMIT 1")->queryAll();
+//        $admin_wash_complete = 0;
+//        if(count($check_admin_cancel) > 0){
+//          $admin_wash_complete = 1;
+//        }
+        $check_admin_cancel = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = ".$wrequest_id_check->id." AND action IN('completejob') AND admin_username != '' LIMIT 1")->queryAll();
         $admin_wash_complete = 0;
         if(count($check_admin_cancel) > 0){
           $admin_wash_complete = 1;
         }
-        
+
         if ($response) {
             $json = array(
                 'result' => $result,
@@ -4914,7 +4911,7 @@ class WashingController extends Controller {
                 'net_price' => $wrequest_id_check->net_price,
                 'agent_total' => $wrequest_id_check->agent_total,
                 'company_total' => $wrequest_id_check->company_total,
-		'admin_wash_complete' => $admin_wash_complete
+                'admin_wash_complete' => $admin_wash_complete
             );
         } else {
             $json = array(

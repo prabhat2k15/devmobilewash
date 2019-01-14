@@ -4098,8 +4098,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             }
         }
         /* END */
-
-
+        if ($event == "all") {
+            $order_day = " AND (DATE_FORMAT(w.order_for,'%Y-%m-%d')= '" . $day . "' OR DATE_FORMAT(w.complete_order,'%Y-%m-%d')= '" . $day . "') ";
+        }
 
         $json = array();
 
@@ -8870,7 +8871,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
         $from = Yii::app()->request->getParam('from');
         $to = Yii::app()->request->getParam('to');
-	$csv_export = Yii::app()->request->getParam('csv_export');
+        $csv_export = Yii::app()->request->getParam('csv_export');
 
         $result = 'false';
         $response = 'nothing found';
@@ -8883,11 +8884,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
           ->where("DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN :from AND :to AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
           ->group('agent_id')
           ->queryAll(); */
-        
-	//$all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 GROUP BY a.id")->queryAll();
 
-if($csv_export) $all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 GROUP BY a.id")->queryAll();
-else $all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 GROUP BY a.id")->queryAll();
+        //$all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 GROUP BY a.id")->queryAll();
+
+        if ($csv_export)
+            $all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 GROUP BY a.id")->queryAll();
+        else
+            $all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 GROUP BY a.id")->queryAll();
 
         if (count($all_washes) > 0) {
             $result = 'true';
@@ -8904,33 +8907,35 @@ else $all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, 
                 $topwashers_det_arr[$i]['washer_id'] = $wash['id'];
                 $topwashers_det_arr[$i]['image'] = $wash['image'];
                 $topwashers_det_arr[$i]['name'] = $wash['first_name'] . " " . $wash['last_name'];
-		$topwashers_det_arr[$i]['phonenumber'] = $wash['phone_number'];
+                $topwashers_det_arr[$i]['phonenumber'] = $wash['phone_number'];
                 $topwashers_det_arr[$i]['email'] = $wash['email'];
                 $topwashers_det_arr[$i]['total_washes'] = $wash['total'];
-		
+
                 $topwashers_det_arr[$i]['total_demand'] = ($wash['total'] == 0) ? 0 : $wash['total_demand'];
                 $topwashers_det_arr[$i]['total_scheduled'] = $wash['total_scheduled'];
                 $topwashers_det_arr[$i]['total_cancel'] = (count($get_cancel_count) > 0) ? $get_cancel_count[0]['total_cancel'] : 0;
                 $topwashers_det_arr[$i]['total_sum'] = (count($total_earn) > 0) ? $total_earn[0]['total_sum'] : 0;
-		$topwashers_det_arr[$i]['total_earned'] = (count($total_earn) > 0) ? "$".number_format($total_earn[0]['total_sum'], 2, '.', '') : "$0";
-		if($wash['block_washer']) $topwashers_det_arr[$i]['status'] = 'Blocked';
-		else $topwashers_det_arr[$i]['status'] = 'Active';
-                $topwashers_det_arr[$i]['street'] = str_replace(",",";",$wash['street_address']);
-                $topwashers_det_arr[$i]['city'] = str_replace(",",";",$wash['city']);
-                $topwashers_det_arr[$i]['state'] = str_replace(",",";",$wash['state']);
-                $topwashers_det_arr[$i]['zip'] = str_replace(",",";",$wash['zipcode']);
-		
+                $topwashers_det_arr[$i]['total_earned'] = (count($total_earn) > 0) ? "$" . number_format($total_earn[0]['total_sum'], 2, '.', '') : "$0";
+                if ($wash['block_washer'])
+                    $topwashers_det_arr[$i]['status'] = 'Blocked';
+                else
+                    $topwashers_det_arr[$i]['status'] = 'Active';
+                $topwashers_det_arr[$i]['street'] = str_replace(",", ";", $wash['street_address']);
+                $topwashers_det_arr[$i]['city'] = str_replace(",", ";", $wash['city']);
+                $topwashers_det_arr[$i]['state'] = str_replace(",", ";", $wash['state']);
+                $topwashers_det_arr[$i]['zip'] = str_replace(",", ";", $wash['zipcode']);
+
                 $i++;
             }
-	    
-		if($csv_export){
-			CsvExport::export(
-			$topwashers_det_arr, // a CActiveRecord array OR any CModel array
-			array('company_id' => array('raw'), 'washer_id' => array('raw'), 'name' => array('text'), 'phonenumber' => array('text'), 'email' => array('text'), 'total_washes' => array('raw'), 'total_demand' => array('raw'), 'total_scheduled' => array('raw'), 'total_cancel' => array('raw'), 'total_earned' => array('text'), 'status' => array('text'), 'street' => array('text'), 'city' => array('text'), 'state' => array('text'), 'zip' => array('text')), true, // boolPrintRows
-			'topwashers-' . $from . '-to-' . $to . ".csv", ","
-			);
-		exit;
-		}
+
+            if ($csv_export) {
+                CsvExport::export(
+                        $topwashers_det_arr, // a CActiveRecord array OR any CModel array
+                        array('company_id' => array('raw'), 'washer_id' => array('raw'), 'name' => array('text'), 'phonenumber' => array('text'), 'email' => array('text'), 'total_washes' => array('raw'), 'total_demand' => array('raw'), 'total_scheduled' => array('raw'), 'total_cancel' => array('raw'), 'total_earned' => array('text'), 'status' => array('text'), 'street' => array('text'), 'city' => array('text'), 'state' => array('text'), 'zip' => array('text')), true, // boolPrintRows
+                        'topwashers-' . $from . '-to-' . $to . ".csv", ","
+                );
+                exit;
+            }
         }
 
 
