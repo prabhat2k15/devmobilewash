@@ -6043,13 +6043,20 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                     $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', is_voip_number = 0, current_app_version = '" . $app_version . "', contact_number = :phone, forced_logout= 0, access_token = '" . $ciphertext_token_base64 . "', access_key='" . $ciphertext_key_base64 . "', access_vector='" . $ciphertext_iv_base64 . "', access_token_expire_at = '" . date("Y-m-d H:i:s", strtotime('+7 days')) . "' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
                 else
                     $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', current_app_version = '" . $app_version . "', forced_logout= 0, access_token = '" . $ciphertext_token_base64 . "', access_key='" . $ciphertext_key_base64 . "', access_vector='" . $ciphertext_iv_base64 . "', access_token_expire_at = '" . date("Y-m-d H:i:s", strtotime('+7 days')) . "' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
-            }
+		 
+		 Yii::app()->db->createCommand("UPDATE customer_devices SET forced_logout= 1 WHERE customer_id = :user_id AND device_token != '".$device_token."' AND device_status = 'online'")
+		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
+
+	    }
             else {
                 if ($phone)
                     $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0, current_app_version = '" . $app_version . "', is_voip_number = 0, phone_number = :phone, access_token = '" . $ciphertext_token_base64 . "', access_key='" . $ciphertext_key_base64 . "', access_vector='" . $ciphertext_iv_base64 . "', access_token_expire_at = '" . date("Y-m-d H:i:s", strtotime('+7 days')) . "' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
                 else
                     $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', current_app_version = '" . $app_version . "', forced_logout= 0, access_token = '" . $ciphertext_token_base64 . "', access_key='" . $ciphertext_key_base64 . "', access_vector='" . $ciphertext_iv_base64 . "', access_token_expire_at = '" . date("Y-m-d H:i:s", strtotime('+7 days')) . "' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
-            }
+            
+		 Yii::app()->db->createCommand("UPDATE agent_devices SET forced_logout= 1 WHERE agent_id = :user_id AND device_token != '".$device_token."' AND device_status = 'online'")
+		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
+	    }
             $data = array(
                 'result' => 'true',
                 'response' => 'Congratulations, Your phone is verified.',

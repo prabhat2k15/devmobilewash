@@ -681,12 +681,29 @@ class CustomersController extends Controller {
 
         $customers_id = Yii::app()->request->getParam('customer_id');
         $device_token = Yii::app()->request->getParam('device_token');
+	$device_logout = 0;
+	$device_logout = Yii::app()->request->getParam('device_logout');
         if (AES256CBC_STATUS == 1) {
             $customers_id = $this->aes256cbc_crypt($customers_id, 'd', AES256CBC_API_PASS);
         }
         $model = Customers::model()->findByAttributes(array('id' => $customers_id));
         $json = array();
         if (count($model) > 0) {
+		if($device_logout == 1){
+			Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline', forced_logout = 0 WHERE customer_id = :customer_id AND device_token = :device_token")
+                        ->bindValue(':customer_id', $customers_id, PDO::PARAM_STR)
+                        ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
+                        ->execute();
+			$result = 'true';
+			$response = 'Successfully logged out';
+                $json = array(
+                    'result' => $result,
+                    'response' => $response
+                );
+		 echo json_encode($json);
+		 die();
+		}
+		else{
             $data = array('device_token' => '');
             $model->attributes = $data;
             if ($model->save(false)) {
@@ -705,6 +722,7 @@ class CustomersController extends Controller {
                         ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
                         ->execute();
             }
+	}
         } else {
             $result = 'false';
             $response = 'Not a authorized customer';
@@ -13187,14 +13205,14 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        /* if (!$token_check) {
+         if (!$token_check) {
           $json = array(
           'result' => 'false',
           'response' => 'Invalid request'
           );
           echo json_encode($json);
           die();
-          } */
+          }
 
         $agent_id = Yii::app()->request->getParam('agent_id');
         $agent_lat = Yii::app()->request->getParam('agent_lat');
@@ -13204,8 +13222,8 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
             $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
         }
 
-        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_20day_notify' => 0), array('limit' => 60));
-        // print_r($wash_id_check);
+        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_20day_notify' => 0), array('order' => 'id DESC', 'limit' => 60));
+         //print_r($clientlist);
         if (count($clientlist)) {
             foreach ($clientlist as $client) {
                 $miles = 0;
@@ -13255,6 +13273,61 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
                 }
             }
         }
+    }
+    
+    
+        public function actiongetcustomerdevice() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+         if (!$token_check) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } 
+
+        $customer_id = Yii::app()->request->getParam('customer_id');
+        $device_token = Yii::app()->request->getParam('device_token');
+
+        if (AES256CBC_STATUS == 1) {
+            $customer_id = $this->aes256cbc_crypt($customer_id, 'd', AES256CBC_API_PASS);
+        }
+
+        $customerdevices = Yii::app()->db->createCommand("SELECT id, forced_logout FROM customer_devices WHERE customer_id = '" . $customer_id . "' AND device_token = '".$device_token."' ORDER BY id DESC LIMIT 1")->queryAll();
+        
+        if (count($customerdevices)) {
+		 $json = array(
+            'result' => 'true',
+	    'response' => 'device found',
+            'forced_logout' => $customerdevices[0]['forced_logout']
+        );
+        echo json_encode($json);
+        die();
+  
+        }
+	else{
+	 $json = array(
+            'result' => 'false',
+	    'response' => 'device not found',
+           
+        );
+        echo json_encode($json);
+        die();	
+	}
     }
 
 }

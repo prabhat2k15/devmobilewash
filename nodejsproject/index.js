@@ -368,6 +368,30 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
+function customers_getcustomerdevice(customer_id='', device_token = '', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
+//console.log(agent_id);
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded'},
+  url:     'https://www.devmobilewash.com/api/index.php?r=customers/getcustomerdevice',
+  body:    "key="+key+"&customer_id="+customer_id+"&device_token="+device_token+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
+}, function(error, response, body){
+  //console.log("inside 30 timer"+JSON.parse(body));
+            try
+       {
+         
+         if(socket_id) io.sockets.connected[socket_id].emit('customers_getcustomerdevice_'+customer_id, JSON.parse(body));
+  else io.emit('customers_getcustomerdevice_'+customer_id, JSON.parse(body));
+       }
+       catch(err)
+       {
+
+       }     
+            
+});
+
+}
+
+
 function washing_removeduplicatewashnowstartlog(wash_request_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 //console.log(agent_id);
 request.post({
@@ -503,6 +527,11 @@ else{
   socket.on('removeduplicatewashnowstartlog', function(data){
       //console.log(data);
     washing_removeduplicatewashnowstartlog(data.wash_request_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
+  });
+  
+    socket.on('getcustomerdevice', function(data){
+      //console.log(data);
+    customers_getcustomerdevice(data.customer_id, data.device_token, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
    
 
