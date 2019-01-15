@@ -52,7 +52,8 @@ $jsondata = json_decode($result);
 $s_orders_response = $jsondata->response;
 $s_orders_result_code = $jsondata->result;
 $s_mw_all_orders = $jsondata->wash_requests;
-/* echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; */
+//print_r($result); die;
+/* \\ echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; */
 $pending_order_count = '';
 if (!$jsondata->pending_wash_count)
     $pending_order_count = "no orders";
@@ -648,13 +649,13 @@ $ios_count = $jsondata->ios_count;
                                             <th style="display: none;"> ZipCode </th>
                                         <?php } ?>
                                         <th> Schedule Datetime </th>
-                                        <th> Starts </th>
+                                        <th class="hide"> Starts </th>
                                         <th> Vehicles </th>
                                         <th> Total Price </th>
                                         <!--th>Total Price </th-->
                                         <!--th>Transaction ID </th-->
                                         <th> Created Date </th>
-
+                                        <th> Completed Date </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -762,7 +763,7 @@ $ios_count = $jsondata->ios_count;
                                                     N/A
                                                 <?php endif; ?>
                                             </td>
-                                            <td>
+                                            <td class="hide">
                                                 <?php
                                                 if ($order->min_diff > 0)
                                                     echo $order->min_diff;
@@ -786,12 +787,19 @@ $ios_count = $jsondata->ios_count;
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;             ?></td-->
+                                           <!--td><?php //echo $order->transaction_id;                         ?></td-->
                                             <?php $sum = $order->agent_total + $order->company_total ?>
                                             <td>$<?php echo number_format($sum, 2); ?>   </td>
-                                            <td><?php echo $order->created_date; ?></td>
-
-
+                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;   ?></td>
+                                            <td>
+                                                <?php
+                                                if (strtotime($order->complete_order) > 0) {
+                                                    echo date('Y-m-d h:i A', strtotime($order->complete_order));
+                                                } else {
+                                                    echo "N/A";
+                                                }
+                                                ?>
+                                            </td>
 
                                         </tr>
                                     <?php } ?>
@@ -1055,20 +1063,20 @@ $ios_count = $jsondata->ios_count;
              if ($(this).hasClass("addonupgrade-view")) {
              return false;
              }
-                 
+             
              var wash_id = $(this).attr('data-id');
-                 
+             
              $(this).parent().remove();
              if ($(".spec-order-list").children().length < 1){
              $(".spec-order-list").remove();
              }
-                 
+             
              if ($(".alert-box-wrap").children().length < 1){
              $(".alert-box-wrap").hide();
              }
              window.open('edit-order.php?id='+wash_id, '_blank');
              return false;
-                 
+             
              });*/
 
         });
@@ -1214,11 +1222,11 @@ $ios_count = $jsondata->ios_count;
                         }
 
                         if (value.min_diff > 0)
-                            upcomingwashes.push(value.min_diff);
-                        else
-                            upcomingwashes.push("-");
+                                // upcomingwashes.push(value.min_diff);
+                                else
+                            // upcomingwashes.push("-");
 
-                        var veh_string = '';
+                            var veh_string = '';
                         if (value.vehicles.length) {
 
                             veh_string += "<ol style='padding-left: 15px;'>";
@@ -1234,6 +1242,7 @@ $ios_count = $jsondata->ios_count;
                         upcomingwashes.push(veh_string);
                         upcomingwashes.push("$" + value.net_price);
                         upcomingwashes.push(value.created_date);
+                        upcomingwashes.push(value.complete_order);
                         dt_table.fnAddData(upcomingwashes);
                         //console.log(upcomingwashes);
                     });

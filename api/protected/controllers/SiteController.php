@@ -4545,6 +4545,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'washer_30_min_noarrive' => $washer_30_min_noarrive,
                         'company_total' => $wrequest['company_total'],
                         'agent_total' => $wrequest['agent_total'],
+                        'complete_order' => $wrequest['complete_order'],
                     );
                 }
 
@@ -4604,6 +4605,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'washer_30_min_noarrive' => $washer_30_min_noarrive,
                         'company_total' => $wrequest['company_total'],
                         'agent_total' => $wrequest['agent_total'],
+                        'complete_order' => $wrequest['complete_order'],
                     );
                 }
                 if (($min_diff < 0) && ($wrequest['status'] > 0)) {
@@ -4656,6 +4658,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'washer_30_min_noarrive' => $washer_30_min_noarrive,
                         'company_total' => $wrequest['company_total'],
                         'agent_total' => $wrequest['agent_total'],
+                        'complete_order' => $wrequest['complete_order'],
                     );
                 }
 
@@ -4706,6 +4709,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     'washer_30_min_noarrive' => $washer_30_min_noarrive,
                     'company_total' => $wrequest['company_total'],
                     'agent_total' => $wrequest['agent_total'],
+                    'complete_order' => $wrequest['complete_order'],
                 );
             }
 
