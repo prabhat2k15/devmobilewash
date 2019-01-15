@@ -15679,5 +15679,108 @@ class WashingController extends Controller {
         );
         echo json_encode($json);
     }
+    
+    public function actioncustomersfeedbacksapp(){
+       if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
 
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+        $type = Yii::app()->request->getParam('type');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        /*        get the total */
+        $feedback = Yii::app()->db->createCommand("SELECT c.id, c.customername, c.contact_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN customers c ON a.customer_id = c.id WHERE a.customer_id != 0 AND a.agent_id = 0 AND a.title = '".$type."' ORDER BY a.create_date DESC")->queryAll();
+
+        $i = 0;
+        foreach ($feedback as $feedbacks) {
+            $i++;
+            $id = $feedbacks['id'];
+            $customer = $feedbacks['customername'];
+            $contact_number = $feedbacks['contact_number'];
+            $comments = $feedbacks['comments'];
+            $create_time = $feedbacks['create_time'];
+
+            $json = array();
+            $json['id'] = $id;
+            $json['customer'] = $customer;
+            $json['contact_number'] = $contact_number;
+            $json['comments'] = $comments;
+            $json['create_time'] = $create_time;
+            $feedview[] = $json;
+        }
+
+        $feedbackadmin['order'] = $feedview;
+        $feedbackadmin['result'] = 'true';
+
+        echo json_encode($feedbackadmin, JSON_PRETTY_PRINT);
+        exit;
+    }
+
+    public function actionwasherfeedbacksapp(){
+       if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+        $type = Yii::app()->request->getParam('type');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        /*        get the total */
+        $feedback = Yii::app()->db->createCommand("SELECT c.real_washer_id, c.agentname, c.phone_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN agents c ON a.agent_id = c.id WHERE a.agent_id != 0 AND a.customer_id = 0 AND a.title = '".$type."' ORDER BY a.create_date DESC")->queryAll();
+
+        $i = 0;
+        foreach ($feedback as $feedbacks) {
+            $i++;
+            $id = $feedbacks['real_washer_id'];
+            $customer = $feedbacks['agentname'];
+            $contact_number = $feedbacks['phone_number'];
+            $comments = $feedbacks['comments'];
+            $create_time = $feedbacks['create_time'];
+
+            $json = array();
+            $json['id'] = $id;
+            $json['customer'] = $customer;
+            $json['contact_number'] = $contact_number;
+            $json['comments'] = $comments;
+            $json['create_time'] = $create_time;
+            $feedview[] = $json;
+        }
+
+        $feedbackadmin['order'] = $feedview;
+        $feedbackadmin['result'] = 'true';
+
+        echo json_encode($feedbackadmin, JSON_PRETTY_PRINT);
+        exit;
+    }
 }
