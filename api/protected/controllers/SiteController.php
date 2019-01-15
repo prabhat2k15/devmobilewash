@@ -6544,7 +6544,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
 
                     $aws_topic_result = $aws_client->createTopic([
-                        'Attributes' => array("DisplayName" => 'MobileWash'),
+                        //'Attributes' => array("DisplayName" => 'MobileWash'),
                         'Name' => 'custnonreturn30',
                     ]);
 
@@ -6574,7 +6574,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
 
                     $aws_topic_result = $aws_client->createTopic([
-                        'Attributes' => array("DisplayName" => 'MobileWash'),
+                        //'Attributes' => array("DisplayName" => 'MobileWash'),
                         'Name' => 'custnonreturn60',
                     ]);
 
@@ -6604,7 +6604,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
 
                     $aws_topic_result = $aws_client->createTopic([
-                        'Attributes' => array("DisplayName" => 'MobileWash'),
+                        //'Attributes' => array("DisplayName" => 'MobileWash'),
                         'Name' => 'custnonreturn90',
                     ]);
 
@@ -6634,7 +6634,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
 
                     $aws_topic_result = $aws_client->createTopic([
-                        'Attributes' => array("DisplayName" => 'MobileWash'),
+                        //'Attributes' => array("DisplayName" => 'MobileWash'),
                         'Name' => 'custinactive5',
                     ]);
 
@@ -6664,7 +6664,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
 
                     $aws_topic_result = $aws_client->createTopic([
-                        'Attributes' => array("DisplayName" => 'MobileWash'),
+                        //'Attributes' => array("DisplayName" => 'MobileWash'),
                         'Name' => 'custinactive10',
                     ]);
 
@@ -6694,7 +6694,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
 
                     $aws_topic_result = $aws_client->createTopic([
-                        'Attributes' => array("DisplayName" => 'MobileWash'),
+                        //'Attributes' => array("DisplayName" => 'MobileWash'),
                         'Name' => 'custinactive30',
                     ]);
 

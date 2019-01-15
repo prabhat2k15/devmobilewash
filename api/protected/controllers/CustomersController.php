@@ -13204,7 +13204,7 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
             $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
         }
 
-        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_20day_notify' => 0), array('limit' => 100));
+        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_20day_notify' => 0), array('limit' => 60));
         // print_r($wash_id_check);
         if (count($clientlist)) {
             foreach ($clientlist as $client) {
