@@ -10162,16 +10162,18 @@ class WashingController extends Controller {
         if (!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))) {
             $last_month = Yii::app()->request->getParam('start');
             $curr_month = Yii::app()->request->getParam('end');
-            $order_month = " AND ( DATE_FORMAT(a.order_for,'%Y-%m')>= :last_month AND DATE_FORMAT(a.order_for,'%Y-%m')<= :curr_month)";
+            $order_month = " AND ( DATE_FORMAT(a.order_for,'%Y-%m')>= :last_month AND DATE_FORMAT(a.order_for,'%Y-%m')<= :curr_month) ";
         }
         /* Post END */
 
         /* web orderds */
-        $total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
+        //$total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
+        $total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
 
         $count = $total_order[0]['countid'];
 
-        $customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
+        //$customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
+        $customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
                 ->bindValue(':last_month', $last_month, PDO::PARAM_STR)
                 ->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
                 ->queryAll();
@@ -10305,7 +10307,7 @@ class WashingController extends Controller {
                     );
                 }
             }
-            //print_r($orderview);
+           // print_r($orderview); die;
             $data = $ArrCustemer = array();
             foreach ($orderview as $key => $value) {
 
@@ -10435,9 +10437,10 @@ class WashingController extends Controller {
                     }
                 }
             }
-            //print_r($data);
+           // print_r($data); die;
             $dt = array();
             foreach ($data as $key => $val) {
+
                 $dt[$key]['declined']['color'] = '';
                 $dt[$key]['total_orders']['color'] = '';
                 $dt[$key]['pending']['color'] = '';
@@ -14286,6 +14289,8 @@ class WashingController extends Controller {
         if (count($allwashes)) {
             foreach ($allwashes as $wash) {
 
+
+
                 $washcompletetime = $wash->complete_order;
 
                 $from_time = strtotime(date('Y-m-d g:i A'));
@@ -14911,13 +14916,13 @@ class WashingController extends Controller {
             }
 
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $washer_request_id));
-            
+
             $check_admin_cancel = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = ".$washer_request_id." AND action IN('completejob') AND admin_username != '' LIMIT 1")->queryAll();
             $admin_wash_complete = 0;
             if(count($check_admin_cancel) > 0){
               $admin_wash_complete = 1;
             }
-            
+
             $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $wrequest_id_check->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
 
@@ -14926,25 +14931,25 @@ class WashingController extends Controller {
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '43' ")->queryAll();
             $message = $pushmsg[0]['message'];
             if($admin_wash_complete == 0){
-                foreach ($clientdevices as $ctdevice) {
+            foreach ($clientdevices as $ctdevice) {
 
-                    //echo $agentdetails['mobile_type'];
-                    $device_type = strtolower($ctdevice['device_type']);
-                    $notify_token = $ctdevice['device_token'];
-                    $alert_type = "schedule";
-                    $notify_msg = urlencode($message);
+                //echo $agentdetails['mobile_type'];
+                $device_type = strtolower($ctdevice['device_type']);
+                $notify_token = $ctdevice['device_token'];
+                $alert_type = "schedule";
+                $notify_msg = urlencode($message);
 
-                    $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
-                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, $notifyurl);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $notifyurl);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-                    if ($notify_msg)
-                        $notifyresult = curl_exec($ch);
-                    curl_close($ch);
-                }
+                if ($notify_msg)
+                    $notifyresult = curl_exec($ch);
+                curl_close($ch);
             }
+          }
             $result = 'true';
             $response = 'notification sent';
         }
@@ -15611,6 +15616,7 @@ class WashingController extends Controller {
         echo json_encode($json);
     }
     
+
         public function actionremoveduplicatewashnowstartlog() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
@@ -15679,7 +15685,7 @@ class WashingController extends Controller {
         );
         echo json_encode($json);
     }
-    
+
     public function actioncustomersfeedbacksapp(){
        if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -15783,4 +15789,5 @@ class WashingController extends Controller {
         echo json_encode($feedbackadmin, JSON_PRETTY_PRINT);
         exit;
     }
+
 }
