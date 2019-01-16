@@ -13259,7 +13259,7 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
                         $notify_msg = urlencode($message);
 
                         $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
-                        //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                        file_put_contents("20daynotify.log",date('Y-m-d g:i A')." ".$client->id."\n\n",FILE_APPEND);
                         //print_r($notifyurl);
                         $ch = curl_init();
                         curl_setopt($ch, CURLOPT_URL, $notifyurl);

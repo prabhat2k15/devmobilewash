@@ -7177,8 +7177,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         echo json_encode($json);
         die();
     }
-
-    public function actiongetinactivecustomers() {
+    
+    
+        public function actiongetinactivecustomers() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -7204,84 +7205,64 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
         $response = "nothing found";
         $result = "false";
+        $inactivecust_arr = [];
         $inactivecust_arr_5 = [];
         $inactivecust_arr_10 = [];
-        $inactivecust_arr_15 = [];
+        $inactivecust_arr_30 = [];
         $ind5 = 0;
         $ind10 = 0;
-        $ind15 = 0;
-        $total_entries = 0;
-        $total_pages = 0;
+        $ind30 = 0;
+        $total_entries_5 = 0;
+        $total_pages_5 = 0;
+        $total_entries_10 = 0;
+        $total_pages_10 = 0;
+        $total_entries_30 = 0;
+        $total_pages_30 = 0;
         $limit = 0;
-        $offset = 0;
+        $offset_5 = 0;
+        $offset_10 = 0;
+        $offset_30 = 0;
         $page_number = 1;
         $limit = Yii::app()->request->getParam('limit');
         $page_number = Yii::app()->request->getParam('page_number');
+        $range = Yii::app()->request->getParam('range');
         $limit = 100;
-        $offset = ($page_number - 1) * $limit;
+        if ($range == 5)
+            $offset_5 = ($page_number - 1) * $limit;
+        if ($range == 10)
+            $offset_10 = ($page_number - 1) * $limit;
+        if ($range == 30)
+            $offset_30 = ($page_number - 1) * $limit;
 
-        $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE total_wash = 0 AND is_first_wash = 0")->queryAll();
+        $total_rows_5 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_inactive = 1 AND inactive_cat = 5")->queryAll();
         if ($limit > 0)
-            $all_customers = Yii::app()->db->createCommand("SELECT * FROM customers WHERE total_wash = 0 AND is_first_wash = 0 ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset)->queryAll();
+            $inactivecust_arr_5 = Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_inactive = 1 AND inactive_cat = 5 ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset_5)->queryAll();
 
-        $total_entries = $total_rows[0]['countid'];
-        if ($total_entries > 0)
-            $total_pages = ceil($total_entries / $limit);
+        $total_entries_5 = $total_rows_5[0]['countid'];
+        if ($total_entries_5 > 0)
+            $total_pages_5 = ceil($total_entries_5 / $limit);
 
+        $total_rows_10 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_inactive = 1 AND inactive_cat = 10")->queryAll();
+        if ($limit > 0)
+            $inactivecust_arr_10 = Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_inactive = 1 AND inactive_cat = 10 ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset_10)->queryAll();
 
-        if (count($all_customers)) {
+        $total_entries_10 = $total_rows_10[0]['countid'];
+        if ($total_entries_10 > 0)
+            $total_pages_10 = ceil($total_entries_10 / $limit);
+
+        $total_rows_30 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_inactive = 1 AND inactive_cat = 30")->queryAll();
+        if ($limit > 0)
+            $inactivecust_arr_30 = Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_inactive = 1 AND inactive_cat = 30 ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset_30)->queryAll();
+
+        $total_entries_30 = $total_rows_30[0]['countid'];
+        if ($total_entries_30 > 0)
+            $total_pages_30 = ceil($total_entries_30 / $limit);
+
+        if (count($inactivecust_arr_5) || count($inactivecust_arr_10) || count($inactivecust_arr_30)) {
 
             $response = "inactive customers";
             $result = "true";
-            foreach ($all_customers as $ind => $customer) {
 
-                $current_time = strtotime(date('Y-m-d H:i:s'));
-
-                $create_time = strtotime($customer['created_date']);
-                $min_diff = 0;
-                if ($current_time > $create_time) {
-                    $min_diff = round(($current_time - $create_time) / 60, 2);
-                }
-
-                // 5 days or more inactive
-                if (($min_diff >= 7200) && ($min_diff < 14400)) {
-
-                    $nonreturncust_arr_5[$ind5]['id'] = $customer['id'];
-                    $nonreturncust_arr_5[$ind5]['name'] = $customer['first_name'] . " " . $customer['last_name'];
-                    $nonreturncust_arr_5[$ind5]['email'] = $customer['email'];
-                    $nonreturncust_arr_5[$ind5]['phone'] = $customer['contact_number'];
-                    $nonreturncust_arr_5[$ind5]['total_wash'] = $customer['total_wash'];
-                    $nonreturncust_arr_5[$ind5]['updated_date'] = date('Y-m-d h:i A', strtotime($customer['updated_date']));
-
-                    $ind5++;
-                }
-
-                // 10 days or more inactive
-                if (($min_diff >= 14400) && ($min_diff < 21600)) {
-
-                    $nonreturncust_arr_10[$ind10]['id'] = $customer['id'];
-                    $nonreturncust_arr_10[$ind10]['name'] = $customer['first_name'] . " " . $customer['last_name'];
-                    $nonreturncust_arr_10[$ind10]['email'] = $customer['email'];
-                    $nonreturncust_arr_10[$ind10]['phone'] = $customer['contact_number'];
-                    $nonreturncust_arr_10[$ind10]['total_wash'] = $customer['total_wash'];
-                    $nonreturncust_arr_10[$ind10]['updated_date'] = date('Y-m-d h:i A', strtotime($customer['updated_date']));
-
-                    $ind10++;
-                }
-
-                // 15 days or more inactive
-                if ($min_diff >= 21600) {
-
-                    $nonreturncust_arr_15[$ind15]['id'] = $customer['id'];
-                    $nonreturncust_arr_15[$ind15]['name'] = $customer['first_name'] . " " . $customer['last_name'];
-                    $nonreturncust_arr_15[$ind15]['email'] = $customer['email'];
-                    $nonreturncust_arr_15[$ind15]['phone'] = $customer['contact_number'];
-                    $nonreturncust_arr_15[$ind15]['total_wash'] = $customer['total_wash'];
-                    $nonreturncust_arr_15[$ind15]['updated_date'] = date('Y-m-d h:i A', strtotime($customer['updated_date']));
-
-                    $ind15++;
-                }
-            }
         }
 
 
@@ -7289,16 +7270,22 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $json = array(
             'result' => $result,
             'response' => $response,
-            'nonreturncusts_5' => $nonreturncust_arr_5,
-            'nonreturncusts_10' => $nonreturncust_arr_10,
-            'nonreturncusts_15' => $nonreturncust_arr_15,
-            'total_entries' => $total_entries,
-            'total_pages' => $total_pages
+            'inactivecusts_5' => $inactivecust_arr_5,
+            'inactivecusts_10' => $inactivecust_arr_10,
+            'inactivecusts_30' => $inactivecust_arr_30,
+            'total_entries_5' => $total_entries_5,
+            'total_pages_5' => $total_pages_5,
+            'total_entries_10' => $total_entries_10,
+            'total_pages_10' => $total_pages_10,
+            'total_entries_30' => $total_entries_30,
+            'total_pages_30' => $total_pages_30,
         );
 
         echo json_encode($json);
         die();
     }
+
+
 
     public function actionwashfraudcheck() {
 

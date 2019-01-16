@@ -1,4 +1,14 @@
 <?php include('header.php') ?>
+
+<style>
+   .customcsv{
+      opacity: 0;
+   }
+   
+   .dataTables_info{
+      display: none;
+   }
+</style>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
@@ -10,11 +20,18 @@ var table;
            table = $('#example1, #example2, #example3').dataTable( {
   "pageLength": 20,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-  "bPaginate": false,
+    "bPaginate": false,
   "aaSorting": [],
+  "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center customcsv'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+ buttons: [
+            'csvHtml5'
+        ]
 } );
 
 
+   $('.csv-link').on('click',function(){
+        $('.buttons-csv').trigger('click');
+    });
         });
         </script>
 
@@ -22,14 +39,16 @@ var table;
 
 <?php
 $page_number = 1;
+$range = 5;
 if(isset($_GET['page_number'])) $page_number = $_GET['page_number'];
+if(isset($_GET['range'])) $range = $_GET['range'];
 
     $url = ROOT_URL.'/api/index.php?r=site/getinactivecustomers';
 
 
         //echo $url;
         $handle = curl_init($url);
-        $data = array('key' => API_KEY, 'page_number' => $page_number, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+        $data = array('key' => API_KEY, 'page_number' => $page_number, 'range' => $range, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
@@ -134,7 +153,7 @@ display: none;
 
 .custom-pagination{
     text-align: center;
-    margin: 10px;
+    margin: 10px 0;
 }
 
 .custom-pagination a{
@@ -179,23 +198,23 @@ cursor: pointer !important;
                                 <div class="portlet-title tabbable-line">
                                                 <div class="caption caption-md">
                                                     <i class="icon-globe theme-font hide"></i>
-                                                    <span class="caption-subject bold uppercase" style="color: #000"> Inactive Customers</span> <a style="margin-left: 20px;" target="_blank" class="csv-link" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=5&page_number=<?php echo $page_number; ?>&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>">Download CSV</a>
+                                                    <span class="caption-subject bold uppercase" style="color: #000"> Inactive Customers</span> <a style="margin-left: 20px;" target="_blank" class="csv-link" href="javascript:void(0)">Download CSV</a>
                                                 </div>
                                                 <ul class="nav nav-tabs">
-                                                    <li class="active">
+                                                    <li <?php if(($_GET['range'] == 5) || (!isset($_GET['range']))) echo "class='active'"; ?>>
                                                         <a href="#tab_1_1" data-toggle="tab">5 Days</a>
                                                     </li>
-                                                    <li>
+                                                    <li <?php if(($_GET['range'] == 10)) echo "class='active'"; ?>>
                                                         <a href="#tab_1_2" data-toggle="tab">10 Days</a>
                                                     </li>
-                                                    <li>
-                                                        <a href="#tab_1_3" data-toggle="tab">15 Days</a>
+                                                    <li <?php if(($_GET['range'] == 30)) echo "class='active'"; ?>>
+                                                        <a href="#tab_1_3" data-toggle="tab">30 Days</a>
                                                     </li>
                                                 </ul>
                                   </div>
                                 <div class="portlet-body">
                                  <div class="tab-content">
-                                    <div class="tab-pane active" id="tab_1_1">
+                                    <div class="tab-pane <?php if(($_GET['range'] == 5) || (!isset($_GET['range']))) echo "active"; ?>" id="tab_1_1">
 
 									<table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                     <!--table class="table table-striped table-bordered table-hover table-checkable order-column"-->
@@ -206,25 +225,28 @@ cursor: pointer !important;
    <th> Customer Name </th>
 <th> Email </th>
 <th> Phone </th>
-<th> Last Activity </th>
-
+<th> Washes </th>
+<!--<th> Last Order </th>-->
 
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <?php
                                      
-                                        if(count($allcustomers->nonreturncusts_5)){
+                                        if(count($allcustomers->inactivecusts_5)){
 
-                                            foreach($allcustomers->nonreturncusts_5 as $customer){
+                                            foreach($allcustomers->inactivecusts_5 as $customer){
 
                                         ?>
                                             <tr class="odd gradeX">
  <td> <?php echo $customer->id; ?> </td>
- <td> <?php echo $customer->name; ?> </td>
+ <td> <?php echo $customer->first_name." ".$customer->last_name; ?> </td>
 <td> <?php echo $customer->email; ?> </td>
-<td> <?php echo $customer->phone; ?> </td>
-<td> <?php echo $customer->updated_date; ?> </td>
+<td> <?php echo $customer->contact_number; ?> </td>
+ <td> <?php
+if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
+else echo $customer->total_wash;?> </td>
+
 
                                             </tr>
 
@@ -237,8 +259,46 @@ cursor: pointer !important;
                                         ?>
                                         </tbody>
                                     </table>
+                                      <?php if((!isset($_GET['range'])) || ($_GET['range'] == 5)): ?>
+                                      <div class='custom-pagination'>
+                                       <?php if(count($allcustomers->inactivecusts_5)): ?>
+                                       <?php if(isset($_GET['page_number']) && ($_GET['page_number'] > 1)): ?>
+                                          <p style="text-align: left;">Showing <?php echo ((($_GET['page_number']  - 1) * 100) + 1); ?> to <?php echo (($_GET['page_number']  - 1) * 100) + count($allcustomers->inactivecusts_5); ?> of <?php echo $allcustomers->total_entries_5; ?> entries</p>
+                                       <?php else: ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->inactivecusts_5); ?> of <?php echo $allcustomers->total_entries_5; ?> entries</p>
+                                       
+                                       <?php endif; ?>
+                                       <?php endif; ?>
+                                    <?php 
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?page_number=1&range=5'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages_5; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=5&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    if($page_number != $allcustomers->total_pages_5) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=5&page_number=".$allcustomers->total_pages_5."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
+                                      <?php else: ?>
+                                        <?php if(count($allcustomers->inactivecusts_5)): ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->inactivecusts_5); ?> of <?php echo $allcustomers->total_entries_5; ?> entries</p>
+                                       <?php endif; ?>
+                                       <?php if($allcustomers->total_pages_5 >1): ?>
+                                         
+                                       <div class='custom-pagination'>
+                                       
+                                    <?php 
+                                    
+                                    for($i=1, $j=1; $i<=$allcustomers->total_pages_5; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=5&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=5&page_number=".$allcustomers->total_pages_5."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
+                                       <?php endif; ?>
+                                      <?php endif; ?>
                                  </div>
-                                    <div class="tab-pane" id="tab_1_2">
+                                    <div class="tab-pane <?php if(($_GET['range'] == 10)) echo "active"; ?>" id="tab_1_2">
                                        									<table class="table table-striped table-bordered table-hover table-checkable order-column" id="example2">
                                     <!--table class="table table-striped table-bordered table-hover table-checkable order-column"-->
                                         <thead>
@@ -248,24 +308,30 @@ cursor: pointer !important;
    <th> Customer Name </th>
 <th> Email </th>
 <th> Phone </th>
-<th> Last Activity </th>
+<th> Washes </th>
+<!--<th> Last Order </th>-->
 
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <?php
                                      
-                                        if(count($allcustomers->nonreturncusts_10)){
+                                        if(count($allcustomers->inactivecusts_10)){
 
-                                            foreach($allcustomers->nonreturncusts_10 as $customer){
+                                            foreach($allcustomers->inactivecusts_10 as $customer){
 
                                         ?>
                                             <tr class="odd gradeX">
  <td> <?php echo $customer->id; ?> </td>
- <td> <?php echo $customer->name; ?> </td>
+ <td> <?php echo $customer->first_name." ".$customer->last_name; ?> </td>
 <td> <?php echo $customer->email; ?> </td>
-<td> <?php echo $customer->phone; ?> </td>
-<td> <?php echo $customer->updated_date; ?> </td>
+<td> <?php echo $customer->contact_number; ?> </td>
+ <td> <?php
+if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
+else echo $customer->total_wash;?> </td>
+
+
+
                                             </tr>
 
                                         <?php
@@ -277,8 +343,45 @@ cursor: pointer !important;
                                         ?>
                                         </tbody>
                                     </table>
+                                      <?php if(($_GET['range'] == 10)): ?>
+                                      <div class='custom-pagination'>
+                                       <?php if(count($allcustomers->inactivecusts_10)): ?>
+                                       <?php if(isset($_GET['page_number']) && ($_GET['page_number'] > 1)): ?>
+                                          <p style="text-align: left;">Showing <?php echo ((($_GET['page_number']  - 1) * 100) + 1); ?> to <?php echo (($_GET['page_number']  - 1) * 100) + count($allcustomers->inactivecusts_10); ?> of <?php echo $allcustomers->total_entries_10; ?> entries</p>
+                                       <?php else: ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->inactivecusts_10); ?> of <?php echo $allcustomers->total_entries_10; ?> entries</p>
+                                       
+                                       <?php endif; ?>
+                                       <?php endif; ?>
+                                    <?php 
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?page_number=1&range=10'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages_10; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=10&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    if($page_number != $allcustomers->total_pages_10) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=10&page_number=".$allcustomers->total_pages_10."'>&raquo;</a> ";
+                                    ?>
                                     </div>
-                                      <div class="tab-pane" id="tab_1_3">
+                                      <?php else: ?>
+                                       <?php if(count($allcustomers->inactivecusts_10)): ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->inactivecusts_10); ?> of <?php echo $allcustomers->total_entries_10; ?> entries</p>
+                                       <?php endif; ?>
+                                      <?php if($allcustomers->total_pages_10 > 1): ?>
+                                      <div class='custom-pagination'>
+                                       
+                                    <?php 
+                                    
+                                    for($i=1, $j=1; $i<=$allcustomers->total_pages_10; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=10&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                   echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=10&page_number=".$allcustomers->total_pages_10."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
+                                      <?php endif; ?>
+                                      <?php endif; ?>
+                                    </div>
+                                      <div class="tab-pane <?php if(($_GET['range'] == 30)) echo "active"; ?>" id="tab_1_3">
                                        									<table class="table table-striped table-bordered table-hover table-checkable order-column" id="example3">
                                     <!--table class="table table-striped table-bordered table-hover table-checkable order-column"-->
                                         <thead>
@@ -288,23 +391,29 @@ cursor: pointer !important;
    <th> Customer Name </th>
 <th> Email </th>
 <th> Phone </th>
-<th> Last Activity </th>
+<th> Washes </th>
+<!--<th> Last Order </th>-->
+
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <?php
                                      
-                                        if(count($allcustomers->nonreturncusts_15)){
+                                        if(count($allcustomers->inactivecusts_30)){
 
-                                            foreach($allcustomers->nonreturncusts_15 as $customer){
+                                            foreach($allcustomers->inactivecusts_30 as $customer){
 
                                         ?>
                                             <tr class="odd gradeX">
  <td> <?php echo $customer->id; ?> </td>
- <td> <?php echo $customer->name; ?> </td>
+ <td> <?php echo $customer->first_name." ".$customer->last_name; ?> </td>
 <td> <?php echo $customer->email; ?> </td>
-<td> <?php echo $customer->phone; ?> </td>
-<td> <?php echo $customer->updated_date; ?> </td>
+<td> <?php echo $customer->contact_number; ?> </td>
+ <td> <?php
+if($customer->total_wash > 0) echo "<a target='_blank' href='".ROOT_URL."/admin-new/all-orders.php?customer_id=".$customer->id."'>".$customer->total_wash."</a>";
+else echo $customer->total_wash;?> </td>
+
+
 
                                             </tr>
 
@@ -317,18 +426,46 @@ cursor: pointer !important;
                                         ?>
                                         </tbody>
                                     </table>
-                                    </div>
-                                      <div class='custom-pagination'>
+                                       <?php if(($_GET['range'] == 30)): ?>
+                                       <div class='custom-pagination'>
+                                          <?php if(count($allcustomers->inactivecusts_30)): ?>
+                                       <?php if(isset($_GET['page_number']) && ($_GET['page_number'] > 1)): ?>
+                                          <p style="text-align: left;">Showing <?php echo ((($_GET['page_number']  - 1) * 100) + 1); ?> to <?php echo (($_GET['page_number']  - 1) * 100) + count($allcustomers->inactivecusts_30); ?> of <?php echo $allcustomers->total_entries_30; ?> entries</p>
+                                       <?php else: ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->inactivecusts_30); ?> of <?php echo $allcustomers->total_entries_30; ?> entries</p>
+                                       
+                                       <?php endif; ?>
+                                       <?php endif; ?>
                                     <?php 
-                                    //echo $searchresults->total_pages."<br>";
-                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?page_number=1'>&laquo;</a> ";
-                                    for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages; $i++, $j++){
-                                      echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?page_number=".$i."'>".$i."</a> ";  
+                                    if($page_number != 1) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?page_number=1&range=30'>&laquo;</a> ";
+                                    for($i=$page_number+1, $j=1; $i<=$allcustomers->total_pages_30; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=30&page_number=".$i."'>".$i."</a> ";  
                                       if($j==5) break;
                                     }
-                                    if($page_number != $allcustomers->total_pages) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?page_number=".$allcustomers->total_pages."'>&raquo;</a> ";
+                                    if($page_number != $allcustomers->total_pages_30) echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=30&page_number=".$allcustomers->total_pages_30."'>&raquo;</a> ";
                                     ?>
                                     </div>
+                                       <?php else: ?>
+                                          <?php if(count($allcustomers->inactivecusts_30)): ?>
+                                       <p style="text-align: left;">Showing 1 to <?php echo count($allcustomers->inactivecusts_30); ?> of <?php echo $allcustomers->total_entries_30; ?> entries</p>
+                                       <?php endif; ?>
+                                       <?php if($allcustomers->total_pages_30 > 1): ?>
+                                       
+                                       <div class='custom-pagination'>
+                                       
+                                    <?php 
+                                    
+                                    for($i=1, $j=1; $i<=$allcustomers->total_pages_30; $i++, $j++){
+                                      echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=30&page_number=".$i."'>".$i."</a> ";  
+                                      if($j==5) break;
+                                    }
+                                    echo "<a href='".ROOT_URL."/admin-new/inactive-customers.php?range=30&page_number=".$allcustomers->total_pages_30."'>&raquo;</a> ";
+                                    ?>
+                                    </div>
+                                       <?php endif; ?>
+                                       <?php endif; ?>
+                                    </div>
+                                      
                                 </div>
                                  
                                 </div><!-- body end-->
@@ -347,23 +484,25 @@ cursor: pointer !important;
             <!-- END CONTENT -->
             <?php include('footer.php') ?>
             <script>
+               /*
                $(function(){
                   $(".nav-tabs a").click(function(){
                      
-                     if ($(this).text() == '5 Days') {
-                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=5&page_number=<?php echo $page_number; ?>&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>");
+                     if ($(this).text() == '30 Days') {
+                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/nonreturncustscsvexport&page_number=<?php echo $page_number; ?>&range=30&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
                      }
-                     if ($(this).text() == '10 Days') {
-                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=10&page_number=<?php echo $page_number; ?>&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>");
+                     if ($(this).text() == '60 Days') {
+                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/nonreturncustscsvexport&page_number=<?php echo $page_number; ?>&range=60&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
                      }
-                     if ($(this).text() == '15 Days') {
-                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/inactivecustscsvexport&range=15&page_number=<?php echo $page_number; ?>&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo urlencode($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>");
+                     if ($(this).text() == '90 Days') {
+                        $('.csv-link').attr('href', "<?php echo ROOT_URL; ?>/api/index.php?r=site/nonreturncustscsvexport&page_number=<?php echo $page_number; ?>&range=90&key=Tva4hwH9KvqEQHTz5nHZTLhAV7Bv68AAtBeAHMA4");
                      }
                   });
-                  });
+                  });*/
             </script>
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
+
         <!-- END PAGE LEVEL SCRIPTS -->
         <style>
 
