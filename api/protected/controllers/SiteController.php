@@ -4062,6 +4062,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $status_qr = " AND w.status = 4";
             } elseif (in_array($event, array('yelloworders', 'blueorders', 'redorders', 'purpleorders'))) {
                 $status_qr = " AND w.status IN('0','4','3','2','1')";
+                
             } elseif ($event == 'washer_history') {
                 $from = Yii::app()->request->getParam('from');
                 $to = Yii::app()->request->getParam('to');
@@ -4172,9 +4173,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             if ($limit > 0)
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
             else
-                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC")->queryAll();
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id  JOIN agents a ON w.agent_id = a.id WHERE " . $cust_query . $agent_query . " c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC")->queryAll();
         }
-
+        
         if (count($qrRequests) > 0) {
             $ios_count = $other_count = $android_count = 0;
             foreach ($qrRequests as $ind => $wrequest) {
@@ -4197,7 +4198,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                 if ($event == 'yelloworders') {
                     $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode' => $wrequest['zipcode']));
-
+                    
                     if (count($coveragezipcheck)) {
                         $zipcolor = $coveragezipcheck->zip_color;
                         if (($zipcolor != 'yellow'))
@@ -4210,7 +4211,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                 if ($event == 'redorders') {
                     $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode' => $wrequest['zipcode']));
-
+                    //print_r($coveragezipcheck);
                     if (count($coveragezipcheck)) {
                         $zipcolor = $coveragezipcheck->zip_color;
                         if (($zipcolor != 'red'))
