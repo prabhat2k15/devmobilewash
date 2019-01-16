@@ -8,8 +8,9 @@
         <script type="text/javascript">
         $(document).ready(function(){
             $('#example1').dataTable( {
-                "order": [[ 3, "desc" ]],
+                "order": [[ 4, "desc" ]],
   "pageLength": 20,
+      "bLengthChange": false,
   "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
 } );
             
@@ -40,6 +41,10 @@ table.dataTable thead .sorting_desc {
     background: rgba(0, 0, 0, 0) url("<?php echo ROOT_URL; ?>/admin-new/assets/global/css/../plugins/datatables/images/sort_both.png") no-repeat scroll right center !important;
     padding-right: 50px !important;
 }
+.btn-primary.btn-resolved-grn{
+        background:#16CE0C;
+        border-color:#16CE0C;
+    }
 </style>
 <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
@@ -68,10 +73,14 @@ table.dataTable thead .sorting_desc {
                                 <div class="portlet-body">
                                     <div class="row">
                                         <div class="col-md-5 col-md-offset-3">
-                                            <a href="<?php echo ROOT_URL;?>/admin-new/washerfeedbacks.php?type=Praise" class="btn btn-primary">PRAISE</a>                                        
-                                            <a href="<?php echo ROOT_URL;?>/admin-new/washerfeedbacks.php?type=Questions" class="btn btn-primary">QUESTIONS</a>                                        
-                                            <a href="<?php echo ROOT_URL;?>/admin-new/washerfeedbacks.php?type=Suggestion" class="btn btn-primary">SUGGESTION</a>
-                                            <a href="<?php echo ROOT_URL;?>/admin-new/washerfeedbacks.php?type=Problem" class="btn btn-primary">PROBLEM</a>
+                                            <?php $praise_color = ($_GET['type'] == 'Praise')? 'primary btn-resolved-grn':'primary';?>
+                                            <a href="<?php echo ROOT_URL;?>/admin-new/washerfeedbacks.php?type=Praise" class="btn btn-<?php echo $praise_color;?>">PRAISE</a>  
+                                            <?php $questions_color = ($_GET['type'] == 'Questions')? 'primary btn-resolved-grn':'primary';?>                                      
+                                            <a href="<?php echo ROOT_URL;?>/admin-new/washerfeedbacks.php?type=Questions" class="btn btn-<?php echo $questions_color;?>">QUESTIONS</a>
+                                            <?php $suggestion_color = ($_GET['type'] == 'Suggestion')? 'primary btn-resolved-grn':'primary';?>                                     
+                                            <a href="<?php echo ROOT_URL;?>/admin-new/washerfeedbacks.php?type=Suggestion" class="btn btn-<?php echo $suggestion_color;?>">SUGGESTION</a>
+                                            <?php $problem_color = ($_GET['type'] == 'Problem')? 'primary btn-resolved-grn':'primary';?>
+                                            <a href="<?php echo ROOT_URL;?>/admin-new/washerfeedbacks.php?type=Problem" class="btn btn-<?php echo $problem_color;?>">PROBLEM</a>
                                         </div>
                                     </div>
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">

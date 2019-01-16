@@ -541,7 +541,7 @@
                 </li>
 
                 <li class="nav-item  <?php
-                if ($url == 'manage-pre-clients.php' || $url == 'non-returning-customer-notifications.php' || $url == 'inactive-customer-notifications.php' || $newurl_page[0] == 'manage-customers.php' || $url == 'non-return-customers.php' || $newurl_page[0] == 'non-return-customers.php' || $url == 'trash-pre-clients.php' || $url == 'client_dashboard.php' || $newurl_page[0] == 'pre-clients-details.php' || $url == 'manage-customers.php' || $newurl_page[0] == 'edit-customer.php' || $url == 'feedbacks.php' || $url == 'customer-notifications.php' || $url == 'top-customers.php' || $newurl_page[0] == 'manage-pre-clients.php') {
+                if ($url == 'manage-pre-clients.php' || $url == 'non-returning-customer-notifications.php' || $url == 'inactive-customer-notifications.php' || $newurl_page[0] == 'manage-customers.php' || $url == 'non-return-customers.php' || $newurl_page[0] == 'non-return-customers.php' || $url == 'trash-pre-clients.php' || $url == 'client_dashboard.php' || $newurl_page[0] == 'pre-clients-details.php' || $url == 'manage-customers.php' || $newurl_page[0] == 'edit-customer.php' || $url == 'feedbacks.php' || $url == 'customer-notifications.php' || $url == 'top-customers.php' || $newurl_page[0] == 'manage-pre-clients.php' || $url == 'customerfeedbacks.php' || $newurl_page[0] == 'customerfeedbacks.php') {
                     $open_client = 'open';
                     echo 'active open';
                 }
@@ -648,11 +648,21 @@
                                 </a>
                             </li>
                         <?php endif; ?>
+                        <li class="nav-item  <?php
+                            if ($url == 'customerfeedbacks.php') {
+                                $open_agent = 'open';
+                                echo 'active open';
+                            }
+                            ?>">
+                                <a href="<?php echo ROOT_URL; ?>/admin-new/customerfeedbacks.php?type=Praise" class="nav-link ">
+                                    <span class="title"> Customer App Feedback </span>
+                                </a>
+                            </li>
                     </ul>
                 </li>
 
                 <li class="nav-item  <?php
-                if ($url == 'unlimited-schedule-range-washer.php' || $newurl_page[0] == 'unlimited-schedule-range-washer.php' || $url == 'manage-pre-washers.php' || $url == 'washer-feed.php' || $newurl_page[0] == 'manage-pre-washers.php' || $url == 'add-new-washer.php' || $url == 'washer-notifications.php' || $url == 'top-washers.php' || $newurl_page[0] == 'add-new-washer.php' || $newurl_page[0] == 'manage-agents.php' || $url == 'trash-pre-washers.php' || $url == 'washer_dashboard.php' || $newurl_page[0] == 'pre-washer-details.php' || $url == 'manage-agents.php' || $newurl_page[0] == 'edit-agent.php' || $url == 'act-washer-details.php' || $newurl_page[0] == 'act-washer-details.php' || $url == 'active-washers.php' || $newurl_page[0] == 'active-washers.php' || $newurl[1] == 'add-agent.php') {
+                if ($url == 'unlimited-schedule-range-washer.php' || $newurl_page[0] == 'unlimited-schedule-range-washer.php' || $url == 'manage-pre-washers.php' || $url == 'washer-feed.php' || $newurl_page[0] == 'manage-pre-washers.php' || $url == 'add-new-washer.php' || $url == 'washer-notifications.php' || $url == 'top-washers.php' || $newurl_page[0] == 'add-new-washer.php' || $newurl_page[0] == 'manage-agents.php' || $url == 'trash-pre-washers.php' || $url == 'washer_dashboard.php' || $newurl_page[0] == 'pre-washer-details.php' || $url == 'manage-agents.php' || $newurl_page[0] == 'edit-agent.php' || $url == 'act-washer-details.php' || $newurl_page[0] == 'act-washer-details.php' || $url == 'active-washers.php' || $newurl_page[0] == 'active-washers.php' || $newurl[1] == 'add-agent.php' || $url == 'washerfeedbacks.php' || $newurl_page[0] == 'washerfeedbacks.php') {
                     $open_agent = 'open';
                     echo 'active open';
                 }
@@ -716,6 +726,16 @@
                                 </a>
                             </li>
                         <?php endif; ?>
+                        <li class="nav-item  <?php
+                            if ($url == 'washerfeedbacks.php') {
+                                $open_agent = 'open';
+                                echo 'active open';
+                            }
+                            ?>">
+                                <a href="<?php echo ROOT_URL; ?>/admin-new/washerfeedbacks.php?type=Praise" class="nav-link ">
+                                    <span class="title"> Washers App Feedback </span>
+                                </a>
+                            </li>
                     </ul>
                 </li>
 

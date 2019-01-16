@@ -15709,7 +15709,11 @@ class WashingController extends Controller {
         }
 
         /*        get the total */
-        $feedback = Yii::app()->db->createCommand("SELECT c.id, c.customername, c.contact_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN customers c ON a.customer_id = c.id WHERE a.customer_id != 0 AND a.agent_id = 0 AND a.title = '" . $type . "' ORDER BY a.create_date DESC")->queryAll();
+        $whr = '';
+        if($type != ''){
+          $whr = 'AND a.title = "' . $type . '"';
+        }
+        $feedback = Yii::app()->db->createCommand("SELECT c.id, c.customername, c.contact_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN customers c ON a.customer_id = c.id WHERE a.agent_id = 0 ".$whr." ORDER BY a.create_time DESC")->queryAll();
 
         $i = 0;
         foreach ($feedback as $feedbacks) {
@@ -15761,7 +15765,11 @@ class WashingController extends Controller {
         }
 
         /*        get the total */
-        $feedback = Yii::app()->db->createCommand("SELECT c.real_washer_id, c.agentname, c.phone_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN agents c ON a.agent_id = c.id WHERE a.agent_id != 0 AND a.customer_id = 0 AND a.title = '" . $type . "' ORDER BY a.create_date DESC")->queryAll();
+        $whr = '';
+        if($type != ''){
+          $whr = 'AND a.title = "' . $type . '"';
+        }
+        $feedback = Yii::app()->db->createCommand("SELECT c.real_washer_id, c.agentname, c.phone_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN agents c ON a.agent_id = c.id WHERE a.agent_id != 0 AND a.customer_id = 0 ".$whr." ORDER BY a.create_time DESC")->queryAll();
 
         $i = 0;
         foreach ($feedback as $feedbacks) {
