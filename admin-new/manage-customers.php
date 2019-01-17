@@ -1,36 +1,12 @@
 <?php include('header.php') ?>
-
-<script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+<!--<script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+        <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>-->
         <!-- END PAGE LEVEL PLUGINS -->
         <script type="text/javascript">
-var table;
-        $(document).ready(function(){
 
-           table = $('#example1').dataTable( {
-  "pageLength": 20,
-  "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-     "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        buttons: [
-            'csvHtml5'
-        ]
-} );
-            
-$(document).ready(function(){
-    $('.csv-link').on('click',function(){
-        $('.buttons-csv').trigger('click');
-    });
-});
-
-$('.cust-search-box').show();
-
-  $('#cust_search').keyup( function() {
-
- $('#example1').dataTable().fnFilter(this.value);
-    } );
-
-        });
         </script>
 
 <?php include('right-sidebar.php') ?>
@@ -299,7 +275,7 @@ else echo $responseagents->total_wash;
   <td> <?php echo $responseagents->city; ?> </td>
  <td> <?php echo $responseagents->how_hear_mw; ?> </td>
  <td> $<?php echo $responseagents->total_spent; ?> </td>
- <td> <?php echo date('m-d-Y h:i A', strtotime($responseagents->client_science)); ?> </td>
+ <td> <?php echo $responseagents->client_science; ?> </td>
 
 
                                             </tr>
@@ -329,7 +305,7 @@ else echo $responseagents->total_wash;
             <!-- END CONTENT -->
             <?php include('footer.php') ?>
             <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
+     <!--<script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>-->
         <!-- END PAGE LEVEL SCRIPTS -->
         <style>
 
@@ -339,6 +315,49 @@ else echo $responseagents->total_wash;
         </style>
 
 <script>
+   var ajaxrunning = 0;
+   var table;
+    var params = {};
+<?php foreach ($_GET as $key => $value) {
+    ?>
+        params.<?php echo $key; ?> = "<?php echo $value; ?>";
+<?php }; ?>
+    params.key = "<?php echo API_KEY; ?>";
+    params.admin_username = "<?php echo $jsondata_permission->user_name; ?>";
+    params.api_token = "<?php echo $finalusertoken; ?>";
+    params.t1 = "<?php echo $mw_admin_auth_arr[2]; ?>";
+    params.t2 = "<?php echo $mw_admin_auth_arr[3]; ?>";
+    params.user_type = 'admin';
+    params.user_id = "<?php echo $mw_admin_auth_arr[4]; ?>";
+
+    if ((!params.limit) || params.limit > 100)
+        params.limit = 40;
+        $(document).ready(function(){
+
+           table = $('#example1').dataTable( {
+  "pageLength": 20,
+  "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+     "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [
+            'csvHtml5'
+        ]
+} );
+            
+$(document).ready(function(){
+    $('.csv-link').on('click',function(){
+        $('.buttons-csv').trigger('click');
+    });
+});
+
+$('.cust-search-box').show();
+
+  $('#cust_search').keyup( function() {
+
+ //$('#example1').dataTable().fnFilter(this.value);
+ table.fnFilter(this.value);
+    } );
+
+        });
 $(function(){
 /* $(document).on( 'click', '.all-clients-logout', function(){ */
 $('.all-clients-logout').click(function(e){
@@ -361,6 +380,31 @@ window.location.href="<?php echo ROOT_URL; ?>/admin-new/manage-customers.php?act
 return false;
 });
 
+setInterval(function(){
+   if (!ajaxrunning) {
+         ajaxrunning = 1;
+         loadmorecustomers();
+      }
+   /*if($('.pagination li.next').prev().hasClass('active')) {
+      
+      if (!ajaxrunning) {
+         ajaxrunning = 1;
+         loadmorecustomers();
+      }
+     
+   }*/
+   }, 10000);
+
+/*$('.pagination li').click(function(e){
+   var timer;
+   clearTimeout(timer); 
+  timer = setTimeout(function(){
+   if($('.pagination li.next').prev().hasClass('active')) console.log('last one');
+   }, 1000); 
+ 
+   
+});*/
+
 var curr_url = "<?php echo ROOT_URL; ?>/admin-new/manage-customers.php";
 
 $(".order-limit").change(function(){
@@ -368,5 +412,63 @@ $(".order-limit").change(function(){
   else window.location.href=curr_url;
 });
 
+function loadmorecustomers() {
+   console.log('loading...');
+   console.log(params);
+   $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/clientsadmin", params, function (data) {
+console.log(data);
+                if (data) {
+                    //console.log(data);
+                   
+                    //alldata = dt_table.fnGetData();
+                    //console.log(alldata);
+                    //dt_table.fnClearTable();
+
+                    $.each(data, function (index, value) {
+                        var morecustomers = [];
+                        
+                        /*morecustomers["DT_RowId"] = "order-" + value.id;
+                        //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
+                        if ((value.min_diff <= 30) && (value.status == 0))
+                            upcomingwashes["DT_RowClass"] = "flashrow";
+                        if ((value.min_diff < 0) && (value.status == 1))
+                            upcomingwashes["DT_RowClass"] = "flashrownotarrive";
+                        if (value.payment_status == 'Declined')
+                            upcomingwashes["DT_RowClass"] = "flashrowdeclined";
+                        if ((value.min_diff <= 30) && (value.status == 0) && (value.payment_status == 'Declined'))
+                            upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
+                        if (value.washer_change_pack > 0)
+                            upcomingwashes["DT_RowClass"] = "flashrowchangedpack";
+                        //if(value.washer_wash_activity == 0) upcomingwashes["DT_RowClass"] = "washernowashactivity";*/
+
+                        morecustomers.push(" <a href='edit-customer.php?customerID="+value.id+"'>Edit</a>");
+                        morecustomers.push(value.id);
+                        morecustomers.push(value.user_type);
+                        morecustomers.push("<a target='_blank' href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id="+value.id+"'>"+value.name+"</a>");
+                       morecustomers.push(value.email);
+                        morecustomers.push(value.rating);
+                        if(value.total_wash > 0) morecustomers.push("<a target='_blank' href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id="+value.id+"'>"+value.total_wash+"</a>");
+else morecustomers.push(value.total_wash);
+morecustomers.push(value.wash_points+"/5");
+morecustomers.push(value.phone);
+morecustomers.push(value.phone_verify_code);
+morecustomers.push(value.device_type);
+morecustomers.push(value.address);
+morecustomers.push(value.city);
+morecustomers.push(value.how_hear_mw);
+morecustomers.push("$"+value.total_spent);
+morecustomers.push(value.client_science);
+table.add(morecustomers).draw( false );
+                        //table.fnAddData(morecustomers, false);
+                        //console.log(upcomingwashes);
+                    });
+//table.fnDraw();
+                 ajaxrunning = 0;
+                }
+
+
+
+            });
+}
 });
 </script>

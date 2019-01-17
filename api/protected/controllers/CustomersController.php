@@ -7357,7 +7357,7 @@ class CustomersController extends Controller {
             $json['how_hear_mw'] = $customername->how_hear_mw;
             $json['total_spent'] = number_format($totalpaid, 2);
 
-            $json['client_science'] = $customername->created_date;
+            $json['client_science'] = date('m-d-Y h:i A', strtotime($customername->created_date));
 
             $customerdetail[] = $json;
         }
