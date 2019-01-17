@@ -10167,13 +10167,13 @@ class WashingController extends Controller {
         /* Post END */
 
         /* web orderds */
-        //$total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
-        $total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
+        $total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
+        //$total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
 
         $count = $total_order[0]['countid'];
 
-        //$customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
-        $customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
+        $customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
+        //$customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
                 ->bindValue(':last_month', $last_month, PDO::PARAM_STR)
                 ->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
                 ->queryAll();
@@ -15710,10 +15710,10 @@ class WashingController extends Controller {
 
         /*        get the total */
         $whr = '';
-        if($type != ''){
-          $whr = 'AND a.title = "' . $type . '"';
+        if ($type != '') {
+            $whr = 'AND a.title = "' . $type . '"';
         }
-        $feedback = Yii::app()->db->createCommand("SELECT c.id, c.customername, c.contact_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN customers c ON a.customer_id = c.id WHERE a.agent_id = 0 ".$whr." ORDER BY a.create_time DESC")->queryAll();
+        $feedback = Yii::app()->db->createCommand("SELECT c.id, c.customername, c.contact_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN customers c ON a.customer_id = c.id WHERE a.agent_id = 0 " . $whr . " ORDER BY a.create_time DESC")->queryAll();
 
         $i = 0;
         foreach ($feedback as $feedbacks) {
@@ -15766,10 +15766,10 @@ class WashingController extends Controller {
 
         /*        get the total */
         $whr = '';
-        if($type != ''){
-          $whr = 'AND a.title = "' . $type . '"';
+        if ($type != '') {
+            $whr = 'AND a.title = "' . $type . '"';
         }
-        $feedback = Yii::app()->db->createCommand("SELECT c.real_washer_id, c.agentname, c.phone_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN agents c ON a.agent_id = c.id WHERE a.agent_id != 0 AND a.customer_id = 0 ".$whr." ORDER BY a.create_time DESC")->queryAll();
+        $feedback = Yii::app()->db->createCommand("SELECT c.real_washer_id, c.agentname, c.phone_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN agents c ON a.agent_id = c.id WHERE a.agent_id != 0 AND a.customer_id = 0 " . $whr . " ORDER BY a.create_time DESC")->queryAll();
 
         $i = 0;
         foreach ($feedback as $feedbacks) {
