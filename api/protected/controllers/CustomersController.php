@@ -6190,7 +6190,7 @@ class CustomersController extends Controller {
      * * Purpose:- adding customer application feedback
      */
 
-    public function actionappfeedback() {
+    public function actionappfeedbackOld() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -6273,6 +6273,88 @@ class CustomersController extends Controller {
 
                 Vargas::Obj()->SendMail($to, $from, $message, "Customer App Feedback", 'mail-receipt');
             }
+        }
+
+        $json = array(
+            'result' => $result,
+            'response' => $response,
+        );
+
+        echo json_encode($json);
+        die();
+    }
+    
+    public function actionappfeedback() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        $customer_id = Yii::app()->request->getParam('customer_id');
+        $title = '';
+        $title = Yii::app()->request->getParam('feedback_subject');
+        $comments = '';
+        $comments = Yii::app()->request->getParam('comments');
+
+
+        $json = array();
+
+        $result = 'false';
+        $response = 'Pass the required parameters';
+
+        if ((isset($customer_id) && !empty($customer_id)) && (isset($comments) && !empty($comments))) {
+            if (AES256CBC_STATUS == 1) {
+                $customer_id = $this->aes256cbc_crypt($customer_id, 'd', AES256CBC_API_PASS);
+            }
+            $customers_id_check = Customers::model()->findByAttributes(array("id" => $customer_id));
+
+            $cust_feedback_check = Appfeedbacks::model()->findByAttributes(array("customer_id" => $customer_id));
+            if (!count($customers_id_check)) {
+                $response = 'Invalid customer';
+            } else {
+                $washfeedbackdata = array(
+                    'customer_id' => $customer_id,
+                    'comments' => $comments,
+                    'title' => $title
+                );
+
+                Yii::app()->db->createCommand()->insert('app_feedbacks', $washfeedbackdata);
+            }
+
+
+            $result = 'true';
+            $response = "Feeback added";
+
+
+            $message = "<div class='block-content' style='background: #fff; text-align: left;'>
+<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer App Feedback</h2>
+<p><b>Customer Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
+<p><b>Customer Email:</b> " . $customers_id_check->email . "</p>
+    <p><b>Title:</b> " . $title . "</p>
+<p><b>Comments:</b> " . $comments . "</p>";
+
+            $from = Vargas::Obj()->getAdminFromEmail();
+            $to = Vargas::Obj()->getAdminToEmailFeedBack();
+
+            Vargas::Obj()->SendMail($to, $from, $message, "Customer App Feedback", 'mail-receipt');
         }
 
         $json = array(
