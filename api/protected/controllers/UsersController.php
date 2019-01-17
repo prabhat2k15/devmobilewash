@@ -5939,9 +5939,10 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             );
             echo json_encode($json);
             die();
-        } else {
-            Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();
         }
+	/*else {
+            Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();
+        }*/
 
 
 
@@ -6063,6 +6064,8 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
 		 Yii::app()->db->createCommand("UPDATE agent_devices SET forced_logout= 0 WHERE agent_id = :user_id AND device_token = '".$device_token."'")
 		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
 	    }
+	    
+	     Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();
             $data = array(
                 'result' => 'true',
                 'response' => 'Congratulations, Your phone is verified.',

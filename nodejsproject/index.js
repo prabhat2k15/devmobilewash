@@ -391,6 +391,29 @@ request.post({
 
 }
 
+function agents_getagentdevice(agent_id='', device_token = '', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
+//console.log(agent_id);
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded'},
+  url:     'https://www.devmobilewash.com/api/index.php?r=agents/getagentdevice',
+  body:    "key="+key+"&agent_id="+agent_id+"&device_token="+device_token+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
+}, function(error, response, body){
+  //console.log("inside 30 timer"+JSON.parse(body));
+            try
+       {
+         
+         if(socket_id) io.sockets.connected[socket_id].emit('agents_getagentdevice_'+agent_id, JSON.parse(body));
+  else io.emit('agents_getagentdevice_'+agent_id, JSON.parse(body));
+       }
+       catch(err)
+       {
+
+       }     
+            
+});
+
+}
+
 
 function washing_removeduplicatewashnowstartlog(wash_request_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 //console.log(agent_id);
@@ -532,6 +555,11 @@ else{
     socket.on('getcustomerdevice', function(data){
       //console.log(data);
     customers_getcustomerdevice(data.customer_id, data.device_token, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
+  });
+    
+        socket.on('getagentdevice', function(data){
+      //console.log(data);
+    agents_getagentdevice(data.agent_id, data.device_token, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
    
 

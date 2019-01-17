@@ -7844,5 +7844,59 @@ class AgentsController extends Controller {
             }
         }
     }
+    
+            public function actiongetagentdevice() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+         /*if (!$token_check) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          }*/ 
+
+        $agent_id = Yii::app()->request->getParam('agent_id');
+        $device_token = Yii::app()->request->getParam('device_token');
+
+        if (AES256CBC_STATUS == 1) {
+            $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
+        }
+
+        $agentdevices = Yii::app()->db->createCommand("SELECT id, forced_logout FROM agent_devices WHERE agent_id = '" . $agent_id . "' AND device_token = '".$device_token."' ORDER BY id DESC LIMIT 1")->queryAll();
+        
+        if (count($agentdevices)) {
+		 $json = array(
+            'result' => 'true',
+	    'response' => 'device found',
+            'forced_logout' => $agentdevices[0]['forced_logout']
+        );
+        echo json_encode($json);
+        die();
+  
+        }
+	else{
+	 $json = array(
+            'result' => 'false',
+	    'response' => 'device not found',
+           
+        );
+        echo json_encode($json);
+        die();	
+	}
+    }
 
 }
