@@ -15777,7 +15777,7 @@ class WashingController extends Controller {
         $feedback = Yii::app()->db->createCommand("SELECT c.real_washer_id, c.agentname, c.phone_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN agents c ON a.agent_id = c.id WHERE a.agent_id != 0 AND a.customer_id = 0 " . $whr . " ORDER BY a.create_time DESC")->queryAll();
 
         $i = 0;
-        foreach ($feedback as $feedbacks) {
+        foreach ($feedback as $feedbacks) { 
             $i++;
             $totalorders = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests` WHERE `status`=4 AND agent_id =" . $feedbacks['real_washer_id'])->queryRow();
             $id = $feedbacks['real_washer_id'];
@@ -15791,7 +15791,7 @@ class WashingController extends Controller {
             $json['customer'] = $customer;
             $json['contact_number'] = $contact_number;
             $json['comments'] = $comments;
-            $json['ordera'] = $totalorders['orders'];
+            $json['orders'] = $totalorders['orders'];
             $json['create_time'] = $create_time;
             $feedview[] = $json;
         }
