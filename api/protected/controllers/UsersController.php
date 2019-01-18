@@ -6048,7 +6048,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
 		 Yii::app()->db->createCommand("UPDATE customer_devices SET forced_logout= 1 WHERE customer_id = :user_id AND device_token != '".$device_token."'")
 		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
 		 
-		 Yii::app()->db->createCommand("UPDATE customer_devices SET forced_logout= 0 WHERE customer_id = :user_id AND device_token = '".$device_token."'")
+		 Yii::app()->db->createCommand("UPDATE customer_devices SET forced_logout= 0, device_status = 'online', last_used = '".date("Y-m-d H:i:s")."' WHERE customer_id = :user_id AND device_token = '".$device_token."'")
 		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
 
 	    }
@@ -6061,7 +6061,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
 		 Yii::app()->db->createCommand("UPDATE agent_devices SET forced_logout= 1 WHERE agent_id = :user_id AND device_token != '".$device_token."'")
 		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
 		 
-		 Yii::app()->db->createCommand("UPDATE agent_devices SET forced_logout= 0 WHERE agent_id = :user_id AND device_token = '".$device_token."'")
+		 Yii::app()->db->createCommand("UPDATE agent_devices SET forced_logout= 0, device_status = 'online', last_used = '".date("Y-m-d H:i:s")."' WHERE agent_id = :user_id AND device_token = '".$device_token."'")
 		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
 	    }
 	    
