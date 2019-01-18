@@ -681,48 +681,47 @@ class CustomersController extends Controller {
 
         $customers_id = Yii::app()->request->getParam('customer_id');
         $device_token = Yii::app()->request->getParam('device_token');
-	$device_logout = 0;
-	$device_logout = Yii::app()->request->getParam('device_logout');
+        $device_logout = 0;
+        $device_logout = Yii::app()->request->getParam('device_logout');
         if (AES256CBC_STATUS == 1) {
             $customers_id = $this->aes256cbc_crypt($customers_id, 'd', AES256CBC_API_PASS);
         }
         $model = Customers::model()->findByAttributes(array('id' => $customers_id));
         $json = array();
         if (count($model) > 0) {
-		if($device_logout == 1){
-			Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline', forced_logout = 0 WHERE customer_id = :customer_id AND device_token = :device_token")
+            if ($device_logout == 1) {
+                Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline', forced_logout = 0 WHERE customer_id = :customer_id AND device_token = :device_token")
                         ->bindValue(':customer_id', $customers_id, PDO::PARAM_STR)
                         ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
                         ->execute();
-			$result = 'true';
-			$response = 'Successfully logged out';
-                $json = array(
-                    'result' => $result,
-                    'response' => $response
-                );
-		 echo json_encode($json);
-		 die();
-		}
-		else{
-            $data = array('device_token' => '');
-            $model->attributes = $data;
-            if ($model->save(false)) {
                 $result = 'true';
                 $response = 'Successfully logged out';
                 $json = array(
                     'result' => $result,
                     'response' => $response
                 );
+                echo json_encode($json);
+                die();
+            } else {
+                $data = array('device_token' => '');
+                $model->attributes = $data;
+                if ($model->save(false)) {
+                    $result = 'true';
+                    $response = 'Successfully logged out';
+                    $json = array(
+                        'result' => $result,
+                        'response' => $response
+                    );
 
-                $online_status = array('online_status' => 'offline', 'forced_logout' => 0, 'access_token' => '', 'access_key' => '', 'access_vector' => '');
+                    $online_status = array('online_status' => 'offline', 'forced_logout' => 0, 'access_token' => '', 'access_key' => '', 'access_vector' => '');
 
-                $update_status = Customers::model()->updateAll($online_status, 'id=:id', array(':id' => $customers_id));
-                Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline' WHERE customer_id = :customer_id AND device_token = :device_token")
-                        ->bindValue(':customer_id', $customers_id, PDO::PARAM_STR)
-                        ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
-                        ->execute();
+                    $update_status = Customers::model()->updateAll($online_status, 'id=:id', array(':id' => $customers_id));
+                    Yii::app()->db->createCommand("UPDATE customer_devices SET device_status='offline' WHERE customer_id = :customer_id AND device_token = :device_token")
+                            ->bindValue(':customer_id', $customers_id, PDO::PARAM_STR)
+                            ->bindValue(':device_token', $device_token, PDO::PARAM_STR)
+                            ->execute();
+                }
             }
-	}
         } else {
             $result = 'false';
             $response = 'Not a authorized customer';
@@ -6283,7 +6282,7 @@ class CustomersController extends Controller {
         echo json_encode($json);
         die();
     }
-    
+
     public function actionappfeedback() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
@@ -7305,6 +7304,21 @@ class CustomersController extends Controller {
         foreach ($customers as $customername) {
             $totalwash = 0;
             $customersid = $customername->id;
+            $CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests` WHERE  customer_id =" . $customername->id)->queryRow();
+            $customerCreatedDate = date('Y-m-d', strtotime($customername->created_date));
+            $current = date('Y-m-d');
+            $current = date_create($current);
+            $customerCreatedDate = date_create($customerCreatedDate);
+            $diff = date_diff($current, $customerCreatedDate);
+            $daysSinceCustomerCreate = $diff->format("%a");
+            //print_r($daysSinceCustomerCreate); 
+            if ($daysSinceCustomerCreate != 0 && $CustomerTotalordersCount['orders']) {
+               $order_frequency = ($daysSinceCustomerCreate / $CustomerTotalordersCount['orders']);
+            } else {
+                 $order_frequency = "0";
+            }
+
+
             $totalwash_arr = Washingrequests::model()->findAllByAttributes(array("status" => 4, "customer_id" => $customername->id));
             $custfirstdevice = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $customername->id . "' ORDER BY device_add_date ASC LIMIT 1")->queryAll();
 
@@ -7356,7 +7370,7 @@ class CustomersController extends Controller {
             $json['city'] = $city;
             $json['how_hear_mw'] = $customername->how_hear_mw;
             $json['total_spent'] = number_format($totalpaid, 2);
-
+            $json['order_frequency'] = $order_frequency;
             $json['client_science'] = date('m-d-Y h:i A', strtotime($customername->created_date));
 
             $customerdetail[] = $json;
@@ -12499,14 +12513,14 @@ class CustomersController extends Controller {
                         'action_date' => date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
-		    
-		    $feed_data = array(
+
+                    $feed_data = array(
                         'agent_id' => $washrequest_id_check->agent_id,
                         'wash_request_id' => $wash_request_id,
-			'customer_id' => $washrequest_id_check->customer_id,
+                        'customer_id' => $washrequest_id_check->customer_id,
                         'comments' => $comments,
-			'ratings' => $cust_feedback_check[0]['customer_ratings'],
-			'social_id' => '',
+                        'ratings' => $cust_feedback_check[0]['customer_ratings'],
+                        'social_id' => '',
                         'created_date' => date('Y-m-d H:i:s'));
 
                     Yii::app()->db->createCommand()->insert('mobilewasher_service_feedbacks', $feed_data);
@@ -12595,7 +12609,7 @@ class CustomersController extends Controller {
         }
 
         //$feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedbacks.*,agents.agentname,agents.real_washer_id, customer_locations.*,customers.customername,customers.email,customers.contact_number FROM mobilewasher_service_feedbacks Left JOIN customers ON mobilewasher_service_feedbacks.customer_id=customers.id JOIN customer_locations ON customer_locations.customer_id=customers.id JOIN agents ON mobilewasher_service_feedbacks.agent_id=agents.id WHERE customer_locations.location_title='Home' ")->queryAll();
-$feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedbacks.*,agents.agentname,agents.real_washer_id, customer_locations.*,customers.customername,customers.email,customers.contact_number, washing_requests.address FROM mobilewasher_service_feedbacks Left JOIN customers ON mobilewasher_service_feedbacks.customer_id=customers.id JOIN customer_locations ON customer_locations.customer_id=customers.id JOIN agents ON mobilewasher_service_feedbacks.agent_id=agents.id JOIN washing_requests ON mobilewasher_service_feedbacks.wash_request_id=washing_requests.id WHERE customer_locations.location_title='Home'")->queryAll();
+        $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedbacks.*,agents.agentname,agents.real_washer_id, customer_locations.*,customers.customername,customers.email,customers.contact_number, washing_requests.address FROM mobilewasher_service_feedbacks Left JOIN customers ON mobilewasher_service_feedbacks.customer_id=customers.id JOIN customer_locations ON customer_locations.customer_id=customers.id JOIN agents ON mobilewasher_service_feedbacks.agent_id=agents.id JOIN washing_requests ON mobilewasher_service_feedbacks.wash_request_id=washing_requests.id WHERE customer_locations.location_title='Home'")->queryAll();
 
 //        $i = 0;
 //        foreach ($feedbacks as $feedback) {
@@ -13287,14 +13301,14 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-         if (!$token_check) {
-          $json = array(
-          'result' => 'false',
-          'response' => 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          }
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
 
         $agent_id = Yii::app()->request->getParam('agent_id');
         $agent_lat = Yii::app()->request->getParam('agent_lat');
@@ -13305,7 +13319,7 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
         }
 
         $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_20day_notify' => 0), array('order' => 'id DESC', 'limit' => 60));
-         //print_r($clientlist);
+        //print_r($clientlist);
         if (count($clientlist)) {
             foreach ($clientlist as $client) {
                 $miles = 0;
@@ -13341,7 +13355,7 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
                         $notify_msg = urlencode($message);
 
                         $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
-                        file_put_contents("20daynotify.log",date('Y-m-d g:i A')." ".$client->id."\n\n",FILE_APPEND);
+                        file_put_contents("20daynotify.log", date('Y-m-d g:i A') . " " . $client->id . "\n\n", FILE_APPEND);
                         //print_r($notifyurl);
                         $ch = curl_init();
                         curl_setopt($ch, CURLOPT_URL, $notifyurl);
@@ -13356,9 +13370,8 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
             }
         }
     }
-    
-    
-        public function actiongetcustomerdevice() {
+
+    public function actiongetcustomerdevice() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -13373,14 +13386,14 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-         /*if (!$token_check) {
+        /* if (!$token_check) {
           $json = array(
           'result' => 'false',
           'response' => 'Invalid request'
           );
           echo json_encode($json);
           die();
-          }*/ 
+          } */
 
         $customer_id = Yii::app()->request->getParam('customer_id');
         $device_token = Yii::app()->request->getParam('device_token');
@@ -13389,27 +13402,24 @@ $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedback
             $customer_id = $this->aes256cbc_crypt($customer_id, 'd', AES256CBC_API_PASS);
         }
 
-        $customerdevices = Yii::app()->db->createCommand("SELECT id, forced_logout FROM customer_devices WHERE customer_id = '" . $customer_id . "' AND device_token = '".$device_token."' ORDER BY id DESC LIMIT 1")->queryAll();
-        
+        $customerdevices = Yii::app()->db->createCommand("SELECT id, forced_logout FROM customer_devices WHERE customer_id = '" . $customer_id . "' AND device_token = '" . $device_token . "' ORDER BY id DESC LIMIT 1")->queryAll();
+
         if (count($customerdevices)) {
-		 $json = array(
-            'result' => 'true',
-	    'response' => 'device found',
-            'forced_logout' => $customerdevices[0]['forced_logout']
-        );
-        echo json_encode($json);
-        die();
-  
+            $json = array(
+                'result' => 'true',
+                'response' => 'device found',
+                'forced_logout' => $customerdevices[0]['forced_logout']
+            );
+            echo json_encode($json);
+            die();
+        } else {
+            $json = array(
+                'result' => 'false',
+                'response' => 'device not found',
+            );
+            echo json_encode($json);
+            die();
         }
-	else{
-	 $json = array(
-            'result' => 'false',
-	    'response' => 'device not found',
-           
-        );
-        echo json_encode($json);
-        die();	
-	}
     }
 
 }
