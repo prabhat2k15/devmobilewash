@@ -37,7 +37,7 @@
         oTable2 = $('#example2').DataTable();
         oTable3 = $('#example3').DataTable();
 
-        $('#customSearch').keyup(function () {
+        $('#customSearch1').keyup(function () {
             var val = $(this).val();
             if (val.length > 0) {
                 $('.custom-pagination').hide();
@@ -262,7 +262,7 @@ $allcustomers = json_decode($result);
 
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="searchResultFor30">
                                         <?php
                                         if (count($allcustomers->nonreturncusts_30)) {
 
@@ -346,7 +346,7 @@ $allcustomers = json_decode($result);
 
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="searchResultFor60">
                                         <?php
                                         if (count($allcustomers->nonreturncusts_60)) {
 
@@ -430,7 +430,7 @@ $allcustomers = json_decode($result);
 
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="searchResultFor90">
                                         <?php
                                         if (count($allcustomers->nonreturncusts_90)) {
 
@@ -546,20 +546,56 @@ $allcustomers = json_decode($result);
     }
 </style>
 <script>
-    $('#customSearch1').keyup(function () {
+    $('#customSearch').keyup(function () {
         var val = $(this).val();
+        if (val.length > 0) {
+            $('.custom-pagination').hide();
+        } else {
+            $('.custom-pagination').show();
+        }
         console.log(val);
         $.ajax({
             type: "GET",
-            url: "<?php echo ROOT_URL; ?>/api/index.php?r=customers/SearchCustomerNonReturn&search_query=" + val,
+            url: "<?php echo ROOT_URL; ?>/api/index.php?r=customers/SearchCustomerNonReturn&search_query=" + $.trim(val),
             data: {'test': 'test'},
             success: function (data) {
                 console.log(data);
-                var data = jQuery.parseJSON(data.result);
+                var data = jQuery.parseJSON(data);
                 //console.log(data)
+                var html = '';
                 $.each(data, function (i, item) {
-                    console.log(i);
+                    html += '<tr class="odd gradeX">';
+                    html += '<td>' + item.id;
+                    +'</td>';
+                    html += '<td>' + item.first_name + ' ' + item.last_name
+                            + '</td>';
+                    html += '<td>' + item.email;
+                    +'</td>';
+                    html += '<td>' + item.contact_number;
+                    +'</td>';
+                    if (item.total_wash != 0) {
+                        html += '<td><a target="_blank" href="/admin-new/all-orders.php?customer_id=' + item.id + '">' + item.total_wash + '</a></td>';
+                    } else {
+                        html += '<td>' + item.total_wash;
+                        +'</td>';
+                    }
+                    html += '</tr>';
+                    if (item.nonreturn_cat == 90) {
+                        $('#searchResultFor90').html('');
+                        $('#searchResultFor90').append(html);
+                    }
+                    if (item.nonreturn_cat == 60) {
+                        $('#searchResultFor60').html('');
+                        $('#searchResultFor60').append(html);
+                    }
+                    if (item.nonreturn_cat == 30) {
+                        $('#searchResultFor30').html('');
+                        $('#searchResultFor30').append(html);
+                    }
+
                 });
+                console.log(html);
+                // append();
             }
         });
     }
