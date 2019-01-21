@@ -45,7 +45,7 @@ curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle);
-
+//print_r($result);die;
 curl_close($handle);
 $jsondata = json_decode($result);
 
@@ -787,16 +787,16 @@ $ios_count = $jsondata->ios_count;
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;                         ?></td-->
+                                           <!--td><?php //echo $order->transaction_id;                            ?></td-->
                                             <?php $sum = $order->agent_total + $order->company_total ?>
                                             <td>$<?php echo number_format($sum, 2); ?>   </td>
-                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;   ?></td>
+                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;      ?></td>
                                             <td>
                                                 <?php
                                                 if (strtotime($order->complete_order) > 0) {
                                                     echo date('Y-m-d h:i A', strtotime($order->complete_order));
                                                 } else {
-                                                    echo "N/A";
+                                                    echo " ";
                                                 }
                                                 ?>
                                             </td>

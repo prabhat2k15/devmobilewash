@@ -8,7 +8,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#example1').dataTable({
-            "order": [[4, "desc"]],
+            "order": [[5, "desc"]],
             "pageLength": 20,
             "bLengthChange": false,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
