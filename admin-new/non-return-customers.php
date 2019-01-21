@@ -16,7 +16,7 @@
 <script type="text/javascript">
     var table;
     $(document).ready(function () {
-
+        $('.custom-pagination').show();
         table = $('#example1, #example2, #example3').dataTable({
             "pageLength": 20,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
@@ -38,6 +38,12 @@
         oTable3 = $('#example3').DataTable();
 
         $('#customSearch').keyup(function () {
+            var val = $(this).val();
+            if (val.length > 0) {
+                $('.custom-pagination').hide();
+            } else {
+                $('.custom-pagination').show();
+            }
             oTable1.search($(this).val()).draw();
             oTable2.search($(this).val()).draw();
             oTable3.search($(this).val()).draw();
@@ -539,3 +545,23 @@ $allcustomers = json_decode($result);
         padding: 0 20px 10px !important;
     }
 </style>
+<script>
+    $('#customSearch1').keyup(function () {
+        var val = $(this).val();
+        console.log(val);
+        $.ajax({
+            type: "GET",
+            url: "<?php echo ROOT_URL; ?>/api/index.php?r=customers/SearchCustomerNonReturn&search_query=" + val,
+            data: {'test': 'test'},
+            success: function (data) {
+                console.log(data);
+                var data = jQuery.parseJSON(data.result);
+                //console.log(data)
+                $.each(data, function (i, item) {
+                    console.log(i);
+                });
+            }
+        });
+    }
+    );
+</script>

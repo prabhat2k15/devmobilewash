@@ -7313,9 +7313,9 @@ class CustomersController extends Controller {
             $daysSinceCustomerCreate = $diff->format("%a");
             //print_r($daysSinceCustomerCreate); 
             if ($daysSinceCustomerCreate != 0 && $CustomerTotalordersCount['orders']) {
-               $order_frequency = ($daysSinceCustomerCreate / $CustomerTotalordersCount['orders']);
+                $order_frequency = ($daysSinceCustomerCreate / $CustomerTotalordersCount['orders']);
             } else {
-                 $order_frequency = "0";
+                $order_frequency = "0";
             }
 
 
@@ -13419,6 +13419,32 @@ class CustomersController extends Controller {
             );
             echo json_encode($json);
             die();
+        }
+    }
+
+    public function actionSearchCustomerNonReturn() {
+        $search_query = Yii::app()->request->getParam('search_query');
+        $q = new CDbCriteria();
+        $q->addcondition("(customername LIKE '" . $search_query . "%')", "OR");
+        $q->addcondition("(first_name LIKE '" . $search_query . "%')", "OR");
+        $q->addcondition("(last_name LIKE '" . $search_query . "%')", "OR");
+        $q->addcondition("is_non_returning = 1 ", "AND");
+        $q->limit = 10;
+        $Customers = Customers::model()->findAll($q);
+        if (count($Customers) > 0) {
+            $i = 0;
+            foreach ($Customers as $val) {
+                $Data[$i]['id'] = $val->id;
+                $Data[$i]['first_name'] = $val->first_name;
+                $Data[$i]['last_name'] = $val->last_name;
+                $Data[$i]['email'] = $val->email;
+                $Data[$i]['contact_number'] = $val->contact_number;
+                $Data[$i]['total_wash'] = $val->total_wash;
+                $Data[$i]['nonreturn_cat'] = $val->nonreturn_cat;
+                $i++;
+            }
+            echo json_encode(array('result'=>$Data));
+            die;
         }
     }
 
