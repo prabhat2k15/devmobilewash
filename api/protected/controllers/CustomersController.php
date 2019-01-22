@@ -13422,14 +13422,26 @@ class CustomersController extends Controller {
         }
     }
 
-    public function actionSearchCustomerNonReturn() {
+    public function actionSearchCustomerNonReturnOld() {
         $search_query = Yii::app()->request->getParam('search_query');
         $q = new CDbCriteria();
-        $q->addcondition("(customername LIKE '" . $search_query . "%')", "OR");
-        $q->addcondition("(first_name LIKE '" . $search_query . "%')", "OR");
-        $q->addcondition("(last_name LIKE '" . $search_query . "%')", "OR");
-        $q->addcondition("is_non_returning = 1 ", "AND");
-        $q->limit = 10;
+        if ($search_query) {
+            $q->addcondition("(customername LIKE '" . $search_query . "%')", "OR");
+            $q->addcondition("(first_name LIKE '" . $search_query . "%')", "OR");
+            $q->addcondition("(last_name LIKE '" . $search_query . "%')", "OR");
+            $q->addcondition("(email LIKE '" . $search_query . "%')", "OR");
+            $q->addcondition("(contact_number LIKE '" . $search_query . "%')", "OR");
+            $q->addcondition("is_non_returning = 1 ", "AND");
+            //$q->limit = 1000;
+        }
+
+        if ($search_query == "") {
+            $q->addcondition("is_non_returning = 1 ");
+            $q->order = 'id ASC';
+            $q->limit = 100;
+            $q->offset = 0;
+        }
+
         $Customers = Customers::model()->findAll($q);
         if (count($Customers) > 0) {
             $i = 0;
@@ -13443,9 +13455,231 @@ class CustomersController extends Controller {
                 $Data[$i]['nonreturn_cat'] = $val->nonreturn_cat;
                 $i++;
             }
-            echo json_encode(array('result'=>$Data));
+            echo json_encode($Data);
             die;
         }
+    }
+
+    public function actionSearchCustomerNonReturn() {
+
+//        if (Yii::app()->request->getParam('key') != API_KEY) {
+//            echo "Invalid api key";
+//            die();
+//        }
+//
+//        $api_token = Yii::app()->request->getParam('api_token');
+//        $t1 = Yii::app()->request->getParam('t1');
+//        $t2 = Yii::app()->request->getParam('t2');
+//        $user_type = Yii::app()->request->getParam('user_type');
+//        $user_id = Yii::app()->request->getParam('user_id');
+//
+//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+//
+//        if (!$token_check) {
+//            $json = array(
+//                'result' => 'false',
+//                'response' => 'Invalid request'
+//            );
+//            echo json_encode($json);
+//            die();
+//        }
+        $search_query = Yii::app()->request->getParam('search_query');
+
+        $response = "nothing found";
+        $result = "false";
+        $nonreturncust_arr = [];
+        $nonreturncust_arr_30 = [];
+        $nonreturncust_arr_60 = [];
+        $nonreturncust_arr_90 = [];
+        $ind30 = 0;
+        $ind60 = 0;
+        $ind90 = 0;
+        $total_entries_30 = 0;
+        $total_pages_30 = 0;
+        $total_entries_60 = 0;
+        $total_pages_60 = 0;
+        $total_entries_90 = 0;
+        $total_pages_90 = 0;
+        $limit = 0;
+        $offset_30 = 0;
+        $offset_60 = 0;
+        $offset_90 = 0;
+        $page_number = 1;
+        $limit = Yii::app()->request->getParam('limit');
+        $page_number = Yii::app()->request->getParam('page_number');
+        $range = Yii::app()->request->getParam('range');
+        $likeQuery = "";
+        $limit = 100;
+        if ($search_query) {
+            $limit = 1000;
+            $likeQuery = " AND (customername LIKE '%" . $search_query . "%' OR  first_name LIKE '%" . $search_query . "%' OR  last_name LIKE '%" . $search_query . "%' OR  email LIKE '%" . $search_query . "%' OR  contact_number LIKE '%" . $search_query . "%')";
+        }
+
+        if ($range == 30)
+            $offset_30 = ($page_number - 1) * $limit;
+        if ($range == 60)
+            $offset_60 = ($page_number - 1) * $limit;
+        if ($range == 90)
+            $offset_90 = ($page_number - 1) * $limit;
+
+        $total_rows_30 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 30")->queryAll();
+        if ($limit > 0)
+            $nonreturncust_arr_30 = Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 30 " . $likeQuery . " ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset_30)->queryAll();
+
+        $total_entries_30 = $total_rows_30[0]['countid'];
+        if ($total_entries_30 > 0)
+            $total_pages_30 = ceil($total_entries_30 / $limit);
+
+        $total_rows_60 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 60")->queryAll();
+        if ($limit > 0)
+            $nonreturncust_arr_60 = Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 60 " . $likeQuery . " ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset_60)->queryAll();
+
+        $total_entries_60 = $total_rows_60[0]['countid'];
+        if ($total_entries_60 > 0)
+            $total_pages_60 = ceil($total_entries_60 / $limit);
+
+        $total_rows_90 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 90")->queryAll();
+        if ($limit > 0)
+            $nonreturncust_arr_90 = Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_non_returning = 1 AND nonreturn_cat = 90 " . $likeQuery . " ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset_90)->queryAll();
+
+        $total_entries_90 = $total_rows_90[0]['countid'];
+        if ($total_entries_90 > 0)
+            $total_pages_90 = ceil($total_entries_90 / $limit);
+
+        if (count($nonreturncust_arr_30) || count($nonreturncust_arr_60) || count($nonreturncust_arr_90)) {
+
+            $response = "nonreturning customers";
+            $result = "true";
+        }
+
+
+
+        $json = array(
+            'result' => $result,
+            'response' => $response,
+            'nonreturncusts_30' => $nonreturncust_arr_30,
+            'nonreturncusts_60' => $nonreturncust_arr_60,
+            'nonreturncusts_90' => $nonreturncust_arr_90,
+            'total_entries_30' => $total_entries_30,
+            'total_pages_30' => $total_pages_30,
+            'total_entries_60' => $total_entries_60,
+            'total_pages_60' => $total_pages_60,
+            'total_entries_90' => $total_entries_90,
+            'total_pages_90' => $total_pages_90,
+        );
+
+        echo json_encode($json);
+        die();
+    }
+
+    public function actionSearchinactivecustomers() {
+
+//        if (Yii::app()->request->getParam('key') != API_KEY) {
+//            echo "Invalid api key";
+//            die();
+//        }
+//
+//        $api_token = Yii::app()->request->getParam('api_token');
+//        $t1 = Yii::app()->request->getParam('t1');
+//        $t2 = Yii::app()->request->getParam('t2');
+//        $user_type = Yii::app()->request->getParam('user_type');
+//        $user_id = Yii::app()->request->getParam('user_id');
+//
+//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+//
+//        if (!$token_check) {
+//            $json = array(
+//                'result' => 'false',
+//                'response' => 'Invalid request'
+//            );
+//            echo json_encode($json);
+//            die();
+//        }
+
+        $response = "nothing found";
+        $result = "false";
+        $inactivecust_arr = [];
+        $inactivecust_arr_5 = [];
+        $inactivecust_arr_10 = [];
+        $inactivecust_arr_30 = [];
+        $ind5 = 0;
+        $ind10 = 0;
+        $ind30 = 0;
+        $total_entries_5 = 0;
+        $total_pages_5 = 0;
+        $total_entries_10 = 0;
+        $total_pages_10 = 0;
+        $total_entries_30 = 0;
+        $total_pages_30 = 0;
+        $limit = 0;
+        $offset_5 = 0;
+        $offset_10 = 0;
+        $offset_30 = 0;
+        $page_number = 1;
+        $search_query = Yii::app()->request->getParam('search_query');
+        $limit = Yii::app()->request->getParam('limit');
+        $page_number = Yii::app()->request->getParam('page_number');
+        $range = Yii::app()->request->getParam('range');
+        $limit = 100;
+        if ($range == 5)
+            $offset_5 = ($page_number - 1) * $limit;
+        if ($range == 10)
+            $offset_10 = ($page_number - 1) * $limit;
+        if ($range == 30)
+            $offset_30 = ($page_number - 1) * $limit;
+
+        if ($search_query) {
+            $limit = 100;
+            $likeQuery = " AND (customername LIKE '%" . $search_query . "%' OR  first_name LIKE '%" . $search_query . "%' OR  last_name LIKE '%" . $search_query . "%' OR  email LIKE '%" . $search_query . "%' OR  contact_number LIKE '%" . $search_query . "%')";
+        }
+        $total_rows_5 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_inactive = 1 AND inactive_cat = 5")->queryAll();
+        if ($limit > 0)
+            $inactivecust_arr_5 = Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_inactive = 1 AND inactive_cat = 5  " . $likeQuery . " ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset_5)->queryAll();
+
+        $total_entries_5 = $total_rows_5[0]['countid'];
+        if ($total_entries_5 > 0)
+            $total_pages_5 = ceil($total_entries_5 / $limit);
+
+        $total_rows_10 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_inactive = 1 AND inactive_cat = 10")->queryAll();
+        if ($limit > 0)
+            $inactivecust_arr_10 = Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_inactive = 1 AND inactive_cat = 10 " . $likeQuery . " ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset_10)->queryAll();
+
+        $total_entries_10 = $total_rows_10[0]['countid'];
+        if ($total_entries_10 > 0)
+            $total_pages_10 = ceil($total_entries_10 / $limit);
+
+        $total_rows_30 = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM customers WHERE is_inactive = 1 AND inactive_cat = 30")->queryAll();
+        if ($limit > 0)
+            $inactivecust_arr_30 = Yii::app()->db->createCommand("SELECT id, first_name, last_name, email, contact_number, total_wash FROM customers WHERE is_inactive = 1 AND inactive_cat = 30 " . $likeQuery . " ORDER BY id ASC LIMIT " . $limit . " OFFSET " . $offset_30)->queryAll();
+
+        $total_entries_30 = $total_rows_30[0]['countid'];
+        if ($total_entries_30 > 0)
+            $total_pages_30 = ceil($total_entries_30 / $limit);
+
+        if (count($inactivecust_arr_5) || count($inactivecust_arr_10) || count($inactivecust_arr_30)) {
+
+            $response = "inactive customers";
+            $result = "true";
+        }
+
+
+
+        $json = array(
+            'result' => $result,
+            'response' => $response,
+            'inactivecusts_5' => $inactivecust_arr_5,
+            'inactivecusts_10' => $inactivecust_arr_10,
+            'inactivecusts_30' => $inactivecust_arr_30,
+            'total_entries_5' => $total_entries_5,
+            'total_pages_5' => $total_pages_5,
+            'total_entries_10' => $total_entries_10,
+            'total_pages_10' => $total_pages_10,
+            'total_entries_30' => $total_entries_30,
+            'total_pages_30' => $total_pages_30,
+        );
+
+        echo json_encode($json);
+        die();
     }
 
 }

@@ -50,12 +50,17 @@
         oTable2 = $('#example2').DataTable();
         oTable3 = $('#example3').DataTable();
 
-        $('#customSearch').keyup(function () {
+        $('#customSearch1').keyup(function () {
+            var val = $(this).val();
+            if (val.length > 0) {
+                $('.custom-pagination').hide();
+            } else {
+                $('.custom-pagination').show();
+            }
             oTable1.search($(this).val()).draw();
             oTable2.search($(this).val()).draw();
             oTable3.search($(this).val()).draw();
         })
-        F
     });
 </script>
 
@@ -255,7 +260,7 @@ $allcustomers = json_decode($result);
 
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="searchResultFor5">
                                         <?php
                                         if (count($allcustomers->inactivecusts_5)) {
 
@@ -339,7 +344,7 @@ $allcustomers = json_decode($result);
 
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="searchResultFor10">
                                         <?php
                                         if (count($allcustomers->inactivecusts_10)) {
 
@@ -423,7 +428,7 @@ $allcustomers = json_decode($result);
 
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="searchResultFor30">
                                         <?php
                                         if (count($allcustomers->inactivecusts_30)) {
 
@@ -538,3 +543,100 @@ $allcustomers = json_decode($result);
         padding: 0 20px 10px !important;
     }
 </style>
+<script>
+    $('#customSearch').keyup(function () {
+        $('#example1').DataTable().clear().draw();
+        $('#example2').DataTable().clear().draw();
+        $('#example3').DataTable().clear().draw();
+        var val = $(this).val();
+        if (val.length > 0) {
+            var URL = "<?php echo ROOT_URL; ?>/api/index.php?r=customers/Searchinactivecustomers&search_query=" + $.trim(val);
+            $('.custom-pagination').hide();
+        } else {
+            $('.custom-pagination').show();
+        }
+        if (val.length == 0) {
+            var URL = "<?php echo ROOT_URL; ?>/api/index.php?r=customers/Searchinactivecustomers";
+        }
+        $.ajax({
+            type: "GET",
+            url: URL,
+            data: {'test': 'test'},
+            success: function (data) {
+                //console.log(data);
+                var data = jQuery.parseJSON(data);
+                console.log(data.inactivecusts_5);
+                var counter = 1;
+                var nactivecusts_5html = '';
+                $('#example1').DataTable().clear().draw();
+                $.each(data.inactivecusts_5, function (i, item) {
+                    nactivecusts_5html += '<tr class="odd gradeX ajaxData">';
+                    nactivecusts_5html += '<td>' + item.id;
+                    +'</td>';
+                    nactivecusts_5html += '<td>' + item.first_name + ' ' + item.last_name
+                            + '</td>';
+                    nactivecusts_5html += '<td>' + item.email;
+                    +'</td>';
+                    nactivecusts_5html += '<td>' + item.contact_number;
+                    +'</td>';
+                    if (item.total_wash != 0) {
+                        nactivecusts_5html += '<td><a target="_blank" href="/admin-new/all-orders.php?customer_id=' + item.id + '">' + item.total_wash + '</a></td>';
+                    } else {
+                        nactivecusts_5html += '<td>' + item.total_wash;
+                        +'</td>';
+                    }
+                    nactivecusts_5html += '</tr>';
+                });
+                $('#searchResultFor5').html(nactivecusts_5html);
+
+
+                var nactivecusts_10html = '';
+                $('#example2').DataTable().clear().draw();
+                $.each(data.inactivecusts_10, function (i, item) {
+                    nactivecusts_10html += '<tr class="odd gradeX ajaxData">';
+                    nactivecusts_10html += '<td>' + item.id;
+                    +'</td>';
+                    nactivecusts_10html += '<td>' + item.first_name + ' ' + item.last_name
+                            + '</td>';
+                    nactivecusts_10html += '<td>' + item.email;
+                    +'</td>';
+                    nactivecusts_10html += '<td>' + item.contact_number;
+                    +'</td>';
+                    if (item.total_wash != 0) {
+                        nactivecusts_10html += '<td><a target="_blank" href="/admin-new/all-orders.php?customer_id=' + item.id + '">' + item.total_wash + '</a></td>';
+                    } else {
+                        nactivecusts_10html += '<td>' + item.total_wash;
+                        +'</td>';
+                    }
+                    nactivecusts_10html += '</tr>';
+                });
+                $('#searchResultFor10').html(nactivecusts_10html);
+
+
+                var inactivecusts_30html = '';
+                $('#example3').DataTable().clear().draw();
+                $.each(data.inactivecusts_30, function (i, item) {
+                    inactivecusts_30html += '<tr class="odd gradeX ajaxData">';
+                    inactivecusts_30html += '<td>' + item.id;
+                    +'</td>';
+                    inactivecusts_30html += '<td>' + item.first_name + ' ' + item.last_name
+                            + '</td>';
+                    inactivecusts_30html += '<td>' + item.email;
+                    +'</td>';
+                    inactivecusts_30html += '<td>' + item.contact_number;
+                    +'</td>';
+                    if (item.total_wash != 0) {
+                        inactivecusts_30html += '<td><a target="_blank" href="/admin-new/all-orders.php?customer_id=' + item.id + '">' + item.total_wash + '</a></td>';
+                    } else {
+                        inactivecusts_30html += '<td>' + item.total_wash;
+                        +'</td>';
+                    }
+                    inactivecusts_30html += '</tr>';
+                });
+                $('#searchResultFor30').html(inactivecusts_30html);
+                // append();
+            }
+        });
+    }
+    );
+</script>

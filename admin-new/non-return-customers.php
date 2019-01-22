@@ -27,16 +27,12 @@
                 'csvHtml5'
             ]
         });
-
-
         $('.csv-link').on('click', function () {
             $('.buttons-csv').trigger('click');
         });
-
-        oTable1 = $('#example1').DataTable();   //pay attention to capital D, which is mandatory to retrieve "api" datatables' object, as @Lionel said
+        oTable1 = $('#example1').DataTable(); //pay attention to capital D, which is mandatory to retrieve "api" datatables' object, as @Lionel said
         oTable2 = $('#example2').DataTable();
         oTable3 = $('#example3').DataTable();
-
         $('#customSearch1').keyup(function () {
             var val = $(this).val();
             if (val.length > 0) {
@@ -48,8 +44,7 @@
             oTable2.search($(this).val()).draw();
             oTable3.search($(this).val()).draw();
         })
-    });
-</script>
+    });</script>
 
 <?php include('right-sidebar.php') ?>
 
@@ -66,11 +61,12 @@ $url = ROOT_URL . '/api/index.php?r=site/getnonreturncustomers';
 
 //echo $url;
 $handle = curl_init($url);
-$data = array('key' => API_KEY, 'page_number' => $page_number, 'range' => $range, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+$data = array('search_query' => $_GET['search_query'], 'key' => API_KEY, 'page_number' => $page_number, 'range' => $range, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle);
+//print_r($result); die;
 curl_close($handle);
 $allcustomers = json_decode($result);
 
@@ -547,54 +543,98 @@ $allcustomers = json_decode($result);
 </style>
 <script>
     $('#customSearch').keyup(function () {
+        $('#example1').DataTable().clear().draw();
+        $('#example2').DataTable().clear().draw();
+        $('#example3').DataTable().clear().draw();
         var val = $(this).val();
         if (val.length > 0) {
+            var URL = "<?php echo ROOT_URL; ?>/api/index.php?r=customers/SearchCustomerNonReturn&search_query=" + $.trim(val);
             $('.custom-pagination').hide();
         } else {
             $('.custom-pagination').show();
         }
-        console.log(val);
+        if (val.length == 0) {
+
+            var URL = "<?php echo ROOT_URL; ?>/api/index.php?r=customers/SearchCustomerNonReturn";
+        }
+
+        //console.log(val);
         $.ajax({
             type: "GET",
-            url: "<?php echo ROOT_URL; ?>/api/index.php?r=customers/SearchCustomerNonReturn&search_query=" + $.trim(val),
+            url: URL,
             data: {'test': 'test'},
             success: function (data) {
-                console.log(data);
+                //console.log(data);
                 var data = jQuery.parseJSON(data);
-                //console.log(data)
-                var html = '';
-                $.each(data, function (i, item) {
-                    html += '<tr class="odd gradeX">';
-                    html += '<td>' + item.id;
+                console.log(data.nonreturncusts_30);
+                var counter = 1;
+                var nonreturncusts_30html = '';
+                $('#example1').DataTable().clear().draw();
+                $.each(data.nonreturncusts_30, function (i, item) {
+                    nonreturncusts_30html += '<tr class="odd gradeX ajaxData">';
+                    nonreturncusts_30html += '<td>' + item.id;
                     +'</td>';
-                    html += '<td>' + item.first_name + ' ' + item.last_name
+                    nonreturncusts_30html += '<td>' + item.first_name + ' ' + item.last_name
                             + '</td>';
-                    html += '<td>' + item.email;
+                    nonreturncusts_30html += '<td>' + item.email;
                     +'</td>';
-                    html += '<td>' + item.contact_number;
+                    nonreturncusts_30html += '<td>' + item.contact_number;
                     +'</td>';
                     if (item.total_wash != 0) {
-                        html += '<td><a target="_blank" href="/admin-new/all-orders.php?customer_id=' + item.id + '">' + item.total_wash + '</a></td>';
+                        nonreturncusts_30html += '<td><a target="_blank" href="/admin-new/all-orders.php?customer_id=' + item.id + '">' + item.total_wash + '</a></td>';
                     } else {
-                        html += '<td>' + item.total_wash;
+                        nonreturncusts_30html += '<td>' + item.total_wash;
                         +'</td>';
                     }
-                    html += '</tr>';
-                    if (item.nonreturn_cat == 90) {
-                        $('#searchResultFor90').html('');
-                        $('#searchResultFor90').append(html);
-                    }
-                    if (item.nonreturn_cat == 60) {
-                        $('#searchResultFor60').html('');
-                        $('#searchResultFor60').append(html);
-                    }
-                    if (item.nonreturn_cat == 30) {
-                        $('#searchResultFor30').html('');
-                        $('#searchResultFor30').append(html);
-                    }
-
+                    nonreturncusts_30html += '</tr>';
                 });
-                console.log(html);
+                $('#searchResultFor30').html(nonreturncusts_30html);
+
+
+                var nonreturncusts_60html = '';
+                $('#example2').DataTable().clear().draw();
+                $.each(data.nonreturncusts_60, function (i, item) {
+                    nonreturncusts_60html += '<tr class="odd gradeX ajaxData">';
+                    nonreturncusts_60html += '<td>' + item.id;
+                    +'</td>';
+                    nonreturncusts_60html += '<td>' + item.first_name + ' ' + item.last_name
+                            + '</td>';
+                    nonreturncusts_60html += '<td>' + item.email;
+                    +'</td>';
+                    nonreturncusts_60html += '<td>' + item.contact_number;
+                    +'</td>';
+                    if (item.total_wash != 0) {
+                        nonreturncusts_60html += '<td><a target="_blank" href="/admin-new/all-orders.php?customer_id=' + item.id + '">' + item.total_wash + '</a></td>';
+                    } else {
+                        nonreturncusts_60html += '<td>' + item.total_wash;
+                        +'</td>';
+                    }
+                    nonreturncusts_60html += '</tr>';
+                });
+                $('#searchResultFor60').html(nonreturncusts_60html);
+
+
+                var nonreturncusts_90html = '';
+                $('#example3').DataTable().clear().draw();
+                $.each(data.nonreturncusts_90, function (i, item) {
+                    nonreturncusts_90html += '<tr class="odd gradeX ajaxData">';
+                    nonreturncusts_90html += '<td>' + item.id;
+                    +'</td>';
+                    nonreturncusts_90html += '<td>' + item.first_name + ' ' + item.last_name
+                            + '</td>';
+                    nonreturncusts_90html += '<td>' + item.email;
+                    +'</td>';
+                    nonreturncusts_90html += '<td>' + item.contact_number;
+                    +'</td>';
+                    if (item.total_wash != 0) {
+                        nonreturncusts_90html += '<td><a target="_blank" href="/admin-new/all-orders.php?customer_id=' + item.id + '">' + item.total_wash + '</a></td>';
+                    } else {
+                        nonreturncusts_90html += '<td>' + item.total_wash;
+                        +'</td>';
+                    }
+                    nonreturncusts_90html += '</tr>';
+                });
+                $('#searchResultFor90').html(nonreturncusts_90html);
                 // append();
             }
         });
