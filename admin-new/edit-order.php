@@ -2049,7 +2049,7 @@ if ($getorder->transaction_id) {
                                                                         <p style="margin-bottom: 10px; color:red;"><?php echo $log->admin_username; ?> applied CNR Fee at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'customerdeclinecar'): ?>
-                                                                        <p style="margin-bottom: 10px;">Customer declined add vehicle request: <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                        <p style="margin-bottom: 10px;">Customer did not accept add vehicle request: <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'customerondemandcreate'): ?>
                                                                         <p style="margin-bottom: 10px;">Customer placed On Demand Order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -4266,7 +4266,7 @@ if ($getorder->transaction_id) {
                                         }
 
                                         if (log.action == 'customerdeclinecar') {
-                                            contents += "<p style='margin-bottom: 10px;'>Customer declined add vehicle request: " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                            contents += "<p style='margin-bottom: 10px;'>Customer did not accept add vehicle request: " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
                                         }
 
                                         if (log.action == 'customerondemandcreate') {
