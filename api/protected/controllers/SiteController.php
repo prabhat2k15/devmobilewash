@@ -9085,7 +9085,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         die;
     }
 
-    public function actionupdatedevicestatus() {
+     public function actionupdatedevicestatus() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -9191,6 +9191,45 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     $user_photo = $user_check->image;
                     $user_name = $user_check->first_name . " " . $user_check->last_name;
                     $user_rating = $user_check->rating;
+                    if($user_rating > 5){
+                        
+                         /* ------------ calculate agent average feedback ---------------- */
+
+                    $washer_total_dropjobs = 0;
+                    $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $user_check->id));
+                    $total_rate = count($agent_feedbacks);
+
+                    $washerdropjobs = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM activity_logs WHERE agent_id = " . $user_check->id . " AND action = 'dropjob' AND status = 0")->queryAll();
+                    if (!empty($washerdropjobs))
+                        $washer_total_dropjobs = $washerdropjobs[0]['count'];
+                    if ($total_rate) {
+                        $rate = 50;
+                        foreach ($agent_feedbacks as $ind => $agent_feedback) {
+
+                            if (!is_numeric($agent_feedback->customer_ratings))
+                                $rate += 5;
+                            else
+                                $rate += $agent_feedback->customer_ratings;
+                        }
+
+                        if ($washer_total_dropjobs)
+                            $agent_rate = ($rate + $washer_total_dropjobs) / ($total_rate + 10 + $washer_total_dropjobs);
+                        else
+                            $agent_rate = $rate / ($total_rate + 10);
+                        $agent_rate = number_format($agent_rate, 2, '.', '');
+                    }
+                    else {
+                        $agent_rate = 5.00;
+                    }
+
+
+                    $agentmodel = new Agents;
+                   if ($agent_rate < 3) $agentmodel->updateAll(array("rating" => $agent_rate, "block_washer" => 1, "forced_logout" => 1), 'id=:id', array(':id' => $user_check->id));
+                    else $agentmodel->updateAll(array("rating" => $agent_rate), 'id=:id', array(':id' => $user_check->id));
+
+                    /* ------------ calculate agent average feedback end ---------------- */
+                    $user_rating = $agent_rate;
+                    }
                     $is_agent_has_wash = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE agent_id='" . $user_check->id . "' AND (status >= 1 AND status <= 3)")->queryAll();
 
                     if (count($is_agent_has_wash)) {
