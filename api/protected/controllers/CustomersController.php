@@ -13462,27 +13462,27 @@ class CustomersController extends Controller {
 
     public function actionSearchCustomerNonReturn() {
 
-//        if (Yii::app()->request->getParam('key') != API_KEY) {
-//            echo "Invalid api key";
-//            die();
-//        }
-//
-//        $api_token = Yii::app()->request->getParam('api_token');
-//        $t1 = Yii::app()->request->getParam('t1');
-//        $t2 = Yii::app()->request->getParam('t2');
-//        $user_type = Yii::app()->request->getParam('user_type');
-//        $user_id = Yii::app()->request->getParam('user_id');
-//
-//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
-//
-//        if (!$token_check) {
-//            $json = array(
-//                'result' => 'false',
-//                'response' => 'Invalid request'
-//            );
-//            echo json_encode($json);
-//            die();
-//        }
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
         $search_query = Yii::app()->request->getParam('search_query');
 
         $response = "nothing found";
@@ -13574,27 +13574,27 @@ class CustomersController extends Controller {
 
     public function actionSearchinactivecustomers() {
 
-//        if (Yii::app()->request->getParam('key') != API_KEY) {
-//            echo "Invalid api key";
-//            die();
-//        }
-//
-//        $api_token = Yii::app()->request->getParam('api_token');
-//        $t1 = Yii::app()->request->getParam('t1');
-//        $t2 = Yii::app()->request->getParam('t2');
-//        $user_type = Yii::app()->request->getParam('user_type');
-//        $user_id = Yii::app()->request->getParam('user_id');
-//
-//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
-//
-//        if (!$token_check) {
-//            $json = array(
-//                'result' => 'false',
-//                'response' => 'Invalid request'
-//            );
-//            echo json_encode($json);
-//            die();
-//        }
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
 
         $response = "nothing found";
         $result = "false";

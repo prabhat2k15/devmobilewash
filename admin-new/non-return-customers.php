@@ -562,7 +562,8 @@ $allcustomers = json_decode($result);
         $.ajax({
             type: "GET",
             url: URL,
-            data: {'test': 'test'},
+            data: {key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"
+            },
             success: function (data) {
                 //console.log(data);
                 var data = jQuery.parseJSON(data);
