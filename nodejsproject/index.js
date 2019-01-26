@@ -429,6 +429,20 @@ request.post({
 
 }
 
+function washing_sendorderreceipts(wash_request_id='', customer_id='', agent_id='', socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
+request.post({
+  headers: {'content-type' : 'application/x-www-form-urlencoded'},
+  url:     'https://www.devmobilewash.com/api/index.php?r=washing/sendorderreceipts',
+  body:    "key="+key+"&wash_request_id="+wash_request_id+"&customer_id="+customer_id+"&agent_id="+agent_id+"&api_token="+api_token+"&t1="+t1+"&t2="+t2+"&user_type="+user_type+"&user_id="+user_id
+}, function(error, response, body){
+     //console.log("body "+body);
+ //console.log(JSON.parse(body));
+ //console.log('site_updatedevicestatus');
+           
+});
+
+}
+
 var server = https.createServer({
     key: fs.readFileSync('/home/devmobilewash/ssl/keys/e2d28_c9e8d_89b88bb84590416dfdcf0e774e73b971.key'),
     cert: fs.readFileSync('/home/devmobilewash/ssl/certs/devmobilewash_com_e2d28_c9e8d_1548719999_dd90cb2446ad5a1e069143697a227a06.crt'),
@@ -560,6 +574,11 @@ else{
         socket.on('getagentdevice', function(data){
       //console.log(data);
     agents_getagentdevice(data.agent_id, data.device_token, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
+  });
+        
+           socket.on('sendorderreceipts', function(data){
+      //console.log(data);
+    washing_sendorderreceipts(data.wash_request_id, data.customer_id, data.agent_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
   });
    
 

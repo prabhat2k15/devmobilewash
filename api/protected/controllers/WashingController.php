@@ -5164,8 +5164,8 @@ class WashingController extends Controller {
                       $receiptdetails = json_decode($receiptresult);
                       //var_dump($jsondata); */
 
-                    $receiptresult = $this->actionsendorderreceipts($wash_request_id, $customer_id, $washrequest_id_check->agent_id, 'true', API_KEY, $api_token, $t1, $t2, $user_type, $user_id);
-                    $receiptdetails = json_decode($receiptresult);
+                    //$receiptresult = $this->actionsendorderreceipts($wash_request_id, $customer_id, $washrequest_id_check->agent_id, 'true', API_KEY, $api_token, $t1, $t2, $user_type, $user_id);
+                    //$receiptdetails = json_decode($receiptresult);
                     Washingrequests::model()->updateByPk($wash_request_id, array('is_order_receipt_sent' => 1));
                 }
 
@@ -7203,6 +7203,17 @@ class WashingController extends Controller {
             echo "Invalid api key";
 //die();
         }
+	
+	      if (!$api_token)
+            $api_token = Yii::app()->request->getParam('api_token');
+        if (!$t1)
+            $t1 = Yii::app()->request->getParam('t1');
+        if (!$t2)
+            $t2 = Yii::app()->request->getParam('t2');
+            if (!$user_type)
+            $user_type = Yii::app()->request->getParam('user_type');
+            if (!$user_id)
+            $user_id = Yii::app()->request->getParam('user_id');
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
@@ -7224,6 +7235,18 @@ class WashingController extends Controller {
         $response = 'Pass the required parameters';
 
         if ((isset($wash_request_id) && !empty($wash_request_id)) && (isset($customer_id) && !empty($customer_id))) {
+		
+		 if ((AES256CBC_STATUS == 1) && (Yii::app()->request->getParam('wash_request_id'))) {
+                $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
+            }
+            
+            if ((AES256CBC_STATUS == 1) && (Yii::app()->request->getParam('customer_id'))) {
+                $customer_id = $this->aes256cbc_crypt($customer_id, 'd', AES256CBC_API_PASS);
+            }
+            
+            if ((AES256CBC_STATUS == 1) && (Yii::app()->request->getParam('agent_id'))) {
+                $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
+            }
 
             $wash_id_check = Washingrequests::model()->findByAttributes(array("id" => $wash_request_id));
             $customer_id_check = Customers::model()->findByAttributes(array("id" => $customer_id));
