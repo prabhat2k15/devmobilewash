@@ -7203,16 +7203,16 @@ class WashingController extends Controller {
             echo "Invalid api key";
 //die();
         }
-	
-	      if (!$api_token)
+
+        if (!$api_token)
             $api_token = Yii::app()->request->getParam('api_token');
         if (!$t1)
             $t1 = Yii::app()->request->getParam('t1');
         if (!$t2)
             $t2 = Yii::app()->request->getParam('t2');
-            if (!$user_type)
+        if (!$user_type)
             $user_type = Yii::app()->request->getParam('user_type');
-            if (!$user_id)
+        if (!$user_id)
             $user_id = Yii::app()->request->getParam('user_id');
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
@@ -7235,15 +7235,15 @@ class WashingController extends Controller {
         $response = 'Pass the required parameters';
 
         if ((isset($wash_request_id) && !empty($wash_request_id)) && (isset($customer_id) && !empty($customer_id))) {
-		
-		 if ((AES256CBC_STATUS == 1) && (Yii::app()->request->getParam('wash_request_id'))) {
+
+            if ((AES256CBC_STATUS == 1) && (Yii::app()->request->getParam('wash_request_id'))) {
                 $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
             }
-            
+
             if ((AES256CBC_STATUS == 1) && (Yii::app()->request->getParam('customer_id'))) {
                 $customer_id = $this->aes256cbc_crypt($customer_id, 'd', AES256CBC_API_PASS);
             }
-            
+
             if ((AES256CBC_STATUS == 1) && (Yii::app()->request->getParam('agent_id'))) {
                 $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
             }
@@ -10158,6 +10158,559 @@ class WashingController extends Controller {
     /* App Order */
 
     public function Actionorder_schedule_app() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+        /* Checking for post(month) parameters */
+        $order_month = '';
+        if (!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))) {
+            $last_month = Yii::app()->request->getParam('start');
+            $curr_month = Yii::app()->request->getParam('end');
+            $order_month = " AND ( DATE_FORMAT(a.order_for,'%Y-%m')>= :last_month AND DATE_FORMAT(a.order_for,'%Y-%m')<= :curr_month) ";
+        }
+        /* Post END */
+
+        /* web orderds */
+        $total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
+        //$total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
+
+        $count = $total_order[0]['countid'];
+
+        $customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND  a.status != 7 " . $order_month)
+                //$customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
+                ->bindValue(':last_month', $last_month, PDO::PARAM_STR)
+                ->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
+                ->queryAll();
+
+        //$customers_order = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN agents a ON w.agent_id = a.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '' AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '2018-12-31' AND w.status IN('0','4','3','2','1') ORDER BY w.id DESC")->queryAll();
+        /* END */
+        if (!empty($customers_order)) {
+            $check_auto_canceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'scheduleauto-canceled'")->queryAll();
+            $scheduleautoArr = array();
+            if (count($check_auto_canceled) > 0) {
+                foreach ($check_auto_canceled as $key => $value) {
+                    $scheduleautoArr[] = $value['wash_request_id'];
+                }
+            }
+            $ondemandauto_canceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'ondemandautocancel'")->queryAll();
+            $ondemandautocancelArr = array();
+            if (count($ondemandauto_canceled) > 0) {
+                foreach ($ondemandauto_canceled as $key => $value) {
+                    $ondemandautocancelArr[] = $value['wash_request_id'];
+                }
+            }
+
+            $get_befor_count = Yii::app()->db->createCommand("SELECT customer_id, order_for FROM washing_requests WHERE status = 4 GROUP BY customer_id ORDER BY id ASC")->queryAll();
+            $ArrCustomers_date = array();
+            if (count($get_befor_count) > 0) {
+                foreach ($get_befor_count as $key => $value) {
+                    $ArrCustomers_date[$value['customer_id']] = date('Y-m-d', strtotime($value['order_for']));
+                }
+            }
+
+            foreach ($customers_order as $orderbycustomer) {
+
+                //$counttype = array_count_values($package_list_explode);
+                $orderstatus = $orderbycustomer['status'];
+                $orderid = $orderbycustomer['id'];
+                $address_type = $orderbycustomer['address_type'];
+                $created_date = $orderbycustomer['order_for'];
+                $wash_request_position = $orderbycustomer['wash_request_position'];
+                $color = '';
+                $check_auto_canceled = $ondemandautocanceled = 0;
+                if (in_array($orderbycustomer['id'], $scheduleautoArr)) {
+                    $check_auto_canceled = 1;
+                }
+                if (in_array($orderbycustomer['id'], $ondemandautocancelArr)) {
+                    $ondemandautocanceled = 1;
+                }
+                $zipcolor = '';
+
+                if ($orderbycustomer['zipcode']) {
+                    $coveragezipcheck = CoverageAreaCodes::model()->findByAttributes(array('zipcode' => $orderbycustomer['zipcode']));
+
+                    if (count($coveragezipcheck)) {
+                        $zipcolor = $coveragezipcheck->zip_color;
+                    }
+                }
+
+                if ($orderstatus == 4) {
+                    $order_of_status = 'Complete';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#30A0FF';
+                } elseif ($check_auto_canceled == 1 && $orderbycustomer['is_scheduled'] == 1) {
+                    $order_of_status = 'Scheduled-auto';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#30A0FF';
+                } elseif ($ondemandautocanceled == 1 && $orderbycustomer['is_scheduled'] == 0) {
+                    $order_of_status = 'ondemandautocanceled';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#30A0FF';
+                } elseif ($orderstatus == 0) {
+                    $order_of_status = 'Pending';
+                    $time = $orderbycustomer['order_for'];
+                    $currentdate = date("Y-m-d h:i:s");
+                    $to_time = strtotime($time);
+                    $from_time = strtotime($currentdate);
+                    $totalminutes = round(abs($to_time - $from_time) / 60, 2);
+                    $color = '#FF3B30';
+                } elseif ($orderstatus >= 1 && $orderstatus <= 3) {
+                    $order_of_status = 'Processing';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#EF9047';
+                } elseif (($orderstatus == 5) || ($orderstatus == 6)) {
+                    $order_of_status = 'Canceled';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#AAAAAA';
+                }
+
+                if ($orderbycustomer['failed_transaction_id']) {
+                    $order_of_status = 'Declined';
+                    $totalminutes = 'N/A';
+                    $near_agent = '';
+                    $color = '#cc0066';
+                }
+                ///$pakage_List = "";
+
+
+                $key = 'order_' . $count . '_' . $orderid;
+                $json = array();
+                $json['title'] = $order_of_status;
+                $json['orderid'] = $orderid;
+                $json['time'] = $totalminutes;
+                $json['address_type'] = $address_type;
+                $json['start'] = date('Y-m-d', strtotime($created_date));
+                $orderbycustomer['total_wash'] = 1;
+                if ($ArrCustomers_date[$orderbycustomer['customer_id']] == date('Y-m-d', strtotime($created_date))) {
+                    $orderbycustomer['total_wash'] = 0;
+                }
+                if ($wash_request_position == APP_ENV) {
+
+                    $orderview[] = array(
+                        "start" => date('Y-m-d', strtotime($created_date)),
+                        "title" => $order_of_status,
+                        "color" => $color,
+                        "address_type" => $address_type,
+                        "car_list" => $orderbycustomer['car_list'],
+                        "package_list" => $orderbycustomer['package_list'],
+                        "coupon_code" => $orderbycustomer['coupon_code'],
+                        "tip_amount" => $orderbycustomer['tip_amount'],
+                        "is_scheduled" => $orderbycustomer['is_scheduled'],
+                        "pet_hair_vehicles" => $orderbycustomer['pet_hair_vehicles'],
+                        "lifted_vehicles" => $orderbycustomer['lifted_vehicles'],
+                        "exthandwax_vehicles" => $orderbycustomer['exthandwax_vehicles'],
+                        "extplasticdressing_vehicles" => $orderbycustomer['extplasticdressing_vehicles'],
+                        "extclaybar_vehicles" => $orderbycustomer['extclaybar_vehicles'],
+                        "waterspotremove_vehicles" => $orderbycustomer['waterspotremove_vehicles'],
+                        "upholstery_vehicles" => $orderbycustomer['upholstery_vehicles'],
+                        "floormat_vehicles" => $orderbycustomer['floormat_vehicles'],
+                        "total_wash" => $orderbycustomer['total_wash'],
+                        "zip_color" => $zipcolor,
+                        "orderstatus" => $orderstatus,
+                    );
+                }
+            }
+//            print_r($orderview);
+//            die;
+            $data = $ArrCustemer = array();
+            foreach ($orderview as $key => $value) {
+
+                /* $packages = explode(",", $value['package_list']);
+                  if(count($packages)>0){
+                  foreach ($packages as $package) {
+                  $data[$value['start']][trim($package)][] = 1;
+                  }
+                  } */
+
+//                if ($value['orderstatus'] != 0 || $value['orderstatus'] != 4) {
+//                    $value['package_list'] = "N/A";
+//                }
+
+                $cancledOrder = "N/A";
+                $data[$value['start']]['OrderCancled'] = $cancledOrder;
+                if ($value['orderstatus'] == 5 || $value['orderstatus'] == 6) {
+                    $cancledOrder = "OrderCancled";
+                }
+
+                if (($value['total_wash'] == 0)) {
+                    if (!in_array($value['customer_id'], $ArrCustemer)) {
+                        $data[$value['start']]['new_customer'][] = 1;
+                        $ArrCustemer[] = $value['customer_id'];
+                    }
+                }
+
+//                if ((($value['zip_color'] == '') || ($value['zip_color'] == 'blue')) && ($value['title'] != 'Canceled')) {
+//                    $data[$value['start']]['zip_blue'][] = 1;
+//                }
+                if ((($value['zip_color'] == '') || ($value['zip_color'] == 'blue')) && ($cancledOrder != 'OrderCancled')) {
+                    $data[$value['start']]['zip_blue'][] = 1;
+                }
+
+
+                if (($value['zip_color'] == 'yellow') && ($cancledOrder != 'OrderCancled')) {
+                    $data[$value['start']]['zip_yellow'][] = 1;
+                }
+
+                if (($value['zip_color'] == 'red') && ($cancledOrder != 'OrderCancled')) {
+                    $data[$value['start']]['zip_red'][] = 1;
+                }
+
+
+                if (($value['zip_color'] == 'purple') && ($cancledOrder != 'OrderCancled')) {
+                    $data[$value['start']]['zip_purple'][] = 1;
+                }
+
+                if ($value['address_type'] == 'Home') {
+                    $data[$value['start']]['home'][] = $value['address_type'];
+                }
+                if ($value['address_type'] == 'Work') {
+                    $data[$value['start']]['work'][] = $value['address_type'];
+                }
+                if ($value['title'] == 'Complete') {
+                    $data[$value['start']]['complete'][] = $value['title'];
+                    if ($value['is_scheduled'] == 1)
+                        $data[$value['start']]['schedulecompleted'][] = 'schedulecompleted';
+                    else
+                        $data[$value['start']]['ondemandcompleted'][] = 'ondemandcompleted';
+
+                    if (trim($value['pet_hair_vehicles']))
+                        $data[$value['start']]['pet_hair_vehicles'][] = count(explode(",", $value['pet_hair_vehicles']));
+                    else
+                        $data[$value['start']]['pet_hair_vehicles'][] = 0;
+
+                    if (trim($value['lifted_vehicles']))
+                        $data[$value['start']]['lifted_vehicles'][] = count(explode(",", $value['lifted_vehicles']));
+                    else
+                        $data[$value['start']]['lifted_vehicles'][] = 0;
+
+                    if (trim($value['exthandwax_vehicles']))
+                        $data[$value['start']]['exthandwax_vehicles'][] = count(explode(",", $value['exthandwax_vehicles']));
+                    else
+                        $data[$value['start']]['exthandwax_vehicles'][] = 0;
+
+                    if (trim($value['extplasticdressing_vehicles']))
+                        $data[$value['start']]['extplasticdressing_vehicles'][] = count(explode(",", $value['extplasticdressing_vehicles']));
+                    else
+                        $data[$value['start']]['extplasticdressing_vehicles'][] = 0;
+
+                    if (trim($value['extclaybar_vehicles']))
+                        $data[$value['start']]['extclaybar_vehicles'][] = count(explode(",", $value['extclaybar_vehicles']));
+                    else
+                        $data[$value['start']]['extclaybar_vehicles'][] = 0;
+
+                    if (trim($value['waterspotremove_vehicles']))
+                        $data[$value['start']]['waterspotremove_vehicles'][] = count(explode(",", $value['waterspotremove_vehicles']));
+                    else
+                        $data[$value['start']]['waterspotremove_vehicles'][] = 0;
+
+                    if (trim($value['upholstery_vehicles']))
+                        $data[$value['start']]['upholstery_vehicles'][] = count(explode(",", $value['upholstery_vehicles']));
+                    else
+                        $data[$value['start']]['upholstery_vehicles'][] = 0;
+
+                    if (trim($value['floormat_vehicles']))
+                        $data[$value['start']]['floormat_vehicles'][] = count(explode(",", $value['floormat_vehicles']));
+                    else
+                        $data[$value['start']]['floormat_vehicles'][] = 0;
+                }
+
+                if ($value['title'] == 'Pending') {
+                    $data[$value['start']]['pending'][] = $value['title'];
+                }
+                if ($value['title'] == 'Scheduled-auto') {
+                    $data[$value['start']]['scheduled_auto'][] = $value['title'];
+                }
+                if ($value['title'] == 'ondemandautocanceled') {
+                    $data[$value['start']]['ondemandautocanceled'][] = $value['title'];
+                }
+                if ($value['title'] == 'Processing') {
+                    $data[$value['start']]['processing'][] = $value['title'];
+                }
+                if ($value['title'] == 'Canceled') {
+                    $data[$value['start']]['canceled'][] = $value['title'];
+                    if ($value['is_scheduled'] == 1)
+                        $data[$value['start']]['schedulecanceled'][] = $value['title'];
+                    else
+                        $data[$value['start']]['ondemandcanceled'][] = $value['title'];
+                }
+
+                if ($value['title'] == 'Declined') {
+                    $data[$value['start']]['declined'][] = $value['title'];
+                }
+
+                if (($value['title'] == 'Pending') || ($value['title'] == 'Processing') || ($value['title'] == 'Complete')) {
+                    $data[$value['start']]['total_cars'][] = count(explode(",", $value['car_list']));
+
+
+                    $packages = explode(",", $value['package_list']);
+                    if (count($packages) > 0) {
+                        foreach ($packages as $package) {
+                            $data[$value['start']][trim($package)][] = 1;
+                        }
+                    }
+
+
+                    if (trim($value['coupon_code']) != '' && !empty($value['coupon_code'])) {
+                        $data[$value['start']]['coupon_code'][] = $value['coupon_code'];
+                    }
+                    if (intval($value['tip_amount']) != '' && intval($value['tip_amount']) != 0) {
+                        $data[$value['start']]['tip_amount'][] = $value['tip_amount'];
+                    }
+                }
+            }
+//            print_r($data);
+//            die;
+            $dt = array();
+            foreach ($data as $key => $val) {
+
+                $dt[$key]['declined']['color'] = '';
+                $dt[$key]['total_orders']['color'] = '';
+                $dt[$key]['pending']['color'] = '';
+                $dt[$key]['complete']['color'] = '';
+                $dt[$key]['canceled']['color'] = '';
+                $dt[$key]['schedulecanceled']['color'] = '';
+                $dt[$key]['ondemandcanceled']['color'] = '';
+                $dt[$key]['Express']['color'] = '';
+                $dt[$key]['Deluxe']['color'] = '';
+                $dt[$key]['Premium']['color'] = '';
+                $dt[$key]['coupon_code']['color'] = '';
+                $dt[$key]['tip_amount']['color'] = '';
+                $dt[$key]['processing']['color'] = '';
+                $dt[$key]['home']['count'] = '';
+                $dt[$key]['work']['count'] = '';
+                $dt[$key]['total_cars']['count'] = '';
+                $dt[$key]['schedulecompleted']['color'] = '';
+                $dt[$key]['ondemandcompleted']['color'] = '';
+                $dt[$key]['addoncompleted']['color'] = '';
+                $dt[$key]['scheduled_auto']['color'] = '#8b9d9e';
+                $dt[$key]['scheduled_auto']['count'] = 0;
+                $dt[$key]['ondemandautocanceled']['color'] = '#8b9d9e';
+                $dt[$key]['ondemandautocanceled']['count'] = 0;
+                $dt[$key]['schedulecanceled']['count'] = 0;
+                $dt[$key]['schedulecanceled']['color'] = '#8b9d9e';
+                $dt[$key]['zipblue']['color'] = '';
+                $dt[$key]['zipblue']['count'] = 0;
+                $dt[$key]['zipyellow']['color'] = '';
+                $dt[$key]['zipyellow']['count'] = 0;
+                $dt[$key]['zipred']['color'] = '';
+                $dt[$key]['zipred']['count'] = 0;
+                $dt[$key]['zippurple']['color'] = '';
+                $dt[$key]['zippurple']['count'] = 0;
+                $addonscompleted = 0;
+                //print_r($val);
+                if (count($val['declined']) > 0) {
+                    $dt[$key]['declined']['count'] = count($val['declined']);
+                    $dt[$key]['declined']['color'] = '#eb1350';
+                }
+                if (count($val['total_cars']) > 0) {
+                    $dt[$key]['total_cars']['count'] = 0;
+                    foreach ($val['total_cars'] as $carcount) {
+                        $dt[$key]['total_cars']['count'] += $carcount;
+                    }
+                }
+                if (count($val['pending']) > 0 || count($val['processing']) > 0 || count($val['complete']) > 0 || count($val['canceled']) > 0 || count($val['scheduled_auto']) > 0 || count($val['ondemandautocanceled']) > 0) {
+                    $total_orders = count($val['pending']) + count($val['processing']) + count($val['complete']); //+count($val['canceled'])+count($val['scheduled_auto'])+count($val['ondemandautocanceled'])+count($val['declined']);
+                    $dt[$key]['total_orders']['count'] = $total_orders;
+                    $dt[$key]['total_orders']['color'] = '#9c64b7';
+                }
+                if (count($val['pending']) > 0) {
+                    $dt[$key]['pending']['count'] = count($val['pending']);
+                    $dt[$key]['pending']['color'] = '#f6d235';
+                }
+                if (count($val['complete']) > 0) {
+                    $dt[$key]['complete']['count'] = count($val['complete']);
+                    $dt[$key]['complete']['color'] = '#14c266';
+                }
+                if (count($val['canceled']) > 0) {
+                    $dt[$key]['canceled']['count'] = count($val['canceled']) + count($val['scheduled_auto']) + count($val['ondemandautocanceled']);
+                    $dt[$key]['canceled']['color'] = '#8b9d9e';
+                }
+                if (count($val['scheduled_auto']) > 0) {
+                    $dt[$key]['scheduled_auto']['count'] = count($val['scheduled_auto']);
+                    $dt[$key]['scheduled_auto']['color'] = '#8b9d9e';
+                }
+                if (count($val['ondemandautocanceled']) > 0) {
+                    $dt[$key]['ondemandautocanceled']['count'] = count($val['ondemandautocanceled']);
+                    $dt[$key]['ondemandautocanceled']['color'] = '#8b9d9e';
+                }
+                if (count($val['schedulecanceled']) > 0) {
+                    $dt[$key]['schedulecanceled']['count'] = count($val['schedulecanceled']);
+                    $dt[$key]['schedulecanceled']['color'] = '#8b9d9e';
+                }
+                if (count($val['ondemandcanceled']) > 0) {
+                    $dt[$key]['ondemandcanceled']['count'] = count($val['ondemandcanceled']);
+                    $dt[$key]['ondemandcanceled']['color'] = '#8b9d9e';
+                }
+                if (count($val['processing']) > 0) {
+                    $dt[$key]['processing']['count'] = count($val['processing']);
+                    $dt[$key]['processing']['color'] = '#f6c235';
+                }
+                if (count($val['Express']) > 0) {
+                    $dt[$key]['Express']['count'] = count($val['Express']);
+                    $dt[$key]['Express']['color'] = '#2490d7';
+                }
+                if (count($val['Deluxe']) > 0) {
+                    $dt[$key]['Deluxe']['count'] = count($val['Deluxe']);
+                    $dt[$key]['Deluxe']['color'] = '#2490d7';
+                }
+                if (count($val['Premium']) > 0) {
+                    $dt[$key]['Premium']['count'] = count($val['Premium']);
+                    $dt[$key]['Premium']['color'] = '#2490d7';
+                }
+                if (count($val['coupon_code']) > 0) {
+                    $dt[$key]['coupon_code']['count'] = count($val['coupon_code']);
+                    $dt[$key]['coupon_code']['color'] = '#ec6858';
+                }
+                if (count($val['tip_amount']) > 0) {
+                    $dt[$key]['tip_amount']['count'] = count($val['tip_amount']);
+                    $dt[$key]['tip_amount']['color'] = '#f28fba';
+                }
+
+                if (count($val['schedulecompleted']) > 0) {
+                    $dt[$key]['schedulecompleted']['count'] = count($val['schedulecompleted']);
+                    $dt[$key]['schedulecompleted']['color'] = '#0000ff';
+                }
+
+                if (count($val['ondemandcompleted']) > 0) {
+                    $dt[$key]['ondemandcompleted']['count'] = count($val['ondemandcompleted']);
+                    $dt[$key]['ondemandcompleted']['color'] = '#008080';
+                }
+
+                if (count($val['zip_blue']) > 0) {
+                    $dt[$key]['zipblue']['count'] = count($val['zip_blue']);
+                    $dt[$key]['zipblue']['color'] = '#63dffb';
+                }
+
+                if (count($val['zip_yellow']) > 0) {
+                    $dt[$key]['zipyellow']['count'] = count($val['zip_yellow']);
+                    $dt[$key]['zipyellow']['color'] = '#d8c200';
+                }
+
+                if (count($val['zip_red']) > 0) {
+                    $dt[$key]['zipred']['count'] = count($val['zip_red']);
+                    $dt[$key]['zipred']['color'] = '#FF0000';
+                }
+
+                if (count($val['zip_purple']) > 0) {
+                    $dt[$key]['zippurple']['count'] = count($val['zip_purple']);
+                    $dt[$key]['zippurple']['color'] = '#800080';
+                }
+
+
+                if (count($val['pet_hair_vehicles']) > 0) {
+                    foreach ($val['pet_hair_vehicles'] as $addoncount) {
+                        $addonscompleted += $addoncount;
+                    }
+                }
+
+                if (count($val['lifted_vehicles']) > 0) {
+                    foreach ($val['lifted_vehicles'] as $addoncount) {
+                        $addonscompleted += $addoncount;
+                    }
+                }
+
+                if (count($val['exthandwax_vehicles']) > 0) {
+                    foreach ($val['exthandwax_vehicles'] as $addoncount) {
+                        $addonscompleted += $addoncount;
+                    }
+                }
+
+                if (count($val['extplasticdressing_vehicles']) > 0) {
+                    foreach ($val['extplasticdressing_vehicles'] as $addoncount) {
+                        $addonscompleted += $addoncount;
+                    }
+                }
+
+                if (count($val['extclaybar_vehicles']) > 0) {
+                    foreach ($val['extclaybar_vehicles'] as $addoncount) {
+                        $addonscompleted += $addoncount;
+                    }
+                }
+
+                if (count($val['waterspotremove_vehicles']) > 0) {
+                    foreach ($val['waterspotremove_vehicles'] as $addoncount) {
+                        $addonscompleted += $addoncount;
+                    }
+                }
+
+                if (count($val['upholstery_vehicles']) > 0) {
+                    foreach ($val['upholstery_vehicles'] as $addoncount) {
+                        $addonscompleted += $addoncount;
+                    }
+                }
+
+                if (count($val['floormat_vehicles']) > 0) {
+                    foreach ($val['floormat_vehicles'] as $addoncount) {
+                        $addonscompleted += $addoncount;
+                    }
+                }
+
+                if ($addonscompleted > 0) {
+                    $dt[$key]['addoncompleted']['count'] = $addonscompleted;
+                    $dt[$key]['addoncompleted']['color'] = '#87CEFA';
+                }
+
+                if (count($val['home']) > 0) {
+                    $dt[$key]['home']['count'] = count($val['home']);
+                }
+                if (count($val['work']) > 0) {
+                    $dt[$key]['work']['count'] = count($val['work']);
+                }
+
+                if (count($val['new_customer']) > 0) {
+                    $dt[$key]['new_customer']['color'] = '#3fcfb6';
+                    $dt[$key]['new_customer']['count'] = count($val['new_customer']);
+                } else {
+                    $dt[$key]['new_customer']['color'] = '';
+                    $dt[$key]['new_customer']['count'] = '';
+                }
+
+                /* if(count($val['tip_amount'])>0){
+                  $dt[$key]['tip_amount']['color']= '#cc0066';
+                  $dt[$key]['tip_amount']['count']= 0;
+                  foreach($val['tip_amount'] as $amount){
+                  $dt[$key]['tip_amount']['count'] += $amount;
+                  }
+                  } */
+            }
+            /* print_r($dt);die; */
+            $ordersdetails['order'] = $dt;
+            echo json_encode($ordersdetails, JSON_PRETTY_PRINT);
+
+            exit;
+        } else {
+            $ordersdetails['order'] = array('empty' => 'yes');
+            echo json_encode($ordersdetails, JSON_PRETTY_PRINT);
+
+            exit;
+        }
+    }
+
+    public function Actionorder_schedule_appOld() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
