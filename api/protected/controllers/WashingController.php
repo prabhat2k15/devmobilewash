@@ -3524,7 +3524,8 @@ class WashingController extends Controller {
                                 //echo $agentdetails['mobile_type'];
                                 $device_type = strtolower($ctdevice['device_type']);
                                 $notify_token = $ctdevice['device_token'];
-                                $alert_type = "strong";
+                                //$alert_type = "strong";
+                                $alert_type = "washerAssigned";
                                 $notify_msg = urlencode($message);
 
                                 $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
@@ -15430,7 +15431,8 @@ class WashingController extends Controller {
                 //echo $agentdetails['mobile_type'];
                 $device_type = strtolower($ctdevice['device_type']);
                 $notify_token = $ctdevice['device_token'];
-                $alert_type = "schedule";
+                //$alert_type = "schedule";
+                $alert_type = "buzz";
                 $notify_msg = urlencode($message);
 
                 $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
@@ -15510,7 +15512,8 @@ class WashingController extends Controller {
                     //echo $agentdetails['mobile_type'];
                     $device_type = strtolower($ctdevice['device_type']);
                     $notify_token = $ctdevice['device_token'];
-                    $alert_type = "schedule";
+                    //$alert_type = "schedule";
+                    $alert_type = "buzz";
                     $notify_msg = urlencode($message);
 
                     $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
