@@ -10295,7 +10295,9 @@ class WashingController extends Controller {
                     $color = '#cc0066';
                 }
                 ///$pakage_List = "";
-
+                if (($orderstatus != 0) && ($orderstatus != 4)) {
+                    $orderbycustomer['package_list'] = "N/A";
+                }
 
                 $key = 'order_' . $count . '_' . $orderid;
                 $json = array();
@@ -10345,10 +10347,6 @@ class WashingController extends Controller {
                   $data[$value['start']][trim($package)][] = 1;
                   }
                   } */
-
-//                if ($value['orderstatus'] != 0 || $value['orderstatus'] != 4) {
-//                    $value['package_list'] = "N/A";
-//                }
 
                 $cancledOrder = "N/A";
                 $data[$value['start']]['OrderCancled'] = $cancledOrder;
