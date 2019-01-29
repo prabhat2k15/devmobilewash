@@ -554,7 +554,7 @@ $ios_count = $jsondata->ios_count;
         text-decoration: underline;
     }
 
-    .spec-order-list li.processordeclined{
+    .spec-order-list li.processordeclined, .spec-order-list li.nowashercancel{
         background: rgba(234, 0, 85, 0.84);
     }
 
@@ -649,7 +649,7 @@ $ios_count = $jsondata->ios_count;
                                             <th style="display: none;"> ZipCode </th>
                                         <?php } ?>
                                         <th> Schedule Datetime </th>
-                                        <th class="hide"> Starts </th>
+                                        <!--<th class="hide"> Starts </th>-->
                                         <th> Vehicles </th>
                                         <th> Total Price </th>
                                         <!--th>Total Price </th-->
@@ -763,14 +763,14 @@ $ios_count = $jsondata->ios_count;
                                                     N/A
                                                 <?php endif; ?>
                                             </td>
-                                            <td class="hide">
+                                            <?php /*<td class="hide">
                                                 <?php
                                                 if ($order->min_diff > 0)
                                                     echo $order->min_diff;
                                                 else
                                                     echo "-";
                                                 ?>
-                                            </td>
+                                            </td>*/ ?>
                                             <td><?php
                                                 if (count($order->vehicles)) {
                                                     echo "<ol style='padding-left: 15px;'>";
@@ -1131,6 +1131,9 @@ $ios_count = $jsondata->ios_count;
                         if (value.washer_30_min_noarrive == 1) {
                             popuptextgreen += "<li class='washernoarrive30min'>#" + value.id + " - En Route Washer " + value.agent_details.agent_name + " hasn't tapped \"arrive\" within 30 minutes - Please Call <a data-id='" + value.id + "' href='edit-order.php?id=" + value.id + "' target='_blank'>View</a></li>";
                         }
+			if ((value.no_washer_cancel == 1) && (value.status == 5)) {
+                            popuptextred += "<li class='nowashercancel'>#" + value.id + " Auto canceled - " + value.customer_name + " <a data-id='" + value.id + "' href='edit-order.php?id=" + value.id + "' target='_blank'>View</a></li>";
+                        }
                         upcomingwashes["DT_RowId"] = "order-" + value.id;
                         //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
                         if ((value.min_diff <= 30) && (value.status == 0))
@@ -1143,6 +1146,8 @@ $ios_count = $jsondata->ios_count;
                             upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
                         if (value.washer_change_pack > 0)
                             upcomingwashes["DT_RowClass"] = "flashrowchangedpack";
+			     if ((value.no_washer_cancel == 1) && (value.status == 5))
+                            upcomingwashes["DT_RowClass"] = "flashrow";
                         //if(value.washer_wash_activity == 0) upcomingwashes["DT_RowClass"] = "washernowashactivity";
 
                         upcomingwashes.push("<a href='edit-order.php?id=" + value.id + "' class='appt-edit-order' data-id='" + value.id + "' style='margin-right: 7px;'>Edit</a>");
@@ -1221,10 +1226,10 @@ $ios_count = $jsondata->ios_count;
                             upcomingwashes.push("N/A");
                         }
 
-                        if (value.min_diff > 0)
+                        /*if (value.min_diff > 0)
                                 // upcomingwashes.push(value.min_diff);
                                 else
-                            // upcomingwashes.push("-");
+                            // upcomingwashes.push("-");*/
 
                             var veh_string = '';
                         if (value.vehicles.length) {
