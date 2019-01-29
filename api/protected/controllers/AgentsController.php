@@ -7831,8 +7831,10 @@ class AgentsController extends Controller {
                 $result = curl_exec($ch);
                 $result = json_decode($result);
                 if ($result->success == 0) {
-                    //echo "SMS disabled FOR Agent";
-                    $result = Yii::app()->db->createCommand("UPDATE agents SET sms_control=0  WHERE id=" . $user_devices_detail['agent_id'])->query();
+                    if ($result->results[0]->error == "NotRegistered") {
+                        echo "SMS disabled FOR Agent " . $user_devices_detail['agent_id'];
+                        $result = Yii::app()->db->createCommand("UPDATE agents SET sms_control=0  WHERE id=" . $user_devices_detail['agent_id'])->query();
+                    }
                 }
                 curl_close($ch);
                 echo "SMS enabled FOR Agent";
@@ -7844,8 +7846,8 @@ class AgentsController extends Controller {
             }
         }
     }
-    
-            public function actiongetagentdevice() {
+
+    public function actiongetagentdevice() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -7860,14 +7862,14 @@ class AgentsController extends Controller {
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-         /*if (!$token_check) {
+        /* if (!$token_check) {
           $json = array(
           'result' => 'false',
           'response' => 'Invalid request'
           );
           echo json_encode($json);
           die();
-          }*/ 
+          } */
 
         $agent_id = Yii::app()->request->getParam('agent_id');
         $device_token = Yii::app()->request->getParam('device_token');
@@ -7876,27 +7878,24 @@ class AgentsController extends Controller {
             $agent_id = $this->aes256cbc_crypt($agent_id, 'd', AES256CBC_API_PASS);
         }
 
-        $agentdevices = Yii::app()->db->createCommand("SELECT id, forced_logout FROM agent_devices WHERE agent_id = '" . $agent_id . "' AND device_token = '".$device_token."' ORDER BY id DESC LIMIT 1")->queryAll();
-        
+        $agentdevices = Yii::app()->db->createCommand("SELECT id, forced_logout FROM agent_devices WHERE agent_id = '" . $agent_id . "' AND device_token = '" . $device_token . "' ORDER BY id DESC LIMIT 1")->queryAll();
+
         if (count($agentdevices)) {
-		 $json = array(
-            'result' => 'true',
-	    'response' => 'device found',
-            'forced_logout' => $agentdevices[0]['forced_logout']
-        );
-        echo json_encode($json);
-        die();
-  
+            $json = array(
+                'result' => 'true',
+                'response' => 'device found',
+                'forced_logout' => $agentdevices[0]['forced_logout']
+            );
+            echo json_encode($json);
+            die();
+        } else {
+            $json = array(
+                'result' => 'false',
+                'response' => 'device not found',
+            );
+            echo json_encode($json);
+            die();
         }
-	else{
-	 $json = array(
-            'result' => 'false',
-	    'response' => 'device not found',
-           
-        );
-        echo json_encode($json);
-        die();	
-	}
     }
 
 }
