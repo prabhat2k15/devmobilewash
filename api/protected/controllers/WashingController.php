@@ -14097,9 +14097,9 @@ public function actiongetallschedulewashes() {
                                     $voidresult = Yii::app()->braintree->void($schedwash->transaction_id);
                             }
 
-                            /* $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                             $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-                              $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '19' ")->queryAll();
+                              $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '61' ")->queryAll();
                               $message = $pushmsg[0]['message'];
 
                               if(count($clientdevices)){
@@ -14120,7 +14120,7 @@ public function actiongetallschedulewashes() {
                               if($notify_msg) $notifyresult = curl_exec($ch);
                               curl_close($ch);
                               }
-                              } */
+                              } 
 
                             $customers_details = Customers::model()->findByPk($schedwash->customer_id);
                             $cust_firstname = $customers_details->first_name;
