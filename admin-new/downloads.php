@@ -314,11 +314,17 @@ $download_data = json_decode($result);
                                         $i = 0;
                                         foreach ($download_data->all_data as $val):
                                             ?>
+                                            <?php
+                                            $color = $val->zip_color;
+                                            if ($color == "") {
+                                                $color = "Blue";
+                                            }
+                                            ?>
                                             <tr>
                                                 <td><?= $i + 1; ?></td>
                                                 <td><?= date("Y-m-d h:i A", strtotime($val->created_at)) ?></td>
                                                 <td><?= $val->zipcode ?></td>
-                                                <td><?= $val->zip_color ?></td>
+                                                <td><?= $color ?></td>
                                                 <td><?= $val->city ?></td>
                                                 <td><?= $val->state ?></td>
                                                 <td><?= $val->country ?></td>

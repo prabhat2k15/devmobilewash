@@ -141,7 +141,7 @@ class DownloadsController extends Controller {
                 ->queryRow();
         $yellow = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM downloads d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') AND z.zip_color='yellow'")
                 ->queryRow();
-        $blue = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM downloads d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') AND z.zip_color='blue'")
+        $blue = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM downloads d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') AND z.zip_color='blue' OR z.zip_color=''")
                 ->queryRow();
         $all_city = Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM downloads  WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') GROUP BY city ORDER BY COUNT(id) DESC")
                 ->queryAll();
@@ -153,7 +153,7 @@ class DownloadsController extends Controller {
                 ->queryAll();
         $all_source = Yii::app()->db->createCommand("SELECT source, COUNT(id) as total FROM downloads WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "') GROUP BY source ORDER BY COUNT(id) DESC")
                 ->queryAll();
-        $all_data = Yii::app()->db->createCommand("SELECT * FROM downloads WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "')  ORDER BY id DESC")
+        $all_data = Yii::app()->db->createCommand("SELECT d.*,z.zip_color FROM downloads d LEFT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "')  ORDER BY id DESC")
                 ->queryAll();
         $json = array(
             'all_data' => $all_data,
