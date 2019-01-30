@@ -1132,7 +1132,7 @@ $ios_count = $jsondata->ios_count;
                             popuptextgreen += "<li class='washernoarrive30min'>#" + value.id + " - En Route Washer " + value.agent_details.agent_name + " hasn't tapped \"arrive\" within 30 minutes - Please Call <a data-id='" + value.id + "' href='edit-order.php?id=" + value.id + "' target='_blank'>View</a></li>";
                         }
 			if ((value.no_washer_cancel == 1) && (value.status == 5)) {
-                            popuptextred += "<li class='nowashercancel'>#" + value.id + " Auto canceled - " + value.customer_name + " <a data-id='" + value.id + "' href='edit-order.php?id=" + value.id + "' target='_blank'>View</a></li>";
+                            popuptextred += "<li class='nowashercancel'>#" + value.id + " Auto canceled - " + value.customer_name + " <a class='admin-notify-view-click' data-action='nowashercancel' data-id='" + value.id + "' href='edit-order.php?id=" + value.id + "' target='_blank'>View</a></li>";
                         }
                         upcomingwashes["DT_RowId"] = "order-" + value.id;
                         //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";

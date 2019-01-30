@@ -5195,12 +5195,15 @@ class WashingController extends Controller {
                 $to = Vargas::Obj()->getAdminToEmail();
                 $from = Vargas::Obj()->getAdminFromEmail();
                 $subject = '';
-                if ($washrequest_id_check->status == 4)
+                if ($washrequest_id_check->status == 4){
                     $subject = 'Customer Wash Complete Feedback';
-                if (($washrequest_id_check->status == 5) || ($washrequest_id_check->status == 6))
+                
+                    if ((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5) || (!empty($comments))) Vargas::Obj()->SendMail($to, $from, $message, $subject . " - Order #0000" . $wash_request_id, 'mail-receipt');
+                }
+                if (($washrequest_id_check->status == 5) || ($washrequest_id_check->status == 6)){
                     $subject = 'Customer Reason for Cancellation';
-                if ((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5) || (!empty($comments)))
-                    Vargas::Obj()->SendMail($to, $from, $message, $subject . " - Order #0000" . $wash_request_id, 'mail-receipt');
+                    if ($comments) Vargas::Obj()->SendMail($to, $from, $message, $subject . " - Order #0000" . $wash_request_id, 'mail-receipt');
+                }
 
                 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
 
@@ -14192,7 +14195,15 @@ public function actiongetallschedulewashes() {
 					<p style='color: #333;'>MobileWash</p>";
 
                             Vargas::Obj()->SendMail($customers_details->email, $from, $message, "MobileWash", 'mail-receipt');
+			
+    $logdata = array(
+                            'agent_id' => $schedwash->agent_id,
+                            'wash_request_id' => $schedwash->id,
+                            'agent_company_id' => 0,
+                            'action' => 'scheduleauto-canceled',
+                            'action_date' => date('Y-m-d H:i:s'));
 
+                        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 
                             if (APP_ENV == 'real') {
 
@@ -14352,12 +14363,12 @@ public function actiongetallschedulewashes() {
                                 }
                             }
 
-                            $logdata = array(
+                            /*$logdata = array(
                                 'wash_request_id' => $schedwash->id,
                                 'action' => 'scheduleauto-canceled',
                                 'action_date' => date('Y-m-d H:i:s'));
 
-                            Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+                            Yii::app()->db->createCommand()->insert('activity_logs', $logdata);*/
                         }
                     }
                 }
