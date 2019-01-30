@@ -5953,6 +5953,7 @@ class WashingController extends Controller {
                         curl_close($ch);
                     }
 
+$agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['agent_id']));
 
                     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $nomeetwash['agent_id'] . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -5977,11 +5978,37 @@ class WashingController extends Controller {
                             $notifyresult = curl_exec($ch);
                         curl_close($ch);
                     }
+		    
+		    	    if ((APP_ENV == 'real')) {
+                                $this->layout = "xmlLayout";
+
+                                //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+                                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+                                $account_sid = TWILIO_SID;
+                                $auth_token = TWILIO_AUTH_TOKEN;
+
+                                $client = new Services_Twilio($account_sid, $auth_token);
+
+                                try {
+                                    $sendmessage = $client->account->messages->create(array(
+                                        'To' => $agent_details->phone_number,
+                                        'From' => '+13103128070',
+                                        'Body' => $message,
+                                    ));
+                                } catch (Services_Twilio_RestException $e) {
+                                    //echo  $e;
+                                }
+          }
 
 
                     Washingrequests::model()->updateByPk($nomeetwash['id'], array('meet_washer_10min_alert' => 1));
                 }
                 if (($min_diff >= 15) && (!$nomeetwash['meet_washer_20min_alert'])) {
+			
+			$agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['agent_id']));
 
                     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $nomeetwash['agent_id'] . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -6007,6 +6034,30 @@ class WashingController extends Controller {
                             $notifyresult = curl_exec($ch);
                         curl_close($ch);
                     }
+		    
+		   if ((APP_ENV == 'real')) {
+                                $this->layout = "xmlLayout";
+
+                                //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+
+                                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+                                $account_sid = TWILIO_SID;
+                                $auth_token = TWILIO_AUTH_TOKEN;
+
+                                $client = new Services_Twilio($account_sid, $auth_token);
+
+                                try {
+                                    $sendmessage = $client->account->messages->create(array(
+                                        'To' => $agent_details->phone_number,
+                                        'From' => '+13103128070',
+                                        'Body' => $message,
+                                    ));
+                                } catch (Services_Twilio_RestException $e) {
+                                    //echo  $e;
+                                }
+          }
 
                     Washingrequests::model()->updateByPk($nomeetwash['id'], array('meet_washer_20min_alert' => 1));
                 }
@@ -15552,10 +15603,11 @@ public function actiongetallschedulewashes() {
             }
 
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $washer_request_id));
-
+	$agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
             $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $wrequest_id_check->agent_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '49' ")->queryAll();
+	    
             $message = $pushmsg[0]['message'];
 
             foreach ($agentdevices as $agdevice) {
@@ -15576,6 +15628,7 @@ public function actiongetallschedulewashes() {
                     $notifyresult = curl_exec($ch);
                 curl_close($ch);
             }
+	    
 
 
             $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $wrequest_id_check->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
@@ -15650,10 +15703,11 @@ public function actiongetallschedulewashes() {
             }
 
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $washer_request_id));
-
+$agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
             $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $wrequest_id_check->agent_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '51' ")->queryAll();
+	    
             $message = $pushmsg[0]['message'];
 
             foreach ($agentdevices as $agdevice) {
@@ -15674,6 +15728,9 @@ public function actiongetallschedulewashes() {
                     $notifyresult = curl_exec($ch);
                 curl_close($ch);
             }
+	    
+
+	  
             $result = 'true';
             $response = 'notification sent';
         }
