@@ -85,6 +85,17 @@ $message = $jsondata->message;
     #save{
         display: none;
     }
+    .emoji-wysiwyg-editor {
+        min-height: 130px !important;
+    }
+    .emoji-picker-icon {
+        right: 23px;
+        top: 21px;
+    }
+    .emoji-menu{
+        top: 40px;
+        right: 16px;
+    }
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -126,7 +137,7 @@ $message = $jsondata->message;
                                 <div class="form-group" id="message">
                                     <label class="control-label col-md-3">Message<span style="color: red;">*</span></label>
                                     <div class="col-md-3">
-                                        <textarea class="form-control emoji" name="message" rows="3" required></textarea>
+                                        <textarea class="form-control emoji" data-emojiable="true" name="message" rows="3" required></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group hide" id="media">

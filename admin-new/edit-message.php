@@ -69,7 +69,19 @@ if (!empty($_POST['hidden'])) {
     $media = $jsondata->media;
 }
 ?>
-
+<style type="text/css">
+.emoji-wysiwyg-editor {
+        min-height: 130px !important;
+    }
+    .emoji-picker-icon {
+        right: 23px;
+        top: 21px;
+    }
+    .emoji-menu{
+        top: 40px;
+        right: 16px;
+    }
+</style>
 
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -119,7 +131,7 @@ if (!empty($_POST['hidden'])) {
                                 <div class="form-group" id="message">
                                     <label class="control-label col-md-3">Message</label>
                                     <div class="col-md-3">
-                                        <textarea class="form-control emoji" name="message" rows="3" required><?php echo $message; ?></textarea>
+                                        <textarea class="form-control emoji" data-emojiable="true" name="message" rows="3" required><?php echo $message; ?></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group hide" id="media">

@@ -60,7 +60,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/jquery.validate.min.js" ></script>
         <script src="js/validation.js" type="text/javascript"></script>
         <script src="js/emoji/emojionearea.js" type="text/javascript"></script>
-        <script src="js/emoji/emoji_custom.js" type="text/javascript"></script>
+        <!-- ** Don't forget to Add jQuery here ** -->
+        <script src="js/lib/js/config.js"></script>
+        <script src="js/lib/js/util.js"></script>
+        <script src="js/lib/js/jquery.emojiarea.js"></script>
+        <script src="js/lib/js/emoji-picker.js"></script>
+        <!-- <script src="js/emoji/emoji_custom.js" type="text/javascript"></script> -->
         <script>
 
 $(function(){
@@ -2798,6 +2803,18 @@ window.location.href = "<?php echo ROOT_URL; ?>/admin-new/login.php";
 		    
 		    }, 600000); // 10 mins interval
 	    });
+        $(function() {
+        // Initializes and creates emoji set from sprite sheet
+        window.emojiPicker = new EmojiPicker({
+          emojiable_selector: '[data-emojiable=true]',
+          assetsPath: 'js/lib/img/',
+          popupButtonClasses: 'fa fa-smile-o'
+        });
+        // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+        // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+        // It can be called as many times as necessary; previously converted input fields will not be converted again
+        window.emojiPicker.discover();
+      });
 	</script>
      
     </body>
