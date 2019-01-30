@@ -86,6 +86,18 @@ if(isset($_POST['inactive-31st-day_submit'])){
     .customcsv{
         opacity: 0;
     }
+
+.emoji-wysiwyg-editor {
+        min-height: 130px !important;
+    }
+    .emoji-picker-icon {
+    right: 7px;
+    top: 5px;
+}
+    .emoji-menu{
+        top: 30px;
+        right: 12px;
+    }
 </style>
 
 
@@ -358,9 +370,9 @@ if(isset($_POST['inactive-31st-day_submit'])){
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-5">
-                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="inactive-6th-day_sms_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-6th-day']['sms_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="inactive-6th-day_sms_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-6th-day']['sms_text']; ?></textarea> </span>
                                         </div>
-                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="inactive-6th-day_notify_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-6th-day']['notify_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="inactive-6th-day_notify_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-6th-day']['notify_text']; ?></textarea> </span>
                                         </div>
                                         <div>
                                                 <div class="form-group upload-image-wrap">
@@ -421,9 +433,9 @@ if(isset($_POST['inactive-31st-day_submit'])){
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-5">
-                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="inactive-11th-day_sms_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-11th-day']['sms_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="inactive-11th-day_sms_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-11th-day']['sms_text']; ?></textarea> </span>
                                         </div>
-                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="inactive-11th-day_notify_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-11th-day']['notify_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="inactive-11th-day_notify_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-11th-day']['notify_text']; ?></textarea> </span>
                                         </div>
                                         <div>
                                                 <div class="form-group upload-image-wrap">
@@ -483,9 +495,9 @@ if(isset($_POST['inactive-31st-day_submit'])){
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-5">
-                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="inactive-31st-day_sms_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-31st-day']['sms_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="inactive-31st-day_sms_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-31st-day']['sms_text']; ?></textarea> </span>
                                         </div>
-                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="inactive-31st-day_notify_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-31st-day']['notify_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="inactive-31st-day_notify_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['inactive-31st-day']['notify_text']; ?></textarea> </span>
                                         </div>
                                         <div>
                                                 <div class="form-group upload-image-wrap">
