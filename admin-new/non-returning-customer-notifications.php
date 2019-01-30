@@ -366,9 +366,9 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-5">
-                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="non-return-31st-day_sms_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-31st-day']['sms_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="non-return-31st-day_sms_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-31st-day']['sms_text']; ?></textarea> </span>
                                         </div>
-                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="non-return-31st-day_notify_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-31st-day']['notify_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="non-return-31st-day_notify_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-31st-day']['notify_text']; ?></textarea> </span>
                                         </div>
                                         <div>
                                                 <div class="form-group upload-image-wrap">
@@ -429,9 +429,9 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-5">
-                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="non-return-61st-day_sms_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-61st-day']['sms_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="non-return-61st-day_sms_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-61st-day']['sms_text']; ?></textarea> </span>
                                         </div>
-                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="non-return-61st-day_notify_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-61st-day']['notify_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="non-return-61st-day_notify_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-61st-day']['notify_text']; ?></textarea> </span>
                                         </div>
                                         <div>
                                                 <div class="form-group upload-image-wrap">
@@ -492,9 +492,9 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-5">
-                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="non-return-90th-day_sms_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-90th-day']['sms_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">SMS </span> <span class="text_msg emoji_div"> <textarea name="non-return-90th-day_sms_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-90th-day']['sms_text']; ?></textarea> </span>
                                         </div>
-                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="non-return-90th-day_notify_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-90th-day']['notify_text']; ?></textarea> </span>
+                                        <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="non-return-90th-day_notify_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-90th-day']['notify_text']; ?></textarea> </span>
                                         </div>
                                         <div>
                                                 <div class="form-group upload-image-wrap">
