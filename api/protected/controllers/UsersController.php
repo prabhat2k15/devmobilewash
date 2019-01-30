@@ -5086,14 +5086,14 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
 
             if ((count($customer_login_status)) && ($send_verify_code != 'false')) {
                 $result = "false";
-                $response = "There is no permission for log in with same account on 2 devices";
+                $response = "This account is already in use, please log out first and try again. If the problem persists, please contact MobileWash at (888) 209-5585";
                 $json = array(
                     'result' => $result,
                     'response' => $response
                 );
             } else if ((count($agent_login_status)) && ($send_verify_code != 'false')) {
                 $result = "false";
-                $response = "There is no permission for log in with same account on 2 devices";
+                $response = "This account is already in use, please log out first and try again. If the problem persists, please contact MobileWash at (888) 209-5585";
                 $json = array(
                     'result' => $result,
                     'response' => $response
@@ -5975,7 +5975,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
 
         if (count($customer_login_status)) {
             $result = "false";
-            $response = "There is no permission for log in with same account on 2 devices";
+            $response = "This account is already in use, please log out first and try again. If the problem persists, please contact MobileWash at (888) 209-5585";
             $json = array(
                 'result' => $result,
                 'response' => $response
@@ -5986,7 +5986,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
 
         if (count($agent_login_status)) {
             $result = "false";
-            $response = "There is no permission for log in with same account on 2 devices";
+            $response = "This account is already in use, please log out first and try again. If the problem persists, please contact MobileWash at (888) 209-5585";
             $json = array(
                 'result' => $result,
                 'response' => $response
