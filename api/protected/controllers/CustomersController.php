@@ -7326,11 +7326,19 @@ class CustomersController extends Controller {
 
             $custlocation = CustomerLocation::model()->findByAttributes(array("customer_id" => $customername->id));
 
-            $custspent = Yii::app()->db->createCommand("SELECT SUM(net_price) FROM washing_requests WHERE customer_id = :customer_id AND  status = 4 AND net_price > 0")
+            $custspent = Yii::app()->db->createCommand("SELECT SUM(net_price),COUNT(id) as CompletedOrders FROM washing_requests WHERE customer_id = :customer_id AND  status = 4 AND net_price > 0")
                     ->bindValue(':customer_id', $customername->id, PDO::PARAM_STR)
                     ->queryAll();
             $totalpaid = 0;
+            $totalSpentAverage = 0;
+            $totalOrderAverage = 0;
             $totalpaid = $custspent[0]['SUM(net_price)'];
+            $CompletedOrders = $custspent[0]['CompletedOrders'];
+            if ($daysSinceCustomerCreate != 0 && count($custspent) > 0) {
+                $totalSpentAverage = ($totalpaid / $daysSinceCustomerCreate);
+                $totalOrderAverage = ($CompletedOrders / $daysSinceCustomerCreate);
+            }
+
 
             $city = 'N/A';
             $address = 'N/A';
@@ -7371,6 +7379,8 @@ class CustomersController extends Controller {
             $json['how_hear_mw'] = $customername->how_hear_mw;
             $json['total_spent'] = number_format($totalpaid, 2);
             $json['order_frequency'] = $order_frequency;
+            $json['totalSpentAverage'] = number_format($totalSpentAverage, 2);
+            $json['totalOrderAverage'] = number_format($totalOrderAverage, 2);
             $json['client_science'] = date('m-d-Y h:i A', strtotime($customername->created_date));
 
             $customerdetail[] = $json;

@@ -213,7 +213,9 @@ $allcustomers = json_decode($result);
                                 <th> City </th>
                                 <th> How Hear MW </th>
                                 <th> Total Spent </th>
-                                <th>Order Frequency</th>
+                                <th>Average Order Frequency (min. 1 order)</th>
+                                <th>Average Total Spent (min. 1 order)</th>
+                                <th>Average Total Orders (min. 1 order)</th>
                                 <th> Created Date </th>
 
                             </tr>
@@ -273,7 +275,9 @@ $allcustomers = json_decode($result);
                                         <td> <?php echo $responseagents->city; ?> </td>
                                         <td> <?php echo $responseagents->how_hear_mw; ?> </td>
                                         <td> $<?php echo $responseagents->total_spent; ?> </td>
-                                        <td> <?php echo number_format($responseagents->order_frequency, 2); ?></td>
+                                        <td> <?php echo number_format($responseagents->order_frequency, 2) . " days"; ?></td>
+                                        <td> $<?php echo $responseagents->totalSpentAverage; ?> </td>
+                                        <td> $<?php echo $responseagents->totalOrderAverage; ?> </td>
                                         <td> <?php echo $responseagents->client_science; ?> </td>
                                     </tr>
 
@@ -456,6 +460,8 @@ $allcustomers = json_decode($result);
                         morecustomers.push(value.how_hear_mw);
                         morecustomers.push("$" + value.total_spent);
                         morecustomers.push(value.order_frequency);
+                        morecustomers.push(value.totalSpentAverage);
+                        morecustomers.push(value.totalOrderAverage);
                         morecustomers.push(value.client_science);
                         table.add(morecustomers).draw(false);
                         //table.fnAddData(morecustomers, false);
