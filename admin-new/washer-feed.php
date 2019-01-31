@@ -110,6 +110,9 @@ $finalData = json_decode($result);
     .emojionearea-editor div:empty{
         display:none;
     }
+    .emoji-picker-icon{
+    right :20px;
+}
 </style>
 <?php
 
@@ -237,7 +240,7 @@ function convertStringTime($date) {
                                                     <div class="col-xs-12 col-md-7">
                                                         <div class="row">
                                                             <div class="col-xs-12 col-md-12">
-                                                                <input type="text" name="title" value="<?= $val->title; ?>"  class="borderm form-control" placeholder="Write Title">
+                                                                <input type="text" name="title" value="<?= $val->title; ?>"  class="borderm form-control" placeholder="Write Title" data-emojiable="true">
                                                             </div>
                                                         </div>
                                                         <div class="row" style="margin-top:20px;margin-bottom:20px;">
