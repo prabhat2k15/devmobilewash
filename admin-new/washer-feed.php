@@ -135,12 +135,6 @@ function convertStringTime($date) {
     return $date = $date;
 }
 ?>
-<style type="text/css">
-.emoji-picker-icon{
-    right :18px;
-}
-</style>
-
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
@@ -299,7 +293,7 @@ function convertStringTime($date) {
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-xs-12 col-md-7 washer-feed-box">
-                                                        <textarea name="message" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" required="" data-emojiable="true"><?= $val->message; ?></textarea>
+                                                        <textarea name="message" class="borderm form-control emoji" data-emojiable="true" rows="4" cols="50" placeholder="Write Message" required=""><?= $val->message; ?></textarea>
                                                     </div>
                                                     <div class="col-xs-12 col-md-2 savebox"> <button type="submit" name="up_washer_feed" class="btn btn-primary bold-txt"> SAVE</button> </div>
                                                 </div>
