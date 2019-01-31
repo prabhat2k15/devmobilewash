@@ -155,8 +155,33 @@ class DownloadsController extends Controller {
                 ->queryAll();
         $all_data = Yii::app()->db->createCommand("SELECT d.*,z.zip_color FROM downloads d LEFT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE (created_at >= '" . $from . "' AND created_at <= '" . $to . "')  ORDER BY id DESC")
                 ->queryAll();
+
+        $i = 0;
+        foreach ($all_data as $val) {
+            $ZipColour = "N/A";
+            if ($val['zipcode']) {
+                $ZipColour = Yii::app()->db->createCommand("SELECT zip_color FROM  coverage_area_zipcodes  WHERE zipcode=" . $val['zipcode'])
+                        ->queryRow();
+                $ZipColour = $ZipColour['zip_color'];
+                if (isset($ZipColour) && $ZipColour == "") {
+                    $ZipColour = "Blue";
+                }
+                if (!isset($ZipColour)) {
+                    $ZipColour = "N/A";
+                }
+            }
+            $all_Data[$i]['created_at'] = $val['created_at'];
+            $all_Data[$i]['zipcode'] = $val['zipcode'];
+            $all_Data[$i]['city'] = $val['city'];
+            $all_Data[$i]['state'] = $val['state'];
+            $all_Data[$i]['ZipColour'] = $ZipColour;
+            $all_Data[$i]['country'] = $val['country'];
+            $all_Data[$i]['source'] = $val['source'];
+            $i++;
+        }
         $json = array(
-            'all_data' => $all_data,
+            //'all_data' => $all_data,
+            'all_data' => $all_Data,
             'all_city' => $all_city,
             'all_state' => $all_state,
             'all_source' => $all_source,

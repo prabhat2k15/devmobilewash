@@ -21,6 +21,7 @@ curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array("key" => API_KEY, "from" => $from, "to" => $to, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
 curl_setopt($handle_data, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle_data);
+
 curl_close($handle_data);
 $download_data = json_decode($result);
 ?>
@@ -314,17 +315,12 @@ $download_data = json_decode($result);
                                         $i = 0;
                                         foreach ($download_data->all_data as $val):
                                             ?>
-                                            <?php
-                                            $color = $val->zip_color;
-                                            if ($color == "") {
-                                                $color = "Blue";
-                                            }
-                                            ?>
+
                                             <tr>
                                                 <td><?= $i + 1; ?></td>
                                                 <td><?= date("Y-m-d h:i A", strtotime($val->created_at)) ?></td>
                                                 <td><?= $val->zipcode ?></td>
-                                                <td><?= $color ?></td>
+                                                <td><?= $val->ZipColour; ?></td>
                                                 <td><?= $val->city ?></td>
                                                 <td><?= $val->state ?></td>
                                                 <td><?= $val->country ?></td>
