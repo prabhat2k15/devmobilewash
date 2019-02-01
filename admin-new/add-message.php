@@ -96,6 +96,10 @@ $message = $jsondata->message;
         top: 40px;
         right: 16px;
     }
+    .icon-bell:before,
+    .icon-grid:before{
+        opacity:0;
+    }
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">

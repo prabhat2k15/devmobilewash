@@ -66,6 +66,10 @@ if (isset($_POST['notify-form-submit'])) {
         top: 40px;
         right: 16px;
     }
+    .icon-bell:before,
+    .icon-grid:before{
+        opacity:0;
+    }
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">

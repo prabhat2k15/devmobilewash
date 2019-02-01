@@ -110,9 +110,10 @@ $finalData = json_decode($result);
     .emojionearea-editor div:empty{
         display:none;
     }
-    .emoji-picker-icon{
-    right :20px;
-}
+    .icon-bell:before,
+    .icon-grid:before{
+        opacity:0;
+    }
 </style>
 <?php
 
@@ -138,6 +139,11 @@ function convertStringTime($date) {
     return $date = $date;
 }
 ?>
+<style type="text/css">
+.emoji-picker-icon{
+    right: 20px;
+}
+</style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
@@ -240,7 +246,7 @@ function convertStringTime($date) {
                                                     <div class="col-xs-12 col-md-7">
                                                         <div class="row">
                                                             <div class="col-xs-12 col-md-12">
-                                                                <input type="text" name="title" value="<?= $val->title; ?>"  class="borderm form-control" placeholder="Write Title" data-emojiable="true">
+                                                                <input type="text" name="title" value="<?= $val->title; ?>"  class="borderm form-control" data-emojiable="true" placeholder="Write Title">
                                                             </div>
                                                         </div>
                                                         <div class="row" style="margin-top:20px;margin-bottom:20px;">

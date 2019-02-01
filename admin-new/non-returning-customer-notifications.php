@@ -1,86 +1,82 @@
 <?php
 include('header.php');
 
-if(isset($_POST['non-return-31st-day_submit'])){
+if (isset($_POST['non-return-31st-day_submit'])) {
     $picname = '';
-     if(!empty($_FILES['non-return-31st-day_email_image']['tmp_name']))
-            {
-                $pic_type = pathinfo($_FILES['non-return-31st-day_email_image']['name'], PATHINFO_EXTENSION);
-                $picname = "non-return-31st-day_email_image.".$pic_type;
-                move_uploaded_file($_FILES['non-return-31st-day_email_image']['tmp_name'], ROOT_WEBFOLDER.'/public_html/admin-new/images/cust-spec-notify-img/'.$picname);
-            }
-            
-    $data = array('notify_cat'=> 'non-return-31st-day', 'notify_trigger_time'=> $_POST['non-return-31st-day_time']." ".$_POST['non-return-31st-day_timeformat'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4],
-                  'sms_text' => $_POST['non-return-31st-day_sms_text'], 'notify_text' => $_POST['non-return-31st-day_notify_text'], 'email_img_url' => $picname);
-                      
-            $handle = curl_init(ROOT_URL."/api/index.php?r=customers/updatecustomerspecnotifiations");
-            curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-            $result = curl_exec($handle);
-            curl_close($handle);
-            $jsondata = json_decode($result);
-            $notify_api_response = $jsondata->response;
-            $notify_api_result_code = $jsondata->result; 
+    if (!empty($_FILES['non-return-31st-day_email_image']['tmp_name'])) {
+        $pic_type = pathinfo($_FILES['non-return-31st-day_email_image']['name'], PATHINFO_EXTENSION);
+        $picname = "non-return-31st-day_email_image." . $pic_type;
+        move_uploaded_file($_FILES['non-return-31st-day_email_image']['tmp_name'], ROOT_WEBFOLDER . '/public_html/admin-new/images/cust-spec-notify-img/' . $picname);
+    }
+
+    $data = array('notify_cat' => 'non-return-31st-day', 'notify_trigger_time' => $_POST['non-return-31st-day_time'] . " " . $_POST['non-return-31st-day_timeformat'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4],
+        'sms_text' => $_POST['non-return-31st-day_sms_text'], 'notify_text' => $_POST['non-return-31st-day_notify_text'], 'email_img_url' => $picname);
+
+    $handle = curl_init(ROOT_URL . "/api/index.php?r=customers/updatecustomerspecnotifiations");
+    curl_setopt($handle, CURLOPT_POST, true);
+    curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+    $result = curl_exec($handle);
+    curl_close($handle);
+    $jsondata = json_decode($result);
+    $notify_api_response = $jsondata->response;
+    $notify_api_result_code = $jsondata->result;
 }
 
-if(isset($_POST['non-return-61st-day_submit'])){
+if (isset($_POST['non-return-61st-day_submit'])) {
     $picname = '';
-     if(!empty($_FILES['non-return-61st-day_email_image']['tmp_name']))
-            {
-                $pic_type = pathinfo($_FILES['non-return-61st-day_email_image']['name'], PATHINFO_EXTENSION);
-                $picname = "non-return-61st-day_email_image.".$pic_type;
-                move_uploaded_file($_FILES['non-return-61st-day_email_image']['tmp_name'], ROOT_WEBFOLDER.'/public_html/admin-new/images/cust-spec-notify-img/'.$picname);
-            }
-            
-    $data = array('notify_cat'=> 'non-return-61st-day', 'notify_trigger_time'=> $_POST['non-return-61st-day_time']." ".$_POST['non-return-61st-day_timeformat'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4],
-                  'sms_text' => $_POST['non-return-61st-day_sms_text'], 'notify_text' => $_POST['non-return-61st-day_notify_text'], 'email_img_url' => $picname);
-                      
-            $handle = curl_init(ROOT_URL."/api/index.php?r=customers/updatecustomerspecnotifiations");
-            curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-            $result = curl_exec($handle);
-            curl_close($handle);
-            $jsondata = json_decode($result);
-            $notify_api_response = $jsondata->response;
-            $notify_api_result_code = $jsondata->result; 
+    if (!empty($_FILES['non-return-61st-day_email_image']['tmp_name'])) {
+        $pic_type = pathinfo($_FILES['non-return-61st-day_email_image']['name'], PATHINFO_EXTENSION);
+        $picname = "non-return-61st-day_email_image." . $pic_type;
+        move_uploaded_file($_FILES['non-return-61st-day_email_image']['tmp_name'], ROOT_WEBFOLDER . '/public_html/admin-new/images/cust-spec-notify-img/' . $picname);
+    }
+
+    $data = array('notify_cat' => 'non-return-61st-day', 'notify_trigger_time' => $_POST['non-return-61st-day_time'] . " " . $_POST['non-return-61st-day_timeformat'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4],
+        'sms_text' => $_POST['non-return-61st-day_sms_text'], 'notify_text' => $_POST['non-return-61st-day_notify_text'], 'email_img_url' => $picname);
+
+    $handle = curl_init(ROOT_URL . "/api/index.php?r=customers/updatecustomerspecnotifiations");
+    curl_setopt($handle, CURLOPT_POST, true);
+    curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+    $result = curl_exec($handle);
+    curl_close($handle);
+    $jsondata = json_decode($result);
+    $notify_api_response = $jsondata->response;
+    $notify_api_result_code = $jsondata->result;
 }
 
-if(isset($_POST['non-return-90th-day_submit'])){
+if (isset($_POST['non-return-90th-day_submit'])) {
     $picname = '';
-     if(!empty($_FILES['non-return-90th-day_email_image']['tmp_name']))
-            {
-                $pic_type = pathinfo($_FILES['non-return-90th-day_email_image']['name'], PATHINFO_EXTENSION);
-                $picname = "non-return-90th-day_email_image.".$pic_type;
-                move_uploaded_file($_FILES['non-return-90th-day_email_image']['tmp_name'], ROOT_WEBFOLDER.'/public_html/admin-new/images/cust-spec-notify-img/'.$picname);
-            }
-            
-    $data = array('notify_cat'=> 'non-return-90th-day', 'notify_trigger_time'=> $_POST['non-return-90th-day_time']." ".$_POST['non-return-90th-day_timeformat'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4],
-                  'sms_text' => $_POST['non-return-90th-day_sms_text'], 'notify_text' => $_POST['non-return-90th-day_notify_text'], 'email_img_url' => $picname);
-                      
-            $handle = curl_init(ROOT_URL."/api/index.php?r=customers/updatecustomerspecnotifiations");
-            curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-            $result = curl_exec($handle);
-            curl_close($handle);
-            $jsondata = json_decode($result);
-            $notify_api_response = $jsondata->response;
-            $notify_api_result_code = $jsondata->result; 
+    if (!empty($_FILES['non-return-90th-day_email_image']['tmp_name'])) {
+        $pic_type = pathinfo($_FILES['non-return-90th-day_email_image']['name'], PATHINFO_EXTENSION);
+        $picname = "non-return-90th-day_email_image." . $pic_type;
+        move_uploaded_file($_FILES['non-return-90th-day_email_image']['tmp_name'], ROOT_WEBFOLDER . '/public_html/admin-new/images/cust-spec-notify-img/' . $picname);
+    }
+
+    $data = array('notify_cat' => 'non-return-90th-day', 'notify_trigger_time' => $_POST['non-return-90th-day_time'] . " " . $_POST['non-return-90th-day_timeformat'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4],
+        'sms_text' => $_POST['non-return-90th-day_sms_text'], 'notify_text' => $_POST['non-return-90th-day_notify_text'], 'email_img_url' => $picname);
+
+    $handle = curl_init(ROOT_URL . "/api/index.php?r=customers/updatecustomerspecnotifiations");
+    curl_setopt($handle, CURLOPT_POST, true);
+    curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+    $result = curl_exec($handle);
+    curl_close($handle);
+    $jsondata = json_decode($result);
+    $notify_api_response = $jsondata->response;
+    $notify_api_result_code = $jsondata->result;
 }
 
- $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
-                      
-            $handle = curl_init(ROOT_URL."/api/index.php?r=customers/getcustomerspecnotifiations");
-            curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($handle,CURLOPT_RETURNTRANSFER,1);
-            $result = curl_exec($handle);
-            curl_close($handle);
-            $notifyobj_jsondata = json_decode($result, true);
-            
- ?>
+$data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+
+$handle = curl_init(ROOT_URL . "/api/index.php?r=customers/getcustomerspecnotifiations");
+curl_setopt($handle, CURLOPT_POST, true);
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+$result = curl_exec($handle);
+curl_close($handle);
+$notifyobj_jsondata = json_decode($result, true);
+?>
 
 <style>
     .customcsv{
@@ -234,8 +230,8 @@ if(isset($_POST['non-return-90th-day_submit'])){
         float: left;
         width:100%;
         margin-top: 8px;
-/*        margin-left: -10em;*/
-margin-bottom: 30px;
+        /*        margin-left: -10em;*/
+        margin-bottom: 30px;
     }
     .spacing{
         margin-top:1em;
@@ -246,16 +242,16 @@ margin-bottom: 30px;
     }
     .bold-txt{
         font-weight:600;
-        
+
     }
     .SelectTime{
         border-radius:3px;
     }
     .savebox{
-            margin-top: 2em;
-            padding-left: 4em;
+        margin-top: 2em;
+        padding-left: 4em;
     }
-       .my-text-align{
+    .my-text-align{
         margin-left: 5em;
     }
     .time-input-wrap{
@@ -277,28 +273,31 @@ margin-bottom: 30px;
         border-top: 8px solid #000;
         border-right: 5px solid transparent;
         border-left: 5px solid transparent;
-           }
-           
-           .portlet-body .select-box-cstm, .portlet-body .select-box-cstm select{
-            width: 80px;
-           }
-           
-           .portlet-body .upload-image-wrap{
-            max-width: 100%;
-           }
-           
-           .portlet-body .preview-img{
-            width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-    display: block;
-           }
-           
-           .portlet-body .upload-image-wrap .disply-img-name{
-            margin-bottom: 20px;
-           }
-           
- 
+    }
+
+    .portlet-body .select-box-cstm, .portlet-body .select-box-cstm select{
+        width: 80px;
+    }
+
+    .portlet-body .upload-image-wrap{
+        max-width: 100%;
+    }
+
+    .portlet-body .preview-img{
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .portlet-body .upload-image-wrap .disply-img-name{
+        margin-bottom: 20px;
+    }
+    .icon-bell:before,
+    .icon-grid:before{
+        opacity:0;
+    } 
+
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -323,19 +322,23 @@ margin-bottom: 30px;
                         </div>
 
                     </div>
-                     <?php if($notify_api_result_code == 'false'){
-                                                     echo "<p style='padding: 10px; background: red; color: #fff;'>".$notify_api_response."</p>";
-                                                    } ?>
-<?php if($notify_api_result_code == 'true'){ 
-echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_response."</p>";
-                                                    } ?>
+<?php
+if ($notify_api_result_code == 'false') {
+    echo "<p style='padding: 10px; background: red; color: #fff;'>" . $notify_api_response . "</p>";
+}
+?>
+                    <?php
+                    if ($notify_api_result_code == 'true') {
+                        echo "<p style='padding: 10px; background: green; color: #fff;'>" . $notify_api_response . "</p>";
+                    }
+                    ?>
                     <div class="spacing"> 
                         <div class="caption caption-md">
                             <i class="icon-globe theme-font hide"></i>
                             <span class="caption-subject bold" style="color: #000"> 31<sup>st</sup> Day Notifications</span> 
                         </div>
                         <div class="portlet-body">
-                           
+
                             <form id="nonreturning_form_notification_1" action="" method="post" enctype="multipart/form-data">
                                 <div class="row my-text-align">
                                     <div class="col-xs-12 col-md-4">
@@ -344,7 +347,7 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                                                 <div class="time-box">
                                                     <span class="text_select_time">Select Time </span>
                                                     <span class="time-input-wrap">
-                                                         <div style="margin-top: 6px;">
+                                                        <div style="margin-top: 6px;">
                                                             <div class="cstm-arrw">
                                                                 <input name="non-return-31st-day_time"  type="text" required="" value="<?php echo $notifyobj_jsondata['spec_notifications']['non-return-31st-day']['notify_trigger_time']; ?>" class="time ui-timepicker-input SelectTime" id="setTimeExample" placeholder="Select Time">            
                                                             </div>
@@ -371,34 +374,34 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                                         <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="non-return-31st-day_notify_text" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-31st-day']['notify_text']; ?></textarea> </span>
                                         </div>
                                         <div>
-                                                <div class="form-group upload-image-wrap">
-                                                    <label class="btn btn-secondary labelUpload">Upload Email Image</label> <input type="file" id="non-return-31st-day_email_image" name="non-return-31st-day_email_image" class="photo_validation">
-                                                    <span id="non-return-31st-day_email_image_filename" class="disply-img-name" title=""></span>
-                                                    <?php if($notifyobj_jsondata['spec_notifications']['non-return-31st-day']['email_image_url']): ?>
-                                                    <img src="<?php echo ROOT_URL.'/admin-new/images/cust-spec-notify-img/'.$notifyobj_jsondata['spec_notifications']['non-return-31st-day']['email_image_url']; ?>" id="non-return-31st-day_email_image_preview" class='preview-img' />
-                                                    
-                                                    <?php else: ?>
-                                                    <img src="" id="non-return-31st-day_email_image_preview" class='preview-img' />
-                                                    <?php endif; ?>
-                                                </div>
+                                            <div class="form-group upload-image-wrap">
+                                                <label class="btn btn-secondary labelUpload">Upload Email Image</label> <input type="file" id="non-return-31st-day_email_image" name="non-return-31st-day_email_image" class="photo_validation">
+                                                <span id="non-return-31st-day_email_image_filename" class="disply-img-name" title=""></span>
+                                                <?php if ($notifyobj_jsondata['spec_notifications']['non-return-31st-day']['email_image_url']): ?>
+                                                    <img src="<?php echo ROOT_URL . '/admin-new/images/cust-spec-notify-img/' . $notifyobj_jsondata['spec_notifications']['non-return-31st-day']['email_image_url']; ?>" id="non-return-31st-day_email_image_preview" class='preview-img' />
 
+                                                <?php else: ?>
+                                                    <img src="" id="non-return-31st-day_email_image_preview" class='preview-img' />
+                                                <?php endif; ?>
                                             </div>
+
+                                        </div>
                                     </div>
                                     <div class="col-xs-12 col-md-3 savebox"> <button type="submit" name="non-return-31st-day_submit" class="btn btn-primary bold-txt"> SAVE</button> </div>
                                 </div>
                             </form>
-                         
+
 
                         </div>
                     </div>
                     <hr>
-                       <div class="spacing"> 
+                    <div class="spacing"> 
                         <div class="caption caption-md">
                             <i class="icon-globe theme-font hide"></i>
                             <span class="caption-subject bold" style="color: #000"> 61<sup>st</sup> Day Notifications</span> 
                         </div>
                         <div class="portlet-body">
-                            
+
                             <form id="nonreturning_form_notification_2" action="" method="post" enctype="multipart/form-data">
                                 <div class="row my-text-align">
                                     <div class="col-xs-12 col-md-4">
@@ -407,7 +410,7 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                                                 <div class="time-box">
                                                     <span class="text_select_time">Select Time </span>
                                                     <span class="time-input-wrap">
-                                                         <div style="margin-top: 6px;">
+                                                        <div style="margin-top: 6px;">
                                                             <div class="cstm-arrw">
                                                                 <input name="non-return-61st-day_time"  type="text" required="" value="<?php echo $notifyobj_jsondata['spec_notifications']['non-return-61st-day']['notify_trigger_time']; ?>" class="time ui-timepicker-input SelectTime" id="setTimeExample" placeholder="Select Time">            
                                                             </div>
@@ -434,23 +437,23 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                                         <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="non-return-61st-day_notify_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-61st-day']['notify_text']; ?></textarea> </span>
                                         </div>
                                         <div>
-                                                <div class="form-group upload-image-wrap">
-                                                    <label class="btn btn-secondary labelUpload">Upload Email Image</label> <input type="file" id="non-return-61st-day_email_image" name="non-return-61st-day_email_image" class="photo_validation">
-                                                    <span id="non-return-61st-day_email_image_filename" class="disply-img-name" title=""></span>
-                                                    <?php if($notifyobj_jsondata['spec_notifications']['non-return-61st-day']['email_image_url']): ?>
-                                                    <img src="<?php echo ROOT_URL.'/admin-new/images/cust-spec-notify-img/'.$notifyobj_jsondata['spec_notifications']['non-return-61st-day']['email_image_url']; ?>" id="non-return-61st-day_email_image_preview" class='preview-img' />
-                                                    
-                                                    <?php else: ?>
-                                                    <img src="" id="non-return-61st-day_email_image_preview" class='preview-img' />
-                                                    <?php endif; ?>
-                                                </div>
+                                            <div class="form-group upload-image-wrap">
+                                                <label class="btn btn-secondary labelUpload">Upload Email Image</label> <input type="file" id="non-return-61st-day_email_image" name="non-return-61st-day_email_image" class="photo_validation">
+                                                <span id="non-return-61st-day_email_image_filename" class="disply-img-name" title=""></span>
+                                                <?php if ($notifyobj_jsondata['spec_notifications']['non-return-61st-day']['email_image_url']): ?>
+                                                    <img src="<?php echo ROOT_URL . '/admin-new/images/cust-spec-notify-img/' . $notifyobj_jsondata['spec_notifications']['non-return-61st-day']['email_image_url']; ?>" id="non-return-61st-day_email_image_preview" class='preview-img' />
 
+                                                <?php else: ?>
+                                                    <img src="" id="non-return-61st-day_email_image_preview" class='preview-img' />
+                                                <?php endif; ?>
                                             </div>
+
+                                        </div>
                                     </div>
                                     <div class="col-xs-12 col-md-3 savebox"> <button type="submit" name="non-return-61st-day_submit" class="btn btn-primary bold-txt"> SAVE</button> </div>
                                 </div>
                             </form>
-                        
+
 
                         </div>
                     </div>         
@@ -461,8 +464,8 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                             <span class="caption-subject bold" style="color: #000"> 90<sup>th</sup> Day Notifications</span> 
                         </div>
                         <div class="portlet-body">
-                          
-                           <form id="nonreturning_form_notification_3" action="" method="post" enctype="multipart/form-data">
+
+                            <form id="nonreturning_form_notification_3" action="" method="post" enctype="multipart/form-data">
                                 <div class="row my-text-align">
                                     <div class="col-xs-12 col-md-4">
                                         <div class="row">
@@ -470,7 +473,7 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                                                 <div class="time-box">
                                                     <span class="text_select_time">Select Time </span>
                                                     <span class="time-input-wrap">
-                                                         <div style="margin-top: 6px;">
+                                                        <div style="margin-top: 6px;">
                                                             <div class="cstm-arrw">
                                                                 <input name="non-return-90th-day_time"  type="text" required="" value="<?php echo $notifyobj_jsondata['spec_notifications']['non-return-90th-day']['notify_trigger_time']; ?>" class="time ui-timepicker-input SelectTime" id="setTimeExample" placeholder="Select Time">            
                                                             </div>
@@ -497,28 +500,28 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
                                         <div> <span class="not_msg">Notification Message </span> <span class="text_msg emoji_div"> <textarea name="non-return-90th-day_notify_text" required="" class="borderm form-control emoji" rows="4" cols="50" placeholder="Write Message" data-emojiable="true"><?php echo $notifyobj_jsondata['spec_notifications']['non-return-90th-day']['notify_text']; ?></textarea> </span>
                                         </div>
                                         <div>
-                                                <div class="form-group upload-image-wrap">
-                                                    <label class="btn btn-secondary labelUpload">Upload Email Image</label> <input type="file" id="non-return-90th-day_email_image" name="non-return-90th-day_email_image" class="photo_validation">
-                                                    <span id="non-return-90th-day_email_image_filename" class="disply-img-name" title=""></span>
-                                                    <?php if($notifyobj_jsondata['spec_notifications']['non-return-90th-day']['email_image_url']): ?>
-                                                    <img src="<?php echo ROOT_URL.'/admin-new/images/cust-spec-notify-img/'.$notifyobj_jsondata['spec_notifications']['non-return-90th-day']['email_image_url']; ?>" id="non-return-90th-day_email_image_preview" class='preview-img' />
-                                                    
-                                                    <?php else: ?>
-                                                    <img src="" id="non-return-90th-day_email_image_preview" class='preview-img' />
-                                                    <?php endif; ?>
-                                                </div>
+                                            <div class="form-group upload-image-wrap">
+                                                <label class="btn btn-secondary labelUpload">Upload Email Image</label> <input type="file" id="non-return-90th-day_email_image" name="non-return-90th-day_email_image" class="photo_validation">
+                                                <span id="non-return-90th-day_email_image_filename" class="disply-img-name" title=""></span>
+                                                <?php if ($notifyobj_jsondata['spec_notifications']['non-return-90th-day']['email_image_url']): ?>
+                                                    <img src="<?php echo ROOT_URL . '/admin-new/images/cust-spec-notify-img/' . $notifyobj_jsondata['spec_notifications']['non-return-90th-day']['email_image_url']; ?>" id="non-return-90th-day_email_image_preview" class='preview-img' />
 
+                                                <?php else: ?>
+                                                    <img src="" id="non-return-90th-day_email_image_preview" class='preview-img' />
+                                                <?php endif; ?>
                                             </div>
+
+                                        </div>
                                     </div>
                                     <div class="col-xs-12 col-md-3 savebox"> <button type="submit" name="non-return-90th-day_submit" class="btn btn-primary bold-txt"> SAVE</button> </div>
                                 </div>
                             </form>
-                          
+
 
                         </div>
                     </div>
 
-                   <!-- body end-->
+                    <!-- body end-->
                 </div>
                 <!-- END EXAMPLE TABLE PORTLET-->
                 <div class="clear"></div>
@@ -532,78 +535,78 @@ echo "<p style='padding: 10px; background: green; color: #fff;'>".$notify_api_re
     <!-- END CONTENT BODY -->
 </div>
 <!-- END CONTENT -->
-<script> 
-    $(document).ready(function(){
-    $('.SelectTime').timepicker({
-        step: '60',
-        timeFormat: 'h:i',
-        'minTime': '01:00',
-        'maxTime': '12:00',
-    });
-    
-     $(".photo_validation").change(function () {
+<script>
+    $(document).ready(function () {
+        $('.SelectTime').timepicker({
+            step: '60',
+            timeFormat: 'h:i',
+            'minTime': '01:00',
+            'maxTime': '12:00',
+        });
 
-        var val = $(this).val();
-        var id = $(this).attr('id');
-        $('#' + id+"_preview").show();
-readURL(this);
-        switch (val.substring(val.lastIndexOf('.') + 1).toLowerCase()) {
-            case 'gif':
-            case 'jpg':
-            case 'jpeg':
-            case 'png':
-            case 'PNG':
-            case 'JPEG 2000':
-            case 'BMP':
+        $(".photo_validation").change(function () {
 
-                break;
-            default:
-                $(this).val('');
-                // error message here
-                alert("Image upload format valid format");
-                break;
-                $('#' + id+"_preview").hide();
+            var val = $(this).val();
+            var id = $(this).attr('id');
+            $('#' + id + "_preview").show();
+            readURL(this);
+            switch (val.substring(val.lastIndexOf('.') + 1).toLowerCase()) {
+                case 'gif':
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                case 'PNG':
+                case 'JPEG 2000':
+                case 'BMP':
+
+                    break;
+                default:
+                    $(this).val('');
+                    // error message here
+                    alert("Image upload format valid format");
+                    break;
+                    $('#' + id + "_preview").hide();
+            }
+        });
+
+        function readURL(input) {
+            var id = $(input).attr('id');
+
+            if (input.files && input.files[0]) {
+                var fileName = input.files[0].name;
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+
+                    $('#' + id + "_preview").attr('src', e.target.result);
+
+                    $('#' + id + "_filename").html(fileName);
+
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
         }
-    });
 
-function readURL(input) {
-    var id = $(input).attr('id');
-    
-    if (input.files && input.files[0]) {
-         var fileName = input.files[0].name;
-        var reader = new FileReader();
+        /*$('.changeDefaultName').on('change', function (e) {
+         var id = $(this).attr('id');
+         $('#hideImage-' + id).show();
+         var fileName = e.target.files[0].name;
+         $('.img-name-box-' + id).html(fileName);
+         $('.img-name-box-' + id).attr('title', fileName);
+         });
+         
+         $('.removeImage').on('click', function (e) {
+         var removeImageVal = $(this).attr('data-imageVal');
+         var removeImageValId = $(this).attr('data-imageId');
+         $('.img-name-box-' + removeImageValId).attr('title', '');
+         $('.img-name-box-' + removeImageValId).html('');
+         $('#' + removeImageValId).val('');
+         $('#hideImage-' + removeImageValId).hide();
+         $('#removeImageVal-' + removeImageValId).val(removeImageVal);
+         });*/
 
-        reader.onload = function (e) {
-            
-            $('#' + id+"_preview").attr('src', e.target.result);
-     
-        $('#' + id+"_filename").html(fileName);
-        
-        }
 
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-    /*$('.changeDefaultName').on('change', function (e) {
-        var id = $(this).attr('id');
-        $('#hideImage-' + id).show();
-        var fileName = e.target.files[0].name;
-        $('.img-name-box-' + id).html(fileName);
-        $('.img-name-box-' + id).attr('title', fileName);
-    });
-    
-    $('.removeImage').on('click', function (e) {
-        var removeImageVal = $(this).attr('data-imageVal');
-        var removeImageValId = $(this).attr('data-imageId');
-        $('.img-name-box-' + removeImageValId).attr('title', '');
-        $('.img-name-box-' + removeImageValId).html('');
-        $('#' + removeImageValId).val('');
-        $('#hideImage-' + removeImageValId).hide();
-        $('#removeImageVal-' + removeImageValId).val(removeImageVal);
-    });*/
-
-     
     });
 </script>
 

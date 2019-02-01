@@ -70,7 +70,7 @@ if (!empty($_POST['hidden'])) {
 }
 ?>
 <style type="text/css">
-.emoji-wysiwyg-editor {
+    .emoji-wysiwyg-editor {
         min-height: 130px !important;
     }
     .emoji-picker-icon {
@@ -80,6 +80,10 @@ if (!empty($_POST['hidden'])) {
     .emoji-menu{
         top: 40px;
         right: 16px;
+    }
+    .icon-bell:before,
+    .icon-grid:before{
+        opacity:0;
     }
 </style>
 
