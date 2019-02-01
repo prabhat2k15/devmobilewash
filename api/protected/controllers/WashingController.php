@@ -14140,7 +14140,8 @@ public function actiongetallschedulewashes() {
                     }
                     else {
 
-                        if (($min_diff <= 0) && ($schedwash->schedule_time) && (!$schedwash->network_error_push_sent)) {
+                        //if (($min_diff <= 0) && ($schedwash->schedule_time) && (!$schedwash->network_error_push_sent)) {
+			if (($min_diff <= 0) && ($schedwash->schedule_time)) {
 
                             Washingrequests::model()->updateByPk($schedwash->id, array("status" => 5, "no_washer_cancel" => 1, "network_error_push_sent" => 1));
                             
