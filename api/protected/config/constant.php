@@ -54,9 +54,9 @@ define("VERSION",'2010-04-01');
 
 define("AWS_ACCESS_KEY",'AKIAJ6HPIJ2U66GFEPSA'); 
 define("AWS_SECRET_KEY","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");
-define("AWS_CUST_IOS_PLATFORM_ARN","arn:aws:sns:us-west-2:461900685840:app/APNS/custiosdevices");
+define("AWS_CUST_IOS_PLATFORM_ARN","arn:aws:sns:us-west-2:461900685840:app/GCM/custiosdevices");
 define("AWS_CUST_ANDROID_PLATFORM_ARN","arn:aws:sns:us-west-2:461900685840:app/GCM/custandroiddevices");
-define("AWS_WASHER_IOS_PLATFORM_ARN","arn:aws:sns:us-west-2:461900685840:app/APNS/washeriosdevices");
+define("AWS_WASHER_IOS_PLATFORM_ARN","arn:aws:sns:us-west-2:461900685840:app/GCM/washeriosdevices");
 define("AWS_WASHER_ANDROID_PLATFORM_ARN","arn:aws:sns:us-west-2:461900685840:app/GCM/washerandroiddevices");
 
 // wash request staus
