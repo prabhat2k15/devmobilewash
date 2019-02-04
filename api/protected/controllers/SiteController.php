@@ -9123,6 +9123,14 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type_security, $user_id_security, AES256CBC_API_PASS);
 
+	if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
       
 
         $user_type = Yii::app()->request->getParam('user_type');
@@ -9285,20 +9293,11 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             $pending_wash_id = $this->aes256cbc_crypt($pending_wash_id, 'e', AES256CBC_API_PASS);
         }
 	
-	  if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request',
-		'forced_logout' => $response,
-            );
-            echo json_encode($json);
-            die();
-        }
+
 
         $json = array(
             'result' => $result,
             'response' => $response,
-	    'forced_logout' => $response,
             'user_id' => $user_id,
             'user_type' => $user_type,
             'user_photo' => $user_photo,
