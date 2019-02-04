@@ -4533,7 +4533,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'reschedule_date' => $resched_date,
                         'checklist' => $wrequest['checklist'],
                         'reschedule_time' => $resched_time,
-                        'created_date' => date('Y-m-d', strtotime($wrequest['created_date'])) . " " . date('h:i A', strtotime($wrequest['created_date'])),
+                        'created_date' => date('Y-m-d h:i A', strtotime($wrequest['created_date'])),
                         'order_for' => date('Y-m-d h:i A', strtotime($wrequest['order_for'])),
                         'transaction_id' => $wrequest['transaction_id'],
                         'failed_transaction_id' => $wrequest['failed_transaction_id'],
@@ -4555,7 +4555,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'washer_30_min_noarrive' => $washer_30_min_noarrive,
                         'company_total' => $wrequest['company_total'],
                         'agent_total' => $wrequest['agent_total'],
-                        'complete_order' => $wrequest['complete_order'],
+                        'complete_order' => date('Y-m-d h:i A', strtotime($wrequest['complete_order'])),
                         'no_washer_cancel' => $wrequest['no_washer_cancel'],
                     );
                 }
@@ -4594,7 +4594,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'reschedule_date' => $resched_date,
                         'checklist' => $wrequest['checklist'],
                         'reschedule_time' => $resched_time,
-                        'created_date' => date('Y-m-d', strtotime($wrequest['created_date'])) . " " . date('h:i A', strtotime($wrequest['created_date'])),
+                        'created_date' => date('Y-m-d h:i A', strtotime($wrequest['created_date'])),
                         'order_for' => date('Y-m-d h:i A', strtotime($wrequest['order_for'])),
                         'transaction_id' => $wrequest['transaction_id'],
                         'failed_transaction_id' => $wrequest['failed_transaction_id'],
@@ -4616,7 +4616,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'washer_30_min_noarrive' => $washer_30_min_noarrive,
                         'company_total' => $wrequest['company_total'],
                         'agent_total' => $wrequest['agent_total'],
-                        'complete_order' => $wrequest['complete_order'],
+                        'complete_order' => date('Y-m-d h:i A', strtotime($wrequest['complete_order'])),
                         'no_washer_cancel' => $wrequest['no_washer_cancel'],
                     );
                 }
@@ -4648,7 +4648,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'reschedule_date' => $wrequest['reschedule_date'],
                         'checklist' => $wrequest['checklist'],
                         'reschedule_time' => $wrequest['reschedule_time'],
-                        'created_date' => $wrequest['created_date'],
+                        'created_date' => date('Y-m-d h:i A', strtotime($wrequest['created_date'])),
                         'order_for' => date('Y-m-d h:i A', strtotime($wrequest['order_for'])),
                         'transaction_id' => $wrequest['transaction_id'],
                         'failed_transaction_id' => $wrequest['failed_transaction_id'],
@@ -4670,7 +4670,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'washer_30_min_noarrive' => $washer_30_min_noarrive,
                         'company_total' => $wrequest['company_total'],
                         'agent_total' => $wrequest['agent_total'],
-                        'complete_order' => $wrequest['complete_order'],
+                        'complete_order' => date('Y-m-d h:i A', strtotime($wrequest['complete_order'])),
                         'no_washer_cancel' => $wrequest['no_washer_cancel'],
                     );
                 }
@@ -4702,7 +4702,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     'reschedule_date' => $wrequest['reschedule_date'],
                     'checklist' => $wrequest['checklist'], 'street_name' => $wrequest['street_name'],
                     'reschedule_time' => $wrequest['reschedule_time'],
-                    'created_date' => $wrequest['created_date'],
+                    'created_date' => date('Y-m-d h:i A', strtotime($wrequest['created_date'])),
                     'transaction_id' => $wrequest['transaction_id'],
                     'failed_transaction_id' => $wrequest['failed_transaction_id'],
                     'transaction_status' => $transaction_status,
@@ -4722,7 +4722,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     'washer_30_min_noarrive' => $washer_30_min_noarrive,
                     'company_total' => $wrequest['company_total'],
                     'agent_total' => $wrequest['agent_total'],
-                    'complete_order' => $wrequest['complete_order'],
+                    'complete_order' => date('Y-m-d h:i A', strtotime($wrequest['complete_order'])),
                     'no_washer_cancel' => $wrequest['no_washer_cancel'],
                 );
             }
