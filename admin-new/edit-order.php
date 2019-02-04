@@ -796,7 +796,6 @@ if ($getorder->transaction_id) {
                                         <div style="font-size: 18px; background: #006fcf; color: #fff; padding: 5px 10px;">
 
                                             <span style="font-weight: 500;font-size: 22px; display: block; float: right;"><?php
-                                                
                                                 if ($getorder->status == 5 || $getorder->status == 6 || $getorder->status == 7) {
                                                     echo "$" . number_format($getorder->cancel_fee, 2);
                                                 } else {
@@ -809,7 +808,6 @@ if ($getorder->transaction_id) {
                                                         echo "N/A";
                                                     }
                                                 }
-                                               
                                                 ?></span>
 
                                             <span style="display: block; float: right; margin-top: 4px; margin-right: 5px;">TOTAL PRICE:</span>
@@ -1071,7 +1069,12 @@ if ($getorder->transaction_id) {
 
                                                         <div class="col-md-12">
                                                             <div class="form-group">
-                                                                <p style="margin-top: 20px;"><input type="button" class="reschedule_update" value="Save" /></p>
+                                                                <?php if ($getorder->status == 4) { ?>
+                                                                    <p style="margin-top: 20px;"><input type="button" class="" value="Save" /></p>
+                                                                <?php } else { ?>
+                                                                    <p style="margin-top: 20px;"><input type="button" class="reschedule_update" value="Save" /></p> 
+                                                                <?php } ?>
+
                                                             </div>
                                                         </div>
                                                     <?php endif; ?>
@@ -1223,7 +1226,7 @@ if ($getorder->transaction_id) {
                                                                         </div>
                                                                         <div style="clear: both;"></div>
 
-                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
+                                                                                                                                                        <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
                                                                         if ($veh->eco_friendly == 1) {
                                                                             echo "Yes";
                                                                         } else {
@@ -1409,7 +1412,7 @@ if ($getorder->transaction_id) {
                                                                         </div>
                                                                         <div style="clear: both;"></div>
 
-                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
+                                                                                                                                                        <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
                                                                         if ($veh->eco_friendly == 1) {
                                                                             echo "Yes";
                                                                         } else {
@@ -1830,7 +1833,7 @@ if ($getorder->transaction_id) {
                                                                         <?php endif; ?>
                                                                     <?php endif; ?>
                                                                     <?php if ((($log->action == 'dropjob_ratingunchange')) && ($getorder->is_scheduled)): ?>
-            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                                         ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                                         ?>. Reason: <?php //echo $log->addi_detail;                                         ?></p>-->
+            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                                              ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                                              ?>. Reason: <?php //echo $log->addi_detail;                                              ?></p>-->
                                                                         <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'dropjob' && ($getorder->is_scheduled) && (!$log->admin_username)): ?>

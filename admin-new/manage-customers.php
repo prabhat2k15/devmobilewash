@@ -22,10 +22,10 @@ curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle);
-//print_r($result); die;
+//print_r($result);
+//die;
 curl_close($handle);
 $allcustomers = json_decode($result);
-
 //$response = $jsondata->response;
 //$result_code = $jsondata->result;
 /*  echo "<pre>";
@@ -33,6 +33,23 @@ $allcustomers = json_decode($result);
   print_r($jsondata);
   echo "<pre>";
   exit; */
+
+$url = ROOT_URL . '/api/index.php?r=customers/AverageCustomer';
+
+
+//echo $url;
+$handle = curl_init($url);
+$data = array('limit' => $_GET['limit'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+curl_setopt($handle, CURLOPT_POST, true);
+curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
+curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+$result = curl_exec($handle);
+
+//die;
+curl_close($handle);
+$allcustomersFrequency = json_decode($result);
+//number_format($allcustomersFrequency->spent_frequency, 2);
+//number_format($allcustomersFrequency->order_frequency, 2);
 ?>
 <style>
     .label-busy {
@@ -125,6 +142,19 @@ $allcustomers = json_decode($result);
         width: 100%;
         overflow-x: scroll;
     }
+    .average-total-list-detail {
+        padding:0px;
+        margin-top: 10px;
+        list-style:none;
+    }
+    .average-total-list-detail li{
+        display: inline-block;
+        margin-right:20px;
+        font-size:14px;
+    }
+    .average-total-list-detail li span{
+        font-weight:600;
+    }
 </style>
 
 
@@ -158,6 +188,14 @@ $allcustomers = json_decode($result);
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
                             <span class="caption-subject bold uppercase"> Managed Customers</span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                            <ul class="average-total-list-detail">
+                                <li>
+                                    <label>Average Total Spent (min. 1 order):</label><span> $<?= number_format($allcustomersFrequency->spent_frequency, 2); ?></span>
+                                </li>
+                                <li>
+                                    <label>Average Total Orders (min. 1 order):</label><span>$<?= number_format($allcustomersFrequency->order_frequency, 2); ?></span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="actions">

@@ -7390,6 +7390,20 @@ class CustomersController extends Controller {
         die();
     }
 
+    public function actionAverageCustomer() {
+        $allRequest = Yii::app()->db->createCommand("SELECT SUM(net_price) as spent,count(id) as totalOrder FROM `washing_requests` WHERE  status=4 ")->queryRow();
+        $allRequestCustomers = Yii::app()->db->createCommand("SELECT count(id) as totalCustomers FROM `washing_requests` WHERE  status=4 GROUP BY customer_id ")->queryRow();
+        if ($allRequest) {
+            $spent_frequency = ($allRequest['spent'] / $allRequest['totalOrder']);
+        }
+        if ($allRequestCustomers) {
+            $order_frequency = ($allRequest['totalOrder'] / $allRequestCustomers['totalCustomers']);
+        }
+
+        echo json_encode(array('spent_frequency' => $spent_frequency, 'order_frequency' => $order_frequency));
+        die;
+    }
+
     public function actionsearchcustomers() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {

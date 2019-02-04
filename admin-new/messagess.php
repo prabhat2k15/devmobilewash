@@ -134,9 +134,6 @@ $result_code = $jsondata->result;
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">
         <!-- BEGIN PAGE HEADER-->
-
-
-
         <!-- END PAGE HEADER-->
         <!-- BEGIN DASHBOARD STATS 1-->
         <?php if (!empty($_GET['dell'])) { ?>
@@ -158,6 +155,9 @@ $result_code = $jsondata->result;
                         <div class="caption font-dark" style="display: <?php echo $edit_company; ?>">
                             <span class="caption-subject bold uppercase"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="importdata.php">Import Data</a></span>
                         </div>
+                        <div class="caption font-dark" style="display: <?php echo $edit_company; ?>">
+                            <span class="caption-subject bold uppercase"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="test_message.php" target="_blank">Test Message</a></span>
+                        </div>
                         <div class="actions">
                             <i class="icon-calendar"></i>&nbsp;
                             <span id="servertime" style="font-weight: 300 !important;"></span>&nbsp;
@@ -173,6 +173,7 @@ $result_code = $jsondata->result;
                                     <th style="width:300px !important;"> Message </th>
                                     <th class="hidden"> Media </th>
                                     <th> Send SMS </th>
+                                    <th> Test SMS </th>
                                     <th> &nbsp; </th>
                                     <th style="display: <?php echo $delete_company; ?>"> &nbsp; </th>
                                 </tr>
@@ -201,9 +202,11 @@ $result_code = $jsondata->result;
                                             <td  class="hidden"><?php echo $responsemesage->media; ?></td>
                                             <?php if ($responsemesage->report == 'sent') { ?>
                                                 <td><span id="" style="color: #00AFF0; cursor: pointer;">Already sent</span></td>
+                                                <td><span id="" style="color: #00AFF0; cursor: pointer;">Already sent</span></td>
                                                 <td>&nbsp;</td>
                                             <?php } else { ?>
                                                 <td><span id="form_<?php echo $i; ?>" onclick="myFunction(<?php echo $i; ?>)" style="color: #00AFF0; cursor: pointer;">Send Now</span></td>
+                                                <td><span id="form_<?php echo $i; ?>" onclick="myFunction(<?php echo $i; ?>)" style="color: #00AFF0; cursor: pointer;">Send Test</span></td>
                                                 <td><a href="edit-message.php?id=<?php echo $responsemesage->id; ?>">Edit</a></td>
                                             <?php } ?>
 
@@ -230,7 +233,7 @@ $result_code = $jsondata->result;
                                         <tr><td>
                                                 <input type="hidden" name="phone" value="<?php echo $responsemesage->phone; ?>"></td></tr>
                                         <tr><td>
-                                                <input type="hidden" name="message" value="<?php echo str_replace('"', 'â€', $responsemesage->message); ?>"></td></tr>
+                                                <input type="hidden" name="message" value="<?php echo str_replace('"', 'â€?', $responsemesage->message); ?>"></td></tr>
                                         <tr><td>
                                                 <input type="hidden" name="media" value="<?php echo $responsemesage->media; ?>"></td></tr>
                                         <tr><td>
