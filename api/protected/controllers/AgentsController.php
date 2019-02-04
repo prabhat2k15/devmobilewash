@@ -6838,12 +6838,23 @@ class AgentsController extends Controller {
                             'EndpointArn' => $device_exists[0]['endpoint_arn'],
                         ]);
 
-                        $aws_subscribe_result = $aws_client->subscribe([
+                        if($device_exists[0]['device_type'] == 'IOS'){
+                          $aws_subscribe_result = $aws_client->subscribe([
                             'Endpoint' => $device_exists[0]['endpoint_arn'],
                             'Protocol' => 'application',
                             'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
-                        ]);
+                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev',
+                        ]);  
+                        }
+                        else{
+                            $aws_subscribe_result = $aws_client->subscribe([
+                            'Endpoint' => $device_exists[0]['endpoint_arn'],
+                            'Protocol' => 'application',
+                            'ReturnSubscriptionArn' => true,
+                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev',
+                        ]);   
+                        }
+                        
                         $endpoint_arn = $device_exists[0]['endpoint_arn'];
                     } catch (exception $e) {
                         
@@ -6869,12 +6880,22 @@ class AgentsController extends Controller {
                             'Token' => $device_token,
                         ]);
 
+ if($device_exists[0]['device_type'] == 'IOS'){
                         $aws_subscribe_result = $aws_client->subscribe([
                             'Endpoint' => $aws_result['EndpointArn'],
                             'Protocol' => 'application',
                             'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
+                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev',
                         ]);
+ }
+ else{
+  $aws_subscribe_result = $aws_client->subscribe([
+                            'Endpoint' => $aws_result['EndpointArn'],
+                            'Protocol' => 'application',
+                            'ReturnSubscriptionArn' => true,
+                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev',
+                        ]);   
+ }
                         $endpoint_arn = $aws_result['EndpointArn'];
                     } catch (exception $e) {
                         
@@ -6925,12 +6946,23 @@ class AgentsController extends Controller {
                         'Token' => $device_token,
                     ]);
 
-                    $aws_subscribe_result = $aws_client->subscribe([
+if ($device_type == 'IOS'){
+                      $aws_subscribe_result = $aws_client->subscribe([
                         'Endpoint' => $aws_result['EndpointArn'],
                         'Protocol' => 'application',
                         'ReturnSubscriptionArn' => true,
-                        'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush',
-                    ]);
+                        'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev',
+                    ]);  
+}
+else{
+                      $aws_subscribe_result = $aws_client->subscribe([
+                        'Endpoint' => $aws_result['EndpointArn'],
+                        'Protocol' => 'application',
+                        'ReturnSubscriptionArn' => true,
+                        'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev',
+                    ]);  
+}
+
                     $endpoint_arn = $aws_result['EndpointArn'];
                 } catch (exception $e) {
                     
@@ -6950,7 +6982,7 @@ class AgentsController extends Controller {
         );
         echo json_encode($json);
     }
-
+    
     public function actionsubmerchant_find() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {

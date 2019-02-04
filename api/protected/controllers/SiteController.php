@@ -7572,7 +7572,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $receiver_type = Yii::app()->request->getParam('receiver_type');
         $receiver_ids = Yii::app()->request->getParam('receiver_ids');
         $receiver_str = '';
-        $topic_arn = '';
+        $topic_arn_ios = '';
+        $topic_arn_android = '';
         if ($receiver_type == 'all-clients')
             $receiver_str = 'clients';
         if ($receiver_type == 'all-agents')
@@ -7588,19 +7589,30 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'version' => 'latest'
             ));
 
-            if ($receiver_str == 'clients')
-                $topic_arn = 'arn:aws:sns:us-west-2:461900685840:custschedpush';
-            else
-                $topic_arn = 'arn:aws:sns:us-west-2:461900685840:washerschedpush';
+            if ($receiver_str == 'clients'){
+              $topic_arn_ios = 'arn:aws:sns:us-west-2:461900685840:custschedpush_ios_dev';
+              $topic_arn_android = 'arn:aws:sns:us-west-2:461900685840:custschedpush_android_dev';  
+            }
+                
+            else{
+            $topic_arn_ios = 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev';
+              $topic_arn_android = 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev';   
+            }
+                
 
-            $aws_result = $aws_client->publish([
-                //'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"data\": { \"message\": \"" . $msg . "\" } }")),
-		'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"notification\": { \"body\": \"" . $msg . "\" }, \"priority\": \"high\"}")),
-                'TopicArn' => $topic_arn,
+            $aws_result_ios = $aws_client->publish([
+                'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"notification\": { \"body\": \"" . $msg . "\" }, \"priority\": \"high\"}")),
+                'TopicArn' => $topic_arn_ios,
+                'MessageStructure' => 'json',
+            ]);
+            
+            $aws_result_android = $aws_client->publish([
+                'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"data\": { \"message\": \"" . $msg . "\" } }")),
+                'TopicArn' => $topic_arn_android,
                 'MessageStructure' => 'json',
             ]);
 
-            if ($aws_result['MessageId']) {
+            if (($aws_result_ios['MessageId']) && ($aws_result_android['MessageId'])) {
                 $json = array(
                     'result' => 'true',
                     'response' => 'schedule notification added'
@@ -9111,14 +9123,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type_security, $user_id_security, AES256CBC_API_PASS);
 
-        if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }
+      
 
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
@@ -9279,10 +9284,21 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             $user_id = $this->aes256cbc_crypt($user_id, 'e', AES256CBC_API_PASS);
             $pending_wash_id = $this->aes256cbc_crypt($pending_wash_id, 'e', AES256CBC_API_PASS);
         }
+	
+	  if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request',
+		'forced_logout' => $response,
+            );
+            echo json_encode($json);
+            die();
+        }
 
         $json = array(
             'result' => $result,
             'response' => $response,
+	    'forced_logout' => $response,
             'user_id' => $user_id,
             'user_type' => $user_type,
             'user_photo' => $user_photo,
