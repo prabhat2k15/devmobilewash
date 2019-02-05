@@ -48,6 +48,7 @@ $result = curl_exec($handle);
 //die;
 curl_close($handle);
 $allcustomersFrequency = json_decode($result);
+
 //number_format($allcustomersFrequency->spent_frequency, 2);
 //number_format($allcustomersFrequency->order_frequency, 2);
 ?>
@@ -192,8 +193,13 @@ $allcustomersFrequency = json_decode($result);
                                 <li>
                                     <label>Average Total Spent (min. 1 order):</label><span> $<?= number_format($allcustomersFrequency->spent_frequency, 2); ?></span>
                                 </li>
+                                <li>|</li>
                                 <li>
-                                    <label>Average Total Orders (min. 1 order):</label><span>$<?= number_format($allcustomersFrequency->order_frequency, 2); ?></span>
+                                    <label>Average Total Orders (min. 1 order):</label><span><?= number_format($allcustomersFrequency->order_frequency, 2); ?></span>
+                                </li>
+                                <li>|</li>
+                                <li>
+                                    <label>Average Order Frequency (min. 1 order):</label><span><?= number_format($allcustomersFrequency->order_frequency_days, 2); ?> days</span>
                                 </li>
                             </ul>
                         </div>
@@ -251,9 +257,9 @@ $allcustomersFrequency = json_decode($result);
                                 <th> City </th>
                                 <th> How Hear MW </th>
                                 <th> Total Spent </th>
-                                <th>Average Order Frequency (min. 1 order)</th>
-                                <th>Average Total Spent (min. 1 order)</th>
-                                <th>Average Total Orders (min. 1 order)</th>
+                                <th>Average Order Frequency</th>
+<!--                                <th>Average Total Spent (min. 1 order)</th>
+                                <th>Average Total Orders (min. 1 order)</th>-->
                                 <th> Created Date </th>
 
                             </tr>
@@ -314,8 +320,8 @@ $allcustomersFrequency = json_decode($result);
                                         <td> <?php echo $responseagents->how_hear_mw; ?> </td>
                                         <td> $<?php echo $responseagents->total_spent; ?> </td>
                                         <td> <?php echo number_format($responseagents->order_frequency, 2) . " days"; ?></td>
-                                        <td> $<?php echo $responseagents->totalSpentAverage; ?> </td>
-                                        <td> $<?php echo $responseagents->totalOrderAverage; ?> </td>
+        <!--                            <td> $<?php //echo $responseagents->totalSpentAverage;     ?> </td>
+                                        <td> $<?php //echo $responseagents->totalOrderAverage;     ?> </td>-->
                                         <td> <?php echo $responseagents->client_science; ?> </td>
                                     </tr>
 
@@ -498,8 +504,8 @@ $allcustomersFrequency = json_decode($result);
                         morecustomers.push(value.how_hear_mw);
                         morecustomers.push("$" + value.total_spent);
                         morecustomers.push(value.order_frequency);
-                        morecustomers.push(value.totalSpentAverage);
-                        morecustomers.push(value.totalOrderAverage);
+//                        morecustomers.push(value.totalSpentAverage);
+//                        morecustomers.push(value.totalOrderAverage);
                         morecustomers.push(value.client_science);
                         table.add(morecustomers).draw(false);
                         //table.fnAddData(morecustomers, false);

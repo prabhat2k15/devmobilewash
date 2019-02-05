@@ -7391,6 +7391,10 @@ class CustomersController extends Controller {
     }
 
     public function actionAverageCustomer() {
+        $CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests`")->queryRow();
+
+        $daysSinceCustomerCreate = Yii::app()->db->createCommand("SELECT SUM(wash_requests.custDate) as CustomerCreatedDays from (SELECT DATEDIFF(NOW(), customers.created_date) as custDate FROM `washing_requests` JOIN customers ON customers.id=washing_requests.customer_id GROUP BY washing_requests.customer_id) as wash_requests")->queryRow();
+
         $allRequest = Yii::app()->db->createCommand("SELECT SUM(net_price) as spent,count(id) as totalOrder FROM `washing_requests` WHERE  status=4 ")->queryRow();
         $allRequestCustomers = Yii::app()->db->createCommand("SELECT count(id) as totalCustomers FROM `washing_requests` WHERE  status=4 GROUP BY customer_id ")->queryRow();
         if ($allRequest) {
@@ -7400,7 +7404,11 @@ class CustomersController extends Controller {
             $order_frequency = ($allRequest['totalOrder'] / $allRequestCustomers['totalCustomers']);
         }
 
-        echo json_encode(array('spent_frequency' => $spent_frequency, 'order_frequency' => $order_frequency));
+        if ($daysSinceCustomerCreate) {
+            $order_frequency_days = ($daysSinceCustomerCreate['CustomerCreatedDays'] / $CustomerTotalordersCount['orders']);
+        }
+
+        echo json_encode(array('spent_frequency' => $spent_frequency, 'order_frequency' => $order_frequency, 'order_frequency_days' => $order_frequency_days));
         die;
     }
 
@@ -11901,22 +11909,21 @@ class CustomersController extends Controller {
                             'EndpointArn' => $device_exists[0]['endpoint_arn'],
                         ]);
 
-if ($device_exists[0]['device_type'] == 'IOS'){
-                          $aws_subscribe_result = $aws_client->subscribe([
-                            'Endpoint' => $device_exists[0]['endpoint_arn'],
-                            'Protocol' => 'application',
-                            'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_ios_dev',
-                        ]);  
-}
-else{
-                          $aws_subscribe_result = $aws_client->subscribe([
-                            'Endpoint' => $device_exists[0]['endpoint_arn'],
-                            'Protocol' => 'application',
-                            'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_android_dev',
-                        ]);  
-}
+                        if ($device_exists[0]['device_type'] == 'IOS') {
+                            $aws_subscribe_result = $aws_client->subscribe([
+                                'Endpoint' => $device_exists[0]['endpoint_arn'],
+                                'Protocol' => 'application',
+                                'ReturnSubscriptionArn' => true,
+                                'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_ios_dev',
+                            ]);
+                        } else {
+                            $aws_subscribe_result = $aws_client->subscribe([
+                                'Endpoint' => $device_exists[0]['endpoint_arn'],
+                                'Protocol' => 'application',
+                                'ReturnSubscriptionArn' => true,
+                                'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_android_dev',
+                            ]);
+                        }
 
 
                         $endpoint_arn = $device_exists[0]['endpoint_arn'];
@@ -11944,22 +11951,21 @@ else{
                             'Token' => $device_token,
                         ]);
 
-if ($device_exists[0]['device_type'] == 'IOS'){
-                        $aws_subscribe_result = $aws_client->subscribe([
-                            'Endpoint' => $aws_result['EndpointArn'],
-                            'Protocol' => 'application',
-                            'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_ios_dev',
-                        ]);
-}
-else{
-  $aws_subscribe_result = $aws_client->subscribe([
-                            'Endpoint' => $aws_result['EndpointArn'],
-                            'Protocol' => 'application',
-                            'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_android_dev',
-                        ]);  
-}
+                        if ($device_exists[0]['device_type'] == 'IOS') {
+                            $aws_subscribe_result = $aws_client->subscribe([
+                                'Endpoint' => $aws_result['EndpointArn'],
+                                'Protocol' => 'application',
+                                'ReturnSubscriptionArn' => true,
+                                'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_ios_dev',
+                            ]);
+                        } else {
+                            $aws_subscribe_result = $aws_client->subscribe([
+                                'Endpoint' => $aws_result['EndpointArn'],
+                                'Protocol' => 'application',
+                                'ReturnSubscriptionArn' => true,
+                                'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_android_dev',
+                            ]);
+                        }
 
                         $endpoint_arn = $aws_result['EndpointArn'];
                     } catch (exception $e) {
@@ -12010,22 +12016,21 @@ else{
                         'PlatformApplicationArn' => $aws_platformarn,
                         'Token' => $device_token,
                     ]);
-if ($device_type == 'IOS'){
-                      $aws_subscribe_result = $aws_client->subscribe([
-                        'Endpoint' => $aws_result['EndpointArn'],
-                        'Protocol' => 'application',
-                        'ReturnSubscriptionArn' => true,
-                        'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_ios_dev',
-                    ]);  
-}
-else{
-                       $aws_subscribe_result = $aws_client->subscribe([
-                        'Endpoint' => $aws_result['EndpointArn'],
-                        'Protocol' => 'application',
-                        'ReturnSubscriptionArn' => true,
-                        'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_android_dev',
-                    ]); 
-}
+                    if ($device_type == 'IOS') {
+                        $aws_subscribe_result = $aws_client->subscribe([
+                            'Endpoint' => $aws_result['EndpointArn'],
+                            'Protocol' => 'application',
+                            'ReturnSubscriptionArn' => true,
+                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_ios_dev',
+                        ]);
+                    } else {
+                        $aws_subscribe_result = $aws_client->subscribe([
+                            'Endpoint' => $aws_result['EndpointArn'],
+                            'Protocol' => 'application',
+                            'ReturnSubscriptionArn' => true,
+                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:custschedpush_android_dev',
+                        ]);
+                    }
 
 
                     $endpoint_arn = $aws_result['EndpointArn'];
