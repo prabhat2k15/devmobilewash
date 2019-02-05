@@ -76,6 +76,9 @@ $download_data = json_decode($result);
     .dataTables_paginate ul.pagination{
         margin-top:0px;
     }
+    .ltst-download-table tr td:nth-child(4){
+        text-transform:capitalize;
+    }
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -297,7 +300,7 @@ $download_data = json_decode($result);
                         <div class="row">
                             <div class="col-xs-12">
                                 <h4 class="fontBold">Latest Downloads</h4>
-                                <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example7">
+                                <table class="table table-striped table-bordered table-hover table-checkable order-column ltst-download-table" id="example7">
                                     <thead>
                                         <tr>
                                             <th>#</th>

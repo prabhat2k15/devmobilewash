@@ -193,7 +193,7 @@ if ($jsondataTestMessage->TestMessage->message) {
                                         </select>
 <!--                                        <input type="text" required name="phone" title="Phone number with 7-9 and remaing 9 digit with 0-9" class="form-control form-control-inline input-medium">-->
                                     </div>
-                                    <!--                                    <button type="button" id="Modal" class="btn btn-info btn-sm edit-btn" data-toggle="modal" data-target="#myModal">Edit</button>-->
+                                    <button type="button" id="Modal" class="btn btn-info btn-sm edit-btn hide" data-toggle="modal" data-target="#myModal">Edit</button>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Message<span style="color: red;">*</span></label>
@@ -240,8 +240,8 @@ if ($jsondataTestMessage->TestMessage->message) {
                         <div class="form-body">
                             <div class="form-group">
                                 <label class="control-label col-md-3">Update Number<span style="color: red;">*</span></label>
-                                <div class="col-md-3">
-                                    <input type="number" class="form-control" id="phoneUpdate" name="phone" required="" minlength="10" maxlength="10" placeholder="Add number">
+                                <div class="col-md-4">
+                                    <input type="number" class="form-control" id="phoneUpdate" name="phone" required="" minlength="12" maxlength="12" placeholder="Add number">
 
                                 </div>
                             </div>
@@ -294,11 +294,9 @@ if ($jsondataTestMessage->TestMessage->message) {
     $('#testNumbers').on('change', function () {
         console.log($(this).val());
         if ($(this).val() == "Select Phone") {
-            $('#data-target').addClass("disabled");
-            $('#data-target').attr('data-target', ' ');
+            $('#Modal').addClass("hide");
         } else {
-            $('#Modal').removeClass("disabled");
-            $('#data-target').attr('data-target', '#myModal');
+            $('#Modal').removeClass("hide");
         }
         $('#phoneNumber').val($(this).val());
         $('#TestNumberId').val($(this).find(':selected').attr('data-id'));
