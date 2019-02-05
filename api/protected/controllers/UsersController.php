@@ -3041,16 +3041,16 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
 	$user_type_security = Yii::app()->request->getParam('user_type_security');
         $user_id_security = Yii::app()->request->getParam('user_id_security');
 
- //$token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type_security, $user_id_security, AES256CBC_API_PASS);
+ $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type_security, $user_id_security, AES256CBC_API_PASS);
 
-	/*if (!$token_check) {
+	if (!$token_check) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }*/
+        }
 
         $device_type = Yii::app()->request->getParam('device_type');
         $app_version = Yii::app()->request->getParam('app_version');
@@ -3111,7 +3111,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                 $json = array(
                     'result' => $result,
                     'response' => $response,
-                    /*'app_link' => $app_settings[0]['app_link'],
+                    'app_link' => $app_settings[0]['app_link'],
                     'mobilewash_domain' => $mobilewash_domain,
                     'mobilewash_apiurl' => $mobilewash_apiurl,
                     'mobilewash_apptype' => $mobilewash_apptype,
@@ -3123,7 +3123,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                     'getmobilewash_domain' => $getmobilewash_domain,
                     'getmobilewash_apiurl' => $getmobilewash_apiurl,
                     'getmobilewash_apptype' => $getmobilewash_apptype,
-                    'getmobilewash_socketurl' => $getmobilewash_socketurl*/
+                    'getmobilewash_socketurl' => $getmobilewash_socketurl
                 );
             } else {
 
@@ -3166,7 +3166,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                 $json = array(
                     'result' => $result,
                     'response' => $response,
-                    /*'mobilewash_domain' => $mobilewash_domain,
+                    'mobilewash_domain' => $mobilewash_domain,
                     'mobilewash_apiurl' => $mobilewash_apiurl,
                     'mobilewash_apptype' => $mobilewash_apptype,
                     'mobilewash_socketurl' => $mobilewash_socketurl,
@@ -3177,7 +3177,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                     'getmobilewash_domain' => $getmobilewash_domain,
                     'getmobilewash_apiurl' => $getmobilewash_apiurl,
                     'getmobilewash_apptype' => $getmobilewash_apptype,
-                    'getmobilewash_socketurl' => $getmobilewash_socketurl*/
+                    'getmobilewash_socketurl' => $getmobilewash_socketurl
                 );
             }
         } else {
@@ -3185,7 +3185,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             $json = array(
                 'result' => $result,
                 'response' => $response,
-                /*'mobilewash_domain' => $mobilewash_domain,
+                'mobilewash_domain' => $mobilewash_domain,
                 'mobilewash_apiurl' => $mobilewash_apiurl,
                 'mobilewash_apptype' => $mobilewash_apptype,
                 'mobilewash_socketurl' => $mobilewash_socketurl,
@@ -3196,7 +3196,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                 'getmobilewash_domain' => $getmobilewash_domain,
                 'getmobilewash_apiurl' => $getmobilewash_apiurl,
                 'getmobilewash_apptype' => $getmobilewash_apptype,
-                'getmobilewash_socketurl' => $getmobilewash_socketurl*/
+                'getmobilewash_socketurl' => $getmobilewash_socketurl
             );
         }
 
@@ -6911,70 +6911,6 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             'response' => $response
         );
         echo json_encode($json);
-    }
-    
-	public function actioncheckuserforcelogout() {
-
-        if (Yii::app()->request->getParam('key') != API_KEY) {
-            echo "Invalid api key";
-            die();
-        }
-
-        
-        $user_type = Yii::app()->request->getParam('user_type');
-        $user_id = Yii::app()->request->getParam('user_id');
-
-        $result = 'false';
-        $response = 'pass the required fields';
-
-
-        if ((isset($user_type) && !empty($user_type)) && (isset($user_id) && !empty($user_id))) {
-            if (AES256CBC_STATUS == 1) {
-                $user_id = $this->aes256cbc_crypt($user_id, 'd', AES256CBC_API_PASS);
-            }
-
-            if ($user_type == 'customer')
-                $user_type = 'customer';
-            elseif ($user_type == 'agent')
-                $user_type = 'agent';
-            else
-                $user_type = 'agent';
-
-
-            if ($user_type == 'customer')
-                $user_check = Customers::model()->findByPk($user_id);
-            if ($user_type == 'agent')
-                $user_check = Agents::model()->findByPk($user_id);
-
-
-            if (!count($user_check)) {
-                $result = 'false';
-                $response = 'No user found';
-		
-		$json = array(
-            'result' => $result,
-            'response' => $response
-        );
-		echo json_encode($json);
-		die();
-            }
-	    else {
-		
-		 $result = 'true';
-                $response = 'user found';
-
-	    $json = array(
-            'result' => $result,
-            'response' => $response,
-	    'forced_logout' => $user_check->forced_logout
-        );
-
-         echo json_encode($json);
-		die();      
-
-            }
-        }
-
     }
 
 }

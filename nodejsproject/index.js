@@ -256,28 +256,6 @@ request.post({
 //getnewwashrequesttimer = setTimeout(washing_getnewwashrequest, 5000);
 }
 
-function users_checkuserforcelogout(user_type='', user_id='', socket_id = '', key = '') {
-request.post({
-  headers: {'content-type' : 'application/x-www-form-urlencoded'},
-  url:     'https://www.devmobilewash.com/api/index.php?r=users/checkuserforcelogout',
-  body:    "key="+key+"&user_type="+user_type+"&user_id="+user_id
-}, function(error, response, body){
- //console.log(JSON.parse(body));
- //console.log('site_updatedevicestatus');
- try
- {
-         if(socket_id) io.sockets.connected[socket_id].emit('users_checkuserforcelogout_'+user_type+'_'+user_id, JSON.parse(body));
-         else io.emit('users_checkuserforcelogout_'+user_type+'_'+user_id, JSON.parse(body));
-       }
-       catch(err)
-       {
-
-       }     
-           
-});
-
-}
-
 function agents_updateagentlocations(agent_id='', latitude=0, longitude=0, socket_id = '', key = '', api_token='', t1='', t2='', user_type='', user_id='') {
 request.post({
   headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -601,11 +579,6 @@ else{
            socket.on('sendorderreceipts', function(data){
       //console.log(data);
     washing_sendorderreceipts(data.wash_request_id, data.customer_id, data.agent_id, data.socketId, data.key, data.api_token, data.t1, data.t2, data.user_type, data.user_id);
-  });
-           
-   socket.on('checkuserforcelogout', function(data){
-      //console.log(data);
-    users_checkuserforcelogout(data.user_type, data.user_id, data.socketId, data.key);
   });
    
 
