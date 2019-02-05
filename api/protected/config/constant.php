@@ -36,6 +36,7 @@ define("AES128CBC_KEY","RfUjWnZr4u7x!A%D");
 define("AES128CBC_IV","u7x!A%D*G-KaPdSg");
 define("AES256CBC_STATUS", 1); // 0 => encrypt/decrypt off, 1 => encrypt/decrypt on
 define("AES256CBC_API_PASS","33CkqOl7C*4iO5Q.W8aO2eCYQ749=%158Jt8mIbM");
+define("AES256CBC_API_PASS_V2_2","AE22K5O6j15xY3Qg5Oh989n6v63bS8eJ");
 
 /*
 define("ENV","production");//sandbox or production
