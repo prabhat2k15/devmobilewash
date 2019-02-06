@@ -6421,20 +6421,21 @@ class CustomersController extends Controller {
 
             $client_loc = CustomerLiveLocations::model()->findByAttributes(array("customer_id" => $client->id));
             //print_r($client_locs);
-
-            $key = 'onlineclient_' . $client->id;
-            $jsononlineclient = array();
-            $jsononlineclient['id'] = $client->id;
-            $jsononlineclient['customername'] = $client->first_name . " " . $client->last_name;
-            $jsononlineclient['email'] = $client->email;
-            $jsononlineclient['contact_number'] = $client->contact_number;
-            $jsononlineclient['image'] = $client->image;
-            $jsononlineclient['total_wash'] = $client->total_wash;
-            $jsononlineclient['latitude'] = $client_loc->latitude;
-            $jsononlineclient['longitude'] = $client_loc->longitude;
-            $jsononlineclient['rating'] = $client->rating;
-            $jsononlineclient['last_wash'] = $cust_last_wash_date;
-            $onlineclients[$key] = $jsononlineclient;
+            if (count($client_loc)) {
+                $key = 'onlineclient_' . $client->id;
+                $jsononlineclient = array();
+                $jsononlineclient['id'] = $client->id;
+                $jsononlineclient['customername'] = $client->first_name . " " . $client->last_name;
+                $jsononlineclient['email'] = $client->email;
+                $jsononlineclient['contact_number'] = $client->contact_number;
+                $jsononlineclient['image'] = $client->image;
+                $jsononlineclient['total_wash'] = $client->total_wash;
+                $jsononlineclient['latitude'] = $client_loc->latitude;
+                $jsononlineclient['longitude'] = $client_loc->longitude;
+                $jsononlineclient['rating'] = $client->rating;
+                $jsononlineclient['last_wash'] = $cust_last_wash_date;
+                $onlineclients[$key] = $jsononlineclient;
+            }
         }
 
 
@@ -7391,14 +7392,39 @@ class CustomersController extends Controller {
     }
 
     public function actionAverageCustomer() {
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
         $CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests`")->queryRow();
 
         $daysSinceCustomerCreate = Yii::app()->db->createCommand("SELECT SUM(wash_requests.custDate) as CustomerCreatedDays from (SELECT DATEDIFF(NOW(), customers.created_date) as custDate FROM `washing_requests` JOIN customers ON customers.id=washing_requests.customer_id GROUP BY washing_requests.customer_id) as wash_requests")->queryRow();
 
         $allRequest = Yii::app()->db->createCommand("SELECT SUM(net_price) as spent,count(id) as totalOrder FROM `washing_requests` WHERE  status=4 ")->queryRow();
+
+        $allCustomerCancleSpent = Yii::app()->db->createCommand("SELECT SUM(cancel_fee) as cancel_fee FROM `washing_requests` WHERE status=5 OR status=7  ")->queryRow();
+        $totalSpentCustomer = $allCustomerCancleSpent['cancel_fee'] + $allRequest['spent'];
+        
         $allRequestCustomers = Yii::app()->db->createCommand("SELECT count(id) as totalCustomers FROM `washing_requests` WHERE  status=4 GROUP BY customer_id ")->queryRow();
         if ($allRequest) {
-            $spent_frequency = ($allRequest['spent'] / $allRequest['totalOrder']);
+            $spent_frequency = ($totalSpentCustomer / $allRequest['totalOrder']);
         }
         if ($allRequestCustomers) {
             $order_frequency = ($allRequest['totalOrder'] / $allRequestCustomers['totalCustomers']);

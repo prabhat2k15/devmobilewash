@@ -3069,7 +3069,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $admin_username = '';
         $admin_username = Yii::app()->request->getParam('admin_username');
         $full_address = Yii::app()->request->getParam('full_address');
-	$street_name = Yii::app()->request->getParam('street_name');
+        $street_name = Yii::app()->request->getParam('street_name');
         $city = Yii::app()->request->getParam('city');
         $state = Yii::app()->request->getParam('state');
         $zipcode = Yii::app()->request->getParam('zipcode');
@@ -3134,8 +3134,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 if (!$full_address) {
                     $full_address = $wrequest_id_check->address;
                 }
-		
-		if (!$street_name) {
+
+                if (!$street_name) {
                     $street_name = $wrequest_id_check->street_name;
                 }
 
@@ -4056,9 +4056,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } elseif ($event == 'express' || $event == 'deluxe' || $event == 'premium') {
                 $status_qr = " AND (FIND_IN_SET('" . $event . "', w.package_list)>0 AND w.status IN('0','4'))";
             } elseif ($event == 'coupon_code') {
-                $status_qr = " AND w.coupon_code <> ''";
+                $status_qr = " AND w.coupon_code <> '' AND w.status IN('4')";
             } elseif ($event == 'tip_amount') {
-                $status_qr = " AND (w.tip_amount <> '' && w.tip_amount <> '0.00' && w.tip_amount <> '0')";
+                $status_qr = " AND (w.tip_amount <> '' && w.tip_amount <> '0.00' && w.tip_amount <> '0') AND w.status IN('4')";
             } elseif ($event == 'addoncompleted') {
                 $status_qr = " AND (w.pet_hair_vehicles != '' OR  w.lifted_vehicles != '' OR  w.exthandwax_vehicles != '' OR  w.extplasticdressing_vehicles != '' OR  w.extclaybar_vehicles != '' OR  w.waterspotremove_vehicles != '' OR  w.upholstery_vehicles != '' OR  w.floormat_vehicles != '') AND w.status = 4";
             } elseif ($event == 'ondemandcompleted') {
@@ -7594,23 +7594,21 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'version' => 'latest'
             ));
 
-            if ($receiver_str == 'clients'){
-              $topic_arn_ios = 'arn:aws:sns:us-west-2:461900685840:custschedpush_ios_dev';
-              $topic_arn_android = 'arn:aws:sns:us-west-2:461900685840:custschedpush_android_dev';  
+            if ($receiver_str == 'clients') {
+                $topic_arn_ios = 'arn:aws:sns:us-west-2:461900685840:custschedpush_ios_dev';
+                $topic_arn_android = 'arn:aws:sns:us-west-2:461900685840:custschedpush_android_dev';
+            } else {
+                $topic_arn_ios = 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev';
+                $topic_arn_android = 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev';
             }
-                
-            else{
-            $topic_arn_ios = 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev';
-              $topic_arn_android = 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev';   
-            }
-                
+
 
             $aws_result_ios = $aws_client->publish([
                 'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"notification\": { \"body\": \"" . $msg . "\" }, \"priority\": \"high\"}")),
                 'TopicArn' => $topic_arn_ios,
                 'MessageStructure' => 'json',
             ]);
-            
+
             $aws_result_android = $aws_client->publish([
                 'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"data\": { \"message\": \"" . $msg . "\" } }")),
                 'TopicArn' => $topic_arn_android,
@@ -9128,7 +9126,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type_security, $user_id_security, AES256CBC_API_PASS);
 
-	if (!$token_check) {
+        if (!$token_check) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
@@ -9136,7 +9134,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             echo json_encode($json);
             die();
         }
-      
+
 
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
@@ -9297,7 +9295,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             $user_id = $this->aes256cbc_crypt($user_id, 'e', AES256CBC_API_PASS);
             $pending_wash_id = $this->aes256cbc_crypt($pending_wash_id, 'e', AES256CBC_API_PASS);
         }
-	
+
 
 
         $json = array(
