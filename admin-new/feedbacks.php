@@ -150,10 +150,10 @@ $result_code = $jsondata->result;
                                                     }
                                                     ?></td>   
                                                 <td><?php
-                                                    if (!empty($responseagents->complete_order)) {
+                                                    if (!empty($responseagents->complete_order) && $responseagents->complete_order != '0000-00-00 00:00:00') {
                                                         echo date('Y-m-d h:s A', strtotime($responseagents->complete_order));
                                                     } else {
-                                                        echo 'N/A';
+                                                        echo ' ';
                                                     }
                                                     ?></td>   
                                             </tr>
