@@ -1860,7 +1860,7 @@ class AgentsController extends Controller {
                     'routing_number' => $routing_number,
                     'last_edited_admin' => $admin_username,
                     //'decals_installed' => $decals_installed,
-                    'updated_date' => date('Y-m-d h:i:s')
+                    'updated_date' => date('Y-m-d H:i:s')
                 );
                 if (Yii::app()->request->getParam('update_by') == "WEB") {
                     $data['unlimited_schedule_range'] = Yii::app()->request->getParam('unlimited_schedule_range');
