@@ -7330,10 +7330,16 @@ class CustomersController extends Controller {
             $custspent = Yii::app()->db->createCommand("SELECT SUM(net_price),COUNT(id) as CompletedOrders FROM washing_requests WHERE customer_id = :customer_id AND  status = 4 AND net_price > 0")
                     ->bindValue(':customer_id', $customername->id, PDO::PARAM_STR)
                     ->queryAll();
+            
+            $cancelspent = Yii::app()->db->createCommand("SELECT SUM(cancel_fee) as cancel_fee FROM washing_requests WHERE customer_id = :customer_id AND  (status = 5 OR status = 7)")
+                    ->bindValue(':customer_id', $customername->id, PDO::PARAM_STR)
+                    ->queryAll();
+            
+            
             $totalpaid = 0;
             $totalSpentAverage = 0;
             $totalOrderAverage = 0;
-            $totalpaid = $custspent[0]['SUM(net_price)'];
+            $totalpaid = ($custspent[0]['SUM(net_price)'] + $cancelspent[0]['cancel_fee']);
             $CompletedOrders = $custspent[0]['CompletedOrders'];
             if ($daysSinceCustomerCreate != 0 && count($custspent) > 0) {
                 $totalSpentAverage = ($totalpaid / $daysSinceCustomerCreate);
