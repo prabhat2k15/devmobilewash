@@ -303,6 +303,13 @@ $profiledetail = json_decode($result);
         border:1px solid #c2cad8;
     }
 </style>
+<?php if ($jsondata_permission->users_type != 'admin'): ?>
+<style>
+    #edit_agent_form input{
+	pointer-events: none; 
+    }
+</style>
+<?php endif; ?>
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" id="main">
@@ -851,7 +858,8 @@ $profiledetail = json_decode($result);
                     </div>
                     <!--/row-->
                 </div>
-                <div class="form-actions">
+                <?php if ($jsondata_permission->users_type == 'admin'): ?>
+		<div class="form-actions">
                     <div class="row" style="text-align: center;">
                         <div class="clear">&nbsp;</div>
                         <div class="col-md-6">
@@ -865,6 +873,7 @@ $profiledetail = json_decode($result);
                         <div class="col-md-6"> </div>
                     </div>
                 </div>
+		<?php endif; ?>
         </form>
 
 
