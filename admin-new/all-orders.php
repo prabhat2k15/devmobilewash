@@ -48,7 +48,7 @@ $result = curl_exec($handle);
 //print_r($result);die;
 curl_close($handle);
 $jsondata = json_decode($result);
-
+//print_r($jsondata); die;
 $s_orders_response = $jsondata->response;
 $s_orders_result_code = $jsondata->result;
 $s_mw_all_orders = $jsondata->wash_requests;
@@ -65,6 +65,9 @@ $voice_print = "Hello " . $jsondata_permission->user_name . "! You have " . $pen
 $cust_avg_order_frequency = $jsondata->cust_avg_order_frequency;
 $android_count = $jsondata->android_count;
 $ios_count = $jsondata->ios_count;
+/* echo "<pre>";
+  print_r($result);
+  echo "</pre>"; */
 ?>
 <style>
     .label-complete {
@@ -763,14 +766,14 @@ $ios_count = $jsondata->ios_count;
                                                     N/A
                                                 <?php endif; ?>
                                             </td>
-                                            <?php /*<td class="hide">
-                                                <?php
-                                                if ($order->min_diff > 0)
-                                                    echo $order->min_diff;
-                                                else
-                                                    echo "-";
-                                                ?>
-                                            </td>*/ ?>
+                                            <?php /* <td class="hide">
+                                              <?php
+                                              if ($order->min_diff > 0)
+                                              echo $order->min_diff;
+                                              else
+                                              echo "-";
+                                              ?>
+                                              </td> */ ?>
                                             <td><?php
                                                 if (count($order->vehicles)) {
                                                     echo "<ol style='padding-left: 15px;'>";
@@ -787,13 +790,13 @@ $ios_count = $jsondata->ios_count;
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;                            ?></td-->
+                                           <!--td><?php //echo $order->transaction_id;                               ?></td-->
                                             <?php $sum = $order->agent_total + $order->company_total ?>
                                             <td>$<?php echo number_format($sum, 2); ?>   </td>
-                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;      ?></td>
+                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;         ?></td>
                                             <td>
                                                 <?php
-                                                if (strtotime($order->complete_order) > 0) {
+                                                if (strtotime($order->status) == 4) {
                                                     echo date('Y-m-d h:i A', strtotime($order->complete_order));
                                                 } else {
                                                     echo " ";
@@ -1131,7 +1134,7 @@ $ios_count = $jsondata->ios_count;
                         if (value.washer_30_min_noarrive == 1) {
                             popuptextgreen += "<li class='washernoarrive30min'>#" + value.id + " - En Route Washer " + value.agent_details.agent_name + " hasn't tapped \"arrive\" within 30 minutes - Please Call <a data-id='" + value.id + "' href='edit-order.php?id=" + value.id + "' target='_blank'>View</a></li>";
                         }
-			if ((value.no_washer_cancel == 1) && (value.status == 5)) {
+                        if ((value.no_washer_cancel == 1) && (value.status == 5)) {
                             popuptextred += "<li class='nowashercancel'>#" + value.id + " Auto canceled - " + value.customer_name + " <a class='admin-notify-view-click' data-action='nowashercancel' data-id='" + value.id + "' href='edit-order.php?id=" + value.id + "' target='_blank'>View</a></li>";
                         }
                         upcomingwashes["DT_RowId"] = "order-" + value.id;
@@ -1146,7 +1149,7 @@ $ios_count = $jsondata->ios_count;
                             upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
                         if (value.washer_change_pack > 0)
                             upcomingwashes["DT_RowClass"] = "flashrowchangedpack";
-			     if ((value.no_washer_cancel == 1) && (value.status == 5))
+                        if ((value.no_washer_cancel == 1) && (value.status == 5))
                             upcomingwashes["DT_RowClass"] = "flashrow";
                         //if(value.washer_wash_activity == 0) upcomingwashes["DT_RowClass"] = "washernowashactivity";
 
@@ -1227,11 +1230,11 @@ $ios_count = $jsondata->ios_count;
                         }
 
                         /*if (value.min_diff > 0)
-                                // upcomingwashes.push(value.min_diff);
-                                else
-                            // upcomingwashes.push("-");*/
+                         // upcomingwashes.push(value.min_diff);
+                         else
+                         // upcomingwashes.push("-");*/
 
-                            var veh_string = '';
+                        var veh_string = '';
                         if (value.vehicles.length) {
 
                             veh_string += "<ol style='padding-left: 15px;'>";
@@ -1247,7 +1250,11 @@ $ios_count = $jsondata->ios_count;
                         upcomingwashes.push(veh_string);
                         upcomingwashes.push("$" + value.net_price);
                         upcomingwashes.push(value.created_date);
-                        upcomingwashes.push(value.complete_order);
+                        if (value.status == 4) {
+                            upcomingwashes.push(value.complete_order);
+                        } else {
+                            upcomingwashes.push(' ');
+                        }
                         dt_table.fnAddData(upcomingwashes);
                         //console.log(upcomingwashes);
                     });
