@@ -796,7 +796,7 @@ $ios_count = $jsondata->ios_count;
                                             <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;         ?></td>
                                             <td>
                                                 <?php
-                                                if (strtotime($order->status) == 4) {
+                                                if ($order->status == 4) {
                                                     echo date('Y-m-d h:i A', strtotime($order->complete_order));
                                                 } else {
                                                     echo " ";
