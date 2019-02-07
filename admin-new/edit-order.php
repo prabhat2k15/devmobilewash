@@ -99,6 +99,7 @@ $address_type = '';
 $city = '';
 $state = '';
 $zipcode = '';
+$street_name = '';
 
 if (isset($_POST['payment_method_nonce'])) {
 
@@ -124,7 +125,8 @@ if (isset($_POST['payment_method_nonce'])) {
 
         $address = $_POST['caddress'];
 
-        $address_temp = $_POST['caddress'] . ", " . $_POST['ccity'] . ", " . $_POST['cstate'] . " " . $_POST['czip'];
+        //$address_temp = $_POST['caddress'] . ", " . $_POST['ccity'] . ", " . $_POST['cstate'] . " " . $_POST['czip'];
+        $address_temp = $_POST['caddress'];
 
 
 
@@ -149,6 +151,22 @@ if (isset($_POST['payment_method_nonce'])) {
                 if ($addrComp->types[0] == 'postal_code') {
                     //Return the zipcode
                     $zip = $addrComp->long_name;
+                    $zipcode = $addrComp->long_name;
+                }
+                
+                if ($addrComp->types[0] == 'locality') {
+ 
+                    $city = $addrComp->short_name;
+                }
+                
+                 if ($addrComp->types[0] == 'administrative_area_level_1') {
+
+                    $state = $addrComp->long_name;
+                }
+                
+                 if ($addrComp->types[0] == 'route') {
+
+                    $street_name = $addrComp->short_name;
                 }
             }
         }
@@ -157,8 +175,8 @@ if (isset($_POST['payment_method_nonce'])) {
         $on_demand_area = '';
         $schedule_area = '';
 
-        if (!$zip)
-            $zip = $_POST['czip'];
+        if (!$zip) $zip = '00000';
+            //$zip = $_POST['czip'];
 
         $url = ROOT_URL . '/api/index.php?r=washing/checkcoveragezipcode';
 
@@ -180,11 +198,10 @@ if (isset($_POST['payment_method_nonce'])) {
 //die();
         } else {
 
-
             $full_address = $address_temp;
-            $city = $_POST['ccity'];
-            $state = $_POST['cstate'];
-            $zipcode = $_POST['czip'];
+            //$city = $_POST['ccity'];
+            //$state = $_POST['cstate'];
+            //$zipcode = $_POST['czip'];
 
             $full_address = trim($full_address);
             //echo $fulladdress;
@@ -216,7 +233,9 @@ if (isset($_POST['payment_method_nonce'])) {
 
             $handle = curl_init(ROOT_URL . "/api/index.php?r=customers/addlocation");
             curl_setopt($handle, CURLOPT_POST, true);
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $getorder->customer_id, "wash_request_id" => $getorder->id, "location_title" => $_POST['address_type'], "location_address" => $full_address, 'actual_latitude' => $lat, 'actual_longitude' => $long, 'city' => $_POST['ccity'], 'state' => $_POST['cstate'], 'zipcode' => $_POST['czip'], 'admin_username' => $jsondata_permission->user_name, 'api_password' => AES256CBC_API_PASS, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
+            //curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $getorder->customer_id, "wash_request_id" => $getorder->id, "location_title" => $_POST['address_type'], "location_address" => $full_address, 'actual_latitude' => $lat, 'actual_longitude' => $long, 'street_name' => $street_name, 'city' => $_POST['ccity'], 'state' => $_POST['cstate'], 'zipcode' => $_POST['czip'], 'admin_username' => $jsondata_permission->user_name, 'api_password' => AES256CBC_API_PASS, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
+            curl_setopt($handle, CURLOPT_POSTFIELDS, array("customer_id" => $getorder->customer_id, "wash_request_id" => $getorder->id, "location_title" => $_POST['address_type'], "location_address" => $full_address, 'actual_latitude' => $lat, 'actual_longitude' => $long, 'street_name' => $street_name, 'city' => $city, 'state' => $state, 'zipcode' => $zipcode, 'admin_username' => $jsondata_permission->user_name, 'api_password' => AES256CBC_API_PASS, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
+            
             curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
             $result = curl_exec($handle);
             curl_close($handle);
@@ -351,7 +370,7 @@ if (isset($_POST['payment_method_nonce'])) {
     }
 
 
-    $data = array("wash_request_id" => $_GET['id'], "car_ids_org" => $getorder->car_list, "car_ids" => $car_ids, "car_packs" => $car_packs, "pet_hair_vehicles" => $pet_hair_vehicles, "pet_hair_vehicles_custom" => json_encode($pet_hair_vehicles_custom), "lifted_vehicles" => $lifted_vehicles, "exthandwax_vehicles" => $exthandwax_vehicles, "extplasticdressing_vehicles" => $extplasticdressing_vehicles, "extclaybar_vehicles" => $extclaybar_vehicles, "waterspotremove_vehicles" => $waterspotremove_vehicles, "upholstery_vehicles" => $upholstery_vehicles, "floormat_vehicles" => $floormat_vehicles, "fifthwash_vehicles" => $fifthwash_vehicles, "tip_amount" => $_POST['ctip'], "full_address" => $full_address, "street_name" => $address, "address_type" => $address_type, "city" => $city, "state" => $state, "zipcode" => $zipcode, "lat" => $lat, "lng" => $long, "admin_command" => "update-order", 'promo_code' => $_POST['promo_code'], "admin_username" => $jsondata_permission->user_name, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+    $data = array("wash_request_id" => $_GET['id'], "car_ids_org" => $getorder->car_list, "car_ids" => $car_ids, "car_packs" => $car_packs, "pet_hair_vehicles" => $pet_hair_vehicles, "pet_hair_vehicles_custom" => json_encode($pet_hair_vehicles_custom), "lifted_vehicles" => $lifted_vehicles, "exthandwax_vehicles" => $exthandwax_vehicles, "extplasticdressing_vehicles" => $extplasticdressing_vehicles, "extclaybar_vehicles" => $extclaybar_vehicles, "waterspotremove_vehicles" => $waterspotremove_vehicles, "upholstery_vehicles" => $upholstery_vehicles, "floormat_vehicles" => $floormat_vehicles, "fifthwash_vehicles" => $fifthwash_vehicles, "tip_amount" => $_POST['ctip'], "full_address" => $full_address, "street_name" => $street_name, "address_type" => $address_type, "city" => $city, "state" => $state, "zipcode" => $zipcode, "lat" => $lat, "lng" => $long, "admin_command" => "update-order", 'promo_code' => $_POST['promo_code'], "admin_username" => $jsondata_permission->user_name, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
 //print_r($data);
 
@@ -1132,7 +1151,7 @@ if ($getorder->transaction_id) {
                                                             </div>
                                                         </div>
                                                         <div style="clear: both;"></div>
-
+<?php /*
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label class="control-label">City<span style="color: red;">*</span></label>
@@ -1153,6 +1172,7 @@ if ($getorder->transaction_id) {
                                                             </div>
                                                         </div>
                                                         <div style="clear: both;"></div>
+                                                        */ ?>
                                                     </div>
 
 

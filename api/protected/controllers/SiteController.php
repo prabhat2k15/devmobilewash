@@ -3336,13 +3336,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                     } else {
-                        $washeractionlogdata = array(
+                        /*$washeractionlogdata = array(
                             'wash_request_id' => $wash_request_id,
                             'admin_username' => $admin_username,
                             'action' => 'editorder',
                             'action_date' => date('Y-m-d H:i:s'));
 
-                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);*/
                     }
 
                     WashPricingHistory::model()->updateAll(array('status' => 1), 'wash_request_id=:wash_request_id', array(":wash_request_id" => $wash_request_id));
