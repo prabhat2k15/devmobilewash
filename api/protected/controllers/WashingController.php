@@ -9086,7 +9086,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                         'action_date' => date('Y-m-d H:i:s'));
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 }
-            } else if (($wrequest_id_check->status > 1) && ($wrequest_id_check->status <= 3) && $status == 5) {
+            } else if (($wrequest_id_check->status > 1) && ($wrequest_id_check->status <= 4) && $status == 5) {
                 $result = 'false';
                 $response = 'you cannot cancel wash until paying $10';
 
