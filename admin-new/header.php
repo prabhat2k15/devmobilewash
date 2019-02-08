@@ -194,13 +194,15 @@ License: You must have a valid license purchased only from themeforest(the above
         <link href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" rel="stylesheet" type="text/css" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker.css" rel="stylesheet" type="text/css" />
         <link href=" https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.css" rel="stylesheet" type="text/css" />
-<!--       <link href="css/emoji/emojionearea.min.css" rel="stylesheet" type="text/css" />-->
+        <link href="css/dropdownCheckboxes.min.css" rel="stylesheet">
+       <!-- <link href="css/emoji/emojionearea.min.css" rel="stylesheet" type="text/css" /> -->
         <link href="css/newAdminStyle.css" rel="stylesheet" type="text/css" />
         <link href="js/lib/css/emoji.css" rel="stylesheet">
         
         <!-- END THEME LAYOUT STYLES -->
         <link rel="shortcut icon" href="favicon.ico" />
         <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js" type="text/javascript"></script>
 
         <script>
 

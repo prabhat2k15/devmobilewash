@@ -59,6 +59,7 @@
         <!-- validation  -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.18.0/jquery.validate.min.js" ></script>
         <script src="js/validation.js" type="text/javascript"></script>
+        <script src="js/dropdownCheckboxes.js" type="text/javascript"></script>
         <script src="js/emoji/emojionearea.js" type="text/javascript"></script>
         <!-- ** Don't forget to Add jQuery here ** -->
         <script src="js/lib/js/config.js"></script>

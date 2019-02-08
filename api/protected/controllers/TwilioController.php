@@ -447,14 +447,14 @@ class TwilioController extends Controller {
                 $phone = $all_phones[0]["GROUP_CONCAT(phone_number SEPARATOR ',')"];
         }
         if ($status == 2) {
-
-            $numberExist = TestNumbers::model()->exists('phone = :phone', array(":phone" => $phone));
-            if ($numberExist == "") {
-                $testNumber = array('phone' => $phone);
-                $modelTestNumbers = new TestNumbers;
-                $modelTestNumbers->attributes = $testNumber;
-                $modelTestNumbers->save(false);
-            }
+//
+//            $numberExist = TestNumbers::model()->exists('phone = :phone', array(":phone" => $phone));
+//            if ($numberExist == "") {
+//                $testNumber = array('phone' => $phone);
+//                $modelTestNumbers = new TestNumbers;
+//                $modelTestNumbers->attributes = $testNumber;
+//                $modelTestNumbers->save(false);
+//            }
         }
         $messagedata = array(
             'to' => $to,
@@ -627,6 +627,93 @@ class TwilioController extends Controller {
             'result' => $result,
             'response' => $response
         );
+        echo json_encode($json);
+        die();
+    }
+
+    public function actionAddTestMessges() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+        $phone = Yii::app()->request->getParam('phone');
+        $numberExist = TestNumbers::model()->exists('phone = :phone', array(":phone" => $phone));
+        if ($numberExist == "") {
+            $testNumber = array('phone' => $phone, 'created_at' => date('y-m-d H:i:s'));
+            $modelTestNumbers = new TestNumbers;
+            $modelTestNumbers->attributes = $testNumber;
+            $modelTestNumbers->save(false);
+            $result = 'true';
+            $response = 'Test number insearted  successfully';
+            $json = array(
+                'result' => $result,
+                'response' => $response
+            );
+            echo json_encode($json);
+            die();
+        } else {
+            $result = 'false';
+            $response = 'Test number already exist';
+            $json = array(
+                'result' => $result,
+                'response' => $response
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        echo json_encode($json);
+        die();
+    }
+
+    public function actionDeleteTestMessges() {
+
+//        $api_token = Yii::app()->request->getParam('api_token');
+//        $t1 = Yii::app()->request->getParam('t1');
+//        $t2 = Yii::app()->request->getParam('t2');
+//        $user_type = Yii::app()->request->getParam('user_type');
+//        $user_id = Yii::app()->request->getParam('user_id');
+//
+//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+//
+//        if (!$token_check) {
+//            $json = array(
+//                'result' => 'false',
+//                'response' => 'Invalid request'
+//            );
+//            echo json_encode($json);
+//            die();
+//        }
+        $phone = Yii::app()->request->getParam('phone');
+        $phones = explode(",", $phone);
+        if (count($phones)) {
+            foreach ($phones as $val) {
+                $TestNumber = TestNumbers::model()->findByAttributes(array('phone' => $val));
+                if ($TestNumber->id) {
+                    $Delete_phones = Yii::app()->db->createCommand("DELETE FROM test_numbers WHERE id=" . $TestNumber->id)->query();
+                }
+            }
+        }
+        $result = 'true';
+        $response = 'Test number Deleted Succesfully';
         echo json_encode($json);
         die();
     }
