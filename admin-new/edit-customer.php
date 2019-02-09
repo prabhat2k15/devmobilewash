@@ -218,6 +218,13 @@ $how_hear_mw = $jsondata->how_hear_mw;
     display: none;
 }
 </style>
+<?php if ($jsondata_permission->users_type != 'admin'): ?>
+<style>
+    .portlet-body form input{
+	pointer-events: none; 
+    }
+</style>
+<?php endif; ?>
 <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
                 <div class="page-content" id="main">
@@ -480,11 +487,13 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                                     </div>
                                                     <!-- END PRIVACY SETTINGS TAB -->
                                                 </div>
+                                                <?php if ($jsondata_permission->users_type == 'admin'): ?>
                                                  <div class="margiv-top-10">
                                                                 <input type="hidden" name="hidden" value="hidden">
                                                                 <input type="hidden" name="id" value="<?php echo $id; ?>">
                                                                 <input type="submit" value="Save Changes" name="submit" style="color: rgb(255, 255, 255); background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 6px 7px 7px 6px; border-radius: 3px;" />
-                                                            </div>
+                                                </div>
+                                                 <?php endif; ?>
                                                             </form>
                                             </div>
                                         </div>

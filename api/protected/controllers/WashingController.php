@@ -6093,6 +6093,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $status = Yii::app()->request->getParam('status');
+        
         $is_scheduled = Yii::app()->request->getParam('is_scheduled');
         $json = array();
         $result = 'false';
@@ -6103,6 +6104,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
             if (AES256CBC_STATUS == 1) {
                 $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
                 $status = $this->aes256cbc_crypt($status, 'd', AES256CBC_API_PASS);
+                
             }
             $status = -1 * abs($status);
 
@@ -6194,15 +6196,27 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                         $ondmeandpendingwashes = Washingrequests::model()->findAllByAttributes(array("status" => 0, "is_scheduled" => 0), array('order' => 'order_for ASC'));
                         $agent_has_order = 0;
                         foreach ($ondmeandpendingwashes as $pwash) {
+                            $mile_check = 0;
+                             $theta = $pwash->longitude - $agentlocation->longitude;
+                    $dist = sin(deg2rad($pwash->latitude)) * sin(deg2rad($agentlocation->latitude)) + cos(deg2rad($pwash->latitude)) * cos(deg2rad($agentlocation->latitude)) * cos(deg2rad($theta));
+                    $dist = acos($dist);
+                    $dist = rad2deg($dist);
+                    $mile_check = $dist * 60 * 1.1515;
+                    $unit = strtoupper($unit);
+                        if (($mile_check > 0) && ($mile_check <= $app_settings[0]['washer_search_radius'])) {
                             $rejected_ids = explode(",", $pwash->agent_reject_ids);
-
+                           
                             if (!in_array($status, $rejected_ids)) {
+                            
                                 $agent_has_order = 1;
+                                
                                 break;
                             }
                         }
+                    }
 
                         if (!$agent_has_order) {
+                            
                             $ondmeandagentrejectwashes = Washingrequests::model()->findAllByAttributes(array("status" => 0, "is_scheduled" => 0), array('order' => 'order_for ASC'));
                             foreach ($ondmeandagentrejectwashes as $rwash) {
                                 $rejected_ids = explode(",", $rwash->agent_reject_ids);

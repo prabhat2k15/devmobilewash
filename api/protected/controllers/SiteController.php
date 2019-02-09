@@ -8056,10 +8056,10 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                 if (strtotime($wrequest_id_check->wash_begin) > 0) {
 
-                    Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "wash_begin" => date('Y-m-d H:i:s'), "washer_late_cancel" => 0, "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
+                    Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "agent_id" => 0, "wash_begin" => date('Y-m-d H:i:s'), "washer_late_cancel" => 0, "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
                 } else {
 
-                    Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "washer_late_cancel" => 0, "created_date" => date('Y-m-d H:i:s'), "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
+                    Washingrequests::model()->updateByPk($wash_request_id, array("status" => 0, "agent_id" => 0, "washer_late_cancel" => 0, "created_date" => date('Y-m-d H:i:s'), "no_washer_cancel" => 0, "company_cancel" => 0, "cancel_fee" => 0, "washer_cancel_fee" => 0));
                 }
 
 
