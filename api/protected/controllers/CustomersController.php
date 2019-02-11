@@ -7419,31 +7419,37 @@ class CustomersController extends Controller {
             echo json_encode($json);
             die();
         }
+        
+        $daysSinceCustomerCreate = Yii::app()->db->createCommand("SELECT SUM(wash_requests.custDate) as CustomerCreatedDays from (SELECT DATEDIFF(NOW(), customers.created_date) as custDate FROM `washing_requests` JOIN customers ON customers.id=washing_requests.customer_id GROUP BY washing_requests.customer_id) as wash_requests")->queryRow();
+        
         $CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests`")->queryRow();
 
-        $daysSinceCustomerCreate = Yii::app()->db->createCommand("SELECT SUM(wash_requests.custDate) as CustomerCreatedDays from (SELECT DATEDIFF(NOW(), customers.created_date) as custDate FROM `washing_requests` JOIN customers ON customers.id=washing_requests.customer_id GROUP BY washing_requests.customer_id) as wash_requests")->queryRow();
-
-        $allRequest = Yii::app()->db->createCommand("SELECT SUM(net_price) as spent,count(id) as totalOrder FROM `washing_requests` WHERE  status=4 ")->queryRow();
-
-        $allCustomerCancleSpent = Yii::app()->db->createCommand("SELECT SUM(cancel_fee) as cancel_fee FROM `washing_requests` WHERE status=5 OR status=7  ")->queryRow();
-        $totalSpentCustomer = $allCustomerCancleSpent['cancel_fee'] + $allRequest['spent'];
+        $totalcustsmin1order = Yii::app()->db->createCommand("SELECT COUNT(id) as totalcusts FROM `customers` WHERE total_wash > 0")->queryRow();
         
+        $totalorderscustsmin1order = Yii::app()->db->createCommand("SELECT SUM(total_wash) as totalwash FROM `customers` WHERE total_wash > 0")->queryRow();
+
+        $allRequest = Yii::app()->db->createCommand("SELECT SUM(w.net_price) as spent,count(w.id) as totalOrder FROM `washing_requests` w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.total_wash > 0 AND w.status=4 ")->queryRow();
+
+        $allCustomerCancleSpent = Yii::app()->db->createCommand("SELECT SUM(w.cancel_fee) as cancel_fee FROM `washing_requests` w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.total_wash > 0 AND (w.status=5 OR w.status=7)  ")->queryRow();
+        $totalSpentCustomer = $allCustomerCancleSpent['cancel_fee'] + $allRequest['spent'];
+
         $allRequestCustomers = Yii::app()->db->createCommand("SELECT count(id) as totalCustomers FROM `washing_requests` WHERE  status=4 GROUP BY customer_id ")->queryRow();
-        if ($allRequest) {
-            $spent_frequency = ($totalSpentCustomer / $allRequest['totalOrder']);
+        if ($allRequest && ($totalcustsmin1order['totalcusts'] > 0)) {
+            //$spent_frequency = ($totalSpentCustomer / $allRequest['totalOrder']);
+            $spent_frequency = ($totalSpentCustomer / $totalcustsmin1order['totalcusts']);
         }
-        if ($allRequestCustomers) {
-            $order_frequency = ($allRequest['totalOrder'] / $allRequestCustomers['totalCustomers']);
+        if ( ($totalcustsmin1order['totalcusts'] > 0)) {
+            $order_frequency = ($totalorderscustsmin1order['totalwash'] / $totalcustsmin1order['totalcusts']);
         }
 
-        if ($daysSinceCustomerCreate) {
-            $order_frequency_days = ($daysSinceCustomerCreate['CustomerCreatedDays'] / $CustomerTotalordersCount['orders']);
+        if ($daysSinceCustomerCreate && ($totalcustsmin1order['totalcusts'] > 0)) {
+            $order_frequency_days = ($daysSinceCustomerCreate['CustomerCreatedDays'] / $totalcustsmin1order['totalcusts']);
         }
 
         echo json_encode(array('spent_frequency' => $spent_frequency, 'order_frequency' => $order_frequency, 'order_frequency_days' => $order_frequency_days));
         die;
     }
-
+    
     public function actionsearchcustomers() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {

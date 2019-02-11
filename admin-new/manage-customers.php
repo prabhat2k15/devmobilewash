@@ -195,11 +195,11 @@ $allcustomersFrequency = json_decode($result);
                                 </li>
                                 <li>|</li>
                                 <li>
-                                    <label>Average Total Orders (min. 1 order):</label><span><?= number_format($allcustomersFrequency->order_frequency, 2); ?></span>
+                                    <label>Average Total Orders (min. 1 order):</label><span> <?= number_format($allcustomersFrequency->order_frequency, 2); ?></span>
                                 </li>
                                 <li>|</li>
                                 <li>
-                                    <label>Average Order Frequency (min. 1 order):</label><span><?= number_format($allcustomersFrequency->order_frequency_days, 2); ?> days</span>
+                                    <label>Average Order Frequency (min. 1 order):</label><span> <?= number_format($allcustomersFrequency->order_frequency_days, 2); ?> days</span>
                                 </li>
                             </ul>
                         </div>
