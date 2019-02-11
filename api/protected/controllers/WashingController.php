@@ -3084,6 +3084,9 @@ class WashingController extends Controller {
                     }
                 }
             }
+	    
+	    Washingrequests::model()->updateByPk($wash_request_id, array("all_reject_ids" => '', "agent_reject_ids" => ''));
+             Washingrequests::model()->updateAll(array("all_reject_ids" => '', "agent_reject_ids" => ''), 'status=:status', array(':status' => 0));
         }
 
         if ($washer_arrive_hit == 1) {
