@@ -264,7 +264,7 @@ if ($jsondataTestMessage->TestMessage->message) {
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Test Number<span style="color: red;">*</span></label>
                                     <div class="col-md-3">
-                                        <input type="text" class="form-control phoneNumber" id="phoneNumber" name="phone" required=""  placeholder="Add number">
+                                        <input type="text" class="form-control phoneNumber" id="phoneNumber" name="phone" required="required"  placeholder="Add number">
 
                                     </div>
                                 </div>
@@ -274,7 +274,7 @@ if ($jsondataTestMessage->TestMessage->message) {
                                         <!-- <select class="form-control" id="testNumbers"  multiple="multiple">
                                             <option >Select Phone</option>
                                         <?php foreach ($jsondataTestNumber->testNumbers as $val) { ?>
-                                                                                                                                                <option data-id="<?= $val->id ?>" value="<?= $val->phone ?>"><?= $val->phone ?></option>
+                                                                                                                                                    <option data-id="<?= $val->id ?>" value="<?= $val->phone ?>"><?= $val->phone ?></option>
                                         <?php } ?>
                                         </select> -->
                                         <div class="dropdown cq-dropdown" data-name='statuses'>

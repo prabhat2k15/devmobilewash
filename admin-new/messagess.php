@@ -37,7 +37,6 @@ if (!empty($_GET['action'])) {
 }
 
 if (!empty($_POST['submit'])) {
-
     $id = $_POST['id'];
     $phone = $_POST['phone'];
     $message = $_POST['message'];
@@ -67,9 +66,8 @@ if (!empty($_POST['submit'])) {
 
     foreach ($phone as $phonenumber) {
         $phonenumber = trim($phonenumber);
-        //echo $phonenumber;
-        //echo "<br>";
-        //continue;
+        $phonenumber = filter_var($phonenumber, FILTER_SANITIZE_NUMBER_INT);
+        $phonenumber = str_replace('-', '', $phonenumber);
         if (!empty($media)) {
             $url = ROOT_URL . '/api/index.php?r=twilio/sendsms&tonumber=' . $phonenumber . '&fromnumber=' . $mw_from_mumbers[$fromindex];
         } else {
@@ -82,6 +80,8 @@ if (!empty($_POST['submit'])) {
         curl_setopt($handle, CURLOPT_POSTFIELDS, $message_data);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($handle);
+//        print_r($result);
+//        die;
         curl_close($handle);
         $jsondata = json_decode($result);
         $result_code = $jsondata->status;
@@ -231,7 +231,7 @@ $result_code = $jsondata->result;
                                                 <input type="hidden" name="id" value="<?php echo $responsemesage->id; ?>"></td></tr>
 
                                         <tr><td>
-                                                <input type="hidden" name="phone" value="<?php echo $responsemesage->phone; ?>"></td></tr>
+                                                <input type="hidden" class="Unmask" name="phone" value="<?php echo $responsemesage->phone; ?>"></td></tr>
                                         <tr><td>
                                                 <input type="hidden" name="message" value="<?php echo str_replace('"', 'â€?', $responsemesage->message); ?>"></td></tr>
                                         <tr><td>
@@ -268,8 +268,8 @@ foreach ($jsondata as $response) {
         ?>
 
         <script>
-                                                function myFunction(el) {
 
+                                                function myFunction(el) {
                                                     if (confirm("Are you sure?")) {
                                                         $('#sumit_' + el).trigger('click');
                                                         return true;
@@ -297,3 +297,10 @@ foreach ($jsondata as $response) {
         display:none;
     }
 </style>
+
+<script>
+    $(document).ready(function () {
+        $('.Unmask').unmask();
+    });
+
+</script>
