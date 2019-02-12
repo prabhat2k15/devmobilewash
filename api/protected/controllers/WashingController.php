@@ -15085,7 +15085,7 @@ public function actiongetallschedulewashes() {
             /* ------- get nearest agents --------- */
 
             $handle = curl_init(ROOT_URL . "/api/index.php?r=agents/getnearestagents");
-            $data = array('wash_request_id' => $wash_request_id, 'ignore_offline' => 2, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
+            $data = array('wash_request_id' => $wash_request_id, 'ignore_offline' => 1, "api_password" => AES256CBC_API_PASS, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
             curl_setopt($handle, CURLOPT_POST, true);
             curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
             curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
@@ -15127,7 +15127,7 @@ public function actiongetallschedulewashes() {
 
                         $notify_msg = urlencode($message2);
 
-                        $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                        $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type."&notification_type=wash_now_notify";
                         //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
                         //print_r($notifyurl);
                         $ch = curl_init();

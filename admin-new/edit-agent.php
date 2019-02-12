@@ -305,8 +305,16 @@ $profiledetail = json_decode($result);
 </style>
 <?php if ($jsondata_permission->users_type != 'admin'): ?>
 <style>
-    #edit_agent_form input{
+    #edit_agent_form input, #edit_agent_form select, #edit_agent_form textarea{
 	pointer-events: none; 
+    }
+    
+    #edit_agent_form .image-upload-btn{
+	display: none;
+    }
+    
+     #edit_agent_form select[name='block_washer'], #edit_agent_form textarea[name='washer_note'], #edit_agent_form select[name='decals_installed']{
+	pointer-events: auto; 
     }
 </style>
 <?php endif; ?>
@@ -858,7 +866,7 @@ $profiledetail = json_decode($result);
                     </div>
                     <!--/row-->
                 </div>
-                <?php if ($jsondata_permission->users_type == 'admin'): ?>
+                
 		<div class="form-actions">
                     <div class="row" style="text-align: center;">
                         <div class="clear">&nbsp;</div>
@@ -873,7 +881,7 @@ $profiledetail = json_decode($result);
                         <div class="col-md-6"> </div>
                     </div>
                 </div>
-		<?php endif; ?>
+		
         </form>
 
 
