@@ -101,9 +101,9 @@ if (!empty($_POST['addTestNumber'])) {
     $result_code = $jsondata->result;
 
     //exit;
-    if ($response == "Test number insearted  successfully" && $result_code == "true") {
+    if ($response == "Test number inserted  successfully" && $result_code == "true") {
 
-        $msg = 'Test number insearted  successfully';
+        $msg = 'Test number inserted  successfully';
         ?>
         <!--        <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/messagess.php"</script>-->
         <?php
@@ -225,7 +225,7 @@ if ($jsondataTestMessage->TestMessage->message) {
         top: 17px;
         position: relative;
     }
-    
+
     .btn.dropdown-toggle{
         width:100%;
         text-align:left;
@@ -263,20 +263,20 @@ if ($jsondataTestMessage->TestMessage->message) {
                         <!-- BEGIN FORM-->
                         <form action="" method="post" class="form-horizontal form-bordered" >
                             <div class="form-body">
-                                <div class="form-group">
+                                <div class="form-group hide" >
                                     <label class="control-label col-md-3">Test Number<span style="color: red;">*</span></label>
                                     <div class="col-md-3">
-                                        <input type="text" class="form-control phoneNumber" id="phoneNumber" name="phone" required="required"  placeholder="Add number">
+                                        <input type="hidden" class="form-control phoneNumber hide" id="phoneNumber" name="phone" required="required"  placeholder="Add number">
 
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Phone<span style="color: red;">*</span></label>
+                                    <label class="control-label col-md-3">Test Number<span style="color: red;">*</span></label>
                                     <div class="col-md-3">
                                         <!-- <select class="form-control" id="testNumbers"  multiple="multiple">
                                             <option >Select Phone</option>
                                         <?php foreach ($jsondataTestNumber->testNumbers as $val) { ?>
-                                                                                                                                                        <option data-id="<?= $val->id ?>" value="<?= $val->phone ?>"><?= $val->phone ?></option>
+                                                                                                                                                                                                <option data-id="<?= $val->id ?>" value="<?= $val->phone ?>"><?= $val->phone ?></option>
                                         <?php } ?>
                                         </select> -->
                                         <div class="dropdown cq-dropdown" data-name='statuses'>
@@ -490,8 +490,14 @@ if ($jsondataTestMessage->TestMessage->message) {
 
     }
 
+    $(".slct-number").on("click", function () {
+        setTimeout(function () {
+            var dropDownVal = $('#btndropdown').text()
+            $('#phoneNumber').val(dropDownVal);
 
+        }, 1000);
 
+    });
 
 
 </script>
