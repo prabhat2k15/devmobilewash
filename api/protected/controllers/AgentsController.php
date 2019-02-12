@@ -6838,23 +6838,22 @@ class AgentsController extends Controller {
                             'EndpointArn' => $device_exists[0]['endpoint_arn'],
                         ]);
 
-                        if($device_exists[0]['device_type'] == 'IOS'){
-                          $aws_subscribe_result = $aws_client->subscribe([
-                            'Endpoint' => $device_exists[0]['endpoint_arn'],
-                            'Protocol' => 'application',
-                            'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev',
-                        ]);  
-                        }
-                        else{
+                        if ($device_exists[0]['device_type'] == 'IOS') {
                             $aws_subscribe_result = $aws_client->subscribe([
-                            'Endpoint' => $device_exists[0]['endpoint_arn'],
-                            'Protocol' => 'application',
-                            'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev',
-                        ]);   
+                                'Endpoint' => $device_exists[0]['endpoint_arn'],
+                                'Protocol' => 'application',
+                                'ReturnSubscriptionArn' => true,
+                                'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev',
+                            ]);
+                        } else {
+                            $aws_subscribe_result = $aws_client->subscribe([
+                                'Endpoint' => $device_exists[0]['endpoint_arn'],
+                                'Protocol' => 'application',
+                                'ReturnSubscriptionArn' => true,
+                                'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev',
+                            ]);
                         }
-                        
+
                         $endpoint_arn = $device_exists[0]['endpoint_arn'];
                     } catch (exception $e) {
                         
@@ -6880,22 +6879,21 @@ class AgentsController extends Controller {
                             'Token' => $device_token,
                         ]);
 
- if($device_exists[0]['device_type'] == 'IOS'){
-                        $aws_subscribe_result = $aws_client->subscribe([
-                            'Endpoint' => $aws_result['EndpointArn'],
-                            'Protocol' => 'application',
-                            'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev',
-                        ]);
- }
- else{
-  $aws_subscribe_result = $aws_client->subscribe([
-                            'Endpoint' => $aws_result['EndpointArn'],
-                            'Protocol' => 'application',
-                            'ReturnSubscriptionArn' => true,
-                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev',
-                        ]);   
- }
+                        if ($device_exists[0]['device_type'] == 'IOS') {
+                            $aws_subscribe_result = $aws_client->subscribe([
+                                'Endpoint' => $aws_result['EndpointArn'],
+                                'Protocol' => 'application',
+                                'ReturnSubscriptionArn' => true,
+                                'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev',
+                            ]);
+                        } else {
+                            $aws_subscribe_result = $aws_client->subscribe([
+                                'Endpoint' => $aws_result['EndpointArn'],
+                                'Protocol' => 'application',
+                                'ReturnSubscriptionArn' => true,
+                                'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev',
+                            ]);
+                        }
                         $endpoint_arn = $aws_result['EndpointArn'];
                     } catch (exception $e) {
                         
@@ -6946,22 +6944,21 @@ class AgentsController extends Controller {
                         'Token' => $device_token,
                     ]);
 
-if ($device_type == 'IOS'){
-                      $aws_subscribe_result = $aws_client->subscribe([
-                        'Endpoint' => $aws_result['EndpointArn'],
-                        'Protocol' => 'application',
-                        'ReturnSubscriptionArn' => true,
-                        'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev',
-                    ]);  
-}
-else{
-                      $aws_subscribe_result = $aws_client->subscribe([
-                        'Endpoint' => $aws_result['EndpointArn'],
-                        'Protocol' => 'application',
-                        'ReturnSubscriptionArn' => true,
-                        'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev',
-                    ]);  
-}
+                    if ($device_type == 'IOS') {
+                        $aws_subscribe_result = $aws_client->subscribe([
+                            'Endpoint' => $aws_result['EndpointArn'],
+                            'Protocol' => 'application',
+                            'ReturnSubscriptionArn' => true,
+                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_ios_dev',
+                        ]);
+                    } else {
+                        $aws_subscribe_result = $aws_client->subscribe([
+                            'Endpoint' => $aws_result['EndpointArn'],
+                            'Protocol' => 'application',
+                            'ReturnSubscriptionArn' => true,
+                            'TopicArn' => 'arn:aws:sns:us-west-2:461900685840:washerschedpush_android_dev',
+                        ]);
+                    }
 
                     $endpoint_arn = $aws_result['EndpointArn'];
                 } catch (exception $e) {
@@ -6982,7 +6979,7 @@ else{
         );
         echo json_encode($json);
     }
-    
+
     public function actionsubmerchant_find() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
@@ -7815,17 +7812,18 @@ else{
     }
 
     public function actionCronJobUninstallApp() {
+        //echo API_ACCESS_KEY_ANDRIOD; die;
         if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
             echo "Invalid api key";
             die();
         }
-        $user_devices = Yii::app()->db->createCommand("SELECT  agent_devices.agent_id FROM agent_devices WHERE  device_type='ANDROID' group by agent_id ORDER BY last_used DESC ")->queryAll();
+        $user_devices = Yii::app()->db->createCommand("SELECT  agent_devices.agent_id FROM agent_devices Where device_type='ANDROID' group by agent_id ORDER BY last_used DESC ")->queryAll();
         $wash_id = "";
         if (count($user_devices)) {
 
             foreach ($user_devices as $device) {
                 /* --- notification call --- */
-                $user_devices_detail = Yii::app()->db->createCommand("SELECT agent_devices.* FROM  agent_devices   WHERE agent_id=" . $device['agent_id'] . " AND  device_type='ANDROID'  ORDER BY last_used DESC LIMIT 1")->queryRow();
+                $user_devices_detail = Yii::app()->db->createCommand("SELECT agent_devices.* FROM  agent_devices   WHERE agent_id=" . $device['agent_id'] . " AND device_type='ANDROID'  ORDER BY last_used DESC LIMIT 1")->queryRow();
                 //define('API_ACCESS_KEY', 'AAAAKHWvBtc:APA91bH7eWGNgvoZQxe56zzxeE2cxW4qVG_5dc9iwpF73R0ph0govruyXQ-1QK-pE_VxLeBewkXsnKWecuVp42IZKJSB0Z6yo5x44w6ytelM7HXWHSItSViPO4TmzscYddTEmcqNi3ae');
                 $registrationIds = array($user_devices_detail['device_token']);
 
@@ -7863,14 +7861,19 @@ else{
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
                 $result = curl_exec($ch);
                 $result = json_decode($result);
+                //print_r($result);
                 if ($result->success == 0) {
                     if ($result->results[0]->error == "NotRegistered") {
-                        echo "SMS disabled FOR Agent " . $user_devices_detail['agent_id'];
+
                         $result = Yii::app()->db->createCommand("UPDATE agents SET sms_control=0  WHERE id=" . $user_devices_detail['agent_id'])->query();
+                        echo json_encode(['message' => "SMS disabled FOR Agent " . $user_devices_detail['agent_id']]);
                     }
+                } else {
+                    echo json_encode(['message' => "SMS enabled FOR Agent " . $user_devices_detail['agent_id']]);
                 }
                 curl_close($ch);
-                echo "SMS enabled FOR Agent";
+
+
                 /* --- notification call end --- */
 
 

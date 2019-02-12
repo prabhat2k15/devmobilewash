@@ -156,13 +156,13 @@ if (!empty($_POST['DeleteTestNumber'])) {
 <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <script type="text/javascript">
-            $(document).ready(function () {
-                $('#example1').dataTable({
-                    "pageLength": 20,
-                    "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
-                });
+    $(document).ready(function () {
+        $('#example1').dataTable({
+            "pageLength": 20,
+            "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
+        });
 
-            });
+    });
 </script>
 <?php include('right-sidebar.php') ?>
 <?php
@@ -225,9 +225,11 @@ if ($jsondataTestMessage->TestMessage->message) {
         top: 17px;
         position: relative;
     }
+    
     .btn.dropdown-toggle{
         width:100%;
         text-align:left;
+        overflow: hidden;
         background:none !important;
         color:#000 !important;
     }
@@ -274,7 +276,7 @@ if ($jsondataTestMessage->TestMessage->message) {
                                         <!-- <select class="form-control" id="testNumbers"  multiple="multiple">
                                             <option >Select Phone</option>
                                         <?php foreach ($jsondataTestNumber->testNumbers as $val) { ?>
-                                                                                                                                                    <option data-id="<?= $val->id ?>" value="<?= $val->phone ?>"><?= $val->phone ?></option>
+                                                                                                                                                        <option data-id="<?= $val->id ?>" value="<?= $val->phone ?>"><?= $val->phone ?></option>
                                         <?php } ?>
                                         </select> -->
                                         <div class="dropdown cq-dropdown" data-name='statuses'>
@@ -420,73 +422,73 @@ if ($jsondataTestMessage->TestMessage->message) {
 <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script type="text/javascript">
-            function getval(sel) {
-                var val = sel.value;
-                if ((val == 'custom')) {
-                    $('#phone').show();
-                    $('#phone input[name=phone]').attr('required', 'required');
-                    $('#message').show();
-                    $('#media').show();
-                    $('#save').show();
-                }
+    function getval(sel) {
+        var val = sel.value;
+        if ((val == 'custom')) {
+            $('#phone').show();
+            $('#phone input[name=phone]').attr('required', 'required');
+            $('#message').show();
+            $('#media').show();
+            $('#save').show();
+        }
 
-                if ((val == 'all_washers')) {
-                    $('#phone').hide();
-                    $('#phone input[name=phone]').removeAttr('required');
-                    $('#message').show();
-                    $('#media').show();
-                    $('#save').show();
-                }
+        if ((val == 'all_washers')) {
+            $('#phone').hide();
+            $('#phone input[name=phone]').removeAttr('required');
+            $('#message').show();
+            $('#media').show();
+            $('#save').show();
+        }
+    }
+
+    $('#testNumbers').on('change', function () {
+        console.log($(this).val());
+        if ($(this).val() == "Select Phone") {
+            $('#Modal').addClass("hide");
+        } else {
+            $('#Modal').removeClass("hide");
+        }
+        $('#phoneNumber').val($(this).val());
+        $('#TestNumberId').val($(this).find(':selected').attr('data-id'));
+    });
+
+    $('#Modal').on('click', function () {
+        //$('#testNumbers').val();
+        $('#phoneUpdate').val($('#testNumbers').val());
+    });
+
+
+    $(function () {
+        $('.cq-dropdown').dropdownCheckboxes();
+    });
+
+    $("#addnew_poup").on("click", function () {
+        $('#addNewModal').modal('show');
+    });
+    jQuery("#phoneUpdate,#AddPhoneNumber").mask('(000) 000-0000');
+
+    function DeleteTestNumber() {
+        var Phone = $('#phoneNumber').val();
+        var form_data = new FormData();
+        form_data.append('phone', Phone);
+        form_data.append('api_token', "<?php echo $finalusertoken; ?>");
+        form_data.append('t1', "<?php echo $mw_admin_auth_arr[2]; ?>");
+        form_data.append('t2', "<?php echo $mw_admin_auth_arr[3]; ?>");
+        form_data.append('user_type', "admin");
+        form_data.append('user_id', "<?php echo $mw_admin_auth_arr[4]; ?>");
+        $.ajax({
+            url: "<?php echo ROOT_URL; ?>/api/index.php?r=twilio/DeleteTestMessges&phone=" + Phone,
+            type: "GET",
+            //data: form_data,
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                location.reload();
             }
+        });
 
-            $('#testNumbers').on('change', function () {
-                console.log($(this).val());
-                if ($(this).val() == "Select Phone") {
-                    $('#Modal').addClass("hide");
-                } else {
-                    $('#Modal').removeClass("hide");
-                }
-                $('#phoneNumber').val($(this).val());
-                $('#TestNumberId').val($(this).find(':selected').attr('data-id'));
-            });
-
-            $('#Modal').on('click', function () {
-                //$('#testNumbers').val();
-                $('#phoneUpdate').val($('#testNumbers').val());
-            });
-
-
-            $(function () {
-                $('.cq-dropdown').dropdownCheckboxes();
-            });
-
-            $("#addnew_poup").on("click", function () {
-                $('#addNewModal').modal('show');
-            });
-            jQuery("#phoneUpdate,#AddPhoneNumber").mask('(000) 000-0000');
-
-            function DeleteTestNumber() {
-                var Phone = $('#phoneNumber').val();
-                var form_data = new FormData();
-                form_data.append('phone', Phone);
-                form_data.append('api_token', "<?php echo $finalusertoken; ?>");
-                form_data.append('t1', "<?php echo $mw_admin_auth_arr[2]; ?>");
-                form_data.append('t2', "<?php echo $mw_admin_auth_arr[3]; ?>");
-                form_data.append('user_type', "admin");
-                form_data.append('user_id', "<?php echo $mw_admin_auth_arr[4]; ?>");
-                $.ajax({
-                    url: "<?php echo ROOT_URL; ?>/api/index.php?r=twilio/DeleteTestMessges&phone=" + Phone,
-                    type: "GET",
-                    //data: form_data,
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    success: function (data) {
-                        location.reload();
-                    }
-                });
-
-            }
+    }
 
 
 
