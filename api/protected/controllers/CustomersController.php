@@ -13813,14 +13813,14 @@ class CustomersController extends Controller {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
 
-        /*if ($ip != MW_SERVER_IP) {
+        if ($ip != MW_SERVER_IP) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }*/
+        }
 
         $all_customers = Yii::app()->db->createCommand("SELECT * FROM `customers` WHERE client_position = '" . APP_ENV . "' AND is_avgorderfrequency_update_pending = 1 ORDER BY id ASC LIMIT 2000")->queryAll();
 
