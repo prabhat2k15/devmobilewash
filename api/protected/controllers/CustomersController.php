@@ -7305,7 +7305,7 @@ class CustomersController extends Controller {
         foreach ($customers as $customername) {
             $totalwash = 0;
             $customersid = $customername->id;
-            $CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests` WHERE  customer_id =" . $customername->id)->queryRow();
+            //$CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests` WHERE  customer_id =" . $customername->id)->queryRow();
             $customerCreatedDate = date('Y-m-d', strtotime($customername->created_date));
             $current = date('Y-m-d');
             $current = date_create($current);
@@ -7313,11 +7313,11 @@ class CustomersController extends Controller {
             $diff = date_diff($current, $customerCreatedDate);
             $daysSinceCustomerCreate = $diff->format("%a");
             //print_r($daysSinceCustomerCreate); 
-            if ($daysSinceCustomerCreate != 0 && $CustomerTotalordersCount['orders']) {
+           /* if ($daysSinceCustomerCreate != 0 && $CustomerTotalordersCount['orders']) {
                 $order_frequency = ($daysSinceCustomerCreate / $CustomerTotalordersCount['orders']);
             } else {
                 $order_frequency = "0";
-            }
+            }*/
 
 
             $totalwash_arr = Washingrequests::model()->findAllByAttributes(array("status" => 4, "customer_id" => $customername->id));
@@ -7385,7 +7385,7 @@ class CustomersController extends Controller {
             $json['city'] = $city;
             $json['how_hear_mw'] = $customername->how_hear_mw;
             $json['total_spent'] = number_format($totalpaid, 2);
-            $json['order_frequency'] = $order_frequency;
+            $json['order_frequency'] = $customername->avg_order_frequency;
             $json['totalSpentAverage'] = number_format($totalSpentAverage, 2);
             $json['totalOrderAverage'] = number_format($totalOrderAverage, 2);
             $json['client_science'] = date('m-d-Y h:i A', strtotime($customername->created_date));
@@ -7427,6 +7427,8 @@ class CustomersController extends Controller {
         $totalcustsmin1order = Yii::app()->db->createCommand("SELECT COUNT(id) as totalcusts FROM `customers` WHERE total_wash > 0")->queryRow();
         
         $totalorderscustsmin1order = Yii::app()->db->createCommand("SELECT SUM(total_wash) as totalwash FROM `customers` WHERE total_wash > 0")->queryRow();
+	
+	$totalorderfrequencycustsmin1order = Yii::app()->db->createCommand("SELECT SUM(avg_order_frequency) as totalfrequency FROM `customers` WHERE total_wash > 0")->queryRow();
 
         $allRequest = Yii::app()->db->createCommand("SELECT SUM(w.net_price) as spent,count(w.id) as totalOrder FROM `washing_requests` w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.total_wash > 0 AND w.status=4 ")->queryRow();
 
@@ -7442,8 +7444,8 @@ class CustomersController extends Controller {
             $order_frequency = ($totalorderscustsmin1order['totalwash'] / $totalcustsmin1order['totalcusts']);
         }
 
-        if ($daysSinceCustomerCreate && ($totalcustsmin1order['totalcusts'] > 0)) {
-            $order_frequency_days = ($daysSinceCustomerCreate['CustomerCreatedDays'] / $totalcustsmin1order['totalcusts']);
+        if (($totalcustsmin1order['totalcusts'] > 0)) {
+            $order_frequency_days = ($totalorderfrequencycustsmin1order['totalfrequency'] / $totalcustsmin1order['totalcusts']);
         }
 
         echo json_encode(array('spent_frequency' => $spent_frequency, 'order_frequency' => $order_frequency, 'order_frequency_days' => $order_frequency_days));
@@ -13778,6 +13780,73 @@ class CustomersController extends Controller {
 
         echo json_encode($json);
         die();
+    }
+    
+    public function actioncustavgorderfrequencycron() {
+        if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
+            echo "Invalid api key";
+            die();
+        }
+
+        /* $api_token = Yii::app()->request->getParam('api_token');
+          $t1 = Yii::app()->request->getParam('t1');
+          $t2 = Yii::app()->request->getParam('t2');
+          $user_type = Yii::app()->request->getParam('user_type');
+          $user_id = Yii::app()->request->getParam('user_id');
+
+          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+          if(!$token_check){
+          $json = array(
+          'result'=> 'false',
+          'response'=> 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
+
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        /*if ($ip != MW_SERVER_IP) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }*/
+
+        $all_customers = Yii::app()->db->createCommand("SELECT * FROM `customers` WHERE client_position = '" . APP_ENV . "' AND is_avgorderfrequency_update_pending = 1 ORDER BY id ASC LIMIT 2000")->queryAll();
+
+        if (count($all_customers) > 0) {
+            foreach ($all_customers as $ind => $cust) {
+		$order_frequency = "0";
+		 $CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests` WHERE  customer_id =" . $cust['id'])->queryRow();
+            $customerCreatedDate = date('Y-m-d', strtotime($cust['created_date']));
+            $current = date('Y-m-d');
+            $current = date_create($current);
+            $customerCreatedDate = date_create($customerCreatedDate);
+            $diff = date_diff($current, $customerCreatedDate);
+            $daysSinceCustomerCreate = $diff->format("%a");
+            //print_r($daysSinceCustomerCreate); 
+            if ($daysSinceCustomerCreate != 0 && $CustomerTotalordersCount['orders']) {
+                $order_frequency = ($daysSinceCustomerCreate / $CustomerTotalordersCount['orders']);
+            } else {
+                $order_frequency = "0";
+            }
+
+                Customers::model()->updateByPk($cust['id'], array('avg_order_frequency' => number_format($order_frequency, 2), 'is_avgorderfrequency_update_pending' => 0));
+            }
+        }
+	else{
+		Customers::model()->updateAll(array("is_avgorderfrequency_update_pending" => 1), 'block_client=0');	
+	}
     }
 
 }
