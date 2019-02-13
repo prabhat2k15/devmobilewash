@@ -1020,4 +1020,56 @@ class VehiclesController extends Controller {
         echo json_encode($json);
     }
 
+    public function actionDeleteVehicelImage() {
+//        if (Yii::app()->request->getParam('key') != API_KEY) {
+//            echo "Invalid api key";
+//            die();
+//        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        $result = 'false';
+        $response = 'pass required parameters';
+
+        $vehicle_id = Yii::app()->request->getParam('vehicle_id');
+        $washRequestId = Yii::app()->request->getParam('wash_request_id');
+        $admin_username = Yii::app()->request->getParam('admin_username');
+        $vehicle_name = Yii::app()->request->getParam('vehicle_name');
+        $SiteUrl = Yii::app()->getBaseUrl(true);
+        $name = 'defimage.png';
+        $image = $SiteUrl . '/images/veh_img/' . $name;
+        $resUpdate = Yii::app()->db->createCommand()->update('customer_vehicals', array('vehicle_image' => $image), "id=:id", array(":id" => $vehicle_id));
+        $result = 'true';
+        $response = 'update successful';
+        $washeractionlogdata = array(
+            'wash_request_id' => $washRequestId,
+            'admin_username' => $admin_username,
+            'action' => 'deleted_vehicle_image',
+            'addi_detail' => $vehicle_name,
+            'action_date' => date('Y-m-d H:i:s'));
+        $result = Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+        if ($result) {
+            $json = array(
+                'result' => $result,
+                'response' => $response,
+            );
+            echo json_encode($json);
+        }
+    }
+
 }

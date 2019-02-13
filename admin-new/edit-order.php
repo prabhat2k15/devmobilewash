@@ -835,7 +835,7 @@ if ($getorder->transaction_id) {
                                             <?php if (($getorder->wash_later_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Surge Fee: <?php echo "+$" . number_format($getorder->wash_later_fee, 2); ?>)</span><?php endif; ?>
                                             <?php if (($getorder->waived_fee > 0)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Waived Fee: <?php echo "-$" . number_format($getorder->waived_fee, 2); ?>)</span><?php endif; ?>
 
-                                                <?php if (($getorder->transaction_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Transaction Fee: <?php echo "$" . number_format($getorder->transaction_fee, 2); ?>)</span><?php endif; ?><?php if (($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Service Fee: +$1.00)</span><?php endif; ?><?php if (($getorder->tip_amount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Tip: <?php echo "+$" . number_format($getorder->tip_amount, 2); ?>)</span><?php endif; ?><?php if (($getorder->coupon_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(<?php echo $getorder->coupon_code; ?>: <?php echo "-$" . number_format($getorder->coupon_discount, 2); ?>)</span><?php endif; ?><?php if (($getorder->company_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">Company Discount: <?php echo "-$" . number_format($getorder->company_discount, 2); ?></span><?php endif; ?><?php if (($getorder->fifth_wash_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(5th Wash Discount: <?php echo "-$" . number_format($getorder->fifth_wash_discount, 2); ?>)</span><?php endif; ?>
+                                            <?php if (($getorder->transaction_fee > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Transaction Fee: <?php echo "$" . number_format($getorder->transaction_fee, 2); ?>)</span><?php endif; ?><?php if (($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Service Fee: +$1.00)</span><?php endif; ?><?php if (($getorder->tip_amount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(Tip: <?php echo "+$" . number_format($getorder->tip_amount, 2); ?>)</span><?php endif; ?><?php if (($getorder->coupon_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(<?php echo $getorder->coupon_code; ?>: <?php echo "-$" . number_format($getorder->coupon_discount, 2); ?>)</span><?php endif; ?><?php if (($getorder->company_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">Company Discount: <?php echo "-$" . number_format($getorder->company_discount, 2); ?></span><?php endif; ?><?php if (($getorder->fifth_wash_discount > 0) && ($getorder->status != 5) && ($getorder->status != 6) && ($getorder->status != 7)): ?> <span style="font-size: 18px; display: block; text-align: right; clear: both;">(5th Wash Discount: <?php echo "-$" . number_format($getorder->fifth_wash_discount, 2); ?>)</span><?php endif; ?>
                                             <span style="font-weight: 500;font-size: 16px; display: block; clear: both; text-align: right; margin-top: 10px;">Agent Total: <?php
                                                 if ($getorder->status == 5 || $getorder->status == 6 || $getorder->status == 7) {
                                                     echo "$" . number_format($getorder->washer_cancel_fee, 2);
@@ -865,13 +865,13 @@ if ($getorder->transaction_id) {
                                                     }
                                                 }
                                                 ?></span><div style="clear: both;"></div>
-                                            <?php if ($getorder->payment_type == 'free'): ?>
+                                                <?php if ($getorder->payment_type == 'free'): ?>
                                                 <p style="margin: 5px 0; text-align: center;">(Free wash applied)</p>
-                                        <?php endif; ?>
+                                            <?php endif; ?>
                                         </div>
                                         <?php if (($getorder->transaction_id) && ($transaction_details->transaction_details->amount != $getorder->net_price) && (($transaction_details->transaction_details->status == 'submitted_for_settlement') || ($transaction_details->transaction_details->status == 'settling') || ($transaction_details->transaction_details->status == 'settled'))): ?>
                                             <p style="margin: 0; font-size: 16px; text-align: center; font-weight: bold; margin-top: 8px; color: red;">Braintree Custom Payment</p>
-<?php endif; ?>
+                                        <?php endif; ?>
                                     </div>
 
                                     <?php if (($getorder->wash_now_fee > 0) || ($getorder->wash_later_fee > 0)): ?>
@@ -905,7 +905,7 @@ if ($getorder->transaction_id) {
                                         <?php endif; ?>
                                     <?php endif; ?>
 
-<?php if ((!$getorder->transaction_id) || (($transaction_details->transaction_details->status != 'authorized') && ($transaction_details->transaction_details->status != 'submitted_for_settlement') && ($transaction_details->transaction_details->status != 'settling') && ($transaction_details->transaction_details->status != 'settled') && (!$getorder->admin_submit_for_settle))): ?>
+                                    <?php if ((!$getorder->transaction_id) || (($transaction_details->transaction_details->status != 'authorized') && ($transaction_details->transaction_details->status != 'submitted_for_settlement') && ($transaction_details->transaction_details->status != 'settling') && ($transaction_details->transaction_details->status != 'settled') && (!$getorder->admin_submit_for_settle))): ?>
 
                                         <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #e42400; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="process-payment">Process Payment</div>
                                     <?php else: ?>
@@ -930,7 +930,7 @@ if ($getorder->transaction_id) {
                                         <?php endif; ?>
                                     <?php endif; ?>
                                     <?php if ($getorder->status != 5 && $getorder->status != 6 && $getorder->status != 7 && (!$getorder->admin_submit_for_settle)): ?>
-    <?php if ($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'scheduler'): ?>
+                                        <?php if ($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'scheduler'): ?>
 
                                             <div style="float: right; font-size: 18px; margin-top: 3px; background: #e47e00; cursor: pointer; color: #fff; padding: 8px 35px; margin-right: 20px;" class="<?php
                                             if ($getorder->status == 0) {
@@ -941,7 +941,7 @@ if ($getorder->transaction_id) {
                                             ?>">Cancel Order</div>
 
                                         <?php endif; ?>
-<?php endif; ?>
+                                    <?php endif; ?>
                                     <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="client-receipt-send">Client Receipt</div>
                                     <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="agent-receipt-send">Detailer Receipt</div>
                                     <div style="float: right; font-size: 18px; margin-top: 3px; cursor: pointer; background: #006fcf; color: #fff; padding: 8px 35px; margin-right: 20px; margin-bottom: 15px;" class="company-receipt-send">Company Receipt</div>
@@ -959,7 +959,7 @@ if ($getorder->transaction_id) {
                                     <?php endif; ?>
                                     <?php if ($ordererror): ?>
                                         <p style="text-align: left; clear: both; margin-top: 0; background: #d40000; color: #fff; padding: 10px;"><?php echo $ordererror; ?></p>
-<?php endif; ?>
+                                    <?php endif; ?>
 
                                 </div>
 
@@ -969,7 +969,7 @@ if ($getorder->transaction_id) {
                                         <div class="tab-pane active" id="tab_1_1">
                                             <?php if (isset($_POST['zipcode-submit']) && $zipdata->result == 'false'): ?>
                                                 <p style="text-align: left; clear: both; background: #d40000; color: #fff; padding: 10px;"><?php echo $zipdata->response; ?></p>
-<?php endif; ?>
+                                            <?php endif; ?>
                                             <form action="" id="phone-order-form" method="post" enctype="multipart/form-data">
                                                 <div class="col-md-8" style="padding-left: 0; padding-right: 0;">
                                                     <div class="col-md-6">
@@ -989,9 +989,9 @@ if ($getorder->transaction_id) {
                                                                     echo $getorder->schedule_date;
                                                                 }
                                                                 ?>" required readonly />
-                                                            <?php else: ?>
+                                                                   <?php else: ?>
                                                                 <input type="text" name="sdate" id="sdate" style="width: 300px;" class="form-control " value="N/A" readonly />
-<?php endif; ?>
+                                                            <?php endif; ?>
 
                                                         </div>
                                                     </div>
@@ -1015,9 +1015,9 @@ if ($getorder->transaction_id) {
                                                                     echo $getorder->schedule_time;
                                                                 }
                                                                 ?>" required readonly />
-                                                            <?php else: ?>
+                                                                   <?php else: ?>
                                                                 <input type="text" name="stime" id="stime" style="width: 300px;" class="form-control " value="N/A" readonly />
-<?php endif; ?>
+                                                            <?php endif; ?>
                                                         </div>
                                                     </div>
 
@@ -1066,7 +1066,7 @@ if ($getorder->transaction_id) {
                                                         </div>
                                                     </div>
                                                     <div style="clear: both;"></div>
-<?php if ($getorder->is_scheduled): ?>
+                                                    <?php if ($getorder->is_scheduled): ?>
                                                         <h3 class="sec-heading" style="margin-top: 25px;">Re-Schedule Date & Time</h3>
 
                                                         <div class="col-md-12">
@@ -1093,11 +1093,11 @@ if ($getorder->transaction_id) {
                                                                     <p style="margin-top: 20px;"><input type="button" class="" value="Save" /></p>
                                                                 <?php } else { ?>
                                                                     <p style="margin-top: 20px;"><input type="button" class="reschedule_update" value="Save" /></p> 
-    <?php } ?>
+                                                                <?php } ?>
 
                                                             </div>
                                                         </div>
-<?php endif; ?>
+                                                    <?php endif; ?>
 
                                                     <h3 class="sec-heading" style="margin-top: 25px;">Device Info</h3>
 
@@ -1118,7 +1118,7 @@ if ($getorder->transaction_id) {
 
                                                     <h3 class="sec-heading" style="margin-top: 25px;">Location Info</h3>
 
-<?php if (count($custdetails->customer_locations)): ?>
+                                                    <?php if (count($custdetails->customer_locations)): ?>
 
                                                         <ul class="cust_locations">
                                                             <?php
@@ -1134,7 +1134,7 @@ if ($getorder->transaction_id) {
                                                         </ul>
 
                                                         <input type="hidden" name="loc_id" id="loc_id" value="<?php if ($first_loc_id) echo $first_loc_id; ?>" />
-<?php endif; ?>
+                                                    <?php endif; ?>
 
                                                     <p style="margin: 0; font-weight: bold; margin-top: 30px;"><a class="loc-add-trigger" href="#">+ ADD NEW LOCATION</a></p>
 
@@ -1227,6 +1227,13 @@ if ($getorder->transaction_id) {
                                                                     ?>
                                                                     <div class='regular-car-box' id='regular-car-box-<?php echo $ind + 1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
                                                                         <div class="upload_Vihicle_image">
+                                                                            <?php
+                                                                            if (strpos($veh->vehicle_image, ROOT_URL) !== false) {
+                                                                                $imageNmae = $veh->vehicle_image;
+                                                                            } else {
+                                                                                $imageNmae = ROOT_URL . "/api/images/veh_img/" . $veh->vehicle_image;
+                                                                            }
+                                                                            ?>
                                                                             <img style="width: 58%; clear: both;margin-top: 20px;" src="<?php
                                                                             if (strpos($veh->vehicle_image, ROOT_URL) !== false) {
                                                                                 echo $veh->vehicle_image;
@@ -1238,16 +1245,20 @@ if ($getorder->transaction_id) {
                                                                                 Upload Image
                                                                                 <input type="button" value="Browse" onclick="$(this).next().click();" />
 
-                                                                                <input type="file" name="vehicle_image" class="vehicle_image changeDefaultName" style="display: none;">
+                                                                                <input type="file" name="vehicle_image" class="vehicle_image changeDefaultName" id="<?php echo $veh->id; ?>" style="display: none;">
 
                                                                                 <input type="hidden" value="<?php echo $veh->id; ?>" name="vehicle_id" class="vehicle_id">
-                                                                                <input type="button" value="SAVE" class="submit_vih_image"><br>
-                                                                                <span class="disply-img-name img-name-box" title=""></span>
+                                                                                <input type="button" value="SAVE" class="submit_vih_image">
+                                                                                <?php if ($imageNmae != ROOT_URL . "/api/images/veh_img/defimage.png") { ?>
+                                                                                    <input type="button" id="<?php echo $veh->id; ?>" value="Delete" name="<?= $veh->brand_name ?>" class="delete_vih_image">
+                                                                                <?php } ?><br>
+                                                                                <span class="disply-img-name img-name-box-<?php echo $veh->id; ?>" title=""></span>
+
                                                                             </div>
                                                                         </div>
                                                                         <div style="clear: both;"></div>
 
-                                                                                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
+                                                                                                                                                                                                                                                                                                                                                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
                                                                         if ($veh->eco_friendly == 1) {
                                                                             echo "Yes";
                                                                         } else {
@@ -1280,7 +1291,7 @@ if ($getorder->transaction_id) {
                                                                             <p class="points-holder"><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img class="last" src="../images/gray-bubble.png" /></p>
                                                                         <?php elseif ($per_car_wash_points_arr[$point_index] == 5): ?>
                                                                             <p class="points-holder"><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img class="last" src="../images/blue-bubble2.png" /></p>
-        <?php endif; ?>
+                                                                        <?php endif; ?>
 
                                                                         <label class='control-label'>Price</label>
                                                                         <input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="$<?php echo $veh->vehicle_washing_price; ?>" />
@@ -1290,10 +1301,10 @@ if ($getorder->transaction_id) {
                                                                         <input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="$<?php echo number_format($veh_detail[7], 2); ?>" />-->
                                                                         <input type="hidden" name="handle_fees[]" value="1" />
 
-        <?php if ($veh->bundle_discount > 0): ?>
+                                                                        <?php if ($veh->bundle_discount > 0): ?>
                                                                             <label class='control-label'>Bundle Discount</label>
                                                                             <input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="-$<?php echo number_format($veh->bundle_discount, 2); ?>" />
-        <?php endif; ?>
+                                                                        <?php endif; ?>
                                                                         <input type="hidden" name="bundle_discs[]" value="<?php echo $veh->bundle_discount; ?>" />
 
                                                                         <p style="margin-top: 20px; <?php if ($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="exthandwax <?php if ($veh->exthandwax_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="exthandwax" value="12" <?php if ($veh->exthandwax_vehicle_fee > 0) echo "checked"; ?>> $12 Liquid Hand Wax </p>
@@ -1372,7 +1383,7 @@ if ($getorder->transaction_id) {
                                                                     $point_index++;
                                                                 endforeach;
                                                                 ?>
-<?php endif; ?>
+                                                            <?php endif; ?>
 
                                                         </div>
 
@@ -1415,6 +1426,13 @@ if ($getorder->transaction_id) {
                                                                     ?>
                                                                     <div class='classic-car-box' id='classic-car-box-<?php echo $ind + 1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
                                                                         <div class="upload_Vihicle_image">
+                                                                            <?php
+                                                                            if (strpos($veh->vehicle_image, ROOT_URL) !== false) {
+                                                                                $imageNmae = $veh->vehicle_image;
+                                                                            } else {
+                                                                                $imageNmae = ROOT_URL . "/api/images/veh_img/" . $veh->vehicle_image;
+                                                                            }
+                                                                            ?>
                                                                             <img style="width: 58%; clear: both;margin-top: 20px;" src="<?php
                                                                             if (strpos($veh->vehicle_image, ROOT_URL) !== false) {
                                                                                 echo $veh->vehicle_image;
@@ -1425,15 +1443,19 @@ if ($getorder->transaction_id) {
                                                                             <div class="upload_form" style="width:100%; float: left; margin:20px 5px;"> 
                                                                                 Upload Image
                                                                                 <input type="button" value="Browse" onclick="$(this).next().click();" />
-                                                                                <input type="file" name="vehicle_image" class="vehicle_image" style="display: none;">
+                                                                                <input type="file" name="vehicle_image" class="vehicle_image changeDefaultName" id="<?php echo $veh->id; ?>" style="display: none;">
                                                                                 <input type="hidden" value="<?php echo $veh->id; ?>" name="vehicle_id" class="vehicle_id">
-                                                                                <input type="button" value="SAVE" class="submit_vih_image"><br>
-                                                                                <span class="disply-img-name img-name-box" title=""></span>
+                                                                                <input type="button" value="SAVE" class="submit_vih_image">
+                                                                                <?php if ($imageNmae != ROOT_URL . "/api/images/veh_img/defimage.png") { ?>
+                                                                                    <input type="button" id="<?php echo $veh->id; ?>" name="<?= $veh->brand_name ?>" value="Delete" class="delete_vih_image">
+                                                                                <?php } ?>
+                                                                                <br>
+                                                                                <span class="disply-img-name img-name-box-<?php echo $veh->id; ?>" title=""></span>
                                                                             </div>
                                                                         </div>
                                                                         <div style="clear: both;"></div>
 
-                                                                                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
+                                                                                                                                                                                                                                                                                                                                                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
                                                                         if ($veh->eco_friendly == 1) {
                                                                             echo "Yes";
                                                                         } else {
@@ -1467,7 +1489,7 @@ if ($getorder->transaction_id) {
                                                                             <p class="points-holder"><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img class="last" src="../images/gray-bubble.png" /></p>
                                                                         <?php elseif ($per_car_wash_points_arr[$point_index] == 5): ?>
                                                                             <p class="points-holder"><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img src="../images/blue-bubble2.png" /><img class="last" src="../images/blue-bubble2.png" /></p>
-        <?php endif; ?>
+                                                                        <?php endif; ?>
 
 
                                                                         <label class='control-label'>Price</label>
@@ -1478,11 +1500,11 @@ if ($getorder->transaction_id) {
                                                                         <input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="$<?php echo number_format($veh_detail[7], 2); ?>" />-->
                                                                         <input type="hidden" name="handle_fees[]" value="1" />
 
-        <?php if ($veh->bundle_discount > 0): ?>
+                                                                        <?php if ($veh->bundle_discount > 0): ?>
                                                                             <label class='control-label'>Bundle Discount</label>
                                                                             <input type="text" class='form-control' style='width: 300px; border: 0;' readonly value="-$<?php echo number_format($veh->bundle_discount, 2); ?>" />
 
-        <?php endif; ?>
+                                                                        <?php endif; ?>
                                                                         <input type="hidden" name="bundle_discs[]" value="<?php echo $veh->bundle_discount; ?>" />
 
                                                                         <p style="margin-top: 20px; <?php if ($veh->vehicle_washing_package == 'Premium') echo 'display: none;'; ?>" class="exthandwax <?php if ($veh->exthandwax_vehicle_fee > 0) echo "addon-checked"; ?>"><input type="checkbox" id="exthandwax" value="12" <?php if ($veh->exthandwax_vehicle_fee > 0) echo "checked"; ?>> $12 Liquid Hand Wax<!--Liquid Hand Wax--> (Liquid form)</p>
@@ -1563,7 +1585,7 @@ if ($getorder->transaction_id) {
                                                                     $point_index++;
                                                                 endforeach;
                                                                 ?>
-<?php endif; ?>
+                                                            <?php endif; ?>
 
                                                         </div>
 
@@ -1624,7 +1646,7 @@ if ($getorder->transaction_id) {
                                                             $first_card_type = '';
                                                             ?>
                                                             <ul class="pay-methods">
-        <?php foreach ($paymentmethods->payment_methods as $ind => $paymethod): ?>
+                                                                <?php foreach ($paymentmethods->payment_methods as $ind => $paymethod): ?>
                                                                     <li data-token="<?php echo $paymethod->payment_method_details->token; ?>" data-ending="<?php echo $paymethod->payment_method_details->last4; ?>" data-type="<?php echo $paymethod->payment_method_details->cardType; ?>">
                                                                         <div style="float: left;"><input type="radio" <?php if ($paymethod->payment_method_details->isDefault) echo "checked"; ?> value="<?php echo $paymethod->payment_method_details->token; ?>" name="saved_paymethod" class="cust_saved_paymethod" /> <img class="card-img" src="<?php echo $paymethod->payment_method_details->cardimg; ?>" style="width: 44px; margin-right: 6px; margin-left: 6px;" /> <?php echo $paymethod->payment_method_details->maskedNumber; ?> <span class="card-exp-det" style="margin-left: 10px;"> (exp. <?php echo $paymethod->payment_method_details->expirationMonth . "/" . $paymethod->payment_method_details->expirationYear; ?>)</span></div><div style="float: left; margin-left: 60px; margin-top: 7px;"><?php echo $paymethod->payment_method_details->cardname; ?><a href="#" class="card-remove" data-token="<?php echo $paymethod->payment_method_details->token; ?>" <?php if ($paymethod->payment_method_details->cardname) echo "style='margin-left: 25px;'"; ?>>Remove</a></div><div style="clear: both;"></div></li>
                                                                     <?php
@@ -1634,7 +1656,7 @@ if ($getorder->transaction_id) {
                                                                         $first_card_type = $paymethod->payment_method_details->cardType;
                                                                     }
                                                                     ?>
-        <?php endforeach; ?>
+                                                                <?php endforeach; ?>
                                                             </ul>
                                                             <input type="hidden" name="pay_method_token" id="pay_method_token" value="<?php if ($first_pay_token) echo $first_pay_token; ?>" />
                                                             <input type="hidden" name="card_ending_no" id="card_ending_no" value="<?php if ($first_card_ending_no) echo $first_card_ending_no; ?>" />
@@ -1742,7 +1764,7 @@ if ($getorder->transaction_id) {
                                                         <?php endif; ?>
                                                         <?php if ($getorder->status == 3): ?>
                                                             <div class="order-status-update orange-btn" data-status="4">Complete Order</div>
-<?php endif; ?>
+                                                        <?php endif; ?>
                                                     </div>
 
                                                     <div class="form-group">
@@ -1799,11 +1821,11 @@ if ($getorder->transaction_id) {
                                                         ?>" />
 
                                                     </div>
-<?php if (!$getorder->admin_submit_for_settle): ?>
+                                                    <?php if (!$getorder->admin_submit_for_settle): ?>
                                                         <div class="form-group">
                                                             <p style="margin-top: 20px;"><input type="button" class="washer_update" value="Save Washer" /></p>
                                                         </div>
-<?php endif; ?>
+                                                    <?php endif; ?>
                                                     <div class="form-group">
                                                         <label class="control-label">Washer Payment Status: </label>
                                                         <?php
@@ -1823,9 +1845,9 @@ if ($getorder->transaction_id) {
                                                             $image2 = '';
                                                         }
                                                         ?>
-                                                    <?php echo $image2; ?>
+                                                        <?php echo $image2; ?>
                                                     </div>
-<?php if ($getorder->transaction_id): ?>
+                                                    <?php if ($getorder->transaction_id): ?>
                                                         <div class="form-group" style="display: block; margin-top: 20px;">
                                                             <label class="control-label">Washer Braintree ID: </label>
                                                             <p style="margin-bottom: 0;"><?php echo $transaction_details->transaction_details->merchant_id; ?></p>
@@ -1853,8 +1875,8 @@ if ($getorder->transaction_id) {
                                                                             <p style="margin-bottom: 10px;">                            #<?php echo $log->agent_company_id; ?> saved order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                         <?php endif; ?>
                                                                     <?php endif; ?>
-        <?php if ((($log->action == 'dropjob_ratingunchange')) && ($getorder->is_scheduled)): ?>
-            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                                               ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                                               ?>. Reason: <?php //echo $log->addi_detail;                                               ?></p>-->
+                                                                    <?php if ((($log->action == 'dropjob_ratingunchange')) && ($getorder->is_scheduled)): ?>
+            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                                                                              ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                                                                              ?>. Reason: <?php //echo $log->addi_detail;                                                                              ?></p>-->
                                                                         <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'dropjob' && ($getorder->is_scheduled) && (!$log->admin_username)): ?>
@@ -1883,6 +1905,9 @@ if ($getorder->transaction_id) {
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'flagged_issue'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> flagged order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                    <?php endif; ?>
+                                                                    <?php if ($log->action == 'deleted_vehicle_image'): ?>
+                                                                        <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> Deleted image for <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'resolved_flagged'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> resolved flagged order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -1942,10 +1967,10 @@ if ($getorder->transaction_id) {
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> completed order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'washerstartjob'): ?>
-            <?php if ($getorder->is_scheduled == 1): ?>
+                                                                        <?php if ($getorder->is_scheduled == 1): ?>
                                                                             <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> tapped Drive Now at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
 
-            <?php else: ?>
+                                                                        <?php else: ?>
                                                                             <p style="margin-bottom: 10px;">#<?php echo $log->agent_company_id; ?> accepted request at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
 
                                                                         <?php endif; ?>
@@ -1988,7 +2013,7 @@ if ($getorder->transaction_id) {
                                                                     <?php if ($log->action == 'adminsubmitforsettlement'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> submitted payment for settlement at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
-                                                                        <?php if ($log->action == 'meetwasherbeforeinspect'): ?>
+                                                                    <?php if ($log->action == 'meetwasherbeforeinspect'): ?>
                                                                         <p style="margin-bottom: 10px;">Customer hit <?php
                                                                             if ($log->addi_detail == 'yes') {
                                                                                 echo "'Meet Washer Outside'";
@@ -1997,7 +2022,7 @@ if ($getorder->transaction_id) {
                                                                             }
                                                                             ?> before inspection at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
-                                                                        <?php if ($log->action == 'meetwasherwashend'): ?>
+                                                                    <?php if ($log->action == 'meetwasherwashend'): ?>
                                                                         <p style="margin-bottom: 10px;">Customer hit <?php
                                                                             if ($log->addi_detail == 'yes') {
                                                                                 echo "'Meet Washer Outside'";
@@ -2099,21 +2124,21 @@ if ($getorder->transaction_id) {
                                                                     <?php if ($log->action == 'waivedfee'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> Waived Fee at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
-    <?php endforeach; ?>
+                                                                <?php endforeach; ?>
                                                             </div>
                                                         </div>
-<?php endif; ?>
+                                                    <?php endif; ?>
 
                                                     <div class="form-group" style="float:left; width:100%;">
-<?php if ($getorder->flagged_issue_status == 0 || $getorder->flagged_issue_status == 2) { ?>
+                                                        <?php if ($getorder->flagged_issue_status == 0 || $getorder->flagged_issue_status == 2) { ?>
 
                                                             <span  data-flag="1" data-washer_id="<?= $getorder->id ?>" class="flaggedIssuseSubmit btn" style="float: left; font-size:14px; margin-top: 3px; cursor: pointer; background: #e2e2e2; color: #000; padding:3px 15px; margin-right: 20px; border:none; border-radius:4px;"><i class="fa fa-flag" style="color:#FF0202;"></i> Flag Order</span>
                                                             <!-- <input type="button" id="flaggedIssuseSubmit" value="Flag"  style="float: left; font-size:14px; margin-top: 3px; cursor: pointer; background: #e47e00; color: #fff; padding: 3px 15px; margin-right: 20px; border:none; border-radius:4px;" /> -->
                                                         <?php } ?>
-<?php if ($getorder->flagged_issue_status == 1) { ?>
+                                                        <?php if ($getorder->flagged_issue_status == 1) { ?>
                                                             <span  data-flag="0" data-washer_id="<?= $getorder->id ?>" class="flaggedIssuseSubmit btn" style="float: left; font-size:14px; margin-top: 3px; cursor: pointer; background: #FF0202; color: #fff; padding:3px 15px; margin-right: 20px; border:none; border-radius:4px;"><i class="fa fa-flag"></i> Flagged</span>
                                                             <!-- <input type="button"  value="Flagged" name="Flagged" style="float: left; font-size:14px; margin-top: 3px; cursor: pointer; background: #FF0202; color: #fff; padding:3px 15px; margin-right: 20px; border:none; border-radius:4px;" /> -->
-<?php } ?>
+                                                        <?php } ?>
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="control-label">Order Notes</label>
@@ -2158,28 +2183,28 @@ if ($getorder->transaction_id) {
 
 
 
-<?php if (count($getorder->vehicles) > 0 && ($getorder->status > 0)): ?>
+                                                    <?php if (count($getorder->vehicles) > 0 && ($getorder->status > 0)): ?>
                                                         <div class="form-group" style="display: block; clear: both; margin-bottom: 60px;">
 
                                                             <ul class="bxslider">
                                                                 <?php foreach ($getorder->vehicles as $veh): ?>
                                                                     <?php if ($veh->vehicle_inspect_image) echo "<li><img title='" . $veh->brand_name . " " . $veh->model_name . "' src='" . $veh->vehicle_inspect_image . "' /></li>"; ?>
-    <?php endforeach; ?>
+                                                                <?php endforeach; ?>
                                                             </ul>
                                                         </div>
                                                     <?php endif; ?>
-<?php if (($getorder->transaction_id) && ($transaction_details->transaction_details->status == 'authorized') && (!$getorder->washer_payment_status)) : ?>
+                                                    <?php if (($getorder->transaction_id) && ($transaction_details->transaction_details->status == 'authorized') && (!$getorder->washer_payment_status)) : ?>
                                                         <div class="form-group">
                                                             <label class="control-label" style="display: block; padding-top: 15px; margin-top: 0; font-weight: bold; margin-bottom: 15px;">Submit for Settlement</label>
                                                             <input type="text" style="width: 85px;" value="<?php echo $getorder->net_price; ?>" id="submit_for_settle_amount" /> USD
                                                             <p style="margin-top: 20px;"><input type="button" class="submit_settle_btn" value="Submit for Settlement" /></p>
                                                         </div>
-<?php endif; ?>
+                                                    <?php endif; ?>
                                                 </div>
                                                 <div style="clear: both;"></div>
                                                 <?php if (!$getorder->admin_submit_for_settle): ?>
                                                     <input type="submit" id="edit-order-submit" value="Submit" name="edit-order-submit" style="color: rgb(255, 255, 255); margin-top: 20px; background-color: rgb(50, 197, 210); border: 1px solid rgb(50, 197, 210); padding: 6px 7px 7px 6px; border-radius: 3px;" />
-<?php endif; ?>    
+                                                <?php endif; ?>    
                                             </form>
 
                                             <div class="clear" style="height: 10px;">&nbsp;</div>
@@ -2205,7 +2230,7 @@ if ($getorder->transaction_id) {
             <form id="checkout" method="post" action="" style="margin-top: 25px;">
                 <?php if ($jsondata_permission->users_type == 'admin' || $jsondata_permission->users_type == 'superadmin'): ?>
                     <input type="text" name="spdisc" id="spdisc" placeholder="Enter special discount amount (if have any)" style="display: block; padding: 10px; width: 80%;" />
-<?php endif; ?>
+                <?php endif; ?>
                 <div id="payment-form"></div>
                 <input type="submit" value="Process" style="margin-top: 20px; display: block; border: 0; background: #076ee1; color: #fff; padding: 8px; cursor: pointer;" name="pay-process-submit" />
             </form>
@@ -4045,6 +4070,9 @@ if ($getorder->transaction_id) {
                                             if (log.action == 'editorder') {
                                                 contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " edited order at " + log.formatted_action_date + "</p>";
                                             }
+                                            if (log.action == 'deleted_vehicle_image') {
+                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " deleted image for  " + log.addi_detail + ' at ' + log.formatted_action_date + "</p>";
+                                            }
                                             if (log.action == 'flagged_issue') {
                                                 contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + "flagged order at " + log.formatted_action_date + "</p>";
                                             }
@@ -4366,7 +4394,39 @@ if ($getorder->transaction_id) {
                                                             }
                                                         });
                                                     });
-                                                });</script>
+                                                });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $('.delete_vih_image').click(function (e) {
+            e.preventDefault();
+            var vehicle_id = $(this).attr('id');
+            var vehicle_name = $(this).attr('name');
+            var form_data = new FormData();
+            form_data.append('vehicle_id', vehicle_id);
+            form_data.append('api_token', "<?php echo $finalusertoken; ?>");
+            form_data.append('t1', "<?php echo $mw_admin_auth_arr[2]; ?>");
+            form_data.append('t2', "<?php echo $mw_admin_auth_arr[3]; ?>");
+            form_data.append('user_type', "admin");
+            form_data.append('wash_request_id', "<?php echo $getorder->id; ?>");
+            form_data.append('vehicle_name', vehicle_name);
+            form_data.append('admin_username', "<?php echo $jsondata_permission->user_name ?>");
+            form_data.append('user_id', "<?php echo $mw_admin_auth_arr[4]; ?>");
+            $.ajax({
+                url: "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/DeleteVehicelImage",
+                type: "POST",
+                data: form_data,
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                    window.location.href = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?= $getorder->id ?>";
+                                    }
+                                });
+                            });
+                        });
+</script>
 <script>
     $(".flaggedIssuseSubmit").on("click", function (e) {
         var id = $(this).attr('data-washer_id');
@@ -4395,9 +4455,10 @@ if ($getorder->transaction_id) {
     });
 
     $('.changeDefaultName').on('change', function (e) {
+        var id = $(this).attr('id');
         var fileName = e.target.files[0].name;
-        $('.img-name-box').html(fileName);
-        $('.img-name-box').attr('title', fileName);
+        $('.img-name-box-' + id).html(fileName);
+        $('.img-name-box-' + id).attr('title', fileName);
     });
 
 </script>
