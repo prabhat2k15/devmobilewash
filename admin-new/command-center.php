@@ -599,6 +599,20 @@
     <?php include_once('cc-footer.php'); ?>
     <script src="https://devmobilewash.com:3000/socket.io/socket.io.js"></script>
     <script>
+	var api_key_security = '';
+var api_token_security = '';
+var t1_security = '';
+var t2_security = '';
+var user_type_security = '';
+var user_id_security = '';
+
+api_key_security = "<?php echo API_KEY; ?>";
+api_token_security = "<?php echo urlencode($finalusertoken); ?>";
+t1_security = "<?php echo $mw_admin_auth_arr[2]; ?>";
+t2_security = "<?php echo $mw_admin_auth_arr[3]; ?>";
+user_type_security = 'admin';
+user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
+
     var markers = [];
     var closest_markers = [];
     var infoWindowContent;
@@ -625,10 +639,10 @@
         //console.log(socketId);
         socketintvaltimer = setInterval(function () {
 
-            socket.emit('get_appstat', {socketId: socketId, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"});
-            socket.emit('get_pendingwashesdetails', {socketId: socketId, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"});
-            socket.emit('get_agentsbystatus', {socketId: socketId, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"});
-            socket.emit('get_clientsbystatus', {socketId: socketId, key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"});
+            socket.emit('get_appstat', {socketId: socketId, key: api_key_security, api_token: api_token_security, t1: t1_security, t2: t2_security, user_type: user_type_security, user_id: user_id_security});
+            socket.emit('get_pendingwashesdetails', {socketId: socketId, key: api_key_security, api_token: api_token_security, t1: t1_security, t2: t2_security, user_type: user_type_security, user_id: user_id_security});
+            socket.emit('get_agentsbystatus', {socketId: socketId, key: api_key_security, api_token: api_token_security, t1: t1_security, t2: t2_security, user_type: user_type_security, user_id: user_id_security});
+            socket.emit('get_clientsbystatus', {socketId: socketId, key: api_key_security, api_token: api_token_security, t1: t1_security, t2: t2_security, user_type: user_type_security, user_id: user_id_security});
 
         }, 60000);
 
