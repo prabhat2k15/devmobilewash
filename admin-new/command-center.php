@@ -970,7 +970,7 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
 
         }
 
-        initialize_map();
+        //initialize_map();
 
 
         function PlotAgents(agentdata) {
