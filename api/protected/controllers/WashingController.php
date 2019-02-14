@@ -9634,7 +9634,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
                                     $notify_msg = urlencode($message2);
 
-                                    $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                                    $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type."&notification_type=wash_now_notify";
                                     //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
                                     $ch = curl_init();
                                     curl_setopt($ch, CURLOPT_URL, $notifyurl);
