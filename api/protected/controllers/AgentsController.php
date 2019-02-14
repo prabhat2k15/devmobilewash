@@ -2157,7 +2157,8 @@ class AgentsController extends Controller {
                         if (!count($washfeedbacks))
                             $wash_requests[$index]['rating'] = 5.00;
                         $wash_requests[$index]['status'] = $wrequest['status'];
-                        $wash_requests[$index]['cancel_fee'] = $wrequest['cancel_fee'];
+                        if($wash_requests[$index]['status'] == 7) $wash_requests[$index]['cancel_fee'] = 20;
+			else $wash_requests[$index]['cancel_fee'] = $wrequest['cancel_fee'];
                         $wash_requests[$index]['washer_cancel_fee'] = $wrequest['washer_cancel_fee'];
                     }
                 }
