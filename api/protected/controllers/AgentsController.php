@@ -6108,7 +6108,7 @@ class AgentsController extends Controller {
                     $agentid = Yii::app()->db->getLastInsertID();
 
                     if ($admin_username)
-                        Agents::model()->updateByPk($agentid, array('last_edited_admin' => $admin_username, 'agentname' => $agentname));
+                        Agents::model()->updateByPk($agentid, array('last_edited_admin' => $admin_username, 'updated_date' => $date, 'agentname' => $agentname));
 
                     $result = 'true';
                     $response = 'Agent successfully registered';
