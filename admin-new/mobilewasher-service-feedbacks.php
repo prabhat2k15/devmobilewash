@@ -10,7 +10,7 @@
         $('#example1').dataTable({
             "pageLength": 20,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-            "aaSorting": [[ 0, "desc" ]],
+            "aaSorting": [],
                     "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         buttons: [
             'csvHtml5'
