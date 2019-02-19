@@ -84,7 +84,7 @@ padding: 0;
 <body>
 <div class="deluxe-pop">
     <?php if(!$_GET['hidebanner']): ?>
-<img src="images/best-deal-ribbon.png" class="popular-ribbon">
+<img src="images/popular-ribbon.png" class="popular-ribbon">
     <?php endif; ?>
          <div class="heading">
 <img src="images/deluxe-icon-large.png" alt="" width="111">
