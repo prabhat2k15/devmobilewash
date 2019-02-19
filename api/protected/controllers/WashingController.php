@@ -928,8 +928,32 @@ class WashingController extends Controller {
                     $fifth_disc = 0;
                     if ($fifth_wash_vehicles)
                         $fifth_disc = 5;
+            $pet_hair_vehicles_custom = array();
+            $pet_hair_vehicles_array = array();
+           if($pet_hair_vehicles) $pet_hair_vehicles_array = explode(",", $pet_hair_vehicles);
+           $car_packs_arr = explode(",", $package_ids);
+           $all_cars_arr = explode(",", $car_ids);
+           if(count($pet_hair_vehicles_array)){
+            foreach ($pet_hair_vehicles_array as $cid) {
+                $car_id_exists = Vehicle::model()->findByAttributes(array("id" => $cid));
+                if (count($car_id_exists)) {
+                    $key = array_search($cid, $all_cars_arr);
+                    $pethairprice = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE title = 'Pet Hair' AND package = '".$car_packs_arr[$key]."' AND vehicle_type = '".$car_id_exists->vehicle_type."'")
+                    ->queryAll();
 
-                    Washingrequests::model()->updateByPk($washrequestid, array('street_name' => $street_name, 'city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'pet_hair_vehicles' => $pet_hair_vehicles, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee, 'wash_later_fee' => $wash_later_fee, 'inc_transaction_fee' => 1));
+                   $pet_hair_vehicles_custom[$cid] = $pethairprice[0]['price'];
+                   //$pet_hair_vehicles_custom[$cid] = "10.00";
+                }
+                else{
+                     $pet_hair_vehicles_custom[$cid] = "10.00";
+                }
+            }
+                }
+
+if(count($pet_hair_vehicles_custom)) $pet_hair_vehicles_custom = json_encode($pet_hair_vehicles_custom);
+else $pet_hair_vehicles_custom = '';
+
+                    Washingrequests::model()->updateByPk($washrequestid, array('street_name' => $street_name, 'city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'pet_hair_vehicles' => $pet_hair_vehicles, "pet_hair_vehicles_custom_amount" => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee, 'wash_later_fee' => $wash_later_fee, 'inc_transaction_fee' => 1));
 
                     if ($old_tip_amount[0]['tip_amount']) {
                         $old_amount = $old_tip_amount[0]['tip_amount'];
@@ -962,7 +986,7 @@ class WashingController extends Controller {
 
                         $pet_hair_vehicles_arr = explode(",", $pet_hair_vehicles);
                         if (in_array($carid, $pet_hair_vehicles_arr))
-                            $pet_fee = 5;
+                            $pet_fee = 10;
 
                         $lifted_vehicles_arr = explode(",", $lifted_vehicles);
                         if (in_array($carid, $lifted_vehicles_arr))
