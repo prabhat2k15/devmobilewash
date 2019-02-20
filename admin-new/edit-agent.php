@@ -226,6 +226,24 @@ if (isset($_POST['edit-agent-submit'])) {
     if ($result_code == 'false') {
         $err .= $response . "<br>";
     }
+    
+    $dir_name = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/'.$_GET['id'];
+
+if (!is_dir($dir_name)) {
+mkdir($dir_name);
+}
+    
+    $orig_filename = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/'.$_GET['id'].'/log.txt';
+    $context = stream_context_create();
+  $orig_file = fopen($orig_filename, 'a+', 1, $context);
+
+  $temp_filename = tempnam(sys_get_temp_dir(), 'php_prepend_'.time());
+  file_put_contents($temp_filename, $jsondata_permission->user_name." on ".date('M j, Y h:i A').PHP_EOL);
+  file_put_contents($temp_filename, $orig_file, FILE_APPEND);
+
+  fclose($orig_file);
+  unlink($orig_filename);
+  rename($temp_filename, $orig_filename);
 }
 
 $handle = curl_init(ROOT_URL . "/api/index.php?r=agents/profiledetails");
