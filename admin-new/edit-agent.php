@@ -238,7 +238,7 @@ mkdir($dir_name);
   $orig_file = fopen($orig_filename, 'a+', 1, $context);
 
   $temp_filename = tempnam(sys_get_temp_dir(), 'php_prepend_'.time());
-  file_put_contents($temp_filename, $jsondata_permission->user_name." on ".date('M j, Y h:i A').PHP_EOL);
+  file_put_contents($temp_filename, $jsondata_permission->user_name." on ".date('M d, Y h:i A').PHP_EOL);
   file_put_contents($temp_filename, $orig_file, FILE_APPEND);
 
   fclose($orig_file);

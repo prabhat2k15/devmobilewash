@@ -7934,5 +7934,38 @@ class AgentsController extends Controller {
             die();
         }
     }
+    
+       public function actioncheckeditwasherlog() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+	
+	$allagents = Agents::model()->findAllByAttributes(array('edit_washer_log_check' => 1), array('limit' => 50));
+	
+	if(count($allagents)){
+	  foreach($allagents as $agent){
+	    
+	    $dir_name = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/'.$agent->id;
+	    
+	      if (file_exists($dir_name.'/log.txt')) {
+	      if ($fh = fopen($dir_name.'/log.txt', 'r')) {
+		while (!feof($fh)) {
+		  $line = trim(fgets($fh));
+		  echo $line."<br>";
+		  echo substr($line,-21);
+		  echo "<br>";
+		  
+		}
+		fclose($fh);
+	      }
+	      }
+	      
+	      //Agents::model()->updateByPk($agent->id, array('edit_washer_log_check' => 0));
+	  }
+	}
+    
+    }
 
 }

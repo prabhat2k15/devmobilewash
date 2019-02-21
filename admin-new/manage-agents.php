@@ -308,8 +308,7 @@ $('#late_drivers').click(function(){
 												<th> Actions </th>
                                                 <th> ID </th>
 <th> Badge No </th>
-                                                   <th> First Name </th>
-                                                <th> Last Name </th>
+                                                   <th> Name </th>
                                                 <th> Email </th>
                                                 <th> Phone Number </th>
                                                 <th> Phone Verify Code </th>
@@ -356,8 +355,7 @@ $('#late_drivers').click(function(){
 												</td>
                                               <td> <?php echo $washer->id; ?> </td>
  <td> <?php echo $washer->real_washer_id; ?> </td>
-                                                <td> <a href="/admin-new/all-orders.php?agent_id=<?php echo $washer->id; ?>" target="_blank"><?php echo $washer->first_name; ?></a> </td>
-                                                <td> <a href="/admin-new/all-orders.php?agent_id=<?php echo $washer->id; ?>" target="_blank"><?php echo $washer->last_name; ?></a> </td>
+                                                <td> <a href="/admin-new/all-orders.php?agent_id=<?php echo $washer->id; ?>" target="_blank"><?php echo $washer->first_name; ?> <?php echo $washer->last_name; ?></a> </td>
                                                  <td> <?php echo $washer->email; ?> </td>
                                                  <td> <?php echo $washer->phone_number; ?> </td>
                                                  <td> <?php echo $washer->phone_verify_code; ?> </td>
