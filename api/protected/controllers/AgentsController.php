@@ -7937,12 +7937,29 @@ class AgentsController extends Controller {
     
        public function actioncheckeditwasherlog() {
 
-        if (Yii::app()->request->getParam('key') != API_KEY) {
+        if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
             echo "Invalid api key";
             die();
         }
 	
-	$allagents = Agents::model()->findAllByAttributes(array('edit_washer_log_check' => 1), array('limit' => 50));
+	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        if ($ip != MW_SERVER_IP) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+	
+	$allagents = Agents::model()->findAllByAttributes(array('edit_washer_log_check' => 1), array('limit' => 10));
 	
 	if(count($allagents)){
 	  foreach($allagents as $agent){
@@ -7950,22 +7967,61 @@ class AgentsController extends Controller {
 	    $dir_name = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/'.$agent->id;
 	    
 	      if (file_exists($dir_name.'/log.txt')) {
-	      if ($fh = fopen($dir_name.'/log.txt', 'r')) {
-		while (!feof($fh)) {
-		  $line = trim(fgets($fh));
-		  echo $line."<br>";
-		  echo substr($line,-21);
-		  echo "<br>";
-		  
-		}
-		fclose($fh);
-	      }
+		
+$data = file($dir_name.'/log.txt');
+
+$out = array();
+
+foreach($data as $line) {
+   $timefactor = substr(trim($line),-21);
+   if((time() - strtotime($timefactor)) < 2592000){
+    $out[] = $line;
+   }
+
+}
+
+$fp = fopen($dir_name.'/log.txt', "w+");
+flock($fp, LOCK_EX);
+foreach($out as $line) {
+    fwrite($fp, $line .PHP_EOL);
+}
+flock($fp, LOCK_UN);
+fclose($fp);
+
 	      }
 	      
-	      //Agents::model()->updateByPk($agent->id, array('edit_washer_log_check' => 0));
+	      Agents::model()->updateByPk($agent->id, array('edit_washer_log_check' => 0));
 	  }
 	}
     
+    }
+    
+    public function actionenableeditlogrotation() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
+            echo "Invalid api key";
+            die();
+        }
+	
+	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        if ($ip != MW_SERVER_IP) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+	
+	Agents::model()->updateAll(array("edit_washer_log_check" => 1));
+	    
     }
 
 }

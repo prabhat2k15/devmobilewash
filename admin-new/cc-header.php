@@ -85,13 +85,13 @@ header("Location: ".ROOT_URL."/admin-new/login.php");
 die();
 }
 
-if($jsondata_permission->users_type == 'recruiter'){
+/*if($jsondata_permission->users_type == 'recruiter'){
 
 	   header("Location: ".ROOT_URL."/admin-new/");
 	die(); 
 
 
-}
+}*/
 
 $userdata = array("user_token"=>$device_token, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 $handle_data = curl_init(ROOT_URL."/api/index.php?r=users/updateadminuserlastactivetime");

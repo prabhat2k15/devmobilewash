@@ -2385,7 +2385,7 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
                         gray_selected = "selected='selected'";
                     }
 
-<?php if ($jsondata_permission->users_type == 'scheduler'): ?>
+<?php if (($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
                         var content = "<div class='zip-info'><p><b>ZIPCODE: </b>" + this.zipcode + "</p><p>Zip Color: " + this.zipcolor + "</p></div>";
 
 <?php else: ?>

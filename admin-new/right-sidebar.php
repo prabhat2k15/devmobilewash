@@ -120,7 +120,7 @@
                                 </a>
                             </li>
                         <?php endif; ?>
-                        <?php if (($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
+                        <?php if (($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
                             <li style="display: <?php echo $checked_command_center_display; ?>" class="nav-item  <?php
                             if ($url == 'command-center.php') {
                                 $open_agent = 'open';
