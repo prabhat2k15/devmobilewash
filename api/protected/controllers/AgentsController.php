@@ -1420,6 +1420,7 @@ class AgentsController extends Controller {
                     'rating_control' => $agent_id_check->rating_control,
                     'sms_control' => $agent_id_check->sms_control,
                     'last_edited_admin' => $agent_id_check->last_edited_admin,
+		    'last_admin_edit_at' => $agent_id_check->last_admin_edit_at,
                     'last_used_device' => $agentdevices,
                     'decals_installed' => $agent_id_check->decals_installed,
                     'unlimited_schedule_range' => $agent_id_check->unlimited_schedule_range,
@@ -1908,6 +1909,11 @@ class AgentsController extends Controller {
                     $data['phone_number'] = $phone_number;
 
                 Agents::model()->updateByPk($agent_id, $data);
+		
+		 if ((Yii::app()->request->getParam('update_by') == "WEB") && ($admin_username)) {
+                    
+                   Agents::model()->updateByPk($agent_id, array('last_edited_admin' => $admin_username, 'last_admin_edit_at' => date('Y-m-d H:i:s'))); 
+                }
 
                 $response = 'Profile updated';
                 $result = 'true';
@@ -6147,7 +6153,7 @@ class AgentsController extends Controller {
                     $agentid = Yii::app()->db->getLastInsertID();
 
                     if ($admin_username)
-                        Agents::model()->updateByPk($agentid, array('last_edited_admin' => $admin_username, 'updated_date' => $date, 'agentname' => $agentname));
+                        Agents::model()->updateByPk($agentid, array('last_edited_admin' => $admin_username, 'last_admin_edit_at' => date('Y-m-d H:i:s'), 'updated_date' => $date, 'agentname' => $agentname));
 
                     $result = 'true';
                     $response = 'Agent successfully registered';

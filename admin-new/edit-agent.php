@@ -367,8 +367,12 @@ $profiledetail = json_decode($result);
                     </div>
                     <!--/span-->
                     <div class="col-md-4" style="margin-top: 20px;">
+                        <?php if(strtotime($profiledetail->last_admin_edit_at) > 0): ?>
                         <span>Last Edited by: <?php echo $profiledetail->last_edited_admin; ?></span>
-                        <span>on <?php echo date('M j, Y h:i A', strtotime($profiledetail->updated_date)); ?></span>
+                        <span>on <?php echo date('M j, Y h:i A', strtotime($profiledetail->last_admin_edit_at)); ?></span>
+                        <?php else: ?>
+                        <span>Last Edited by: N/A</span>
+                        <?php endif; ?>
                     </div>
                     <!--/span-->
                 </div>
