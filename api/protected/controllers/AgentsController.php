@@ -985,6 +985,7 @@ class AgentsController extends Controller {
         $title = '';
         $comments = Yii::app()->request->getParam('comments');
         $title = Yii::app()->request->getParam('title');
+        $addVehicleFeedBack = Yii::app()->request->getParam('addVehicleFeedBack');
 
         $json = array();
 
@@ -1028,23 +1029,58 @@ class AgentsController extends Controller {
 //                    $washfeedbackmodel->updateAll($washfeedbackdata, 'agent_id=:agent_id', array(':agent_id' => $agent_id));
 //                }
 
-                $result = 'true';
-                $response = "Feeback added";
+//                $result = 'true';
+//                $response = "Feeback added";
+//
+//
+//
+//                $message = "<div class='block-content' style='background: #fff; text-align: left;'>
+//<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Washer App Feedback</h2>
+//<p><b>Washer Name:</b> " . $agent_id_check->first_name . " " . $agent_id_check->last_name . "</p>
+//<p><b>Washer Email:</b> " . $agent_id_check->email . "</p>
+//<p><b>Title:</b> " . $title . "</p>
+//<p><b>Comments:</b> " . $comments . "</p>";
+//
+//                //$to = Vargas::Obj()->getAdminToEmail();
+//                $to = Vargas::Obj()->getAdminToEmailFeedBack();
+//                $from = Vargas::Obj()->getAdminFromEmail();
+//
+//                Vargas::Obj()->SendMail($to, $from, $message, "Washer App Feedback", 'mail-receipt');
+                if ($addVehicleFeedBack == 1) {
+                    $result = 'true';
+                    $response = "Feeback added";
+
+
+                    $message = "<div class='block-content' style='background: #fff; text-align: left;'>
+<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>NEW VEHICLE REQUEST  FEEDBACK</h2>
+<p><b> Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
+<p><b> Email:</b> " . $customers_id_check->email . "</p>
+<p><b>Comments:</b> " . $comments . "</p>";
+
+                    $from = Vargas::Obj()->getAdminFromEmail();
+                    $to = Vargas::Obj()->getAdminToEmailFeedBack();
+
+                    Vargas::Obj()->SendMail($to, $from, $message, "NEW VEHICLE REQUEST  FEEDBACK", 'mail-receipt');
+                } else {
+
+                    $result = 'true';
+                    $response = "Feeback added";
 
 
 
-                $message = "<div class='block-content' style='background: #fff; text-align: left;'>
+                    $message = "<div class='block-content' style='background: #fff; text-align: left;'>
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Washer App Feedback</h2>
 <p><b>Washer Name:</b> " . $agent_id_check->first_name . " " . $agent_id_check->last_name . "</p>
 <p><b>Washer Email:</b> " . $agent_id_check->email . "</p>
 <p><b>Title:</b> " . $title . "</p>
 <p><b>Comments:</b> " . $comments . "</p>";
 
-                //$to = Vargas::Obj()->getAdminToEmail();
-                $to = Vargas::Obj()->getAdminToEmailFeedBack();
-                $from = Vargas::Obj()->getAdminFromEmail();
+                    //$to = Vargas::Obj()->getAdminToEmail();
+                    $to = Vargas::Obj()->getAdminToEmailFeedBack();
+                    $from = Vargas::Obj()->getAdminFromEmail();
 
-                Vargas::Obj()->SendMail($to, $from, $message, "Washer App Feedback", 'mail-receipt');
+                    Vargas::Obj()->SendMail($to, $from, $message, "Washer App Feedback", 'mail-receipt');
+                }
             }
         }
 
@@ -2073,8 +2109,11 @@ class AgentsController extends Controller {
                             $wash_requests[$index]['id'] = $wrequest['id'];
                         }
                         $wash_requests[$index]['org_id'] = $wrequest['id'];
+                        $wash_requests[$index]['agent_total'] = $wrequest['agent_total'];
                         $wash_requests[$index]['date'] = $wrequest['order_for'];
                         $wash_requests[$index]['address'] = $wrequest['address'];
+                        $wash_requests[$index]['schedule_date'] = $wrequest['schedule_date'] . " " . $wrequest['schedule_time'];
+                        $wash_requests[$index]['is_scheduled'] = $wrequest['is_scheduled'];
                         $plan_ids = $wrequest['package_list'];
                         $car_ids = $wrequest['car_list'];
 

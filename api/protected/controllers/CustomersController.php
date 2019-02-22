@@ -6312,6 +6312,7 @@ class CustomersController extends Controller {
         $title = Yii::app()->request->getParam('feedback_subject');
         $comments = '';
         $comments = Yii::app()->request->getParam('comments');
+        $addVehicleFeedBack = Yii::app()->request->getParam('addVehicleFeedBack');
 
 
         $json = array();
@@ -6343,17 +6344,49 @@ class CustomersController extends Controller {
             $response = "Feeback added";
 
 
-            $message = "<div class='block-content' style='background: #fff; text-align: left;'>
+//            $message = "<div class='block-content' style='background: #fff; text-align: left;'>
+//<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer App Feedback</h2>
+//<p><b>Customer Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
+//<p><b>Customer Email:</b> " . $customers_id_check->email . "</p>
+//    <p><b>Title:</b> " . $title . "</p>
+//<p><b>Comments:</b> " . $comments . "</p>";
+//
+//            $from = Vargas::Obj()->getAdminFromEmail();
+//            $to = Vargas::Obj()->getAdminToEmailFeedBack();
+//
+//            Vargas::Obj()->SendMail($to, $from, $message, "Customer App Feedback", 'mail-receipt');
+            if ($addVehicleFeedBack == 1) {
+                $result = 'true';
+                $response = "Feeback added";
+
+
+                $message = "<div class='block-content' style='background: #fff; text-align: left;'>
+<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>NEW VEHICLE REQUEST  FEEDBACK</h2>
+<p><b> Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
+<p><b> Email:</b> " . $customers_id_check->email . "</p>
+<p><b>Comments:</b> " . $comments . "</p>";
+
+                $from = Vargas::Obj()->getAdminFromEmail();
+                $to = Vargas::Obj()->getAdminToEmailFeedBack();
+
+                Vargas::Obj()->SendMail($to, $from, $message, "NEW VEHICLE REQUEST  FEEDBACK", 'mail-receipt');
+            } else {
+                $result = 'true';
+                $response = "Feeback added";
+
+
+                $message = "<div class='block-content' style='background: #fff; text-align: left;'>
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Customer App Feedback</h2>
 <p><b>Customer Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
 <p><b>Customer Email:</b> " . $customers_id_check->email . "</p>
     <p><b>Title:</b> " . $title . "</p>
 <p><b>Comments:</b> " . $comments . "</p>";
 
-            $from = Vargas::Obj()->getAdminFromEmail();
-            $to = Vargas::Obj()->getAdminToEmailFeedBack();
+                $from = Vargas::Obj()->getAdminFromEmail();
+                $to = Vargas::Obj()->getAdminToEmailFeedBack();
 
-            Vargas::Obj()->SendMail($to, $from, $message, "Customer App Feedback", 'mail-receipt');
+                Vargas::Obj()->SendMail($to, $from, $message, "Customer App Feedback", 'mail-receipt');
+            }
         }
 
         $json = array(
@@ -7313,11 +7346,11 @@ class CustomersController extends Controller {
             $diff = date_diff($current, $customerCreatedDate);
             $daysSinceCustomerCreate = $diff->format("%a");
             //print_r($daysSinceCustomerCreate); 
-           /* if ($daysSinceCustomerCreate != 0 && $CustomerTotalordersCount['orders']) {
-                $order_frequency = ($daysSinceCustomerCreate / $CustomerTotalordersCount['orders']);
-            } else {
-                $order_frequency = "0";
-            }*/
+            /* if ($daysSinceCustomerCreate != 0 && $CustomerTotalordersCount['orders']) {
+              $order_frequency = ($daysSinceCustomerCreate / $CustomerTotalordersCount['orders']);
+              } else {
+              $order_frequency = "0";
+              } */
 
 
             $totalwash_arr = Washingrequests::model()->findAllByAttributes(array("status" => 4, "customer_id" => $customername->id));
@@ -7330,12 +7363,12 @@ class CustomersController extends Controller {
             $custspent = Yii::app()->db->createCommand("SELECT SUM(net_price),COUNT(id) as CompletedOrders FROM washing_requests WHERE customer_id = :customer_id AND  status = 4 AND net_price > 0")
                     ->bindValue(':customer_id', $customername->id, PDO::PARAM_STR)
                     ->queryAll();
-            
+
             $cancelspent = Yii::app()->db->createCommand("SELECT SUM(cancel_fee) as cancel_fee FROM washing_requests WHERE customer_id = :customer_id AND  (status = 5 OR status = 7)")
                     ->bindValue(':customer_id', $customername->id, PDO::PARAM_STR)
                     ->queryAll();
-            
-            
+
+
             $totalpaid = 0;
             $totalSpentAverage = 0;
             $totalOrderAverage = 0;
@@ -7419,16 +7452,16 @@ class CustomersController extends Controller {
             echo json_encode($json);
             die();
         }
-        
+
         $daysSinceCustomerCreate = Yii::app()->db->createCommand("SELECT SUM(wash_requests.custDate) as CustomerCreatedDays from (SELECT DATEDIFF(NOW(), customers.created_date) as custDate FROM `washing_requests` JOIN customers ON customers.id=washing_requests.customer_id GROUP BY washing_requests.customer_id) as wash_requests")->queryRow();
-        
+
         $CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests`")->queryRow();
 
         $totalcustsmin1order = Yii::app()->db->createCommand("SELECT COUNT(id) as totalcusts FROM `customers` WHERE total_wash > 0")->queryRow();
-        
+
         $totalorderscustsmin1order = Yii::app()->db->createCommand("SELECT SUM(total_wash) as totalwash FROM `customers` WHERE total_wash > 0")->queryRow();
-	
-	$totalorderfrequencycustsmin1order = Yii::app()->db->createCommand("SELECT SUM(avg_order_frequency) as totalfrequency FROM `customers` WHERE total_wash > 0")->queryRow();
+
+        $totalorderfrequencycustsmin1order = Yii::app()->db->createCommand("SELECT SUM(avg_order_frequency) as totalfrequency FROM `customers` WHERE total_wash > 0")->queryRow();
 
         $allRequest = Yii::app()->db->createCommand("SELECT SUM(w.net_price) as spent,count(w.id) as totalOrder FROM `washing_requests` w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.total_wash > 0 AND w.status=4 ")->queryRow();
 
@@ -7440,7 +7473,7 @@ class CustomersController extends Controller {
             //$spent_frequency = ($totalSpentCustomer / $allRequest['totalOrder']);
             $spent_frequency = ($totalSpentCustomer / $totalcustsmin1order['totalcusts']);
         }
-        if ( ($totalcustsmin1order['totalcusts'] > 0)) {
+        if (($totalcustsmin1order['totalcusts'] > 0)) {
             $order_frequency = ($totalorderscustsmin1order['totalwash'] / $totalcustsmin1order['totalcusts']);
         }
 
@@ -7451,7 +7484,7 @@ class CustomersController extends Controller {
         echo json_encode(array('spent_frequency' => $spent_frequency, 'order_frequency' => $order_frequency, 'order_frequency_days' => $order_frequency_days));
         die;
     }
-    
+
     public function actionsearchcustomers() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
@@ -13781,7 +13814,7 @@ class CustomersController extends Controller {
         echo json_encode($json);
         die();
     }
-    
+
     public function actioncustavgorderfrequencycron() {
         if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
             echo "Invalid api key";
@@ -13826,27 +13859,26 @@ class CustomersController extends Controller {
 
         if (count($all_customers) > 0) {
             foreach ($all_customers as $ind => $cust) {
-		$order_frequency = "0";
-		 $CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests` WHERE  customer_id =" . $cust['id'])->queryRow();
-            $customerCreatedDate = date('Y-m-d', strtotime($cust['created_date']));
-            $current = date('Y-m-d');
-            $current = date_create($current);
-            $customerCreatedDate = date_create($customerCreatedDate);
-            $diff = date_diff($current, $customerCreatedDate);
-            $daysSinceCustomerCreate = $diff->format("%a");
-            //print_r($daysSinceCustomerCreate); 
-            if ($daysSinceCustomerCreate != 0 && $CustomerTotalordersCount['orders']) {
-                $order_frequency = ($daysSinceCustomerCreate / $CustomerTotalordersCount['orders']);
-            } else {
                 $order_frequency = "0";
-            }
+                $CustomerTotalordersCount = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests` WHERE  customer_id =" . $cust['id'])->queryRow();
+                $customerCreatedDate = date('Y-m-d', strtotime($cust['created_date']));
+                $current = date('Y-m-d');
+                $current = date_create($current);
+                $customerCreatedDate = date_create($customerCreatedDate);
+                $diff = date_diff($current, $customerCreatedDate);
+                $daysSinceCustomerCreate = $diff->format("%a");
+                //print_r($daysSinceCustomerCreate); 
+                if ($daysSinceCustomerCreate != 0 && $CustomerTotalordersCount['orders']) {
+                    $order_frequency = ($daysSinceCustomerCreate / $CustomerTotalordersCount['orders']);
+                } else {
+                    $order_frequency = "0";
+                }
 
                 Customers::model()->updateByPk($cust['id'], array('avg_order_frequency' => number_format($order_frequency, 2), 'is_avgorderfrequency_update_pending' => 0));
             }
+        } else {
+            Customers::model()->updateAll(array("is_avgorderfrequency_update_pending" => 1), 'block_client=0');
         }
-	else{
-		Customers::model()->updateAll(array("is_avgorderfrequency_update_pending" => 1), 'block_client=0');	
-	}
     }
 
 }
