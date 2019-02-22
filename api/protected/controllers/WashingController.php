@@ -9070,12 +9070,12 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id' => $car));
                     }
 
-                    $data = array('status' => $status, 'order_canceled_at' => date("Y-m-d H:i:s"));
+		    $data = array('status' => $status, 'order_canceled_at' => date("Y-m-d H:i:s"));
                     $washrequestmodel = new Washingrequests;
                     $washrequestmodel->attributes = $data;
 
                     $resUpdate = $washrequestmodel->updateAll($data, 'id=:id', array(':id' => $wash_request_id));
-
+		    
                     $result = 'true';
                     if ($status == 5)
                         $response = 'Wash request is canceled by client';
@@ -9492,6 +9492,12 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                     }
                 }
             }
+	    
+	     if(($result == 'true') && ($wash_now_canceled == 1)) {
+		Washingrequests::model()->updateByPk($wrequest_id_check->id, array("all_reject_ids" => '', "agent_reject_ids" => ''));	
+		Washingrequests::model()->updateAll(array("all_reject_ids" => '', "agent_reject_ids" => ''), 'status=:status', array(':status' => 0));
+	}
+		
         } else {
             $result = 'false';
             $response = 'Pass the required parameters';
