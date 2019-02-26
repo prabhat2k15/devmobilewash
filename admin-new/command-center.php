@@ -368,6 +368,13 @@
         to {left: 100%;}
     }
 </style>
+<?php if ($jsondata_permission->users_type == 'recruiter'): ?>
+<style>
+    .mw-menu{
+	display: none;
+    }
+</style>
+<?php endif; ?>
 <script type="text/javascript">
     var currenttime = '<?php echo date("F d, Y H:i:s", time()) ?>'
 
@@ -1486,7 +1493,7 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
                 marker.setVisible(false);
             markers.push(marker);
 
-
+<?php if ($jsondata_permission->users_type != 'recruiter'): ?>
             google.maps.event.addListener(marker, 'click', (function (marker) {
                 return function () {
                     infoWindow.setContent(content);
@@ -1529,6 +1536,7 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
                 infoWindow.setContent("<p style='font-size: 18px;'>Connect agent with order of <b>" + closest_markers[0].title + "</b>?</p><p style='text-align: center; background: #2196F3; color: #fff; display: block;'><a class='infowin-assign-order' data-agent-id='" + this.id + "' data-wash-id='" + closest_markers[0].extradata + "' style='color: #fff; text-decoration: none; font-size: 18px; font-weight: bold; display: block; padding: 10px; width: 100%; box-sizing: border-box;' href='#'>Assign Order</a></p>");
                 infoWindow.open(map, closest_markers[0]);
             });
+	    <?php endif; ?>
         }
 
         function updatelocation(markerid, lat, lng) {
@@ -2289,6 +2297,7 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
                         //stopDraw(e);
                     });
 <?php endif; ?>
+<?php if ($jsondata_permission->users_type != 'recruiter'): ?>
                 google.maps.event.addListener(country, 'mouseover', function () {
                     //console.log(this);
 
@@ -2309,7 +2318,7 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
                             this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
                     }
                 });
-
+<?php endif; ?>
 <?php if ($jsondata_permission->users_type == 'admin'): ?>
                     google.maps.event.addDomListener(country, 'rightclick', function (e) {
                         if (selectedzips) {
@@ -2325,6 +2334,7 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
                     });
 <?php endif; ?>
 
+<?php if ($jsondata_permission->users_type != 'recruiter'): ?>
 
                 google.maps.event.addListener(country, 'click', function (e)
                 {
@@ -2400,7 +2410,7 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
                     infowindow.open(map, this);
                 });
 
-
+<?php endif; ?>
                 country.setMap(map);
 
             }
