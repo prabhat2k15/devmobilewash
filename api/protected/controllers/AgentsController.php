@@ -1053,8 +1053,8 @@ class AgentsController extends Controller {
 
                     $message = "<div class='block-content' style='background: #fff; text-align: left;'>
 <h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>NEW VEHICLE REQUEST  FEEDBACK</h2>
-<p><b> Name:</b> " . $customers_id_check->first_name . " " . $customers_id_check->last_name . "</p>
-<p><b> Email:</b> " . $customers_id_check->email . "</p>
+<p><b> Name:</b> " . $agent_id_check->first_name . " " . $agent_id_check->last_name . "</p>
+<p><b> Email:</b> " . $agent_id_check->email . "</p>
 <p><b>Comments:</b> " . $comments . "</p>";
 
                     $from = Vargas::Obj()->getAdminFromEmail();
