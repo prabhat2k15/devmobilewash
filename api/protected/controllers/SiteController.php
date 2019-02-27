@@ -10050,9 +10050,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             echo json_encode($json);
             die();
         }
-
-        $real_washer = $all_washes = Yii::app()->db->createCommand("SELECT *, CASE WHEN account_status = 1 THEN 'Active'
-            ELSE 'Blocked' END AS washer_status, CASE WHEN decals_installed = 1 THEN 'Yes'
+		
+	$real_washer = $all_washes = Yii::app()->db->createCommand("SELECT *, CASE WHEN block_washer = 1 THEN 'Blocked'
+            ELSE 'Active' END AS washer_status, CASE WHEN decals_installed = 1 THEN 'Yes'
             ELSE 'No' END AS decals_installed FROM agents WHERE washer_position = :washer_position")
                 ->bindValue(':washer_position', "real", PDO::PARAM_STR)
                 ->queryAll();
