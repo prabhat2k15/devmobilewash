@@ -3017,6 +3017,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
     }
 
     public function actionupdatewashadmin() {
+        //print_r($_REQUEST); die;
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -3107,6 +3108,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $result = 'false';
                 $response = "Sorry, you already used this promo once.";
             } else {
+
                 $result = 'true';
                 $response = 'wash request updated';
 
@@ -3310,6 +3312,14 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         }
 
                         $fifthwash_vehicles = '';
+
+
+                        $Promologdata = array(
+                            'wash_request_id' => $wash_request_id,
+                            'admin_username' => $admin_username,
+                            'action' => 'Promo_code_added',
+                            'action_date' => date('Y-m-d H:i:s'));
+                        Yii::app()->db->createCommand()->insert('activity_logs', $Promologdata);
                     }
 
                     Washingrequests::model()->updateByPk($wash_request_id, array('car_list' => $car_ids, 'package_list' => $car_packs, 'pet_hair_vehicles' => $pet_hair_vehicles, 'pet_hair_vehicles_custom_amount' => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifthwash_vehicles, 'tip_amount' => $tip_amount, 'address' => $full_address, 'street_name' => $street_name, 'city' => $city, 'state' => $state, 'zipcode' => $zipcode, 'address_type' => $address_type, 'latitude' => $lat, 'longitude' => $lng, 'coupon_code' => $promo_code, 'coupon_discount' => $coupon_amount));
@@ -3336,13 +3346,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                         Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                     } else {
-                        /*$washeractionlogdata = array(
-                            'wash_request_id' => $wash_request_id,
-                            'admin_username' => $admin_username,
-                            'action' => 'editorder',
-                            'action_date' => date('Y-m-d H:i:s'));
+                        /* $washeractionlogdata = array(
+                          'wash_request_id' => $wash_request_id,
+                          'admin_username' => $admin_username,
+                          'action' => 'editorder',
+                          'action_date' => date('Y-m-d H:i:s'));
 
-                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);*/
+                          Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata); */
                     }
 
                     WashPricingHistory::model()->updateAll(array('status' => 1), 'wash_request_id=:wash_request_id', array(":wash_request_id" => $wash_request_id));
@@ -4024,6 +4034,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
     public function actiongetallwashrequestsnew() {
 
+
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -4033,6 +4044,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         if (!empty(Yii::app()->request->getParam('event'))) {
             $day = Yii::app()->request->getParam('day');
             $event = Yii::app()->request->getParam('event');
+            $end_month = Yii::app()->request->getParam('end_month');
+            $start_month = Yii::app()->request->getParam('start_month');
 
             $status_qr = '';
             if ($event == 'pending') {
@@ -4161,6 +4174,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
         if ($event == 'washer_history' || $event == 'washer_history_csv' || $event == 'washer_history_cancel') {
+
             if ($limit > 0)
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $order_day . " ORDER BY w.id ASC LIMIT " . $limit)->queryAll();
             else
@@ -4183,6 +4197,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } else {
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' AND (DATE_FORMAT(w.order_for,'%Y-%m-%d')= '" . $day . "' OR DATE_FORMAT(w.complete_order,'%Y-%m-%d')= '" . $day . "') AND (w.failed_transaction_id != '')  ORDER BY w.id DESC")->queryAll();
             }
+        } elseif ($event == 'csv_total_orders') {
+            $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$start_month."' AND '".$end_month."' AND w.status IN(0,4,3,2,1,5,6) ORDER BY w.id ASC")->queryAll();
         } else {
             if ($limit > 0)
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
@@ -10050,8 +10066,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             echo json_encode($json);
             die();
         }
-		
-	$real_washer = $all_washes = Yii::app()->db->createCommand("SELECT *, CASE WHEN block_washer = 1 THEN 'Blocked'
+
+        $real_washer = $all_washes = Yii::app()->db->createCommand("SELECT *, CASE WHEN block_washer = 1 THEN 'Blocked'
             ELSE 'Active' END AS washer_status, CASE WHEN decals_installed = 1 THEN 'Yes'
             ELSE 'No' END AS decals_installed FROM agents WHERE washer_position = :washer_position")
                 ->bindValue(':washer_position', "real", PDO::PARAM_STR)
@@ -11354,7 +11370,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
     }
 
     public function actiontestingcsv() {
-
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -11388,14 +11403,17 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $cust_id = 0;
         $agent_id = 0;
         $_event = 'csv_total_orders';
-        $month = Yii::app()->request->getParam('month');
+        $start_month = Yii::app()->request->getParam('start_month') . '-01';
+        $end_month = Yii::app()->request->getParam('end_month') . '-31';
+
         $handle = curl_init($url);
-        $data = array('event' => $_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id, 'day' => '', 'month' => $month);
+        $data = array('event' => $_event, 'filter' => '', 'limit' => '', 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id, 'day' => '', 'start_month' => $start_month, 'end_month' => $end_month);
 
         curl_setopt($handle, CURLOPT_POST, true);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($handle);
+        //print_r($result); die;
         curl_close($handle);
         $jsondata = json_decode($result);
         $s_orders_response = $jsondata->response;

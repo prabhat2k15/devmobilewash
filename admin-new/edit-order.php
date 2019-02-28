@@ -1258,7 +1258,7 @@ if ($getorder->transaction_id) {
                                                                         </div>
                                                                         <div style="clear: both;"></div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
+                                                                                                                                                                                                                                                                                                                                                                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
                                                                         if ($veh->eco_friendly == 1) {
                                                                             echo "Yes";
                                                                         } else {
@@ -1455,7 +1455,7 @@ if ($getorder->transaction_id) {
                                                                         </div>
                                                                         <div style="clear: both;"></div>
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
+                                                                                                                                                                                                                                                                                                                                                                                                                                                <!--<p style="margin-top: 20px;">Eco friendly waterless wash: <?php
                                                                         if ($veh->eco_friendly == 1) {
                                                                             echo "Yes";
                                                                         } else {
@@ -1876,7 +1876,7 @@ if ($getorder->transaction_id) {
                                                                         <?php endif; ?>
                                                                     <?php endif; ?>
                                                                     <?php if ((($log->action == 'dropjob_ratingunchange')) && ($getorder->is_scheduled)): ?>
-            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                                                                              ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                                                                              ?>. Reason: <?php //echo $log->addi_detail;                                                                              ?></p>-->
+            <!--<p style="margin-bottom: 10px; color: red;">#<?php //echo $log->agent_company_id;                                                                                ?> dropped order at <?php //echo date('F j, Y - h:i A', strtotime($log->action_date));                                                                                ?>. Reason: <?php //echo $log->addi_detail;                                                                                ?></p>-->
                                                                         <p style="margin-bottom: 10px; color: red;">#<?php echo $log->agent_company_id; ?> feedback at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?>: <?php echo $log->addi_detail; ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'dropjob' && ($getorder->is_scheduled) && (!$log->admin_username)): ?>
@@ -1905,6 +1905,9 @@ if ($getorder->transaction_id) {
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'flagged_issue'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> flagged order at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                    <?php endif; ?>
+                                                                    <?php if ($log->action == 'Promo_code_added'): ?>
+                                                                        <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> Promo code added at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'deleted_vehicle_image'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> Deleted image for <?php echo $log->addi_detail; ?> at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
@@ -2259,263 +2262,263 @@ if ($getorder->transaction_id) {
 <script src="assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
 <script src="https://devmobilewash.com:3000/socket.io/socket.io.js"></script>
 <script>
-                                                                            var current_vehicle_id;
-                                                                            $(function () {
+                                                                    var current_vehicle_id;
+                                                                    $(function () {
 
-                                                                                $('#washer_note').on('click', function () {
-                                                                                    var notes = $('#was_notes').val();
-                                                                                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/NotesUpdate", {customer_id: "<?php echo $getorder->agent_id; ?>", admin_command: 'save-wash-note', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", notes: notes, key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                        $('#washer_note').on('click', function () {
+                                                                            var notes = $('#was_notes').val();
+                                                                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=agents/NotesUpdate", {customer_id: "<?php echo $getorder->agent_id; ?>", admin_command: 'save-wash-note', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", notes: notes, key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                        if (data.result == 'true') {
-                                                                                            window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                            }
-                                                                                                        });
-                                                                                                    });
-                                                                                                    $('#customer_note').on('click', function () {
-                                                                                                        var notes = $('#cst_notes').val();
-                                                                                                        $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/NotesUpdate", {customer_id: "<?php echo $getorder->customer_id; ?>", admin_command: 'save-customer-note', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", notes: notes, key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                if (data.result == 'true') {
+                                                                                    window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                    }
+                                                                                                });
+                                                                                            });
+                                                                                            $('#customer_note').on('click', function () {
+                                                                                                var notes = $('#cst_notes').val();
+                                                                                                $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/NotesUpdate", {customer_id: "<?php echo $getorder->customer_id; ?>", admin_command: 'save-customer-note', admin_username: "<?php echo $jsondata_permission->user_name; ?>", wash_request_id: "<?php echo $getorder->id; ?>", notes: notes, key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                            if (data.result == 'true') {
-                                                                                                                window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                }
-                                                                                                                            });
-                                                                                                                        });
-                                                                                                                        $("#cancel-order-pop").dialog({
-                                                                                                                            resizable: false,
-                                                                                                                            autoOpen: false,
-                                                                                                                            height: "auto",
-                                                                                                                            width: 465,
-                                                                                                                            modal: true,
-                                                                                                                            buttons: {
-                                                                                                                                "Customer Cancel (fee)": function () {
-                                                                                                                                    $(this).dialog("close");
-                                                                                                                                    $(".cancel-order").html('Cancelling. Please wait...');
-                                                                                                                                    $(".err-text").hide();
-                                                                                                                                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/cancelscheduleorder", {customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 15, admin_username: "<?php echo $jsondata_permission->user_name; ?>", api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                                    if (data.result == 'true') {
+                                                                                                        window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                                });
+                                                                                                                $("#cancel-order-pop").dialog({
+                                                                                                                    resizable: false,
+                                                                                                                    autoOpen: false,
+                                                                                                                    height: "auto",
+                                                                                                                    width: 465,
+                                                                                                                    modal: true,
+                                                                                                                    buttons: {
+                                                                                                                        "Customer Cancel (fee)": function () {
+                                                                                                                            $(this).dialog("close");
+                                                                                                                            $(".cancel-order").html('Cancelling. Please wait...');
+                                                                                                                            $(".err-text").hide();
+                                                                                                                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/cancelscheduleorder", {customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 15, admin_username: "<?php echo $jsondata_permission->user_name; ?>", api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                                                        if (data.result == 'true') {
-                                                                                                                                            window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                                                    } else {
-                                                                                                                                                                        $(".err-text").html(data.response);
-                                                                                                                                                                        $(".err-text").show();
-                                                                                                                                                                        $(".cancel-order").html('Cancel Order');
-                                                                                                                                                                    }
+                                                                                                                                if (data.result == 'true') {
+                                                                                                                                    window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                                                            } else {
+                                                                                                                                                                $(".err-text").html(data.response);
+                                                                                                                                                                $(".err-text").show();
+                                                                                                                                                                $(".cancel-order").html('Cancel Order');
+                                                                                                                                                            }
 
-                                                                                                                                                                });
-                                                                                                                                                            },
-                                                                                                                                                            "Washer Cancel (rating penalty, no fee)": function () {
+                                                                                                                                                        });
+                                                                                                                                                    },
+                                                                                                                                                    "Washer Cancel (rating penalty, no fee)": function () {
 
-                                                                                                                                                                $(this).dialog("close");
-                                                                                                                                                                $(".cancel-order").html('Cancelling. Please wait...');
-                                                                                                                                                                $(".err-text").hide();
+                                                                                                                                                        $(this).dialog("close");
+                                                                                                                                                        $(".cancel-order").html('Cancelling. Please wait...');
+                                                                                                                                                        $(".err-text").hide();
 
-                                                                                                                                                                var socket = io.connect("https://devmobilewash.com:3000", {query: "action=commandcenter", secure: true});
-                                                                                                                                                                socket.on('connect', function () {
-                                                                                                                                                                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", {wash_request_id: "<?php echo $getorder->id; ?>", agent_id: 0, washer_drop_job: 1, is_scheduled: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', admin_username: "<?php echo $jsondata_permission->user_name; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                                                                                        var socket = io.connect("https://devmobilewash.com:3000", {query: "action=commandcenter", secure: true});
+                                                                                                                                                        socket.on('connect', function () {
+                                                                                                                                                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", {wash_request_id: "<?php echo $getorder->id; ?>", agent_id: 0, washer_drop_job: 1, is_scheduled: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', admin_username: "<?php echo $jsondata_permission->user_name; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                                                                                        if (data.result == 'true') {
-                                                                                                                                                                            var wash_id = "<?php echo $getorder->specid; ?>";
-                                                                                                                                                                            socketId = socket.io.engine.id;
-                                                                                                                                                                            //console.log(socketId);
-                                                                                                                                                                            socket.emit('currentwashschedulealert', {wash_request_id: wash_id, socketId: socketId});
-                                                                                                                                                                            window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                                                                                        } else {
-                                                                                                                                                                                                            $(".err-text").html(data.response);
-                                                                                                                                                                                                            $(".err-text").show();
-                                                                                                                                                                                                            $(".cancel-order").html('Cancel Order');
-                                                                                                                                                                                                        }
+                                                                                                                                                                if (data.result == 'true') {
+                                                                                                                                                                    var wash_id = "<?php echo $getorder->specid; ?>";
+                                                                                                                                                                    socketId = socket.io.engine.id;
+                                                                                                                                                                    //console.log(socketId);
+                                                                                                                                                                    socket.emit('currentwashschedulealert', {wash_request_id: wash_id, socketId: socketId});
+                                                                                                                                                                    window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                                                                                                } else {
+                                                                                                                                                                                                    $(".err-text").html(data.response);
+                                                                                                                                                                                                    $(".err-text").show();
+                                                                                                                                                                                                    $(".cancel-order").html('Cancel Order');
+                                                                                                                                                                                                }
 
-                                                                                                                                                                                                    });
-                                                                                                                                                                                                });
-                                                                                                                                                                                            },
-                                                                                                                                                                                            "Company Cancel (no fee, no rating penalty)": function () {
+                                                                                                                                                                                            });
+                                                                                                                                                                                        });
+                                                                                                                                                                                    },
+                                                                                                                                                                                    "Company Cancel (no fee, no rating penalty)": function () {
 
-                                                                                                                                                                                                $(this).dialog("close");
-                                                                                                                                                                                                $(".cancel-order").html('Cancelling. Please wait...');
-                                                                                                                                                                                                $(".err-text").hide();
-                                                                                                                                                                                                $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/cancelscheduleorder", {customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", fee: 15, free_cancel: true, company_cancel: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                                                                                                                        $(this).dialog("close");
+                                                                                                                                                                                        $(".cancel-order").html('Cancelling. Please wait...');
+                                                                                                                                                                                        $(".err-text").hide();
+                                                                                                                                                                                        $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/cancelscheduleorder", {customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", fee: 15, free_cancel: true, company_cancel: 1, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                                                                                                                    if (data.result == 'true') {
-                                                                                                                                                                                                        window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                                                                                                                } else {
-                                                                                                                                                                                                                                    $(".err-text").html(data.response);
-                                                                                                                                                                                                                                    $(".err-text").show();
-                                                                                                                                                                                                                                    $(".cancel-order").html('Cancel Order');
-                                                                                                                                                                                                                                }
+                                                                                                                                                                                            if (data.result == 'true') {
+                                                                                                                                                                                                window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                                                                                                                        } else {
+                                                                                                                                                                                                                            $(".err-text").html(data.response);
+                                                                                                                                                                                                                            $(".err-text").show();
+                                                                                                                                                                                                                            $(".cancel-order").html('Cancel Order');
+                                                                                                                                                                                                                        }
 
-                                                                                                                                                                                                                            });
-                                                                                                                                                                                                                        },
-                                                                                                                                                                                                                        "Customer No Response (fee)": function () {
-                                                                                                                                                                                                                            $(this).dialog("close");
-                                                                                                                                                                                                                            $(".cancel-order").html('Cancelling. Please wait...');
-                                                                                                                                                                                                                            $(".err-text").hide();
-                                                                                                                                                                                                                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/customernoresponse", {customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 25, admin_username: "<?php echo $jsondata_permission->user_name; ?>", company_cancel: 5, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                                                                                                                                                    });
+                                                                                                                                                                                                                },
+                                                                                                                                                                                                                "Customer No Response (fee)": function () {
+                                                                                                                                                                                                                    $(this).dialog("close");
+                                                                                                                                                                                                                    $(".cancel-order").html('Cancelling. Please wait...');
+                                                                                                                                                                                                                    $(".err-text").hide();
+                                                                                                                                                                                                                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/customernoresponse", {customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 25, admin_username: "<?php echo $jsondata_permission->user_name; ?>", company_cancel: 5, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                                                                                                                                                if (data.result == 'true') {
-                                                                                                                                                                                                                                    window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                                                                                                                                            } else {
-                                                                                                                                                                                                                                                                $(".err-text").html(data.response);
-                                                                                                                                                                                                                                                                $(".err-text").show();
-                                                                                                                                                                                                                                                                $(".cancel-order").html('Cancel Order');
-                                                                                                                                                                                                                                                            }
-
-                                                                                                                                                                                                                                                        });
+                                                                                                                                                                                                                        if (data.result == 'true') {
+                                                                                                                                                                                                                            window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                                                                                                                                                    } else {
+                                                                                                                                                                                                                                                        $(".err-text").html(data.response);
+                                                                                                                                                                                                                                                        $(".err-text").show();
+                                                                                                                                                                                                                                                        $(".cancel-order").html('Cancel Order');
                                                                                                                                                                                                                                                     }
-                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                            });
-                                                                                                                                                                                                                                            $("#cancel-order-ondemand-pop").dialog({
-                                                                                                                                                                                                                                                resizable: false,
-                                                                                                                                                                                                                                                autoOpen: false,
-                                                                                                                                                                                                                                                height: "auto",
-                                                                                                                                                                                                                                                width: 465,
-                                                                                                                                                                                                                                                modal: true,
-                                                                                                                                                                                                                                                buttons: {
-                                                                                                                                                                                                                                                    "Customer Cancel (fee)": function () {
-                                                                                                                                                                                                                                                        $(this).dialog("close");
-                                                                                                                                                                                                                                                        $(".cancel-order-ondemand").html('Cancelling. Please wait...');
-                                                                                                                                                                                                                                                        $(".err-text").hide();
-                                                                                                                                                                                                                                                        $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", {id: "<?php echo $getorder->id; ?>", status: 5, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+
+                                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                    });
+                                                                                                                                                                                                                                    $("#cancel-order-ondemand-pop").dialog({
+                                                                                                                                                                                                                                        resizable: false,
+                                                                                                                                                                                                                                        autoOpen: false,
+                                                                                                                                                                                                                                        height: "auto",
+                                                                                                                                                                                                                                        width: 465,
+                                                                                                                                                                                                                                        modal: true,
+                                                                                                                                                                                                                                        buttons: {
+                                                                                                                                                                                                                                            "Customer Cancel (fee)": function () {
+                                                                                                                                                                                                                                                $(this).dialog("close");
+                                                                                                                                                                                                                                                $(".cancel-order-ondemand").html('Cancelling. Please wait...');
+                                                                                                                                                                                                                                                $(".err-text").hide();
+                                                                                                                                                                                                                                                $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", {id: "<?php echo $getorder->id; ?>", status: 5, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                                                                                                                                                                            if (data.result == 'true') {
-                                                                                                                                                                                                                                                                window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                                                                                                                                                                        } else {
-                                                                                                                                                                                                                                                                                            $(".err-text").html(data.response);
-                                                                                                                                                                                                                                                                                            $(".err-text").show();
-                                                                                                                                                                                                                                                                                            $(".cancel-order-ondemand").html('Cancel Order');
-                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                    if (data.result == 'true') {
+                                                                                                                                                                                                                                                        window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                                                                                    $(".err-text").html(data.response);
+                                                                                                                                                                                                                                                                                    $(".err-text").show();
+                                                                                                                                                                                                                                                                                    $(".cancel-order-ondemand").html('Cancel Order');
+                                                                                                                                                                                                                                                                                }
 
-                                                                                                                                                                                                                                                                                    });
-                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                "Washer Cancel (rating penalty, no fee)": function () {
+                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                        },
+                                                                                                                                                                                                                                                                        "Washer Cancel (rating penalty, no fee)": function () {
 
-                                                                                                                                                                                                                                                                                    $(this).dialog("close");
-                                                                                                                                                                                                                                                                                    $(".cancel-order-ondemand").html('Cancelling. Please wait...');
-                                                                                                                                                                                                                                                                                    $(".err-text").hide();
+                                                                                                                                                                                                                                                                            $(this).dialog("close");
+                                                                                                                                                                                                                                                                            $(".cancel-order-ondemand").html('Cancelling. Please wait...');
+                                                                                                                                                                                                                                                                            $(".err-text").hide();
 <?php if ($getorder->status == 1): ?>
-                                                                                                                                                                                                                                                                                        $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/washerenroutecancel", {wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", status: 6, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
-                                                                                                                                                                                                                                                                                            if (data.result == 'true') {
-                                                                                                                                                                                                                                                                                                window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                                                                                                                                                                                                        } else {
-                                                                                                                                                                                                                                                                                                                            $(".err-text").html(data.response);
-                                                                                                                                                                                                                                                                                                                            $(".err-text").show();
-                                                                                                                                                                                                                                                                                                                            $(".cancel-order-ondemand").html('Cancel Order');
-                                                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/washerenroutecancel", {wash_request_id: "<?php echo $getorder->id; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", status: 6, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                                                                                                                                                                                                                    if (data.result == 'true') {
+                                                                                                                                                                                                                                                                                        window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                                                                                                                    $(".err-text").html(data.response);
+                                                                                                                                                                                                                                                                                                                    $(".err-text").show();
+                                                                                                                                                                                                                                                                                                                    $(".cancel-order-ondemand").html('Cancel Order');
+                                                                                                                                                                                                                                                                                                                }
 
-                                                                                                                                                                                                                                                                                                                    });
+                                                                                                                                                                                                                                                                                                            });
 <?php else: ?>
-                                                                                                                                                                                                                                                                                                                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", {id: "<?php echo $getorder->id; ?>", free_cancel: 'yes', status: 6, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                                                                                                                                                                                                                                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", {id: "<?php echo $getorder->id; ?>", free_cancel: 'yes', status: 6, admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 
-                                                                                                                                                                                                                                                                                                                        if (data.result == 'true') {
-                                                                                                                                                                                                                                                                                                                            window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                                                                                                                                                                                                                                    } else {
-                                                                                                                                                                                                                                                                                                                                                        $(".err-text").html(data.response);
-                                                                                                                                                                                                                                                                                                                                                        $(".err-text").show();
-                                                                                                                                                                                                                                                                                                                                                        $(".cancel-order-ondemand").html('Cancel Order');
-                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                if (data.result == 'true') {
+                                                                                                                                                                                                                                                                                                                    window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                                                                                                                                                                                                                                            } else {
+                                                                                                                                                                                                                                                                                                                                                $(".err-text").html(data.response);
+                                                                                                                                                                                                                                                                                                                                                $(".err-text").show();
+                                                                                                                                                                                                                                                                                                                                                $(".cancel-order-ondemand").html('Cancel Order');
+                                                                                                                                                                                                                                                                                                                                            }
 
-                                                                                                                                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                                                                                                                                        });
 <?php endif; ?>
-                                                                                                                                                                                                                                                                                                                                        },
-                                                                                                                                                                                                                                                                                                                                        "Company Cancel (no fee, no rating penalty)": function () {
-                                                                                                                                                                                                                                                                                                                                            var cancel_status = 5;
-                                                                                                                                                                                                                                                                                                                                            $(this).dialog("close");
-                                                                                                                                                                                                                                                                                                                                            $(".cancel-order-ondemand").html('Cancelling. Please wait...');
-                                                                                                                                                                                                                                                                                                                                            $(".err-text").hide();
-                                                                                                                                                                                                                                                                                                                                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", {id: "<?php echo $getorder->id; ?>", status: cancel_status, free_cancel: 'yes', admin_username: "<?php echo $jsondata_permission->user_name; ?>", company_cancel: 1, key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                                                                                                                                                                                                                                                                },
+                                                                                                                                                                                                                                                                                                                                "Company Cancel (no fee, no rating penalty)": function () {
+                                                                                                                                                                                                                                                                                                                                    var cancel_status = 5;
+                                                                                                                                                                                                                                                                                                                                    $(this).dialog("close");
+                                                                                                                                                                                                                                                                                                                                    $(".cancel-order-ondemand").html('Cancelling. Please wait...');
+                                                                                                                                                                                                                                                                                                                                    $(".err-text").hide();
+                                                                                                                                                                                                                                                                                                                                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=users/adminondemandcancelorder", {id: "<?php echo $getorder->id; ?>", status: cancel_status, free_cancel: 'yes', admin_username: "<?php echo $jsondata_permission->user_name; ?>", company_cancel: 1, key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                                                                                                                                                                                                                                                                if (data.result == 'true') {
-                                                                                                                                                                                                                                                                                                                                                    window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                                                                                                                                                                                                                                                            } else {
-                                                                                                                                                                                                                                                                                                                                                                                $(".err-text").html(data.response);
-                                                                                                                                                                                                                                                                                                                                                                                $(".err-text").show();
-                                                                                                                                                                                                                                                                                                                                                                                $(".cancel-order-ondemand").html('Cancel Order');
-                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                        if (data.result == 'true') {
+                                                                                                                                                                                                                                                                                                                                            window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                                                                                                                                                                                                                                                                    } else {
+                                                                                                                                                                                                                                                                                                                                                                        $(".err-text").html(data.response);
+                                                                                                                                                                                                                                                                                                                                                                        $(".err-text").show();
+                                                                                                                                                                                                                                                                                                                                                                        $(".cancel-order-ondemand").html('Cancel Order');
+                                                                                                                                                                                                                                                                                                                                                                    }
 
-                                                                                                                                                                                                                                                                                                                                                                        });
-                                                                                                                                                                                                                                                                                                                                                                    },
-                                                                                                                                                                                                                                                                                                                                                                    "Customer No Response (fee)": function () {
-                                                                                                                                                                                                                                                                                                                                                                        $(this).dialog("close");
-                                                                                                                                                                                                                                                                                                                                                                        $(".cancel-order").html('Cancelling. Please wait...');
-                                                                                                                                                                                                                                                                                                                                                                        $(".err-text").hide();
-                                                                                                                                                                                                                                                                                                                                                                        $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/customernoresponse", {customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 25, admin_username: "<?php echo $jsondata_permission->user_name; ?>", company_cancel: 5, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                                                                                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                                                                                                                                                            },
+                                                                                                                                                                                                                                                                                                                                                            "Customer No Response (fee)": function () {
+                                                                                                                                                                                                                                                                                                                                                                $(this).dialog("close");
+                                                                                                                                                                                                                                                                                                                                                                $(".cancel-order").html('Cancelling. Please wait...');
+                                                                                                                                                                                                                                                                                                                                                                $(".err-text").hide();
+                                                                                                                                                                                                                                                                                                                                                                $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/customernoresponse", {customer_id: "<?php echo $getorder->customer_id; ?>", id: "<?php echo $getorder->id; ?>", fee: 25, admin_username: "<?php echo $jsondata_permission->user_name; ?>", company_cancel: 5, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                                                                                                                                                                                                                                                                                            if (data.result == 'true') {
-                                                                                                                                                                                                                                                                                                                                                                                window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
-                                                                                                                                                                                                                                                                                                                                                                                                        } else {
-                                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").html(data.response);
-                                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").show();
-                                                                                                                                                                                                                                                                                                                                                                                                            $(".cancel-order").html('Cancel Order');
-                                                                                                                                                                                                                                                                                                                                                                                                        }
-
-                                                                                                                                                                                                                                                                                                                                                                                                    });
+                                                                                                                                                                                                                                                                                                                                                                    if (data.result == 'true') {
+                                                                                                                                                                                                                                                                                                                                                                        window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?php echo $getorder->id; ?>";
+                                                                                                                                                                                                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").html(data.response);
+                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").show();
+                                                                                                                                                                                                                                                                                                                                                                                                    $(".cancel-order").html('Cancel Order');
                                                                                                                                                                                                                                                                                                                                                                                                 }
 
-                                                                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                                                                        });
-                                                                                                                                                                                                                                                                                                                                                                                        $("#washer-arrive-dialog").dialog({
-                                                                                                                                                                                                                                                                                                                                                                                            resizable: false,
-                                                                                                                                                                                                                                                                                                                                                                                            autoOpen: false,
-                                                                                                                                                                                                                                                                                                                                                                                            height: "auto",
-                                                                                                                                                                                                                                                                                                                                                                                            width: 465,
-                                                                                                                                                                                                                                                                                                                                                                                            modal: true,
-                                                                                                                                                                                                                                                                                                                                                                                            buttons: {
-                                                                                                                                                                                                                                                                                                                                                                                                "Ok": function () {
-                                                                                                                                                                                                                                                                                                                                                                                                    $(this).dialog("close");
-                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").hide();
-                                                                                                                                                                                                                                                                                                                                                                                                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", {agent_id: "<?php echo $getorder->agent_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", status: 3, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                                                                                                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                                                                                                                        }
+
+                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                                                                                                                                                                                $("#washer-arrive-dialog").dialog({
+                                                                                                                                                                                                                                                                                                                                                                                    resizable: false,
+                                                                                                                                                                                                                                                                                                                                                                                    autoOpen: false,
+                                                                                                                                                                                                                                                                                                                                                                                    height: "auto",
+                                                                                                                                                                                                                                                                                                                                                                                    width: 465,
+                                                                                                                                                                                                                                                                                                                                                                                    modal: true,
+                                                                                                                                                                                                                                                                                                                                                                                    buttons: {
+                                                                                                                                                                                                                                                                                                                                                                                        "Ok": function () {
+                                                                                                                                                                                                                                                                                                                                                                                            $(this).dialog("close");
+                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").hide();
+                                                                                                                                                                                                                                                                                                                                                                                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=washing/updatewashrequeststatus", {agent_id: "<?php echo $getorder->agent_id; ?>", wash_request_id: "<?php echo $getorder->id; ?>", status: 3, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                                                                                                                                                                                                                                                                                                                        if (data.result == 'false') {
+                                                                                                                                                                                                                                                                                                                                                                                                if (data.result == 'false') {
 
-                                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").html(data.response);
-                                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").show();
-                                                                                                                                                                                                                                                                                                                                                                                                        }
-
-                                                                                                                                                                                                                                                                                                                                                                                                    });
-                                                                                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                                                                                "Close": function () {
-
-                                                                                                                                                                                                                                                                                                                                                                                                    $(this).dialog("close");
+                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").html(data.response);
+                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").show();
                                                                                                                                                                                                                                                                                                                                                                                                 }
-                                                                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                                                                        });
-                                                                                                                                                                                                                                                                                                                                                                                        $("#car-inspect-dialog").dialog({
-                                                                                                                                                                                                                                                                                                                                                                                            resizable: false,
-                                                                                                                                                                                                                                                                                                                                                                                            autoOpen: false,
-                                                                                                                                                                                                                                                                                                                                                                                            height: "auto",
-                                                                                                                                                                                                                                                                                                                                                                                            width: 465,
-                                                                                                                                                                                                                                                                                                                                                                                            modal: true,
-                                                                                                                                                                                                                                                                                                                                                                                            buttons: {
-                                                                                                                                                                                                                                                                                                                                                                                                "Accept": function () {
-                                                                                                                                                                                                                                                                                                                                                                                                    $(this).dialog("close");
-                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").hide();
-                                                                                                                                                                                                                                                                                                                                                                                                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", {vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 5, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+
+                                                                                                                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                                                                                                                        },
+                                                                                                                                                                                                                                                                                                                                                                                        "Close": function () {
+
+                                                                                                                                                                                                                                                                                                                                                                                            $(this).dialog("close");
+                                                                                                                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                                                                                                                                                                                $("#car-inspect-dialog").dialog({
+                                                                                                                                                                                                                                                                                                                                                                                    resizable: false,
+                                                                                                                                                                                                                                                                                                                                                                                    autoOpen: false,
+                                                                                                                                                                                                                                                                                                                                                                                    height: "auto",
+                                                                                                                                                                                                                                                                                                                                                                                    width: 465,
+                                                                                                                                                                                                                                                                                                                                                                                    modal: true,
+                                                                                                                                                                                                                                                                                                                                                                                    buttons: {
+                                                                                                                                                                                                                                                                                                                                                                                        "Accept": function () {
+                                                                                                                                                                                                                                                                                                                                                                                            $(this).dialog("close");
+                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").hide();
+                                                                                                                                                                                                                                                                                                                                                                                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", {vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 5, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                                                                                                                                                                                                                                                                                                                                                                                        if (data.result == 'false') {
+                                                                                                                                                                                                                                                                                                                                                                                                if (data.result == 'false') {
 
-                                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").html(data.response);
-                                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").show();
-                                                                                                                                                                                                                                                                                                                                                                                                        }
-
-                                                                                                                                                                                                                                                                                                                                                                                                    });
-                                                                                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                                                                                "Reject": function () {
-
-                                                                                                                                                                                                                                                                                                                                                                                                    $(this).dialog("close");
-                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").hide();
-                                                                                                                                                                                                                                                                                                                                                                                                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", {vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 3, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
-//console.log(data);
-                                                                                                                                                                                                                                                                                                                                                                                                        if (data.result == 'false') {
-
-                                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").html(data.response);
-                                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").show();
-                                                                                                                                                                                                                                                                                                                                                                                                        }
-
-                                                                                                                                                                                                                                                                                                                                                                                                    });
+                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").html(data.response);
+                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").show();
                                                                                                                                                                                                                                                                                                                                                                                                 }
-                                                                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                                                                        });
-                                                                                                                                                                                                                                                                                                                                                                                        $('.ui-dialog-titlebar-close').html('X');
-                                                                                                                                                                                                                                                                                                                                                                                    });</script>
+
+                                                                                                                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                                                                                                                        },
+                                                                                                                                                                                                                                                                                                                                                                                        "Reject": function () {
+
+                                                                                                                                                                                                                                                                                                                                                                                            $(this).dialog("close");
+                                                                                                                                                                                                                                                                                                                                                                                            $(".err-text").hide();
+                                                                                                                                                                                                                                                                                                                                                                                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/setvehiclestatus", {vehicle_id: current_vehicle_id, wash_request_id: "<?php echo $getorder->id; ?>", status: 3, api_password: "<?php echo AES256CBC_API_PASS; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+//console.log(data);
+                                                                                                                                                                                                                                                                                                                                                                                                if (data.result == 'false') {
+
+                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").html(data.response);
+                                                                                                                                                                                                                                                                                                                                                                                                    $(".err-text").show();
+                                                                                                                                                                                                                                                                                                                                                                                                }
+
+                                                                                                                                                                                                                                                                                                                                                                                            });
+                                                                                                                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                });
+                                                                                                                                                                                                                                                                                                                                                                                $('.ui-dialog-titlebar-close').html('X');
+                                                                                                                                                                                                                                                                                                                                                                            });</script>
 
 <script>
     var regular_makes;
@@ -3974,427 +3977,430 @@ if ($getorder->transaction_id) {
 <?php endif; ?> 
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-                            $(function () {
+                        $(function () {
 
-                                var availableTags = new Array();
+                            var availableTags = new Array();
 <?php foreach ($allagents as $agent) { ?>
-                                    var obj = {};
-                                    obj['label'] = '<?php echo $agent->label; ?>';
-                                    obj['value'] = '<?php echo $agent->value; ?>';
-                                    availableTags.push(obj);
+                                var obj = {};
+                                obj['label'] = '<?php echo $agent->label; ?>';
+                                obj['value'] = '<?php echo $agent->value; ?>';
+                                availableTags.push(obj);
 <?php } ?>
-                                $(".portlet-body form #agentname").autocomplete({
-                                    source: availableTags,
-                                    select: function (event, ui) {
-                                        event.preventDefault();
-                                        //console.log(ui.item.label);
-                                        //console.log(ui.item.value);
-                                        $(".portlet-body form #detailer").val(ui.item.value);
-                                        $(this).val(ui.item.label);
-                                        //return false; // Prevent the widget from inserting the value.
-                                    }
-                                });
-                                $(".portlet-body form #agentname").keyup(function () {
-                                    if (!$(this).val()) {
-                                        $(".portlet-body form #detailer").val(0);
-                                    }
-                                });
-                            });</script>
+                            $(".portlet-body form #agentname").autocomplete({
+                                source: availableTags,
+                                select: function (event, ui) {
+                                    event.preventDefault();
+                                    //console.log(ui.item.label);
+                                    //console.log(ui.item.value);
+                                    $(".portlet-body form #detailer").val(ui.item.value);
+                                    $(this).val(ui.item.label);
+                                    //return false; // Prevent the widget from inserting the value.
+                                }
+                            });
+                            $(".portlet-body form #agentname").keyup(function () {
+                                if (!$(this).val()) {
+                                    $(".portlet-body form #detailer").val(0);
+                                }
+                            });
+                        });</script>
 <script src="https://js.braintreegateway.com/v2/braintree.js"></script>
 <script>
 
-                            var token = "<?php echo $clientToken; ?>";
-                            braintree.setup(token, 'custom', {id: 'phone-order-form', onPaymentMethodReceived: function (payload) {
-                                    var nonce = payload.nonce;
-                                    if (nonce)
-                                    {
+                        var token = "<?php echo $clientToken; ?>";
+                        braintree.setup(token, 'custom', {id: 'phone-order-form', onPaymentMethodReceived: function (payload) {
+                                var nonce = payload.nonce;
+                                if (nonce)
+                                {
 
-                                        $("#phone-order-form #bt_number").val($("#phone-order-form #ccno").val());
-                                        exp_date = $("#phone-order-form #ccexpmo").val() + "/" + $("#phone-order-form #ccexpyr").val();
-                                        $("#phone-order-form #bt_exp").val(exp_date);
-                                        var form = document.getElementById('phone-order-form');
-                                        var payment_method_nonce = document.createElement('input');
-                                        payment_method_nonce.name = 'payment_method_nonce';
-                                        payment_method_nonce.type = 'hidden';
-                                        payment_method_nonce.value = nonce;
-                                        form.appendChild(payment_method_nonce);
-                                        form.submit();
-                                    }
-                                }});
-                            function updateactivitylogs() {
-                                $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=site/getwashersavedroplog", {wash_request_id: "<?php echo $getorder->id; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                                    $("#phone-order-form #bt_number").val($("#phone-order-form #ccno").val());
+                                    exp_date = $("#phone-order-form #ccexpmo").val() + "/" + $("#phone-order-form #ccexpyr").val();
+                                    $("#phone-order-form #bt_exp").val(exp_date);
+                                    var form = document.getElementById('phone-order-form');
+                                    var payment_method_nonce = document.createElement('input');
+                                    payment_method_nonce.name = 'payment_method_nonce';
+                                    payment_method_nonce.type = 'hidden';
+                                    payment_method_nonce.value = nonce;
+                                    form.appendChild(payment_method_nonce);
+                                    form.submit();
+                                }
+                            }});
+                        function updateactivitylogs() {
+                            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=site/getwashersavedroplog", {wash_request_id: "<?php echo $getorder->id; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
 //console.log(data);
-                                    if (data.result == 'true') {
-                                        var contents = "";
-                                        $.each(data.logs, function (i, log) {
+                                if (data.result == 'true') {
+                                    var contents = "";
+                                    $.each(data.logs, function (i, log) {
 
-                                            if (log.action == 'savejob') {
-                                                if (log.admin_username) {
-                                                    contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " assigned #" + log.agent_company_id + " at " + log.formatted_action_date + "</p>";
-                                                } else {
-                                                    contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " assigned " + log.formatted_action_date + "</p>";
-                                                }
+                                        if (log.action == 'savejob') {
+                                            if (log.admin_username) {
+                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " assigned #" + log.agent_company_id + " at " + log.formatted_action_date + "</p>";
+                                            } else {
+                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " assigned " + log.formatted_action_date + "</p>";
                                             }
+                                        }
 <?php if (($getorder->is_scheduled)): ?>
-                                                if (log.action == 'dropjob_ratingunchange') {
-                                                    /*contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped order at "+log.formatted_action_date+"</p>. Reason: "+log.addi_detail; */
-                                                    contents += "<p style='margin-bottom: 10px; color:red;'>#" + log.agent_company_id + " feedback at " + log.formatted_action_date + " : " + log.addi_detail + '</p>';
-                                                }
-                                                if ((log.action == 'dropjob') && (!log.admin_username)) {
-                                                    contents += "<p style='margin-bottom: 10px; color:red;'>#" + log.agent_company_id + " feedback at " + log.formatted_action_date + " : " + log.addi_detail + '</p>';
-                                                }
-                                                if (log.action == 'Dropschedule') {
-                                                    contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " dropped order at " + log.formatted_action_date + "</p>";
-                                                }
+                                            if (log.action == 'dropjob_ratingunchange') {
+                                                /*contents += "<p style='margin-bottom: 10px;'>#"+log.agent_company_id+" dropped order at "+log.formatted_action_date+"</p>. Reason: "+log.addi_detail; */
+                                                contents += "<p style='margin-bottom: 10px; color:red;'>#" + log.agent_company_id + " feedback at " + log.formatted_action_date + " : " + log.addi_detail + '</p>';
+                                            }
+                                            if ((log.action == 'dropjob') && (!log.admin_username)) {
+                                                contents += "<p style='margin-bottom: 10px; color:red;'>#" + log.agent_company_id + " feedback at " + log.formatted_action_date + " : " + log.addi_detail + '</p>';
+                                            }
+                                            if (log.action == 'Dropschedule') {
+                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " dropped order at " + log.formatted_action_date + "</p>";
+                                            }
 <?php endif; ?>
-                                            if (log.action == 'admindropjob') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " dropped washer #" + log.agent_company_id + " from the order at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'admindropjob') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " dropped washer #" + log.agent_company_id + " from the order at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'reschedule') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " re-scheduled order at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'reschedule') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " re-scheduled order at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'savenote') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added order note at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'savenote') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added order note at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'savecustomernote') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added Customers note at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'savecustomernote') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added Customers note at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'savewashnote') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added washer note at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'savewashnote') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added washer note at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'editorder') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " edited order at " + log.formatted_action_date + "</p>";
-                                            }
-                                            if (log.action == 'deleted_vehicle_image') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " deleted image for  " + log.addi_detail + ' at ' + log.formatted_action_date + "</p>";
-                                            }
-                                            if (log.action == 'flagged_issue') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + "flagged order at " + log.formatted_action_date + "</p>";
-                                            }
-                                            if (log.action == 'resolved_flagged') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + "resolved flagged order at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'editorder') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " edited order at " + log.formatted_action_date + "</p>";
+                                        }
+                                        if (log.action == 'deleted_vehicle_image') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " deleted image for  " + log.addi_detail + ' at ' + log.formatted_action_date + "</p>";
+                                        }
+                                        if (log.action == 'Promo_code_added') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " Promo code added at " + log.formatted_action_date + "</p>";
+                                        }
+                                        if (log.action == 'flagged_issue') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " flagged order at " + log.formatted_action_date + "</p>";
+                                        }
+                                        if (log.action == 'resolved_flagged') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + "resolved flagged order at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'refundpayment') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " refunded payment at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'refundpayment') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " refunded payment at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'processpayment') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " processed payment at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'processpayment') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " processed payment at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'voidpayment') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " voided payment at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'voidpayment') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " voided payment at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'cancelorder') {
-                                                contents += "<p style='margin-bottom: 10px; color:red;'>" + log.admin_username + " canceled order at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'cancelorder') {
+                                            contents += "<p style='margin-bottom: 10px; color:red;'>" + log.admin_username + " canceled order at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'agentreceiptsend') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " sent washer receipt at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'agentreceiptsend') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " sent washer receipt at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'clientreceiptsend') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " sent client receipt at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'clientreceiptsend') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " sent client receipt at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'addlocation') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added location at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'addlocation') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added location at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'updatelocation') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " updated location at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'updatelocation') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " updated location at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'deletelocation') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " deleted location at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'deletelocation') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " deleted location at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'deletepaymentmethod') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " deleted payment method at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'deletepaymentmethod') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " deleted payment method at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'addpaymentmethod') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added payment method at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'addpaymentmethod') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added payment method at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'updatepaymentmethod') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " updated payment method at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'updatepaymentmethod') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " updated payment method at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'washerpush') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " sent washer push notification at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'washerpush') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " sent washer push notification at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'passfraud') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " released order from fraud at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'passfraud') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " released order from fraud at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'startjob') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " accepted request at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'startjob') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " accepted request at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'arrivejob') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " arrived at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'arrivejob') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " arrived at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'processjob') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " processed order at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'processjob') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " processed order at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'completejob') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " completed order at " + log.formatted_action_date + "</p>";
-                                            }
+                                        if (log.action == 'completejob') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " completed order at " + log.formatted_action_date + "</p>";
+                                        }
 
-                                            if (log.action == 'washerstartjob') {
+                                        if (log.action == 'washerstartjob') {
 <?php if ($getorder->is_scheduled == 1): ?>
-                                                    contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " tapped Drive Now at " + log.formatted_action_date + "</p>";
+                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " tapped Drive Now at " + log.formatted_action_date + "</p>";
 <?php else: ?>
-                                                    contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " accepted request at " + log.formatted_action_date + "</p>";
+                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " accepted request at " + log.formatted_action_date + "</p>";
 <?php endif; ?>
-
-                                            }
-
-                                            if (log.action == 'washerarrivejob') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " arrived at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'appcompletejob') {
-                                                contents += "<p style='margin-bottom: 10px;'>Order completed at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'freewash') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " gives free wash at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'uncancel') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " un-canceled order at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'cancelorderclient') {
-                                                contents += "<p style='margin-bottom: 10px; color:red;'>Customer canceled order at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'cancelorderwasher') {
-                                                contents += "<p style='margin-bottom: 10px; color:red;'>#" + log.agent_company_id + " canceled order at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'washerenroutecancel') {
-                                                contents += "<p style='margin-bottom: 10px; color:red;'>#" + log.agent_company_id + " canceled order enroute at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'adminstopwasherpayment') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " stopped washer payment at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'adminenablewasherpayment') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " enabled washer payment at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'washeraddcar') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer accepted add vehicle request: " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'washerchangepack') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " changed package/addons " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'adminsubmitforsettlement') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " submitted payment for settlement at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'meetwasherbeforeinspect') {
-                                                if (log.addi_detail == 'yes') {
-                                                    contents += "<p style='margin-bottom: 10px;'>Customer hit 'Meet Washer Outside' before inspection at " + log.formatted_action_date + "</p>";
-                                                }
-
-                                                if (log.addi_detail == 'no') {
-                                                    contents += "<p style='margin-bottom: 10px;'>Customer hit 'No Thanks' before inspection at " + log.formatted_action_date + "</p>";
-                                                }
-
-                                            }
-
-                                            if (log.action == 'meetwasherwashend') {
-                                                if (log.addi_detail == 'yes') {
-                                                    contents += "<p style='margin-bottom: 10px;'>Customer hit 'Meet Washer Outside' after wash at " + log.formatted_action_date + "</p>";
-                                                }
-
-                                                if (log.addi_detail == 'no') {
-                                                    contents += "<p style='margin-bottom: 10px;'>Customer hit 'No Thanks' after wash at " + log.formatted_action_date + "</p>";
-                                                }
-
-                                            }
-
-                                            if (log.action == 'washereditcar') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " edited vehicle to " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'adminaddcar') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'adminchangepack') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " changed package " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'adminchangeaddons') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " changed addons " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'washerremovecar') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " removed " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'adminremovecar') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " removed " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'customerfeedback') {
-                                                contents += "<p style='margin-bottom: 10px; color:red;'>Customer feedback at " + log.formatted_action_date + " : " + log.addi_detail + "</p>";
-                                            }
-
-                                            if (log.action == 'agentfeedback') {
-                                                /*"+log.formatted_action_date +"*/
-                                                contents += "<p style='margin-bottom: 10px; color: red;'>#" + log.agent_company_id + " feedback at " + log.formatted_action_date + ": " + log.addi_detail + "</p>";
-                                            }
-
-                                            if (log.action == 'customercall') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer called washer #" + log.agent_company_id + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'agentcall') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " called customer at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'agentbuzz') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " buzzed customer at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'customeracceptupgrade') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer accepted package change for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'customerrejectupgrade') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer did not accept package change for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-                                            if (log.action == 'tipamount') {
-                                                contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " edited tip amount from " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-                                            if (log.action == 'customertipamount') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer edited tip amount from " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-                                            if (log.action == 'customeraddtipamount') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer added " + log.addi_detail + " tip amount at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'agentreinspectopt') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " chose reinspect for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'agentnodamageopt') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " chose no damage for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'clientwashnowschedule') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer changed On Demand to Scheduled on " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'ondemandautocancel') {
-                                                contents += "<p style='margin-bottom: 10px;  color:red;'>On Demand order Auto-Canceled at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'scheduleauto-canceled') {
-                                                contents += "<p style='margin-bottom: 10px;  color:red;'>Scheduled order Auto-Canceled at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'cnrcompanynoresponse') {
-                                                contents += "<p style='margin-bottom: 10px;  color:red;'>" + log.admin_username + " applied CNR Fee at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'customerdeclinecar') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer did not accept add vehicle request: " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'customerondemandcreate') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer placed On Demand Order at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'customerschedulecreate') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer placed Scheduled Order at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'customerreschedule') {
-                                                contents += "<p style='margin-bottom: 10px;'>Customer rescheduled order from " + log.addi_detail + " on " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'washerstartinspection') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " started inspection for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'washercompleteinspection') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " completed inspection for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'washerstartwash') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " started wash for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'washerfinishwash') {
-                                                contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " completed wash for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
-                                            }
-
-                                            if (log.action == 'waivedfee') {
-                                                contents += "<p style='margin-bottom: 10px;  color:red;'>" + log.admin_username + " Waived Fee at " + log.formatted_action_date + "</p>";
-                                            }
-
-
-
 
                                         }
-                                        );
-                                        $(".activity-logs").html(contents);
+
+                                        if (log.action == 'washerarrivejob') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " arrived at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'appcompletejob') {
+                                            contents += "<p style='margin-bottom: 10px;'>Order completed at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'freewash') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " gives free wash at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'uncancel') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " un-canceled order at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'cancelorderclient') {
+                                            contents += "<p style='margin-bottom: 10px; color:red;'>Customer canceled order at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'cancelorderwasher') {
+                                            contents += "<p style='margin-bottom: 10px; color:red;'>#" + log.agent_company_id + " canceled order at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'washerenroutecancel') {
+                                            contents += "<p style='margin-bottom: 10px; color:red;'>#" + log.agent_company_id + " canceled order enroute at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'adminstopwasherpayment') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " stopped washer payment at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'adminenablewasherpayment') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " enabled washer payment at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'washeraddcar') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer accepted add vehicle request: " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'washerchangepack') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " changed package/addons " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'adminsubmitforsettlement') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " submitted payment for settlement at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'meetwasherbeforeinspect') {
+                                            if (log.addi_detail == 'yes') {
+                                                contents += "<p style='margin-bottom: 10px;'>Customer hit 'Meet Washer Outside' before inspection at " + log.formatted_action_date + "</p>";
+                                            }
+
+                                            if (log.addi_detail == 'no') {
+                                                contents += "<p style='margin-bottom: 10px;'>Customer hit 'No Thanks' before inspection at " + log.formatted_action_date + "</p>";
+                                            }
+
+                                        }
+
+                                        if (log.action == 'meetwasherwashend') {
+                                            if (log.addi_detail == 'yes') {
+                                                contents += "<p style='margin-bottom: 10px;'>Customer hit 'Meet Washer Outside' after wash at " + log.formatted_action_date + "</p>";
+                                            }
+
+                                            if (log.addi_detail == 'no') {
+                                                contents += "<p style='margin-bottom: 10px;'>Customer hit 'No Thanks' after wash at " + log.formatted_action_date + "</p>";
+                                            }
+
+                                        }
+
+                                        if (log.action == 'washereditcar') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " edited vehicle to " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'adminaddcar') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " added " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'adminchangepack') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " changed package " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'adminchangeaddons') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " changed addons " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'washerremovecar') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " removed " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'adminremovecar') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " removed " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'customerfeedback') {
+                                            contents += "<p style='margin-bottom: 10px; color:red;'>Customer feedback at " + log.formatted_action_date + " : " + log.addi_detail + "</p>";
+                                        }
+
+                                        if (log.action == 'agentfeedback') {
+                                            /*"+log.formatted_action_date +"*/
+                                            contents += "<p style='margin-bottom: 10px; color: red;'>#" + log.agent_company_id + " feedback at " + log.formatted_action_date + ": " + log.addi_detail + "</p>";
+                                        }
+
+                                        if (log.action == 'customercall') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer called washer #" + log.agent_company_id + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'agentcall') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " called customer at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'agentbuzz') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " buzzed customer at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'customeracceptupgrade') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer accepted package change for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'customerrejectupgrade') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer did not accept package change for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+                                        if (log.action == 'tipamount') {
+                                            contents += "<p style='margin-bottom: 10px;'>" + log.admin_username + " edited tip amount from " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+                                        if (log.action == 'customertipamount') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer edited tip amount from " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+                                        if (log.action == 'customeraddtipamount') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer added " + log.addi_detail + " tip amount at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'agentreinspectopt') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " chose reinspect for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'agentnodamageopt') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " chose no damage for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'clientwashnowschedule') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer changed On Demand to Scheduled on " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'ondemandautocancel') {
+                                            contents += "<p style='margin-bottom: 10px;  color:red;'>On Demand order Auto-Canceled at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'scheduleauto-canceled') {
+                                            contents += "<p style='margin-bottom: 10px;  color:red;'>Scheduled order Auto-Canceled at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'cnrcompanynoresponse') {
+                                            contents += "<p style='margin-bottom: 10px;  color:red;'>" + log.admin_username + " applied CNR Fee at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'customerdeclinecar') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer did not accept add vehicle request: " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'customerondemandcreate') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer placed On Demand Order at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'customerschedulecreate') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer placed Scheduled Order at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'customerreschedule') {
+                                            contents += "<p style='margin-bottom: 10px;'>Customer rescheduled order from " + log.addi_detail + " on " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'washerstartinspection') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " started inspection for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'washercompleteinspection') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " completed inspection for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'washerstartwash') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " started wash for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'washerfinishwash') {
+                                            contents += "<p style='margin-bottom: 10px;'>#" + log.agent_company_id + " completed wash for " + log.addi_detail + " at " + log.formatted_action_date + "</p>";
+                                        }
+
+                                        if (log.action == 'waivedfee') {
+                                            contents += "<p style='margin-bottom: 10px;  color:red;'>" + log.admin_username + " Waived Fee at " + log.formatted_action_date + "</p>";
+                                        }
+
+
+
+
                                     }
-
-
+                                    );
+                                    $(".activity-logs").html(contents);
                                 }
-                                );
-                            }
 
-                            $(document).ready(function () {
-                                $('.submit_vih_image').click(function (e) {
-                                    e.preventDefault();
-                                    var parent = $(this).parent('.upload_form');
-                                    var file_data = parent.children('.vehicle_image').prop('files')[0];
-                                    var vehicle_id = parent.children('.vehicle_id').val();
-                                    var form_data = new FormData();
-                                    form_data.append('file', file_data);
-                                    form_data.append('vehicle_id', vehicle_id);
-                                    form_data.append('api_token', "<?php echo $finalusertoken; ?>");
-                                    form_data.append('t1', "<?php echo $mw_admin_auth_arr[2]; ?>");
-                                    form_data.append('t2', "<?php echo $mw_admin_auth_arr[3]; ?>");
-                                    form_data.append('user_type', "admin");
-                                    form_data.append('user_id', "<?php echo $mw_admin_auth_arr[4]; ?>");
-                                    //alert(form_data);
-                                    $.ajax({
-                                        url: "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/addVehicelImage",
-                                        type: "POST",
-                                        data: form_data,
-                                        contentType: false,
-                                        cache: false,
-                                        processData: false,
-                                        success: function (data) {
-                                            window.location.href = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?= $getorder->id ?>";
-                                                                //location.reload();
-                                                            }
-                                                        });
+
+                            }
+                            );
+                        }
+
+                        $(document).ready(function () {
+                            $('.submit_vih_image').click(function (e) {
+                                e.preventDefault();
+                                var parent = $(this).parent('.upload_form');
+                                var file_data = parent.children('.vehicle_image').prop('files')[0];
+                                var vehicle_id = parent.children('.vehicle_id').val();
+                                var form_data = new FormData();
+                                form_data.append('file', file_data);
+                                form_data.append('vehicle_id', vehicle_id);
+                                form_data.append('api_token', "<?php echo $finalusertoken; ?>");
+                                form_data.append('t1', "<?php echo $mw_admin_auth_arr[2]; ?>");
+                                form_data.append('t2', "<?php echo $mw_admin_auth_arr[3]; ?>");
+                                form_data.append('user_type', "admin");
+                                form_data.append('user_id', "<?php echo $mw_admin_auth_arr[4]; ?>");
+                                //alert(form_data);
+                                $.ajax({
+                                    url: "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/addVehicelImage",
+                                    type: "POST",
+                                    data: form_data,
+                                    contentType: false,
+                                    cache: false,
+                                    processData: false,
+                                    success: function (data) {
+                                        window.location.href = "<?php echo ROOT_URL; ?>/admin-new/edit-order.php?id=<?= $getorder->id ?>";
+                                                            //location.reload();
+                                                        }
                                                     });
                                                 });
+                                            });
 
 </script>
 <script>

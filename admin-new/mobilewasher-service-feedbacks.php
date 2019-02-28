@@ -11,16 +11,16 @@
             "pageLength": 20,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
             "aaSorting": [],
-                    "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-        buttons: [
-            'csvHtml5'
-        ]
+            "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            buttons: [
+                'csvHtml5'
+            ]
         });
-        
 
-    $('.csv-link').on('click',function(){
-        $('.buttons-csv').trigger('click');
-    });
+
+        $('.csv-link').on('click', function () {
+            $('.buttons-csv').trigger('click');
+        });
 
     });
 </script>
@@ -34,6 +34,7 @@ curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle);
+//print_r($result); die;
 curl_close($handle);
 $jsondata = json_decode($result);
 $response = $jsondata->response;
@@ -51,18 +52,18 @@ $result_code = $jsondata->result;
     
 </style>-->
 <style>
-.dt-button.buttons-csv.buttons-html5 { opacity: 0;}
-.table thead tr th{
-    white-space: nowrap;
-}
-.table-scrollable {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: auto;
-    border: 1px solid #e7ecf1;
-    margin: 10px 0 !important;
-    max-height: 800px;
-}
+    .dt-button.buttons-csv.buttons-html5 { opacity: 0;}
+    .table thead tr th{
+        white-space: nowrap;
+    }
+    .table-scrollable {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        border: 1px solid #e7ecf1;
+        margin: 10px 0 !important;
+        max-height: 800px;
+    }
 </style>
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -90,44 +91,43 @@ $result_code = $jsondata->result;
                     </div>
                     <div class="portlet-body">
                         <div class="table-scrollable">
-                        <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
-                            <thead>
-                                <tr>
-                                    
-                                    <th class="row1" style="min-width: 120px !important;"> Order Number </th>
-                                    <th class="row2"> Customer name </th>
-                                    <th class="row2"> Customer Email </th>
-                                    <th class="row2"> Customer Phone </th>
-                                    <th class="row2"> Customer Address </th>
-                                     <th class="row2"> Customer Feedback </th>
-                                    <th class="row2"> Washer Name & Badge</th>
-                                    <th class="row2"> Create Date</th>
+                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
+                                <thead>
+                                    <tr>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
+                                        <th class="row1" style="min-width: 120px !important;"> Order Number </th>
+                                        <th class="row2"> Customer name </th>
+                                        <th class="row2"> Customer Email </th>
+                                        <th class="row2"> Customer Phone </th>
+                                        <th class="row2"> Customer Address </th>
+                                        <th class="row2"> Customer Feedback </th>
+                                        <th class="row2"> Washer Name & Badge</th>
+                                        <th class="row2"> Create Date</th>
 
-                                /*function is_iterable($var) {
-                                    return $var !== null && (is_array($var) || $var instanceof Traversable || $var instanceof Iterator || $var instanceof IteratorAggregate
-                                            );
-                                }*/
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    /* function is_iterable($var) {
+                                      return $var !== null && (is_array($var) || $var instanceof Traversable || $var instanceof Iterator || $var instanceof IteratorAggregate
+                                      );
+                                      } */
 
-                                foreach ($jsondata as $responseage) {
+                                    foreach ($jsondata as $responseage) {
                                         foreach ($responseage as $responseagents) {
 
                                             //$totalrecord = $responseagents->totalrecorc;  
                                             ?>
                                             <tr class="odd gradeX">
 
-                                                    
+
                                                 <td><a target="_blank" href="edit-order.php?id=<?php echo $responseagents->wash_request_id; ?>"><?php echo $responseagents->wash_request_id; ?></a></td>  
-                                                <td><?php echo $responseagents->customername; ?></td>
+                                                <td><a target="_blank" href="<?= ROOT_URL ?>/admin-new/all-orders.php?customer_id=<?php echo $responseagents->customer_id; ?>"><?php echo $responseagents->customername; ?></a></td>
                                                 <td><?php echo $responseagents->email; ?></td>
                                                 <td><?php echo $responseagents->contact_number; ?></td>
                                                 <td><?php echo $responseagents->address; ?></td>
-                                                
-                                             
+
+
                                                 <td><?php
                                                     if (!empty($responseagents->comments)) {
                                                         echo $responseagents->comments;
@@ -135,18 +135,17 @@ $result_code = $jsondata->result;
                                                         echo 'N/A';
                                                     }
                                                     ?>
-                                                    </td>
-                                                   <td><?php echo $responseagents->agentname." (#".$responseagents->real_washer_id.")"; ?></td>
-                                                   <td><?php echo date('Y-m-d g:i A', strtotime($responseagents->created_date)); ?></td>
+                                                </td>
+                                                <td><?php echo $responseagents->agentname . " (#" . $responseagents->real_washer_id . ")"; ?></td>
+                                                <td><?php echo date('Y-m-d g:i A', strtotime($responseagents->created_date)); ?></td>
                                             </tr>
                                             <?php
                                         }
-                                  
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <!-- END EXAMPLE TABLE PORTLET-->
