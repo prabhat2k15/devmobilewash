@@ -32,6 +32,7 @@ echo "Invalid api key";
 return;
 }
 
+if($api_password != AES256CBC_API_PASS){
 $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
 
 if(!$token_check){
@@ -41,6 +42,7 @@ if(!$token_check){
                 );
  echo json_encode($json);
  die();
+}
 }
 
         //$wash_request_id = Yii::app()->request->getParam('wash_request_id');

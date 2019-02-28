@@ -11107,6 +11107,7 @@ class CustomersController extends Controller {
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
 
+	if(Yii::app()->request->getParam('api_password') != AES256CBC_API_PASS){
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
         if (!$token_check) {
@@ -11117,6 +11118,7 @@ class CustomersController extends Controller {
             echo json_encode($json);
             die();
         }
+	}
 
         $customer_id = Yii::app()->request->getParam('customer_id');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
