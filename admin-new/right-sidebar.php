@@ -749,7 +749,7 @@
             <!-- END SIDEBAR MENU -->
             <!-- END SIDEBAR MENU -->
             <a class="add-bug-btn" href="add-new-bug.php" style="display: block;margin: 0 auto;color: #fff;text-align: center;padding: 10px;margin: 20px 45px;box-sizing: border-box;border-radius: 50px;text-decoration: none;border: 2px solid #b4bcc8;">Report Bug</a>
-            <?php if (($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler')): ?>
+            <?php if (($jsondata_permission->users_type == 'admin') || ($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
                 <form class="sidebar-search  " action="search.php" method="GET">
 
 
