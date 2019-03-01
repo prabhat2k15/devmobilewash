@@ -4198,7 +4198,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' AND (DATE_FORMAT(w.order_for,'%Y-%m-%d')= '" . $day . "' OR DATE_FORMAT(w.complete_order,'%Y-%m-%d')= '" . $day . "') AND (w.failed_transaction_id != '')  ORDER BY w.id DESC")->queryAll();
             }
         } elseif ($event == 'csv_total_orders') {
-            $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '".$start_month."' AND '".$end_month."' AND w.status IN(0,4,3,2,1,5,6) ORDER BY w.id ASC")->queryAll();
+            $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '" . $start_month . "' AND '" . $end_month . "' AND w.status IN(0,4,3,2,1,5,6) ORDER BY w.id ASC")->queryAll();
         } else {
             if ($limit > 0)
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
@@ -11454,7 +11454,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             $Arr_field['field_name']['vehicles'] = 'Vehicles';
             $Arr_field['field_name']['total_price'] = 'Total Price';
             $Arr_field['field_name']['create_date'] = 'Created Date';
-
+            $Arr_field['field_name']['completed_date'] = 'Completed Date';
             fputcsv($file, $Arr_field['field_name']);
 
             foreach ($s_mw_all_orders as $key => $order) {
@@ -11520,9 +11520,15 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                             $vehicle .= " - Addons: " . $car->addons;
                     }
                 }
+                if (strtotime($order->complete_order) > 0) {
+                    $completed_date = $order->complete_order;
+                } else {
+                    $completed_date = 'N/A';
+                }
                 $Arr_field['field_value']['vehicles'] = $vehicle;
                 $Arr_field['field_value']['total_price'] = $order->net_price;
-                $Arr_field['field_value']['create_date'] = $order->net_price;
+                $Arr_field['field_value']['create_date'] = $order->order_for;
+                $Arr_field['field_value']['completed_date'] = $completed_date;
                 //print_r($Arr_field['field_value']);
                 fputcsv($file, $Arr_field['field_value']);
             }
