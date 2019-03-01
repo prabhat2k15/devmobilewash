@@ -13176,8 +13176,7 @@ class CustomersController extends Controller {
 
           exit; */
 
-        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1), array('order' => 'id DESC', 'limit' => 50));
-
+        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1, 'nonreturn_email_subscription' => 0), array('order' => 'id DESC', 'limit' => 50));
 
         if (count($clientlist)) {
             $subject = '';
@@ -13190,6 +13189,9 @@ class CustomersController extends Controller {
                         'version' => 'latest'
             ));
             foreach ($clientlist as $client) {
+            //echo $client->id."<br>";    
+//if($client->id != 257) continue; 
+$cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
 
                 if ($client->nonreturn_cat == 30) {
                     $notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
@@ -13244,6 +13246,7 @@ class CustomersController extends Controller {
 <p style='text-align: center; font-size: 16px; font-family: arial, sans-serif; line-height: 20px; margin: 12px auto; padding-bottom: 25px; margin-top: 20px;'>Thank you for choosing MobileWash!</p>
 
 <p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; " . date("Y") . " MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
+<p style='text-align: center; font-size: 12px; font-family: arial, sans-serif; margin: 12px auto;'><a href='".WEBSITE_URL."/unsubscribe.php?nrsid=".$cust_id_encrypt."' style='text-decoration: underline; color: #000; font-size: 12px; font-family: arial, sans-serif;'>Unsubscribe</a></p>
 </div>
 </body>
 </html>";
@@ -13304,7 +13307,7 @@ class CustomersController extends Controller {
 
           exit; */
 
-        $clientlist = Customers::model()->findAllByAttributes(array('is_inactive' => 1, 'inactive_email_delivery_pending' => 1), array('order' => 'id DESC', 'limit' => 50));
+        $clientlist = Customers::model()->findAllByAttributes(array('is_inactive' => 1, 'inactive_email_delivery_pending' => 1, 'inactive_email_subscription' => 0), array('order' => 'id DESC', 'limit' => 50));
 
         if (count($clientlist)) {
             $subject = '';
@@ -13317,6 +13320,10 @@ class CustomersController extends Controller {
                         'version' => 'latest'
             ));
             foreach ($clientlist as $client) {
+                
+            //echo $client->id."<br>";    
+//if($client->id != 80996) continue; 
+$cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
 
                 if (!$client->email)
                     continue;
@@ -13375,6 +13382,7 @@ class CustomersController extends Controller {
 <p style='text-align: center; font-size: 16px; font-family: arial, sans-serif; line-height: 20px; margin: 12px auto; padding-bottom: 25px; margin-top: 20px;'>Thank you for choosing MobileWash!</p>
 
 <p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; " . date("Y") . " MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
+<p style='text-align: center; font-size: 12px; font-family: arial, sans-serif; margin: 12px auto;'><a href='".WEBSITE_URL."/unsubscribe.php?incsid=".$cust_id_encrypt."' style='text-decoration: underline; color: #000; font-size: 12px; font-family: arial, sans-serif;'>Unsubscribe</a></p>
 </div>
 </body>
 </html>";
@@ -13880,6 +13888,41 @@ class CustomersController extends Controller {
             }
         } else {
             Customers::model()->updateAll(array("is_avgorderfrequency_update_pending" => 1), 'block_client=0');
+        }
+    }
+    
+    public function actionupdatecustemailsubscribestatus() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $customer_id = Yii::app()->request->getParam('customer_id');
+        $action = Yii::app()->request->getParam('action');
+        $status = Yii::app()->request->getParam('status');
+        
+            $customer_id = $this->aes256cbc_crypt($customer_id, 'd', AES256CBC_API_PASS);
+
+$cust_check = Customers::model()->findByPk($customer_id);
+
+        
+        if (count($cust_check)) {
+            if($action == 'nonreturn') Customers::model()->updateByPk($customer_id, array("nonreturn_email_subscription" => $status));
+            if($action == 'inactive') Customers::model()->updateByPk($customer_id, array("inactive_email_subscription" => $status));
+            $json = array(
+                'result' => 'true',
+                'response' => 'unsubscribe success'
+            );
+            echo json_encode($json);
+            die();
+        } else {
+            $json = array(
+                'result' => 'false',
+                'response' => 'customer not found',
+            );
+            echo json_encode($json);
+            die();
         }
     }
 
