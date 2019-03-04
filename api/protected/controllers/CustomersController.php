@@ -13176,7 +13176,7 @@ class CustomersController extends Controller {
 
           exit; */
 
-        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1, 'nonreturn_email_subscription' => 0), array('order' => 'id DESC', 'limit' => 50));
+       $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1, 'nonreturn_email_subscription' => 0), array('condition' => "email != ''", 'order' => 'id DESC', 'limit' => 1));
 
         if (count($clientlist)) {
             $subject = '';
@@ -13287,6 +13287,7 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
                     //echo $e->getMessage();
                     //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
                     //echo "\n";
+		    Customers::model()->updateByPk($client->id, array('nonreturn_email_delivery_pending' => 0));
                 }
             }
         }
@@ -13307,7 +13308,7 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
 
           exit; */
 
-        $clientlist = Customers::model()->findAllByAttributes(array('is_inactive' => 1, 'inactive_email_delivery_pending' => 1, 'inactive_email_subscription' => 0), array('order' => 'id DESC', 'limit' => 50));
+       $clientlist = Customers::model()->findAllByAttributes(array('is_inactive' => 1, 'inactive_email_delivery_pending' => 1, 'inactive_email_subscription' => 0), array('condition' => "email != ''", 'order' => 'id DESC', 'limit' => 1));
 
         if (count($clientlist)) {
             $subject = '';
@@ -13424,6 +13425,7 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
                     //echo "<br>";
                     //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
                     //echo "\n";
+		    Customers::model()->updateByPk($client->id, array('inactive_email_delivery_pending' => 0));
                 }
             }
         }
