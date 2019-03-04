@@ -124,7 +124,7 @@ $count = $preclients_trash->count;
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase"> Manage Washer App Feedback</span> <a style="margin-left: 20px;" target="_blank" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/prewasherexport&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo ($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>">Download CSV</a>
+                            <span class="caption-subject bold uppercase"> Manage Pre-Registered Washers</span> <a style="margin-left: 20px;" target="_blank" href="<?php echo ROOT_URL; ?>/api/index.php?r=site/prewasherexport&key=<?php echo API_KEY; ?>&api_token=<?php echo urlencode($finalusertoken); ?>&t1=<?php echo ($mw_admin_auth_arr[2]); ?>&t2=<?php echo urlencode($mw_admin_auth_arr[3]); ?>&user_type=admin&user_id=<?php echo urlencode($mw_admin_auth_arr[4]); ?>">Download CSV</a>
                         </div>
                         <div style="margin: -20px 0px 0px 100px; display: none;" class="caption font-dark" id="copy_washers">
                             <span class="caption-subject bold uppercase"> <img width="84" src="images/loader.gif" class="copy_clients"></span>
