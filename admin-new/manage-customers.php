@@ -1,6 +1,9 @@
 <?php include('header.php') ?>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+
+<script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
+<script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+
 <!--<script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
      <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
      <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>-->
@@ -320,8 +323,8 @@ $allcustomersFrequency = json_decode($result);
                                         <td> <?php echo $responseagents->how_hear_mw; ?> </td>
                                         <td> $<?php echo $responseagents->total_spent; ?> </td>
                                         <td> <?php echo number_format($responseagents->order_frequency, 2) . " days"; ?></td>
-        <!--                            <td> $<?php //echo $responseagents->totalSpentAverage;     ?> </td>
-                                        <td> $<?php //echo $responseagents->totalOrderAverage;     ?> </td>-->
+        <!--                            <td> $<?php //echo $responseagents->totalSpentAverage;          ?> </td>
+                                        <td> $<?php //echo $responseagents->totalOrderAverage;          ?> </td>-->
                                         <td> <?php echo $responseagents->client_science; ?> </td>
                                     </tr>
 
@@ -377,18 +380,14 @@ $allcustomersFrequency = json_decode($result);
     $(document).ready(function () {
 
         table = $('#example1').dataTable({
-            "pageLength": 20,
-            "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-            "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            pageLength: 20,
+            stateSave: true,
+            // "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+            dom: 'Bfrtip',
+            sDom: "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
             buttons: [
-                'csvHtml5'
+                'csv',
             ]
-        });
-
-        $(document).ready(function () {
-            $('.csv-link').on('click', function () {
-                $('.buttons-csv').trigger('click');
-            });
         });
 
         $('.cust-search-box').show();
@@ -519,5 +518,11 @@ $allcustomersFrequency = json_decode($result);
 
             });
         }
+    });
+
+    $(document).ready(function () {
+        $('.csv-link').on('click', function () {
+            $('.buttons-csv').trigger('click');
+        });
     });
 </script>
