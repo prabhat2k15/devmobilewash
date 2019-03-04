@@ -11136,7 +11136,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 ->bindValue(":to", $to)
                 ->queryAll();
 
-        $all_washes_zipcode = Yii::app()->db->createCommand("SELECT zipcode, COUNT(id) as total FROM washing_requests WHERE (order_for >= :from AND order_for <= :to) AND status = 4 GROUP BY zipcode ORDER BY COUNT(id) DESC")
+        $all_washes_zipcode = Yii::app()->db->createCommand("SELECT zipcode, city, COUNT(id) as total FROM washing_requests WHERE (order_for >= :from AND order_for <= :to) AND status = 4 GROUP BY zipcode ORDER BY COUNT(id) DESC")
                 ->bindValue(":from", $from)
                 ->bindValue(":to", $to)
                 ->queryAll();

@@ -144,7 +144,7 @@ $heatmaplist_data = json_decode($result);
                                         <tbody>
                                             <?php foreach ($heatmaplist_data->all_washes_zipcode as $washbyzip): ?>
                                                 <tr>
-                                                    <td><?php echo $washbyzip->zipcode; ?></td>
+                                                    <td><?php echo $washbyzip->zipcode; ?> - <?php echo $washbyzip->city; ?></td>
                                                     <td><?php echo $washbyzip->total; ?></td>
                                                 </tr>
                                             <?php endforeach; ?>
