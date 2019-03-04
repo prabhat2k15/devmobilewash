@@ -733,7 +733,7 @@
                             }
                             ?>">
                                 <a href="<?php echo ROOT_URL; ?>/admin-new/washerfeedbacks.php?type=Praise" class="nav-link ">
-                                    <span class="title"> Washers App Feedback </span>
+                                    <span class="title"> Washer App Feedback </span>
                                 </a>
                             </li>
                     </ul>
