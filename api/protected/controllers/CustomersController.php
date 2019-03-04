@@ -8999,6 +8999,7 @@ class CustomersController extends Controller {
                 $all_clients[$ind]['phone'] = $clients['phone'];
                 $all_clients[$ind]['city'] = $clients['city'];
                 $all_clients[$ind]['state'] = $clients['state'];
+                $all_clients[$ind]['register_date'] = $clients['register_date'];
                 $all_clients[$ind]['trash_status'] = $clients['trash_status'];
             }
         }
