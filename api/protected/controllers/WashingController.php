@@ -3064,7 +3064,7 @@ else $pet_hair_vehicles_custom = '';
 
 
                 $mobile_receipt .= "Total: $" . $kartdata->net_price . "\r\n";
-                if (APP_ENV == 'real') {
+                /*if (APP_ENV == 'real') {
                     $this->layout = "xmlLayout";
 
                     require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
@@ -3106,7 +3106,7 @@ else $pet_hair_vehicles_custom = '';
                     } catch (Services_Twilio_RestException $e) {
                         //echo  $e;
                     }
-                }
+                }*/
             }
 	    
 	    Washingrequests::model()->updateByPk($wash_request_id, array("all_reject_ids" => '', "agent_reject_ids" => ''));
@@ -16351,6 +16351,138 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
             }
 
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $wash_request_id));
+	    
+	    if (!$wrequest_id_check->is_scheduled) {
+		 $agent_detail = Agents::model()->findByAttributes(array("id" => $wrequest_id_check->agent_id));
+		 $cust_detail = Customers::model()->findByPk($wrequest_id_check->customer_id);
+		 
+                $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
+                $kartdata = json_decode($kartapiresult);
+
+                foreach ($kartdata->vehicles as $ind => $vehicle) {
+                    $mobile_receipt .= $vehicle->brand_name . " " . $vehicle->model_name . "\r\n" . $vehicle->vehicle_washing_package . " $" . $vehicle->vehicle_washing_price . "\r\nHandling $1.00\r\n";
+
+                    if ($vehicle->surge_vehicle_fee > 0) {
+                        $mobile_receipt .= "Surge $" . $vehicle->surge_vehicle_fee . "\r\n";
+                    }
+                    if ($vehicle->extclaybar_vehicle_fee > 0) {
+
+                        $mobile_receipt .= "Clay $" . $vehicle->extclaybar_vehicle_fee . "\r\n";
+                    }
+                    if ($vehicle->waterspotremove_vehicle_fee > 0) {
+
+                        $mobile_receipt .= "Spot $" . $vehicle->waterspotremove_vehicle_fee . "\r\n";
+                    }
+                    if ($vehicle->exthandwax_vehicle_fee > 0) {
+
+                        $mobile_receipt .= "Wax $" . $vehicle->exthandwax_vehicle_fee . "\r\n";
+                    }
+
+                    if ($vehicle->pet_hair_fee > 0) {
+
+                        $mobile_receipt .= "Extra Cleaning $" . $vehicle->pet_hair_fee . "\r\n";
+                    }
+                    if ($vehicle->lifted_vehicle_fee > 0) {
+
+                        $mobile_receipt .= "Lifted $" . $vehicle->lifted_vehicle_fee . "\r\n";
+                    }
+
+                    if ($vehicle->extplasticdressing_vehicle_fee > 0) {
+
+                        $mobile_receipt .= "Dressing $" . $vehicle->extplasticdressing_vehicle_fee . "\r\n";
+                    }
+
+                    if ($vehicle->upholstery_vehicle_fee > 0) {
+
+                        $mobile_receipt .= "Upholstery $" . $vehicle->upholstery_vehicle_fee . "\r\n";
+                    }
+
+                    if ($vehicle->floormat_vehicle_fee > 0) {
+
+                        $mobile_receipt .= "Floormat $" . $vehicle->floormat_vehicle_fee . "\r\n";
+                    }
+
+                    if (($ind == 0) && ($kartdata->coupon_discount > 0)) {
+
+                        $mobile_receipt .= "Promo: " . $kartdata->coupon_code . " -$" . number_format($kartdata->coupon_discount, 2) . "\r\n";
+                    }
+
+
+                    if ($vehicle->fifth_wash_discount > 0) {
+
+                        $mobile_receipt .= "5th -$" . number_format($vehicle->fifth_wash_discount, 2) . "\r\n";
+                    }
+
+                    if (($vehicle->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)) {
+
+                        $mobile_receipt .= "Bundle -$1.00\r\n";
+                    }
+
+                    if (($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)) {
+
+                        $mobile_receipt .= "Bundle -$1.00\r\n";
+                    }
+                    $mobile_receipt .= "------\r\n";
+                }
+
+                if ($kartdata->tip_amount > 0) {
+                    $mobile_receipt .= "Tip $" . number_format($kartdata->tip_amount, 2) . "\r\n";
+                }
+
+                if ($kartdata->wash_now_fee > 0) {
+                    $mobile_receipt .= "Wash Now $" . number_format($kartdata->wash_now_fee, 2) . "\r\n";
+                }
+
+                if ($kartdata->wash_later_fee > 0) {
+                    $mobile_receipt .= "Surge Fee $" . number_format($kartdata->wash_later_fee, 2) . "\r\n";
+                }
+
+
+                $mobile_receipt .= "Total: $" . $kartdata->net_price . "\r\n";
+                //if (APP_ENV == 'real') {
+                    $this->layout = "xmlLayout";
+
+                    require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                    require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+                    $account_sid = TWILIO_SID;
+                    $auth_token = TWILIO_AUTH_TOKEN;
+                    $client = new Services_Twilio($account_sid, $auth_token);
+
+                    $message = "WASH NOW TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->created_date)) . " @ " . date('h:i A', strtotime($wrequest_id_check->created_date)) . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
+
+
+                    try {
+                        $sendmessage = $client->account->messages->create(array(
+                            'To' => '8183313631',
+                            'From' => '+13108890719',
+                            'Body' => $message,
+                        ));
+                    } catch (Services_Twilio_RestException $e) {
+                        //echo  $e;
+                    }
+
+                    try {
+                        $sendmessage = $client->account->messages->create(array(
+                            'To' => '3109999334',
+                            'From' => '+13108890719',
+                            'Body' => $message,
+                        ));
+                    } catch (Services_Twilio_RestException $e) {
+                        //echo  $e;
+                    }
+
+                    try {
+                        $sendmessage = $client->account->messages->create(array(
+                            'To' => '3103442534',
+                            'From' => '+13108890719',
+                            'Body' => $message,
+                        ));
+                    } catch (Services_Twilio_RestException $e) {
+                        //echo  $e;
+                    }
+                //}
+            }
 
 
             $currentwasherwashnowstartlog = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE agent_id = '" . $wrequest_id_check->agent_id . "' AND wash_request_id = '" . $wash_request_id . "' AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")->queryAll();
