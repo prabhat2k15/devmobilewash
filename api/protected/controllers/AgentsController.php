@@ -1028,7 +1028,6 @@ class AgentsController extends Controller {
 //                    $washfeedbackmodel->attributes = $washfeedbackdata;
 //                    $washfeedbackmodel->updateAll($washfeedbackdata, 'agent_id=:agent_id', array(':agent_id' => $agent_id));
 //                }
-
 //                $result = 'true';
 //                $response = "Feeback added";
 //
@@ -1420,7 +1419,7 @@ class AgentsController extends Controller {
                     'rating_control' => $agent_id_check->rating_control,
                     'sms_control' => $agent_id_check->sms_control,
                     'last_edited_admin' => $agent_id_check->last_edited_admin,
-		    'last_admin_edit_at' => $agent_id_check->last_admin_edit_at,
+                    'last_admin_edit_at' => $agent_id_check->last_admin_edit_at,
                     'last_used_device' => $agentdevices,
                     'decals_installed' => $agent_id_check->decals_installed,
                     'unlimited_schedule_range' => $agent_id_check->unlimited_schedule_range,
@@ -1909,10 +1908,10 @@ class AgentsController extends Controller {
                     $data['phone_number'] = $phone_number;
 
                 Agents::model()->updateByPk($agent_id, $data);
-		
-		 if ((Yii::app()->request->getParam('update_by') == "WEB") && ($admin_username)) {
-                    
-                   Agents::model()->updateByPk($agent_id, array('last_edited_admin' => $admin_username, 'last_admin_edit_at' => date('Y-m-d H:i:s'))); 
+
+                if ((Yii::app()->request->getParam('update_by') == "WEB") && ($admin_username)) {
+
+                    Agents::model()->updateByPk($agent_id, array('last_edited_admin' => $admin_username, 'last_admin_edit_at' => date('Y-m-d H:i:s')));
                 }
 
                 $response = 'Profile updated';
@@ -2202,8 +2201,10 @@ class AgentsController extends Controller {
                         if (!count($washfeedbacks))
                             $wash_requests[$index]['rating'] = 5.00;
                         $wash_requests[$index]['status'] = $wrequest['status'];
-                        if($wash_requests[$index]['status'] == 7) $wash_requests[$index]['cancel_fee'] = 20;
-			else $wash_requests[$index]['cancel_fee'] = $wrequest['cancel_fee'];
+                        if ($wash_requests[$index]['status'] == 7)
+                            $wash_requests[$index]['cancel_fee'] = 20;
+                        else
+                            $wash_requests[$index]['cancel_fee'] = $wrequest['cancel_fee'];
                         $wash_requests[$index]['washer_cancel_fee'] = $wrequest['washer_cancel_fee'];
                     }
                 }
@@ -7979,15 +7980,15 @@ class AgentsController extends Controller {
             die();
         }
     }
-    
-       public function actioncheckeditwasherlog() {
+
+    public function actioncheckeditwasherlog() {
 
         if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
             echo "Invalid api key";
             die();
         }
-	
-	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -8003,52 +8004,49 @@ class AgentsController extends Controller {
             echo json_encode($json);
             die();
         }
-	
-	$allagents = Agents::model()->findAllByAttributes(array('edit_washer_log_check' => 1), array('limit' => 10));
-	
-	if(count($allagents)){
-	  foreach($allagents as $agent){
-	    
-	    $dir_name = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/'.$agent->id;
-	    
-	      if (file_exists($dir_name.'/log.txt')) {
-		
-$data = file($dir_name.'/log.txt');
 
-$out = array();
+        $allagents = Agents::model()->findAllByAttributes(array('edit_washer_log_check' => 1), array('limit' => 10));
 
-foreach($data as $line) {
-   $timefactor = substr(trim($line),-21);
-   if((time() - strtotime($timefactor)) < 2592000){
-    $out[] = $line;
-   }
+        if (count($allagents)) {
+            foreach ($allagents as $agent) {
 
-}
+                $dir_name = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/' . $agent->id;
 
-$fp = fopen($dir_name.'/log.txt', "w+");
-flock($fp, LOCK_EX);
-foreach($out as $line) {
-    fwrite($fp, $line .PHP_EOL);
-}
-flock($fp, LOCK_UN);
-fclose($fp);
+                if (file_exists($dir_name . '/log.txt')) {
 
-	      }
-	      
-	      Agents::model()->updateByPk($agent->id, array('edit_washer_log_check' => 0));
-	  }
-	}
-    
+                    $data = file($dir_name . '/log.txt');
+
+                    $out = array();
+
+                    foreach ($data as $line) {
+                        $timefactor = substr(trim($line), -21);
+                        if ((time() - strtotime($timefactor)) < 2592000) {
+                            $out[] = $line;
+                        }
+                    }
+
+                    $fp = fopen($dir_name . '/log.txt', "w+");
+                    flock($fp, LOCK_EX);
+                    foreach ($out as $line) {
+                        fwrite($fp, $line . PHP_EOL);
+                    }
+                    flock($fp, LOCK_UN);
+                    fclose($fp);
+                }
+
+                Agents::model()->updateByPk($agent->id, array('edit_washer_log_check' => 0));
+            }
+        }
     }
-    
+
     public function actionenableeditlogrotation() {
 
         if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
             echo "Invalid api key";
             die();
         }
-	
-	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -8064,9 +8062,112 @@ fclose($fp);
             echo json_encode($json);
             die();
         }
-	
-	Agents::model()->updateAll(array("edit_washer_log_check" => 1));
-	    
+
+        Agents::model()->updateAll(array("edit_washer_log_check" => 1));
+    }
+
+    public function actionwasherfeedbacksapp() {
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+        $type = Yii::app()->request->getParam('type');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        /*        get the total */
+        $whr = '';
+        if ($type != '') {
+            $whr = 'AND a.title = "' . $type . '"';
+        }
+        $feedback = Yii::app()->db->createCommand("SELECT c.real_washer_id,a.status,a.id as feedBackId, c.agentname, c.phone_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN agents c ON a.agent_id = c.id WHERE a.agent_id != 0 AND a.customer_id = 0 " . $whr . " ORDER BY a.create_time DESC")->queryAll();
+
+        $i = 0;
+        foreach ($feedback as $feedbacks) {
+            $i++;
+            if ($feedbacks['real_washer_id']) {
+                $totalorders = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests` WHERE `status`=4 AND agent_id =" . $feedbacks['real_washer_id'])->queryRow();
+            }
+            $id = $feedbacks['real_washer_id'];
+            $customer = $feedbacks['agentname'];
+            $contact_number = $feedbacks['phone_number'];
+            $comments = $feedbacks['comments'];
+            $create_time = $feedbacks['create_time'];
+
+            $json = array();
+            $json['id'] = $id;
+            $json['customer'] = $customer;
+            $json['contact_number'] = $contact_number;
+            $json['comments'] = $comments;
+            $json['status'] = $feedbacks['status'];
+            $json['feedBackId'] = $feedbacks['feedBackId'];
+            $json['orders'] = $totalorders['orders'];
+            $json['create_time'] = $create_time;
+            $feedview[] = $json;
+        }
+
+        $feedbackadmin['order'] = $feedview;
+        $feedbackadmin['result'] = 'true';
+
+        echo json_encode($feedbackadmin, JSON_PRETTY_PRINT);
+        exit;
+    }
+
+    public function actionAgentfeedbacksappUpdatStatus() {
+        $id = Yii::app()->request->getParam('id');
+        $status = Yii::app()->request->getParam('status');
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+        $type = Yii::app()->request->getParam('type');
+        $feedback_type = Yii::app()->request->getParam('feedback_type');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        $model = Appfeedbacks::model()->updateByPk(
+                $id, array("status" => $status)
+        );
+        if ($model) {
+            $json = array(
+                'result' => 'true',
+                'response' => 'Updated sucessfully.'
+            );
+            echo json_encode($json);
+            die();
+        } else {
+            $json = array(
+                'result' => 'false',
+                'response' => 'something went wrong'
+            );
+            echo json_encode($json);
+            die();
+        }
     }
 
 }

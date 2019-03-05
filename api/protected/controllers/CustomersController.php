@@ -11108,18 +11108,18 @@ class CustomersController extends Controller {
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
 
-	if(Yii::app()->request->getParam('api_password') != AES256CBC_API_PASS){
-        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+        if (Yii::app()->request->getParam('api_password') != AES256CBC_API_PASS) {
+            $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
+            if (!$token_check) {
+                $json = array(
+                    'result' => 'false',
+                    'response' => 'Invalid request'
+                );
+                echo json_encode($json);
+                die();
+            }
         }
-	}
 
         $customer_id = Yii::app()->request->getParam('customer_id');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
@@ -13177,7 +13177,7 @@ class CustomersController extends Controller {
 
           exit; */
 
-       $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1, 'nonreturn_email_subscription' => 0), array('condition' => "email != ''", 'order' => 'id DESC', 'limit' => 1));
+        $clientlist = Customers::model()->findAllByAttributes(array('is_non_returning' => 1, 'nonreturn_email_delivery_pending' => 1, 'nonreturn_email_subscription' => 0), array('condition' => "email != ''", 'order' => 'id DESC', 'limit' => 1));
 
         if (count($clientlist)) {
             $subject = '';
@@ -13190,9 +13190,9 @@ class CustomersController extends Controller {
                         'version' => 'latest'
             ));
             foreach ($clientlist as $client) {
-            //echo $client->id."<br>";    
+                //echo $client->id."<br>";    
 //if($client->id != 257) continue; 
-$cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
+                $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
 
                 if ($client->nonreturn_cat == 30) {
                     $notify_check = Yii::app()->db->createCommand("SELECT * FROM customer_spec_notifications WHERE notify_cat = :notify_cat")
@@ -13247,7 +13247,7 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
 <p style='text-align: center; font-size: 16px; font-family: arial, sans-serif; line-height: 20px; margin: 12px auto; padding-bottom: 25px; margin-top: 20px;'>Thank you for choosing MobileWash!</p>
 
 <p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; " . date("Y") . " MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
-<p style='text-align: center; font-size: 12px; font-family: arial, sans-serif; margin: 12px auto;'><a href='".WEBSITE_URL."/unsubscribe.php?nrsid=".$cust_id_encrypt."' style='text-decoration: underline; color: #000; font-size: 12px; font-family: arial, sans-serif;'>Unsubscribe</a></p>
+<p style='text-align: center; font-size: 12px; font-family: arial, sans-serif; margin: 12px auto;'><a href='" . WEBSITE_URL . "/unsubscribe.php?nrsid=" . $cust_id_encrypt . "' style='text-decoration: underline; color: #000; font-size: 12px; font-family: arial, sans-serif;'>Unsubscribe</a></p>
 </div>
 </body>
 </html>";
@@ -13288,7 +13288,7 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
                     //echo $e->getMessage();
                     //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
                     //echo "\n";
-		    Customers::model()->updateByPk($client->id, array('nonreturn_email_delivery_pending' => 0));
+                    Customers::model()->updateByPk($client->id, array('nonreturn_email_delivery_pending' => 0));
                 }
             }
         }
@@ -13309,7 +13309,7 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
 
           exit; */
 
-       $clientlist = Customers::model()->findAllByAttributes(array('is_inactive' => 1, 'inactive_email_delivery_pending' => 1, 'inactive_email_subscription' => 0), array('condition' => "email != ''", 'order' => 'id DESC', 'limit' => 1));
+        $clientlist = Customers::model()->findAllByAttributes(array('is_inactive' => 1, 'inactive_email_delivery_pending' => 1, 'inactive_email_subscription' => 0), array('condition' => "email != ''", 'order' => 'id DESC', 'limit' => 1));
 
         if (count($clientlist)) {
             $subject = '';
@@ -13322,10 +13322,10 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
                         'version' => 'latest'
             ));
             foreach ($clientlist as $client) {
-                
-            //echo $client->id."<br>";    
+
+                //echo $client->id."<br>";    
 //if($client->id != 80996) continue; 
-$cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
+                $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
 
                 if (!$client->email)
                     continue;
@@ -13384,7 +13384,7 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
 <p style='text-align: center; font-size: 16px; font-family: arial, sans-serif; line-height: 20px; margin: 12px auto; padding-bottom: 25px; margin-top: 20px;'>Thank you for choosing MobileWash!</p>
 
 <p style='text-align: center; font-size: 14px; font-family: arial, sans-serif; line-height: 20px; max-width: 480px; margin: 12px auto;'>&copy; " . date("Y") . " MobileWash, Inc. All rights reserved. All trademarks referenced herein are the property of their respective owners.</p>
-<p style='text-align: center; font-size: 12px; font-family: arial, sans-serif; margin: 12px auto;'><a href='".WEBSITE_URL."/unsubscribe.php?incsid=".$cust_id_encrypt."' style='text-decoration: underline; color: #000; font-size: 12px; font-family: arial, sans-serif;'>Unsubscribe</a></p>
+<p style='text-align: center; font-size: 12px; font-family: arial, sans-serif; margin: 12px auto;'><a href='" . WEBSITE_URL . "/unsubscribe.php?incsid=" . $cust_id_encrypt . "' style='text-decoration: underline; color: #000; font-size: 12px; font-family: arial, sans-serif;'>Unsubscribe</a></p>
 </div>
 </body>
 </html>";
@@ -13426,7 +13426,7 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
                     //echo "<br>";
                     //echo("The email was not sent. Error message: ".$e->getAwsErrorMessage()."\n");
                     //echo "\n";
-		    Customers::model()->updateByPk($client->id, array('inactive_email_delivery_pending' => 0));
+                    Customers::model()->updateByPk($client->id, array('inactive_email_delivery_pending' => 0));
                 }
             }
         }
@@ -13893,7 +13893,7 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
             Customers::model()->updateAll(array("is_avgorderfrequency_update_pending" => 1), 'block_client=0');
         }
     }
-    
+
     public function actionupdatecustemailsubscribestatus() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
@@ -13904,15 +13904,17 @@ $cust_id_encrypt = $this->aes256cbc_crypt($client->id, 'e', AES256CBC_API_PASS);
         $customer_id = Yii::app()->request->getParam('customer_id');
         $action = Yii::app()->request->getParam('action');
         $status = Yii::app()->request->getParam('status');
-        
-            $customer_id = $this->aes256cbc_crypt($customer_id, 'd', AES256CBC_API_PASS);
 
-$cust_check = Customers::model()->findByPk($customer_id);
+        $customer_id = $this->aes256cbc_crypt($customer_id, 'd', AES256CBC_API_PASS);
 
-        
+        $cust_check = Customers::model()->findByPk($customer_id);
+
+
         if (count($cust_check)) {
-            if($action == 'nonreturn') Customers::model()->updateByPk($customer_id, array("nonreturn_email_subscription" => $status));
-            if($action == 'inactive') Customers::model()->updateByPk($customer_id, array("inactive_email_subscription" => $status));
+            if ($action == 'nonreturn')
+                Customers::model()->updateByPk($customer_id, array("nonreturn_email_subscription" => $status));
+            if ($action == 'inactive')
+                Customers::model()->updateByPk($customer_id, array("inactive_email_subscription" => $status));
             $json = array(
                 'result' => 'true',
                 'response' => 'unsubscribe success'
@@ -13923,6 +13925,113 @@ $cust_check = Customers::model()->findByPk($customer_id);
             $json = array(
                 'result' => 'false',
                 'response' => 'customer not found',
+            );
+            echo json_encode($json);
+            die();
+        }
+    }
+
+    public function actioncustomersfeedbacksapp() {
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+        $type = Yii::app()->request->getParam('type');
+        $feedback_type = Yii::app()->request->getParam('feedback_type');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        /*        get the total */
+        $whr = '';
+        if ($type != '') {
+            $whr = 'AND a.title = "' . $type . '"';
+        }
+
+
+        $feedback = Yii::app()->db->createCommand("SELECT c.id,a.status,a.id as feedBackId,c.customername, c.contact_number, a.comments, a.create_time FROM app_feedbacks a LEFT JOIN customers c ON a.customer_id = c.id WHERE a.agent_id = 0 " . $whr . " ORDER BY a.create_time DESC")->queryAll();
+
+        $i = 0;
+        foreach ($feedback as $feedbacks) {
+            if ($feedbacks['id']) {
+                $totalorders = Yii::app()->db->createCommand("SELECT COUNT(id) as orders FROM `washing_requests` WHERE `status`=4 AND customer_id =" . $feedbacks['id'])->queryRow();
+            }
+            $i++;
+            $id = $feedbacks['id'];
+            $customer = $feedbacks['customername'];
+            $contact_number = $feedbacks['contact_number'];
+            $comments = $feedbacks['comments'];
+            $create_time = $feedbacks['create_time'];
+
+            $json = array();
+            $json['id'] = $id;
+            $json['customer'] = $customer;
+            $json['contact_number'] = $contact_number;
+            $json['status'] = $feedbacks['status'];
+            $json['feedBackId'] = $feedbacks['feedBackId'];
+            $json['orders'] = $totalorders['orders'];
+            $json['comments'] = $comments;
+            $json['create_time'] = $create_time;
+            $feedview[] = $json;
+        }
+
+        $feedbackadmin['order'] = $feedview;
+        $feedbackadmin['result'] = 'true';
+
+        echo json_encode($feedbackadmin, JSON_PRETTY_PRINT);
+        exit;
+    }
+
+    public function actionCustomersfeedbacksappUpdatStatus() {
+        $id = Yii::app()->request->getParam('id');
+        $status = Yii::app()->request->getParam('status');
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+        $type = Yii::app()->request->getParam('type');
+        $feedback_type = Yii::app()->request->getParam('feedback_type');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        $model = Appfeedbacks::model()->updateByPk(
+                $id, array("status" => $status)
+        );
+        if ($model) {
+            $json = array(
+                'result' => 'true',
+                'response' => 'Updated sucessfully.'
+            );
+            echo json_encode($json);
+            die();
+        } else {
+            $json = array(
+                'result' => 'false',
+                'response' => 'something went wrong'
             );
             echo json_encode($json);
             die();

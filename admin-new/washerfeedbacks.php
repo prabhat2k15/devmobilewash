@@ -1,4 +1,31 @@
 <?php include('header.php') ?>
+<style>
+    .strike td:not(:first-child){ 
+        text-decoration: line-through;
+    }
+    .resolved{
+        background-color: #ed6b75;
+        text-decoration:none;
+        color:#fff
+    }
+    .resolved:hover ,  .resolved:active,  .resolved.active , .resolved:focus{
+        background-color: #f15c68;
+        transition: all .3s;
+        text-decoration:none;
+        color:#fff
+    }
+    .reopen{
+        background-color:#16CE0C;
+        text-decoration:none;
+        color:#fff
+    }
+    .reopen:hover , .reopen:active , .reopen.active , .reopen:focus{
+        transition: all .3s;
+        background-color:#15b30c;
+        text-decoration:none;
+        color:#fff
+    }
+</style>
 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
@@ -18,7 +45,7 @@
 </script>
 <?php include('right-sidebar.php') ?>
 <?php
-$url = ROOT_URL . '/api/index.php?r=washing/washerfeedbacksapp';
+$url = ROOT_URL . '/api/index.php?r=Agents/washerfeedbacksapp';
 //echo $url;
 $handle = curl_init($url);
 $data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4], 'type' => $_GET['type']);
@@ -28,6 +55,7 @@ curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle);
 curl_close($handle);
 $jsondata = json_decode($result);
+//print_r($jsondata);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
 ?>
@@ -85,6 +113,9 @@ $result_code = $jsondata->result;
                         <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                             <thead>
                                 <tr>
+                                    <?php if ($_GET['type'] == 'Problem' || $_GET['type'] == 'Suggestion') { ?>
+                                        <th class="row1"> Action </th> 
+                                    <?php } ?>
                                     <th class="row1"> Badge # </th>
                                     <th class="row2"> Washer Name </th>
                                     <th class="row2"> Phone Number </th>
@@ -104,10 +135,17 @@ $result_code = $jsondata->result;
                                 foreach ($jsondata as $responseage) {
                                     if (is_iterable($responseage)) {
                                         foreach ($responseage as $responseagents) {
-
+                                            $strike = ($responseagents->status == 1) ? 'strike' : ' ';
                                             //$totalrecord = $responseagents->totalrecorc;  
                                             ?>
-                                            <tr class="odd gradeX">
+                                            <tr class="odd gradeX <?= $strike ?>">
+                                                <?php if ($_GET['type'] == 'Problem' || $_GET['type'] == 'Suggestion') { ?>
+                                                    <td> <?php if ($responseagents->status == 0) { ?> 
+                                                            <a  id="<?= $responseagents->feedBackId ?>" data-val="1" class="btn  updateStatus resolved"> Resolved </a> <?php } else {
+                                                        ?>
+                                                            <a  id="<?= $responseagents->feedBackId ?>" data-val="0" class="btn  updateStatus reopen"> Reopen </a>
+                                                        <?php } ?></td>
+                                                <?php } ?>
 
                                                 <td><?php echo $responseagents->id; ?></td>
                                                 <td><?php
@@ -172,3 +210,18 @@ $result_code = $jsondata->result;
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
+<script>
+    $('.updateStatus').on('click', function (e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        var status = $(this).attr('data-val');
+        $.ajax({
+            type: 'GET',
+            url: '<?= ROOT_URL ?>/api/index.php?r=Agents/AgentfeedbacksappUpdatStatus',
+            data: {status: status, id: id, key: '<?= API_KEY ?>', api_token: '<?= $finalusertoken ?>', t1: '<?= $mw_admin_auth_arr[2] ?>', t2: '<?= $mw_admin_auth_arr[3] ?>', user_type: 'admin', user_id: '<?= $mw_admin_auth_arr[4] ?>', type: '<?= $_GET['type'] ?>'},
+            success: function (data) {
+                location.reload();
+            }});
+    });
+
+</script>
