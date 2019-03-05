@@ -5012,6 +5012,10 @@ else $pet_hair_vehicles_custom = '';
         $api_password = '';
         $api_password = Yii::app()->request->getParam('api_password');
         $cancel_feedback = Yii::app()->request->getParam('cancel_feedback');
+	$old_tip_amount = '';
+if(Yii::app()->request->getParam('old_tip_amount')) $old_tip_amount = Yii::app()->request->getParam('old_tip_amount');
+	$device_type = '';
+if(Yii::app()->request->getParam('device_type')) $device_type = Yii::app()->request->getParam('device_type');
 
         $json = array();
         $car_id_check = true;
@@ -5019,6 +5023,7 @@ else $pet_hair_vehicles_custom = '';
         $result = 'false';
         $response = 'Pass the required parameters';
 
+	
         if ((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))) {
 
             if ((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)) {
@@ -5028,6 +5033,7 @@ else $pet_hair_vehicles_custom = '';
 
             $customers_id_check = Customers::model()->findByAttributes(array("id" => $customer_id));
             $washrequest_id_check = Washingrequests::model()->findByAttributes(array("id" => $wash_request_id, "customer_id" => $customer_id));
+	    
             $cust_feedback_check = Washingfeedbacks::model()->findByAttributes(array("wash_request_id" => $wash_request_id));
 
 
@@ -5235,8 +5241,25 @@ else $pet_hair_vehicles_custom = '';
                 }
 
                 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
+		
+                if($device_type == 'IOS'){
+			
+		if (number_format($tip_amount, 2) != number_format($old_tip_amount, 2)) {
+		
+                    $washeractionlogdata = array(
+                        'wash_request_id' => $wash_request_id,
+                        //'admin_username' => $admin_username,
+                        'agent_id' => $washrequest_id_check->agent_id,
+                        'addi_detail' => '$' . number_format($old_tip_amount, 2) . ' to $' . number_format($tip_amount, 2),
+                        'action' => 'customertipamount',
+                        'action_date' => date('Y-m-d H:i:s'));
 
-                if (number_format($tip_amount, 2) != number_format($washrequest_id_check->tip_amount, 2)) {
+                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                }
+	    }
+	     else{
+		if (number_format($tip_amount, 2) != number_format($washrequest_id_check->tip_amount, 2)) {
+		
                     $washeractionlogdata = array(
                         'wash_request_id' => $wash_request_id,
                         //'admin_username' => $admin_username,
@@ -5247,6 +5270,7 @@ else $pet_hair_vehicles_custom = '';
 
                     Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
                 }
+	    }
                 if (is_numeric($ratings) && (!$cancel_feedback))
                     $logcomment = $comments . " (Ratings: " . $ratings . ")";
                 else
