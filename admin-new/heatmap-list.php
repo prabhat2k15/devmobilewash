@@ -121,7 +121,7 @@ $heatmaplist_data = json_decode($result);
                                             <?php foreach ($heatmaplist_data->all_washes_city as $washbycity): ?>
                                                 <tr>
                                                     <td><?php echo $washbycity->city; ?></td>
-                                                    <td><?php echo $washbycity->total; ?></td>
+                                                    <td><a href="<?= ROOT_URL ?>/admin-new/all-orders.php?city=<?= $washbycity->city ?>&event=city&filter=&limit=400"><?php echo $washbycity->total; ?></a></td>
                                                 </tr>
                                             <?php endforeach; ?>
 
@@ -145,7 +145,7 @@ $heatmaplist_data = json_decode($result);
                                             <?php foreach ($heatmaplist_data->all_washes_zipcode as $washbyzip): ?>
                                                 <tr>
                                                     <td><?php echo $washbyzip->zipcode; ?> - <?php echo $washbyzip->city; ?></td>
-                                                    <td><?php echo $washbyzip->total; ?></td>
+                                                    <td><a href="<?= ROOT_URL ?>/admin-new/all-orders.php?city=<?= $washbyzip->city ?>&zipcode=<?= $washbyzip->zipcode ?>&event=zipcode_and_city&filter=&limit=400"><?php echo $washbyzip->total; ?></a></td>
                                                 </tr>
                                             <?php endforeach; ?>
 

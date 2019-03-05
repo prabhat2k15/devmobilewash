@@ -18,10 +18,14 @@ $voice_print = '';
   //$_event = $_GET['event'];
   } */
 
-
+$zipcode = "";
 
 /* SCHEDULE ORDER */
 $day = $_event = $month = '';
+if (isset($_GET['event']) && !empty($_GET['event'])) {
+    $_event = $_GET['event'];
+}
+
 if (isset($_GET['day']) && !empty($_GET['day'])) {
     $day = $_GET['day'];
     $_event = $_GET['event'];
@@ -29,6 +33,13 @@ if (isset($_GET['day']) && !empty($_GET['day'])) {
 if (isset($_GET['month']) && !empty($_GET['month'])) {
     $month = $_GET['month'];
     $_event = $_GET['event'];
+}
+if (isset($_GET['zipcode']) && !empty($_GET['zipcode'])) {
+    $zipcode = $_GET['zipcode'];
+}
+
+if (isset($_GET['city']) && !empty($_GET['city'])) {
+    $city = $_GET['city'];
 }
 
 $url = ROOT_URL . '/api/index.php?r=site/getallwashrequestsnew';
@@ -39,7 +50,7 @@ if (isset($_GET['customer_id']))
 if (isset($_GET['agent_id']))
     $agent_id = $_GET['agent_id'];
 $handle = curl_init($url);
-$data = array('day' => $day, 'event' => $_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, 'month' => $month, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+$data = array('city' => $city, 'zipcode' => $zipcode, 'day' => $day, 'event' => $_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, 'month' => $month, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -52,7 +63,7 @@ $jsondata = json_decode($result);
 $s_orders_response = $jsondata->response;
 $s_orders_result_code = $jsondata->result;
 $s_mw_all_orders = $jsondata->wash_requests;
-//print_r($result); die;
+//print_r($s_mw_all_orders); die;
 /* \\ echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; */
 $pending_order_count = '';
 if (!$jsondata->pending_wash_count)
@@ -790,10 +801,17 @@ $ios_count = $jsondata->ios_count;
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;                               ?></td-->
-                                            <?php $sum = $order->agent_total + $order->company_total ?>
+                                           <!--td><?php //echo $order->transaction_id;                                      ?></td-->
+                                            <?php
+                                            if ($order->coupon_discount) {
+                                                $coupon_discount = $order->coupon_discount;
+                                            } else {
+                                                $coupon_discount = 0.00;
+                                            }
+                                            $sum = ($order->agent_total + $order->company_total);
+                                            ?>
                                             <td>$<?php echo number_format($sum, 2); ?>   </td>
-                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;         ?></td>
+                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;                 ?></td>
                                             <td>
                                                 <?php
                                                 if ($order->status == 4) {
@@ -980,7 +998,7 @@ $ios_count = $jsondata->ios_count;
 
         $(".preloader").remove();
 
-        var curr_url = "<?php echo ROOT_URL; ?>/admin-new/all-orders.php?filter=<?php echo $_GET['filter']; ?>";
+        var curr_url = "<?php echo ROOT_URL; ?>/admin-new/all-orders.php?filter=<?php echo $_GET['filter']; ?>&city=<?php echo $_GET['city']; ?>&event=<?php echo $_GET['event']; ?>&zipcode=<?php echo $_GET['zipcode']; ?>";
                 var limit = "<?php echo $_GET['limit']; ?>";
                 $(".order-limit").change(function () {
                     window.location.href = curr_url + '&limit=' + $(this).val();
@@ -1066,20 +1084,20 @@ $ios_count = $jsondata->ios_count;
              if ($(this).hasClass("addonupgrade-view")) {
              return false;
              }
-             
+                 
              var wash_id = $(this).attr('data-id');
-             
+                 
              $(this).parent().remove();
              if ($(".spec-order-list").children().length < 1){
              $(".spec-order-list").remove();
              }
-             
+                 
              if ($(".alert-box-wrap").children().length < 1){
              $(".alert-box-wrap").hide();
              }
              window.open('edit-order.php?id='+wash_id, '_blank');
              return false;
-             
+                 
              });*/
 
         });

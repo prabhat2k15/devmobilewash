@@ -4034,19 +4034,20 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
     public function actiongetallwashrequestsnew() {
 
-
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
         }
         /* Checking for post(day) parameters */
+        //print_r($_REQUEST); die;
         $order_day = '';
         if (!empty(Yii::app()->request->getParam('event'))) {
             $day = Yii::app()->request->getParam('day');
             $event = Yii::app()->request->getParam('event');
+            $zipcode = Yii::app()->request->getParam('zipcode');
+            $city = Yii::app()->request->getParam('city');
             $end_month = Yii::app()->request->getParam('end_month');
             $start_month = Yii::app()->request->getParam('start_month');
-
             $status_qr = '';
             if ($event == 'pending') {
                 $status = 0;
@@ -4196,6 +4197,18 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' AND (DATE_FORMAT(w.order_for,'%Y-%m-%d')= '" . $day . "' OR DATE_FORMAT(w.complete_order,'%Y-%m-%d')= '" . $day . "') AND (w.failed_transaction_id != '')  ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
             } else {
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' AND (DATE_FORMAT(w.order_for,'%Y-%m-%d')= '" . $day . "' OR DATE_FORMAT(w.complete_order,'%Y-%m-%d')= '" . $day . "') AND (w.failed_transaction_id != '')  ORDER BY w.id DESC")->queryAll();
+            }
+        } elseif ($event == 'city') {
+            if ($limit > 0) {
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE  w.wash_request_position = '" . APP_ENV . "' AND w.city ='" . $city . "' AND w.status = 4 ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
+            } else {
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE  w.wash_request_position = '" . APP_ENV . "' AND w.city ='" . $city . "' AND w.status = 4 ORDER BY w.id DESC")->queryAll();
+            }
+        } elseif ($event == 'zipcode_and_city') {
+            if ($limit > 0) {
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE  w.wash_request_position = '" . APP_ENV . "' AND w.zipcode ='" . $zipcode . "' AND w.city ='" . $city . "' AND w.status = 4  ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
+            } else {
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE  w.wash_request_position = '" . APP_ENV . "' AND w.zipcode ='" . $zipcode . "' AND w.city ='" . $city . "' AND w.status = 4 ORDER BY w.id DESC")->queryAll();
             }
         } elseif ($event == 'csv_total_orders') {
             $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '" . $start_month . "' AND '" . $end_month . "' AND w.status IN(0,4,3,2,1,5,6) ORDER BY w.id ASC")->queryAll();
