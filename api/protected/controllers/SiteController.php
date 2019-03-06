@@ -4048,6 +4048,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             $city = Yii::app()->request->getParam('city');
             $end_month = Yii::app()->request->getParam('end_month');
             $start_month = Yii::app()->request->getParam('start_month');
+            $from = Yii::app()->request->getParam('from');
+            $to = Yii::app()->request->getParam('to');
             $status_qr = '';
             if ($event == 'pending') {
                 $status = 0;
@@ -4200,15 +4202,16 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             }
         } elseif ($event == 'city') {
             if ($limit > 0) {
-                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE  w.wash_request_position = '" . APP_ENV . "' AND w.city ='" . $city . "' AND w.status = 4 ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w WHERE  DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND w.city ='" . $city . "' AND w.status = 4 ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
             } else {
-                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE  w.wash_request_position = '" . APP_ENV . "' AND w.city ='" . $city . "' AND w.status = 4 ORDER BY w.id DESC")->queryAll();
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w  WHERE DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND  w.city ='" . $city . "' AND w.status = 4 ORDER BY w.id DESC")->queryAll();
             }
         } elseif ($event == 'zipcode_and_city') {
+
             if ($limit > 0) {
-                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE  w.wash_request_position = '" . APP_ENV . "' AND w.zipcode ='" . $zipcode . "' AND w.city ='" . $city . "' AND w.status = 4  ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w  WHERE DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND  w.zipcode ='" . $zipcode . "'  AND w.status = 4  ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
             } else {
-                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE  w.wash_request_position = '" . APP_ENV . "' AND w.zipcode ='" . $zipcode . "' AND w.city ='" . $city . "' AND w.status = 4 ORDER BY w.id DESC")->queryAll();
+                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w  WHERE DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND  w.zipcode ='" . $zipcode . "'  AND w.status = 4 ORDER BY w.id DESC")->queryAll();
             }
         } elseif ($event == 'csv_total_orders') {
             $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE DATE_FORMAT(w.order_for,'%Y-%m-%d') BETWEEN '" . $start_month . "' AND '" . $end_month . "' AND w.status IN(0,4,3,2,1,5,6) ORDER BY w.id ASC")->queryAll();
@@ -11144,9 +11147,12 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
         $blue_orders = $qrRequests[0]['total'];
 
-        $all_washes_city = Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM washing_requests WHERE (order_for >= :from AND order_for <= :to) AND status = 4 GROUP BY city ORDER BY COUNT(id) DESC")
-                ->bindValue(":from", $from)
-                ->bindValue(":to", $to)
+//        $all_washes_city = Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM washing_requests WHERE (order_for >= :from AND order_for <= :to) AND status = 4 GROUP BY city ORDER BY COUNT(id) DESC")
+//                ->bindValue(":from", $from)
+//                ->bindValue(":to", $to)
+//                ->queryAll();
+
+        $all_washes_city = Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM washing_requests WHERE DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND status = 4 GROUP BY city ORDER BY COUNT(id) DESC")
                 ->queryAll();
 
         $all_washes_zipcode = Yii::app()->db->createCommand("SELECT zipcode, city, COUNT(id) as total FROM washing_requests WHERE (order_for >= :from AND order_for <= :to) AND status = 4 GROUP BY zipcode ORDER BY COUNT(id) DESC")

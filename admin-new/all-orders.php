@@ -42,6 +42,18 @@ if (isset($_GET['city']) && !empty($_GET['city'])) {
     $city = $_GET['city'];
 }
 
+if ($_GET['from']) {
+    $from = $_GET['from'];
+} else {
+    $from = "2017-01-01";
+}
+
+if ($_GET['to']) {
+    $to = $_GET['to'];
+} else {
+    $to = date('Y-m-d');
+}
+
 $url = ROOT_URL . '/api/index.php?r=site/getallwashrequestsnew';
 $cust_id = 0;
 $agent_id = 0;
@@ -50,7 +62,7 @@ if (isset($_GET['customer_id']))
 if (isset($_GET['agent_id']))
     $agent_id = $_GET['agent_id'];
 $handle = curl_init($url);
-$data = array('city' => $city, 'zipcode' => $zipcode, 'day' => $day, 'event' => $_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, 'month' => $month, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+$data = array('to' => $to, 'from' => $from, 'city' => $city, 'zipcode' => $zipcode, 'day' => $day, 'event' => $_event, 'filter' => $_GET['filter'], 'limit' => $_GET['limit'], 'customer_id' => $cust_id, 'agent_id' => $agent_id, 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, 'month' => $month, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -801,7 +813,7 @@ $ios_count = $jsondata->ios_count;
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;                                      ?></td-->
+                                           <!--td><?php //echo $order->transaction_id;                                       ?></td-->
                                             <?php
                                             if ($order->coupon_discount) {
                                                 $coupon_discount = $order->coupon_discount;
@@ -811,7 +823,7 @@ $ios_count = $jsondata->ios_count;
                                             $sum = ($order->agent_total + $order->company_total);
                                             ?>
                                             <td>$<?php echo number_format($sum, 2); ?>   </td>
-                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;                 ?></td>
+                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); //echo $order->created_date;                  ?></td>
                                             <td>
                                                 <?php
                                                 if ($order->status == 4) {
@@ -998,7 +1010,7 @@ $ios_count = $jsondata->ios_count;
 
         $(".preloader").remove();
 
-        var curr_url = "<?php echo ROOT_URL; ?>/admin-new/all-orders.php?filter=<?php echo $_GET['filter']; ?>&city=<?php echo $_GET['city']; ?>&event=<?php echo $_GET['event']; ?>&zipcode=<?php echo $_GET['zipcode']; ?>";
+        var curr_url = "<?php echo ROOT_URL; ?>/admin-new/all-orders.php?filter=<?php echo $_GET['filter']; ?>&city=<?php echo $_GET['city']; ?>&event=<?php echo $_GET['event']; ?>&zipcode=<?php echo $_GET['zipcode']; ?>&to=<?php echo $to; ?>&from=<?php echo $from; ?>";
                 var limit = "<?php echo $_GET['limit']; ?>";
                 $(".order-limit").change(function () {
                     window.location.href = curr_url + '&limit=' + $(this).val();
@@ -1084,20 +1096,20 @@ $ios_count = $jsondata->ios_count;
              if ($(this).hasClass("addonupgrade-view")) {
              return false;
              }
-                 
+             
              var wash_id = $(this).attr('data-id');
-                 
+             
              $(this).parent().remove();
              if ($(".spec-order-list").children().length < 1){
              $(".spec-order-list").remove();
              }
-                 
+             
              if ($(".alert-box-wrap").children().length < 1){
              $(".alert-box-wrap").hide();
              }
              window.open('edit-order.php?id='+wash_id, '_blank');
              return false;
-                 
+             
              });*/
 
         });

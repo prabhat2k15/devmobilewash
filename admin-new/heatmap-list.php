@@ -16,6 +16,7 @@ if ($_GET['to']) {
     $to = date('Y-m-d');
 }
 
+//print_r($_GET); die;
 $handle_data = curl_init(ROOT_URL . "/api/index.php?r=site/heatmaplistdata");
 curl_setopt($handle_data, CURLOPT_POST, true);
 curl_setopt($handle_data, CURLOPT_POSTFIELDS, array("key" => API_KEY, "from" => $from, "to" => $to, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
@@ -23,6 +24,7 @@ curl_setopt($handle_data, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle_data);
 curl_close($handle_data);
 $heatmaplist_data = json_decode($result);
+//print_r($heatmaplist_data->all_washes_city); 
 ?>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
 <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
@@ -121,7 +123,7 @@ $heatmaplist_data = json_decode($result);
                                             <?php foreach ($heatmaplist_data->all_washes_city as $washbycity): ?>
                                                 <tr>
                                                     <td><?php echo $washbycity->city; ?></td>
-                                                    <td><a href="<?= ROOT_URL ?>/admin-new/all-orders.php?city=<?= $washbycity->city ?>&event=city&filter=&limit=400"><?php echo $washbycity->total; ?></a></td>
+                                                    <td><a href="<?= ROOT_URL ?>/admin-new/all-orders.php?city=<?= $washbycity->city ?>&to=<?= $to ?>&from=<?= $from ?>&event=city&filter=&limit=400"><?php echo $washbycity->total; ?></a></td>
                                                 </tr>
                                             <?php endforeach; ?>
 
@@ -145,7 +147,7 @@ $heatmaplist_data = json_decode($result);
                                             <?php foreach ($heatmaplist_data->all_washes_zipcode as $washbyzip): ?>
                                                 <tr>
                                                     <td><?php echo $washbyzip->zipcode; ?> - <?php echo $washbyzip->city; ?></td>
-                                                    <td><a href="<?= ROOT_URL ?>/admin-new/all-orders.php?city=<?= $washbyzip->city ?>&zipcode=<?= $washbyzip->zipcode ?>&event=zipcode_and_city&filter=&limit=400"><?php echo $washbyzip->total; ?></a></td>
+                                                    <td><a href="<?= ROOT_URL ?>/admin-new/all-orders.php?city=<?= $washbyzip->city ?>&zipcode=<?= $washbyzip->zipcode ?>&to=<?= $to ?>&from=<?= $from ?>&event=zipcode_and_city&filter=&limit=400"><?php echo $washbyzip->total; ?></a></td>
                                                 </tr>
                                             <?php endforeach; ?>
 
