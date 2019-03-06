@@ -16352,7 +16352,6 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
 
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $wash_request_id));
 	    
-	    if (!$wrequest_id_check->is_scheduled) {
 		 $agent_detail = Agents::model()->findByAttributes(array("id" => $wrequest_id_check->agent_id));
 		 $cust_detail = Customers::model()->findByPk($wrequest_id_check->customer_id);
 		 
@@ -16449,7 +16448,8 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
                     $auth_token = TWILIO_AUTH_TOKEN;
                     $client = new Services_Twilio($account_sid, $auth_token);
 
-                    $message = "WASH NOW TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->created_date)) . " @ " . date('h:i A', strtotime($wrequest_id_check->created_date)) . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
+                    if (!$wrequest_id_check->is_scheduled) $message = "WASH NOW TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->created_date)) . " @ " . date('h:i A', strtotime($wrequest_id_check->created_date)) . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
+if ($wrequest_id_check->is_scheduled) $message = "SCHEDULED WASH TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->schedule_date)) . " @ " . $wrequest_id_check->schedule_time . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
 
 
                     try {
@@ -16482,9 +16482,9 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
                         //echo  $e;
                     }
                 //}
-            }
+        
 
-
+if (!$wrequest_id_check->is_scheduled){
             $currentwasherwashnowstartlog = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE agent_id = '" . $wrequest_id_check->agent_id . "' AND wash_request_id = '" . $wash_request_id . "' AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")->queryAll();
 
             if (count($currentwasherwashnowstartlog)) {
@@ -16501,6 +16501,7 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
                     }
                 }
             }
+	}
 
 
 
