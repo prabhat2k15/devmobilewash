@@ -113,7 +113,7 @@ $result_code = $jsondata->result;
                         <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                             <thead>
                                 <tr>
-                                    <?php if ($_GET['type'] == 'Problem' || $_GET['type'] == 'Suggestion') { ?>
+                                    <?php if ($_GET['type'] == 'Problem' || $_GET['type'] == 'Suggestion' || $_GET['type'] == 'Questions') { ?>
                                         <th class="row1"> Action </th> 
                                     <?php } ?>
                                     <th class="row1"> Badge # </th>
@@ -139,7 +139,7 @@ $result_code = $jsondata->result;
                                             //$totalrecord = $responseagents->totalrecorc;  
                                             ?>
                                             <tr class="odd gradeX <?= $strike ?>">
-                                                <?php if ($_GET['type'] == 'Problem' || $_GET['type'] == 'Suggestion') { ?>
+                                                <?php if ($_GET['type'] == 'Problem' || $_GET['type'] == 'Suggestion' || $_GET['type'] == 'Questions') { ?>
                                                     <td> <?php if ($responseagents->status == 0) { ?> 
                                                             <a  id="<?= $responseagents->feedBackId ?>" data-val="1" class="btn  updateStatus resolved"> Resolved </a> <?php } else {
                                                         ?>
