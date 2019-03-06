@@ -466,7 +466,7 @@ $searchresult_result_code = $searchresults->result;
                                                 }
                                                 ?></td>
                                             <td>$<?php echo $order->net_price; ?></td>
-                                            <td><?php echo $order->created_date; ?></td>
+                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); ?></td>
 
 
 
