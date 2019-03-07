@@ -16438,7 +16438,7 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
 
 
                 $mobile_receipt .= "Total: $" . $kartdata->net_price . "\r\n";
-                //if (APP_ENV == 'real') {
+                if (APP_ENV == 'real') {
                     $this->layout = "xmlLayout";
 
                     require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
@@ -16481,7 +16481,7 @@ if ($wrequest_id_check->is_scheduled) $message = "SCHEDULED WASH TAKEN #000" . $
                     } catch (Services_Twilio_RestException $e) {
                         //echo  $e;
                     }
-                //}
+                }
         
 
 if (!$wrequest_id_check->is_scheduled){
