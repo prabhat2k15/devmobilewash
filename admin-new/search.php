@@ -17,6 +17,7 @@ curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle);
 curl_close($handle);
 $searchresults = json_decode($result);
+//print_r($searchresults); die;
 $searchresult_response = $searchresults->response;
 $searchresult_result_code = $searchresults->result;
 ?>
@@ -354,6 +355,7 @@ $searchresult_result_code = $searchresults->result;
                                         <!--th>Total Price </th-->
                                         <!--th>Transaction ID </th-->
                                         <th> Created Date </th>
+                                        <th> Completed Date </th>
 
                                     </tr>
                                 </thead>
@@ -467,7 +469,12 @@ $searchresult_result_code = $searchresults->result;
                                                 ?></td>
                                             <td>$<?php echo $order->net_price; ?></td>
                                             <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date)); ?></td>
-
+                                            <td><?php
+                                                if (strtotime($order->complete_order) > 0) {
+                                                    echo date('Y-m-d h:i A', strtotime($order->complete_order));
+                                                }
+                                                ?>
+                                            </td>
 
 
                                         </tr>

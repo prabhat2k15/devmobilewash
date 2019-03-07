@@ -5895,6 +5895,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'schedule_company_total' => $wrequest['schedule_company_total'],
                         'schedule_agent_total' => $wrequest['schedule_agent_total'],
                         'net_price' => $wrequest['net_price'],
+                        'complete_order' => $wrequest['complete_order'],
                         'wash_request_position' => $wrequest['wash_request_position'],
                         'payment_status' => $payment_status,
                         'min_diff' => $min_diff
@@ -5932,6 +5933,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'schedule_company_total' => $wrequest['schedule_company_total'],
                         'schedule_agent_total' => $wrequest['schedule_agent_total'],
                         'net_price' => $wrequest['net_price'],
+                        'complete_order' => $wrequest['complete_order'],
                         'wash_request_position' => $wrequest['wash_request_position'],
                         'payment_status' => $payment_status,
                         'min_diff' => $min_diff
@@ -5969,6 +5971,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     'schedule_company_total' => $wrequest['schedule_company_total'],
                     'schedule_agent_total' => $wrequest['schedule_agent_total'],
                     'net_price' => $wrequest['net_price'],
+                    'complete_order' => $wrequest['complete_order'],
                     'wash_request_position' => $wrequest['wash_request_position'],
                     'payment_status' => $payment_status,
                     'min_diff' => $min_diff
