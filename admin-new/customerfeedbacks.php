@@ -34,12 +34,18 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#example1').dataTable({
-            "order": [[5, "desc"]],
+            //"order": [-1, "asc"],
+            "order": [6, 'asc'],
             "pageLength": 20,
             "bLengthChange": false,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
         });
-    });</script>
+    });
+</script>
+
+
+
+
 <?php include('right-sidebar.php') ?>
 <?php
 $url = ROOT_URL . '/api/index.php?r=Customers/customersfeedbacksapp';
@@ -111,8 +117,11 @@ $result_code = $jsondata->result;
                         <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                             <thead>
                                 <tr>
+
                                     <?php if ($_GET['type'] == 'Problem' || $_GET['type'] == 'Suggestion' || $_GET['type'] == 'Questions') { ?>
                                         <th class="row1"> Action </th> 
+                                    <?php } else { ?>
+                                        <th class = "row1 hide"> Action </th>
                                     <?php } ?>
                                     <th class="row1"> Customer ID </th>                                 
                                     <th class="row2"> Customer Name </th>
@@ -143,6 +152,8 @@ $result_code = $jsondata->result;
                                                         ?>
                                                             <a  id="<?= $responseagents->feedBackId ?>" data-val="0" class="btn  updateStatus reopen"> Reopen </a>
                                                         <?php } ?></td>
+                                                <?php } else { ?>
+                                                    <td class="hide"><?php echo $responseagents->feedBackId; ?></td>  
                                                 <?php } ?>
                                                 <td><?php echo $responseagents->id; ?></td>
                                                 <td><?php
