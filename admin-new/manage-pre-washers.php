@@ -29,7 +29,7 @@ if (!empty($_GET['action'])) {
 <script type="text/javascript">
     $(document).ready(function () {
         $('#example1').dataTable({
-            "order": [[4, "asc"]],
+            "order": [[4, "desc"]],
             "pageLength": 20,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
         });
