@@ -10303,14 +10303,14 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        /*if (!$token_check) {
+        if (!$token_check) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }*/
+        }
         /* Checking for post(month) parameters */
         $order_month = '';
         if (!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))) {
