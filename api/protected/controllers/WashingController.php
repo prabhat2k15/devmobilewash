@@ -10303,14 +10303,14 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        if (!$token_check) {
+        /*if (!$token_check) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }
+        }*/
         /* Checking for post(month) parameters */
         $order_month = '';
         if (!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))) {
@@ -10437,10 +10437,10 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                 $json['time'] = $totalminutes;
                 $json['address_type'] = $address_type;
                 $json['start'] = date('Y-m-d', strtotime($created_date));
-                $orderbycustomer['total_wash'] = 1;
-                if ($ArrCustomers_date[$orderbycustomer['customer_id']] == date('Y-m-d', strtotime($created_date))) {
-                    $orderbycustomer['total_wash'] = 0;
-                }
+                //$orderbycustomer['total_wash'] = 1;
+                //if ($ArrCustomers_date[$orderbycustomer['customer_id']] == date('Y-m-d', strtotime($created_date))) {
+                  //  $orderbycustomer['total_wash'] = 0;
+                //}
                 if ($wash_request_position == APP_ENV) {
 
                     $orderview[] = array(
@@ -10486,10 +10486,10 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                 }
 
                 if (($value['total_wash'] == 0)) {
-                    if (!in_array($value['customer_id'], $ArrCustemer)) {
+                    //if (!in_array($value['customer_id'], $ArrCustemer)) {
                         $data[$value['start']]['new_customer'][] = 1;
-                        $ArrCustemer[] = $value['customer_id'];
-                    }
+                        //$ArrCustemer[] = $value['customer_id'];
+                    //}
                 }
 
 //                if ((($value['zip_color'] == '') || ($value['zip_color'] == 'blue')) && ($value['title'] != 'Canceled')) {

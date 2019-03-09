@@ -4086,7 +4086,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } elseif ($event == 'ondemandcanceled') {
                 $status_qr = " AND w.is_scheduled = 0 AND (w.status=5 || w.status=6)";
             } elseif ($event == 'newcustomer') {
-                $status_qr = " AND w.status = 4";
+                //$status_qr = " AND w.status = 4";
+		$status_qr = " AND c.total_wash = 0";
             } elseif (in_array($event, array('yelloworders', 'blueorders', 'redorders', 'purpleorders'))) {
                 $status_qr = " AND w.status IN('0','4','3','2','1')";
             } elseif ($event == 'washer_history') {
@@ -4464,7 +4465,7 @@ if ($wrequest['escrow_status'] == 'authorized') {
                 }
 
                 $show_result = 0;
-                if ($event == 'newcustomer') {
+                /*if ($event == 'newcustomer') {
                     $get_befor_count = Yii::app()->db->createCommand("SELECT id, order_for FROM washing_requests WHERE customer_id = '" . $wrequest['customer_id'] . "' AND status = 4 ORDER BY id ASC LIMIT 1")->queryAll();
 
                     if (count($get_befor_count) > 0 && date('Y-m-d', strtotime($get_befor_count[0]['order_for'])) == $day) {
@@ -4472,7 +4473,7 @@ if ($wrequest['escrow_status'] == 'authorized') {
                     } else {
                         continue;
                     }
-                }
+                }*/
 
 
                 if (($wrequest['status'] >= 1) && ($wrequest['status'] <= 3)) {
