@@ -85,6 +85,13 @@ if (!empty($_POST['hidden'])) {
     .icon-grid:before{
         opacity:0;
     }
+   .emoji-wysiwyg-editor {
+        white-space: pre-wrap;
+   }
+   .emoji-picker-icon {
+    right: 39px;
+    top: 28px;
+}
 </style>
 
 <!-- BEGIN CONTENT -->
@@ -111,7 +118,7 @@ if (!empty($_POST['hidden'])) {
                                     <label class="control-label col-md-3">To</label>
                                     <div class="col-md-3">
                                         <select class="form-control input-medium" onchange="getval(this);" name="to" required>
-                                            <option value="">Select</option>
+                                            <option value="">Select</option>Test Message
                                             <option <?php
                                             if ($to == 'all_washers') {
                                                 echo 'selected="selected"';
@@ -122,6 +129,11 @@ if (!empty($_POST['hidden'])) {
                                                 echo 'selected="selected"';
                                             }
                                             ?>>Custom</option>
+                                            <option <?php
+                                            if ($to == 'Test Message') {
+                                                echo "selected";
+                                            }
+                                            ?>>Test Message</option>
 
                                         </select>
                                     </div>
@@ -134,8 +146,8 @@ if (!empty($_POST['hidden'])) {
                                 </div>
                                 <div class="form-group" id="message">
                                     <label class="control-label col-md-3">Message</label>
-                                    <div class="col-md-3">
-                                        <textarea class="form-control emoji" data-emojiable="true" name="message" rows="3" required><?php echo $message; ?></textarea>
+                                    <div class="col-md-5">                                        
+                                        <textarea class="form-control emoji" data-emojiable="true"  data-type="original-input"  name="message"  rows="13" required><?php echo $message; ?></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group hide" id="media">

@@ -1,5 +1,12 @@
 <?php include('header.php') ?>
-
+<style>
+    .gradeX p{
+        white-space: pre-wrap;
+    }
+    .gradeX img{
+        vertical-align: baseline;
+    }
+</style>
 <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
 <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
 <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
@@ -7,6 +14,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#example1').dataTable({
+            "order": [[ 4, "asc" ]],
             "pageLength": 20,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]]
         });
@@ -40,6 +48,8 @@ if (!empty($_POST['submit'])) {
     $id = $_POST['id'];
     $phone = $_POST['phone'];
     $message = $_POST['message'];
+    //$message = htmlspecialchars($message, ENT_QUOTES);
+    //print_r($message); die('lkjflsd');
     //exit;
     $media = $_POST['media'];
     $message_get = explode(',', $phone);
@@ -172,6 +182,7 @@ $result_code = $jsondata->result;
                                     <th> Phone </th>
                                     <th style="width:300px !important;"> Message </th>
                                     <th class="hidden"> Media </th>
+                                    <th class="hidden">Message Report </th>
                                     <th> Send SMS </th>
                                     <th> Test SMS </th>
                                     <th> &nbsp; </th>
@@ -200,6 +211,7 @@ $result_code = $jsondata->result;
                                             </td>
 
                                             <td  class="hidden"><?php echo $responsemesage->media; ?></td>
+                                            <td  class="hidden"><?php echo ($responsemesage->report === 'sent' ? '1' : '0'); ?></td>
                                             <?php if ($responsemesage->report == 'sent') { ?>
                                                 <td><span id="" style="color: #00AFF0; cursor: pointer;">Already sent</span></td>
                                                 <td><span id="" style="color: #00AFF0; cursor: pointer;">Already sent</span></td>
@@ -233,7 +245,7 @@ $result_code = $jsondata->result;
                                         <tr><td>
                                                 <input type="hidden" class="Unmask" name="phone" value="<?php echo $responsemesage->phone; ?>"></td></tr>
                                         <tr><td>
-                                                <input type="hidden" name="message" value="<?php echo str_replace('"', 'â€?', $responsemesage->message); ?>"></td></tr>
+                                                <input type="hidden" name="message" value="<?php echo str_replace('"', '&quot;', $responsemesage->message); ?>"></td></tr>
                                         <tr><td>
                                                 <input type="hidden" name="media" value="<?php echo $responsemesage->media; ?>"></td></tr>
                                         <tr><td>
@@ -247,7 +259,7 @@ $result_code = $jsondata->result;
                         ?>
                     </div>
                 </div>
-                <!-- END EXAMPLE TABLE PORTLET-->
+                <!-- END EXAMPLE TABLE PORTLET â€? -->
             </div>
         </div>                  
         <div class="clearfix"></div>
