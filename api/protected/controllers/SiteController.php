@@ -3406,8 +3406,11 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     $car_ids_new_arr = explode(",", $car_ids_new);
 
                     $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
-
-                    $washrequestmodel->complete_order = date("Y-m-d H:i:s");
+                    //$washrequestmodel->complete_order = date("Y-m-d H:i:s");
+                    if($washrequestmodel->complete_order == "0000-00-00 00:00:00"){
+                        $washrequestmodel->complete_order = date("Y-m-d H:i:s");
+                    }
+                    
                     $resUpdate = $washrequestmodel->save(false);
 
                     WashPricingHistory::model()->updateAll(array('status' => 1), 'wash_request_id=:wash_request_id', array(":wash_request_id" => $wash_request_id));
