@@ -1423,6 +1423,7 @@ class AgentsController extends Controller {
                     'last_used_device' => $agentdevices,
                     'decals_installed' => $agent_id_check->decals_installed,
                     'unlimited_schedule_range' => $agent_id_check->unlimited_schedule_range,
+		    'certificates' => $agent_id_check->certificates,
                 );
             } else {
                 $json = array(
@@ -1536,6 +1537,7 @@ class AgentsController extends Controller {
         $api_password = '';
         $admin_username = '';
         $admin_username = Yii::app()->request->getParam('admin_username');
+	$certificates = Yii::app()->request->getParam('certificates');
         $force_logout = 0;
         if ($block_washer == 1)
             $force_logout = 1;
@@ -1850,6 +1852,10 @@ class AgentsController extends Controller {
                 if ($agent_profile_img) {
                     $image = $agent_profile_img;
                 }
+		
+		/*if (empty($certificates)) {
+                    $certificates = $model->certificates;
+                }*/
 
                 $data = array(
                     'first_name' => $first_name,
@@ -1895,6 +1901,7 @@ class AgentsController extends Controller {
                     'bank_account_number' => $bank_account_number,
                     'routing_number' => $routing_number,
                     'last_edited_admin' => $admin_username,
+		    'certificates' => $certificates,
                     //'decals_installed' => $decals_installed,
                     'updated_date' => date('Y-m-d H:i:s')
                 );
@@ -3273,7 +3280,9 @@ class AgentsController extends Controller {
         $t2 = Yii::app()->request->getParam('t2');
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
+	$action = Yii::app()->request->getParam('action');
 
+	if($action != 'webregister'){
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
         if (!$token_check) {
@@ -3284,6 +3293,7 @@ class AgentsController extends Controller {
             echo json_encode($json);
             die();
         }
+      }
 
         $first_name = Yii::app()->request->getParam('first_name');
         $last_name = Yii::app()->request->getParam('last_name');
