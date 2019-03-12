@@ -669,11 +669,16 @@ $profiledetail = json_decode($result);
                         <div class="form-group">
                             <label class="control-label col-md-3">Certificates</label>
                             <div class="col-md-9">
-				<p><input type="checkbox" name="certificates[]" value="Head Light Restoration"> Head Light Restoration</p>
-				<p><input type="checkbox" name="certificates[]" value="Clay Bar & Paste Wax"> Clay Bar & Paste Wax</p>
-<p><input type="checkbox" name="certificates[]" value="Interior Shampooing"> Interior Shampooing</p>
-<p><input type="checkbox" name="certificates[]" value="Ceramic Coating"> Ceramic Coating</p>
-<p><input type="checkbox" name="certificates[]" value="Tree Sap Removal"> Tree Sap Removal</p>
+				<?php
+				$all_certs = array();
+				if ($profiledetail->certificates){
+				    $all_certs = explode("|", $profiledetail->certificates);
+				} ?>
+				<p><input type="checkbox" name="certificates[]" <?php if (in_array("Head Light Restoration", $all_certs)) echo "checked"; ?> value="Head Light Restoration"> Head Light Restoration</p>
+				<p><input type="checkbox" name="certificates[]" <?php if (in_array("Clay Bar & Paste Wax", $all_certs)) echo "checked"; ?> value="Clay Bar & Paste Wax"> Clay Bar & Paste Wax</p>
+<p><input type="checkbox" name="certificates[]" <?php if (in_array("Interior Shampooing", $all_certs)) echo "checked"; ?> value="Interior Shampooing"> Interior Shampooing</p>
+<p><input type="checkbox" name="certificates[]" <?php if (in_array("Ceramic Coating", $all_certs)) echo "checked"; ?> value="Ceramic Coating"> Ceramic Coating</p>
+<p><input type="checkbox" name="certificates[]" <?php if (in_array("Tree Sap Removal", $all_certs)) echo "checked"; ?> value="Tree Sap Removal"> Tree Sap Removal</p>
                              
                             </div>
                         </div>
