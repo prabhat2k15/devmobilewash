@@ -107,6 +107,19 @@ if (isset($_POST['edit-agent-submit'])) {
     }
 
     // END PROOF INSURANCE //
+    // END PRFILE IMAGE //
+    /// washer vehical Image start
+    if (!empty($_FILES['agent_vehicle_pic']['tmp_name'])) {
+        $profile_pic = $_FILES['agent_vehicle_pic']['tmp_name'];
+        $profile_pic_type = pathinfo($_FILES['agent_vehicle_pic']['name'], PATHINFO_EXTENSION);
+        $md5 = md5(uniqid(rand(), true));
+        $picname = $md5 . "." . $profile_pic_type;
+        move_uploaded_file($profile_pic, ROOT_WEBFOLDER . '/public_html/api/images/agent_vehical_images/' . $picname);
+        $agent_vehicle_pic = ROOT_URL . '/api/images/agent_vehical_images/' . $picname;
+    } else {
+        $agent_vehicle_pic = "";
+    }
+
     // START PROOF INSURANCE IMAGE //
 
     if (!empty($_FILES['agreement_prof']['tmp_name'])) {
@@ -209,23 +222,22 @@ if (isset($_POST['edit-agent-submit'])) {
     $decals_installed = $_POST['decals_installed'];
     $updateBy = "WEB";
     $certificates = $_POST['certificates'];
-    
+    $service_area = $_POST['service_area'];
+    $helper = $_POST['helper'];
     $certificates_str = '';
-    
-  if(!empty($certificates)) 
-  {
-    $N = count($certificates);
 
-    for($i=0; $i < $N; $i++)
-    {
-      $certificates_str.= $certificates[$i]."|";
+    if (!empty($certificates)) {
+        $N = count($certificates);
+
+        for ($i = 0; $i < $N; $i++) {
+            $certificates_str .= $certificates[$i] . "|";
+        }
+
+        $certificates_str = rtrim($certificates_str, '|');
     }
-    
-    $certificates_str = rtrim($certificates_str, '|');
-  } 
 
 
-    $data = array('update_by' => $updateBy, 'unlimited_schedule_range' => $unlimited_schedule_range, 'agent_id' => strip_tags($_GET['id']), 'first_name' => strip_tags($first_name), 'last_name' => strip_tags($last_name), 'email' => strip_tags($email), 'phone_number' => strip_tags($phone_number), 'date_of_birth' => strip_tags($date_of_birth), 'new_password' => strip_tags($password), 'confirm_password' => strip_tags($password), 'street_address' => strip_tags($street_address), 'suite_apt' => strip_tags($suite_apt), 'city' => strip_tags($city), 'state' => strip_tags($state), 'zipcode' => strip_tags($zipcode), 'wash_experience' => strip_tags($wash_experience), 'rating' => strip_tags($rating), 'driver_license' => strip_tags($driver_license), 'business_license' => strip_tags($business_license), 'proof_insurance' => strip_tags($proof_insurance), 'agent_profile_img' => strip_tags($profileimg), 'agreement_prof' => strip_tags($agreement_prof), 'privacy_policy' => strip_tags($privacy_policy), 'notice_standard' => strip_tags($notice_standard), 'notice_card_security' => strip_tags($notice_card_security), 'mobile_type' => strip_tags($mobile_type), 'bank_account_number' => strip_tags($bank_account_number), 'routing_number' => strip_tags($routing_number), 'legally_eligible' => strip_tags($legally_eligible), 'own_vehicle' => strip_tags($own_vehicle), 'waterless_wash_product' => strip_tags($waterless_wash_product), 'operate_area' => strip_tags($operate_area), 'work_schedule' => strip_tags($work_schedule), 'operating_as' => strip_tags($operating_as), 'company_name' => strip_tags($company_name), 'email_alerts' => strip_tags($email_alerts), 'push_notifications' => strip_tags($push_notifications), 'agent_location' => strip_tags($agent_location), 'bt_submerchant_id' => strip_tags($bt_submerchant_id), 'status' => strip_tags($status), 'total_wash' => strip_tags($total_wash), 'account_status' => strip_tags($account_status), 'available_for_new_order' => strip_tags($available_for_new_order), 'driver_license_expiration' => strip_tags($driverlicense_expiration), 'insurance_expiration' => strip_tags($insurance_expiration), 'washer_position' => strip_tags($_POST['washer_position']), 'real_washer_id' => strip_tags($_POST['real_washer_id']), 'block_washer' => $block_washer, 'admin_edit' => 'true', 'notes' => strip_tags($notes), 'hours_opt_check' => strip_tags($hours_opt_check), 'rating_control' => strip_tags($rating_control), 'sms_control' => strip_tags($sms_control), 'admin_username' => $jsondata_permission->user_name, 'api_password' => AES256CBC_API_PASS, 'decals_installed' => strip_tags($decals_installed), 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'certificates' => $certificates_str, 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+    $data = array('helper' => $helper, 'vehicle_pic' => $agent_vehicle_pic, 'update_by' => $updateBy, 'unlimited_schedule_range' => $unlimited_schedule_range, 'agent_id' => strip_tags($_GET['id']), 'first_name' => strip_tags($first_name), 'last_name' => strip_tags($last_name), 'email' => strip_tags($email), 'phone_number' => strip_tags($phone_number), 'date_of_birth' => strip_tags($date_of_birth), 'new_password' => strip_tags($password), 'confirm_password' => strip_tags($password), 'street_address' => strip_tags($street_address), 'suite_apt' => strip_tags($suite_apt), 'city' => strip_tags($city), 'state' => strip_tags($state), 'zipcode' => strip_tags($zipcode), 'wash_experience' => strip_tags($wash_experience), 'rating' => strip_tags($rating), 'driver_license' => strip_tags($driver_license), 'business_license' => strip_tags($business_license), 'proof_insurance' => strip_tags($proof_insurance), 'agent_profile_img' => strip_tags($profileimg), 'agreement_prof' => strip_tags($agreement_prof), 'privacy_policy' => strip_tags($privacy_policy), 'notice_standard' => strip_tags($notice_standard), 'notice_card_security' => strip_tags($notice_card_security), 'mobile_type' => strip_tags($mobile_type), 'bank_account_number' => strip_tags($bank_account_number), 'routing_number' => strip_tags($routing_number), 'legally_eligible' => strip_tags($legally_eligible), 'own_vehicle' => strip_tags($own_vehicle), 'waterless_wash_product' => strip_tags($waterless_wash_product), 'operate_area' => strip_tags($operate_area), 'work_schedule' => strip_tags($work_schedule), 'operating_as' => strip_tags($operating_as), 'company_name' => strip_tags($company_name), 'email_alerts' => strip_tags($email_alerts), 'push_notifications' => strip_tags($push_notifications), 'agent_location' => strip_tags($agent_location), 'bt_submerchant_id' => strip_tags($bt_submerchant_id), 'status' => strip_tags($status), 'total_wash' => strip_tags($total_wash), 'account_status' => strip_tags($account_status), 'available_for_new_order' => strip_tags($available_for_new_order), 'driver_license_expiration' => strip_tags($driverlicense_expiration), 'insurance_expiration' => strip_tags($insurance_expiration), 'washer_position' => strip_tags($_POST['washer_position']), 'real_washer_id' => strip_tags($_POST['real_washer_id']), 'block_washer' => $block_washer, 'admin_edit' => 'true', 'notes' => strip_tags($notes), 'hours_opt_check' => strip_tags($hours_opt_check), 'rating_control' => strip_tags($rating_control), 'sms_control' => strip_tags($sms_control), 'admin_username' => $jsondata_permission->user_name, 'api_password' => AES256CBC_API_PASS, 'decals_installed' => strip_tags($decals_installed), 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'certificates' => $certificates_str, 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
 
     $handle = curl_init(ROOT_URL . "/api/index.php?r=agents/profileupdate");
@@ -242,24 +254,24 @@ if (isset($_POST['edit-agent-submit'])) {
     if ($result_code == 'false') {
         $err .= $response . "<br>";
     }
-    
-    $dir_name = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/'.$_GET['id'];
 
-if (!is_dir($dir_name)) {
-mkdir($dir_name);
-}
-    
-    $orig_filename = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/'.$_GET['id'].'/log.txt';
+    $dir_name = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/' . $_GET['id'];
+
+    if (!is_dir($dir_name)) {
+        mkdir($dir_name);
+    }
+
+    $orig_filename = ROOT_WEBFOLDER . '/public_html/admin-new/edit-washer-logs/' . $_GET['id'] . '/log.txt';
     $context = stream_context_create();
-  $orig_file = fopen($orig_filename, 'a+', 1, $context);
+    $orig_file = fopen($orig_filename, 'a+', 1, $context);
 
-  $temp_filename = tempnam(sys_get_temp_dir(), 'php_prepend_'.time());
-  file_put_contents($temp_filename, $jsondata_permission->user_name." on ".date('M d, Y h:i A').PHP_EOL);
-  file_put_contents($temp_filename, $orig_file, FILE_APPEND);
+    $temp_filename = tempnam(sys_get_temp_dir(), 'php_prepend_' . time());
+    file_put_contents($temp_filename, $jsondata_permission->user_name . " on " . date('M d, Y h:i A') . PHP_EOL);
+    file_put_contents($temp_filename, $orig_file, FILE_APPEND);
 
-  fclose($orig_file);
-  unlink($orig_filename);
-  rename($temp_filename, $orig_filename);
+    fclose($orig_file);
+    unlink($orig_filename);
+    rename($temp_filename, $orig_filename);
 }
 
 $handle = curl_init(ROOT_URL . "/api/index.php?r=agents/profiledetails");
@@ -289,8 +301,12 @@ $profiledetail = json_decode($result);
         display: block;
         padding: 11px 0;
         text-align: center;
+        margin-top: 10px;
         text-decoration: none;
-        width: 200px;
+        width: 150px;
+    }
+    #washer_vehicle{
+        border-radius: 16px;
     }
     a:hover{
         color: #fff !important;
@@ -336,21 +352,28 @@ $profiledetail = json_decode($result);
     .form-control.error{
         border:1px solid #c2cad8;
     }
+    .fileinput{
+        margin:10px;
+    }
+    .edit-agent .form-group{
+        display:flex;
+        justify-content:center;
+    }
 </style>
 <?php if ($jsondata_permission->users_type != 'admin'): ?>
-<style>
-    #edit_agent_form input, #edit_agent_form select, #edit_agent_form textarea{
-	pointer-events: none; 
-    }
-    
-    #edit_agent_form .image-upload-btn{
-	display: none;
-    }
-    
-     #edit_agent_form select[name='block_washer'], #edit_agent_form textarea[name='washer_note'], #edit_agent_form select[name='decals_installed']{
-	pointer-events: auto; 
-    }
-</style>
+    <style>
+        #edit_agent_form input, #edit_agent_form select, #edit_agent_form textarea{
+            pointer-events: none; 
+        }
+
+        #edit_agent_form .image-upload-btn{
+            display: none;
+        }
+
+        #edit_agent_form select[name='block_washer'], #edit_agent_form textarea[name='washer_note'], #edit_agent_form select[name='decals_installed']{
+            pointer-events: auto; 
+        }
+    </style>
 <?php endif; ?>
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
@@ -383,11 +406,11 @@ $profiledetail = json_decode($result);
                     </div>
                     <!--/span-->
                     <div class="col-md-4" style="margin-top: 20px;">
-                        <?php if(strtotime($profiledetail->last_admin_edit_at) > 0): ?>
-                        <span>Last Edited by: <?php echo $profiledetail->last_edited_admin; ?></span>
-                        <span>on <?php echo date('M j, Y h:i A', strtotime($profiledetail->last_admin_edit_at)); ?></span>
+                        <?php if (strtotime($profiledetail->last_admin_edit_at) > 0): ?>
+                            <span>Last Edited by: <?php echo $profiledetail->last_edited_admin; ?></span>
+                            <span>on <?php echo date('M j, Y h:i A', strtotime($profiledetail->last_admin_edit_at)); ?></span>
                         <?php else: ?>
-                        <span>Last Edited by: N/A</span>
+                            <span>Last Edited by: N/A</span>
                         <?php endif; ?>
                     </div>
                     <!--/span-->
@@ -518,11 +541,19 @@ $profiledetail = json_decode($result);
                                 <input type="text" value="<?php echo $profiledetail->waterless_wash_product; ?>" name="waterless_wash_product" class="form-control"  /> </div>
                         </div>
                     </div>
+
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Operate Area</label>
                             <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->operate_area; ?>" name="operate_area" class="form-control"  /> </div>
+                                <select class="form-control" name="operate_area">
+                                    <option value="" ></option>
+                                    <option value="CA" <?php if ($profiledetail->operate_area == 'CA') echo 'selected'; ?>>CA</option>
+                                    <option value="NV" <?php if ($profiledetail->operate_area == 'NV') echo 'selected'; ?>>NV</option>
+                                    <option value="AZ" <?php if ($profiledetail->operate_area == 'AZ') echo 'selected'; ?>>AZ</option>
+                                    <option value="FL" <?php if ($profiledetail->operate_area == 'FL') echo 'selected'; ?>>FL</option>
+                                    <option value="TX" <?php if ($profiledetail->operate_area == 'TX') echo 'selected'; ?>>TX</option>
+                                </select> </div>
                         </div>
                     </div>
                 </div>
@@ -664,26 +695,27 @@ $profiledetail = json_decode($result);
                     </div>
 
                 </div>
-		<div class="row">
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Certificates</label>
                             <div class="col-md-9">
-				<?php
-				$all_certs = array();
-				if ($profiledetail->certificates){
-				    $all_certs = explode("|", $profiledetail->certificates);
-				} ?>
-				<p><input type="checkbox" name="certificates[]" <?php if (in_array("Head Light Restoration", $all_certs)) echo "checked"; ?> value="Head Light Restoration"> Head Light Restoration</p>
-				<p><input type="checkbox" name="certificates[]" <?php if (in_array("Clay Bar & Paste Wax", $all_certs)) echo "checked"; ?> value="Clay Bar & Paste Wax"> Clay Bar & Paste Wax</p>
-<p><input type="checkbox" name="certificates[]" <?php if (in_array("Interior Shampooing", $all_certs)) echo "checked"; ?> value="Interior Shampooing"> Interior Shampooing</p>
-<p><input type="checkbox" name="certificates[]" <?php if (in_array("Ceramic Coating", $all_certs)) echo "checked"; ?> value="Ceramic Coating"> Ceramic Coating</p>
-<p><input type="checkbox" name="certificates[]" <?php if (in_array("Tree Sap Removal", $all_certs)) echo "checked"; ?> value="Tree Sap Removal"> Tree Sap Removal</p>
-                             
+                                <?php
+                                $all_certs = array();
+                                if ($profiledetail->certificates) {
+                                    $all_certs = explode("|", $profiledetail->certificates);
+                                }
+                                ?>
+                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Head Light Restoration", $all_certs)) echo "checked"; ?> value="Head Light Restoration"> Head Light Restoration</p>
+                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Clay Bar & Paste Wax", $all_certs)) echo "checked"; ?> value="Clay Bar & Paste Wax"> Clay Bar & Paste Wax</p>
+                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Interior Shampooing", $all_certs)) echo "checked"; ?> value="Interior Shampooing"> Interior Shampooing</p>
+                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Ceramic Coating", $all_certs)) echo "checked"; ?> value="Ceramic Coating"> Ceramic Coating</p>
+                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Tree Sap Removal", $all_certs)) echo "checked"; ?> value="Tree Sap Removal"> Tree Sap Removal</p>
+
                             </div>
                         </div>
                     </div>
-                  
+
 
                 </div>
 
@@ -871,68 +903,94 @@ $profiledetail = json_decode($result);
                         </div>
                     </div>
                     <!--/span-->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Helper</label>
+                            <div class="col-md-9">
+                                <select class="form-control" name="helper">
+                                    <option value="0" <?php if ($profiledetail->helper == 0) echo 'selected'; ?>>No</option>
+                                    <option value="1" <?php if ($profiledetail->helper == 1) echo 'selected'; ?>>Yes</option>
+
+                                </select> </div>
+                        </div>
+                    </div>
 
                 </div>
                 <!--/row-->
                 <h3 class="form-section"  style="margin: 30px 0; padding-bottom: 5px; border-bottom: 1px solid #e7ecf1;">Upload</h3>
                 <!--/row-->
-                <div class="row" style="padding: 0px 0px 0px 15px;">
+                <div class="row    edit-agent" style="padding: 0px 0px 0px 15px;">
                     <div id="agent-image-crop"></div>
                     <a href="javascript:void(0)" class="crop-result">Crop</a>
-                    <div class="form-group" style="display: inline ! important;">
-                        <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
-                            <img id="driver_license_pic" class="driver_license_img" src="images/image_icon.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' />
+                    <div class="form-group">
+                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
+                            <img id="driver_license_pic" class="driver_license_img" src="images/image_icon.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' />
                             <a class="driver_license_pic_link image-upload-btn" href="#" onclick="chooseFile('#driver_license'); return false;">Driver License</a>
                             <input type="file" name="driver_license" id="driver_license" value="" style="padding: 6px 0px 0px; display: none;" onchange="loaddriver_license(event)" />
                         </div>
-                        <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
-                            <img id="proof_insurance_pic" class="proof_insurance_img" src="images/image_icon.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' /> <a class="proof_insurance_pic_link image-upload-btn" href="#" onclick="chooseFile('#proof_insurance'); return false;">Proof Insurance</a> <input type="file" name="proof_insurance" id="proof_insurance" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadproof_insurance(event)" />
+                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
+                            <img id="proof_insurance_pic" class="proof_insurance_img" src="images/image_icon.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' /> <a class="proof_insurance_pic_link image-upload-btn" href="#" onclick="chooseFile('#proof_insurance'); return false;">Proof Insurance</a> <input type="file" name="proof_insurance" id="proof_insurance" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadproof_insurance(event)" />
                         </div>
-                        <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
-                            <img id="business_license_pic" class="business_license_img" src="images/image_icon.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' /> <a class="business_license_pic_link image-upload-btn" href="#" onclick="chooseFile('#business_license'); return false;">Business License</a> <input type="file" name="business_license" id="business_license" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadbusiness_license(event)" />
+                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
+                            <img id="business_license_pic" class="business_license_img" src="images/image_icon.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' /> <a class="business_license_pic_link image-upload-btn" href="#" onclick="chooseFile('#business_license'); return false;">Business License</a> <input type="file" name="business_license" id="business_license" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadbusiness_license(event)" />
                         </div>
-                        <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
+                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
                             <img id="image_pic" class="image_img" src="<?php
                             if ($profiledetail->image) {
                                 echo $profiledetail->image;
                             } else {
                                 echo "images/image_icon.png";
                             }
-                            ?>" style='display: block; width: 200px; height: auto; cursor: pointer;' /> <a class="image_pic_link image-upload-btn" href="#" onclick="chooseFile('#image'); return false;">Profile Pic</a> <input type="file" name="image" id="image" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadimage(event)" />
+                            ?>" style='display: block; width: 150px; height: auto; cursor: pointer;' /> <a class="image_pic_link image-upload-btn" href="#" onclick="chooseFile('#image'); return false;">Profile Pic</a> 
+                            <input type="file" name="image" id="image" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadimage(event)" />
                             <input type="hidden" class="agentnewpic" name="agentnewpic" />
                         </div>
 
+                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
+                            <img id="washer_vehicle" class="driver_license_img" src="<?php
+                            if ($profiledetail->vehicle_pic) {
+                                echo $profiledetail->vehicle_pic;
+                            } else {
+                                echo "images/image_icon.png";
+                            }
+                            ?>" style='display: block; width: 150px; height: 150px; cursor: pointer;' />
+                            <a class="driver_license_pic_link image-upload-btn" href="#" onclick="chooseFile('#washer_vehicle_pic'); return false;">Washer vehicle</a>
+                            <input type="file" name="agent_vehicle_pic" id="washer_vehicle_pic" value="" style="padding: 6px 0px 0px; display: none;" accept="image/*"/>
+                        </div>
+
+
 
                     </div>
-                    <div class="form-group" style="display: inline ! important;">
-                        <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
-                            <img id="agreement_prof_pic" class="agreement_prof_img" src="images/pdf.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' />
+                    <div class="form-group ">
+                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
+                            <img id="agreement_prof_pic" class="agreement_prof_img" src="images/pdf.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' />
                             <a class="agreement_prof_pic_link image-upload-btn" href="#" onclick="chooseFile('#agreement_prof'); return false;">Agreement Prof</a>
                             <input type="file" name="agreement_prof" id="agreement_prof" value="" accept="application/pdf" style="padding: 6px 0px 0px; display: none;" onchange="loadagreement_prof(event)" />
                         </div>
-                        <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
-                            <img id="privacy_policy_pic" class="privacy_policy_img" src="images/pdf.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' />
+                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
+                            <img id="privacy_policy_pic" class="privacy_policy_img" src="images/pdf.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' />
                             <a class="privacy_policy_pic_link image-upload-btn" href="#" onclick="chooseFile('#privacy_policy'); return false;">Privacy Policy</a>
                             <input type="file" name="privacy_policy" id="privacy_policy" value="" accept="application/pdf" style="padding: 6px 0px 0px; display: none;" onchange="loadprivacy_policy(event)" />
                         </div>
-                        <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
-                            <img id="notice_standard_pic" class="notice_standard_img" src="images/pdf.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' /> <a class="notice_standard_pic_link image-upload-btn" href="#" onclick="chooseFile('#notice_standard'); return false;">Notice Standard</a> <input type="file" name="notice_standard" id="notice_standard" value="" accept="application/pdf" style="padding: 6px 0px 0px; display: none;" onchange="loadnotice_standard(event)" />
+                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
+                            <img id="notice_standard_pic" class="notice_standard_img" src="images/pdf.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' /> <a class="notice_standard_pic_link image-upload-btn" href="#" onclick="chooseFile('#notice_standard'); return false;">Notice Standard</a> <input type="file" name="notice_standard" id="notice_standard" value="" accept="application/pdf" style="padding: 6px 0px 0px; display: none;" onchange="loadnotice_standard(event)" />
                         </div>
-                        <div class="fileinput fileinput-new" data-provides="fileinput" style="padding: 0px 30px 0px 0px;">
-                            <img id="notice_card_security_pic" class="notice_card_security_img" src="images/pdf.png" style='display: block; width: 200px; height: 150px; cursor: pointer;' /> <a class="notice_card_security_pic_link image-upload-btn" href="#" onclick="chooseFile('#notice_card_security'); return false;">Notice Card Security</a> <input type="file" name="notice_card_security" id="notice_card_security" accept="application/pdf" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadnotice_card_security(event)" />
+                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
+                            <img id="notice_card_security_pic" class="notice_card_security_img" src="images/pdf.png" style='display: block; width: 15
+                                 0px; height: 150px; cursor: pointer;' /> <a class="notice_card_security_pic_link image-upload-btn" href="#" onclick="chooseFile('#notice_card_security'); return false;">Notice Card Security</a> <input type="file" name="notice_card_security" id="notice_card_security" accept="application/pdf" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadnotice_card_security(event)" />
                         </div>
 
 
                     </div>
                     <!--/row-->
                 </div>
-                
-		<div class="form-actions">
+
+                <div class="form-actions">
                     <div class="row" style="text-align: center;">
                         <div class="clear">&nbsp;</div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-offset-3 col-md-9">
+                                <div class="col-md-12">
                                     <input type="hidden" name="edit-agent-submit" value="hidden">
                                     <button type="submit" id="submit" class="btn green">Submit</button>
                                 </div>
@@ -941,7 +999,7 @@ $profiledetail = json_decode($result);
                         <div class="col-md-6"> </div>
                     </div>
                 </div>
-		
+
         </form>
 
 
@@ -978,6 +1036,22 @@ $profiledetail = json_decode($result);
         var output4 = document.getElementById('image_pic');
         output4.src = URL.createObjectURL(event.target.files[0]);
     };
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#washer_vehicle').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#washer_vehicle_pic").change(function () {
+        readURL(this);
+    });
 
 </script>
 <script>

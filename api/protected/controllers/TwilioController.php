@@ -233,7 +233,6 @@ class TwilioController extends Controller {
     }
 
     public function actionsendsms() {
-
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -294,6 +293,22 @@ class TwilioController extends Controller {
             }
         } else {
             try {
+                 $dict = array(
+                    '@' => "\x00", '£' => "\x01", '$' => "\x02", '¥' => "\x03", 'è' => "\x04", 'é' => "\x05", 'ù' => "\x06", 'ì' => "\x07", 'ò' => "\x08", 'Ç' => "\x09", 'Ø' => "\x0B", 'ø' => "\x0C", 'Å' => "\x0E", 'å' => "\x0F",
+                    'Δ' => "\x10", '_' => "\x11", 'Φ' => "\x12", 'Γ' => "\x13", 'Λ' => "\x14", 'Ω' => "\x15", 'Π' => "\x16", 'Ψ' => "\x17", 'Σ' => "\x18", 'Θ' => "\x19", 'Ξ' => "\x1A", 'Æ' => "\x1C", 'æ' => "\x1D", 'ß' => "\x1E", 'É' => "\x1F",
+                    // all \x2? removed
+                    // all \x3? removed
+                    // all \x4? removed
+                    'Ä' => "\x5B", 'Ö' => "\x5C", 'Ñ' => "\x5D", 'Ü' => "\x5E", '§' => "\x5F",
+                    '¿' => "\x60",
+                    'ä' => "\x7B", 'ö' => "\x7C", 'ñ' => "\x7D", 'ü' => "\x7E", 'à' => "\x7F",
+                    '^' => "\x1B\x14", '{' => "\x1B\x28", '}' => "\x1B\x29", '\\' => "\x1B\x2F", '[' => "\x1B\x3C", '~' => "\x1B\x3D", ']' => "\x1B\x3E", '|' => "\x1B\x40", '€' => "\x1B\x65"
+                );
+                $converted = strtr($message, $dict);
+                
+                // Replace unconverted UTF-8 chars from codepages U+0080-U+07FF, U+0080-U+FFFF and U+010000-U+10FFFF with a single ?
+                $message = $converted;// preg_replace('/([\\xC0-\\xDF].)|([\\xE0-\\xEF]..)|([\\xF0-\\xFF]...)/m','?',$converted);
+                
                 $sendmessage = $client->account->messages->create(array(
                     'To' => $to_num,
                     'From' => $from_num,
@@ -440,6 +455,16 @@ class TwilioController extends Controller {
         $message = Yii::app()->request->getParam('message');
         $media = Yii::app()->request->getParam('media');
         $status = Yii::app()->request->getParam('status');
+        if ($to == "" || $phone == "" || $message == "") {
+            $result = 'false';
+            $response = 'Please Fill the required fields';
+            $json = array(
+                'result' => $result,
+                'response' => $response,
+            );
+            echo json_encode($json);
+            die();
+        }
         if ($to == 'all_washers') {
             Yii::app()->db->createCommand('SET group_concat_max_len = 1000000')->execute();
             $all_phones = Yii::app()->db->createCommand("SELECT id, block_washer, GROUP_CONCAT(phone_number SEPARATOR ',') FROM agents WHERE block_washer = 0 AND phone_number != ''")->queryAll();
@@ -662,7 +687,7 @@ class TwilioController extends Controller {
             $modelTestNumbers->attributes = $testNumber;
             $modelTestNumbers->save(false);
             $result = 'true';
-            $response = 'Test number insearted  successfully';
+            $response = 'Test number inserted  successfully';
             $json = array(
                 'result' => $result,
                 'response' => $response
@@ -947,6 +972,80 @@ class TwilioController extends Controller {
 
         //echo json_encode($data);
         //exit;
+    }
+
+    public function actionCallLogs() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+
+        $fromnumber = Yii::app()->request->getParam('fromnumber');
+        $wash_request_id = '';
+        if (Yii::app()->request->getParam('wash_request_id')) {
+            $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+            if (AES256CBC_STATUS == 1) {
+                $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
+            }
+        }
+
+        if ($wash_request_id) {
+            $cust_details = Customers::model()->findByAttributes(array('contact_number' => $fromnumber));
+            $agent_details = Agents::model()->findByAttributes(array('phone_number' => $fromnumber));
+            $wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
+
+            if (count($cust_details)) {
+                $agent_det = Agents::model()->findByPk($wash_id_check->agent_id);
+                $logdata = array(
+                    'agent_id' => $wash_id_check->agent_id,
+                    'wash_request_id' => $wash_request_id,
+                    'agent_company_id' => $agent_det->real_washer_id,
+                    'action' => 'customercall',
+                    'action_date' => date('Y-m-d H:i:s'));
+
+                Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+                $json = array(
+                    'result' => 'true',
+                    'response' => 'customercall started'
+                );
+                echo json_encode($json);
+                die();
+            }
+
+            if (count($agent_details)) {
+                $logdata = array(
+                    'agent_id' => $wash_id_check->agent_id,
+                    'wash_request_id' => $wash_request_id,
+                    'agent_company_id' => $agent_details->real_washer_id,
+                    'action' => 'agentcall',
+                    'action_date' => date('Y-m-d H:i:s'));
+                Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+                $json = array(
+                    'result' => 'true',
+                    'response' => 'agentcall started'
+                );
+                echo json_encode($json);
+                die();
+            }
+        }
     }
 
 }

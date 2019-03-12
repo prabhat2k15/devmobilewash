@@ -3407,10 +3407,10 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                     $washrequestmodel = Washingrequests::model()->findByPk($wash_request_id);
                     //$washrequestmodel->complete_order = date("Y-m-d H:i:s");
-                    if($washrequestmodel->complete_order == "0000-00-00 00:00:00"){
+                    if ($washrequestmodel->complete_order == "0000-00-00 00:00:00") {
                         $washrequestmodel->complete_order = date("Y-m-d H:i:s");
                     }
-                    
+
                     $resUpdate = $washrequestmodel->save(false);
 
                     WashPricingHistory::model()->updateAll(array('status' => 1), 'wash_request_id=:wash_request_id', array(":wash_request_id" => $wash_request_id));
@@ -4090,7 +4090,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $status_qr = " AND w.is_scheduled = 0 AND (w.status=5 || w.status=6)";
             } elseif ($event == 'newcustomer') {
                 //$status_qr = " AND w.status = 4";
-		$status_qr = " AND c.total_wash = 0";
+                $status_qr = " AND c.total_wash = 0";
             } elseif (in_array($event, array('yelloworders', 'blueorders', 'redorders', 'purpleorders'))) {
                 $status_qr = " AND w.status IN('0','4','3','2','1')";
             } elseif ($event == 'washer_history') {
@@ -4448,10 +4448,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     $payment_status = 'Declined';
                 } else {
                     if ($wrequest['transaction_id']) {
-if ($wrequest['escrow_status'] == 'authorized') {
+                        if ($wrequest['escrow_status'] == 'authorized') {
                             $payment_status = 'Authorized';
-                        }
-                        else if ($wrequest['escrow_status'] == 'hold_pending' || $wrequest['escrow_status'] == 'held') {
+                        } else if ($wrequest['escrow_status'] == 'hold_pending' || $wrequest['escrow_status'] == 'held') {
                             $payment_status = 'Processed';
                         } else if ($wrequest['escrow_status'] == 'release_pending' || $wrequest['escrow_status'] == 'released') {
                             $payment_status = 'Released';
@@ -4468,15 +4467,15 @@ if ($wrequest['escrow_status'] == 'authorized') {
                 }
 
                 $show_result = 0;
-                /*if ($event == 'newcustomer') {
-                    $get_befor_count = Yii::app()->db->createCommand("SELECT id, order_for FROM washing_requests WHERE customer_id = '" . $wrequest['customer_id'] . "' AND status = 4 ORDER BY id ASC LIMIT 1")->queryAll();
+                /* if ($event == 'newcustomer') {
+                  $get_befor_count = Yii::app()->db->createCommand("SELECT id, order_for FROM washing_requests WHERE customer_id = '" . $wrequest['customer_id'] . "' AND status = 4 ORDER BY id ASC LIMIT 1")->queryAll();
 
-                    if (count($get_befor_count) > 0 && date('Y-m-d', strtotime($get_befor_count[0]['order_for'])) == $day) {
-                        
-                    } else {
-                        continue;
-                    }
-                }*/
+                  if (count($get_befor_count) > 0 && date('Y-m-d', strtotime($get_befor_count[0]['order_for'])) == $day) {
+
+                  } else {
+                  continue;
+                  }
+                  } */
 
 
                 if (($wrequest['status'] >= 1) && ($wrequest['status'] <= 3)) {
@@ -10092,15 +10091,47 @@ if ($wrequest['escrow_status'] == 'authorized') {
             die();
         }
 
-        $real_washer = $all_washes = Yii::app()->db->createCommand("SELECT *, CASE WHEN block_washer = 1 THEN 'Blocked'
+        $real_washers = $all_washes = Yii::app()->db->createCommand("SELECT *, CASE WHEN block_washer = 1 THEN 'Blocked'
             ELSE 'Active' END AS washer_status, CASE WHEN decals_installed = 1 THEN 'Yes'
-            ELSE 'No' END AS decals_installed FROM agents WHERE washer_position = :washer_position")
-                ->bindValue(':washer_position', "real", PDO::PARAM_STR)
+            ELSE 'No' END AS decals_installed,CASE WHEN helper = 1 THEN 'Yes'
+            ELSE 'No' END AS helper FROM agents ")
+                //WHERE washer_position = :washer_position
+                //->bindValue(':washer_position', "demo", PDO::PARAM_STR)
                 ->queryAll();
+        $index = 0;
+        foreach ($real_washers as $real_washer) {
+            $orderData = Yii::app()->db->createCommand("SELECT complete_order,id FROM `washing_requests` WHERE status=4 AND `agent_id` = " . $real_washer['id'] . " ORDER BY id DESC limit 1")->queryAll();
+            
+            if (count($orderData) > 0) {
+                $Last_Completed_Wash = "#(" . $orderData[0]['id'] . ") " . date('m/d/Y h:i A', strtotime($orderData[0]['complete_order']));
+            } else {
+                $Last_Completed_Wash = ' ';
+            }
+            $real_washer_arr[$index]['id'] = $real_washer['id'];
+            $real_washer_arr[$index]['real_washer_id'] = $real_washer['real_washer_id'];
+            $real_washer_arr[$index]['first_name'] = $real_washer['first_name'];
+            $real_washer_arr[$index]['last_name'] = $real_washer['last_name'];
+            $real_washer_arr[$index]['email'] = $real_washer['email'];
+            $real_washer_arr[$index]['phone_number'] = $real_washer['phone_number'];
+            $real_washer_arr[$index]['city'] = $real_washer['city'];
+            $real_washer_arr[$index]['rating'] = $real_washer['rating'];
+            $real_washer_arr[$index]['care_rating'] = $real_washer['care_rating'];
+            $real_washer_arr[$index]['bt_submerchant_id'] = $real_washer['bt_submerchant_id'];
+            $real_washer_arr[$index]['created_date'] = $real_washer['created_date'];
+            $real_washer_arr[$index]['decals_installed'] = $real_washer['decals_installed'];
+            $real_washer_arr[$index]['total_wash'] = $real_washer['total_wash'];
+            $real_washer_arr[$index]['washer_position'] = $real_washer['washer_position'];
+            $real_washer_arr[$index]['washer_status'] = $real_washer['washer_status'];
+            $real_washer_arr[$index]['helper'] = $real_washer['helper'];
+            
+            $real_washer_arr[$index]['Last_Completed_Wash'] = $Last_Completed_Wash;
+            $real_washer_arr[$index]['Service Area'] = $real_washer['operate_area'];
+            $index++;
+        }
 
         CsvExport::export(
-                $real_washer, // a CActiveRecord array OR any CModel array
-                array('id' => array('raw'), 'real_washer_id' => array('raw'), 'first_name' => array('text'), 'last_name' => array('text'), 'email' => array('text'), 'phone_number' => array('text'), 'city' => array('text'), 'rating' => array('text'), 'care_rating' => array(text), 'bt_submerchant_id' => array('text'), 'created_date' => array('datetime'), 'decals_installed' => array('text'), 'total_wash' => array('text'), 'washer_position' => array('text'), 'washer_status' => array('text')), true, // boolPrintRows
+                $real_washer_arr, // a CActiveRecord array OR any CModel array
+                array('id' => array('raw'), 'real_washer_id' => array('raw'), 'first_name' => array('text'), 'last_name' => array('text'), 'email' => array('text'), 'phone_number' => array('text'), 'city' => array('text'), 'rating' => array('text'), 'care_rating' => array(text), 'bt_submerchant_id' => array('text'), 'created_date' => array('datetime'), 'decals_installed' => array('text'), 'total_wash' => array('text'), 'washer_position' => array('text'), 'washer_status' => array('text'), 'helper' => array('text'),'Last_Completed_Wash' => array('text'),'Service Area' => array('text')), true, // boolPrintRows
                 'washers--' . date('Y-m-d-H-i-s') . ".csv", ","
         );
     }

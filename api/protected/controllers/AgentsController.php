@@ -1423,7 +1423,9 @@ class AgentsController extends Controller {
                     'last_used_device' => $agentdevices,
                     'decals_installed' => $agent_id_check->decals_installed,
                     'unlimited_schedule_range' => $agent_id_check->unlimited_schedule_range,
-		    'certificates' => $agent_id_check->certificates,
+                    'certificates' => $agent_id_check->certificates,
+                    'helper' => $agent_id_check->helper,
+                    'vehicle_pic' => $agent_id_check->vehicle_pic,
                 );
             } else {
                 $json = array(
@@ -1537,7 +1539,9 @@ class AgentsController extends Controller {
         $api_password = '';
         $admin_username = '';
         $admin_username = Yii::app()->request->getParam('admin_username');
-	$certificates = Yii::app()->request->getParam('certificates');
+        $certificates = Yii::app()->request->getParam('certificates');
+        $vehicle_pic = Yii::app()->request->getParam('vehicle_pic');
+        $helper = Yii::app()->request->getParam('helper');
         $force_logout = 0;
         if ($block_washer == 1)
             $force_logout = 1;
@@ -1678,6 +1682,12 @@ class AgentsController extends Controller {
                     $last_name = $model->last_name;
                 }
 
+//                if (empty($helper)) {
+//                    $helper = $model->helper;
+//                }
+                if (empty($vehicle_pic)) {
+                    $vehicle_pic = $model->vehicle_pic;
+                }
 
                 if (!empty($new_password)) {
                     if (empty($confirm_password)) {
@@ -1852,18 +1862,18 @@ class AgentsController extends Controller {
                 if ($agent_profile_img) {
                     $image = $agent_profile_img;
                 }
-		
-		/*if (empty($certificates)) {
-                    $certificates = $model->certificates;
-                }*/
+
+                /* if (empty($certificates)) {
+                  $certificates = $model->certificates;
+                  } */
 
                 $data = array(
                     'first_name' => $first_name,
                     'last_name' => $last_name,
-                    //'agentname' => $agentname,
+                    'vehicle_pic' => $vehicle_pic,
                     'email' => $email,
                     'image' => $image,
-                    //'phone_number'=> $phone_number,
+                    'helper' => $helper,
                     'date_of_birth' => $date_of_birth,
                     'street_address' => $street_address,
                     'suite_apt' => $suite_apt,
@@ -1901,7 +1911,7 @@ class AgentsController extends Controller {
                     'bank_account_number' => $bank_account_number,
                     'routing_number' => $routing_number,
                     'last_edited_admin' => $admin_username,
-		    'certificates' => $certificates,
+                    'certificates' => $certificates,
                     //'decals_installed' => $decals_installed,
                     'updated_date' => date('Y-m-d H:i:s')
                 );
@@ -2779,7 +2789,7 @@ class AgentsController extends Controller {
                     ->queryAll();
             $cancelwash = Yii::app()->db->createCommand("SELECT COUNT(*) as count FROM `washing_requests` WHERE status IN ('5', '6') AND `agent_id` = '$agetsid' GROUP BY agent_id")->queryAll();
 
-            $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '$agetsid'")->queryAll();
+            $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '$agetsid' ORDER BY id DESC")->queryAll();
             $totalwash = count($totalwash_arr);
             /* echo "<pre>";
               print_r($cancelwash);
@@ -3280,20 +3290,20 @@ class AgentsController extends Controller {
         $t2 = Yii::app()->request->getParam('t2');
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
-	$action = Yii::app()->request->getParam('action');
+        $action = Yii::app()->request->getParam('action');
 
-	if($action != 'webregister'){
-        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+        if ($action != 'webregister') {
+            $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
+            if (!$token_check) {
+                $json = array(
+                    'result' => 'false',
+                    'response' => 'Invalid request'
+                );
+                echo json_encode($json);
+                die();
+            }
         }
-      }
 
         $first_name = Yii::app()->request->getParam('first_name');
         $last_name = Yii::app()->request->getParam('last_name');
@@ -3734,6 +3744,14 @@ class AgentsController extends Controller {
                   else{
                   $care_rating = "NEW";
                   } */
+                $orderData = Yii::app()->db->createCommand("SELECT complete_order,id FROM `washing_requests` WHERE status=4 AND `agent_id` = " . $washer['id'] . " ORDER BY id DESC limit 1")->queryAll();
+                if (count($orderData) > 0) {
+                    $complete_order_id = $orderData[0]['id'];
+                    $complete_order_date = $orderData[0]['complete_order'];
+                } else {
+                    $complete_order_id = "N/A";
+                    $complete_order_date = "N/A";
+                }
                 $care_rating = $washer['care_rating'];
                 $insurance_date = '';
                 if (strtotime($washer['insurance_license_expiration']) > 0)
@@ -3759,6 +3777,11 @@ class AgentsController extends Controller {
                 $all_washers[$ind]['status'] = $washer['status'];
                 $all_washers[$ind]['insurance_exp_date'] = $insurance_date;
                 $all_washers[$ind]['created_date'] = $washer['created_date'];
+                $all_washers[$ind]['helper'] = $washer['helper'];
+                $all_washers[$ind]['operate_area'] = $washer['operate_area'];
+                $all_washers[$ind]['vehicle_pic'] = $washer['vehicle_pic'];
+                $all_washers[$ind]['complete_order_id'] = $complete_order_id;
+                $all_washers[$ind]['complete_order_date'] = $complete_order_date;
             }
         }
 
@@ -6006,6 +6029,7 @@ class AgentsController extends Controller {
     }
 
     public function actionaddagent() {
+        //print_r($_REQUEST); die;
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -6057,6 +6081,10 @@ class AgentsController extends Controller {
         $wash_experience = Yii::app()->request->getParam('wash_experience');
         $washer_position = Yii::app()->request->getParam('washer_position');
         $real_washer_id = Yii::app()->request->getParam('real_washer_id');
+
+        $vehicle_pic = Yii::app()->request->getParam('vehicle_pic');
+        $helper = Yii::app()->request->getParam('helper');
+
         $admin_username = '';
         $admin_username = Yii::app()->request->getParam('admin_username');
         $date = date('Y-m-d H:i:s');
@@ -6128,6 +6156,8 @@ class AgentsController extends Controller {
                     'last_name' => $last_name,
                     'agentname' => $agentname,
                     'email' => $emailid,
+                    'vehicle_pic' => $vehicle_pic,
+                    'helper' => $helper,
                     'password' => md5($password),
                     'phone_number' => $contact_number,
                     'date_of_birth' => $date_of_birth,
