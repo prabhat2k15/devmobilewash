@@ -626,6 +626,7 @@ class WashingController extends Controller {
         $nonce = Yii::app()->request->getParam('nonce');
         $estimate_time = Yii::app()->request->getParam('estimate_time');
         $transaction_id = Yii::app()->request->getParam('transaction_id');
+	$is_cust_first_wash = 0;
 
         $is_scheduled = 0;
         if (Yii::app()->request->getParam('is_scheduled'))
@@ -953,7 +954,8 @@ class WashingController extends Controller {
 if(count($pet_hair_vehicles_custom)) $pet_hair_vehicles_custom = json_encode($pet_hair_vehicles_custom);
 else $pet_hair_vehicles_custom = '';
 
-                    Washingrequests::model()->updateByPk($washrequestid, array('street_name' => $street_name, 'city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'pet_hair_vehicles' => $pet_hair_vehicles, "pet_hair_vehicles_custom_amount" => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee, 'wash_later_fee' => $wash_later_fee, 'inc_transaction_fee' => 1));
+if(!$customers_id_check->total_wash) $is_cust_first_wash = 1;
+                    Washingrequests::model()->updateByPk($washrequestid, array('street_name' => $street_name, 'city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'pet_hair_vehicles' => $pet_hair_vehicles, "pet_hair_vehicles_custom_amount" => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee, 'wash_later_fee' => $wash_later_fee, 'inc_transaction_fee' => 1, 'is_cust_first_wash' => $is_cust_first_wash));
 
                     if ($old_tip_amount[0]['tip_amount']) {
                         $old_amount = $old_tip_amount[0]['tip_amount'];
@@ -10303,14 +10305,14 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        if (!$token_check) {
+        /*if (!$token_check) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }
+        }*/
         /* Checking for post(month) parameters */
         $order_month = '';
         if (!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))) {
@@ -10326,7 +10328,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
         $count = $total_order[0]['countid'];
 
-        $customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND  a.status != 7 " . $order_month)
+        $customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,a.complete_order,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND  a.status != 7 " . $order_month)
                 //$customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
                 ->bindValue(':last_month', $last_month, PDO::PARAM_STR)
                 ->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
@@ -10462,12 +10464,13 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                         "upholstery_vehicles" => $orderbycustomer['upholstery_vehicles'],
                         "floormat_vehicles" => $orderbycustomer['floormat_vehicles'],
                         "total_wash" => $orderbycustomer['total_wash'],
+			"complete_order" => $orderbycustomer['complete_order'],
                         "zip_color" => $zipcolor,
                         "orderstatus" => $orderstatus,
                     );
                 }
             }
-//            print_r($orderview);
+            print_r($orderview);
 //            die;
             $data = $ArrCustemer = array();
             foreach ($orderview as $key => $value) {
