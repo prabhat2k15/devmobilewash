@@ -1521,6 +1521,57 @@ Braintree_Configuration::environment('production');
 
     }
     
+    public function getpaymentmethod_real($token)
+    {
+
+Braintree_Configuration::environment('production');
+        Braintree_Configuration::merchantId('74zsnfqy5svgpvjv');
+        Braintree_Configuration::publicKey('7gg5kfvkx8w5fcx8');
+        Braintree_Configuration::privateKey('579e6af0c752079c2f9596c838191327');
+
+        try {
+            $paymentMethod = Braintree_PaymentMethod::find($token);
+            return (array(
+                'success' => 1,
+'expiration_date' => $paymentMethod->expirationDate,
+'expiration_month' => $paymentMethod->expirationMonth,
+'expiration_year' => $paymentMethod->expirationYear,
+                'masked_number' => $paymentMethod->maskedNumber,
+
+            ));
+        } catch (Exception $e) {
+            return (array(
+                'success' => 0,
+                'message' => 'Payment method with ' . token . " is not found"
+            ));
+        }
+
+
+    }
+    
+        public function getpaymentmethod($token)
+    {
+
+        try {
+            $paymentMethod = Braintree_PaymentMethod::find($token);
+            return (array(
+                'success' => 1,
+'expiration_date' => $paymentMethod->expirationDate,
+'expiration_month' => $paymentMethod->expirationMonth,
+'expiration_year' => $paymentMethod->expirationYear,
+                'masked_number' => $paymentMethod->maskedNumber,
+
+            ));
+        } catch (Exception $e) {
+            return (array(
+                'success' => 0,
+                'message' => 'Payment method with ' . token . " is not found"
+            ));
+        }
+
+
+    }
+    
         public function searchsettletransactionsbyorderid($order_id)
     {
 $all_transactions = array();

@@ -11367,7 +11367,7 @@ class CustomersController extends Controller {
                             if ($payment_methods[$index]['title'] == 'Braintree\\CreditCard') {
                                 if ($paymethod->isDefault()) {
                                     $token = $paymethod->token;
-				    file_put_contents("cardexpiredate.log",$paymethod->expirationDate."\r\n",FILE_APPEND);
+				    
                                     break;
                                 }
                             }
@@ -11393,6 +11393,42 @@ class CustomersController extends Controller {
                     die();
                 }
 
+		if($token){
+			if ($customer_check->client_position == 'real') $paymethod = Yii::app()->braintree->getpaymentmethod_real($token);
+			else $paymethod = Yii::app()->braintree->getpaymentmethod($token);
+			
+			$exp_month = ltrim($paymethod['expiration_month'], '0');
+			$exp_year = $paymethod['expiration_year'];
+			
+			$current_year = date('Y');
+			$current_month = date('n');
+						
+			if($current_year > $exp_year) {
+				
+			$json = array(
+                        'result' => 'false',
+                        'response' => 'Card expired. Please update your payment method.'
+                    );
+
+                    echo json_encode($json);
+                    die();
+				
+			}
+			
+			if(($current_year == $exp_year) && ($current_month > $exp_month)) {
+			$json = array(
+                        'result' => 'false',
+                        'response' => 'Card expired. Please update your payment method.'
+                    );
+
+                    echo json_encode($json);
+                    die();
+				
+			}
+
+
+			//file_put_contents("cardexpiredate.log",$exp_month." ".$exp_year." cur: ".$current_month." ".$current_year."\r\n",FILE_APPEND);
+		}
 
                 $current_time = strtotime(date('Y-m-d H:i:s'));
                 $last_edit_time = strtotime($customer_check->last_upfront_payment_cut);
