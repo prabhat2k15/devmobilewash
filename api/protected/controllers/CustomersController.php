@@ -11367,6 +11367,7 @@ class CustomersController extends Controller {
                             if ($payment_methods[$index]['title'] == 'Braintree\\CreditCard') {
                                 if ($paymethod->isDefault()) {
                                     $token = $paymethod->token;
+				    file_put_contents("cardexpiredate.log",$paymethod->expirationDate."\r\n",FILE_APPEND);
                                     break;
                                 }
                             }
@@ -11399,12 +11400,13 @@ class CustomersController extends Controller {
                 $min_diff = round(($current_time - $last_edit_time) / 60, 2);
 
 
-                if ((strtotime($customer_check->last_upfront_payment_cut) > 0) && ($min_diff <= 60)) {
+                /*if ((strtotime($customer_check->last_upfront_payment_cut) > 0) && ($min_diff <= 60)) {
                     $response = "Payment successful";
                     $result = "true";
 
                     $tid = '';
-                } else {
+                }*/
+		//else {
 
                     $total = preg_replace("/[^0-9\.]/", "", $total);
                     $total = number_format($total, 2, '.', '');
@@ -11444,11 +11446,17 @@ class CustomersController extends Controller {
                         $result = "true";
 
                         $tid = $payresult['transaction_id'];
+			
+			if ($customer_check->client_position == 'real') $voidresult = Yii::app()->braintree->void_real($payresult['transaction_id']);
+			else $voidresult = Yii::app()->braintree->void($payresult['transaction_id']);
+			if ($voidresult['success'] == 1) $tid = '';
+			
                     } else {
                         $result = "false";
-                        $response = $payresult['message_mob'];
+                        //$response = $payresult['message_mob'];
+			$response = "Insufficient funds. Please try another payment method";
                     }
-                }
+               // }
             }
         }
 

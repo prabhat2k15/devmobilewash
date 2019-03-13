@@ -5294,7 +5294,7 @@ if(Yii::app()->request->getParam('device_type')) $device_type = Yii::app()->requ
 
                 /* ----------- update pricing details -------------- */
 
-                Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total));
+                Washingrequests::model()->updateByPk($wash_request_id, array('total_price' => $kartdetails->total_price, 'net_price' => $kartdetails->net_price, 'company_total' => $kartdetails->company_total, 'agent_total' => $kartdetails->agent_total, 'is_feedback_sent' => 1));
 
                 /* ----------- update pricing details end -------------- */
             }
@@ -10470,7 +10470,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                     );
                 }
             }
-            print_r($orderview);
+           // print_r($orderview);
 //            die;
             $data = $ArrCustemer = array();
             foreach ($orderview as $key => $value) {

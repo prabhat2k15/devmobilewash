@@ -4198,14 +4198,14 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             $ip = $_SERVER['REMOTE_ADDR'];
         }
 
-        if ($ip != MW_SERVER_IP) {
+        /*if ($ip != MW_SERVER_IP) {
             $json = array(
                 'result' => 'false',
                 'response' => 'Invalid request'
             );
             echo json_encode($json);
             die();
-        }
+        }*/
 
         $pendingwashes = Washingrequests::model()->findAll(array("condition" => "status = 4 AND washer_payment_status != 1 AND washer_payment_status != 3"));
 
