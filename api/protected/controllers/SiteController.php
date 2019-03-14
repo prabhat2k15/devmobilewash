@@ -4448,9 +4448,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     $payment_status = 'Declined';
                 } else {
                     if ($wrequest['transaction_id']) {
-                        if ($wrequest['escrow_status'] == 'authorized') {
-                            $payment_status = 'Authorized';
-                        } else if ($wrequest['escrow_status'] == 'hold_pending' || $wrequest['escrow_status'] == 'held') {
+
+                        if ($wrequest['escrow_status'] == 'hold_pending' || $wrequest['escrow_status'] == 'held') {
                             $payment_status = 'Processed';
                         } else if ($wrequest['escrow_status'] == 'release_pending' || $wrequest['escrow_status'] == 'released') {
                             $payment_status = 'Released';

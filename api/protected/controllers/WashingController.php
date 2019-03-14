@@ -866,7 +866,7 @@ class WashingController extends Controller {
 
                     if ((isset($transaction_id) && !empty($transaction_id))) {
 
-                        Washingrequests::model()->updateByPk($washrequestid, array("transaction_id" => $transaction_id, "upfront_transaction_id" => $transaction_id, 'escrow_status' => 'authorized'));
+                        Washingrequests::model()->updateByPk($washrequestid, array("transaction_id" => $transaction_id, "upfront_transaction_id" => $transaction_id));
                     }
 
                     /* ---------- insert transaction id end -------------- */

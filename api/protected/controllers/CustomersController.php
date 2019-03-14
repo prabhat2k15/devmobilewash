@@ -11436,13 +11436,13 @@ class CustomersController extends Controller {
                 $min_diff = round(($current_time - $last_edit_time) / 60, 2);
 
 
-                /*if ((strtotime($customer_check->last_upfront_payment_cut) > 0) && ($min_diff <= 60)) {
+                if ((strtotime($customer_check->last_upfront_payment_cut) > 0) && ($min_diff <= 1440)) {
                     $response = "Payment successful";
                     $result = "true";
 
                     $tid = '';
-                }*/
-		//else {
+                }
+		else {
 
                     $total = preg_replace("/[^0-9\.]/", "", $total);
                     $total = number_format($total, 2, '.', '');
@@ -11492,7 +11492,7 @@ class CustomersController extends Controller {
                         //$response = $payresult['message_mob'];
 			$response = "Insufficient funds. Please try another payment method";
                     }
-               // }
+               }
             }
         }
 
