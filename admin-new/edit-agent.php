@@ -11,8 +11,21 @@
 <link href="assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/global/plugins/clockface/css/clockface.css" rel="stylesheet" type="text/css" />
+
+<link rel="stylesheet" href="css/bootstrap-multiselect.css?v=<?= time(); ?>">
+<!--<link rel="stylesheet" href="css/bootstrap-3.3.2.min.css">-->
 <link href="css/croppie.css" rel="stylesheet" type="text/css" />
 <!-- BEGIN THEME LAYOUT STYLES -->
+<style>
+    .multiselect-container>li>a>label {
+        padding: 4px 20px 3px 20px;
+    }
+    .flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
 <script>
 
     $(document).ready(function () {
@@ -52,6 +65,7 @@ $profiledetail = json_decode($result);
 
 
 if (isset($_POST['edit-agent-submit'])) {
+
     if (!empty($_POST['agentnewpic'])) {
 
         $data = $_POST['agentnewpic'];
@@ -67,8 +81,8 @@ if (isset($_POST['edit-agent-submit'])) {
         $profileimg = $profiledetail->image;
     }
 
-    // END PRFILE IMAGE //
-    // START DRIVER LICENCE IMAGE UPLOAD //
+// END PRFILE IMAGE //
+// START DRIVER LICENCE IMAGE UPLOAD //
 
     if (!empty($_FILES['driver_license']['tmp_name'])) {
         $profile_pic = $_FILES['driver_license']['tmp_name'];
@@ -92,8 +106,8 @@ if (isset($_POST['edit-agent-submit'])) {
         $business_license = '';
     }
 
-    // END DRIVER LICENCE IMAGE //
-    // START PROOF INSURANCE IMAGE //
+// END DRIVER LICENCE IMAGE //
+// START PROOF INSURANCE IMAGE //
 
     if (!empty($_FILES['proof_insurance']['tmp_name'])) {
         $profile_pic = $_FILES['proof_insurance']['tmp_name'];
@@ -106,9 +120,9 @@ if (isset($_POST['edit-agent-submit'])) {
         $proof_insurance = '';
     }
 
-    // END PROOF INSURANCE //
-    // END PRFILE IMAGE //
-    /// washer vehical Image start
+// END PROOF INSURANCE //
+// END PRFILE IMAGE //
+/// washer vehical Image start
     if (!empty($_FILES['agent_vehicle_pic']['tmp_name'])) {
         $profile_pic = $_FILES['agent_vehicle_pic']['tmp_name'];
         $profile_pic_type = pathinfo($_FILES['agent_vehicle_pic']['name'], PATHINFO_EXTENSION);
@@ -120,7 +134,7 @@ if (isset($_POST['edit-agent-submit'])) {
         $agent_vehicle_pic = "";
     }
 
-    // START PROOF INSURANCE IMAGE //
+// START PROOF INSURANCE IMAGE //
 
     if (!empty($_FILES['agreement_prof']['tmp_name'])) {
         $profile_pic = $_FILES['agreement_prof']['tmp_name'];
@@ -133,8 +147,8 @@ if (isset($_POST['edit-agent-submit'])) {
         $agreement_prof = '';
     }
 
-    // END PROOF INSURANCE //
-    // START PROOF INSURANCE IMAGE //
+// END PROOF INSURANCE //
+// START PROOF INSURANCE IMAGE //
 
     if (!empty($_FILES['privacy_policy']['tmp_name'])) {
         $profile_pic = $_FILES['privacy_policy']['tmp_name'];
@@ -147,8 +161,8 @@ if (isset($_POST['edit-agent-submit'])) {
         $privacy_policy = '';
     }
 
-    // END PROOF INSURANCE //
-    // START PROOF INSURANCE IMAGE //
+// END PROOF INSURANCE //
+// START PROOF INSURANCE IMAGE //
 
     if (!empty($_FILES['notice_standard']['tmp_name'])) {
         $profile_pic = $_FILES['notice_standard']['tmp_name'];
@@ -161,8 +175,8 @@ if (isset($_POST['edit-agent-submit'])) {
         $notice_standard = '';
     }
 
-    // END PROOF INSURANCE //
-    // START PROOF INSURANCE IMAGE //
+// END PROOF INSURANCE //
+// START PROOF INSURANCE IMAGE //
 
     if (!empty($_FILES['notice_card_security']['tmp_name'])) {
         $profile_pic = $_FILES['notice_card_security']['tmp_name'];
@@ -175,7 +189,7 @@ if (isset($_POST['edit-agent-submit'])) {
         $notice_card_security = '';
     }
 
-    // END PROOF INSURANCE //
+// END PROOF INSURANCE //
 
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
@@ -235,7 +249,6 @@ if (isset($_POST['edit-agent-submit'])) {
 
         $certificates_str = rtrim($certificates_str, '|');
     }
-
 
     $data = array('helper' => $helper, 'vehicle_pic' => $agent_vehicle_pic, 'update_by' => $updateBy, 'unlimited_schedule_range' => $unlimited_schedule_range, 'agent_id' => strip_tags($_GET['id']), 'first_name' => strip_tags($first_name), 'last_name' => strip_tags($last_name), 'email' => strip_tags($email), 'phone_number' => strip_tags($phone_number), 'date_of_birth' => strip_tags($date_of_birth), 'new_password' => strip_tags($password), 'confirm_password' => strip_tags($password), 'street_address' => strip_tags($street_address), 'suite_apt' => strip_tags($suite_apt), 'city' => strip_tags($city), 'state' => strip_tags($state), 'zipcode' => strip_tags($zipcode), 'wash_experience' => strip_tags($wash_experience), 'rating' => strip_tags($rating), 'driver_license' => strip_tags($driver_license), 'business_license' => strip_tags($business_license), 'proof_insurance' => strip_tags($proof_insurance), 'agent_profile_img' => strip_tags($profileimg), 'agreement_prof' => strip_tags($agreement_prof), 'privacy_policy' => strip_tags($privacy_policy), 'notice_standard' => strip_tags($notice_standard), 'notice_card_security' => strip_tags($notice_card_security), 'mobile_type' => strip_tags($mobile_type), 'bank_account_number' => strip_tags($bank_account_number), 'routing_number' => strip_tags($routing_number), 'legally_eligible' => strip_tags($legally_eligible), 'own_vehicle' => strip_tags($own_vehicle), 'waterless_wash_product' => strip_tags($waterless_wash_product), 'operate_area' => strip_tags($operate_area), 'work_schedule' => strip_tags($work_schedule), 'operating_as' => strip_tags($operating_as), 'company_name' => strip_tags($company_name), 'email_alerts' => strip_tags($email_alerts), 'push_notifications' => strip_tags($push_notifications), 'agent_location' => strip_tags($agent_location), 'bt_submerchant_id' => strip_tags($bt_submerchant_id), 'status' => strip_tags($status), 'total_wash' => strip_tags($total_wash), 'account_status' => strip_tags($account_status), 'available_for_new_order' => strip_tags($available_for_new_order), 'driver_license_expiration' => strip_tags($driverlicense_expiration), 'insurance_expiration' => strip_tags($insurance_expiration), 'washer_position' => strip_tags($_POST['washer_position']), 'real_washer_id' => strip_tags($_POST['real_washer_id']), 'block_washer' => $block_washer, 'admin_edit' => 'true', 'notes' => strip_tags($notes), 'hours_opt_check' => strip_tags($hours_opt_check), 'rating_control' => strip_tags($rating_control), 'sms_control' => strip_tags($sms_control), 'admin_username' => $jsondata_permission->user_name, 'api_password' => AES256CBC_API_PASS, 'decals_installed' => strip_tags($decals_installed), 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'certificates' => $certificates_str, 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
@@ -358,6 +371,13 @@ $profiledetail = json_decode($result);
     .edit-agent .form-group{
         display:flex;
         justify-content:center;
+    }
+    .cstmMultiselect .multiselect-container li a{
+        padding-left:30px;
+
+    }
+    .cstmMultiselect .multiselect-container li a:hover{
+        color:#333!important;
     }
 </style>
 <?php if ($jsondata_permission->users_type != 'admin'): ?>
@@ -553,7 +573,8 @@ $profiledetail = json_decode($result);
                                     <option value="AZ" <?php if ($profiledetail->operate_area == 'AZ') echo 'selected'; ?>>AZ</option>
                                     <option value="FL" <?php if ($profiledetail->operate_area == 'FL') echo 'selected'; ?>>FL</option>
                                     <option value="TX" <?php if ($profiledetail->operate_area == 'TX') echo 'selected'; ?>>TX</option>
-                                </select> </div>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -694,30 +715,25 @@ $profiledetail = json_decode($result);
                         </div>
                     </div>
 
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Certificates</label>
-                            <div class="col-md-9">
-                                <?php
-                                $all_certs = array();
-                                if ($profiledetail->certificates) {
-                                    $all_certs = explode("|", $profiledetail->certificates);
-                                }
-                                ?>
-                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Head Light Restoration", $all_certs)) echo "checked"; ?> value="Head Light Restoration"> Head Light Restoration</p>
-                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Clay Bar & Paste Wax", $all_certs)) echo "checked"; ?> value="Clay Bar & Paste Wax"> Clay Bar & Paste Wax</p>
-                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Interior Shampooing", $all_certs)) echo "checked"; ?> value="Interior Shampooing"> Interior Shampooing</p>
-                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Ceramic Coating", $all_certs)) echo "checked"; ?> value="Ceramic Coating"> Ceramic Coating</p>
-                                <p><input type="checkbox" name="certificates[]" <?php if (in_array("Tree Sap Removal", $all_certs)) echo "checked"; ?> value="Tree Sap Removal"> Tree Sap Removal</p>
+                    <div class="col-md-6 cstmMultiselect" style="padding:20px">
 
-                            </div>
-                        </div>
+                        <select id="chkveg" name="certificates[]" multiple="multiple">
+                            <?php
+                            $all_certs = array();
+                            if ($profiledetail->certificates) {
+                                $all_certs = explode("|", $profiledetail->certificates);
+                            }
+                            ?>
+                            <option <?php if (in_array("Head Light Restoration", $all_certs)) echo "selected"; ?> value="Head Light Restoration">Head Light Restoration</option>
+                            <option <?php if (in_array("Clay Bar & Paste Wax", $all_certs)) echo "selected"; ?> value="Clay Bar & Paste Wax">Clay Bar & Paste Wax</option>
+                            <option <?php if (in_array("Interior Shampooing", $all_certs)) echo "selected"; ?> value="Interior Shampooing">Interior Shampooing</option>
+                            <option <?php if (in_array("Ceramic Coating", $all_certs)) echo "selected"; ?> value="Ceramic Coating">Ceramic Coating</option>
+                            <option <?php if (in_array("Tree Sap Removal", $all_certs)) echo "selected"; ?> value="Tree Sap Removal">Tree Sap Removal</option>
+                        </select>
                     </div>
 
-
                 </div>
+
 
 
                 <!--/row-->
@@ -1011,6 +1027,7 @@ $profiledetail = json_decode($result);
 </div>
 <!-- END CONTENT BODY -->
 </div>
+
 <script>
     function chooseFile(fileid) {
         $(fileid).click();
@@ -1071,6 +1088,7 @@ $profiledetail = json_decode($result);
 </script>
 <?php include('footer.php') ?>
 <!-- BEGIN PAGE LEVEL PLUGINS -->
+
 <script src="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
 <script src="assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
@@ -1093,6 +1111,8 @@ $profiledetail = json_decode($result);
 <script src="assets/global/plugins/ckeditor/ckeditor.js" type="text/javascript"></script>
 <script src="assets/global/plugins/bootstrap-markdown/lib/markdown.js" type="text/javascript"></script>
 <script src="js/croppie.js" type="text/javascript"></script>
+<script src="js/bootstrap-3.3.2.min.js?v=<?= time(); ?>" type="text/javascript"></script>
+<script src="js/bootstrap-multiselect.js?v=<?= time(); ?>" type="text/javascript"></script>
 <script>
 
     function custprofilepicupload() {
@@ -1196,5 +1216,24 @@ $profiledetail = json_decode($result);
         }
 
 
+    });
+</script>
+<!--<script>
+    $(function () {
+        $('#chkveg').multiselect({
+            includeSelectAllOption: true;
+             $('#example-getting-started').multiselect();
+        });
+
+    });
+</script>-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#chkveg').multiselect({
+            includeSelectAllOption: false
+        });
+        $(".multiselect").on("click", function () {
+            $(this).parent().toggleClass("open");
+        });
     });
 </script>

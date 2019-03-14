@@ -3782,6 +3782,7 @@ class AgentsController extends Controller {
                 $all_washers[$ind]['vehicle_pic'] = $washer['vehicle_pic'];
                 $all_washers[$ind]['complete_order_id'] = $complete_order_id;
                 $all_washers[$ind]['complete_order_date'] = $complete_order_date;
+                $all_washers[$ind]['certificates'] = $washer['certificates'];
             }
         }
 

@@ -16,6 +16,7 @@ $result = curl_exec($handle);
 
 curl_close($handle);
 $allagents = json_decode($result);
+
 $response = $allagents->response;
 $result_code = $allagents->result;
 $total_pages = $allagents->total_pages;
@@ -331,6 +332,7 @@ if (empty($_GET['type'])) {
                                     <th> BT Submerchant ID </th>
                                     <th> Status </th>
                                     <th>Last Completed Wash</th>
+                                    <th>Certificates</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -354,7 +356,7 @@ if (empty($_GET['type'])) {
                                     <tr class="odd gradeX">
                                         <td> 
                                             <a href="edit-agent.php?id=<?php echo $washer->id; ?>">Edit</a> 
-                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;           ?>">View</a-->
+                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;                    ?>">View</a-->
                                         </td>
                                         <td> <?php echo $washer->id; ?> </td>
                                         <td>
@@ -384,6 +386,16 @@ if (empty($_GET['type'])) {
                                                 echo "#(" . $washer->complete_order_id . ") <br>" . date('m/d/Y h:i A', strtotime($washer->complete_order_date));
                                             } else {
                                                 echo ' ';
+                                            }
+                                            ?> </td>
+
+                                        <td> <?php
+                                            if ($washer->certificates) {
+
+                                                $all_certs = explode("|", $washer->certificates);
+                                                echo count($all_certs);
+                                            } else {
+                                                echo "0";
                                             }
                                             ?> </td>
 
