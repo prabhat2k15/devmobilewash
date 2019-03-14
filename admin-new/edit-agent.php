@@ -379,6 +379,18 @@ $profiledetail = json_decode($result);
     .cstmMultiselect .multiselect-container li a:hover{
         color:#333!important;
     }
+    .cstmMultiselect .btn-group{
+            width:100%;
+        }
+        
+        .cstmMultiselect .btn-group .multiselect{
+            width:100%;
+            text-align:left;
+        }
+        .cstmMultiselect .btn-group .multiselect .caret{
+            float:right;
+            margin-top:10px;
+        }
 </style>
 <?php if ($jsondata_permission->users_type != 'admin'): ?>
     <style>
@@ -392,6 +404,18 @@ $profiledetail = json_decode($result);
 
         #edit_agent_form select[name='block_washer'], #edit_agent_form textarea[name='washer_note'], #edit_agent_form select[name='decals_installed']{
             pointer-events: auto; 
+        }
+        .cstmMultiselect .btn-group{
+            width:100%;
+        }
+        
+        .cstmMultiselect .btn-group .multiselect{
+            width:100%;
+            text-align:left;
+        }
+        .cstmMultiselect .btn-group .multiselect .caret{
+            float:right;
+            margin-top:10px;
         }
     </style>
 <?php endif; ?>
@@ -715,9 +739,11 @@ $profiledetail = json_decode($result);
                         </div>
                     </div>
 
-                    <div class="col-md-6 cstmMultiselect" style="padding:20px">
-
-                        <select id="chkveg" name="certificates[]" multiple="multiple">
+                    <div class="col-md-6 cstmMultiselect">
+                        <div class="form-group">
+                        <label class="control-label col-md-3">Certificates</label>
+                        <div class="col-md-9">
+                        <select classs="form-control" id="chkveg" name="certificates[]" multiple="multiple">
                             <?php
                             $all_certs = array();
                             if ($profiledetail->certificates) {
@@ -730,6 +756,8 @@ $profiledetail = json_decode($result);
                             <option <?php if (in_array("Ceramic Coating", $all_certs)) echo "selected"; ?> value="Ceramic Coating">Ceramic Coating</option>
                             <option <?php if (in_array("Tree Sap Removal", $all_certs)) echo "selected"; ?> value="Tree Sap Removal">Tree Sap Removal</option>
                         </select>
+                        </div>
+                        </div>
                     </div>
 
                 </div>
