@@ -7644,13 +7644,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
 
             $aws_result_ios = $aws_client->publish([
-                'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"notification\": { \"body\": \"" . $msg . "\" }, \"priority\": \"high\"}")),
+                'Message' => json_encode(array("default" => $msg, "GCM" => json_encode(array("notification" => array("body" => $msg), "priority" => "high")))),
                 'TopicArn' => $topic_arn_ios,
                 'MessageStructure' => 'json',
             ]);
 
             $aws_result_android = $aws_client->publish([
-                'Message' => json_encode(array("default" => $msg, "GCM" => "{ \"data\": { \"message\": \"" . $msg . "\" } }")),
+                'Message' => json_encode(array("default" => $msg, "GCM" => json_encode(array("data" => array("message" => $msg))))),
                 'TopicArn' => $topic_arn_android,
                 'MessageStructure' => 'json',
             ]);
