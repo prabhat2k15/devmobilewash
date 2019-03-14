@@ -93,6 +93,7 @@ $ios_count = $jsondata->ios_count;
   echo "</pre>"; */
 ?>
 <style>
+   
     .label-complete {
         background-color: #16CE0C !important;
     }
@@ -622,8 +623,9 @@ $ios_count = $jsondata->ios_count;
                                     echo 'Upcoming';
                                 if ($_GET['filter'] == 'nonupcoming')
                                     echo 'Non-Upcoming';
-                                ?> All Orders </span><?php if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer' || $_GET['event'] == "topCustomerOrder")) { ?><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                                ?> All Orders </span><?php if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer' || $_GET['event'] == "topCustomerOrder" || $_GET['event'] == "all")) { ?><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                                 <?php } ?>
+
                         </div>
                         <div class="caption font-dark">
 
@@ -644,6 +646,7 @@ $ios_count = $jsondata->ios_count;
                             <div class="large-table-fake-top-scroll-container-3">
                                 <div>&nbsp;</div>
                             </div>
+                        <div class="table-scrollable">
                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                 <thead>
                                     <tr>
@@ -782,9 +785,9 @@ $ios_count = $jsondata->ios_count;
                                                 <?php if ($order->is_scheduled): ?>
                                                     <?php if (strtotime($order->reschedule_date) > 0): ?>
 
-                                                        <p style="color: red; font-weight: bold; font-size: 13px; margin: 0;">Rescheduled to <?php echo $order->reschedule_date . " " . $order->reschedule_time; ?></p>
+                                                        <p style="color: red; font-weight: bold; font-size: 13px; margin: 0;">Rescheduled to <?php echo date('m/d/Y h:i A', strtotime($order->reschedule_date)); ?></p>
                                                     <?php endif; ?>
-                                                    <?php if (strtotime($order->schedule_date) > 0) echo $order->schedule_date . " " . $order->schedule_time; ?>
+                                                    <?php if (strtotime($order->schedule_date) > 0) echo date('m/d/Y h:i A', strtotime($order->schedule_date)); ?>
                                                 <?php else: ?>
                                                     N/A
                                                 <?php endif; ?>
@@ -813,7 +816,7 @@ $ios_count = $jsondata->ios_count;
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;                                       ?></td-->
+                                           <!--td><?php //echo $order->transaction_id;                                           ?></td-->
                                             <?php
                                             if ($order->coupon_discount) {
                                                 $coupon_discount = $order->coupon_discount;
@@ -823,11 +826,11 @@ $ios_count = $jsondata->ios_count;
                                             $sum = ($order->agent_total + $order->company_total);
                                             ?>
                                             <td>$<?php echo number_format($sum, 2); ?>   </td>
-                                            <td><?php echo date('Y-m-d h:i A', strtotime($order->created_date));               ?></td>
+                                            <td><?php echo date('m/d/Y h:i A', strtotime($order->created_date)); ?></td>
                                             <td>
                                                 <?php
                                                 if (strtotime($order->complete_order) > 0) {
-                                                    echo date('Y-m-d h:i A', strtotime($order->complete_order));
+                                                    echo date('m/d/Y h:i A', strtotime($order->complete_order));
                                                 } else {
                                                     echo " ";
                                                 }
@@ -838,6 +841,7 @@ $ios_count = $jsondata->ios_count;
                                     <?php } ?>
                                 </tbody>
                             </table>
+                        </div>
                         <?php } ?>
                     </div>
                 </div>
@@ -943,10 +947,16 @@ $ios_count = $jsondata->ios_count;
     <script type="text/javascript">
         dt_table = $('#example1, #example2').dataTable({
             "pageLength": 20,
+            "dom": 'Bfrtip',
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+            "aaSorting": [],
+            "buttons": [
+                'csvHtml5'
+            ]
 
-            "aaSorting": []
-
+        });
+        $('.csv-link').on('click', function () {
+            $('.buttons-csv').trigger('click');
         });
     </script>
 <?php } ?>
@@ -1247,10 +1257,15 @@ $ios_count = $jsondata->ios_count;
 
                         if (value.is_scheduled == 1) {
                             if (value.reschedule_time) {
-                                upcomingwashes.push("<p style='color: red; font-weight: bold; font-size: 13px; margin: 0;'>Rescheduled to " + value.reschedule_date + " " + value.reschedule_time + "</p>");
+                                var d = new Date(value.reschedule_date + " " + value.reschedule_time);
+                                upcomingwashes.push("<p style='color: red; font-weight: bold; font-size: 13px; margin: 0;'>Rescheduled to " + d.toLocaleString('en-US', {day: '2-digit', month: '2-digit', year: 'numeric', hour12: true, hour: '2-digit', minute: '2-digit'}));
+                                //upcomingwashes.push("<p style='color: red; font-weight: bold; font-size: 13px; margin: 0;'>Rescheduled to " + value.reschedule_date + " " + value.reschedule_time + "</p>");
                             } else {
                                 if (value.schedule_time) {
-                                    upcomingwashes.push(value.schedule_date + " " + value.schedule_time);
+                                    console.log("sch date" + value.schedule_date)
+                                    var d = new Date(value.schedule_date + " " + value.schedule_time);
+                                    upcomingwashes.push(d.toLocaleString('en-US', {day: '2-digit', month: '2-digit', year: 'numeric', hour12: true, hour: '2-digit', minute: '2-digit'}));
+                                    //upcomingwashes.push(value.schedule_date + " " + value.schedule_time);
                                 } else {
                                     upcomingwashes.push("N/A");
                                 }
@@ -1279,9 +1294,13 @@ $ios_count = $jsondata->ios_count;
                         }
                         upcomingwashes.push(veh_string);
                         upcomingwashes.push("$" + value.net_price);
-                        upcomingwashes.push(value.created_date);
+                        var d = new Date(value.created_date);
+                        upcomingwashes.push(d.toLocaleString('en-US', {day: '2-digit', month: '2-digit', year: 'numeric', hour12: true, hour: '2-digit', minute: '2-digit'}));
+                        // upcomingwashes.push(value.created_date);
                         if (value.status == 4) {
-                            upcomingwashes.push(value.complete_order);
+                            var d = new Date(value.complete_order);
+                            upcomingwashes.push(d.toLocaleString('en-US', {day: '2-digit', month: '2-digit', year: 'numeric', hour12: true, hour: '2-digit', minute: '2-digit'}));
+                            //upcomingwashes.push(value.complete_order);
                         } else {
                             upcomingwashes.push(' ');
                         }
