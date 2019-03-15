@@ -381,6 +381,8 @@ $searchresult_result_code = $searchresults->result;
                                                     <span class="label label-sm label-process">In Process</span>
                                                 <?php elseif ($order->status == 4): ?>
                                                     <span class="label label-sm label-complete">Completed</span>
+                                                <?php elseif ($order->status == 7): ?>
+                                                    <span class="label label-sm label-cancel">CNR</span>
                                                 <?php endif; ?>
                                             </td>
                                             <td><?php
