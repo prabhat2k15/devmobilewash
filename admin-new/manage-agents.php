@@ -114,6 +114,11 @@ $appsettings = json_decode($result);
         text-decoration: none;
     }
 
+    #example1 tr td {
+        vertical-align: middle;
+        text-align: center;
+
+    }
 </style>
 <?php
 if (empty($_GET['type'])) {
@@ -356,7 +361,7 @@ if (empty($_GET['type'])) {
                                     <tr class="odd gradeX">
                                         <td> 
                                             <a href="edit-agent.php?id=<?php echo $washer->id; ?>">Edit</a> 
-                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;                    ?>">View</a-->
+                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;                     ?>">View</a-->
                                         </td>
                                         <td> <?php echo $washer->id; ?> </td>
                                         <td>

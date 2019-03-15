@@ -4620,7 +4620,7 @@ if(!$customers_id_check->total_wash) $is_cust_first_wash = 1;
 
                     $to_time = strtotime("now");
 
-                    if (($wrequest_id_check->status == 5) || ($wrequest_id_check->status == 6))
+                    if (($wrequest_id_check->status == 5) || ($wrequest_id_check->status == 6) || ($wrequest_id_check->status == 7))
                         $from_time = strtotime($wrequest_id_check->order_canceled_at);
                     else
                         $from_time = strtotime($wrequest_id_check->complete_order);
@@ -15956,9 +15956,9 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
                                 $cancel_price = $fee;
                                 $washer_cancel_fee = $fee - 5;
                                 if (($order_exists->status > 1) && ($order_exists->status <= 3))
-                                    Washingrequests::model()->updateByPk($id, array('status' => 7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
+                                    Washingrequests::model()->updateByPk($id, array('status' => 7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $washer_cancel_fee,  'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
                                 else
-                                    Washingrequests::model()->updateByPk($id, array('status' => 7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee, 'washer_cancel_fee' => $washer_cancel_fee, 'agent_id' => 0, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
+                                    Washingrequests::model()->updateByPk($id, array('status' => 7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee, 'washer_cancel_fee' => $washer_cancel_fee, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s")));
 
                                 if ($order_exists->transaction_id) {
                                     if ($order_exists->wash_request_position == 'real')
