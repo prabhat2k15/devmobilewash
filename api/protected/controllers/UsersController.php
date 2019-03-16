@@ -4378,6 +4378,96 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             }
         }
     }
+    
+    public function actioncanceledwashtransactionsettle() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
+            echo "Invalid api key";
+            die();
+        }
+
+        /* $api_token = Yii::app()->request->getParam('api_token');
+          $t1 = Yii::app()->request->getParam('t1');
+          $t2 = Yii::app()->request->getParam('t2');
+          $user_type = Yii::app()->request->getParam('user_type');
+          $user_id = Yii::app()->request->getParam('user_id');
+
+          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
+
+          if(!$token_check){
+          $json = array(
+          'result'=> 'false',
+          'response'=> 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
+
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        /*if ($ip != MW_SERVER_IP) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }*/
+
+        $pendingwashes = Washingrequests::model()->findAll(array("condition" => "(status = 5 OR status = 7) AND canceled_wash_transaction_id != '' AND washer_payment_status != 1 AND washer_payment_status != 3"));
+
+        if (count($pendingwashes)) {
+            foreach ($pendingwashes as $wash) {
+
+                //if($wash->id != 10530) continue;
+
+                $customer_check = Customers::model()->findByPk($wash->customer_id);
+                $agent_check = Agents::model()->findByPk($wash->agent_id);
+                $token = '';
+
+                if (!count($customer_check))
+                    continue;
+
+                else if (!count($agent_check))
+                    continue;
+
+
+                if (!$wash->washer_payment_status) {
+
+                    if ($customer_check->client_position == 'real')
+                        $transaction_check = Yii::app()->braintree->getTransactionById_real($wash->canceled_wash_transaction_id);
+                    else
+                        $transaction_check = Yii::app()->braintree->getTransactionById($wash->canceled_wash_transaction_id);
+
+                    if ($transaction_check['success'] == 1) {
+                        if (($transaction_check['status'] == 'submitted_for_settlement') || ($transaction_check['status'] == 'settling') || ($transaction_check['status'] == 'settled')) {
+                            Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id' => ''));
+                        } else {
+				
+				  if ($customer_check->client_position == 'real')
+                                        $payresult = Yii::app()->braintree->submitforsettlement_real($wash->canceled_wash_transaction_id);
+                                    else
+                                        $payresult = Yii::app()->braintree->submitforsettlement($wash->canceled_wash_transaction_id);
+
+                                    if ($payresult['success'] == 1) {
+                                        Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id' => ''));
+                                    } else {
+                                        //Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id' => $payresult['transaction_id']));
+                                    }
+
+                   
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public function actionsendclientappreceipt() {
 

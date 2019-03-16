@@ -11763,14 +11763,14 @@ class CustomersController extends Controller {
                 }
 
                 if (($wash_id_check->status >= 1) && ($wash_id_check->status <= 4)) {
-                    $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'serviceFeeAmount' => "5.00", 'amount' => $amount, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => true], 'deviceData' => $deviceData];
+                    $request_data = ['merchantAccountId' => $agent_check->bt_submerchant_id, 'serviceFeeAmount' => "5.00", 'amount' => $amount, 'paymentMethodToken' => $token, 'deviceData' => $deviceData];
                     if (($wash_position == 'demo') || ($wash_position == ''))
                         $payresult = Yii::app()->braintree->transactToSubMerchant($request_data);
                     else
                         $payresult = Yii::app()->braintree->transactToSubMerchant_real($request_data);
                 }
                 else {
-                    $request_data = ['amount' => $amount, 'paymentMethodToken' => $token, 'options' => ['submitForSettlement' => true], 'deviceData' => $deviceData];
+                    $request_data = ['amount' => $amount, 'paymentMethodToken' => $token, 'deviceData' => $deviceData];
                     if (($wash_position == 'demo') || ($wash_position == ''))
                         $payresult = Yii::app()->braintree->sale($request_data);
                     else
@@ -11791,9 +11791,9 @@ class CustomersController extends Controller {
                     }
 
                     if (($wash_id_check->status >= 1) && ($wash_id_check->status <= 4))
-                        $data = array('status' => 5, 'company_cancel' => $company_cancel, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $amount, 'washer_cancel_fee' => $amount - 5);
+                        $data = array('status' => 5, 'company_cancel' => $company_cancel, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $amount, 'washer_cancel_fee' => $amount - 5, 'canceled_wash_transaction_id' => $payresult['transaction_id']);
                     else {
-                        $data = array('status' => 5, 'company_cancel' => $company_cancel, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $amount);
+                        $data = array('status' => 5, 'company_cancel' => $company_cancel, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $amount, 'canceled_wash_transaction_id' => $payresult['transaction_id']);
                     }
                     $washrequestmodel = new Washingrequests;
                     $washrequestmodel->attributes = $data;
