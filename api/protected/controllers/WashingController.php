@@ -12142,17 +12142,17 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
 
                             if (($cancelresult['success'] == 1)) {
-                                if ($cust_exists->client_position == 'real')
+                                /*if ($cust_exists->client_position == 'real')
                                     $cancelsettle = Yii::app()->braintree->submitforsettlement_real($cancelresult['transaction_id']);
                                 else
-                                    $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['transaction_id']);
+                                    $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['transaction_id']);*/
                                 $result = 'true';
                                 $response = 'Order canceled';
                                 $cancel_price = $fee;
                                 if (($order_exists->status > 1) && ($order_exists->status <= 3))
-                                    Washingrequests::model()->updateByPk($id, array('status' => 5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $fee - 5));
+                                    Washingrequests::model()->updateByPk($id, array('status' => 5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $fee - 5, 'canceled_wash_transaction_id' => $cancelresult['transaction_id']));
                                 else
-                                    Washingrequests::model()->updateByPk($id, array('status' => 5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee));
+                                    Washingrequests::model()->updateByPk($id, array('status' => 5, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee, 'canceled_wash_transaction_id' => $cancelresult['transaction_id']));
 
                                 if ($order_exists->transaction_id) {
                                     if ($order_exists->wash_request_position == 'real')
