@@ -7066,5 +7066,34 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
         }
 
     }
+    
+    public function actioncleartemptokens() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
+            echo "Invalid api key";
+            die();
+        }
+
+
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+        /*if ($ip != MW_SERVER_IP) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }*/
+
+        Yii::app()->db->createCommand("TRUNCATE TABLE temp_tokens")->execute();
+
+    }
 
 }
