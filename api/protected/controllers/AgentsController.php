@@ -7411,12 +7411,19 @@ class AgentsController extends Controller {
             die();
         }
 
-        $washers_exists = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE (DATEDIFF(CURDATE(), last_activity) >= 30) AND block_washer = 0")->queryAll();
+        $washers_exists = Yii::app()->db->createCommand("SELECT * FROM `agents` WHERE ((DATEDIFF(CURDATE(), last_activity) >= 2) OR (DATEDIFF(CURDATE(), last_activity) >= 30)) AND block_washer = 0")->queryAll();
 
 
         if (count($washers_exists)) {
             foreach ($washers_exists as $washer) {
-                Agents::model()->updateByPk($washer['id'], array("block_washer" => 1));
+	      $now = time();
+$last_active = strtotime($washer['last_activity']);
+$datediff = $now - $last_active;
+
+$last_active_since = round($datediff / (60 * 60 * 24));
+
+if($last_active_since >= 2) Agents::model()->updateByPk($washer['id'], array("forced_logout" => 1));
+if($last_active_since >= 30) Agents::model()->updateByPk($washer['id'], array("block_washer" => 1));
             }
         }
     }
