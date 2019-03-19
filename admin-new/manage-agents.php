@@ -60,16 +60,16 @@ $appsettings = json_decode($result);
 
 <!-- END PAGE LEVEL PLUGINS -->
 <script type="text/javascript">
-            var dt_table;
-            $(document).ready(function () {
-                dt_table = $('#example1').dataTable({
-                    "pageLength": 20,
-                    "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-                    "aaSorting": [],
-                    "bPaginate": true,
-                });
+    var dt_table;
+    $(document).ready(function () {
+        dt_table = $('#example1').dataTable({
+            "pageLength": 20,
+            "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+            "aaSorting": [],
+            "bPaginate": true,
+        });
 
-            });
+    });
 </script>
 <?php include('right-sidebar.php') ?>
 
@@ -118,6 +118,13 @@ $appsettings = json_decode($result);
         vertical-align: middle;
         text-align: center;
 
+    }
+    table tr td:last-child ul{
+        padding:0px;
+    }
+    table tr td:last-child li{
+        list-style:none;
+        white-space: nowrap;
     }
 </style>
 <?php
@@ -361,7 +368,7 @@ if (empty($_GET['type'])) {
                                     <tr class="odd gradeX">
                                         <td> 
                                             <a href="edit-agent.php?id=<?php echo $washer->id; ?>">Edit</a> 
-                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;                     ?>">View</a-->
+                                            <!--a href="view-agent-wash.php?id=<?php //echo $washer->id;                          ?>">View</a-->
                                         </td>
                                         <td> <?php echo $washer->id; ?> </td>
                                         <td>
@@ -386,21 +393,24 @@ if (empty($_GET['type'])) {
                                         <td> <?php echo $washer->total_wash; ?> </td>
                                         <td> <?php echo $washer->bt_submerchant_id; ?> </td>
                                         <td> <?php echo $washer->status; ?> </td>
+                                        
                                         <td> <?php
                                             if ($washer->complete_order_id != "N/A") {
-                                                echo "#(" . $washer->complete_order_id . ") <br>" . date('m/d/Y h:i A', strtotime($washer->complete_order_date));
+                                                echo "<a href='" . ROOT_URL . "/admin-new/edit-order.php?id=$washer->complete_order_id' target='_blank'>#(" . $washer->complete_order_id . ") <br>" . date('m/d/Y h:i A', strtotime($washer->complete_order_date)) . "</a>";
                                             } else {
                                                 echo ' ';
                                             }
-                                            ?> </td>
-
+                                            ?>
+                                        </td>
+                                        
                                         <td> <?php
                                             if ($washer->certificates) {
-
+                                                echo "<ul>";
                                                 $all_certs = explode("|", $washer->certificates);
-                                                echo count($all_certs);
-                                            } else {
-                                                echo "0";
+                                                foreach ($all_certs as $val) {
+                                                    echo '<li>' . $val . "</li>";
+                                                }
+                                                echo '</ul>';
                                             }
                                             ?> </td>
 
