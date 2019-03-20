@@ -10328,7 +10328,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
         $count = $total_order[0]['countid'];
 
-        $customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,a.complete_order,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND  a.status != 7 " . $order_month)
+        $customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,a.complete_order,a.is_cust_first_wash,b.total_wash, a.customer_id FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND  a.status != 7 " . $order_month)
                 //$customers_order = Yii::app()->db->createCommand("SELECT a.id, a.car_list, a.package_list, a.coupon_code, a.tip_amount, a.status, a.schedule_date, a.created_date, a.order_for, a.address_type, a.zipcode, a.failed_transaction_id, a.wash_request_position, a.pet_hair_vehicles, a.lifted_vehicles, a.exthandwax_vehicles, a.extplasticdressing_vehicles, a.extclaybar_vehicles, a.waterspotremove_vehicles, a.upholstery_vehicles, a.floormat_vehicles, a.is_scheduled,b.total_wash, a.customer_id FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "' AND a.status != 7 $order_month")
                 ->bindValue(':last_month', $last_month, PDO::PARAM_STR)
                 ->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
@@ -10465,12 +10465,13 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                         "floormat_vehicles" => $orderbycustomer['floormat_vehicles'],
                         "total_wash" => $orderbycustomer['total_wash'],
 			"complete_order" => $orderbycustomer['complete_order'],
+			"is_cust_first_wash" => $orderbycustomer['is_cust_first_wash'],
                         "zip_color" => $zipcolor,
                         "orderstatus" => $orderstatus,
                     );
                 }
             }
-           // print_r($orderview);
+            //print_r($orderview);
 //            die;
             $data = $ArrCustemer = array();
             foreach ($orderview as $key => $value) {
@@ -10482,17 +10483,19 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                   }
                   } */
 
-                $cancledOrder = "N/A";
+		//$total_new_orders = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM washing_requests WHERE is_cust_first_wash = 1 AND status = 4 AND DATE_FORMAT(order_for,'%Y-%m-%d') = '".$value['start']."'")->queryAll();
+                //$total_new_count = $total_new_orders[0]['countid'];
+		//echo $value['start']." ".$total_new_orders[0]['countid']."<br>";
+		$cancledOrder = "N/A";
                 $data[$value['start']]['OrderCancled'] = $cancledOrder;
                 if ($value['orderstatus'] == 5 || $value['orderstatus'] == 6) {
                     $cancledOrder = "OrderCancled";
                 }
 
-                if (($value['total_wash'] == 0)) {
-                    //if (!in_array($value['customer_id'], $ArrCustemer)) {
-                        $data[$value['start']]['new_customer'][] = 1;
-                        //$ArrCustemer[] = $value['customer_id'];
-                    //}
+                if (($value['is_cust_first_wash']) && ($value['orderstatus'] == 4)) {
+                        //$data[$value['start']]['new_customer'][] = array_fill(0, $total_new_count, 1);
+			$data[$value['start']]['new_customer'][] = 1;
+ 
                 }
 
 //                if ((($value['zip_color'] == '') || ($value['zip_color'] == 'blue')) && ($value['title'] != 'Canceled')) {

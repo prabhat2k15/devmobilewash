@@ -4089,8 +4089,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } elseif ($event == 'ondemandcanceled') {
                 $status_qr = " AND w.is_scheduled = 0 AND (w.status=5 || w.status=6)";
             } elseif ($event == 'newcustomer') {
-                //$status_qr = " AND w.status = 4";
-                $status_qr = " AND c.total_wash = 0";
+                $status_qr = " AND (w.status = 4 OR w.status = 5 OR w.status = 6 OR w.status = 7) AND is_cust_first_wash = 1";
+                //$status_qr = " AND c.total_wash = 0";
             } elseif (in_array($event, array('yelloworders', 'blueorders', 'redorders', 'purpleorders'))) {
                 $status_qr = " AND w.status IN('0','4','3','2','1')";
             } elseif ($event == 'washer_history') {
