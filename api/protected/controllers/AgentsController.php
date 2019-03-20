@@ -4034,6 +4034,14 @@ class AgentsController extends Controller {
             $response = 'all agents';
 
             foreach ($washers_exists as $ind => $washer) {
+                $orderData = Yii::app()->db->createCommand("SELECT complete_order,id FROM `washing_requests` WHERE status=4 AND `agent_id` = " . $washer['id'] . " ORDER BY id DESC limit 1")->queryAll();
+                if (count($orderData) > 0) {
+                    $complete_order_id = $orderData[0]['id'];
+                    $complete_order_date = $orderData[0]['complete_order'];
+                } else {
+                    $complete_order_id = "N/A";
+                    $complete_order_date = "N/A";
+                }
 
                 $all_washers[$ind]['id'] = $washer['id'];
                 $all_washers[$ind]['real_washer_id'] = $washer['real_washer_id'];
@@ -4052,6 +4060,8 @@ class AgentsController extends Controller {
                 $all_washers[$ind]['status'] = $washer['status'];
                 $all_washers[$ind]['insurance_exp_date'] = $washer['insurance_license_expiration'];
                 $all_washers[$ind]['created_date'] = $washer['created_date'];
+                $all_washers[$ind]['complete_order_id'] = $complete_order_id;
+                $all_washers[$ind]['complete_order_date'] = $complete_order_date;
             }
         }
 

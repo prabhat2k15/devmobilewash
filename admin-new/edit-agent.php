@@ -594,7 +594,7 @@ $profiledetail = json_decode($result);
                             <label class="control-label col-md-3">Service area</label>
                             <div class="col-md-9">
                                 <select class="form-control" name="operate_area">
-                                    <option value="" ></option>
+                                   
                                     <option value="CA" <?php if ($profiledetail->operate_area == 'CA') echo 'selected'; ?>>CA</option>
                                     <option value="NV" <?php if ($profiledetail->operate_area == 'NV') echo 'selected'; ?>>NV</option>
                                     <option value="AZ" <?php if ($profiledetail->operate_area == 'AZ') echo 'selected'; ?>>AZ</option>

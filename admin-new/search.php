@@ -258,6 +258,7 @@ $searchresult_result_code = $searchresults->result;
                                         <th> Washes </th>
                                         <th> BT Submerchant ID </th>
                                         <th> Status </th>
+                                        <th>Last Completed Wash</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -298,6 +299,14 @@ $searchresult_result_code = $searchresults->result;
                                             <td> <?php echo $washer->total_wash; ?> </td>
                                             <td> <?php echo $washer->bt_submerchant_id; ?> </td>
                                             <td> <?php echo $washer->status; ?> </td>
+                                            <td> <?php
+                                                if ($washer->complete_order_id != "N/A") {
+                                                    echo "<a href='" . ROOT_URL . "/admin-new/edit-order.php?id=$washer->complete_order_id' target='_blank'>#(" . $washer->complete_order_id . ") <br>" . date('m/d/Y h:i A', strtotime($washer->complete_order_date)) . "</a>";
+                                                } else {
+                                                    echo ' ';
+                                                }
+                                                ?>
+                                            </td>
 
                                         </tr>
 
