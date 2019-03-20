@@ -2621,6 +2621,31 @@ class CustomersController extends Controller {
                 $response = "Invalid vehicle";
             }
         }
+        // updating picupload action
+        if ($user_type) {
+            $wash_request_id = Yii::app()->request->getParam('wash_request_id');
+            if (AES256CBC_STATUS == 1) {
+                $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
+            }
+
+            $agent_id = Yii::app()->request->getParam('agent_id') ? Yii::app()->request->getParam('agent_id') : 0;
+            $user_id = $this->aes256cbc_crypt($user_id, 'd', AES256CBC_API_PASS);
+            $agent = Agents::model()->findByAttributes(array("id" => $user_id));
+            if (count($agent) > 0) {
+                $name = $agent->agentname;
+            }
+            $addi_detail = array($vehicle_id=>array('agentname'=>$name, 'user_type'=>$user_type));
+            $addi_detail = json_encode($addi_detail);
+            $logdata = array(
+                'agent_id' => $user_id,
+                'wash_request_id' => $wash_request_id,
+                'agent_company_id' => 0,
+                'action' => 'picupload',
+                'addi_detail' => $addi_detail,
+                'action_date' => date('Y-m-d H:i:s'));
+                
+            Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+        }
 
         $json = array(
             'result' => $result,

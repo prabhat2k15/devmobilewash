@@ -1176,7 +1176,29 @@ if ($getorder->transaction_id) {
                                                           <div style="clear: both;"></div>
                                                          */ ?>
                                                     </div>
-
+                                                    <?php
+                                                        $handle = curl_init(ROOT_URL . "/api/index.php?r=site/getwashersavedroplog");
+                                                        curl_setopt($handle, CURLOPT_POST, true);
+                                                        curl_setopt($handle, CURLOPT_POSTFIELDS, array('wash_request_id' => $_GET['id'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]));
+                                                        curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+                                                        $result = curl_exec($handle);
+                                                        curl_close($handle);
+                                                        $savedroplogdata = json_decode($result);
+                                                        $addi_details=array();
+                                                        if ($savedroplogdata->result == 'true'){
+                                                            foreach(array_reverse($savedroplogdata->logs) as $log){
+                                                                if($log->action == 'picupload'){
+                                                                    // echo $log->action_date;
+                                                                    $temp = json_decode($log->addi_detail);
+                                                                    $veh_key =  key($temp);
+                                                                    $temp->$veh_key->action_date = $log->action_date;
+                                                                    $temp->$veh_key->logid = $log->id;
+                                                                    $addi_details[$veh_key] = $temp;
+                                                                    print_r($addi_details);
+                                                                }
+                                                            }
+                                                        }// if ends
+                                                    ?>
 
                                                     <?php
                                                     $regular_vehicles = [];
@@ -1228,6 +1250,11 @@ if ($getorder->transaction_id) {
                                                                     ?>
                                                                     <div class='regular-car-box' id='regular-car-box-<?php echo $ind + 1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
                                                                         <div class="upload_Vihicle_image">
+                                                                            <?php
+                                                                                if(!empty($addi_details[$veh->id])){
+                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->logid.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
+                                                                                }
+                                                                            ?>
                                                                             <?php
                                                                             if (strpos($veh->vehicle_image, ROOT_URL) !== false) {
                                                                                 $imageNmae = $veh->vehicle_image;
@@ -1427,6 +1454,11 @@ if ($getorder->transaction_id) {
                                                                     ?>
                                                                     <div class='classic-car-box' id='classic-car-box-<?php echo $ind + 1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
                                                                         <div class="upload_Vihicle_image">
+                                                                            <?php
+                                                                                if(!empty($addi_details[$veh->id])){
+                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->logid.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
+                                                                                }
+                                                                            ?>
                                                                             <?php
                                                                             if (strpos($veh->vehicle_image, ROOT_URL) !== false) {
                                                                                 $imageNmae = $veh->vehicle_image;
@@ -2130,6 +2162,12 @@ if ($getorder->transaction_id) {
                                                                     <?php endif; ?>
                                                                     <?php if ($log->action == 'waivedfee'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> Waived Fee at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                    <?php endif; ?>
+                                                                    <?php if ($log->action == 'picupload'): 
+                                                                        $temp = json_decode($log->addi_detail); 
+                                                                        $key = key($temp);
+                                                                        ?>
+                                                                        <p style="margin-bottom: 10px;">Photo Taken by #<?php echo $log->id.' '.$temp->{$key}->agentname.' on '.date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
                                                                 <?php endforeach; ?>
                                                             </div>
@@ -4392,6 +4430,7 @@ if ($getorder->transaction_id) {
                                     form_data.append('t2', "<?php echo $mw_admin_auth_arr[3]; ?>");
                                     form_data.append('user_type', "admin");
                                     form_data.append('user_id', "<?php echo $mw_admin_auth_arr[4]; ?>");
+                                    form_data.append('wash_request_id', "<?php echo  $getorder->id; ?>");
                                     //alert(form_data);
                                     $.ajax({
                                         url: "<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/addVehicelImage",
