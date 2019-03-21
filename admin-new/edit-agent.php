@@ -741,7 +741,18 @@ $profiledetail = json_decode($result);
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6"></div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Helper</label>
+                            <div class="col-md-9">
+                                <select class="form-control" name="helper">
+                                    <option value="0" <?php if ($profiledetail->helper == 0) echo 'selected'; ?>>No</option>
+                                    <option value="1" <?php if ($profiledetail->helper == 1) echo 'selected'; ?>>Yes</option>
+
+                                </select> </div>
+                        </div>
+                    </div>
+                    
                     <div class="col-md-6 cstmMultiselect">
                         <div class="form-group">
                             <label class="control-label col-md-3">Certificates</label>
@@ -950,17 +961,7 @@ $profiledetail = json_decode($result);
                         </div>
                     </div>
                     <!--/span-->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Helper</label>
-                            <div class="col-md-9">
-                                <select class="form-control" name="helper">
-                                    <option value="0" <?php if ($profiledetail->helper == 0) echo 'selected'; ?>>No</option>
-                                    <option value="1" <?php if ($profiledetail->helper == 1) echo 'selected'; ?>>Yes</option>
-
-                                </select> </div>
-                        </div>
-                    </div>
+                    
 
                 </div>
                 <!--/row-->
