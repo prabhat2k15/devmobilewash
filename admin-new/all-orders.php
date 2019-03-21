@@ -723,9 +723,14 @@ $ios_count = $jsondata->ios_count;
                                                     <span class="label label-sm label-complete">Free Wash</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td><?php if ($order->transaction_id): ?>
+                                            <td>
+					    <?php if ((($order->status == 5) || ($order->status == 7)) && ($order->canceled_wash_transaction_id)): ?>
+                                                    <a target="_blank" href="<?php echo BT_TRANSACTION_URL . $order->canceled_wash_transaction_id; ?>"><?php echo $order->canceled_wash_transaction_id; ?></a>
+                                                <?php else: ?>
+					    <?php if ($order->transaction_id): ?>
                                                     <a target="_blank" href="<?php echo BT_TRANSACTION_URL . $order->transaction_id; ?>"><?php echo $order->transaction_id; ?></a>
                                                 <?php endif; ?>
+						<?php endif; ?>
                                             </td>
                                             <td>
                                                 <?php if ($order->failed_transaction_id): ?>
