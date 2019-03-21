@@ -2594,7 +2594,8 @@ class CustomersController extends Controller {
                     if (!$vehicle_build) {
                         $vehicle_build = $vehicle_exists->vehicle_build;
                     }
-
+                    
+                    
 
                     $vehicle = array('vehicle_no' => $vehicle_no,
                         'brand_name' => $brand_name,
@@ -2621,6 +2622,7 @@ class CustomersController extends Controller {
                 $response = "Invalid vehicle";
             }
         }
+        
         // updating picupload action
         if ($user_type) {
             $wash_request_id = Yii::app()->request->getParam('wash_request_id');
@@ -2646,7 +2648,6 @@ class CustomersController extends Controller {
                 
             Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
         }
-
         $json = array(
             'result' => $result,
             'response' => $response,
@@ -7352,11 +7353,11 @@ class CustomersController extends Controller {
 
         $search = Yii::app()->request->getParam('search');
         $limit = Yii::app()->request->getParam('limit');
-
+        $offset = Yii::app()->request->getParam('offset');
         if (!$limit)
             $customers = Customers::model()->findAll(array('order' => 'created_date desc'));
         else
-            $customers = Customers::model()->findAll(array('order' => 'created_date desc', 'limit' => $limit));
+            $customers = Customers::model()->findAll(array('order' => 'created_date desc', 'limit' => $limit,'offset'=>$offset));
 
 
         $customerdetail = array();

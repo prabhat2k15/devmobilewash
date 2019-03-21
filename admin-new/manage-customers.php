@@ -15,12 +15,15 @@
 <?php include('right-sidebar.php') ?>
 
 <?php
+$offset = 0;
 $url = ROOT_URL . '/api/index.php?r=customers/clientsadmin';
-
+if ($_GET['offset'] && $_GET['limit']) {
+    echo $offset = $_GET['offset'];
+}
 
 //echo $url;
 $handle = curl_init($url);
-$data = array('limit' => $_GET['limit'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+$data = array('offset' => $offset, 'limit' => $_GET['limit'], 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
@@ -323,8 +326,8 @@ $allcustomersFrequency = json_decode($result);
                                         <td> <?php echo $responseagents->how_hear_mw; ?> </td>
                                         <td> $<?php echo $responseagents->total_spent; ?> </td>
                                         <td> <?php echo number_format($responseagents->order_frequency, 2) . " days"; ?></td>
-        <!--                            <td> $<?php //echo $responseagents->totalSpentAverage;          ?> </td>
-                                        <td> $<?php //echo $responseagents->totalOrderAverage;          ?> </td>-->
+        <!--                            <td> $<?php //echo $responseagents->totalSpentAverage;                                         ?> </td>
+                                        <td> $<?php //echo $responseagents->totalOrderAverage;                                         ?> </td>-->
                                         <td> <?php echo $responseagents->client_science; ?> </td>
                                     </tr>
 
@@ -336,193 +339,207 @@ $allcustomersFrequency = json_decode($result);
                     </table>
                 </div>
             </div>
-            <!-- END EXAMPLE TABLE PORTLET-->
-            <div class="clear"></div>
+            <div id="nexUrl" class="hide">
+                <li><a  target="_blank" href="<?= ROOT_URL ?>/admin-new/manage-customers.php?limit=400&offset=<?= $_GET['offset'] + $_GET['limit'] ?>" >Next 400 </a></li>
+                <div>
+                    <!-- END EXAMPLE TABLE PORTLET-->
+                    <div class="clear"></div>
 
-            <div class="clear"></div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+
         </div>
+        <!-- END CONTENT BODY -->
     </div>
-    <div class="clearfix"></div>
+    <!-- END CONTENT -->
+    <?php include('footer.php') ?>
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <!--<script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>-->
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <style>
 
-</div>
-<!-- END CONTENT BODY -->
-</div>
-<!-- END CONTENT -->
-<?php include('footer.php') ?>
-<!-- BEGIN PAGE LEVEL SCRIPTS -->
-<!--<script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>-->
-<!-- END PAGE LEVEL SCRIPTS -->
-<style>
+        .page-content-wrapper .page-content{
+            padding: 0 20px 10px !important;
+        }
+    </style>
 
-    .page-content-wrapper .page-content{
-        padding: 0 20px 10px !important;
-    }
-</style>
-
-<script>
-    var ajaxrunning = 0;
-    var table;
-    var params = {};
+    <script>
+        var ajaxrunning = 0;
+        var table;
+        var params = {};
 <?php foreach ($_GET as $key => $value) {
     ?>
-        params.<?php echo $key; ?> = "<?php echo $value; ?>";
+            params.<?php echo $key; ?> = "<?php echo $value; ?>";
 <?php }; ?>
-    params.key = "<?php echo API_KEY; ?>";
-    params.admin_username = "<?php echo $jsondata_permission->user_name; ?>";
-    params.api_token = "<?php echo $finalusertoken; ?>";
-    params.t1 = "<?php echo $mw_admin_auth_arr[2]; ?>";
-    params.t2 = "<?php echo $mw_admin_auth_arr[3]; ?>";
-    params.user_type = 'admin';
-    params.user_id = "<?php echo $mw_admin_auth_arr[4]; ?>";
+        params.key = "<?php echo API_KEY; ?>";
+        params.admin_username = "<?php echo $jsondata_permission->user_name; ?>";
+        params.api_token = "<?php echo $finalusertoken; ?>";
+        params.t1 = "<?php echo $mw_admin_auth_arr[2]; ?>";
+        params.t2 = "<?php echo $mw_admin_auth_arr[3]; ?>";
+        params.user_type = 'admin';
+        params.user_id = "<?php echo $mw_admin_auth_arr[4]; ?>";
 
-    if ((!params.limit) || params.limit > 100)
-        params.limit = 40;
-    $(document).ready(function () {
+        if ((!params.limit) || params.limit > 100)
+            params.limit = 40;
+        $(document).ready(function () {
 
-        table = $('#example1').dataTable({
-            pageLength: 20,
-            stateSave: true,
-            // "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-            dom: 'Bfrtip',
-            sDom: "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-            buttons: [
-                'csv',
-            ]
+            table = $('#example1').dataTable({
+                pageLength: 20,
+                stateSave: true,
+                // "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
+                dom: 'Bfrtip',
+                sDom: "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                buttons: [
+                    'csv',
+                ]
+            });
+
+            $('.cust-search-box').show();
+
+            $('#cust_search').keyup(function () {
+
+                //$('#example1').dataTable().fnFilter(this.value);
+                table.fnFilter(this.value);
+            });
+
         });
+        $(function () {
+            /* $(document).on( 'click', '.all-clients-logout', function(){ */
+            $('.all-clients-logout').click(function (e) {
+                var th = $(this);
+                console.log(th);
+                var r = confirm('Are you sure you want to logout all clients?');
+                if (r == true) {
+                    $(th).html('Logging out...');
+                    $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/allclientslogout", {key: API_KEY, api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+                        if (data.result == 'true') {
+                            window.location.href = "<?php echo ROOT_URL; ?>/admin-new/manage-customers.php?action=allclogout-success";
+                        }
+                        if (data.result == 'false') {
+                            window.location.href = "<?php echo ROOT_URL; ?>/admin-new/manage-customers.php?action=allclogout-error";
+                        }
 
-        $('.cust-search-box').show();
+                    });
 
-        $('#cust_search').keyup(function () {
+                }
+                return false;
+            });
 
-            //$('#example1').dataTable().fnFilter(this.value);
-            table.fnFilter(this.value);
-        });
+            setInterval(function () {
+                if (!ajaxrunning) {
+                    ajaxrunning = 1;
+                    loadmorecustomers();
+                }
+                /*if($('.pagination li.next').prev().hasClass('active')) {
+                 
+                 if (!ajaxrunning) {
+                 ajaxrunning = 1;
+                 loadmorecustomers();
+                 }
+                 
+                 }*/
+            }, 10000);
 
-    });
-    $(function () {
-        /* $(document).on( 'click', '.all-clients-logout', function(){ */
-        $('.all-clients-logout').click(function (e) {
-            var th = $(this);
-            console.log(th);
-            var r = confirm('Are you sure you want to logout all clients?');
-            if (r == true) {
-                $(th).html('Logging out...');
-                $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/allclientslogout", {key: API_KEY, api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
-                    if (data.result == 'true') {
-                        window.location.href = "<?php echo ROOT_URL; ?>/admin-new/manage-customers.php?action=allclogout-success";
+            /*$('.pagination li').click(function(e){
+             var timer;
+             clearTimeout(timer); 
+             timer = setTimeout(function(){
+             if($('.pagination li.next').prev().hasClass('active')) console.log('last one');
+             }, 1000); 
+             
+             
+             });*/
+
+            var curr_url = "<?php echo ROOT_URL; ?>/admin-new/manage-customers.php";
+
+            $(".order-limit").change(function () {
+                if ($(this).val())
+                    window.location.href = curr_url + '?limit=' + $(this).val();
+                else
+                    window.location.href = curr_url;
+            });
+
+            function loadmorecustomers() {
+                console.log('loading...');
+                console.log(params);
+                $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/clientsadmin", params, function (data) {
+                    console.log(data);
+
+
+                    if (data) {
+                        //console.log(data);
+
+                        //alldata = dt_table.fnGetData();
+                        //console.log(alldata);
+                        //dt_table.fnClearTable();
+
+                        $.each(data, function (index, value) {
+                            var morecustomers = [];
+
+                            /*morecustomers["DT_RowId"] = "order-" + value.id;
+                             //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
+                             if ((value.min_diff <= 30) && (value.status == 0))
+                             upcomingwashes["DT_RowClass"] = "flashrow";
+                             if ((value.min_diff < 0) && (value.status == 1))
+                             upcomingwashes["DT_RowClass"] = "flashrownotarrive";
+                             if (value.payment_status == 'Declined')
+                             upcomingwashes["DT_RowClass"] = "flashrowdeclined";
+                             if ((value.min_diff <= 30) && (value.status == 0) && (value.payment_status == 'Declined'))
+                             upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
+                             if (value.washer_change_pack > 0)
+                             upcomingwashes["DT_RowClass"] = "flashrowchangedpack";
+                             //if(value.washer_wash_activity == 0) upcomingwashes["DT_RowClass"] = "washernowashactivity";*/
+
+                            morecustomers.push(" <a href='edit-customer.php?customerID=" + value.id + "'>Edit</a>");
+                            morecustomers.push(value.id);
+                            morecustomers.push(value.user_type);
+                            morecustomers.push("<a target='_blank' href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id=" + value.id + "'>" + value.name + "</a>");
+                            morecustomers.push(value.email);
+                            morecustomers.push(value.rating);
+                            if (value.total_wash > 0)
+                                morecustomers.push("<a target='_blank' href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id=" + value.id + "'>" + value.total_wash + "</a>");
+                            else
+                                morecustomers.push(value.total_wash);
+                            morecustomers.push(value.wash_points + "/5");
+                            morecustomers.push(value.phone);
+                            morecustomers.push(value.phone_verify_code);
+                            morecustomers.push(value.device_type);
+                            morecustomers.push(value.address);
+                            morecustomers.push(value.city);
+                            morecustomers.push(value.how_hear_mw);
+                            morecustomers.push("$" + value.total_spent);
+                            morecustomers.push(value.order_frequency);
+                            //                        morecustomers.push(value.totalSpentAverage);
+                            //                        morecustomers.push(value.totalOrderAverage);
+                            morecustomers.push(value.client_science);
+                            table.add(morecustomers).draw(false);
+                            //table.fnAddData(morecustomers, false);
+                            //console.log(upcomingwashes);
+                        });
+                        //table.fnDraw();
+                        ajaxrunning = 0;
                     }
-                    if (data.result == 'false') {
-                        window.location.href = "<?php echo ROOT_URL; ?>/admin-new/manage-customers.php?action=allclogout-error";
-                    }
+
+
 
                 });
-
             }
-            return false;
         });
 
-        setInterval(function () {
-            if (!ajaxrunning) {
-                ajaxrunning = 1;
-                loadmorecustomers();
-            }
-            /*if($('.pagination li.next').prev().hasClass('active')) {
-             
-             if (!ajaxrunning) {
-             ajaxrunning = 1;
-             loadmorecustomers();
-             }
-             
-             }*/
-        }, 10000);
-
-        /*$('.pagination li').click(function(e){
-         var timer;
-         clearTimeout(timer); 
-         timer = setTimeout(function(){
-         if($('.pagination li.next').prev().hasClass('active')) console.log('last one');
-         }, 1000); 
-         
-         
-         });*/
-
-        var curr_url = "<?php echo ROOT_URL; ?>/admin-new/manage-customers.php";
-
-        $(".order-limit").change(function () {
-            if ($(this).val())
-                window.location.href = curr_url + '?limit=' + $(this).val();
-            else
-                window.location.href = curr_url;
-        });
-
-        function loadmorecustomers() {
-            console.log('loading...');
-            console.log(params);
-            $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/clientsadmin", params, function (data) {
-                console.log(data);
-                if (data) {
-                    //console.log(data);
-
-                    //alldata = dt_table.fnGetData();
-                    //console.log(alldata);
-                    //dt_table.fnClearTable();
-
-                    $.each(data, function (index, value) {
-                        var morecustomers = [];
-
-                        /*morecustomers["DT_RowId"] = "order-" + value.id;
-                         //if((value.min_diff > 0) && (value.min_diff <= 30) && (value.status == 0)) upcomingwashes["DT_RowClass"] = "flashrow";
-                         if ((value.min_diff <= 30) && (value.status == 0))
-                         upcomingwashes["DT_RowClass"] = "flashrow";
-                         if ((value.min_diff < 0) && (value.status == 1))
-                         upcomingwashes["DT_RowClass"] = "flashrownotarrive";
-                         if (value.payment_status == 'Declined')
-                         upcomingwashes["DT_RowClass"] = "flashrowdeclined";
-                         if ((value.min_diff <= 30) && (value.status == 0) && (value.payment_status == 'Declined'))
-                         upcomingwashes["DT_RowClass"] = "flashrowdeclinednotarrive";
-                         if (value.washer_change_pack > 0)
-                         upcomingwashes["DT_RowClass"] = "flashrowchangedpack";
-                         //if(value.washer_wash_activity == 0) upcomingwashes["DT_RowClass"] = "washernowashactivity";*/
-
-                        morecustomers.push(" <a href='edit-customer.php?customerID=" + value.id + "'>Edit</a>");
-                        morecustomers.push(value.id);
-                        morecustomers.push(value.user_type);
-                        morecustomers.push("<a target='_blank' href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id=" + value.id + "'>" + value.name + "</a>");
-                        morecustomers.push(value.email);
-                        morecustomers.push(value.rating);
-                        if (value.total_wash > 0)
-                            morecustomers.push("<a target='_blank' href='<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id=" + value.id + "'>" + value.total_wash + "</a>");
-                        else
-                            morecustomers.push(value.total_wash);
-                        morecustomers.push(value.wash_points + "/5");
-                        morecustomers.push(value.phone);
-                        morecustomers.push(value.phone_verify_code);
-                        morecustomers.push(value.device_type);
-                        morecustomers.push(value.address);
-                        morecustomers.push(value.city);
-                        morecustomers.push(value.how_hear_mw);
-                        morecustomers.push("$" + value.total_spent);
-                        morecustomers.push(value.order_frequency);
-//                        morecustomers.push(value.totalSpentAverage);
-//                        morecustomers.push(value.totalOrderAverage);
-                        morecustomers.push(value.client_science);
-                        table.add(morecustomers).draw(false);
-                        //table.fnAddData(morecustomers, false);
-                        //console.log(upcomingwashes);
-                    });
-//table.fnDraw();
-                    ajaxrunning = 0;
-                }
-
-
-
+        $(document).ready(function () {
+            $('.csv-link').on('click', function () {
+                $('.buttons-csv').trigger('click');
             });
-        }
-    });
+            var nextUrl = $('#nexUrl').html();
+            $('.pagination').append(nextUrl);
+            $('.pagination').on("click", function (e) {
+                $('.pagination li:last').after('')
+                $('.pagination li:last').after($('#nexUrl').html());
+            });
 
-    $(document).ready(function () {
-        $('.csv-link').on('click', function () {
-            $('.buttons-csv').trigger('click');
         });
-    });
-</script>
+
+
+    </script>
