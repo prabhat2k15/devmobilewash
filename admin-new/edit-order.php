@@ -1186,15 +1186,13 @@ if ($getorder->transaction_id) {
                                                         $savedroplogdata = json_decode($result);
                                                         $addi_details=array();
                                                         if ($savedroplogdata->result == 'true'){
-                                                            foreach(array_reverse($savedroplogdata->logs) as $log){
+                                                            foreach($savedroplogdata->logs as $log){
                                                                 if($log->action == 'picupload'){
-                                                                    // echo $log->action_date;
                                                                     $temp = json_decode($log->addi_detail);
                                                                     $veh_key =  key($temp);
                                                                     $temp->$veh_key->action_date = $log->action_date;
                                                                     $temp->$veh_key->logid = $log->id;
                                                                     $addi_details[$veh_key] = $temp;
-                                                                    // print_r($addi_details);
                                                                 }
                                                             }
                                                         }// if ends
@@ -1251,9 +1249,13 @@ if ($getorder->transaction_id) {
                                                                     <div class='regular-car-box' id='regular-car-box-<?php echo $ind + 1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
                                                                         <div class="upload_Vihicle_image">
                                                                             <?php
-                                                                                if(!empty($addi_details[$veh->id])){
+                                                                            if(!empty($addi_details[$veh->id])){
+                                                                                if($addi_details[$veh->id]->{$veh->id}->user_type == 'admin'){
+                                                                                    echo 'Photo last taken by: '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
+                                                                                }else{
                                                                                     echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->logid.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }
+                                                                            }
                                                                             ?>
                                                                             <?php
                                                                             if (strpos($veh->vehicle_image, ROOT_URL) !== false) {
@@ -2166,8 +2168,16 @@ if ($getorder->transaction_id) {
                                                                     <?php if ($log->action == 'picupload'): 
                                                                         $temp = json_decode($log->addi_detail); 
                                                                         $key = key($temp);
+                                                                        if($temp->{$key}->user_type == 'admin'){
                                                                         ?>
-                                                                        <p style="margin-bottom: 10px;">Photo Taken by #<?php echo $log->id.' '.$temp->{$key}->agentname.' on '.date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                            <p style="margin-bottom: 10px;">Photo Taken by <?php echo $temp->{$key}->agentname.' on '.date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                        <?php 
+                                                                        }else{
+                                                                        ?>
+                                                                            <p style="margin-bottom: 10px;">Photo Taken by #<?php echo $log->id.' '.$temp->{$key}->agentname.' on '.date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
+                                                                        <?php     
+                                                                        }
+                                                                        ?>
                                                                     <?php endif; ?>
                                                                 <?php endforeach; ?>
                                                             </div>

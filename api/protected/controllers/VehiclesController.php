@@ -1014,13 +1014,11 @@ class VehiclesController extends Controller {
         $response = 'update successful';
 
         // activity logging
-        if (AES256CBC_STATUS == 1) {
-            // $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
-            $user_id = $this->aes256cbc_crypt($user_id, 'd', AES256CBC_API_PASS);
-        }
+        $username =  Users::model()->findByAttributes(array("id" => $user_id));
+        $username = $username->username;
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $agent_id = Yii::app()->request->getParam('agent_id') ? Yii::app()->request->getParam('agent_id') : 0;
-        $addi_detail = array($vehicle_id=>array('agentname'=>'Admin', 'user_type'=>$user_type));
+        $addi_detail = array($vehicle_id=>array('agentname'=>$username, 'user_type'=>$user_type));
         $addi_detail = json_encode($addi_detail);
         $logdata = array(
             'agent_id' => $user_id,
@@ -1032,7 +1030,7 @@ class VehiclesController extends Controller {
             
         Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 
-        
+
         $json = array(
             'result' => $result,
             'response' => $response,
