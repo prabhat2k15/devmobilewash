@@ -1194,7 +1194,7 @@ if ($getorder->transaction_id) {
                                                                     $temp->$veh_key->action_date = $log->action_date;
                                                                     $temp->$veh_key->logid = $log->id;
                                                                     $addi_details[$veh_key] = $temp;
-                                                                    print_r($addi_details);
+                                                                    // print_r($addi_details);
                                                                 }
                                                             }
                                                         }// if ends
