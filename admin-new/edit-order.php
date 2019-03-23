@@ -1456,11 +1456,15 @@ if ($getorder->transaction_id) {
                                                                     ?>
                                                                     <div class='classic-car-box' id='classic-car-box-<?php echo $ind + 1; ?>' style='border-top: 1px solid #ccc; margin-top: 20px;'>
                                                                         <div class="upload_Vihicle_image">
-                                                                            <?php
-                                                                                if(!empty($addi_details[$veh->id])){
+                                                                        <?php
+                                                                            if(!empty($addi_details[$veh->id])){
+                                                                                if($addi_details[$veh->id]->{$veh->id}->user_type == 'admin'){
+                                                                                    echo 'Photo last taken by: '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
+                                                                                }else{
                                                                                     echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->logid.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }
-                                                                            ?>
+                                                                            }
+                                                                        ?>
                                                                             <?php
                                                                             if (strpos($veh->vehicle_image, ROOT_URL) !== false) {
                                                                                 $imageNmae = $veh->vehicle_image;
