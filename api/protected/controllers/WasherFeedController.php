@@ -65,6 +65,7 @@ class washerFeedController extends Controller {
         }
     }
 
+    // get washer feed api 
     public function actionGetFeedList() {
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";

@@ -626,7 +626,7 @@ class WashingController extends Controller {
         $nonce = Yii::app()->request->getParam('nonce');
         $estimate_time = Yii::app()->request->getParam('estimate_time');
         $transaction_id = Yii::app()->request->getParam('transaction_id');
-	$is_cust_first_wash = 0;
+        $is_cust_first_wash = 0;
 
         $is_scheduled = 0;
         if (Yii::app()->request->getParam('is_scheduled'))
@@ -929,32 +929,35 @@ class WashingController extends Controller {
                     $fifth_disc = 0;
                     if ($fifth_wash_vehicles)
                         $fifth_disc = 5;
-            $pet_hair_vehicles_custom = array();
-            $pet_hair_vehicles_array = array();
-           if($pet_hair_vehicles) $pet_hair_vehicles_array = explode(",", $pet_hair_vehicles);
-           $car_packs_arr = explode(",", $package_ids);
-           $all_cars_arr = explode(",", $car_ids);
-           if(count($pet_hair_vehicles_array)){
-            foreach ($pet_hair_vehicles_array as $cid) {
-                $car_id_exists = Vehicle::model()->findByAttributes(array("id" => $cid));
-                if (count($car_id_exists)) {
-                    $key = array_search($cid, $all_cars_arr);
-                    $pethairprice = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE title = 'Pet Hair' AND package = '".$car_packs_arr[$key]."' AND vehicle_type = '".$car_id_exists->vehicle_type."'")
-                    ->queryAll();
+                    $pet_hair_vehicles_custom = array();
+                    $pet_hair_vehicles_array = array();
+                    if ($pet_hair_vehicles)
+                        $pet_hair_vehicles_array = explode(",", $pet_hair_vehicles);
+                    $car_packs_arr = explode(",", $package_ids);
+                    $all_cars_arr = explode(",", $car_ids);
+                    if (count($pet_hair_vehicles_array)) {
+                        foreach ($pet_hair_vehicles_array as $cid) {
+                            $car_id_exists = Vehicle::model()->findByAttributes(array("id" => $cid));
+                            if (count($car_id_exists)) {
+                                $key = array_search($cid, $all_cars_arr);
+                                $pethairprice = Yii::app()->db->createCommand("SELECT * FROM washing_plans_addons WHERE title = 'Pet Hair' AND package = '" . $car_packs_arr[$key] . "' AND vehicle_type = '" . $car_id_exists->vehicle_type . "'")
+                                        ->queryAll();
 
-                   $pet_hair_vehicles_custom[$cid] = $pethairprice[0]['price'];
-                   //$pet_hair_vehicles_custom[$cid] = "10.00";
-                }
-                else{
-                     $pet_hair_vehicles_custom[$cid] = "10.00";
-                }
-            }
-                }
+                                $pet_hair_vehicles_custom[$cid] = $pethairprice[0]['price'];
+                                //$pet_hair_vehicles_custom[$cid] = "10.00";
+                            } else {
+                                $pet_hair_vehicles_custom[$cid] = "10.00";
+                            }
+                        }
+                    }
 
-if(count($pet_hair_vehicles_custom)) $pet_hair_vehicles_custom = json_encode($pet_hair_vehicles_custom);
-else $pet_hair_vehicles_custom = '';
+                    if (count($pet_hair_vehicles_custom))
+                        $pet_hair_vehicles_custom = json_encode($pet_hair_vehicles_custom);
+                    else
+                        $pet_hair_vehicles_custom = '';
 
-if(!$customers_id_check->total_wash) $is_cust_first_wash = 1;
+                    if (!$customers_id_check->total_wash)
+                        $is_cust_first_wash = 1;
                     Washingrequests::model()->updateByPk($washrequestid, array('street_name' => $street_name, 'city' => $order_city, 'state' => $order_state, 'zipcode' => $order_zipcode, 'pet_hair_vehicles' => $pet_hair_vehicles, "pet_hair_vehicles_custom_amount" => $pet_hair_vehicles_custom, 'lifted_vehicles' => $lifted_vehicles, 'exthandwax_vehicles' => $exthandwax_vehicles, 'extplasticdressing_vehicles' => $extplasticdressing_vehicles, 'extclaybar_vehicles' => $extclaybar_vehicles, 'waterspotremove_vehicles' => $waterspotremove_vehicles, 'upholstery_vehicles' => $upholstery_vehicles, 'floormat_vehicles' => $floormat_vehicles, 'fifth_wash_vehicles' => $fifth_wash_vehicles, 'fifth_wash_discount' => $fifth_disc, 'coupon_discount' => $coupon_amount, 'coupon_code' => $coupon_code, 'tip_amount' => $tip_amount, 'wash_request_position' => $wash_request_position, 'wash_now_fee' => $wash_now_fee, 'wash_later_fee' => $wash_later_fee, 'inc_transaction_fee' => 1, 'is_cust_first_wash' => $is_cust_first_wash));
 
                     if ($old_tip_amount[0]['tip_amount']) {
@@ -3066,53 +3069,53 @@ if(!$customers_id_check->total_wash) $is_cust_first_wash = 1;
 
 
                 $mobile_receipt .= "Total: $" . $kartdata->net_price . "\r\n";
-                /*if (APP_ENV == 'real') {
-                    $this->layout = "xmlLayout";
+                /* if (APP_ENV == 'real') {
+                  $this->layout = "xmlLayout";
 
-                    require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
-                    require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+                  require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                  require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                    $account_sid = TWILIO_SID;
-                    $auth_token = TWILIO_AUTH_TOKEN;
-                    $client = new Services_Twilio($account_sid, $auth_token);
+                  $account_sid = TWILIO_SID;
+                  $auth_token = TWILIO_AUTH_TOKEN;
+                  $client = new Services_Twilio($account_sid, $auth_token);
 
-                    $message = "WASH NOW TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->created_date)) . " @ " . date('h:i A', strtotime($wrequest_id_check->created_date)) . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
+                  $message = "WASH NOW TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->created_date)) . " @ " . date('h:i A', strtotime($wrequest_id_check->created_date)) . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
 
 
-                    try {
-                        $sendmessage = $client->account->messages->create(array(
-                            'To' => '8183313631',
-                            'From' => '+13103128070',
-                            'Body' => $message,
-                        ));
-                    } catch (Services_Twilio_RestException $e) {
-                        //echo  $e;
-                    }
+                  try {
+                  $sendmessage = $client->account->messages->create(array(
+                  'To' => '8183313631',
+                  'From' => '+13103128070',
+                  'Body' => $message,
+                  ));
+                  } catch (Services_Twilio_RestException $e) {
+                  //echo  $e;
+                  }
 
-                    try {
-                        $sendmessage = $client->account->messages->create(array(
-                            'To' => '3109999334',
-                            'From' => '+13103128070',
-                            'Body' => $message,
-                        ));
-                    } catch (Services_Twilio_RestException $e) {
-                        //echo  $e;
-                    }
+                  try {
+                  $sendmessage = $client->account->messages->create(array(
+                  'To' => '3109999334',
+                  'From' => '+13103128070',
+                  'Body' => $message,
+                  ));
+                  } catch (Services_Twilio_RestException $e) {
+                  //echo  $e;
+                  }
 
-                    try {
-                        $sendmessage = $client->account->messages->create(array(
-                            'To' => '3103442534',
-                            'From' => '+13103128070',
-                            'Body' => $message,
-                        ));
-                    } catch (Services_Twilio_RestException $e) {
-                        //echo  $e;
-                    }
-                }*/
+                  try {
+                  $sendmessage = $client->account->messages->create(array(
+                  'To' => '3103442534',
+                  'From' => '+13103128070',
+                  'Body' => $message,
+                  ));
+                  } catch (Services_Twilio_RestException $e) {
+                  //echo  $e;
+                  }
+                  } */
             }
-	    
-	    Washingrequests::model()->updateByPk($wash_request_id, array("all_reject_ids" => '', "agent_reject_ids" => ''));
-             Washingrequests::model()->updateAll(array("all_reject_ids" => '', "agent_reject_ids" => ''), 'status=:status', array(':status' => 0));
+
+            Washingrequests::model()->updateByPk($wash_request_id, array("all_reject_ids" => '', "agent_reject_ids" => ''));
+            Washingrequests::model()->updateAll(array("all_reject_ids" => '', "agent_reject_ids" => ''), 'status=:status', array(':status' => 0));
         }
 
         if ($washer_arrive_hit == 1) {
@@ -4334,8 +4337,8 @@ if(!$customers_id_check->total_wash) $is_cust_first_wash = 1;
                     $notify_msg = urlencode($notify_msg);
 
                     $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
-                    file_put_contents("android_notificaiton.log",$notifyurl."\r\n",FILE_APPEND);
-		    $ch = curl_init();
+                    file_put_contents("android_notificaiton.log", $notifyurl . "\r\n", FILE_APPEND);
+                    $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $notifyurl);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -4984,18 +4987,18 @@ if(!$customers_id_check->total_wash) $is_cust_first_wash = 1;
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
 
-	if(Yii::app()->request->getParam('api_password') != AES256CBC_API_PASS){
-        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+        if (Yii::app()->request->getParam('api_password') != AES256CBC_API_PASS) {
+            $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
+            if (!$token_check) {
+                $json = array(
+                    'result' => 'false',
+                    'response' => 'Invalid request'
+                );
+                echo json_encode($json);
+                die();
+            }
         }
-	}
 
         $customer_id = Yii::app()->request->getParam('customer_id');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
@@ -5014,10 +5017,12 @@ if(!$customers_id_check->total_wash) $is_cust_first_wash = 1;
         $api_password = '';
         $api_password = Yii::app()->request->getParam('api_password');
         $cancel_feedback = Yii::app()->request->getParam('cancel_feedback');
-	$old_tip_amount = '';
-if(Yii::app()->request->getParam('old_tip_amount')) $old_tip_amount = Yii::app()->request->getParam('old_tip_amount');
-	$device_type = '';
-if(Yii::app()->request->getParam('device_type')) $device_type = Yii::app()->request->getParam('device_type');
+        $old_tip_amount = '';
+        if (Yii::app()->request->getParam('old_tip_amount'))
+            $old_tip_amount = Yii::app()->request->getParam('old_tip_amount');
+        $device_type = '';
+        if (Yii::app()->request->getParam('device_type'))
+            $device_type = Yii::app()->request->getParam('device_type');
 
         $json = array();
         $car_id_check = true;
@@ -5025,7 +5030,7 @@ if(Yii::app()->request->getParam('device_type')) $device_type = Yii::app()->requ
         $result = 'false';
         $response = 'Pass the required parameters';
 
-	
+
         if ((isset($customer_id) && !empty($customer_id)) && (isset($wash_request_id) && !empty($wash_request_id))) {
 
             if ((AES256CBC_STATUS == 1) && ($api_password != AES256CBC_API_PASS)) {
@@ -5035,7 +5040,7 @@ if(Yii::app()->request->getParam('device_type')) $device_type = Yii::app()->requ
 
             $customers_id_check = Customers::model()->findByAttributes(array("id" => $customer_id));
             $washrequest_id_check = Washingrequests::model()->findByAttributes(array("id" => $wash_request_id, "customer_id" => $customer_id));
-	    
+
             $cust_feedback_check = Washingfeedbacks::model()->findByAttributes(array("wash_request_id" => $wash_request_id));
 
 
@@ -5232,47 +5237,48 @@ if(Yii::app()->request->getParam('device_type')) $device_type = Yii::app()->requ
                 $to = Vargas::Obj()->getAdminToEmail();
                 $from = Vargas::Obj()->getAdminFromEmail();
                 $subject = '';
-                if ($washrequest_id_check->status == 4){
+                if ($washrequest_id_check->status == 4) {
                     $subject = 'Customer Wash Complete Feedback';
-                
-                    if ((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5) || (!empty($comments))) Vargas::Obj()->SendMail($to, $from, $message, $subject . " - Order #0000" . $wash_request_id, 'mail-receipt');
+
+                    if ((!empty($washrequest_id_check->is_feedback_sent)) || (number_format($ratings, 1, '.', '') < 4.5) || (!empty($comments)))
+                        Vargas::Obj()->SendMail($to, $from, $message, $subject . " - Order #0000" . $wash_request_id, 'mail-receipt');
                 }
-                if (($washrequest_id_check->status == 5) || ($washrequest_id_check->status == 6)){
+                if (($washrequest_id_check->status == 5) || ($washrequest_id_check->status == 6)) {
                     $subject = 'Customer Reason for Cancellation';
-                    if ($comments) Vargas::Obj()->SendMail($to, $from, $message, $subject . " - Order #0000" . $wash_request_id, 'mail-receipt');
+                    if ($comments)
+                        Vargas::Obj()->SendMail($to, $from, $message, $subject . " - Order #0000" . $wash_request_id, 'mail-receipt');
                 }
 
                 Customers::model()->updateByPk($customer_id, array('fb_id' => $fb_id));
-		
-                if($device_type == 'IOS'){
-			
-		if (number_format($tip_amount, 2) != number_format($old_tip_amount, 2)) {
-		
-                    $washeractionlogdata = array(
-                        'wash_request_id' => $wash_request_id,
-                        //'admin_username' => $admin_username,
-                        'agent_id' => $washrequest_id_check->agent_id,
-                        'addi_detail' => '$' . number_format($old_tip_amount, 2) . ' to $' . number_format($tip_amount, 2),
-                        'action' => 'customertipamount',
-                        'action_date' => date('Y-m-d H:i:s'));
 
-                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
-                }
-	    }
-	     else{
-		if (number_format($tip_amount, 2) != number_format($washrequest_id_check->tip_amount, 2)) {
-		
-                    $washeractionlogdata = array(
-                        'wash_request_id' => $wash_request_id,
-                        //'admin_username' => $admin_username,
-                        'agent_id' => $washrequest_id_check->agent_id,
-                        'addi_detail' => '$' . number_format($washrequest_id_check->tip_amount, 2) . ' to $' . number_format($tip_amount, 2),
-                        'action' => 'customertipamount',
-                        'action_date' => date('Y-m-d H:i:s'));
+                if ($device_type == 'IOS') {
 
-                    Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                    if (number_format($tip_amount, 2) != number_format($old_tip_amount, 2)) {
+
+                        $washeractionlogdata = array(
+                            'wash_request_id' => $wash_request_id,
+                            //'admin_username' => $admin_username,
+                            'agent_id' => $washrequest_id_check->agent_id,
+                            'addi_detail' => '$' . number_format($old_tip_amount, 2) . ' to $' . number_format($tip_amount, 2),
+                            'action' => 'customertipamount',
+                            'action_date' => date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                    }
+                } else {
+                    if (number_format($tip_amount, 2) != number_format($washrequest_id_check->tip_amount, 2)) {
+
+                        $washeractionlogdata = array(
+                            'wash_request_id' => $wash_request_id,
+                            //'admin_username' => $admin_username,
+                            'agent_id' => $washrequest_id_check->agent_id,
+                            'addi_detail' => '$' . number_format($washrequest_id_check->tip_amount, 2) . ' to $' . number_format($tip_amount, 2),
+                            'action' => 'customertipamount',
+                            'action_date' => date('Y-m-d H:i:s'));
+
+                        Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
+                    }
                 }
-	    }
                 if (is_numeric($ratings) && (!$cancel_feedback))
                     $logcomment = $comments . " (Ratings: " . $ratings . ")";
                 else
@@ -5331,18 +5337,18 @@ if(Yii::app()->request->getParam('device_type')) $device_type = Yii::app()->requ
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
 
-	if(Yii::app()->request->getParam('api_password') != AES256CBC_API_PASS){
-        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+        if (Yii::app()->request->getParam('api_password') != AES256CBC_API_PASS) {
+            $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
+            if (!$token_check) {
+                $json = array(
+                    'result' => 'false',
+                    'response' => 'Invalid request'
+                );
+                echo json_encode($json);
+                die();
+            }
         }
-	}
 
         $agent_id = Yii::app()->request->getParam('agent_id');
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
@@ -6013,7 +6019,7 @@ if(Yii::app()->request->getParam('device_type')) $device_type = Yii::app()->requ
                         curl_close($ch);
                     }
 
-$agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['agent_id']));
+                    $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['agent_id']));
 
                     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $nomeetwash['agent_id'] . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -6038,37 +6044,37 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                             $notifyresult = curl_exec($ch);
                         curl_close($ch);
                     }
-		    
-		    	    if ((APP_ENV == 'real')) {
-                                $this->layout = "xmlLayout";
 
-                                //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+                    if ((APP_ENV == 'real')) {
+                        $this->layout = "xmlLayout";
 
-                                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
-                                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+                        //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-                                $account_sid = TWILIO_SID;
-                                $auth_token = TWILIO_AUTH_TOKEN;
+                        require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                        require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                                $client = new Services_Twilio($account_sid, $auth_token);
+                        $account_sid = TWILIO_SID;
+                        $auth_token = TWILIO_AUTH_TOKEN;
 
-                                try {
-                                    $sendmessage = $client->account->messages->create(array(
-                                        'To' => $agent_details->phone_number,
-                                        'From' => '+13103128070',
-                                        'Body' => $message,
-                                    ));
-                                } catch (Services_Twilio_RestException $e) {
-                                    //echo  $e;
-                                }
-          }
+                        $client = new Services_Twilio($account_sid, $auth_token);
+
+                        try {
+                            $sendmessage = $client->account->messages->create(array(
+                                'To' => $agent_details->phone_number,
+                                'From' => '+13103128070',
+                                'Body' => $message,
+                            ));
+                        } catch (Services_Twilio_RestException $e) {
+                            //echo  $e;
+                        }
+                    }
 
 
                     Washingrequests::model()->updateByPk($nomeetwash['id'], array('meet_washer_10min_alert' => 1));
                 }
                 if (($min_diff >= 15) && (!$nomeetwash['meet_washer_20min_alert'])) {
-			
-			$agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['agent_id']));
+
+                    $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['agent_id']));
 
                     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $nomeetwash['agent_id'] . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
@@ -6094,30 +6100,30 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                             $notifyresult = curl_exec($ch);
                         curl_close($ch);
                     }
-		    
-		   if ((APP_ENV == 'real')) {
-                                $this->layout = "xmlLayout";
 
-                                //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
+                    if ((APP_ENV == 'real')) {
+                        $this->layout = "xmlLayout";
 
-                                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
-                                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+                        //include($phpExcelPath . DIRECTORY_SEPARATOR . 'CList.php');
 
-                                $account_sid = TWILIO_SID;
-                                $auth_token = TWILIO_AUTH_TOKEN;
+                        require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                        require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
 
-                                $client = new Services_Twilio($account_sid, $auth_token);
+                        $account_sid = TWILIO_SID;
+                        $auth_token = TWILIO_AUTH_TOKEN;
 
-                                try {
-                                    $sendmessage = $client->account->messages->create(array(
-                                        'To' => $agent_details->phone_number,
-                                        'From' => '+13103128070',
-                                        'Body' => $message,
-                                    ));
-                                } catch (Services_Twilio_RestException $e) {
-                                    //echo  $e;
-                                }
-          }
+                        $client = new Services_Twilio($account_sid, $auth_token);
+
+                        try {
+                            $sendmessage = $client->account->messages->create(array(
+                                'To' => $agent_details->phone_number,
+                                'From' => '+13103128070',
+                                'Body' => $message,
+                            ));
+                        } catch (Services_Twilio_RestException $e) {
+                            //echo  $e;
+                        }
+                    }
 
                     Washingrequests::model()->updateByPk($nomeetwash['id'], array('meet_washer_20min_alert' => 1));
                 }
@@ -6150,7 +6156,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
         $wash_request_id = Yii::app()->request->getParam('wash_request_id');
         $status = Yii::app()->request->getParam('status');
-        
+
         $is_scheduled = Yii::app()->request->getParam('is_scheduled');
         $json = array();
         $result = 'false';
@@ -6161,7 +6167,6 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
             if (AES256CBC_STATUS == 1) {
                 $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
                 $status = $this->aes256cbc_crypt($status, 'd', AES256CBC_API_PASS);
-                
             }
             $status = -1 * abs($status);
 
@@ -6254,26 +6259,26 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                         $agent_has_order = 0;
                         foreach ($ondmeandpendingwashes as $pwash) {
                             $mile_check = 0;
-                             $theta = $pwash->longitude - $agentlocation->longitude;
-                    $dist = sin(deg2rad($pwash->latitude)) * sin(deg2rad($agentlocation->latitude)) + cos(deg2rad($pwash->latitude)) * cos(deg2rad($agentlocation->latitude)) * cos(deg2rad($theta));
-                    $dist = acos($dist);
-                    $dist = rad2deg($dist);
-                    $mile_check = $dist * 60 * 1.1515;
-                    $unit = strtoupper($unit);
-                        if (($mile_check > 0) && ($mile_check <= $app_settings[0]['washer_search_radius'])) {
-                            $rejected_ids = explode(",", $pwash->agent_reject_ids);
-                           
-                            if (!in_array($status, $rejected_ids)) {
-                            
-                                $agent_has_order = 1;
-                                
-                                break;
+                            $theta = $pwash->longitude - $agentlocation->longitude;
+                            $dist = sin(deg2rad($pwash->latitude)) * sin(deg2rad($agentlocation->latitude)) + cos(deg2rad($pwash->latitude)) * cos(deg2rad($agentlocation->latitude)) * cos(deg2rad($theta));
+                            $dist = acos($dist);
+                            $dist = rad2deg($dist);
+                            $mile_check = $dist * 60 * 1.1515;
+                            $unit = strtoupper($unit);
+                            if (($mile_check > 0) && ($mile_check <= $app_settings[0]['washer_search_radius'])) {
+                                $rejected_ids = explode(",", $pwash->agent_reject_ids);
+
+                                if (!in_array($status, $rejected_ids)) {
+
+                                    $agent_has_order = 1;
+
+                                    break;
+                                }
                             }
                         }
-                    }
 
                         if (!$agent_has_order) {
-                            
+
                             $ondmeandagentrejectwashes = Washingrequests::model()->findAllByAttributes(array("status" => 0, "is_scheduled" => 0), array('order' => 'order_for ASC'));
                             foreach ($ondmeandagentrejectwashes as $rwash) {
                                 $rejected_ids = explode(",", $rwash->agent_reject_ids);
@@ -9100,12 +9105,12 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                         $vehiclemodel->updateAll($carresetdata, 'id=:id', array(':id' => $car));
                     }
 
-		    $data = array('status' => $status, 'order_canceled_at' => date("Y-m-d H:i:s"));
+                    $data = array('status' => $status, 'order_canceled_at' => date("Y-m-d H:i:s"));
                     $washrequestmodel = new Washingrequests;
                     $washrequestmodel->attributes = $data;
 
                     $resUpdate = $washrequestmodel->updateAll($data, 'id=:id', array(':id' => $wash_request_id));
-		    
+
                     $result = 'true';
                     if ($status == 5)
                         $response = 'Wash request is canceled by client';
@@ -9522,12 +9527,11 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                     }
                 }
             }
-	    
-	     if(($result == 'true') && ($wash_now_canceled == 1)) {
-		Washingrequests::model()->updateByPk($wrequest_id_check->id, array("all_reject_ids" => '', "agent_reject_ids" => ''));	
-		Washingrequests::model()->updateAll(array("all_reject_ids" => '', "agent_reject_ids" => ''), 'status=:status', array(':status' => 0));
-	}
-		
+
+            if (($result == 'true') && ($wash_now_canceled == 1)) {
+                Washingrequests::model()->updateByPk($wrequest_id_check->id, array("all_reject_ids" => '', "agent_reject_ids" => ''));
+                Washingrequests::model()->updateAll(array("all_reject_ids" => '', "agent_reject_ids" => ''), 'status=:status', array(':status' => 0));
+            }
         } else {
             $result = 'false';
             $response = 'Pass the required parameters';
@@ -9694,7 +9698,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
                                     $notify_msg = urlencode($message2);
 
-                                    $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type."&notification_type=wash_now_notify";
+                                    $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type . "&notification_type=wash_now_notify";
                                     //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
                                     $ch = curl_init();
                                     curl_setopt($ch, CURLOPT_URL, $notifyurl);
@@ -10305,14 +10309,14 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-        /*if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }*/
+        /* if (!$token_check) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
         /* Checking for post(month) parameters */
         $order_month = '';
         if (!empty(Yii::app()->request->getParam('start')) && !empty(Yii::app()->request->getParam('end'))) {
@@ -10441,7 +10445,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                 $json['start'] = date('Y-m-d', strtotime($created_date));
                 //$orderbycustomer['total_wash'] = 1;
                 //if ($ArrCustomers_date[$orderbycustomer['customer_id']] == date('Y-m-d', strtotime($created_date))) {
-                  //  $orderbycustomer['total_wash'] = 0;
+                //  $orderbycustomer['total_wash'] = 0;
                 //}
                 if ($wash_request_position == APP_ENV) {
 
@@ -10464,8 +10468,8 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                         "upholstery_vehicles" => $orderbycustomer['upholstery_vehicles'],
                         "floormat_vehicles" => $orderbycustomer['floormat_vehicles'],
                         "total_wash" => $orderbycustomer['total_wash'],
-			"complete_order" => $orderbycustomer['complete_order'],
-			"is_cust_first_wash" => $orderbycustomer['is_cust_first_wash'],
+                        "complete_order" => $orderbycustomer['complete_order'],
+                        "is_cust_first_wash" => $orderbycustomer['is_cust_first_wash'],
                         "zip_color" => $zipcolor,
                         "orderstatus" => $orderstatus,
                     );
@@ -10483,19 +10487,18 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
                   }
                   } */
 
-		//$total_new_orders = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM washing_requests WHERE is_cust_first_wash = 1 AND status = 4 AND DATE_FORMAT(order_for,'%Y-%m-%d') = '".$value['start']."'")->queryAll();
+                //$total_new_orders = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM washing_requests WHERE is_cust_first_wash = 1 AND status = 4 AND DATE_FORMAT(order_for,'%Y-%m-%d') = '".$value['start']."'")->queryAll();
                 //$total_new_count = $total_new_orders[0]['countid'];
-		//echo $value['start']." ".$total_new_orders[0]['countid']."<br>";
-		$cancledOrder = "N/A";
+                //echo $value['start']." ".$total_new_orders[0]['countid']."<br>";
+                $cancledOrder = "N/A";
                 $data[$value['start']]['OrderCancled'] = $cancledOrder;
                 if ($value['orderstatus'] == 5 || $value['orderstatus'] == 6) {
                     $cancledOrder = "OrderCancled";
                 }
 
                 if (($value['is_cust_first_wash']) && ($value['orderstatus'] == 4)) {
-                        //$data[$value['start']]['new_customer'][] = array_fill(0, $total_new_count, 1);
-			$data[$value['start']]['new_customer'][] = 1;
- 
+                    //$data[$value['start']]['new_customer'][] = array_fill(0, $total_new_count, 1);
+                    $data[$value['start']]['new_customer'][] = 1;
                 }
 
 //                if ((($value['zip_color'] == '') || ($value['zip_color'] == 'blue')) && ($value['title'] != 'Canceled')) {
@@ -12145,10 +12148,10 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
 
 
                             if (($cancelresult['success'] == 1)) {
-                                /*if ($cust_exists->client_position == 'real')
-                                    $cancelsettle = Yii::app()->braintree->submitforsettlement_real($cancelresult['transaction_id']);
-                                else
-                                    $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['transaction_id']);*/
+                                /* if ($cust_exists->client_position == 'real')
+                                  $cancelsettle = Yii::app()->braintree->submitforsettlement_real($cancelresult['transaction_id']);
+                                  else
+                                  $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['transaction_id']); */
                                 $result = 'true';
                                 $response = 'Order canceled';
                                 $cancel_price = $fee;
@@ -13356,7 +13359,7 @@ $agent_details = Agents::model()->findByAttributes(array('id' => $nomeetwash['ag
         return $hours;
     }
 
-public function actiongetallschedulewashes() {
+    public function actiongetallschedulewashes() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -14222,10 +14225,10 @@ public function actiongetallschedulewashes() {
                     else {
 
                         //if (($min_diff <= 0) && ($schedwash->schedule_time) && (!$schedwash->network_error_push_sent)) {
-			if (($min_diff <= 0) && ($schedwash->schedule_time)) {
+                        if (($min_diff <= 0) && ($schedwash->schedule_time)) {
 
                             Washingrequests::model()->updateByPk($schedwash->id, array("status" => 5, "no_washer_cancel" => 1, "network_error_push_sent" => 1));
-                            
+
                             if ($schedwash->transaction_id) {
                                 if ($schedwash->wash_request_position == 'real')
                                     $voidresult = Yii::app()->braintree->void_real($schedwash->transaction_id);
@@ -14233,30 +14236,31 @@ public function actiongetallschedulewashes() {
                                     $voidresult = Yii::app()->braintree->void($schedwash->transaction_id);
                             }
 
-                             $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '".$schedwash->customer_id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
+                            $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $schedwash->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
-                              $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '61' ")->queryAll();
-                              $message = $pushmsg[0]['message'];
+                            $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '61' ")->queryAll();
+                            $message = $pushmsg[0]['message'];
 
-                              if(count($clientdevices)){
-                              foreach($clientdevices as $ctdevice){
-                              //$message =  "You have a new scheduled wash request.";
-                              //echo $agentdetails['mobile_type'];
-                              $device_type = strtolower($ctdevice['device_type']);
-                              $notify_token = $ctdevice['device_token'];
-                              $alert_type = "strong";
-                              $notify_msg = urlencode($message);
+                            if (count($clientdevices)) {
+                                foreach ($clientdevices as $ctdevice) {
+                                    //$message =  "You have a new scheduled wash request.";
+                                    //echo $agentdetails['mobile_type'];
+                                    $device_type = strtolower($ctdevice['device_type']);
+                                    $notify_token = $ctdevice['device_token'];
+                                    $alert_type = "strong";
+                                    $notify_msg = urlencode($message);
 
-                              $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-                              //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-                              $ch = curl_init();
-                              curl_setopt($ch,CURLOPT_URL,$notifyurl);
-                              curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+                                    $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
+                                    //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
+                                    $ch = curl_init();
+                                    curl_setopt($ch, CURLOPT_URL, $notifyurl);
+                                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-                              if($notify_msg) $notifyresult = curl_exec($ch);
-                              curl_close($ch);
-                              }
-                              } 
+                                    if ($notify_msg)
+                                        $notifyresult = curl_exec($ch);
+                                    curl_close($ch);
+                                }
+                            }
 
                             $customers_details = Customers::model()->findByPk($schedwash->customer_id);
                             $cust_firstname = $customers_details->first_name;
@@ -14277,15 +14281,15 @@ public function actiongetallschedulewashes() {
 					<p style='color: #333;'>MobileWash</p>";
 
                             Vargas::Obj()->SendMail($customers_details->email, $from, $message, "MobileWash", 'mail-receipt');
-			
-    $logdata = array(
-                            'agent_id' => $schedwash->agent_id,
-                            'wash_request_id' => $schedwash->id,
-                            'agent_company_id' => 0,
-                            'action' => 'scheduleauto-canceled',
-                            'action_date' => date('Y-m-d H:i:s'));
 
-                        Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
+                            $logdata = array(
+                                'agent_id' => $schedwash->agent_id,
+                                'wash_request_id' => $schedwash->id,
+                                'agent_company_id' => 0,
+                                'action' => 'scheduleauto-canceled',
+                                'action_date' => date('Y-m-d H:i:s'));
+
+                            Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
 
                             if (APP_ENV == 'real') {
 
@@ -14445,12 +14449,12 @@ public function actiongetallschedulewashes() {
                                 }
                             }
 
-                            /*$logdata = array(
-                                'wash_request_id' => $schedwash->id,
-                                'action' => 'scheduleauto-canceled',
-                                'action_date' => date('Y-m-d H:i:s'));
+                            /* $logdata = array(
+                              'wash_request_id' => $schedwash->id,
+                              'action' => 'scheduleauto-canceled',
+                              'action_date' => date('Y-m-d H:i:s'));
 
-                            Yii::app()->db->createCommand()->insert('activity_logs', $logdata);*/
+                              Yii::app()->db->createCommand()->insert('activity_logs', $logdata); */
                         }
                     }
                 }
@@ -15191,7 +15195,7 @@ public function actiongetallschedulewashes() {
 
                         $notify_msg = urlencode($message2);
 
-                        $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type."&notification_type=wash_now_notify";
+                        $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type . "&notification_type=wash_now_notify";
                         //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
                         //print_r($notifyurl);
                         $ch = curl_init();
@@ -15696,11 +15700,11 @@ public function actiongetallschedulewashes() {
             }
 
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $washer_request_id));
-	$agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
+            $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
             $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $wrequest_id_check->agent_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '49' ")->queryAll();
-	    
+
             $message = $pushmsg[0]['message'];
 
             foreach ($agentdevices as $agdevice) {
@@ -15721,7 +15725,7 @@ public function actiongetallschedulewashes() {
                     $notifyresult = curl_exec($ch);
                 curl_close($ch);
             }
-	    
+
 
 
             $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $wrequest_id_check->customer_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
@@ -15796,11 +15800,11 @@ public function actiongetallschedulewashes() {
             }
 
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $washer_request_id));
-$agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
+            $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
             $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $wrequest_id_check->agent_id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
 
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '51' ")->queryAll();
-	    
+
             $message = $pushmsg[0]['message'];
 
             foreach ($agentdevices as $agdevice) {
@@ -15821,9 +15825,9 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
                     $notifyresult = curl_exec($ch);
                 curl_close($ch);
             }
-	    
 
-	  
+
+
             $result = 'true';
             $response = 'notification sent';
         }
@@ -15950,16 +15954,16 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
 
 
                             if (($cancelresult['success'] == 1)) {
-                                /*if ($cust_exists->client_position == 'real')
-                                    $cancelsettle = Yii::app()->braintree->submitforsettlement_real($cancelresult['transaction_id']);
-                                else
-                                    $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['transaction_id']);*/
+                                /* if ($cust_exists->client_position == 'real')
+                                  $cancelsettle = Yii::app()->braintree->submitforsettlement_real($cancelresult['transaction_id']);
+                                  else
+                                  $cancelsettle = Yii::app()->braintree->submitforsettlement($cancelresult['transaction_id']); */
                                 $result = 'true';
                                 $response = 'Order canceled';
                                 $cancel_price = $fee;
                                 $washer_cancel_fee = $fee - 5;
                                 if (($order_exists->status > 1) && ($order_exists->status <= 3))
-                                    Washingrequests::model()->updateByPk($id, array('status' => 7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $washer_cancel_fee,  'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s"), 'canceled_wash_transaction_id' => $cancelresult['transaction_id']));
+                                    Washingrequests::model()->updateByPk($id, array('status' => 7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'cancel_fee' => $fee, 'company_cancel' => $company_cancel, 'washer_cancel_fee' => $washer_cancel_fee, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s"), 'canceled_wash_transaction_id' => $cancelresult['transaction_id']));
                                 else
                                     Washingrequests::model()->updateByPk($id, array('status' => 7, 'order_canceled_at' => date("Y-m-d H:i:s"), 'company_cancel' => $company_cancel, 'cancel_fee' => $fee, 'washer_cancel_fee' => $washer_cancel_fee, 'canceled_washer_id' => $order_exists->agent_id, 'wash_begin' => date("Y-m-d H:i:s"), 'canceled_wash_transaction_id' => $cancelresult['transaction_id']));
 
@@ -16357,157 +16361,159 @@ $agent_det = Agents::model()->findByPk($wrequest_id_check->agent_id);
             }
 
             $wrequest_id_check = Washingrequests::model()->findByAttributes(array('id' => $wash_request_id));
-	    
-		 $agent_detail = Agents::model()->findByAttributes(array("id" => $wrequest_id_check->agent_id));
-		 $cust_detail = Customers::model()->findByPk($wrequest_id_check->customer_id);
-		 
-                $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
-                $kartdata = json_decode($kartapiresult);
 
-                foreach ($kartdata->vehicles as $ind => $vehicle) {
-                    $mobile_receipt .= $vehicle->brand_name . " " . $vehicle->model_name . "\r\n" . $vehicle->vehicle_washing_package . " $" . $vehicle->vehicle_washing_price . "\r\nHandling $1.00\r\n";
+            $agent_detail = Agents::model()->findByAttributes(array("id" => $wrequest_id_check->agent_id));
+            $cust_detail = Customers::model()->findByPk($wrequest_id_check->customer_id);
 
-                    if ($vehicle->surge_vehicle_fee > 0) {
-                        $mobile_receipt .= "Surge $" . $vehicle->surge_vehicle_fee . "\r\n";
-                    }
-                    if ($vehicle->extclaybar_vehicle_fee > 0) {
+            $kartapiresult = $this->washingkart($wash_request_id, API_KEY, 0, AES256CBC_API_PASS, $api_token, $t1, $t2, $user_type, $user_id);
+            $kartdata = json_decode($kartapiresult);
 
-                        $mobile_receipt .= "Clay $" . $vehicle->extclaybar_vehicle_fee . "\r\n";
-                    }
-                    if ($vehicle->waterspotremove_vehicle_fee > 0) {
+            foreach ($kartdata->vehicles as $ind => $vehicle) {
+                $mobile_receipt .= $vehicle->brand_name . " " . $vehicle->model_name . "\r\n" . $vehicle->vehicle_washing_package . " $" . $vehicle->vehicle_washing_price . "\r\nHandling $1.00\r\n";
 
-                        $mobile_receipt .= "Spot $" . $vehicle->waterspotremove_vehicle_fee . "\r\n";
-                    }
-                    if ($vehicle->exthandwax_vehicle_fee > 0) {
+                if ($vehicle->surge_vehicle_fee > 0) {
+                    $mobile_receipt .= "Surge $" . $vehicle->surge_vehicle_fee . "\r\n";
+                }
+                if ($vehicle->extclaybar_vehicle_fee > 0) {
 
-                        $mobile_receipt .= "Wax $" . $vehicle->exthandwax_vehicle_fee . "\r\n";
-                    }
+                    $mobile_receipt .= "Clay $" . $vehicle->extclaybar_vehicle_fee . "\r\n";
+                }
+                if ($vehicle->waterspotremove_vehicle_fee > 0) {
 
-                    if ($vehicle->pet_hair_fee > 0) {
+                    $mobile_receipt .= "Spot $" . $vehicle->waterspotremove_vehicle_fee . "\r\n";
+                }
+                if ($vehicle->exthandwax_vehicle_fee > 0) {
 
-                        $mobile_receipt .= "Extra Cleaning $" . $vehicle->pet_hair_fee . "\r\n";
-                    }
-                    if ($vehicle->lifted_vehicle_fee > 0) {
-
-                        $mobile_receipt .= "Lifted $" . $vehicle->lifted_vehicle_fee . "\r\n";
-                    }
-
-                    if ($vehicle->extplasticdressing_vehicle_fee > 0) {
-
-                        $mobile_receipt .= "Dressing $" . $vehicle->extplasticdressing_vehicle_fee . "\r\n";
-                    }
-
-                    if ($vehicle->upholstery_vehicle_fee > 0) {
-
-                        $mobile_receipt .= "Upholstery $" . $vehicle->upholstery_vehicle_fee . "\r\n";
-                    }
-
-                    if ($vehicle->floormat_vehicle_fee > 0) {
-
-                        $mobile_receipt .= "Floormat $" . $vehicle->floormat_vehicle_fee . "\r\n";
-                    }
-
-                    if (($ind == 0) && ($kartdata->coupon_discount > 0)) {
-
-                        $mobile_receipt .= "Promo: " . $kartdata->coupon_code . " -$" . number_format($kartdata->coupon_discount, 2) . "\r\n";
-                    }
-
-
-                    if ($vehicle->fifth_wash_discount > 0) {
-
-                        $mobile_receipt .= "5th -$" . number_format($vehicle->fifth_wash_discount, 2) . "\r\n";
-                    }
-
-                    if (($vehicle->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)) {
-
-                        $mobile_receipt .= "Bundle -$1.00\r\n";
-                    }
-
-                    if (($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)) {
-
-                        $mobile_receipt .= "Bundle -$1.00\r\n";
-                    }
-                    $mobile_receipt .= "------\r\n";
+                    $mobile_receipt .= "Wax $" . $vehicle->exthandwax_vehicle_fee . "\r\n";
                 }
 
-                if ($kartdata->tip_amount > 0) {
-                    $mobile_receipt .= "Tip $" . number_format($kartdata->tip_amount, 2) . "\r\n";
+                if ($vehicle->pet_hair_fee > 0) {
+
+                    $mobile_receipt .= "Extra Cleaning $" . $vehicle->pet_hair_fee . "\r\n";
+                }
+                if ($vehicle->lifted_vehicle_fee > 0) {
+
+                    $mobile_receipt .= "Lifted $" . $vehicle->lifted_vehicle_fee . "\r\n";
                 }
 
-                if ($kartdata->wash_now_fee > 0) {
-                    $mobile_receipt .= "Wash Now $" . number_format($kartdata->wash_now_fee, 2) . "\r\n";
+                if ($vehicle->extplasticdressing_vehicle_fee > 0) {
+
+                    $mobile_receipt .= "Dressing $" . $vehicle->extplasticdressing_vehicle_fee . "\r\n";
                 }
 
-                if ($kartdata->wash_later_fee > 0) {
-                    $mobile_receipt .= "Surge Fee $" . number_format($kartdata->wash_later_fee, 2) . "\r\n";
+                if ($vehicle->upholstery_vehicle_fee > 0) {
+
+                    $mobile_receipt .= "Upholstery $" . $vehicle->upholstery_vehicle_fee . "\r\n";
+                }
+
+                if ($vehicle->floormat_vehicle_fee > 0) {
+
+                    $mobile_receipt .= "Floormat $" . $vehicle->floormat_vehicle_fee . "\r\n";
+                }
+
+                if (($ind == 0) && ($kartdata->coupon_discount > 0)) {
+
+                    $mobile_receipt .= "Promo: " . $kartdata->coupon_code . " -$" . number_format($kartdata->coupon_discount, 2) . "\r\n";
                 }
 
 
-                $mobile_receipt .= "Total: $" . $kartdata->net_price . "\r\n";
-                if (APP_ENV == 'real') {
-                    $this->layout = "xmlLayout";
+                if ($vehicle->fifth_wash_discount > 0) {
 
-                    require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
-                    require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
-
-                    $account_sid = TWILIO_SID;
-                    $auth_token = TWILIO_AUTH_TOKEN;
-                    $client = new Services_Twilio($account_sid, $auth_token);
-
-                    if (!$wrequest_id_check->is_scheduled) $message = "WASH NOW TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->created_date)) . " @ " . date('h:i A', strtotime($wrequest_id_check->created_date)) . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
-if ($wrequest_id_check->is_scheduled) $message = "SCHEDULED WASH TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->schedule_date)) . " @ " . $wrequest_id_check->schedule_time . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
-
-
-                    try {
-                        $sendmessage = $client->account->messages->create(array(
-                            'To' => '8183313631',
-                            'From' => '+13108890719',
-                            'Body' => $message,
-                        ));
-                    } catch (Services_Twilio_RestException $e) {
-                        //echo  $e;
-                    }
-
-                    try {
-                        $sendmessage = $client->account->messages->create(array(
-                            'To' => '3109999334',
-                            'From' => '+13108890719',
-                            'Body' => $message,
-                        ));
-                    } catch (Services_Twilio_RestException $e) {
-                        //echo  $e;
-                    }
-
-                    try {
-                        $sendmessage = $client->account->messages->create(array(
-                            'To' => '3103442534',
-                            'From' => '+13108890719',
-                            'Body' => $message,
-                        ));
-                    } catch (Services_Twilio_RestException $e) {
-                        //echo  $e;
-                    }
+                    $mobile_receipt .= "5th -$" . number_format($vehicle->fifth_wash_discount, 2) . "\r\n";
                 }
-        
 
-if (!$wrequest_id_check->is_scheduled){
-            $currentwasherwashnowstartlog = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE agent_id = '" . $wrequest_id_check->agent_id . "' AND wash_request_id = '" . $wash_request_id . "' AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")->queryAll();
+                if (($vehicle->fifth_wash_discount == 0) && ($kartdata->coupon_discount <= 0) && (count($kartdata->vehicles) > 1)) {
 
-            if (count($currentwasherwashnowstartlog)) {
-                $otherwasherswashnowstartlogs = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE agent_id != '" . $wrequest_id_check->agent_id . "' AND wash_request_id = '" . $wash_request_id . "' AND action = 'washerstartjob' ORDER BY action_date DESC")->queryAll();
+                    $mobile_receipt .= "Bundle -$1.00\r\n";
+                }
 
-                if (count($otherwasherswashnowstartlogs)) {
-                    foreach ($otherwasherswashnowstartlogs as $log) {
-                        $sec_diff = 0;
-                        $sec_diff = abs(strtotime($currentwasherwashnowstartlog[0]['action_date']) - strtotime($log['action_date']));
+                if (($kartdata->coupon_discount > 0) && ($ind != 0) && (count($kartdata->vehicles) > 1)) {
 
-                        if (($sec_diff <= 2) && ($sec_diff >= 0)) {
-                            Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE id = " . $log['id'])->execute();
+                    $mobile_receipt .= "Bundle -$1.00\r\n";
+                }
+                $mobile_receipt .= "------\r\n";
+            }
+
+            if ($kartdata->tip_amount > 0) {
+                $mobile_receipt .= "Tip $" . number_format($kartdata->tip_amount, 2) . "\r\n";
+            }
+
+            if ($kartdata->wash_now_fee > 0) {
+                $mobile_receipt .= "Wash Now $" . number_format($kartdata->wash_now_fee, 2) . "\r\n";
+            }
+
+            if ($kartdata->wash_later_fee > 0) {
+                $mobile_receipt .= "Surge Fee $" . number_format($kartdata->wash_later_fee, 2) . "\r\n";
+            }
+
+
+            $mobile_receipt .= "Total: $" . $kartdata->net_price . "\r\n";
+            if (APP_ENV == 'real') {
+                $this->layout = "xmlLayout";
+
+                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
+                require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
+
+                $account_sid = TWILIO_SID;
+                $auth_token = TWILIO_AUTH_TOKEN;
+                $client = new Services_Twilio($account_sid, $auth_token);
+
+                if (!$wrequest_id_check->is_scheduled)
+                    $message = "WASH NOW TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->created_date)) . " @ " . date('h:i A', strtotime($wrequest_id_check->created_date)) . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
+                if ($wrequest_id_check->is_scheduled)
+                    $message = "SCHEDULED WASH TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->schedule_date)) . " @ " . $wrequest_id_check->schedule_time . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
+
+
+                try {
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' => '8183313631',
+                        'From' => '+13108890719',
+                        'Body' => $message,
+                    ));
+                } catch (Services_Twilio_RestException $e) {
+                    //echo  $e;
+                }
+
+                try {
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' => '3109999334',
+                        'From' => '+13108890719',
+                        'Body' => $message,
+                    ));
+                } catch (Services_Twilio_RestException $e) {
+                    //echo  $e;
+                }
+
+                try {
+                    $sendmessage = $client->account->messages->create(array(
+                        'To' => '3103442534',
+                        'From' => '+13108890719',
+                        'Body' => $message,
+                    ));
+                } catch (Services_Twilio_RestException $e) {
+                    //echo  $e;
+                }
+            }
+
+
+            if (!$wrequest_id_check->is_scheduled) {
+                $currentwasherwashnowstartlog = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE agent_id = '" . $wrequest_id_check->agent_id . "' AND wash_request_id = '" . $wash_request_id . "' AND action = 'washerstartjob' ORDER BY action_date DESC LIMIT 1")->queryAll();
+
+                if (count($currentwasherwashnowstartlog)) {
+                    $otherwasherswashnowstartlogs = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE agent_id != '" . $wrequest_id_check->agent_id . "' AND wash_request_id = '" . $wash_request_id . "' AND action = 'washerstartjob' ORDER BY action_date DESC")->queryAll();
+
+                    if (count($otherwasherswashnowstartlogs)) {
+                        foreach ($otherwasherswashnowstartlogs as $log) {
+                            $sec_diff = 0;
+                            $sec_diff = abs(strtotime($currentwasherwashnowstartlog[0]['action_date']) - strtotime($log['action_date']));
+
+                            if (($sec_diff <= 2) && ($sec_diff >= 0)) {
+                                Yii::app()->db->createCommand("DELETE FROM activity_logs WHERE id = " . $log['id'])->execute();
+                            }
                         }
                     }
                 }
             }
-	}
 
 
 

@@ -4578,7 +4578,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'order_for' => date('Y-m-d h:i A', strtotime($wrequest['order_for'])),
                         'transaction_id' => $wrequest['transaction_id'],
                         'failed_transaction_id' => $wrequest['failed_transaction_id'],
-			'canceled_wash_transaction_id' => $wrequest['canceled_wash_transaction_id'],
+                        'canceled_wash_transaction_id' => $wrequest['canceled_wash_transaction_id'],
                         'transaction_status' => $transaction_status,
                         'submerchant_id' => $submerchant_id,
                         'scheduled_cars_info' => $wrequest['scheduled_cars_info'],
@@ -4640,7 +4640,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'order_for' => date('Y-m-d h:i A', strtotime($wrequest['order_for'])),
                         'transaction_id' => $wrequest['transaction_id'],
                         'failed_transaction_id' => $wrequest['failed_transaction_id'],
-			'canceled_wash_transaction_id' => $wrequest['canceled_wash_transaction_id'],
+                        'canceled_wash_transaction_id' => $wrequest['canceled_wash_transaction_id'],
                         'transaction_status' => $transaction_status,
                         'submerchant_id' => $submerchant_id,
                         'scheduled_cars_info' => $wrequest['scheduled_cars_info'],
@@ -4695,7 +4695,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         'order_for' => date('Y-m-d h:i A', strtotime($wrequest['order_for'])),
                         'transaction_id' => $wrequest['transaction_id'],
                         'failed_transaction_id' => $wrequest['failed_transaction_id'],
-			'canceled_wash_transaction_id' => $wrequest['canceled_wash_transaction_id'],
+                        'canceled_wash_transaction_id' => $wrequest['canceled_wash_transaction_id'],
                         'submerchant_id' => $submerchant_id,
                         'transaction_status' => $transaction_status,
                         'scheduled_cars_info' => $wrequest['scheduled_cars_info'],
@@ -4749,7 +4749,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     'created_date' => date('Y-m-d h:i A', strtotime($wrequest['created_date'])),
                     'transaction_id' => $wrequest['transaction_id'],
                     'failed_transaction_id' => $wrequest['failed_transaction_id'],
-		    'canceled_wash_transaction_id' => $wrequest['canceled_wash_transaction_id'],
+                    'canceled_wash_transaction_id' => $wrequest['canceled_wash_transaction_id'],
                     'transaction_status' => $transaction_status,
                     'scheduled_cars_info' => $wrequest['scheduled_cars_info'],
                     'schedule_total' => $wrequest['schedule_total'],
@@ -8096,12 +8096,14 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             } else {
                 $result = 'true';
                 $response = 'wash request uncanceled';
-		
-		if($wrequest_id_check->canceled_wash_transaction_id){
-			$customer_check = Customers::model()->findByPk($wrequest_id_check->id);
-			if ($customer_check->client_position == 'real') $voidresult = Yii::app()->braintree->void_real($wrequest_id_check->canceled_wash_transaction_id);
-			else $voidresult = Yii::app()->braintree->void($wrequest_id_check->canceled_wash_transaction_id);
-		}
+
+                if ($wrequest_id_check->canceled_wash_transaction_id) {
+                    $customer_check = Customers::model()->findByPk($wrequest_id_check->id);
+                    if ($customer_check->client_position == 'real')
+                        $voidresult = Yii::app()->braintree->void_real($wrequest_id_check->canceled_wash_transaction_id);
+                    else
+                        $voidresult = Yii::app()->braintree->void($wrequest_id_check->canceled_wash_transaction_id);
+                }
 
                 if (strtotime($wrequest_id_check->wash_begin) > 0) {
 
@@ -10110,7 +10112,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $index = 0;
         foreach ($real_washers as $real_washer) {
             $orderData = Yii::app()->db->createCommand("SELECT complete_order,id FROM `washing_requests` WHERE status=4 AND `agent_id` = " . $real_washer['id'] . " ORDER BY id DESC limit 1")->queryAll();
-            
+
             if (count($orderData) > 0) {
                 $Last_Completed_Wash = "#(" . $orderData[0]['id'] . ") " . date('m/d/Y h:i A', strtotime($orderData[0]['complete_order']));
             } else {
@@ -10132,7 +10134,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             $real_washer_arr[$index]['washer_position'] = $real_washer['washer_position'];
             $real_washer_arr[$index]['washer_status'] = $real_washer['washer_status'];
             $real_washer_arr[$index]['helper'] = $real_washer['helper'];
-            
+
             $real_washer_arr[$index]['Last_Completed_Wash'] = $Last_Completed_Wash;
             $real_washer_arr[$index]['Service Area'] = $real_washer['operate_area'];
             $index++;
@@ -10140,7 +10142,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
         CsvExport::export(
                 $real_washer_arr, // a CActiveRecord array OR any CModel array
-                array('id' => array('raw'), 'real_washer_id' => array('raw'), 'first_name' => array('text'), 'last_name' => array('text'), 'email' => array('text'), 'phone_number' => array('text'), 'city' => array('text'), 'rating' => array('text'), 'care_rating' => array(text), 'bt_submerchant_id' => array('text'), 'created_date' => array('datetime'), 'decals_installed' => array('text'), 'total_wash' => array('text'), 'washer_position' => array('text'), 'washer_status' => array('text'), 'helper' => array('text'),'Last_Completed_Wash' => array('text'),'Service Area' => array('text')), true, // boolPrintRows
+                array('id' => array('raw'), 'real_washer_id' => array('raw'), 'first_name' => array('text'), 'last_name' => array('text'), 'email' => array('text'), 'phone_number' => array('text'), 'city' => array('text'), 'rating' => array('text'), 'care_rating' => array(text), 'bt_submerchant_id' => array('text'), 'created_date' => array('datetime'), 'decals_installed' => array('text'), 'total_wash' => array('text'), 'washer_position' => array('text'), 'washer_status' => array('text'), 'helper' => array('text'), 'Last_Completed_Wash' => array('text'), 'Service Area' => array('text')), true, // boolPrintRows
                 'washers--' . date('Y-m-d-H-i-s') . ".csv", ","
         );
     }

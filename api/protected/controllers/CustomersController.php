@@ -2594,8 +2594,8 @@ class CustomersController extends Controller {
                     if (!$vehicle_build) {
                         $vehicle_build = $vehicle_exists->vehicle_build;
                     }
-                    
-                    
+
+
 
                     $vehicle = array('vehicle_no' => $vehicle_no,
                         'brand_name' => $brand_name,
@@ -2622,7 +2622,7 @@ class CustomersController extends Controller {
                 $response = "Invalid vehicle";
             }
         }
-        
+
         // updating picupload action
         if ($user_type) {
             $wash_request_id = Yii::app()->request->getParam('wash_request_id');
@@ -2636,7 +2636,7 @@ class CustomersController extends Controller {
             if (count($agent) > 0) {
                 $name = $agent->agentname;
             }
-            $addi_detail = array($vehicle_id=>array('agentname'=>$name, 'user_type'=>$user_type));
+            $addi_detail = array($vehicle_id => array('agentname' => $name, 'user_type' => $user_type));
             $addi_detail = json_encode($addi_detail);
             $logdata = array(
                 'agent_id' => $user_id,
@@ -2645,7 +2645,7 @@ class CustomersController extends Controller {
                 'action' => 'picupload',
                 'addi_detail' => $addi_detail,
                 'action_date' => date('Y-m-d H:i:s'));
-                
+
             Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
         }
         $json = array(
@@ -7357,7 +7357,7 @@ class CustomersController extends Controller {
         if (!$limit)
             $customers = Customers::model()->findAll(array('order' => 'created_date desc'));
         else
-            $customers = Customers::model()->findAll(array('order' => 'created_date desc', 'limit' => $limit,'offset'=>$offset));
+            $customers = Customers::model()->findAll(array('order' => 'created_date desc', 'limit' => $limit, 'offset' => $offset));
 
 
         $customerdetail = array();
@@ -11393,7 +11393,7 @@ class CustomersController extends Controller {
                             if ($payment_methods[$index]['title'] == 'Braintree\\CreditCard') {
                                 if ($paymethod->isDefault()) {
                                     $token = $paymethod->token;
-				    
+
                                     break;
                                 }
                             }
@@ -11419,42 +11419,42 @@ class CustomersController extends Controller {
                     die();
                 }
 
-		if($token){
-			if ($customer_check->client_position == 'real') $paymethod = Yii::app()->braintree->getpaymentmethod_real($token);
-			else $paymethod = Yii::app()->braintree->getpaymentmethod($token);
-			
-			$exp_month = ltrim($paymethod['expiration_month'], '0');
-			$exp_year = $paymethod['expiration_year'];
-			
-			$current_year = date('Y');
-			$current_month = date('n');
-						
-			if($current_year > $exp_year) {
-				
-			$json = array(
-                        'result' => 'false',
-                        'response' => 'Card expired. Please update your payment method.'
-                    );
+                if ($token) {
+                    if ($customer_check->client_position == 'real')
+                        $paymethod = Yii::app()->braintree->getpaymentmethod_real($token);
+                    else
+                        $paymethod = Yii::app()->braintree->getpaymentmethod($token);
 
-                    echo json_encode($json);
-                    die();
-				
-			}
-			
-			if(($current_year == $exp_year) && ($current_month > $exp_month)) {
-			$json = array(
-                        'result' => 'false',
-                        'response' => 'Card expired. Please update your payment method.'
-                    );
+                    $exp_month = ltrim($paymethod['expiration_month'], '0');
+                    $exp_year = $paymethod['expiration_year'];
 
-                    echo json_encode($json);
-                    die();
-				
-			}
+                    $current_year = date('Y');
+                    $current_month = date('n');
+
+                    if ($current_year > $exp_year) {
+
+                        $json = array(
+                            'result' => 'false',
+                            'response' => 'Card expired. Please update your payment method.'
+                        );
+
+                        echo json_encode($json);
+                        die();
+                    }
+
+                    if (($current_year == $exp_year) && ($current_month > $exp_month)) {
+                        $json = array(
+                            'result' => 'false',
+                            'response' => 'Card expired. Please update your payment method.'
+                        );
+
+                        echo json_encode($json);
+                        die();
+                    }
 
 
-			//file_put_contents("cardexpiredate.log",$exp_month." ".$exp_year." cur: ".$current_month." ".$current_year."\r\n",FILE_APPEND);
-		}
+                    //file_put_contents("cardexpiredate.log",$exp_month." ".$exp_year." cur: ".$current_month." ".$current_year."\r\n",FILE_APPEND);
+                }
 
                 $current_time = strtotime(date('Y-m-d H:i:s'));
                 $last_edit_time = strtotime($customer_check->last_upfront_payment_cut);
@@ -11467,8 +11467,7 @@ class CustomersController extends Controller {
                     $result = "true";
 
                     $tid = '';
-                }
-		else {
+                } else {
 
                     $total = preg_replace("/[^0-9\.]/", "", $total);
                     $total = number_format($total, 2, '.', '');
@@ -11508,17 +11507,19 @@ class CustomersController extends Controller {
                         $result = "true";
 
                         $tid = $payresult['transaction_id'];
-			
-			if ($customer_check->client_position == 'real') $voidresult = Yii::app()->braintree->void_real($payresult['transaction_id']);
-			else $voidresult = Yii::app()->braintree->void($payresult['transaction_id']);
-			if ($voidresult['success'] == 1) $tid = '';
-			
+
+                        if ($customer_check->client_position == 'real')
+                            $voidresult = Yii::app()->braintree->void_real($payresult['transaction_id']);
+                        else
+                            $voidresult = Yii::app()->braintree->void($payresult['transaction_id']);
+                        if ($voidresult['success'] == 1)
+                            $tid = '';
                     } else {
                         $result = "false";
                         //$response = $payresult['message_mob'];
-			$response = "Insufficient funds. Please try another payment method";
+                        $response = "Insufficient funds. Please try another payment method";
                     }
-               }
+                }
             }
         }
 
