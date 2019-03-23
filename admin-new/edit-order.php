@@ -1191,6 +1191,7 @@ if ($getorder->transaction_id) {
                                                                     $temp = json_decode($log->addi_detail);
                                                                     $veh_key =  key($temp);
                                                                     $temp->$veh_key->action_date = $log->action_date;
+                                                                    $temp->$veh_key->agent_id = $log->agent_id;
                                                                     $temp->$veh_key->logid = $log->id;
                                                                     $addi_details[$veh_key] = $temp;
                                                                 }
@@ -1253,7 +1254,7 @@ if ($getorder->transaction_id) {
                                                                                 if($addi_details[$veh->id]->{$veh->id}->user_type == 'admin'){
                                                                                     echo 'Photo last taken by: '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }else{
-                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->logid.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
+                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->agent_id.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }
                                                                             }
                                                                             ?>
@@ -1461,7 +1462,7 @@ if ($getorder->transaction_id) {
                                                                                 if($addi_details[$veh->id]->{$veh->id}->user_type == 'admin'){
                                                                                     echo 'Photo last taken by: '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }else{
-                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->logid.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
+                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->agent_id.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }
                                                                             }
                                                                         ?>
@@ -2169,20 +2170,7 @@ if ($getorder->transaction_id) {
                                                                     <?php if ($log->action == 'waivedfee'): ?>
                                                                         <p style="margin-bottom: 10px;"><?php echo $log->admin_username; ?> Waived Fee at <?php echo date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
                                                                     <?php endif; ?>
-                                                                    <?php if ($log->action == 'picupload'): 
-                                                                        $temp = json_decode($log->addi_detail); 
-                                                                        $key = key($temp);
-                                                                        if($temp->{$key}->user_type == 'admin'){
-                                                                        ?>
-                                                                            <p style="margin-bottom: 10px;">Photo Taken by <?php echo $temp->{$key}->agentname.' on '.date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
-                                                                        <?php 
-                                                                        }else{
-                                                                        ?>
-                                                                            <p style="margin-bottom: 10px;">Photo Taken by #<?php echo $log->id.' '.$temp->{$key}->agentname.' on '.date('F j, Y - h:i A', strtotime($log->action_date)); ?></p>
-                                                                        <?php     
-                                                                        }
-                                                                        ?>
-                                                                    <?php endif; ?>
+                                                                    
                                                                 <?php endforeach; ?>
                                                             </div>
                                                         </div>
