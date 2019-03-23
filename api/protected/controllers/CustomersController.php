@@ -11348,6 +11348,8 @@ class CustomersController extends Controller {
                 $response = "Invalid customer id";
                 $result = "false";
             }
+	    
+	    
 
             /* else if(($customer_check->hours_opt_check == 1) && ($hours_op_check->status == 'off') && (!$is_scheduled)){
               $result= 'false';
@@ -11373,6 +11375,21 @@ class CustomersController extends Controller {
                 $response = "Company total not specified";
                 $result = "false";
             } else {
+		
+		if (count($customer_check)) {
+			$cust_today_canceled_orders = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE (DATEDIFF(CURDATE(), created_date) = 0) AND customer_id = ".$customer_check->id." AND status = 5")->queryAll();
+	
+			if(count($cust_today_canceled_orders) >= 2){
+			$json = array(
+                        'result' => 'false',
+                        'response' => 'You have exceeded your daily cancel limit. Please try again tomorrow.',
+                    );
+
+                    echo json_encode($json);
+                    die();	
+			}
+		}
+		
                 if (!$customer_check->braintree_id) {
                     $json = array(
                         'result' => 'false',
