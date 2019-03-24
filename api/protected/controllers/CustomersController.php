@@ -11377,7 +11377,7 @@ class CustomersController extends Controller {
             } else {
 		
 		if (count($customer_check)) {
-			$cust_today_canceled_orders = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE (DATEDIFF(CURDATE(), created_date) = 0) AND customer_id = ".$customer_check->id." AND status = 5")->queryAll();
+			$cust_today_canceled_orders = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE (DATEDIFF(CURDATE(), created_date) = 0) AND customer_id = ".$customer_check->id." AND status = 5 AND ignore_2cancel_count=0")->queryAll();
 	
 			if(count($cust_today_canceled_orders) >= 2){
 			$json = array(
@@ -14124,6 +14124,54 @@ class CustomersController extends Controller {
             echo json_encode($json);
             die();
         }
+    }
+    
+       public function actionresetcancelorderpermission() {
+
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+         if (!$token_check) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } 
+
+        $customer_id = Yii::app()->request->getParam('customer_id');
+	
+$cust_check = Customers::model()->findByPk($customer_id);
+
+if(!count($cust_check)){
+ $json = array(
+                'result' => 'false',
+                'response' => 'Customer not found',
+            );
+            echo json_encode($json);
+            die();	
+}
+
+       Yii::app()->db->createCommand("UPDATE washing_requests SET ignore_2cancel_count=1 WHERE (DATEDIFF(CURDATE(), created_date) = 0) AND customer_id = ".$customer_id." AND status = 5")->execute();
+	
+            $json = array(
+                'result' => 'true',
+                'response' => 'success',
+            );
+            echo json_encode($json);
+            die();
+        
     }
 
 }

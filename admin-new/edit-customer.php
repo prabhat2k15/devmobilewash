@@ -327,6 +327,20 @@ $how_hear_mw = $jsondata->how_hear_mw;
 
 
                                     </div>
+                                    <div class="row list-separated profile-stat">
+
+
+										
+                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                            <div class="uppercase profile-stat-title" style="font-size: 18px; font-weight: bold;">  </div>
+                                            <div class="uppercase profile-stat-text"> Order Cancel Permission </div>
+<div class="profile-userbuttons">
+									                                        <button type="button" class="btn btn-circle blue btn-sm reset-order-cancel">Reset</button>
+                                    </div>
+                                        </div>
+
+
+                                    </div>
                                 </div>
                                 <!-- END PORTLET MAIN -->
                             </div>
@@ -584,4 +598,23 @@ $how_hear_mw = $jsondata->how_hear_mw;
 	}
 	
 	custprofilepicupload();
+        
+        $(function(){
+          $(".reset-order-cancel").click(function(){
+            if(confirm('Are you sure you want to reset order cancel permission for this customer?')){
+               $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=customers/resetcancelorderpermission", {customer_id: "<?php echo $_GET['customerID']; ?>", admin_username: "<?php echo $jsondata_permission->user_name; ?>", key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
+//console.log(data);
+                                        if (data.result == 'true') {
+                                            window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-customer.php?customerID=<?php echo $_GET['customerID']; ?>";
+                                                                } else {
+                                                                    alert(data.response);
+                                                                
+                                                                }
+
+             });
+            }
+
+                                return false;
+            });  
+        });
         </script>
