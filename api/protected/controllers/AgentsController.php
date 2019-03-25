@@ -114,26 +114,11 @@ class AgentsController extends Controller {
             } else {
 
                 $agent_img = $SiteUrl . '/images/agent_img/no_profile.jpg';
-                /*
-                  $dl_img = str_replace('data:image/png;base64,', '', $driver_license);
-                  $dl_img = str_replace(' ', '+', $dl_img);
-                  $dl_data = base64_decode($dl_img);
-                  $md5 = md5(uniqid(rand(), true));
-                  $name = 'agent_driver_license_'.$md5.".jpg";
-                  $path = $directorypath1.'/agent_docs/'.$name;
-                 */
+
                 $dl_imagename = $SiteUrl . '/images/agent_img/agent_docs/' . $driver_license;
                 $bl_imagename = $SiteUrl . '/images/agent_img/agent_docs/' . $business_license;
 
-                //file_put_contents($path, $dl_data);
-                /*
-                  $pi_img = str_replace('data:image/png;base64,', '', $proof_insurance);
-                  $pi_img = str_replace(' ', '+', $pi_img);
-                  $pi_data = base64_decode($pi_img);
-                  $md5 = md5(uniqid(rand(), true));
-                  $name = 'agent_proof_insurance_'.$md5.".jpg";
-                  $path = $directorypath1.'/agent_docs/'.$name;
-                 */
+
                 $pi_imagename = $SiteUrl . '/images/agent_img/agent_docs/' . $proof_insurance;
 
                 //file_put_contents($path, $pi_data);
@@ -325,7 +310,6 @@ class AgentsController extends Controller {
 
                     /* ------------- check if agent available for new order end ------------- */
 
-                    // $wash_count_check = Washingrequests::model()->findAllByAttributes(array("agent_id" => $agents_id->id, "status" => 5));
                     $wash_count = $agents_id->total_wash;
                     $agent_feedbacks = Washingfeedbacks::model()->findAllByAttributes(array("agent_id" => $agents_id->id));
 
@@ -693,7 +677,7 @@ class AgentsController extends Controller {
                         $customername2 = $cust_name[0];
 
                     $from = Vargas::Obj()->getAdminFromEmail();
-                    //echo $from;
+
                     $subject = 'Welcome to Mobile Wash! ' . $customername2;
                     //$message = "Hello ".$customername2.",<br/><br/>Welcome to Mobile wash!";
 
@@ -1018,33 +1002,6 @@ class AgentsController extends Controller {
                 );
 
                 Yii::app()->db->createCommand()->insert('app_feedbacks', $washfeedbackdata);
-//                } else {
-//                    $washfeedbackdata = array(
-//                        'agent_id' => $agent_id,
-//                        'comments' => $comments
-//                    );
-//                    $washfeedbackmodel = new Appfeedbacks;
-//
-//                    $washfeedbackmodel->attributes = $washfeedbackdata;
-//                    $washfeedbackmodel->updateAll($washfeedbackdata, 'agent_id=:agent_id', array(':agent_id' => $agent_id));
-//                }
-//                $result = 'true';
-//                $response = "Feeback added";
-//
-//
-//
-//                $message = "<div class='block-content' style='background: #fff; text-align: left;'>
-//<h2 style='text-align:center;font-size: 28px;margin-top:0; margin-bottom: 0;text-transform: uppercase;'>Washer App Feedback</h2>
-//<p><b>Washer Name:</b> " . $agent_id_check->first_name . " " . $agent_id_check->last_name . "</p>
-//<p><b>Washer Email:</b> " . $agent_id_check->email . "</p>
-//<p><b>Title:</b> " . $title . "</p>
-//<p><b>Comments:</b> " . $comments . "</p>";
-//
-//                //$to = Vargas::Obj()->getAdminToEmail();
-//                $to = Vargas::Obj()->getAdminToEmailFeedBack();
-//                $from = Vargas::Obj()->getAdminFromEmail();
-//
-//                Vargas::Obj()->SendMail($to, $from, $message, "Washer App Feedback", 'mail-receipt');
                 if ($addVehicleFeedBack == 1) {
                     $result = 'true';
                     $response = "Feeback added";
@@ -1648,27 +1605,6 @@ class AgentsController extends Controller {
                 } else {
                     $image = $model->image;
                 }
-
-
-                /* if(isset($email) && !empty($email) ){
-                  $email_Exist= Agents::model()->findByAttributes(array('email'=>$email));
-                  if(isset($email_Exist->id) &&($email_Exist->id == $agent_id)){
-                  $email_Exist = array();
-                  }
-                  if(count($email_Exist)>0){
-                  $email_details= Agents::model()->findByAttributes(array('id'=> $id));
-                  if(count($email_details)>0){
-                  $email = $email_details->email;
-                  }
-                  //$result= 'false';
-                  //$response= 'Email already exists';
-                  $email = $model->email;
-                  }
-
-
-                  }else{
-                  $email = $model->email;
-                  } */
 
                 if (empty($email)) {
                     $email = $model->email;
@@ -2316,31 +2252,7 @@ class AgentsController extends Controller {
                 $dist = rad2deg($dist);
                 $miles = $dist * 60 * 1.1515;
                 $unit = strtoupper($unit);
-//echo "#".$loc['agent_id']." ".$miles."<br>";
 
-                /*
-                  if ($unit == "K") {
-                  return ($miles * 1.609344);
-                  } else if ($unit == "N") {
-                  return ($miles * 0.8684);
-                  } else {
-                  return $miles;
-                  }
-                 */
-
-                /*
-                  $latFrom = deg2rad($agent_lat);
-                  $lonFrom = deg2rad($agent_lng);
-                  $latTo = deg2rad($customer_lat);
-                  $lonTo = deg2rad($customer_lng);
-
-                  $latDelta = $latTo - $latFrom;
-                  $lonDelta = $lonTo - $lonFrom;
-
-                  $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-                  cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
-                  $miles =  $angle * 6371000;
-                 */
                 /* --------- distance calculation end ------------ */
 
                 if (($miles > 0) && ($miles <= $app_settings[0]['washer_search_radius'])) {
@@ -2770,8 +2682,7 @@ class AgentsController extends Controller {
 
 
         $agents = Yii::app()->db->createCommand("SELECT * FROM `agents` ORDER BY " . ($set) . " " . ($des) . " ")->queryAll();
-        /* echo "SELECT * FROM `agents` ODER BY ". ($set) ." ". ($des) ." ";
-          exit; */
+
 
         $agentloc = new AgentLocations;
 
@@ -2791,10 +2702,7 @@ class AgentsController extends Controller {
 
             $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '$agetsid' ORDER BY id DESC")->queryAll();
             $totalwash = count($totalwash_arr);
-            /* echo "<pre>";
-              print_r($cancelwash);
-              echo "<pre>"; */
-            //exit;
+
             if (!empty($logs)) {
                 $status = 'Busy';
             } else {
@@ -3666,15 +3574,6 @@ class AgentsController extends Controller {
         $limit = 20;
         $offset = ($page_number - 1) * $limit;
 
-        /*          if(Yii::app()->request->getParam('type') == 'demo'){
-          $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'demo' OR washer_position = ''")->queryAll();
-          if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'demo' OR washer_position = '' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
-          }
-          else{
-          $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'real'")->queryAll();
-          if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
-          } */
-
         if (Yii::app()->request->getParam('type') == 'demo') {
             $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'demo' OR washer_position = ''")->queryAll();
             if ($limit > 0)
@@ -3688,10 +3587,6 @@ class AgentsController extends Controller {
 //$washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
         }
 
-
-
-        //$total_entries = $total_rows[0]['countid'];
-        //if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
 
 
         if (count($washers_exists) > 0) {
@@ -3711,39 +3606,7 @@ class AgentsController extends Controller {
                 $datediff = $current_time - $washer_created;
 
                 $washer_registered_since = round($datediff / (60 * 60 * 24));
-                /* if($washer_registered_since > 30){
 
-                  $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$washer['id']."'")->queryAll();
-                  $totalwash = count($totalwash_arr);
-
-                  if(count($totalwash_arr)){
-                  foreach($totalwash_arr as $agentwash){
-                  $cust_served_ids[] = $agentwash['customer_id'];
-                  }
-
-
-                  $cust_served_ids = array_unique($cust_served_ids);
-
-                  if(count($cust_served_ids) > 0){
-                  foreach($cust_served_ids as $cid){
-                  $cust_check = Customers::model()->findByAttributes(array("id"=>$cid));
-                  $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$cid, 'status' => 4),array('order'=>'id DESC'));
-                  if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning) && ($cust_last_wash_check->agent_id == $washer['id'])){
-                  $total_returning_customers++;
-                  }
-                  }
-                  }
-
-                  if(count($cust_served_ids) > 0) {
-                  $care_rating = ($total_returning_customers/$totalwash) * 100;
-                  $care_rating = round($care_rating, 2);
-                  }
-                  }
-                  else $care_rating = "N/A";
-                  }
-                  else{
-                  $care_rating = "NEW";
-                  } */
                 $orderData = Yii::app()->db->createCommand("SELECT complete_order,id FROM `washing_requests` WHERE status=4 AND `agent_id` = " . $washer['id'] . " ORDER BY id DESC limit 1")->queryAll();
                 if (count($orderData) > 0) {
                     $complete_order_id = $orderData[0]['id'];
@@ -3836,30 +3699,8 @@ class AgentsController extends Controller {
         $limit = 20;
         $offset = ($page_number - 1) * $limit;
 
-        /*          if(Yii::app()->request->getParam('type') == 'demo'){
-          $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'demo' OR washer_position = ''")->queryAll();
-          if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'demo' OR washer_position = '' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
-          }
-          else{
-          $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE washer_position = 'real'")->queryAll();
-          if($limit > 0) $washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
-          } */
-        $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE (unlimited_schedule_range = '1') ORDER BY id DESC")->queryAll();
-//        if (Yii::app()->request->getParam('type') == 'demo') {
-//            $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE (washer_position = 'demo' OR washer_position = '') AND (unlimited_schedule_range = '1') ")->queryAll();
-//            if ($limit > 0)
-//                $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE (washer_position = 'demo' OR washer_position = '') AND (unlimited_schedule_range = '1') ORDER BY id DESC")->queryAll();
-//            //$washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'demo' OR washer_position = '' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
-//        }
-//        else {
-//            $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM agents WHERE (washer_position = 'real') AND (unlimited_schedule_range = '1') ")->queryAll();
-//            if ($limit > 0)
-//                $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE (washer_position = 'real') AND (unlimited_schedule_range = '1') ORDER BY id DESC")->queryAll();
-////$washers_exists =  Yii::app()->db->createCommand("SELECT * FROM agents WHERE washer_position = 'real' ORDER BY id DESC LIMIT ".$limit." OFFSET ".$offset)->queryAll();
-//        }
-        //$total_entries = $total_rows[0]['countid'];
-        //if($total_entries > 0) $total_pages = ceil($total_entries / $limit);
 
+        $washers_exists = Yii::app()->db->createCommand("SELECT * FROM agents WHERE (unlimited_schedule_range = '1') ORDER BY id DESC")->queryAll();
 
         if (count($washers_exists) > 0) {
             $result = 'true';
@@ -3878,39 +3719,7 @@ class AgentsController extends Controller {
                 $datediff = $current_time - $washer_created;
 
                 $washer_registered_since = round($datediff / (60 * 60 * 24));
-                /* if($washer_registered_since > 30){
 
-                  $totalwash_arr = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE status=4 AND `agent_id` = '".$washer['id']."'")->queryAll();
-                  $totalwash = count($totalwash_arr);
-
-                  if(count($totalwash_arr)){
-                  foreach($totalwash_arr as $agentwash){
-                  $cust_served_ids[] = $agentwash['customer_id'];
-                  }
-
-
-                  $cust_served_ids = array_unique($cust_served_ids);
-
-                  if(count($cust_served_ids) > 0){
-                  foreach($cust_served_ids as $cid){
-                  $cust_check = Customers::model()->findByAttributes(array("id"=>$cid));
-                  $cust_last_wash_check = Washingrequests::model()->findByAttributes(array('customer_id'=>$cid, 'status' => 4),array('order'=>'id DESC'));
-                  if((count($cust_check)) && ($cust_check->is_first_wash == 1) && (!$cust_check->is_non_returning) && ($cust_last_wash_check->agent_id == $washer['id'])){
-                  $total_returning_customers++;
-                  }
-                  }
-                  }
-
-                  if(count($cust_served_ids) > 0) {
-                  $care_rating = ($total_returning_customers/$totalwash) * 100;
-                  $care_rating = round($care_rating, 2);
-                  }
-                  }
-                  else $care_rating = "N/A";
-                  }
-                  else{
-                  $care_rating = "NEW";
-                  } */
                 $care_rating = $washer['care_rating'];
                 $insurance_date = '';
                 if (strtotime($washer['insurance_license_expiration']) > 0)
@@ -4312,17 +4121,6 @@ class AgentsController extends Controller {
         $agentid = Yii::app()->request->getParam('id');
         $num = Yii::app()->request->getParam('tonumber');
 
-        //$getnumber = urlencode($num);
-        //$doc = "(+918745) -042-716";
-        //$number =  str_replace(')', '', str_replace('(','',$num));
-        //echo $number.'<br />';
-        //$number_formate =  str_replace('-','',$number);
-        //$to_number =  str_replace('+','',$number_formate);
-        //$to_num =  str_replace(' ','',$number_formate);
-        //echo $to_num;
-        //exit;
-        // $message = urlencode($message);
-
         $digits = 4;
         $randum_number = rand(pow(10, $digits - 1), pow(10, $digits) - 1);
         $update_response = Yii::app()->db->createCommand("UPDATE pre_registered_washers SET phone_verify_code='$randum_number' WHERE id = :id ")
@@ -4465,17 +4263,6 @@ class AgentsController extends Controller {
 
         $washerid = Yii::app()->request->getParam('id');
         $num = Yii::app()->request->getParam('tonumber');
-
-        //$getnumber = urlencode($num);
-        //$doc = "(+918745) -042-716";
-        //$number =  str_replace(')', '', str_replace('(','',$num));
-        //echo $number.'<br />';
-        //$number_formate =  str_replace('-','',$number);
-        //$to_number =  str_replace('+','',$number_formate);
-        //$to_num =  str_replace(' ','',$number_formate);
-        //echo $to_num;
-        //exit;
-        // $message = urlencode($message);
 
         $digits = 4;
         $randum_number = rand(pow(10, $digits - 1), pow(10, $digits) - 1);
@@ -5113,13 +4900,12 @@ class AgentsController extends Controller {
             $start_year = $year . '-01-01' . ' ' . '00:00:00';
             $end_year = $year . '-12-31' . ' ' . '23:59:59';
             $request = Yii::app()->db->createCommand("SELECT COUNT(*) as cnt FROM `agents` WHERE created_date BETWEEN '$start_year' AND '$end_year' ")->queryAll();
-            //echo "SELECT COUNT(*) as cnt FROM `washing_requests` WHERE created_date BETWEEN '$start_year' AND '$end_year' " .'<br />';
+
             foreach ($request as $details) {
                 $array[$year] = $details['cnt'];
             }
         }
 
-//exit;
 
         $json = $array;
         echo json_encode($json);
@@ -5792,12 +5578,6 @@ class AgentsController extends Controller {
             $pendingorders[$key] = $jsonpending;
         }
 
-// Get Processing Orders
-        /* $processing_orders = Yii::app()->db->createCommand()
-          ->select('*')
-          ->from('washing_requests')  //Your Table name
-          ->where('status>=1 AND status<=3') // Write your where condition here
-          ->queryAll(); */
 
         $processing_orders = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE status>=1 AND status<=3")->queryAll();
 
@@ -6823,22 +6603,6 @@ class AgentsController extends Controller {
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -7387,22 +7151,6 @@ class AgentsController extends Controller {
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -7480,13 +7228,6 @@ class AgentsController extends Controller {
                     'action' => 'savewashnote',
                     'action_date' => $date);
                 Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata);
-
-                /* $washeractionlogdata = array(
-                  'wash_request_id'=> $id,
-                  'admin_username' => $admin_username,
-                  'action'=> 'edit_Agent',
-                  'action_date'=> date('Y-m-d H:i:s'));
-                  Yii::app()->db->createCommand()->insert('activity_logs', $washeractionlogdata); */
             }
         }
 
@@ -7507,22 +7248,7 @@ class AgentsController extends Controller {
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
 
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];

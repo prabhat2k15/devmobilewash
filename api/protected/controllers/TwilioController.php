@@ -521,8 +521,7 @@ class TwilioController extends Controller {
             echo json_encode($json);
             die();
         }
-        //$TestNumbers = TestNumbers::model()->findAll();
-        // print_r($TestNumbers); die;
+
         $TestNumbers = Yii::app()->db->createCommand("SELECT id,phone from test_numbers ")->queryAll();
         echo json_encode(array('testNumbers' => $TestNumbers));
     }

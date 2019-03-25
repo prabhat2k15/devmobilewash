@@ -3038,19 +3038,19 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
         $api_token = Yii::app()->request->getParam('api_token');
         $t1 = Yii::app()->request->getParam('t1');
         $t2 = Yii::app()->request->getParam('t2');
-	$user_type_security = Yii::app()->request->getParam('user_type_security');
+        $user_type_security = Yii::app()->request->getParam('user_type_security');
         $user_id_security = Yii::app()->request->getParam('user_id_security');
 
- //$token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type_security, $user_id_security, AES256CBC_API_PASS);
+        //$token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type_security, $user_id_security, AES256CBC_API_PASS);
 
-	/*if (!$token_check) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }*/
+        /* if (!$token_check) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
 
         $device_type = Yii::app()->request->getParam('device_type');
         $app_version = Yii::app()->request->getParam('app_version');
@@ -3111,19 +3111,19 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                 $json = array(
                     'result' => $result,
                     'response' => $response,
-                    /*'app_link' => $app_settings[0]['app_link'],
-                    'mobilewash_domain' => $mobilewash_domain,
-                    'mobilewash_apiurl' => $mobilewash_apiurl,
-                    'mobilewash_apptype' => $mobilewash_apptype,
-                    'mobilewash_socketurl' => $mobilewash_socketurl,
-                    'devmobilewash_domain' => $devmobilewash_domain,
-                    'devmobilewash_apiurl' => $devmobilewash_apiurl,
-                    'devmobilewash_apptype' => $devmobilewash_apptype,
-                    'devmobilewash_socketurl' => $devmobilewash_socketurl,
-                    'getmobilewash_domain' => $getmobilewash_domain,
-                    'getmobilewash_apiurl' => $getmobilewash_apiurl,
-                    'getmobilewash_apptype' => $getmobilewash_apptype,
-                    'getmobilewash_socketurl' => $getmobilewash_socketurl*/
+                        /* 'app_link' => $app_settings[0]['app_link'],
+                          'mobilewash_domain' => $mobilewash_domain,
+                          'mobilewash_apiurl' => $mobilewash_apiurl,
+                          'mobilewash_apptype' => $mobilewash_apptype,
+                          'mobilewash_socketurl' => $mobilewash_socketurl,
+                          'devmobilewash_domain' => $devmobilewash_domain,
+                          'devmobilewash_apiurl' => $devmobilewash_apiurl,
+                          'devmobilewash_apptype' => $devmobilewash_apptype,
+                          'devmobilewash_socketurl' => $devmobilewash_socketurl,
+                          'getmobilewash_domain' => $getmobilewash_domain,
+                          'getmobilewash_apiurl' => $getmobilewash_apiurl,
+                          'getmobilewash_apptype' => $getmobilewash_apptype,
+                          'getmobilewash_socketurl' => $getmobilewash_socketurl */
                 );
             } else {
 
@@ -3166,18 +3166,18 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                 $json = array(
                     'result' => $result,
                     'response' => $response,
-                    /*'mobilewash_domain' => $mobilewash_domain,
-                    'mobilewash_apiurl' => $mobilewash_apiurl,
-                    'mobilewash_apptype' => $mobilewash_apptype,
-                    'mobilewash_socketurl' => $mobilewash_socketurl,
-                    'devmobilewash_domain' => $devmobilewash_domain,
-                    'devmobilewash_apiurl' => $devmobilewash_apiurl,
-                    'devmobilewash_apptype' => $devmobilewash_apptype,
-                    'devmobilewash_socketurl' => $devmobilewash_socketurl,
-                    'getmobilewash_domain' => $getmobilewash_domain,
-                    'getmobilewash_apiurl' => $getmobilewash_apiurl,
-                    'getmobilewash_apptype' => $getmobilewash_apptype,
-                    'getmobilewash_socketurl' => $getmobilewash_socketurl*/
+                        /* 'mobilewash_domain' => $mobilewash_domain,
+                          'mobilewash_apiurl' => $mobilewash_apiurl,
+                          'mobilewash_apptype' => $mobilewash_apptype,
+                          'mobilewash_socketurl' => $mobilewash_socketurl,
+                          'devmobilewash_domain' => $devmobilewash_domain,
+                          'devmobilewash_apiurl' => $devmobilewash_apiurl,
+                          'devmobilewash_apptype' => $devmobilewash_apptype,
+                          'devmobilewash_socketurl' => $devmobilewash_socketurl,
+                          'getmobilewash_domain' => $getmobilewash_domain,
+                          'getmobilewash_apiurl' => $getmobilewash_apiurl,
+                          'getmobilewash_apptype' => $getmobilewash_apptype,
+                          'getmobilewash_socketurl' => $getmobilewash_socketurl */
                 );
             }
         } else {
@@ -3185,18 +3185,18 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             $json = array(
                 'result' => $result,
                 'response' => $response,
-                /*'mobilewash_domain' => $mobilewash_domain,
-                'mobilewash_apiurl' => $mobilewash_apiurl,
-                'mobilewash_apptype' => $mobilewash_apptype,
-                'mobilewash_socketurl' => $mobilewash_socketurl,
-                'devmobilewash_domain' => $devmobilewash_domain,
-                'devmobilewash_apiurl' => $devmobilewash_apiurl,
-                'devmobilewash_apptype' => $devmobilewash_apptype,
-                'devmobilewash_socketurl' => $devmobilewash_socketurl,
-                'getmobilewash_domain' => $getmobilewash_domain,
-                'getmobilewash_apiurl' => $getmobilewash_apiurl,
-                'getmobilewash_apptype' => $getmobilewash_apptype,
-                'getmobilewash_socketurl' => $getmobilewash_socketurl*/
+                    /* 'mobilewash_domain' => $mobilewash_domain,
+                      'mobilewash_apiurl' => $mobilewash_apiurl,
+                      'mobilewash_apptype' => $mobilewash_apptype,
+                      'mobilewash_socketurl' => $mobilewash_socketurl,
+                      'devmobilewash_domain' => $devmobilewash_domain,
+                      'devmobilewash_apiurl' => $devmobilewash_apiurl,
+                      'devmobilewash_apptype' => $devmobilewash_apptype,
+                      'devmobilewash_socketurl' => $devmobilewash_socketurl,
+                      'getmobilewash_domain' => $getmobilewash_domain,
+                      'getmobilewash_apiurl' => $getmobilewash_apiurl,
+                      'getmobilewash_apptype' => $getmobilewash_apptype,
+                      'getmobilewash_socketurl' => $getmobilewash_socketurl */
             );
         }
 
@@ -4198,14 +4198,14 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             $ip = $_SERVER['REMOTE_ADDR'];
         }
 
-        /*if ($ip != MW_SERVER_IP) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }*/
+        /* if ($ip != MW_SERVER_IP) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
 
         $pendingwashes = Washingrequests::model()->findAll(array("condition" => "status = 4 AND washer_payment_status != 1 AND washer_payment_status != 3"));
 
@@ -4378,7 +4378,7 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             }
         }
     }
-    
+
     public function actioncanceledwashtransactionsettle() {
 
         if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
@@ -4411,14 +4411,14 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             $ip = $_SERVER['REMOTE_ADDR'];
         }
 
-        /*if ($ip != MW_SERVER_IP) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }*/
+        /* if ($ip != MW_SERVER_IP) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
 
         $pendingwashes = Washingrequests::model()->findAll(array("condition" => "(status = 5 OR status = 7) AND canceled_wash_transaction_id != '' AND washer_payment_status != 1 AND washer_payment_status != 3"));
 
@@ -4449,19 +4449,17 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                         if (($transaction_check['status'] == 'submitted_for_settlement') || ($transaction_check['status'] == 'settling') || ($transaction_check['status'] == 'settled')) {
                             Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id' => ''));
                         } else {
-				
-				  if ($customer_check->client_position == 'real')
-                                        $payresult = Yii::app()->braintree->submitforsettlement_real($wash->canceled_wash_transaction_id);
-                                    else
-                                        $payresult = Yii::app()->braintree->submitforsettlement($wash->canceled_wash_transaction_id);
 
-                                    if ($payresult['success'] == 1) {
-                                        Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id' => ''));
-                                    } else {
-                                        //Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id' => $payresult['transaction_id']));
-                                    }
+                            if ($customer_check->client_position == 'real')
+                                $payresult = Yii::app()->braintree->submitforsettlement_real($wash->canceled_wash_transaction_id);
+                            else
+                                $payresult = Yii::app()->braintree->submitforsettlement($wash->canceled_wash_transaction_id);
 
-                   
+                            if ($payresult['success'] == 1) {
+                                Washingrequests::model()->updateByPk($wash->id, array('washer_payment_status' => 1, 'failed_transaction_id' => ''));
+                            } else {
+                                //Washingrequests::model()->updateByPk($wash->id, array('failed_transaction_id' => $payresult['transaction_id']));
+                            }
                         }
                     }
                 }
@@ -6032,9 +6030,9 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             echo json_encode($json);
             die();
         }
-	/*else {
-            Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();
-        }*/
+        /* else {
+          Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();
+          } */
 
 
 
@@ -6136,28 +6134,27 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
                     $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', is_voip_number = 0, current_app_version = '" . $app_version . "', contact_number = :phone, forced_logout= 0, access_token = '" . $ciphertext_token_base64 . "', access_key='" . $ciphertext_key_base64 . "', access_vector='" . $ciphertext_iv_base64 . "', access_token_expire_at = '" . date("Y-m-d H:i:s", strtotime('+7 days')) . "' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
                 else
                     $update_response = Yii::app()->db->createCommand("UPDATE customers SET phone_verified='1', current_app_version = '" . $app_version . "', forced_logout= 0, access_token = '" . $ciphertext_token_base64 . "', access_key='" . $ciphertext_key_base64 . "', access_vector='" . $ciphertext_iv_base64 . "', access_token_expire_at = '" . date("Y-m-d H:i:s", strtotime('+7 days')) . "' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
-		 
-		 Yii::app()->db->createCommand("UPDATE customer_devices SET forced_logout= 1 WHERE customer_id = :user_id AND device_token != '".$device_token."'")
-		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
-		 
-		 Yii::app()->db->createCommand("UPDATE customer_devices SET forced_logout= 0, device_status = 'online', last_used = '".date("Y-m-d H:i:s")."' WHERE customer_id = :user_id AND device_token = '".$device_token."'")
-		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
 
-	    }
+                Yii::app()->db->createCommand("UPDATE customer_devices SET forced_logout= 1 WHERE customer_id = :user_id AND device_token != '" . $device_token . "'")
+                        ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
+
+                Yii::app()->db->createCommand("UPDATE customer_devices SET forced_logout= 0, device_status = 'online', last_used = '" . date("Y-m-d H:i:s") . "' WHERE customer_id = :user_id AND device_token = '" . $device_token . "'")
+                        ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
+            }
             else {
                 if ($phone)
                     $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', forced_logout= 0, current_app_version = '" . $app_version . "', is_voip_number = 0, phone_number = :phone, access_token = '" . $ciphertext_token_base64 . "', access_key='" . $ciphertext_key_base64 . "', access_vector='" . $ciphertext_iv_base64 . "', access_token_expire_at = '" . date("Y-m-d H:i:s", strtotime('+7 days')) . "' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->bindValue(':phone', $phone, PDO::PARAM_STR)->execute();
                 else
                     $update_response = Yii::app()->db->createCommand("UPDATE agents SET phone_verified='1', current_app_version = '" . $app_version . "', forced_logout= 0, access_token = '" . $ciphertext_token_base64 . "', access_key='" . $ciphertext_key_base64 . "', access_vector='" . $ciphertext_iv_base64 . "', access_token_expire_at = '" . date("Y-m-d H:i:s", strtotime('+7 days')) . "' WHERE id = :user_id AND phone_verify_code = :verify_code ")->bindValue(':user_id', $userid, PDO::PARAM_STR)->bindValue(':verify_code', $sortcode, PDO::PARAM_STR)->execute();
-            
-		 Yii::app()->db->createCommand("UPDATE agent_devices SET forced_logout= 1 WHERE agent_id = :user_id AND device_token != '".$device_token."'")
-		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
-		 
-		 Yii::app()->db->createCommand("UPDATE agent_devices SET forced_logout= 0, device_status = 'online', last_used = '".date("Y-m-d H:i:s")."' WHERE agent_id = :user_id AND device_token = '".$device_token."'")
-		 ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
-	    }
-	    
-	     Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();
+
+                Yii::app()->db->createCommand("UPDATE agent_devices SET forced_logout= 1 WHERE agent_id = :user_id AND device_token != '" . $device_token . "'")
+                        ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
+
+                Yii::app()->db->createCommand("UPDATE agent_devices SET forced_logout= 0, device_status = 'online', last_used = '" . date("Y-m-d H:i:s") . "' WHERE agent_id = :user_id AND device_token = '" . $device_token . "'")
+                        ->bindValue(':user_id', $userid, PDO::PARAM_STR)->execute();
+            }
+
+            Yii::app()->db->createCommand("DELETE FROM `temp_tokens` WHERE id = :id")->bindValue(':id', $token_check, PDO::PARAM_STR)->execute();
             $data = array(
                 'result' => 'true',
                 'response' => 'Congratulations, Your phone is verified.',
@@ -7002,15 +6999,15 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
         );
         echo json_encode($json);
     }
-    
-	public function actioncheckuserforcelogout() {
+
+    public function actioncheckuserforcelogout() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
         }
 
-        
+
         $user_type = Yii::app()->request->getParam('user_type');
         $user_id = Yii::app()->request->getParam('user_id');
 
@@ -7040,33 +7037,30 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             if (!count($user_check)) {
                 $result = 'false';
                 $response = 'No user found';
-		
-		$json = array(
-            'result' => $result,
-            'response' => $response
-        );
-		echo json_encode($json);
-		die();
-            }
-	    else {
-		
-		 $result = 'true';
+
+                $json = array(
+                    'result' => $result,
+                    'response' => $response
+                );
+                echo json_encode($json);
+                die();
+            } else {
+
+                $result = 'true';
                 $response = 'user found';
 
-	    $json = array(
-            'result' => $result,
-            'response' => $response,
-	    'forced_logout' => $user_check->forced_logout
-        );
+                $json = array(
+                    'result' => $result,
+                    'response' => $response,
+                    'forced_logout' => $user_check->forced_logout
+                );
 
-         echo json_encode($json);
-		die();      
-
+                echo json_encode($json);
+                die();
             }
         }
-
     }
-    
+
     public function actioncleartemptokens() {
 
         if (Yii::app()->request->getParam('key') != API_KEY_CRON) {
@@ -7083,17 +7077,16 @@ VALUES ('$email', '$username', '$password', '$account_type', '', '$client_pemiss
             $ip = $_SERVER['REMOTE_ADDR'];
         }
 
-        /*if ($ip != MW_SERVER_IP) {
-            $json = array(
-                'result' => 'false',
-                'response' => 'Invalid request'
-            );
-            echo json_encode($json);
-            die();
-        }*/
+        /* if ($ip != MW_SERVER_IP) {
+          $json = array(
+          'result' => 'false',
+          'response' => 'Invalid request'
+          );
+          echo json_encode($json);
+          die();
+          } */
 
         Yii::app()->db->createCommand("TRUNCATE TABLE temp_tokens")->execute();
-
     }
 
 }

@@ -432,7 +432,6 @@ class CouponsController extends Controller {
 
                     $min_diff = round(($from_time - $to_time) / 60, 2);
 
-                    //$min_diff = abs($min_diff);
                 }
                 else {
                     if ($wrequest['status'] >= 0 && $wrequest['status'] < 4)
@@ -529,18 +528,9 @@ class CouponsController extends Controller {
                             $payment_status = 'Released';
                         }
 
-
-                        /* if($cust_details->client_position == 'real') $payresult = Yii::app()->braintree->getTransactionById_real($wrequest['transaction_id']);
-                          else $payresult = Yii::app()->braintree->getTransactionById($wrequest['transaction_id']);
-                          if($payresult['success'] == 1) {
-                          //$submerchant_id = $payresult['merchant_id'];
-                          $transaction_status = $payresult['status'];
-                          } */
                     }
                 }
 
-//$kartapiresult = $this->washingkart($wrequest['id'], API_KEY, 0, AES256CBC_API_PASS);
-//$kartdata = json_decode($kartapiresult);
 
                 if ($wrequest['is_flagged'] == 1)
                     $payment_status = 'Check Fraud';

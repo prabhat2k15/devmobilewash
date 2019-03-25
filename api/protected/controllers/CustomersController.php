@@ -181,33 +181,7 @@ class CustomersController extends Controller {
                         $result = 'true';
                         $response = 'Customer successfully registered';
 
-                        //	Create default home location while customer register
-                        //Yii::app()->db->createCommand()->insert('customer_locations',array('customer_id' =>$customerid,'location_title'=>'Home'));
-                        //	Create default office location while customer register
-                        //Yii::app()->db->createCommand()->insert('customer_locations',array('customer_id' =>$customerid,'location_title'=>'Office'));
 
-
-                        /*
-                          $location_details = Yii::app()->db->createCommand()
-                          ->select('*')
-                          ->from('customer_locations')
-                          ->where("customer_id='".$customerid."'", array())
-                          ->queryAll();
-
-                          $locations = array();
-
-                          if(count($location_details)>0){
-                          foreach($location_details as $sloc){
-                          $locations[]= array(
-                          'location_title'=> $sloc['location_title'],
-                          'location_address'=> $sloc['location_address'],
-                          'actual_longitude'=> $sloc['actual_longitude'],
-                          'actual_latitude'=> $sloc['actual_latitude'],
-                          'is_editable'=> $sloc['is_editable']
-                          );
-                          }
-                          }
-                         */
 
                         $customername2 = '';
                         $cust_name = explode(" ", trim($customername));
@@ -1021,53 +995,6 @@ class CustomersController extends Controller {
     }
 
     /*
-      public function actionresetpassword() {
-
-      if(Yii::app()->request->getParam('key') != API_KEY){
-      echo "Invalid api key";
-      die();
-      }
-
-      $this->layout = '//layouts/main2';
-      if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $message = "";
-      $loadView = "index";
-      $new_password = trim($_POST['newpassword']);
-      $id = $_POST['id'];
-
-      if(empty($new_password)){
-      $message = "Password can not be empty.";
-      }else{
-      $cnfpassword = $_POST['cnfpassword'];
-      if($new_password==$cnfpassword){
-      $update_password = Customers::model()->updateAll(array('password'=>md5($new_password),'token'=>''),'id=:id',array(':id'=>$id));
-      if($update_password ==1) {
-      $loadView = 'message';
-      $message = 'Password has been Updated';
-      } else {
-      $message = 'Password not Updated';
-      }
-      }else{
-      $message = "New Password and Confirm Password does not match.";
-      }
-
-      }
-
-      $this->render($loadView,array('id'=>$id,'message'=>$message));
-
-      }else {
-      $token = Yii::app()->request->getParam('token');
-      $id = Yii::app()->request->getParam('id');
-      $customers_email_exists = Customers::model()->findByAttributes(array("token"=>$token,"id"=>$id));
-      if(count($customers_email_exists)>0) {
-      $this->render('index',array('id'=>$id,'message'=>''));
-      } else {
-      $this->render('message',array('message'=>"Sorry can't reset your password. Please check reset link."));
-      }
-      }
-      }
-     */
-    /*
      * * Performs the Customer Profile update.
      * * Post Required: emailid, customername, password, image, contact_number, email_alerts, push_notify
      */
@@ -1673,38 +1600,6 @@ class CustomersController extends Controller {
         echo json_encode($json);
         die();
     }
-
-    /* public function actiondeletecustomer(){
-
-      if(Yii::app()->request->getParam('key') != API_KEY){
-      echo "Invalid api key";
-      die();
-      }
-
-      $customers_id = Yii::app()->request->getParam('customers_id');
-      $customer = Customers::model()->findByAttributes(array("id"=>$customers_id));
-      if(!empty($customer)){
-      $customer->delete();
-      //$rides = Rids::model()->findByAttributes(array('customers_id'=> $customers_id));
-      //if(!empty($rides)) $likes->deleteAll('customers_id='. $customers_id);
-
-      $response = 'User with all respected data is deleted successfully';
-      $json = array(
-      'result' => true,
-      'response' => $response,
-      'Deleted' => true
-      );
-      }else{
-      $response = 'User doesnot exists, Please provide valid customer ID';
-      $json = array(
-      'result' => false,
-      'response' => $response,
-      'Deleted' => false
-      );
-      }
-      echo json_encode($json);
-      exit;
-      } */
 
     public function actionAddLocation() {
 
@@ -2697,12 +2592,6 @@ class CustomersController extends Controller {
                 $response = "Vehicles";
                 $siteUrl = Yii::app()->getBaseUrl(true);
 
-
-//                $qrVehicles = Yii::app()->db->createCommand()
-//                        ->select('*')->from('customer_vehicals')
-//                        ->where("customer_id=:customer_id AND hide_vehicle = 0", array(":customer_id" => $customer_id))
-//                        ->order("id DESC")
-//                        ->queryAll();
                 $qrVehicles = Yii::app()->db->createCommand()
                         ->select('customer_vehicals.*')->from('customer_vehicals')
                         ->where("customer_id=:customer_id AND hide_vehicle = 0", array(":customer_id" => $customer_id))
@@ -4203,10 +4092,7 @@ class CustomersController extends Controller {
                     $cust_vehicle_model->status = $status;
                     if ($status == 2)
                         $cust_vehicle_model->eco_friendly = $eco_friendly;
-//if(!Yii::app()->request->getParam('pet_hair')) $pet_hair = $cust_vehicle_model->pet_hair;
-//$cust_vehicle_model->pet_hair = $pet_hair;
-//if(!Yii::app()->request->getParam('lifted_vehicle')) $lifted_vehicle = $cust_vehicle_model->lifted_vehicle;
-//$cust_vehicle_model->lifted_vehicle = $lifted_vehicle;
+
                     $cust_vehicle_model->damage_points = $damage_points;
                     $cust_vehicle_model->upgrade_pack = $upgrade_pack;
                     $cust_vehicle_model->edit_vehicle = $edit_vehicle;
@@ -5198,63 +5084,6 @@ class CustomersController extends Controller {
         echo json_encode($json);
         die();
     }
-
-    /*
-      // Generate Payment with requested payment nonce
-      public function actionCustomerPayment() {
-
-      if(Yii::app()->request->getParam('key') != API_KEY){
-      echo "Invalid api key";
-      die();
-      }
-
-      $customer_id = Yii::app()->request->getParam('customer_id');
-      $nonce = Yii::app()->request->getParam('nonce');
-      $amount = Yii::app()->request->getParam('amount');
-      $washing_request_id =Yii::app()->request->getParam('wash_request_id');
-      $response = "Pass the required parameters";
-      $result = "false";
-      $payment_type = '';
-
-      if((isset($customer_id) && !empty($customer_id)) && (isset($nonce) && !empty($nonce)) && (isset($amount) && !empty($amount))){
-
-      $customers = Customers::model()->findByPk($customer_id);
-      if(!$customers){
-      $response = "Invalid customer id";
-      $result = "false";
-      } else {
-      $request_data = ['amount' => $amount,'paymentMethodNonce' => $nonce,'options' => ['submitForSettlement' => True,'storeInVaultOnSuccess'=>true]];
-      $Bresult = Yii::app()->braintree->sale($request_data);
-      //print_r($Bresult);
-
-      if($Bresult['success'] == 1) {
-      //print_r($result);die;
-      $response = "Payment successful";
-      $result = "true";
-      $payment_type = $Bresult['transaction_id'];
-      $update_request = Washingrequests::model()->findByPk($washing_request_id);
-      $update_request->transaction_id = $Bresult['transaction_id'];
-      $update_request->save(false);
-
-      } else {
-      $result = "false";
-      $response = $Bresult['message'];
-      }
-      }
-      }
-
-      $json = array(
-      'result'=> $result,
-      'response'=> $response,
-      'transation_id'=> $payment_type
-      );
-
-      echo json_encode($json);
-      die();
-
-      }
-
-     */
 
     // Generate Payment with requested payment nonce
     public function actionCustomerPaymentold() {
@@ -10827,16 +10656,7 @@ class CustomersController extends Controller {
         $customerid = Yii::app()->request->getParam('id');
         $num = Yii::app()->request->getParam('tonumber');
 
-        //$getnumber = urlencode($num);
-        //$doc = "(+918745) -042-716";
-        //$number =  str_replace(')', '', str_replace('(','',$num));
-        //echo $number.'<br />';
-        //$number_formate =  str_replace('-','',$number);
-        //$to_number =  str_replace('+','',$number_formate);
-        //$to_num =  str_replace(' ','',$number_formate);
-        //echo $to_num;
-        //exit;
-        // $message = urlencode($message);
+
 
         $customers_phone_exists = Customers::model()->findByAttributes(array("contact_number" => $num));
 
@@ -11348,8 +11168,8 @@ class CustomersController extends Controller {
                 $response = "Invalid customer id";
                 $result = "false";
             }
-	    
-	    
+
+
 
             /* else if(($customer_check->hours_opt_check == 1) && ($hours_op_check->status == 'off') && (!$is_scheduled)){
               $result= 'false';
@@ -11375,21 +11195,21 @@ class CustomersController extends Controller {
                 $response = "Company total not specified";
                 $result = "false";
             } else {
-		
-		if (count($customer_check)) {
-			$cust_today_canceled_orders = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE (DATEDIFF(CURDATE(), created_date) = 0) AND customer_id = ".$customer_check->id." AND status = 5 AND ignore_2cancel_count=0")->queryAll();
-	
-			if(count($cust_today_canceled_orders) >= 2){
-			$json = array(
-                        'result' => 'false',
-                        'response' => 'You have exceeded your daily cancel limit. Please try again tomorrow.',
-                    );
 
-                    echo json_encode($json);
-                    die();	
-			}
-		}
-		
+                if (count($customer_check)) {
+                    $cust_today_canceled_orders = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE (DATEDIFF(CURDATE(), created_date) = 0) AND customer_id = " . $customer_check->id . " AND status = 5 AND ignore_2cancel_count=0")->queryAll();
+
+                    if (count($cust_today_canceled_orders) >= 2) {
+                        $json = array(
+                            'result' => 'false',
+                            'response' => 'You have exceeded your daily cancel limit. Please try again tomorrow.',
+                        );
+
+                        echo json_encode($json);
+                        die();
+                    }
+                }
+
                 if (!$customer_check->braintree_id) {
                     $json = array(
                         'result' => 'false',
@@ -12835,28 +12655,6 @@ class CustomersController extends Controller {
         //$feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedbacks.*,agents.agentname,agents.real_washer_id, customer_locations.*,customers.customername,customers.email,customers.contact_number FROM mobilewasher_service_feedbacks Left JOIN customers ON mobilewasher_service_feedbacks.customer_id=customers.id JOIN customer_locations ON customer_locations.customer_id=customers.id JOIN agents ON mobilewasher_service_feedbacks.agent_id=agents.id WHERE customer_locations.location_title='Home' ")->queryAll();
         $feedbacks = Yii::app()->db->createCommand("SELECT mobilewasher_service_feedbacks.*,agents.agentname,agents.real_washer_id, customer_locations.*,customers.customername,customers.email,customers.contact_number, washing_requests.address FROM mobilewasher_service_feedbacks Left JOIN customers ON mobilewasher_service_feedbacks.customer_id=customers.id JOIN customer_locations ON customer_locations.customer_id=customers.id JOIN agents ON mobilewasher_service_feedbacks.agent_id=agents.id JOIN washing_requests ON mobilewasher_service_feedbacks.wash_request_id=washing_requests.id WHERE customer_locations.location_title='Home' ORDER BY mobilewasher_service_feedbacks.created_date DESC")->queryAll();
 
-//        $i = 0;
-//        foreach ($feedbacks as $feedback) {
-//            $i++;
-//
-//            $json = array();
-//            $json['id'] = $feedback['id'];
-//            $json['washingid'] = $feedback['wash_request_id'];
-//            $json['customer_comments'] = $feedback['comments'];
-//            $json['customername'] = $feedback['customername'];
-//            $json['location_address'] = $feedback['location_address'];
-//            $json['city'] = $feedback['city'];
-//            $json['state'] = $feedback['state'];
-//            $json['zipcode'] = $feedback['zipcode'];
-//            $json['email'] = $feedback['email'];
-//            $json['contact_number'] = $feedback['contact_number'];
-//            $json['customer_comments'] = $feedback['comments'];
-//            $json['customer_ratings'] = $feedback['ratings'];
-//            $json['customer_id'] = $feedback['customer_id'];
-//            $json['agent_id'] = $feedback['agent_id'];
-//            $json['customer_social_id'] = $feedback['social_id'];
-//            $feedview[] = $json;
-//        }
 
         $feedbackadmin['order'] = $feedbacks;
 
@@ -13922,23 +13720,6 @@ class CustomersController extends Controller {
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
-
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
@@ -14125,8 +13906,8 @@ class CustomersController extends Controller {
             die();
         }
     }
-    
-       public function actionresetcancelorderpermission() {
+
+    public function actionresetcancelorderpermission() {
 
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
@@ -14141,37 +13922,36 @@ class CustomersController extends Controller {
 
         $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
 
-         if (!$token_check) {
-          $json = array(
-          'result' => 'false',
-          'response' => 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } 
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
 
         $customer_id = Yii::app()->request->getParam('customer_id');
-	
-$cust_check = Customers::model()->findByPk($customer_id);
 
-if(!count($cust_check)){
- $json = array(
+        $cust_check = Customers::model()->findByPk($customer_id);
+
+        if (!count($cust_check)) {
+            $json = array(
                 'result' => 'false',
                 'response' => 'Customer not found',
             );
             echo json_encode($json);
-            die();	
-}
-
-       Yii::app()->db->createCommand("UPDATE washing_requests SET ignore_2cancel_count=1 WHERE (DATEDIFF(CURDATE(), created_date) = 0) AND customer_id = ".$customer_id." AND status = 5")->execute();
-	
-            $json = array(
-                'result' => 'true',
-                'response' => 'success',
-            );
-            echo json_encode($json);
             die();
-        
+        }
+
+        Yii::app()->db->createCommand("UPDATE washing_requests SET ignore_2cancel_count=1 WHERE (DATEDIFF(CURDATE(), created_date) = 0) AND customer_id = " . $customer_id . " AND status = 5")->execute();
+
+        $json = array(
+            'result' => 'true',
+            'response' => 'success',
+        );
+        echo json_encode($json);
+        die();
     }
 
 }
