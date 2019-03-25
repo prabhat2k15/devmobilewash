@@ -1190,13 +1190,37 @@ if ($getorder->transaction_id) {
                                                                 if($log->action == 'picupload'){
                                                                     $temp = json_decode($log->addi_detail);
                                                                     $veh_key =  key($temp);
+                                                                    
                                                                     $temp->$veh_key->action_date = $log->action_date;
                                                                     $temp->$veh_key->agent_id = $log->agent_id;
                                                                     $temp->$veh_key->logid = $log->id;
                                                                     $addi_details[$veh_key] = $temp;
+                                                                    
+                                                                }
+                                                                
+                                                                if($log->action == 'washereditcar'){
+                                                                    $temp = new stdClass();
+                                                                    $veh_key =  $log->vehicle_id;
+                                                                    $temp->$veh_key->action_date = $log->action_date;
+                                                                    $temp->$veh_key->agent_id = $log->agent_id;
+                                                                    $temp->$veh_key->logid = $log->id;
+                                                                    $temp->$veh_key->agentname = $agentdetails->first_name . " " . $agentdetails->last_name;
+                                                                    $addi_details[$veh_key] = $temp;
+                                                                }
+                                                                
+                                                                if($log->action == 'washeraddcar'){
+                                                                    $temp = new stdClass();
+                                                                    $veh_key =  $log->vehicle_id;
+                                                                    $temp->$veh_key->action_date = $log->action_date;
+                                                                    $temp->$veh_key->agent_id = $log->agent_id;
+                                                                    $temp->$veh_key->logid = $log->id;
+                                                                    $temp->$veh_key->agentname = $agentdetails->first_name . " " . $agentdetails->last_name;
+                                                                    $addi_details[$veh_key] = $temp;
                                                                 }
                                                             }
                                                         }// if ends
+                                                        
+                                                        
                                                     ?>
 
                                                     <?php
@@ -1902,6 +1926,7 @@ if ($getorder->transaction_id) {
                                                     $result = curl_exec($handle);
                                                     curl_close($handle);
                                                     $savedroplogdata = json_decode($result);
+                                                    
                                                     if ($savedroplogdata->result == 'true'):
                                                         ?>
                                                         <div class="form-group" style="display: block; margin-top: 25px;">

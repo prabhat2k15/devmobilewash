@@ -2380,6 +2380,7 @@ class CustomersController extends Controller {
                                 'agent_company_id' => $agent_detail->real_washer_id,
                                 'action' => 'washeraddcar',
                                 'addi_detail' => $cust_vehicle_data->brand_name . " " . $cust_vehicle_data->model_name . " (" . $new_pack_name . ")",
+				'vehicle_id' => $cust_vehicle_data->id,
                                 'action_date' => date('Y-m-d H:i:s'));
                             Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
                         }
@@ -3738,6 +3739,7 @@ class CustomersController extends Controller {
                             'agent_company_id' => $agent_detail->real_washer_id,
                             'action' => 'washereditcar',
                             'addi_detail' => $log_detail,
+			    'vehicle_id' => $vehicle_id,
                             'action_date' => date('Y-m-d H:i:s'));
                         Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
                     }
