@@ -10323,6 +10323,7 @@ class WashingController extends Controller {
             $last_month = Yii::app()->request->getParam('start');
             $curr_month = Yii::app()->request->getParam('end');
             $order_month = " AND ( DATE_FORMAT(a.order_for,'%Y-%m')>= :last_month AND DATE_FORMAT(a.order_for,'%Y-%m')<= :curr_month) ";
+	    //$order_month = " AND (( DATE_FORMAT(a.order_for,'%Y-%m')>= :last_month AND DATE_FORMAT(a.order_for,'%Y-%m')<= :curr_month) OR ( DATE_FORMAT(a.complete_order,'%Y-%m')>= :last_month AND DATE_FORMAT(a.complete_order,'%Y-%m')<= :curr_month)) ";
         }
         /* Post END */
 
