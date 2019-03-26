@@ -1190,9 +1190,9 @@ if ($getorder->transaction_id) {
                                                                 if($log->action == 'picupload'){
                                                                     $temp = json_decode($log->addi_detail);
                                                                     $veh_key =  key($temp);
-                                                                    
                                                                     $temp->$veh_key->action_date = $log->action_date;
                                                                     $temp->$veh_key->agent_id = $log->agent_id;
+                                                                    $temp->$veh_key->agent_company_id = $log->agent_company_id;
                                                                     $temp->$veh_key->logid = $log->id;
                                                                     $addi_details[$veh_key] = $temp;
                                                                     
@@ -1486,7 +1486,7 @@ if ($getorder->transaction_id) {
                                                                                 if($addi_details[$veh->id]->{$veh->id}->user_type == 'admin'){
                                                                                     echo 'Photo last taken by: '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }else{
-                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->agent_id.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
+                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->agent_company_id.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }
                                                                             }
                                                                         ?>
