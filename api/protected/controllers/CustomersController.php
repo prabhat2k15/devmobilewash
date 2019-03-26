@@ -2531,16 +2531,21 @@ class CustomersController extends Controller {
             $agent = Agents::model()->findByAttributes(array("id" => $user_id));
             if (count($agent) > 0) {
                 $name = $agent->agentname;
+                $real_washer_id = $agent->real_washer_id;
+            }else{
+                $name = '';
+                $real_washer_id = 0;
             }
             $addi_detail = array($vehicle_id => array('agentname' => $name, 'user_type' => $user_type));
             $addi_detail = json_encode($addi_detail);
             $logdata = array(
                 'agent_id' => $user_id,
                 'wash_request_id' => $wash_request_id,
-                'agent_company_id' => 0,
+                'agent_company_id' => $real_washer_id,
                 'action' => 'picupload',
                 'addi_detail' => $addi_detail,
                 'action_date' => date('Y-m-d H:i:s'));
+
 
             Yii::app()->db->createCommand()->insert('activity_logs', $logdata);
         }
