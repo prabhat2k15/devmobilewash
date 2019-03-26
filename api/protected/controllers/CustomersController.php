@@ -11351,8 +11351,7 @@ class CustomersController extends Controller {
                             $voidresult = Yii::app()->braintree->void_real($payresult['transaction_id']);
                         else
                             $voidresult = Yii::app()->braintree->void($payresult['transaction_id']);
-                        if ($voidresult['success'] == 1)
-                            $tid = '';
+                        //if ($voidresult['success'] == 1) $tid = '';
                     } else {
                         $result = "false";
                         //$response = $payresult['message_mob'];

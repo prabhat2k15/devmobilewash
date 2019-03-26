@@ -724,7 +724,7 @@ $ios_count = $jsondata->ios_count;
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-					    <?php if ((($order->status == 5) || ($order->status == 7)) && ($order->canceled_wash_transaction_id)): ?>
+					    <?php if ((($order->status == 5) || ($order->status == 7) || ($order->status == 0)) && ($order->canceled_wash_transaction_id)): ?>
                                                     <a target="_blank" href="<?php echo BT_TRANSACTION_URL . $order->canceled_wash_transaction_id; ?>"><?php echo $order->canceled_wash_transaction_id; ?></a>
                                                 <?php else: ?>
 					    <?php if ($order->transaction_id): ?>
