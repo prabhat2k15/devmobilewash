@@ -650,7 +650,7 @@ $profiledetail = json_decode($result);
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label col-md-3">Real Washer ID</label>
+                            <label class="control-label col-md-3">Badge ID</label>
                             <div class="col-md-9">
                                 <input type="text" name="real_washer_id" class="form-control" value="<?php echo $profiledetail->real_washer_id; ?>"> </div>
                         </div>
