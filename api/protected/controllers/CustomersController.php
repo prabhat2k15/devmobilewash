@@ -11203,7 +11203,7 @@ class CustomersController extends Controller {
                 $result = "false";
             } else {
 
-                if (count($customer_check)) {
+                /*if (count($customer_check)) {
                     $cust_today_canceled_orders = Yii::app()->db->createCommand("SELECT * FROM `washing_requests` WHERE (DATEDIFF(CURDATE(), created_date) = 0) AND customer_id = " . $customer_check->id . " AND status = 5 AND ignore_2cancel_count=0")->queryAll();
 
                     if (count($cust_today_canceled_orders) >= 2) {
@@ -11215,7 +11215,7 @@ class CustomersController extends Controller {
                         echo json_encode($json);
                         die();
                     }
-                }
+                }*/
 
                 if (!$customer_check->braintree_id) {
                     $json = array(
