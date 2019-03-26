@@ -1278,7 +1278,7 @@ if ($getorder->transaction_id) {
                                                                                 if($addi_details[$veh->id]->{$veh->id}->user_type == 'admin'){
                                                                                     echo 'Photo last taken by: '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }else{
-                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->agent_id.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
+                                                                                    echo 'Photo last taken by: #'.$profiledetail->real_washer_id.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }
                                                                             }
                                                                             ?>
@@ -1486,7 +1486,7 @@ if ($getorder->transaction_id) {
                                                                                 if($addi_details[$veh->id]->{$veh->id}->user_type == 'admin'){
                                                                                     echo 'Photo last taken by: '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }else{
-                                                                                    echo 'Photo last taken by: #'.$addi_details[$veh->id]->{$veh->id}->agent_company_id.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
+                                                                                    echo 'Photo last taken by: #'.$profiledetail->real_washer_id.' '.$addi_details[$veh->id]->{$veh->id}->agentname.' on '.date("F j, Y, g:i a", strtotime($addi_details[$veh->id]->{$veh->id}->action_date)); 
                                                                                 }
                                                                             }
                                                                         ?>
