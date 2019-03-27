@@ -97,6 +97,7 @@ $washers_data = json_decode($result);
                                                 <th> Total Washes </th>
                                                 <th> Total cancel </th>
                                                 <th> Total Earned </th>
+                                                <th> Last Completed Wash </th>
                                             </tr>
                                         </thead>
                                         <tbody>
