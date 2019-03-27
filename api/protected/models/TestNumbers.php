@@ -6,13 +6,13 @@
  * The followings are the available columns in table 'site sttings':
 
  */
-class Messges extends CActiveRecord {
+class TestNumbers extends CActiveRecord {
 
     /**
      * @return string the associated database table name
      */
     public function tableName() {
-        return 'messages';
+        return 'test_numbers';
     }
 
     /**
@@ -20,8 +20,7 @@ class Messges extends CActiveRecord {
      */
     public function rules() {
         return array(
-            array('to, phone, message, media', 'required'),
-            array('id, to, phone, message, media', 'required'),
+            array('id,phone', 'required'),
         );
     }
 
@@ -41,10 +40,7 @@ class Messges extends CActiveRecord {
     public function attributeLabels() {
         return array(
             'id' => 'id',
-            'to' => 'To',
             'phone' => 'Phone',
-            'message' => 'Message',
-            'media' => 'Media'
         );
     }
 

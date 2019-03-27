@@ -110,11 +110,7 @@ class WashingController extends Controller {
                         ->queryAll();
 
 
-                /* $surgeprice = Yii::app()->db->createCommand()
-                  ->select('*')
-                  ->from('surge_pricing')
-                  ->where("day='".strtolower(date('D'))."'", array())
-                  ->queryAll(); */
+
 
                 $surgeprice = Yii::app()->db->createCommand()->select('*')->from('surge_pricing')->where("day='" . strtolower(date('D')) . "'", array())->queryAll();
                 //$zipcodeprice = Yii::app()->db->createCommand()->select('*')->from('zipcode_pricing')->where("id='1'", array())->queryAll();
@@ -176,9 +172,6 @@ class WashingController extends Controller {
                 $del_surge_factor += $surgeprice[0]['deluxe'];
                 $prem_surge_factor += $surgeprice[0]['premium'];
 
-
-                //print_r($surgeprice);
-                //echo $surgeprice[0]['day'];
 
                 foreach ($allplans as $planDetails) {
                     $planDetails['description'] = preg_split('/\r\n|[\r\n]/', $planDetails['description']);
@@ -312,7 +305,7 @@ class WashingController extends Controller {
                     $vehicle_exists = Vehicle::model()->findByAttributes(array("id" => trim($vehicle)));
 
                     if (count($vehicle_exists) && ($vehicle_exists->vehicle_type)) {
-                        //$vehplan = Yii::app()->db->createCommand()->select('*')->from('washing_plans')->where("vehicle_type='".$vehicle_exists->vehicle_type."'", array())->queryAll();
+
                         $vehplan = Yii::app()->db->createCommand('SELECT * FROM washing_plans WHERE vehicle_type = :vehicle_type')
                                 ->bindValue(':vehicle_type', $vehicle_exists->vehicle_type, PDO::PARAM_STR)
                                 ->queryAll();
@@ -346,8 +339,6 @@ class WashingController extends Controller {
                         $del_surge_factor += $surgeprice[0]['deluxe'];
                         $prem_surge_factor += $surgeprice[0]['premium'];
 
-                        //print_r($surgeprice);
-                        //echo $surgeprice[0]['day'];
 
                         foreach ($vehplan as $planDetails) {
                             $planDetails['description'] = preg_split('/\r\n|[\r\n]/', $planDetails['description']);
@@ -633,16 +624,6 @@ class WashingController extends Controller {
             $is_scheduled = Yii::app()->request->getParam('is_scheduled');
 
         $schedule_date = Yii::app()->request->getParam('schedule_date');
-//        if (Yii::app()->request->getParam('is_scheduled') == 1) {
-//            if ($dateChack == "tomorrow") {
-//                $datetime = new DateTime('tomorrow');
-//                $schedule_date = $datetime->format('Y-m-d');
-//            }
-//            if ($dateChack == "today") {
-//                $schedule_date = $currentDate = Date("Y-m-d");
-//            }
-//        }
-
 
         $schedule_time = Yii::app()->request->getParam('schedule_time');
         $schedule_cars_info = Yii::app()->request->getParam('schedule_cars_info');
@@ -749,10 +730,6 @@ class WashingController extends Controller {
                 }
             }
 
-            //Yii::app()->db->createCommand("UPDATE customers SET is_firstwash_reminder_push_sent=1 WHERE id = 18")->execute();
-
-
-
             if (!count($customers_id_check)) {
                 $response = 'Invalid customer';
             } else if (!$car_id_check) {
@@ -795,7 +772,7 @@ class WashingController extends Controller {
                 $georesult = curl_exec($ch);
                 curl_close($ch);
                 $geojsondata = json_decode($georesult);
-//var_dump($geojsondata);
+
                 if ($geojsondata->status == 'ZERO_RESULTS') {
                     $json = array(
                         'result' => 'false',
@@ -1412,7 +1389,6 @@ class WashingController extends Controller {
                         $wash_details = Washingrequests::model()->findByPk($washrequestid);
 
                         $from = Vargas::Obj()->getAdminFromEmail();
-                        //echo $from;
                         $sched_date = '';
                         if (strtotime($wash_details->schedule_date) == strtotime(date('Y-m-d'))) {
                             $sched_date = 'Today';
@@ -2239,8 +2215,7 @@ class WashingController extends Controller {
                         //if($time_detail[1] == 'inactive') continue;
                         $start = strtotime($current_date . " " . $time_detail[0]);
                         $end = strtotime($current_date . " " . $time_detail[0] . " +14 minutes 59 seconds");
-                        //echo $schedule_time." ".date('h:i:s A', $schedule_time);
-                        //echo $start." ".$end." ".date('h:i:s A', $start)." ".date('h:i:s A', $end)." ".$time_detail[2]."<br>";
+
 
                         if (strtotime($schedule_time) >= $start && strtotime($schedule_time) <= $end) {
                             $wash_now_fee = $time_detail[2];
@@ -3069,49 +3044,6 @@ class WashingController extends Controller {
 
 
                 $mobile_receipt .= "Total: $" . $kartdata->net_price . "\r\n";
-                /* if (APP_ENV == 'real') {
-                  $this->layout = "xmlLayout";
-
-                  require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio.php');
-                  require_once(ROOT_WEBFOLDER . '/public_html/api/protected/extensions/twilio/twilio-php/Services/Twilio/Capability.php');
-
-                  $account_sid = TWILIO_SID;
-                  $auth_token = TWILIO_AUTH_TOKEN;
-                  $client = new Services_Twilio($account_sid, $auth_token);
-
-                  $message = "WASH NOW TAKEN #000" . $wrequest_id_check->id . "- " . date('M d', strtotime($wrequest_id_check->created_date)) . " @ " . date('h:i A', strtotime($wrequest_id_check->created_date)) . "\r\n" . $cust_detail->first_name . " " . $cust_detail->last_name . "\r\n" . $cust_detail->contact_number . "\r\n" . $wrequest_id_check->address . " (" . $wrequest_id_check->address_type . ")\r\nWasher Name: " . $agent_detail->first_name . " " . $agent_detail->last_name . "\r\nWasher Badge #" . $agent_detail->real_washer_id . "\r\n------\r\n" . $mobile_receipt;
-
-
-                  try {
-                  $sendmessage = $client->account->messages->create(array(
-                  'To' => '8183313631',
-                  'From' => '+13103128070',
-                  'Body' => $message,
-                  ));
-                  } catch (Services_Twilio_RestException $e) {
-                  //echo  $e;
-                  }
-
-                  try {
-                  $sendmessage = $client->account->messages->create(array(
-                  'To' => '3109999334',
-                  'From' => '+13103128070',
-                  'Body' => $message,
-                  ));
-                  } catch (Services_Twilio_RestException $e) {
-                  //echo  $e;
-                  }
-
-                  try {
-                  $sendmessage = $client->account->messages->create(array(
-                  'To' => '3103442534',
-                  'From' => '+13103128070',
-                  'Body' => $message,
-                  ));
-                  } catch (Services_Twilio_RestException $e) {
-                  //echo  $e;
-                  }
-                  } */
             }
 
             Washingrequests::model()->updateByPk($wash_request_id, array("all_reject_ids" => '', "agent_reject_ids" => ''));
@@ -3347,19 +3279,16 @@ class WashingController extends Controller {
                     $jsondata = json_decode($plan_result);
 
                     if ($plans[$ind] == 'Express') {
-                        //echo $jsondata->plans->deluxe[0]->wash_time."<br>";
                         $expprice = intval($jsondata->plans->express[0]->wash_time);
                         $washtime += $expprice;
                     }
 
                     if ($plans[$ind] == 'Deluxe') {
-                        //echo $jsondata->plans->deluxe[0]->wash_time."<br>";
                         $delprice = intval($jsondata->plans->deluxe[0]->wash_time);
                         $washtime += $delprice;
                     }
 
                     if ($plans[$ind] == 'Premium') {
-                        //echo $jsondata->plans->premium[0]->wash_time."<br>";
                         $premprice = intval($jsondata->plans->premium[0]->wash_time);
                         $washtime += $premprice;
                     }
@@ -3408,9 +3337,6 @@ class WashingController extends Controller {
                     $currentwashbasescheduletime = date('Y-m-d h:i A', strtotime($model_NewRqst->schedule_date . ' ' . $model_NewRqst->schedule_time));
                 }
 
-                //echo "currentwashtotalscheduletime ".$currentwashtotalscheduletime."<br>";
-                //echo "currentwashbasescheduletime ".$currentwashbasescheduletime."<br>";
-
                 $agenttakenwashes = Washingrequests::model()->findAll(array("condition" => "agent_id = :agent_id AND status = 0 AND is_scheduled = 1", 'params' => array(':agent_id' => $agent_id)));
 
                 if (count($agenttakenwashes)) {
@@ -3420,7 +3346,7 @@ class WashingController extends Controller {
                         $plans = explode(",", $agtwash->package_list);
                         foreach ($cars as $ind => $car) {
                             $car_detail = Vehicle::model()->findByPk($car);
-                            //echo $car_detail->brand_name." ".$car_detail->model_name."<br>";
+
 
                             $handle = curl_init(ROOT_URL . "/api/index.php?r=washing/plans");
                             $data = array('vehicle_make' => $car_detail->brand_name, 'vehicle_model' => $car_detail->model_name, 'vehicle_build' => $car_detail->vehicle_build, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
@@ -3432,19 +3358,16 @@ class WashingController extends Controller {
                             $jsondata = json_decode($plan_result);
 
                             if ($plans[$ind] == 'Express') {
-                                //echo $jsondata->plans->deluxe[0]->wash_time."<br>";
                                 $expprice = intval($jsondata->plans->express[0]->wash_time);
                                 $washtime += $expprice;
                             }
 
                             if ($plans[$ind] == 'Deluxe') {
-                                //echo $jsondata->plans->deluxe[0]->wash_time."<br>";
                                 $delprice = intval($jsondata->plans->deluxe[0]->wash_time);
                                 $washtime += $delprice;
                             }
 
                             if ($plans[$ind] == 'Premium') {
-                                //echo $jsondata->plans->premium[0]->wash_time."<br>";
                                 $premprice = intval($jsondata->plans->premium[0]->wash_time);
                                 $washtime += $premprice;
                             }
@@ -3493,13 +3416,10 @@ class WashingController extends Controller {
                             $agtwashbasescheduletime = date('Y-m-d h:i A', strtotime($agtwash->schedule_date . ' ' . $agtwash->schedule_time));
                         }
 
-                        //echo "agtwashtotalscheduletime ".$agtwashtotalscheduletime."<br>";
-                        //echo "agtwashbasescheduletime ".$agtwashbasescheduletime."<br>";
 
                         if ((!$status) && ($agent_id) && (!$admin_permit) && (!Yii::app()->request->getParam('washer_drop_job')) && ($wrequest_id_check->agent_id != $agent_id)) {
                             if (strtotime($currentwashbasescheduletime) >= strtotime($agtwashbasescheduletime)) {
-                                //echo "currentwashtotalscheduletime ".strtotime($currentwashtotalscheduletime)."<br>";
-                                //echo "agtwashtotalscheduletime ".strtotime($agtwashtotalscheduletime)."<br>";
+
                                 if (strtotime($agtwashtotalscheduletime) > strtotime($currentwashbasescheduletime)) {
                                     $result = 'false';
                                     $response = 'Sorry, you have an overlapping appointment with this schedule.';
@@ -3553,7 +3473,6 @@ class WashingController extends Controller {
                         if (count($clientdevices)) {
                             foreach ($clientdevices as $ctdevice) {
                                 //$message =  "You have a new scheduled wash request.";
-                                //echo $agentdetails['mobile_type'];
                                 $device_type = strtolower($ctdevice['device_type']);
                                 $notify_token = $ctdevice['device_token'];
                                 //$alert_type = "strong";
@@ -3739,7 +3658,6 @@ class WashingController extends Controller {
                         //$message = str_replace("[ORDER_ID]", "#" . $wash_request_id, $pushmsg[0]['message']);
                         foreach ($agentdevices as $agdevice) {
                             //$message =  "You have a new scheduled wash request.";
-                            //echo $agentdetails['mobile_type'];
                             $device_type = strtolower($agdevice['device_type']);
                             $notify_token = $agdevice['device_token'];
                             $alert_type = "schedule";
@@ -3916,7 +3834,6 @@ class WashingController extends Controller {
 
                     foreach ($clientdevices as $ctdevice) {
                         //$message =  "You have a new scheduled wash request.";
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($ctdevice['device_type']);
                         $notify_token = $ctdevice['device_token'];
                         $alert_type = "schedule";
@@ -4187,7 +4104,6 @@ class WashingController extends Controller {
                 if (count($clientdevices)) {
                     foreach ($clientdevices as $ctdevice) {
                         //$message =  "You have a new scheduled wash request.";
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($ctdevice['device_type']);
                         $notify_token = $ctdevice['device_token'];
                         $alert_type = "default";
@@ -4562,7 +4478,6 @@ class WashingController extends Controller {
 
                         /* --- Google Distance call --- */
 
-                        //echo "customer locations: ".$latitude.",".$longitude."<br>";
                         $geourl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" . $agent_loc_obj->latitude . "," . $agent_loc_obj->longitude . "&destinations=" . $wrequest_obj->latitude . "," . $wrequest_obj->longitude . "&mode=driving&language=en-EN&sensor=false&key=AIzaSyBKtA-rMuYePlrl3O5Z52T-4LiEVl64Z9Y";
 
                         $ch = curl_init();
@@ -4574,7 +4489,6 @@ class WashingController extends Controller {
                         $georesult = curl_exec($ch);
                         curl_close($ch);
                         $geojsondata = json_decode($georesult);
-//print_r($geojsondata);
                         $eta = $geojsondata->rows[0]->elements[0]->duration->value;
 
                         if ($eta <= 60) {
@@ -4588,7 +4502,6 @@ class WashingController extends Controller {
 
                                 foreach ($clientdevices as $ctdevice) {
                                     //$message =  "Washer arriving within 1 minute";
-                                    //echo $agentdetails['mobile_type'];
                                     $device_type = strtolower($ctdevice['device_type']);
                                     $notify_token = $ctdevice['device_token'];
                                     $alert_type = "strong";
@@ -4903,11 +4816,6 @@ class WashingController extends Controller {
             }
         }
 
-//        $check_admin_cancel = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = ".$wrequest_id_check->id." AND action IN('admindropjob', 'cancelorder') AND admin_username != '' LIMIT 1")->queryAll();
-//        $admin_wash_complete = 0;
-//        if(count($check_admin_cancel) > 0){
-//          $admin_wash_complete = 1;
-//        }
         $check_admin_cancel = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE wash_request_id = " . $wrequest_id_check->id . " AND action IN('completejob') AND admin_username != '' LIMIT 1")->queryAll();
         $admin_wash_complete = 0;
         if (count($check_admin_cancel) > 0) {
@@ -5138,7 +5046,6 @@ class WashingController extends Controller {
                                 else
                                     $rate += $agent_feedback->customer_ratings;
                             }
-//echo "rate: ".$rate."<br>total drops: ".$washer_total_dropjobs."<br>total rate: ".$total_rate."<br>";
                             if ($washer_total_dropjobs)
                                 $agent_rate = ($rate + $washer_total_dropjobs) / ($total_rate + 10 + $washer_total_dropjobs);
                             else
@@ -5170,8 +5077,6 @@ class WashingController extends Controller {
 
                 $plan_ids = explode(",", $plan_ids);
                 $car_ids = explode(",", $car_ids);
-                //var_dump($plan_ids);
-                //var_dump($car_ids);
 
                 $total = 0;
 
@@ -5190,7 +5095,6 @@ class WashingController extends Controller {
                     $total += $price + $fee;
                 }
 
-                //echo $total;
                 $total = number_format($total, 2, '.', '');
 
                 Washingrequests::model()->updateByPk($wash_request_id, array('tip_amount' => $tip_amount));
@@ -5455,7 +5359,6 @@ class WashingController extends Controller {
                         }
 
                         if ($washer_total_dropjobs) {
-                            //echo "rate: ".$rate."<br>total drops: ".$washer_total_dropjobs."<br>total rate: ".$total_rate."<br>";
                             $agent_rate = ($rate + $washer_total_dropjobs) / ($total_rate + 10 + $washer_total_dropjobs);
                         } else
                             $agent_rate = $rate / ($total_rate + 10);
@@ -5591,8 +5494,6 @@ class WashingController extends Controller {
 
                 $plan_ids = explode(",", $plan_ids);
                 $car_ids = explode(",", $car_ids);
-                //var_dump($plan_ids);
-                //var_dump($car_ids);
 
                 $total = 0;
 
@@ -5611,7 +5512,6 @@ class WashingController extends Controller {
                     $total += $price + $fee;
                 }
 
-                //echo $total;
                 $total = number_format($total, 2, '.', '');
 
                 if (!$simulate_rating) {
@@ -5662,23 +5562,7 @@ class WashingController extends Controller {
             echo "Invalid api key";
             die();
         }
-        /*
-          $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
 
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -5701,7 +5585,6 @@ class WashingController extends Controller {
 
         if (count($pendingrequests)) {
             foreach ($pendingrequests as $wrequest) {
-//echo $wrequest['id']."<br>";
 
                 /* ------- get nearest agents --------- */
 
@@ -5770,8 +5653,6 @@ class WashingController extends Controller {
                             $message = $pushmsg[0]['message'];
 
                             foreach ($clientdevices as $ctdevice) {
-
-                                //echo $agentdetails['mobile_type'];
                                 $device_type = strtolower($ctdevice['device_type']);
                                 $notify_token = $ctdevice['device_token'];
                                 $alert_type = "schedule";
@@ -6002,7 +5883,6 @@ class WashingController extends Controller {
 
                     foreach ($clientdevices as $ctdevice) {
 
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($ctdevice['device_type']);
                         $notify_token = $ctdevice['device_token'];
                         $alert_type = "schedule";
@@ -6028,7 +5908,6 @@ class WashingController extends Controller {
 
                     foreach ($agentdevices as $agdevice) {
 
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($agdevice['device_type']);
                         $notify_token = $agdevice['device_token'];
                         $alert_type = "schedule";
@@ -6083,8 +5962,6 @@ class WashingController extends Controller {
                     $message = $pushmsg[0]['message'];
 
                     foreach ($agentdevices as $agdevice) {
-
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($agdevice['device_type']);
                         $notify_token = $agdevice['device_token'];
                         $alert_type = "schedule";
@@ -6200,8 +6077,6 @@ class WashingController extends Controller {
                 }
 
                 //$status_text = rtrim($status_text, ',');
-                //echo $status_text;
-
                 if ($is_scheduled) {
                     Washingrequests::model()->updateByPk($wash_request_id, array('agent_reject_ids' => $status_text, 'all_reject_ids' => $saved_reject_ids, 'create_wash_push_sent' => 0));
                 } else {
@@ -6395,7 +6270,6 @@ class WashingController extends Controller {
 
                             unset($carlist['customer_id']);
                             //$cardetails[] = $carlist;
-                            // echo $k.'dad'. $counter;
                             $cardetails[] = array_merge($carlist, $washing_plans[0]);
 
                             array_push($customer_vehicals, $carlist['vehicle_type']);
@@ -6411,8 +6285,6 @@ class WashingController extends Controller {
                         $title_plan = $package_name[$i];
 
                         $price = Yii::app()->db->createCommand("SELECT SUM(price) AS TotalPrice FROM `washing_plans` WHERE `vehicle_type` = '$vehicals' AND title = '$title_plan'")->queryAll();
-                        //echo "SELECT SUM(price) AS TotalPrice FROM `washing_plans` WHERE `vehicle_type` = '$vehicals' AND title = '$title_plan'";
-
                         foreach ($price as $pice) {
 
                             $totalpice += $pice['TotalPrice'];
@@ -6631,13 +6503,11 @@ class WashingController extends Controller {
 
         if ((isset($agent_id) && !empty($agent_id))) {
             $agents_id_check = Agents::model()->findByAttributes(array("id" => $agent_id));
-            //$agent_has_order = Washingrequests::model()->findByAttributes(array("order_temp_assigned"=>$agent_id, "status"=>0, "is_scheduled"=>0));
 
             if ($agents_id_check->washer_position == 'real')
                 $pendingschedrequests = Washingrequests::model()->findAll(array("condition" => "wash_request_position = 'real' AND agent_id = 0 AND is_scheduled = 1 AND status = 0"));
             else
                 $pendingschedrequests = Washingrequests::model()->findAll(array("condition" => "wash_request_position != 'real' AND agent_id = 0 AND is_scheduled = 1 AND status = 0"));
-//print_r($pendingschedrequests);
             foreach ($pendingschedrequests as $pdrequest) {
                 $cust_id_check = Customers::model()->findByAttributes(array("id" => $pdrequest->customer_id));
                 $sched_date = '';
@@ -6885,44 +6755,13 @@ class WashingController extends Controller {
 
 
                         if ($nearest_check == 'true' && $nearest_response == 'agent is nearest') {
-                            //$id_assign_check = Washingrequests::model()->updateByPk($prequest['id'], array( 'order_temp_assigned' => $agent_id ));
+
                             $result = 'true';
                             $response = 'wash request found';
 
                             if (!$prequest['create_wash_push_sent']) {
 
 
-                                /* --- notification call --- */
-
-                                /*    $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '9' ")->queryAll();
-                                  $message = $pushmsg[0]['message'];
-
-                                  $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agents_id_check->id."' ORDER BY last_used DESC LIMIT 1")->queryAll();
-
-
-                                  if((count($agentdevices)) && (!$agentdetails->block_washer))
-                                  {
-
-
-                                  $device_type = strtolower($agentdevices[0]['device_type']);
-                                  $notify_token = $agentdevices[0]['device_token'];
-                                  $alert_type = "strong";
-                                  //$notify_msg = urlencode($message." status: ".$prequest['create_wash_push_sent']." token: ".$agentdevices[0]['device_token']." type: ".$agentdevices[0]['device_type']." agent id: ".$agentdevices[0]['agent_id']);
-                                  $notify_msg = urlencode($message);
-
-                                  $notifyurl = ROOT_URL."/push-notifications/".$device_type."/?device_token=".$notify_token."&msg=".$notify_msg."&alert_type=".$alert_type;
-
-                                  $ch = curl_init();
-                                  curl_setopt($ch,CURLOPT_URL,$notifyurl);
-                                  curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-
-                                  if($notify_msg) $notifyresult = curl_exec($ch);
-                                  curl_close($ch);
-
-                                  } */
-
-
-                                /* --- notification call end --- */
 
                                 Washingrequests::model()->updateByPk($prequest['id'], array("create_wash_push_sent" => 1));
                             }
@@ -7237,7 +7076,6 @@ class WashingController extends Controller {
         $clientname = Yii::app()->request->getParam('clientname');
         $agentname = Yii::app()->request->getParam('agentname');
         if (!empty($status)) {
-            //$update_password = Customers::model()->updateAll(array('status'=>$status),'id=:id',array(':id'=>$orderid));
             $update_status = Yii::app()->db->createCommand("UPDATE washing_requests SET status=:status WHERE id = :id")->bindValue(':status', $status, PDO::PARAM_STR)->bindValue(':id', $orderid, PDO::PARAM_STR)->queryAll();
             $value = $status;
         } elseif (!empty($clientname)) {
@@ -7247,25 +7085,6 @@ class WashingController extends Controller {
             $update_customer = Yii::app()->db->createCommand("UPDATE customers SET customername=:customername WHERE id = :id")->bindValue(':customername', $clientname, PDO::PARAM_STR)->bindValue(':id', $customerid, PDO::PARAM_STR)->queryAll();
             $value = $firstname;
         }
-        /* elseif(!empty($agentname))
-          {
-          $Agents = new Agents;
-          $agentname = explode(" ",$agentname);
-
-          $fname = $agentname[0];
-          $lname = $agentname[1];
-          $customer =  Yii::app()->db->createCommand("SELECT agent_id FROM washing_requests WHERE id = '$orderid' ")->queryAll();
-
-          $agentid = $customer[0]['agent_id'];
-          $update_agent = Agents::model()->updateByPk($agentid, array('first_name'=>$fname, 'last_name'=>$lname));
-          //$update_agent = Yii::app()->db->createCommand("UPDATE agents SET first_name='$fname', last_name = '$lname' WHERE id = '$agentid' ")->queryAll();
-          //echo "UPDATE agents SET first_name='$fname', last_name = '$lname' WHERE id = '$agentid'";
-          $value = $agentname;
-          } */
-
-
-
-
         $result = 'true';
         $response = $value . ' updated successfully';
         $json = array(
@@ -7407,7 +7226,6 @@ class WashingController extends Controller {
                 /* ------- kart details end ----------- */
 
                 $from = Vargas::Obj()->getAdminFromEmail();
-                //echo $from;
                 $subject = 'Order Receipt - #000' . $wash_id_check->id;
                 //$message = "Hello ".$customername.",<br/><br/>Welcome to Mobile wash!";
                 $message = "<div class='block-content' style='background: #fff; text-align: left;'>";
@@ -8795,8 +8613,6 @@ class WashingController extends Controller {
                 $idd = $y['id'];
 
                 $agentid = $y['agent_id'];
-                //echo "SELECT * FROM agents WHERE id = '$agentid'<br />";
-                //echo "SELECT * FROM agents WHERE id = '$id' ";
                 $agent = Yii::app()->db->createCommand("SELECT * FROM agents WHERE id = '$agentid' ")->queryAll();
                 $var['name'] = $agent[0]['first_name'] . '&nbsp;' . $agent[0]['last_name'];
                 $var['address'] = $agent[0]['street_address'];
@@ -8814,13 +8630,6 @@ class WashingController extends Controller {
             }
         }
 
-
-        /* echo "<pre>";
-          print_r($res);
-          echo "<pre>";
-          exit; */
-
-        //$json = array($array);
         $json = array($res);
         echo json_encode($json);
         die();
@@ -9242,7 +9051,6 @@ class WashingController extends Controller {
                     if (count($clientdevices)) {
                         foreach ($clientdevices as $ctdevice) {
                             //$message =  "You have a new scheduled wash request.";
-                            //echo $agentdetails['mobile_type'];
                             $device_type = strtolower($ctdevice['device_type']);
                             $notify_token = $ctdevice['device_token'];
                             $alert_type = "default";
@@ -9384,8 +9192,6 @@ class WashingController extends Controller {
                     }
                 }
             }
-
-//$receiptresult = $this->actionsendorderreceipts($wash_request_id, $wrequest_id_check->customer_id, $wrequest_id_check->agent_id, 'true', API_KEY);
 
             if (($result == 'true') && ($wash_now_canceled == 1) && (APP_ENV == 'real')) {
                 //if(($result == 'true') && ($wash_now_canceled == 1)){
@@ -9625,8 +9431,6 @@ class WashingController extends Controller {
                 }
 
 
-                //Washingrequests::model()->updateByPk($wrequest_id_check->id, array("is_scheduled" => 0, 'status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0));
-
                 if ($wrequest_id_check->is_scheduled)
                     Washingrequests::model()->updateByPk($wrequest_id_check->id, array('status' => 0, 'agent_id' => 0, 'washer_on_way_push_sent' => 0, 'is_create_schedulewash_push_sent' => 0));
                 else
@@ -9640,7 +9444,6 @@ class WashingController extends Controller {
                 if (count($clientdevices)) {
                     foreach ($clientdevices as $ctdevice) {
                         //$message =  "You have a new scheduled wash request.";
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($ctdevice['device_type']);
                         $notify_token = $ctdevice['device_token'];
                         $alert_type = "default";
@@ -9681,14 +9484,12 @@ class WashingController extends Controller {
 
                     if (count($distance_array)) {
                         asort($distance_array);
-                        //print_r($distance_array);
                         foreach ($distance_array as $aid => $dist) {
 
                             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
                             $message = $pushmsg[0]['message'];
                             $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $aid . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
                             $message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wrequest_id_check->city), number_format($wrequest_id_check->agent_total, 2)), $message);
-                            //echo $agid." ".$message2."<br>";
                             if (count($agentdevices) > 0) {
                                 foreach ($agentdevices as $agdevice) {
 
@@ -10323,13 +10124,12 @@ class WashingController extends Controller {
             $last_month = Yii::app()->request->getParam('start');
             $curr_month = Yii::app()->request->getParam('end');
             $order_month = " AND ( DATE_FORMAT(a.order_for,'%Y-%m')>= :last_month AND DATE_FORMAT(a.order_for,'%Y-%m')<= :curr_month) ";
-	    //$order_month = " AND (( DATE_FORMAT(a.order_for,'%Y-%m')>= :last_month AND DATE_FORMAT(a.order_for,'%Y-%m')<= :curr_month) OR ( DATE_FORMAT(a.complete_order,'%Y-%m')>= :last_month AND DATE_FORMAT(a.complete_order,'%Y-%m')<= :curr_month)) ";
+            //$order_month = " AND (( DATE_FORMAT(a.order_for,'%Y-%m')>= :last_month AND DATE_FORMAT(a.order_for,'%Y-%m')<= :curr_month) OR ( DATE_FORMAT(a.complete_order,'%Y-%m')>= :last_month AND DATE_FORMAT(a.complete_order,'%Y-%m')<= :curr_month)) ";
         }
         /* Post END */
 
         /* web orderds */
         $total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
-        //$total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
 
         $count = $total_order[0]['countid'];
 
@@ -10339,7 +10139,6 @@ class WashingController extends Controller {
                 ->bindValue(':curr_month', $curr_month, PDO::PARAM_STR)
                 ->queryAll();
 
-        //$customers_order = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id LEFT JOIN agents a ON w.agent_id = a.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '' AND DATE_FORMAT(w.order_for,'%Y-%m-%d')= '2018-12-31' AND w.status IN('0','4','3','2','1') ORDER BY w.id DESC")->queryAll();
         /* END */
         if (!empty($customers_order)) {
             $check_auto_canceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'scheduleauto-canceled'")->queryAll();
@@ -10476,8 +10275,6 @@ class WashingController extends Controller {
                     );
                 }
             }
-            //print_r($orderview);
-//            die;
             $data = $ArrCustemer = array();
             foreach ($orderview as $key => $value) {
 
@@ -10490,7 +10287,6 @@ class WashingController extends Controller {
 
                 //$total_new_orders = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM washing_requests WHERE is_cust_first_wash = 1 AND status = 4 AND DATE_FORMAT(order_for,'%Y-%m-%d') = '".$value['start']."'")->queryAll();
                 //$total_new_count = $total_new_orders[0]['countid'];
-                //echo $value['start']." ".$total_new_orders[0]['countid']."<br>";
                 $cancledOrder = "N/A";
                 $data[$value['start']]['OrderCancled'] = $cancledOrder;
                 if ($value['orderstatus'] == 5 || $value['orderstatus'] == 6) {
@@ -10621,8 +10417,7 @@ class WashingController extends Controller {
                     }
                 }
             }
-//            print_r($data);
-//            die;
+
             $dt = array();
             foreach ($data as $key => $val) {
 
@@ -10660,7 +10455,6 @@ class WashingController extends Controller {
                 $dt[$key]['zippurple']['color'] = '';
                 $dt[$key]['zippurple']['count'] = 0;
                 $addonscompleted = 0;
-                //print_r($val);
                 if (count($val['declined']) > 0) {
                     $dt[$key]['declined']['count'] = count($val['declined']);
                     $dt[$key]['declined']['color'] = '#eb1350';
@@ -10883,7 +10677,6 @@ class WashingController extends Controller {
 
         /* web orderds */
         $total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a LEFT JOIN customers b ON a.customer_id = b.id LEFT JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
-        //$total_order = Yii::app()->db->createCommand("SELECT COUNT(a.id) as countid FROM washing_requests a  JOIN customers b ON a.customer_id = b.id  JOIN agents c ON a.agent_id = c.id WHERE b.hours_opt_check = 1 AND a.wash_request_position='" . APP_ENV . "'")->queryAll();
 
         $count = $total_order[0]['countid'];
 
@@ -11022,7 +10815,6 @@ class WashingController extends Controller {
                     );
                 }
             }
-            //print_r($orderview); die;
             $data = $ArrCustemer = array();
             foreach ($orderview as $key => $value) {
 
@@ -11152,7 +10944,6 @@ class WashingController extends Controller {
                     }
                 }
             }
-            //print_r($data); die;
             $dt = array();
             foreach ($data as $key => $val) {
 
@@ -11190,7 +10981,6 @@ class WashingController extends Controller {
                 $dt[$key]['zippurple']['color'] = '';
                 $dt[$key]['zippurple']['count'] = 0;
                 $addonscompleted = 0;
-                //print_r($val);
                 if (count($val['declined']) > 0) {
                     $dt[$key]['declined']['count'] = count($val['declined']);
                     $dt[$key]['declined']['color'] = '#eb1350';
@@ -11520,7 +11310,6 @@ class WashingController extends Controller {
                     $dt[$key]['work']['count'] = count($val['work']);
                 }
             }
-            //print_r($dt);
             $ordersdetails['order'] = $dt;
             echo json_encode($ordersdetails, JSON_PRETTY_PRINT);
 
@@ -11675,7 +11464,6 @@ class WashingController extends Controller {
                 }
             }
         }
-        //print_r($sch_orderview);die;
         /* END */
 
         $package_name = array();
@@ -12107,14 +11895,12 @@ class WashingController extends Controller {
                     $scheduledatetime = $order_exists->reschedule_date . " " . $order_exists->reschedule_time;
                 else
                     $scheduledatetime = $order_exists->schedule_date . " " . $order_exists->schedule_time;
-//echo date('Y-m-d h:i A')."<br>";
                 $min_diff = 0;
                 $to_time = strtotime(date('Y-m-d g:i A'));
                 $from_time = strtotime($scheduledatetime);
                 if ($from_time > $to_time) {
                     $min_diff = round(($from_time - $to_time) / 60, 2);
                 }
-//echo $min_diff."<br>";
                 if (($min_diff <= 60) && (!Yii::app()->request->getParam('free_cancel')) && ($order_exists->agent_id)) {
 
                     $braintree_id = '';
@@ -12124,7 +11910,6 @@ class WashingController extends Controller {
                         $Bresult = Yii::app()->braintree->getCustomerById_real($braintree_id);
                     else
                         $Bresult = Yii::app()->braintree->getCustomerById($braintree_id);
-                    //var_dump($Bresult);
                     if (count($Bresult->paymentMethods)) {
                         $result = 'true';
                         $response = 'payment methods';
@@ -12174,7 +11959,6 @@ class WashingController extends Controller {
                                 }
 
                                 $from = Vargas::Obj()->getAdminFromEmail();
-                                //echo $from;
                                 $sched_date = '';
                                 $sched_time = '';
 
@@ -12483,7 +12267,6 @@ class WashingController extends Controller {
                     }
 
                     $from = Vargas::Obj()->getAdminFromEmail();
-                    //echo $from;
                     $sched_date = '';
                     $sched_time = '';
 
@@ -12759,7 +12542,6 @@ class WashingController extends Controller {
                     //$message = str_replace("[ORDER_ID]","#".$order_exists->id, $pushmsg[0]['message']);
                     foreach ($agentdevices as $agdevice) {
                         //$message =  "You have a new scheduled wash request.";
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($agdevice['device_type']);
                         $notify_token = $agdevice['device_token'];
                         $alert_type = "schedule";
@@ -12793,7 +12575,6 @@ class WashingController extends Controller {
 
                     foreach ($clientdevices as $ctdevice) {
                         //$message =  "You have a new scheduled wash request.";
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($ctdevice['device_type']);
                         $notify_token = $ctdevice['device_token'];
                         $alert_type = "schedule";
@@ -13228,7 +13009,6 @@ class WashingController extends Controller {
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC")->bindValue(':day', $day, PDO::PARAM_STR)->queryAll();
         }
 
-        //print_r($qrRequests);
         if (count($qrRequests) > 0) {
 
             foreach ($qrRequests as $wrequest) {
@@ -13419,7 +13199,6 @@ class WashingController extends Controller {
 
         $allschedwashes = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = :washer_position AND w.agent_id=0 AND w.is_scheduled = 1 AND w.status = 0 ORDER BY w.created_date ASC")->bindValue(':washer_position', $washer_position, PDO::PARAM_STR)->queryAll();
 
-//print_r($allschedwashes);
         if (count($allschedwashes)) {
             $customerName = '';
             $currentDateTime = date('Y-m-d h:i:s', time());
@@ -13444,7 +13223,6 @@ class WashingController extends Controller {
                 $schdDate = date('Y-m-d', strtotime($schedwash['schedule_date']));
 
                 $hoursDiff = $this->_getHoursDifference($currentDateTime, $schdDateTime);
-                //echo $schedwash->id." ".$hoursDiff."<br>";
                 //if($schdDate >= $currentDate && $hoursDiff >= 1){
                 $sched_date = '';
                 $sched_time = '';
@@ -13481,7 +13259,6 @@ class WashingController extends Controller {
                 $plans = explode(",", $schedwash['package_list']);
                 foreach ($cars as $ind => $car) {
                     $car_detail = Vehicle::model()->findByPk($car);
-                    //echo $car_detail->brand_name." ".$car_detail->model_name."<br>";
 
                     $handle = curl_init(ROOT_URL . "/api/index.php?r=washing/plans");
                     $data = array('vehicle_make' => $car_detail->brand_name, 'vehicle_model' => $car_detail->model_name, 'vehicle_build' => $car_detail->vehicle_build, "key" => API_KEY, "api_token" => $api_token, "t1" => $t1, "t2" => $t2, "user_type" => $user_type, "user_id" => $user_id);
@@ -13493,19 +13270,16 @@ class WashingController extends Controller {
                     $jsondata = json_decode($plan_result);
 
                     if ($plans[$ind] == 'Express') {
-                        //echo $jsondata->plans->deluxe[0]->wash_time."<br>";
                         $expprice = intval($jsondata->plans->express[0]->wash_time);
                         $washtime += $expprice;
                     }
 
                     if ($plans[$ind] == 'Deluxe') {
-                        //echo $jsondata->plans->deluxe[0]->wash_time."<br>";
                         $delprice = intval($jsondata->plans->deluxe[0]->wash_time);
                         $washtime += $delprice;
                     }
 
                     if ($plans[$ind] == 'Premium') {
-                        //echo $jsondata->plans->premium[0]->wash_time."<br>";
                         $premprice = intval($jsondata->plans->premium[0]->wash_time);
                         $washtime += $premprice;
                     }
@@ -13728,23 +13502,6 @@ class WashingController extends Controller {
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
-
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
@@ -13813,7 +13570,6 @@ class WashingController extends Controller {
 
                             //$agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '".$agent->id."' AND device_token != '' ORDER BY last_used DESC LIMIT 1")->queryAll();
                             $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $agent->id . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
-//echo $schedwash->id." - ".$agent->id."<br>";
 
                             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '8' ")->queryAll();
                             $message = $pushmsg[0]['message'];
@@ -13829,7 +13585,6 @@ class WashingController extends Controller {
                                 $notify_token = $agdevice['device_token'];
                                 $alert_type = "schedule";
                                 $notify_msg = urlencode($message2);
-//echo $device_type." ".$notify_token."<br><br>";
 
                                 $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type . "&wash_id=" . $wash_id_encoded;
                                 file_put_contents("android_notificaiton.log", $notifyurl, FILE_APPEND);
@@ -13876,12 +13631,10 @@ class WashingController extends Controller {
                         $device_type = '';
                         $notify_token = '';
                         //$message =  "You have a new scheduled wash request.";
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($ctdevice['device_type']);
                         $notify_token = $ctdevice['device_token'];
                         $alert_type = "default";
                         $notify_msg = urlencode($message);
-//echo $device_type." ".$notify_token."<br><br>";
 
                         $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type;
                         file_put_contents("android_notificaiton.log", $notifyurl, FILE_APPEND);
@@ -14056,7 +13809,6 @@ class WashingController extends Controller {
 
                         foreach ($agentdevices as $agdevice) {
                             //$message =  "You have a new scheduled wash request.";
-                            //echo $agentdetails['mobile_type'];
                             $device_type = strtolower($agdevice['device_type']);
                             $notify_token = $agdevice['device_token'];
                             $alert_type = "strong";
@@ -14084,23 +13836,6 @@ class WashingController extends Controller {
             echo "Invalid api key";
             die();
         }
-
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -14135,7 +13870,6 @@ class WashingController extends Controller {
                 if ($from_time >= $to_time) {
                     $min_diff = round(($from_time - $to_time) / 60, 2);
                 }
-//echo "#".$schedwash->id." ".$min_diff."<br>";
                 if ($min_diff < 10) {
 
                     if ($schedwash->agent_id) {
@@ -14183,7 +13917,6 @@ class WashingController extends Controller {
                             if (count($clientdevices)) {
                                 foreach ($clientdevices as $ctdevice) {
                                     //$message =  "You have a new scheduled wash request.";
-                                    //echo $agentdetails['mobile_type'];
                                     $device_type = strtolower($ctdevice['device_type']);
                                     $notify_token = $ctdevice['device_token'];
                                     $alert_type = "strong";
@@ -14205,7 +13938,6 @@ class WashingController extends Controller {
                         if (!$agent_detail->block_washer) {
                             foreach ($agentdevices as $agdevice) {
                                 //$message =  "You have a new scheduled wash request.";
-                                //echo $agentdetails['mobile_type'];
                                 $device_type = strtolower($agdevice['device_type']);
                                 $notify_token = $agdevice['device_token'];
                                 $alert_type = "strong";
@@ -14245,7 +13977,6 @@ class WashingController extends Controller {
                             if (count($clientdevices)) {
                                 foreach ($clientdevices as $ctdevice) {
                                     //$message =  "You have a new scheduled wash request.";
-                                    //echo $agentdetails['mobile_type'];
                                     $device_type = strtolower($ctdevice['device_type']);
                                     $notify_token = $ctdevice['device_token'];
                                     $alert_type = "strong";
@@ -14470,22 +14201,6 @@ class WashingController extends Controller {
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -14813,7 +14528,6 @@ class WashingController extends Controller {
                 $georesult = curl_exec($ch);
                 curl_close($ch);
                 $geojsondata = json_decode($georesult);
-//print_r($geojsondata);
 
                 $distance = $geojsondata->rows[0]->elements[0]->distance->value;
                 $distance_mile = round($distance * 0.000621371, 2);
@@ -14951,23 +14665,6 @@ class WashingController extends Controller {
             echo "Invalid api key";
             die();
         }
-
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -15144,7 +14841,6 @@ class WashingController extends Controller {
             $wash_request_id = $this->aes256cbc_crypt($wash_request_id, 'd', AES256CBC_API_PASS);
         }
         $wash_id_check = Washingrequests::model()->findByPk($wash_request_id);
-        // print_r($wash_id_check);
         if (count($wash_id_check) && (!$wash_id_check->ondemand_create_push_sent)) {
             $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '28' ")->queryAll();
             //$app_settings =  Yii::app()->db->createCommand("SELECT * FROM `app_settings`")->queryAll();
@@ -15161,7 +14857,6 @@ class WashingController extends Controller {
             $output = curl_exec($handle);
             curl_close($handle);
             $nearagentsdetails = json_decode($output);
-            //print_r($nearagentsdetails);
             /* ------- get nearest agents end --------- */
 
             if ($nearagentsdetails->result == 'true') {
@@ -15171,10 +14866,7 @@ class WashingController extends Controller {
                 foreach ($nearagentsdetails->nearest_agents as $agid => $nearagentdis) {
                     $current_mile = 0;
                     $message2 = '';
-//echo $agid." ".$nearagentdis." ";
-                    //print_r($agid);
                     $agentdevices = Yii::app()->db->createCommand("SELECT * FROM agent_devices WHERE agent_id = '" . $agid . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
-                    // print_r($agentdevices);
                     $mins_since_last_use = 0;
 
                     $mins_since_last_use = round((time() - strtotime($agentdevices[0]['last_used'])) / 60, 2);
@@ -15183,11 +14875,8 @@ class WashingController extends Controller {
 
                     if ($current_mile < 1)
                         $current_mile = 1;
-                    //if($current_mile <= 1) $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
-                    //else $message2 = str_replace(array("[CITY]"), array(" IN ".strtoupper($wash_id_check->city)), $message);
 
                     $message2 = str_replace(array("[CITY]", "[WASHER_TOTAL]"), array(strtoupper($wash_id_check->city), number_format($wash_id_check->agent_total, 2)), $message);
-                    //echo $agid." ".$message2."<br>";
                     foreach ($agentdevices as $agdevice) {
 
                         $device_type = strtolower($agdevice['device_type']);
@@ -15198,7 +14887,6 @@ class WashingController extends Controller {
 
                         $notifyurl = ROOT_URL . "/push-notifications/" . $device_type . "/?device_token=" . $notify_token . "&msg=" . $notify_msg . "&alert_type=" . $alert_type . "&notification_type=wash_now_notify";
                         //file_put_contents("android_notificaiton.log",$notifyurl,FILE_APPEND);
-                        //print_r($notifyurl);
                         $ch = curl_init();
                         curl_setopt($ch, CURLOPT_URL, $notifyurl);
                         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -15358,7 +15046,6 @@ class WashingController extends Controller {
 
         $result = 'false';
         $response = 'Right now no washer';
-//$washer_id = 91;
         $wash_id_check = Yii::app()->db->createCommand("SELECT order_temp_assigned FROM washing_requests WHERE status = 0 AND order_temp_assigned != 0 ORDER BY id DESC LIMIT 1")->queryAll();
 
         if (count($wash_id_check) > 0) {
@@ -15444,22 +15131,6 @@ class WashingController extends Controller {
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -15491,19 +15162,13 @@ class WashingController extends Controller {
 
                 if ($Bresult['success'] == 1) {
 
-                    //echo count($Bresult['all_transactions']);
                     foreach ($Bresult['all_transactions'] as $transaction) {
-
-                        //print_r($transaction);
-                        //echo $wash['id']." ".$transaction['id']." ".$transaction['status']."<br>";
                         if ($transaction['status'] == 'settled') {
                             Washingrequests::model()->updateByPk($wash['id'], array("transaction_id" => $transaction['id'], 'failed_transaction_id' => '', 'washer_payment_status' => 1));
                             break;
                         }
                     }
                 }
-                //print_r($Bresult);
-                //echo "id: ".$wash['id']." tid: ".$wash['transaction_id']." status: ".$wash['status']." washer paystatus: ".$wash['washer_payment_status']."<br><br><br>";
             }
         }
     }
@@ -15920,7 +15585,6 @@ class WashingController extends Controller {
                   if($from_time > $to_time){
                   $min_diff = round(($from_time - $to_time) / 60,2);
                   } */
-//echo $min_diff."<br>";
                 if ((!Yii::app()->request->getParam('free_cancel')) && ($order_exists->agent_id)) {
 
                     $braintree_id = '';
@@ -15930,7 +15594,6 @@ class WashingController extends Controller {
                         $Bresult = Yii::app()->braintree->getCustomerById_real($braintree_id);
                     else
                         $Bresult = Yii::app()->braintree->getCustomerById($braintree_id);
-                    //var_dump($Bresult);
                     if (count($Bresult->paymentMethods)) {
                         $result = 'true';
                         $response = 'payment methods';
@@ -15981,7 +15644,6 @@ class WashingController extends Controller {
                                 }
 
                                 $from = Vargas::Obj()->getAdminFromEmail();
-                                //echo $from;
                                 $sched_date = '';
                                 $sched_time = '';
 
@@ -16026,7 +15688,7 @@ class WashingController extends Controller {
 					</table>";
 
                                 $message .= "<table style='width: 100%; border-collapse: collapse; border-top: 1px solid #000; margin-top: 15px;'>";
-//test
+
                                 foreach ($kartdata->vehicles as $ind => $vehicle) {
 
                                     $message .= "<tr>
@@ -16220,7 +15882,6 @@ class WashingController extends Controller {
                                 Vargas::Obj()->SendMail($cust_exists->email, "billing@devmobilewash.com", $message, $subject, 'mail-receipt');
                                 Vargas::Obj()->SendMail($agent_det->email, "billing@devmobilewash.com", $message_washer, $subject, 'mail-receipt');
                                 Vargas::Obj()->SendMail($to, "billing@devmobilewash.com", $message_company, $subject, 'mail-receipt');
-//Vargas::Obj()->SendMail($to,$cust_exists->email,$message,$subject, 'mail-receipt');
 
                                 Washingrequests::model()->updateByPk($order_exists->id, array('is_order_receipt_sent' => 1));
                             } else {
@@ -16247,10 +15908,8 @@ class WashingController extends Controller {
 
                     $pushmsg = Yii::app()->db->createCommand("SELECT * FROM push_messages WHERE id = '20' ")->queryAll();
                     $message = $pushmsg[0]['message'];
-                    //$message = str_replace("[ORDER_ID]","#".$order_exists->id, $pushmsg[0]['message']);
                     foreach ($agentdevices as $agdevice) {
                         //$message =  "You have a new scheduled wash request.";
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($agdevice['device_type']);
                         $notify_token = $agdevice['device_token'];
                         $alert_type = "schedule";
@@ -16284,7 +15943,6 @@ class WashingController extends Controller {
 
                     foreach ($clientdevices as $ctdevice) {
                         //$message =  "You have a new scheduled wash request.";
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($ctdevice['device_type']);
                         $notify_token = $ctdevice['device_token'];
                         $alert_type = "schedule";

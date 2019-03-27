@@ -2691,7 +2691,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         if ($current_day == 'Sunday')
             $times = $schedule_times[0]['sun'];
 
-//echo "<br>".$times;
 
         $times_arr = explode("|", $times);
 
@@ -2740,23 +2739,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             echo "Invalid api key";
             die();
         }
-
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -3017,8 +2999,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
     }
 
     public function actionupdatewashadmin() {
-        //print_r($_REQUEST); die;
-
         if (Yii::app()->request->getParam('key') != API_KEY) {
             echo "Invalid api key";
             die();
@@ -3518,9 +3498,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 $new_points = $current_points + 1;
                             }
 
-
-//$custmodel = new Customers;
-//$custmodel->updateAll(array('fifth_wash_points'=> $new_points, 'id=:id', array(':id'=>$wash_request_exists->customer_id)));
 
                             Customers::model()->updateByPk($wash_detail->customer_id, array('fifth_wash_points' => $new_points, 'is_first_wash' => 1));
 
@@ -4177,8 +4154,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             $cust_check = Customers::model()->findByPk($customer_id);
         }
 
-        //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
-//else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
 
         if ($event == 'washer_history' || $event == 'washer_history_csv' || $event == 'washer_history_cancel') {
 
@@ -4287,7 +4262,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                 if ($event == 'scheduleauto') {
                     $check_auto_canceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'scheduleauto-canceled' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
-                    //print_r($check_auto_canceled);
                     if (count($check_auto_canceled) == 0 || $wrequest['is_scheduled'] == 0) {
                         continue;
                     }
@@ -4300,13 +4274,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                 if ($event == 'ondemandauto') {
                     $ondemandautocanceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'ondemandautocancel' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
-                    //print_r($check_auto_canceled);
+
                     if (count($ondemandautocanceled) == 0 || $wrequest['is_scheduled'] == 1) {
                         continue;
                     }
                 } elseif ($event == 'ondemandcanceled') {
                     $ondemandautocanceled = Yii::app()->db->createCommand("SELECT * FROM activity_logs WHERE action = 'ondemandautocancel' AND wash_request_id = :order_id")->bindValue(':order_id', $wrequest['id'], PDO::PARAM_STR)->queryAll();
-                    //print_r($check_auto_canceled);
+
                     if (count($ondemandautocanceled) != 0 || $wrequest['status'] == 7) {
                         continue;
                     }
@@ -4772,9 +4746,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 );
             }
 
-            //echo "total: ".$total_days_diff."<br>";
-            //echo "total orders done: ".$completed_orders."<br>";
-            //echo "average order frequency: ".round($total_days_diff/($completed_orders-1))."<br>";
             if ($completed_orders > 1)
                 $avg_order_frequency = round($total_days_diff / ($completed_orders - 1));
 
@@ -4920,9 +4891,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             $cust_check = Customers::model()->findByPk($customer_id);
         }
 
-        //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
-//else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
-
         if ($filter == 'testorders') {
 
             $total_rows = Yii::app()->db->createCommand("SELECT COUNT(w.id) as countid FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 0 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day)
@@ -4954,7 +4922,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         if ($total_entries > 0)
             $total_pages = ceil($total_entries / $limit);
 
-        //print_r($qrRequests);
 
         if (count($qrRequests) > 0) {
 
@@ -4997,10 +4964,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     if (isset($qrRequests[$ind + 1])) {
                         $order1_date = date("Y-m-d", strtotime($wrequest['order_for']));
                         $order2_date = date("Y-m-d", strtotime($qrRequests[$ind + 1]['order_for']));
-                        //echo $order1_date." ".$order2_date."<br>";
                         $day_diff = date_diff(new DateTime($order1_date), new DateTime($order2_date));
-                        //echo $day_diff->format("%a")."<br>";
-                        //echo "working<br>";
                         $total_days_diff += $day_diff->format("%a");
                     }
 
@@ -5280,9 +5244,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 );
             }
 
-            //echo "total: ".$total_days_diff."<br>";
-            //echo "total orders done: ".$completed_orders."<br>";
-            //echo "average order frequency: ".round($total_days_diff/($completed_orders-1))."<br>";
             if ($completed_orders > 1)
                 $avg_order_frequency = round($total_days_diff / ($completed_orders - 1));
 
@@ -5410,15 +5371,10 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         if ($total_entries > 0)
             $total_pages = ceil($total_entries / $limit);
 
-        //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
-        //else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
-
 
         if ($limit > 0)
             $qrRequests = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = '" . APP_ENV . "' ORDER BY id DESC LIMIT " . $limit . " OFFSET " . $offset)->queryAll();
 
-
-        //print_r($qrRequests);
 
         if (count($qrRequests) > 0) {
             foreach ($qrRequests as $ind => $wrequest) {
@@ -5450,15 +5406,13 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     $pendingorderscount++;
 
                 if (($customer_id > 0) && ($wrequest['status'] == 4)) {
-                    //echo $wrequest['id']." ".$wrequest['order_for']." "."<br>";
-                    //echo $qrRequests[$ind+1]['id']." ".$qrRequests[$ind+1]['order_for']." "."<br>";
+
                     if (isset($qrRequests[$ind + 1])) {
                         $order1_date = date("Y-m-d", strtotime($wrequest['order_for']));
                         $order2_date = date("Y-m-d", strtotime($qrRequests[$ind + 1]['order_for']));
-                        //echo $order1_date." ".$order2_date."<br>";
+
                         $day_diff = date_diff(new DateTime($order1_date), new DateTime($order2_date));
-                        //echo $day_diff->format("%a")."<br>";
-                        //echo "working<br>";
+
                         $total_days_diff += $day_diff->format("%a");
                     }
                     $completed_orders++;
@@ -5618,9 +5572,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 );
             }
 
-            //echo "total: ".$total_days_diff."<br>";
-            //echo "total orders done: ".$completed_orders."<br>";
-            //echo "average order frequency: ".round($total_days_diff/($completed_orders-1))."<br>";
             if ($completed_orders > 1)
                 $avg_order_frequency = round($total_days_diff / ($completed_orders - 1));
         } else {
@@ -5716,10 +5667,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         if ($search_area == "Scheduled")
             $order_query = "(is_scheduled = 1) ";
 
-        //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
-//else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
-
-
         if ($query) {
             $qrRequests = Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE " . $order_query . "ORDER BY id DESC" . $limit_str)->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
             $total_rows = Yii::app()->db->createCommand("SELECT COUNT(id) as countid FROM washing_requests WHERE " . $order_query . "ORDER BY id DESC")->bindValue(':query', "%$query%", PDO::PARAM_STR)->queryAll();
@@ -5727,8 +5674,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             if ($total_count > 0)
                 $total_pages = ceil($total_count / $limit);
         }
-
-        //print_r($qrRequests);
         if (count($qrRequests) > 0) {
 
             foreach ($qrRequests as $wrequest) {
@@ -5746,7 +5691,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
                     $min_diff = round(($from_time - $to_time) / 60, 2);
 
-//$min_diff = abs($min_diff);
+                    //$min_diff = abs($min_diff);
                 }
                 else {
                     if ($wrequest['status'] >= 0 && $wrequest['status'] < 4)
@@ -5839,7 +5784,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     $start = strtotime($wrequest['order_for']);
 
                     $days_between = ceil(abs($end - $start) / 86400);
-//echo $wrequest['id']." ".$days_between."<br>"; 
                     if ($days_between > 1)
                         $washer_payment_status = 'pending';
                 }
@@ -6016,22 +5960,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -6062,9 +5990,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 if ($current_time > $create_time) {
                     $min_diff = round(($current_time - $create_time) / 60, 2);
                 }
-
-//echo $min_diff;
-//echo "<br>";
                 if ($min_diff >= 30) {
 
                     $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $client['id'] . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
@@ -6083,7 +6008,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     $message = str_replace("[CUSTNAME]", $custname, $message);
                     foreach ($clientdevices as $ctdevice) {
 
-                        //echo $agentdetails['mobile_type'];
                         $device_type = strtolower($ctdevice['device_type']);
                         $notify_token = $ctdevice['device_token'];
                         $alert_type = "default";
@@ -6177,23 +6101,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
-
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
@@ -6226,9 +6133,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     if ($current_time > $create_time) {
                         $min_diff = round(($current_time - $create_time) / 60, 2);
                     }
-
-//echo $min_diff;
-//echo "<br>";
                     if (($min_diff >= 14400) && ($min_diff < 43200) && (!$client['is_nextwash_reminder_push_sent'])) {
 
                         $clientdevices = Yii::app()->db->createCommand("SELECT * FROM customer_devices WHERE customer_id = '" . $client['id'] . "' ORDER BY last_used DESC LIMIT 1")->queryAll();
@@ -6527,22 +6431,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -6787,11 +6675,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                             'version' => 'latest'
                 ));
 
-                //echo $client->id."<br>";
-                // echo $client['id']."<br>";
                 $wash_check = Washingrequests::model()->findByAttributes(array('customer_id' => $client->id, 'status' => 4), array('order' => 'id DESC'));
                 if (count($wash_check)) {
-                    //echo $client['id']." ".$wash_check->id." ";
+
                     $current_time = strtotime(date('Y-m-d H:i:s'));
 
                     $create_time = strtotime($wash_check->order_for);
@@ -6799,11 +6685,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     if ($current_time > $create_time) {
                         $min_diff = round(($current_time - $create_time) / 60, 2);
                     }
-
-//echo $min_diff;
-//echo "<br>";
-//more than 30 days
-
 
                     if ($min_diff >= 28800) {
 
@@ -7162,61 +7043,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
             $response = "nonreturning customers";
             $result = "true";
-            /* foreach($all_customers as $ind=>$customer){
-              $last_wash = Washingrequests::model()->findByAttributes(array('customer_id'=>$customer['id'], 'status' => 4),array('order'=>'id DESC'));
-              if(count($last_wash)){
-              $current_time = strtotime(date('Y-m-d H:i:s'));
-
-              $create_time = strtotime($last_wash->order_for);
-              $min_diff = 0;
-              if($current_time > $create_time){
-              $min_diff = round(($current_time - $create_time) / 60,2);
-              }
-
-              // 30 days or more inactive
-              if(($min_diff >= 43200) && ($min_diff < 86400)){
-
-              $nonreturncust_arr_30[$ind30]['id'] = $customer['id'];
-              $nonreturncust_arr_30[$ind30]['name'] = $customer['first_name']." ".$customer['last_name'];
-              $nonreturncust_arr_30[$ind30]['email'] = $customer['email'];
-              $nonreturncust_arr_30[$ind30]['phone'] = $customer['contact_number'];
-              $nonreturncust_arr_30[$ind30]['total_wash'] = $customer['total_wash'];
-              $nonreturncust_arr_30[$ind30]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
-
-              $ind30++;
-
-              }
-
-              // 60 days or more inactive
-              if(($min_diff >= 86400) && ($min_diff < 129600)){
-
-              $nonreturncust_arr_60[$ind60]['id'] = $customer['id'];
-              $nonreturncust_arr_60[$ind60]['name'] = $customer['first_name']." ".$customer['last_name'];
-              $nonreturncust_arr_60[$ind60]['email'] = $customer['email'];
-              $nonreturncust_arr_60[$ind60]['phone'] = $customer['contact_number'];
-              $nonreturncust_arr_60[$ind60]['total_wash'] = $customer['total_wash'];
-              $nonreturncust_arr_60[$ind60]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
-
-              $ind60++;
-
-              }
-
-              // 90 days or more inactive
-              if($min_diff >= 129600){
-
-              $nonreturncust_arr_90[$ind90]['id'] = $customer['id'];
-              $nonreturncust_arr_90[$ind90]['name'] = $customer['first_name']." ".$customer['last_name'];
-              $nonreturncust_arr_90[$ind90]['email'] = $customer['email'];
-              $nonreturncust_arr_90[$ind90]['phone'] = $customer['contact_number'];
-              $nonreturncust_arr_90[$ind90]['total_wash'] = $customer['total_wash'];
-              $nonreturncust_arr_90[$ind90]['last_order'] = "#".$last_wash->id." at ".date('m-d-Y h:i A', strtotime($last_wash->order_for));
-
-              $ind90++;
-
-              }
-              }
-
-              } */
         }
 
 
@@ -7351,22 +7177,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -8457,7 +8267,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                         $message = str_replace("[ORDER_ID]", "#" . $wrequest_id_check->id, $pushmsg[0]['message']);
                         foreach ($agentdevices as $agdevice) {
                             //$message =  "You have a new scheduled wash request.";
-                            //echo $agentdetails['mobile_type'];
+
                             $device_type = strtolower($agdevice['device_type']);
                             $notify_token = $agdevice['device_token'];
                             $alert_type = "strong";
@@ -8615,7 +8425,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 $message = str_replace("[ORDER_ID]", "#" . $wrequest_id_check->id, $pushmsg[0]['message']);
                                 foreach ($agentdevices as $agdevice) {
                                     //$message =  "You have a new scheduled wash request.";
-                                    //echo $agentdetails['mobile_type'];
+
                                     $device_type = strtolower($agdevice['device_type']);
                                     $notify_token = $agdevice['device_token'];
                                     $alert_type = "strong";
@@ -8654,7 +8464,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                                 $message = str_replace("[ORDER_ID]", "#" . $wrequest_id_check->id, $pushmsg[0]['message']);
                                 foreach ($agentdevices as $agdevice) {
                                     //$message =  "You have a new scheduled wash request.";
-                                    //echo $agentdetails['mobile_type'];
+
                                     $device_type = strtolower($agdevice['device_type']);
                                     $notify_token = $agdevice['device_token'];
                                     $alert_type = "strong";
@@ -8946,14 +8756,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $washer_ids = array();
         $topwashers_arr = array();
         $topwashers_det_arr = array();
-        /* $all_washes =  Yii::app()->db->createCommand()
-          ->select('COUNT(id) as total, agent_id, COUNT(CASE WHEN is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN is_scheduled = 1 THEN null ELSE 1 END) as total_demand')
-          ->from('washing_requests')
-          ->where("DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN :from AND :to AND status = 4 AND agent_id != 0", array(":from" => $from, ":to" => $to))
-          ->group('agent_id')
-          ->queryAll(); */
-
-        //$all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 WHERE a.block_washer = 0 GROUP BY a.id")->queryAll();
 
         if ($csv_export)
             $all_washes = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, a.*, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, image FROM agents as a LEFT JOIN washing_requests wr ON a.id = wr.agent_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status = 4 AND wr.agent_id != 0 GROUP BY a.id")->queryAll();
@@ -9016,7 +8818,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
     }
 
     public function actiongettopmostcustomers() {
-        //echo "here"; die; 
         $from = Yii::app()->request->getParam('from');
         $to = Yii::app()->request->getParam('to');
         $limit = $_REQUEST['limit'];
@@ -9068,7 +8869,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
     }
 
     public function actionexporttopmostcustomers() {
-        //echo "here"; die; 
+
         ob_end_clean();
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename=top_customers.csv');
@@ -9096,7 +8897,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $washer_ids = array();
         $topwashers_arr = array();
         $topwashers_det_arr = array();
-        //$all_customers = Yii::app()->db->createCommand("SELECT COUNT(wr.id) as total, c.id,c.image,c.first_name,c.last_name,c.contact_number,c.last_name,c.email, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, SUM(wr.net_price) as total_sum, COUNT(wr.status = 4) as total_completed, image FROM customers as c LEFT JOIN washing_requests wr ON c.id = wr.customer_id AND DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "'  AND wr.customer_id != 0 WHERE c.block_client = 0 AND wr.status IN(4) GROUP BY c.id ORDER BY total DESC")->queryAll();
+
         $all_customers = Yii::app()->db->createCommand("SELECT c.id as customer_id,c.image,c.first_name,c.last_name,c.contact_number,c.last_name,c.email,c.image, cl.location_address as address, cl.city, cl.state FROM customers as c LEFT JOIN customer_locations cl ON c.id = cl.customer_id WHERE c.block_client = 0 GROUP BY c.id")->queryAll();
 
         $total_spent = Yii::app()->db->createCommand("SELECT SUM(net_price) as total_sum,wr.id, COUNT(CASE WHEN wr.is_scheduled = 1 THEN 1 ELSE null END) as total_scheduled, COUNT(CASE WHEN wr.is_scheduled = 1 THEN null ELSE 1 END) as total_demand, COUNT(wr.id) as total,customer_id FROM washing_requests wr WHERE DATE_FORMAT(wr.order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND wr.status IN (4) GROUP BY customer_id")->queryAll();
@@ -9372,22 +9173,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -10033,7 +9818,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 ->bindValue(':status', $status, PDO::PARAM_STR)
                 ->queryAll();
 
-        //print_r($all_washes);
 
         if (count($all_washes) > 0) {
             $result = 'true';
@@ -10602,29 +10386,8 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
 
         print_r($phone_number);
         echo "test<br>";
-//print_r($phone_number->carrier['type']);
         echo "<br>" . $phone_number->carrier['type'];
     }
-
-    /* public function actioncodetest()
-      {
-
-      if(Yii::app()->request->getParam('key') != API_KEY){
-      echo "Invalid api key";
-      die();
-      }
-
-      $cust_id = Yii::app()->request->getParam('customer_id');
-
-      //$pendingwashcheck =  Washingrequests::model()->findAll(array("condition"=>"wash_request_position != 'real' AND status <= 3 AND customer_id=:customer_id", 'params'  => array(':customer_id' => $customer_id), 'order' => 'created_date desc'));
-      //WashPricingHistory::model()->updateAll(array('status'=>5), 'wash_request_id=:wash_request_id', array(':wash_request_id'=>$wash_request_id));
-      //WashPricingHistory::model()->deleteAll("wash_request_id = :wash_request_id", array(':wash_request_id' => $wash_request_id));
-      //print_r($pendingwashcheck);
-
-      $clientdevices = Yii::app()->db->createCommand('SELECT * FROM customer_devices WHERE customer_id = :customer_id ORDER BY last_used DESC LIMIT 1')->bindValue(':customer_id', $cust_id, PDO::PARAM_STR)->queryAll();
-      print_r($clientdevices);
-
-      } */
 
     public function actioncheckcustomervoipnumbers() {
 
@@ -10753,22 +10516,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -10787,8 +10534,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             die();
         }
 
-
-        //$allclients = Customers::model()->findAllByAttributes(array('is_pushmsg_pending'=> 1));
         $allclients = Yii::app()->db->createCommand('SELECT * FROM customers WHERE is_pushmsg_pending = 1 ORDER BY total_wash DESC LIMIT 2000')->queryAll();
         $pendingjob = Yii::app()->db->createCommand("SELECT * FROM scheduled_notifications WHERE status = 0 AND notification_type = 'clients' ORDER BY id DESC LIMIT 1")->queryAll();
 
@@ -10836,23 +10581,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             echo "Invalid api key";
             die();
         }
-
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -10971,23 +10699,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
-
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
@@ -11080,22 +10791,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             die();
         }
 
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
 
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -11197,11 +10893,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 ->queryAll();
 
         $blue_orders = $qrRequests[0]['total'];
-
-//        $all_washes_city = Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM washing_requests WHERE (order_for >= :from AND order_for <= :to) AND status = 4 GROUP BY city ORDER BY COUNT(id) DESC")
-//                ->bindValue(":from", $from)
-//                ->bindValue(":to", $to)
-//                ->queryAll();
 
         $all_washes_city = Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM washing_requests WHERE DATE_FORMAT(order_for,'%Y-%m-%d') BETWEEN '" . $from . "' AND '" . $to . "' AND status = 4 GROUP BY city ORDER BY COUNT(id) DESC")
                 ->queryAll();
@@ -11350,7 +11041,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $georesult = curl_exec($ch);
                 curl_close($ch);
                 $geojsondata = json_decode($georesult, true);
-//var_dump($geojsondata);
                 if ($geojsondata['status'] == 'OK') {
 
                     foreach ($geojsondata["results"] as $result) {
@@ -11483,13 +11173,11 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($handle);
-        //print_r($result); die;
         curl_close($handle);
         $jsondata = json_decode($result);
         $s_orders_response = $jsondata->response;
         $s_orders_result_code = $jsondata->result;
         $s_mw_all_orders = $jsondata->wash_requests;
-        //echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; 
         $pending_order_count = '';
         if (!$jsondata->pending_wash_count)
             $pending_order_count = "no orders";
@@ -11528,7 +11216,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             fputcsv($file, $Arr_field['field_name']);
 
             foreach ($s_mw_all_orders as $key => $order) {
-                //print_r($order);
                 $Arr_field['field_value']['order_id'] = $order->id;
                 $order_type = ($order->is_scheduled == 1) ? 'Scheduled' : 'On-Demand';
                 $Arr_field['field_value']['order_type'] = $order_type;
@@ -11558,7 +11245,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $Arr_field['field_value']['agent_name'] = $order->agent_details->agent_name;
                 $Arr_field['field_value']['agent_phone'] = $order->agent_details->agent_phoneno;
                 $addressArr = explode(',', $order->address);
-                //print_r($addressArr);
                 $house_name = preg_replace('/[^0-9]/', '', $addressArr[0]);
                 //$Arr_field['field_value']['house_num'] = $house_name;
                 //$Arr_field['field_value']['street'] = $order->street_name;
@@ -11599,7 +11285,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $Arr_field['field_value']['total_price'] = $order->net_price;
                 $Arr_field['field_value']['create_date'] = $order->order_for;
                 $Arr_field['field_value']['completed_date'] = $completed_date;
-                //print_r($Arr_field['field_value']);
                 fputcsv($file, $Arr_field['field_value']);
             }
         }
@@ -11643,7 +11328,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
         $s_orders_response = $jsondata->response;
         $s_orders_result_code = $jsondata->result;
         $s_mw_all_orders = $jsondata->wash_requests;
-        //echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; 
         $pending_order_count = '';
         if (!$jsondata->pending_wash_count)
             $pending_order_count = "no orders";
@@ -11682,7 +11366,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             fputcsv($file, $Arr_field['field_name']);
 
             foreach ($s_mw_all_orders as $key => $order) {
-                //print_r($order);
                 $Arr_field['field_value']['order_id'] = $order->id;
                 $order_type = ($order->is_scheduled == 1) ? 'Scheduled' : 'On-Demand';
                 $Arr_field['field_value']['order_type'] = $order_type;
@@ -11712,7 +11395,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $Arr_field['field_value']['agent_name'] = $order->agent_details->agent_name;
                 $Arr_field['field_value']['agent_phone'] = $order->agent_details->agent_phoneno;
                 $addressArr = explode(',', $order->address);
-                //print_r($addressArr);
                 $house_name = preg_replace('/[^0-9]/', '', $addressArr[0]);
                 $Arr_field['field_value']['address'] = $order->address;
                 //$Arr_field['field_value']['street'] = $order->street_name;
@@ -11751,7 +11433,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     continue;
                 }
                 $Arr_field['field_value']['create_date'] = $order->created_date; //order_for;
-                //print_r($Arr_field['field_value']);
                 fputcsv($file, $Arr_field['field_value']);
             }
         }
@@ -11764,23 +11445,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             echo "Invalid api key";
             die();
         }
-
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -11911,24 +11575,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             echo "Invalid api key";
             die();
         }
-
-        /* $api_token = Yii::app()->request->getParam('api_token');
-          $t1 = Yii::app()->request->getParam('t1');
-          $t2 = Yii::app()->request->getParam('t2');
-          $user_type = Yii::app()->request->getParam('user_type');
-          $user_id = Yii::app()->request->getParam('user_id');
-
-          $token_check = $this->verifyapitoken( $api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS );
-
-          if(!$token_check){
-          $json = array(
-          'result'=> 'false',
-          'response'=> 'Invalid request'
-          );
-          echo json_encode($json);
-          die();
-          } */
-
 
         $aws_credentials = new Credentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
 
@@ -12068,36 +11714,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . $flag_query . " ORDER BY w.id DESC")->queryAll();
             }
         }
-        //print_r($qrRequests);
-        //die;
-        //if($limit > 0) $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC LIMIT ".$limit)->queryAll();
-//else $qrRequests =  Yii::app()->db->createCommand("SELECT * FROM washing_requests WHERE wash_request_position = 'real' ".$order_day." ORDER BY id DESC")->queryAll();
-//echo "SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '".APP_ENV."' ".$order_day." ORDER BY w.id ASC";
-//        if ($event == 'washer_history') {
-//            if ($limit > 0)
-//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $order_day . " ORDER BY w.id ASC LIMIT " . $limit)->queryAll();
-//            else
-//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $order_day . " ORDER BY w.id ASC")->queryAll();
-//        }elseif ($event == 'newcustomer') {
-//            if ($limit > 0)
-//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id ASC LIMIT " . $limit)->queryAll();
-//            else
-//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id ASC")->queryAll();
-//        }
-//        elseif ($filter == 'testorders') {
-//            if ($limit > 0)
-//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 0 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
-//            else
-//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 0 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC")->queryAll();
-//        }
-//        else {
-//            if ($limit > 0)
-//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC LIMIT " . $limit)->queryAll();
-//            else
-//                $qrRequests = Yii::app()->db->createCommand("SELECT w.* FROM washing_requests w LEFT JOIN customers c ON w.customer_id = c.id WHERE " . $cust_query . $agent_query . "c.hours_opt_check = 1 AND w.wash_request_position = '" . APP_ENV . "' " . $order_day . " ORDER BY w.id DESC")->queryAll();
-//        }
+
         if (count($qrRequests) > 0) {
-            // print_r($qrRequests); die;
+
             $ios_count = $other_count = $android_count = 0;
             foreach ($qrRequests as $ind => $wrequest) {
 
@@ -12214,15 +11833,10 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     $pendingorderscount++;
 
                 if (($customer_id > 0) && ($wrequest['status'] == 4)) {
-//echo $wrequest['id']." ".$wrequest['order_for']." "."<br>";
-                    //echo $qrRequests[$ind+1]['id']." ".$qrRequests[$ind+1]['order_for']." "."<br>";
                     if (isset($qrRequests[$ind + 1])) {
                         $order1_date = date("Y-m-d", strtotime($wrequest['order_for']));
                         $order2_date = date("Y-m-d", strtotime($qrRequests[$ind + 1]['order_for']));
-                        //echo $order1_date." ".$order2_date."<br>";
                         $day_diff = date_diff(new DateTime($order1_date), new DateTime($order2_date));
-                        //echo $day_diff->format("%a")."<br>";
-                        //echo "working<br>";
                         $total_days_diff += $day_diff->format("%a");
                     }
 
@@ -12311,7 +11925,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                     $start = strtotime($wrequest['order_for']);
 
                     $days_between = ceil(abs($end - $start) / 86400);
-//echo $wrequest['id']." ".$days_between."<br>"; 
                     if ($days_between > 1)
                         $washer_payment_status = 'pending';
                 }
@@ -12627,9 +12240,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 );
             }
 
-            //echo "total: ".$total_days_diff."<br>";
-            //echo "total orders done: ".$completed_orders."<br>";
-            //echo "average order frequency: ".round($total_days_diff/($completed_orders-1))."<br>";
             if ($completed_orders > 1)
                 $avg_order_frequency = round($total_days_diff / ($completed_orders - 1));
 
@@ -12663,27 +12273,6 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
     }
 
     public function actionGetServerTime() {
-//        if (Yii::app()->request->getParam('key') != API_KEY) {
-//            echo "Invalid api key";
-//            die();
-//        }
-//
-//        $api_token = Yii::app()->request->getParam('api_token');
-//        $t1 = Yii::app()->request->getParam('t1');
-//        $t2 = Yii::app()->request->getParam('t2');
-//        $user_type = Yii::app()->request->getParam('user_type');
-//        $user_id = Yii::app()->request->getParam('user_id');
-//
-//        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
-//
-//        if (!$token_check) {
-//            $json = array(
-//                'result' => 'false',
-//                'response' => 'Invalid request'
-//            );
-//            echo json_encode($json);
-//            die();
-//        }
         echo json_encode(array('result' => 'true', 'server_time' => date('Y-m-d h:i A')));
         die();
     }

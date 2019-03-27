@@ -38,7 +38,7 @@ class Download extends CActiveRecord {
      * @return array customized attribute labels (name=>label)
      */
     public function attributeLabels() {
-
+        
     }
 
     public static function model($className = __CLASS__) {

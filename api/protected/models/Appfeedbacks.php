@@ -9,69 +9,62 @@
  * @property string $feedback
 
  */
- 
-class Appfeedbacks extends CActiveRecord
-{
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'app_feedbacks';
-	}
+class Appfeedbacks extends CActiveRecord {
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('customer_id, feedback', 'required'),
-			array('id, customer_id, feedback', 'safe', 'on'=>'search'),
-		);
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName() {
+        return 'app_feedbacks';
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules() {
+        return array(
+            array('customer_id, feedback', 'required'),
+            array('id, customer_id, feedback', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	 
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'customer_id' => 'Customer ID',
-			'feedback' => 'Feedback'
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations() {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+        );
+    }
 
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels() {
+        return array(
+            'id' => 'ID',
+            'customer_id' => 'Customer ID',
+            'feedback' => 'Feedback'
+        );
+    }
 
-		$criteria=new CDbCriteria;
+    public function search() {
+        // @todo Please modify the following code to remove attributes that should not be searched.
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('customer_id',$this->customer_id,true);
-		$criteria->compare('feedback',$this->feedback,true);
+        $criteria = new CDbCriteria;
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
+        $criteria->compare('id', $this->id);
+        $criteria->compare('customer_id', $this->customer_id, true);
+        $criteria->compare('feedback', $this->feedback, true);
 
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+        ));
+    }
+
+    public static function model($className = __CLASS__) {
+        return parent::model($className);
+    }
+
 }

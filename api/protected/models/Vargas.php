@@ -57,8 +57,8 @@ class Vargas {
     public function getAdminFromEmail() {
         return Yii::app()->params['adminFromEmail'];
     }
-    
-     public function getAdminToEmailFeedBack() {
+
+    public function getAdminToEmailFeedBack() {
         return Yii::app()->params['AdminToEmailFeedBack'];
     }
 
