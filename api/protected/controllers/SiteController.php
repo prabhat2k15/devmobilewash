@@ -8794,6 +8794,9 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
                 $topwashers_det_arr[$i]['city'] = str_replace(",", ";", $wash['city']);
                 $topwashers_det_arr[$i]['state'] = str_replace(",", ";", $wash['state']);
                 $topwashers_det_arr[$i]['zip'] = str_replace(",", ";", $wash['zipcode']);
+                $l_c_w = Yii::app()->db->createCommand("SELECT id,complete_order FROM washing_requests WHERE agent_id=".$wash['id']." and status=4 order by id desc limit 1")->queryAll();
+                $topwashers_det_arr[$i]['last_completed_wash'] = $l_c_w[0]['complete_order'];
+                $topwashers_det_arr[$i]['orderid'] = $l_c_w[0]['id'];
 
                 $i++;
             }
