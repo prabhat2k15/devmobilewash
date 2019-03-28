@@ -8804,7 +8804,7 @@ VALUES ('site sttings', '$site_settings', '$from_date', '$to_date', '$message');
             if ($csv_export) {
                 CsvExport::export(
                         $topwashers_det_arr, // a CActiveRecord array OR any CModel array
-                        array('company_id' => array('raw'), 'washer_id' => array('raw'), 'name' => array('text'), 'phonenumber' => array('text'), 'email' => array('text'), 'total_washes' => array('raw'), 'total_demand' => array('raw'), 'total_scheduled' => array('raw'), 'total_cancel' => array('raw'), 'total_earned' => array('text'), 'status' => array('text'), 'street' => array('text'), 'city' => array('text'), 'state' => array('text'), 'zip' => array('text')), true, // boolPrintRows
+                        array('company_id' => array('raw'), 'washer_id' => array('raw'), 'name' => array('text'), 'phonenumber' => array('text'), 'email' => array('text'), 'total_washes' => array('raw'), 'total_demand' => array('raw'), 'total_scheduled' => array('raw'), 'total_cancel' => array('raw'), 'total_earned' => array('text'), 'status' => array('text'), 'street' => array('text'), 'city' => array('text'), 'state' => array('text'), 'zip' => array('text'), 'last_completed_wash' => array('text')), true, // boolPrintRows
                         'topwashers-' . $from . '-to-' . $to . ".csv", ","
                 );
                 exit;
