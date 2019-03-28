@@ -126,9 +126,8 @@ $washers_data = json_decode($result);
         echo "<td>".$washer->total_cancel."</td>";
     }?>
     <td><?php echo ($washer->total_sum > 0)? '$'.number_format($washer->total_sum,2):'$00.00'; ?></td>
-    <td><?php if(!empty($washer->orderid)) { ?>
-    <center>#(<?php echo $washer->orderid.')</center><br>'.date('m/d/Y h:i A', strtotime($washer->last_completed_wash)); ?>
-    <?php } ?></td></tr>
+    <td> <?php echo $washer->last_completed_wash; ?></td>
+</tr>
 <?php endforeach; ?>
              
                                       </tbody>
