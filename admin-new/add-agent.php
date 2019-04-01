@@ -176,8 +176,6 @@ if (isset($_POST['hidden'])) {
     $zipcode = $_POST['zipcode'];
     $wash_experience = $_POST['wash_experience'];
     $rating = $_POST['rating'];
-
-
     $mobile_type = $_POST['mobile_type'];
     $bank_account_number = $_POST['bank_account_number'];
     $routing_number = $_POST['routing_number'];
@@ -202,19 +200,15 @@ if (isset($_POST['hidden'])) {
     $driverlicense_expiration = $driver_license_expiration;
 
     $data = array('helper' => $helper, 'vehicle_pic' => $agent_vehicle_pic, 'first_name' => strip_tags($first_name), 'last_name' => strip_tags($last_name), 'email' => strip_tags($email), 'phone_number' => strip_tags($phone_number), 'date_of_birth' => strip_tags($date_of_birth), 'password' => strip_tags($password), 'street_address' => strip_tags($street_address), 'suite_apt' => strip_tags($suite_apt), 'city' => strip_tags($city), 'state' => strip_tags($state), 'zipcode' => strip_tags($zipcode), 'wash_experience' => strip_tags($wash_experience), 'rating' => strip_tags($rating), 'driver_license' => strip_tags($driver_license), 'business_license' => strip_tags($business_license), 'proof_insurance' => strip_tags($proof_insurance), 'image' => strip_tags($profileimg), 'agreement_prof' => strip_tags($agreement_prof), 'privacy_policy' => strip_tags($privacy_policy), 'notice_standard' => strip_tags($notice_standard), 'notice_card_security' => strip_tags($notice_card_security), 'mobile_type' => strip_tags($mobile_type), 'bank_account_number' => strip_tags($bank_account_number), 'routing_number' => strip_tags($routing_number), 'legally_eligible' => strip_tags($legally_eligible), 'own_vehicle' => strip_tags($own_vehicle), 'waterless_wash_product' => strip_tags($waterless_wash_product), 'operate_area' => strip_tags($operate_area), 'work_schedule' => strip_tags($work_schedule), 'operating_as' => strip_tags($operating_as), 'company_name' => strip_tags($company_name), 'email_alerts' => strip_tags($email_alerts), 'push_notifications' => strip_tags($push_notifications), 'agent_location' => strip_tags($agent_location), 'bt_submerchant_id' => strip_tags($bt_submerchant_id), 'status' => strip_tags($status), 'total_wash' => strip_tags($total_wash), 'account_status' => strip_tags($account_status), 'available_for_new_order' => strip_tags($available_for_new_order), 'driver_license_expiration' => strip_tags($driverlicense_expiration), 'washer_position' => strip_tags($_POST['washer_position']), 'real_washer_id' => strip_tags($_POST['real_washer_id']), 'admin_username' => $jsondata_permission->user_name, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
-    //print_r($data);die;
     $handle = curl_init(ROOT_URL . "/api/index.php?r=agents/addagent");
     curl_setopt($handle, CURLOPT_POST, true);
     curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
     curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
     $result = curl_exec($handle);
-    //print_r($result); die;
     curl_close($handle);
     $jsondata = json_decode($result);
-    //print_r($jsondata); die;
     $response = $jsondata->response;
     $result_code = $jsondata->result;
-
     if ($result_code == "true") {
         ?>
         <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/edit-agent.php?id=<?php echo $jsondata->id; ?>"</script>
@@ -242,7 +236,7 @@ if (isset($_POST['hidden'])) {
         display: block;
         padding: 11px 0;
         text-align: center;
-            margin-top: 10px;
+        margin-top: 10px;
         text-decoration: none;
         width: 150px;
     }
@@ -284,7 +278,7 @@ if (isset($_POST['hidden'])) {
         color: #fff;
         display: none;
     }
-     .fileinput{
+    .fileinput{
         margin:10px;
     }
     .add-agent .form-group{
@@ -295,15 +289,6 @@ if (isset($_POST['hidden'])) {
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" id="main">
-        <!-- BEGIN PAGE HEADER-->
-
-
-        <!-- BEGIN PAGE TITLE-->
-        <!-- <h3 class="page-title"> New User Profile | Account
-             <small>user account page</small>
-         </h3>-->
-        <!-- END PAGE TITLE-->
-        <!-- END PAGE HEADER-->
         <form action="" class="form-horizontal" method="post" enctype="multipart/form-data">
             <div class="form-body" style="padding: 10px 0px 0px 20px;">
                 <?php
@@ -395,10 +380,7 @@ if (isset($_POST['hidden'])) {
                     </div>
 
                 </div>
-
-
                 <div class="row">
-
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Bank Account Number<span style="color: red;">*</span></label>
@@ -414,7 +396,6 @@ if (isset($_POST['hidden'])) {
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -431,7 +412,6 @@ if (isset($_POST['hidden'])) {
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -440,7 +420,6 @@ if (isset($_POST['hidden'])) {
                                 <input type="text" value="" name="waterless_wash_product" class="form-control"  /> </div>
                         </div>
                     </div>
-
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Operate Area</label>
@@ -456,7 +435,6 @@ if (isset($_POST['hidden'])) {
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -473,7 +451,6 @@ if (isset($_POST['hidden'])) {
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -504,9 +481,6 @@ if (isset($_POST['hidden'])) {
                     </div>
 
                 </div>
-
-
-
                 <!--/row-->
                 <h3 class="form-section"  style="margin: 30px 0; padding-bottom: 5px; border-bottom: 1px solid #e7ecf1;">Address</h3>
                 <!--/row-->
@@ -528,7 +502,6 @@ if (isset($_POST['hidden'])) {
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -547,7 +520,6 @@ if (isset($_POST['hidden'])) {
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -559,10 +531,6 @@ if (isset($_POST['hidden'])) {
 
                 </div>
 
-
-                <!--/row-->
-
-                <!--/row-->
                 <h3 class="form-section"  style="margin: 30px 0; padding-bottom: 5px; border-bottom: 1px solid #e7ecf1;">Work</h3>
                 <!--/row-->
                 <div class="row">
@@ -601,9 +569,7 @@ if (isset($_POST['hidden'])) {
                                 <input type="text" name="email_alerts" value="" class="form-control" /> </div>
                         </div>
                     </div>
-                    <!--/span-->
 
-                    <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Push Notifications</label>
@@ -611,9 +577,7 @@ if (isset($_POST['hidden'])) {
                                 <input type="text" name="push_notifications" value="" class="form-control"  /> </div>
                         </div>
                     </div>
-                    <!--/span-->
 
-                    <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Agent Location</label>
@@ -621,11 +585,7 @@ if (isset($_POST['hidden'])) {
                                 <input type="text" name="agent_location" value="" class="form-control"  /> </div>
                         </div>
                     </div>
-                    <!--/span-->
 
-
-
-                    <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">BT Submerchant ID</label>
@@ -633,8 +593,6 @@ if (isset($_POST['hidden'])) {
                                 <input type="text" name="bt_submerchant_id" value="" class="form-control"  /> </div>
                         </div>
                     </div>
-                    <!--/span-->
-                    <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Status</label>
@@ -646,8 +604,6 @@ if (isset($_POST['hidden'])) {
                                 </select> </div>
                         </div>
                     </div>
-                    <!--/span-->
-                    <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Account Status</label>
@@ -658,8 +614,6 @@ if (isset($_POST['hidden'])) {
                                 </select> </div>
                         </div>
                     </div>
-                    <!--/span-->
-                    <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Available For New Order</label>
@@ -671,8 +625,6 @@ if (isset($_POST['hidden'])) {
                                 </select> </div>
                         </div>
                     </div>
-                    <!--/span-->
-                    <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Driver License Expiration</label>

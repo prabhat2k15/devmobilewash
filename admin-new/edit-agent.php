@@ -425,15 +425,7 @@ $profiledetail = json_decode($result);
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" id="main">
-        <!-- BEGIN PAGE HEADER-->
 
-
-        <!-- BEGIN PAGE TITLE-->
-        <!-- <h3 class="page-title"> New User Profile | Account
-             <small>user account page</small>
-         </h3>-->
-        <!-- END PAGE TITLE-->
-        <!-- END PAGE HEADER-->
         <form action="" class="form-horizontal" id="edit_agent_form" method="post" enctype="multipart/form-data">
             <div class="form-body" style="padding: 10px 0px 0px 20px;">
                 <?php
@@ -542,9 +534,6 @@ $profiledetail = json_decode($result);
                     </div>
 
                 </div>
-
-
-
                 <div class="row">
 
                     <div class="col-md-6">
@@ -594,7 +583,7 @@ $profiledetail = json_decode($result);
                             <label class="control-label col-md-3">Service area</label>
                             <div class="col-md-9">
                                 <select class="form-control" name="operate_area">
-                                   
+
                                     <option value="CA" <?php if ($profiledetail->operate_area == 'CA') echo 'selected'; ?>>CA</option>
                                     <option value="NV" <?php if ($profiledetail->operate_area == 'NV') echo 'selected'; ?>>NV</option>
                                     <option value="AZ" <?php if ($profiledetail->operate_area == 'AZ') echo 'selected'; ?>>AZ</option>
@@ -752,7 +741,7 @@ $profiledetail = json_decode($result);
                                 </select> </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6 cstmMultiselect">
                         <div class="form-group">
                             <label class="control-label col-md-3">Certificates</label>
@@ -798,7 +787,6 @@ $profiledetail = json_decode($result);
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -961,7 +949,7 @@ $profiledetail = json_decode($result);
                         </div>
                     </div>
                     <!--/span-->
-                    
+
 
                 </div>
                 <!--/row-->

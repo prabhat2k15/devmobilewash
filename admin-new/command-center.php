@@ -369,11 +369,11 @@
     }
 </style>
 <?php if ($jsondata_permission->users_type == 'recruiter'): ?>
-<style>
-    .mw-menu{
-	display: none;
-    }
-</style>
+    <style>
+        .mw-menu{
+            display: none;
+        }
+    </style>
 <?php endif; ?>
 <script type="text/javascript">
     var currenttime = '<?php echo date("F d, Y H:i:s", time()) ?>'
@@ -554,11 +554,11 @@
                 <div class="section" style="width: 670px;">
                     <!--<div class="single-stat total-order">
         
-                                        <div class="single-stat-content">
-                                        <p class="count">0</p>
-                                        <p class="status">Total Orders</p>
-                                        </div>
-                                        <div class="clear"></div>
+                                            <div class="single-stat-content">
+                                            <p class="count">0</p>
+                                            <p class="status">Total Orders</p>
+                                            </div>
+                                            <div class="clear"></div>
                                 </div>-->
                     <div class="single-stat today-order">
 
@@ -606,19 +606,19 @@
     <?php include_once('cc-footer.php'); ?>
     <script src="https://devmobilewash.com:3000/socket.io/socket.io.js"></script>
     <script>
-	var api_key_security = '';
-var api_token_security = '';
-var t1_security = '';
-var t2_security = '';
-var user_type_security = '';
-var user_id_security = '';
+    var api_key_security = '';
+    var api_token_security = '';
+    var t1_security = '';
+    var t2_security = '';
+    var user_type_security = '';
+    var user_id_security = '';
 
-api_key_security = "<?php echo API_KEY; ?>";
-api_token_security = "<?php echo urlencode($finalusertoken); ?>";
-t1_security = "<?php echo $mw_admin_auth_arr[2]; ?>";
-t2_security = "<?php echo $mw_admin_auth_arr[3]; ?>";
-user_type_security = 'admin';
-user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
+    api_key_security = "<?php echo API_KEY; ?>";
+    api_token_security = "<?php echo urlencode($finalusertoken); ?>";
+    t1_security = "<?php echo $mw_admin_auth_arr[2]; ?>";
+    t2_security = "<?php echo $mw_admin_auth_arr[3]; ?>";
+    user_type_security = 'admin';
+    user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
 
     var markers = [];
     var closest_markers = [];
@@ -1494,49 +1494,49 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
             markers.push(marker);
 
 <?php if ($jsondata_permission->users_type != 'recruiter'): ?>
-            google.maps.event.addListener(marker, 'click', (function (marker) {
-                return function () {
-                    infoWindow.setContent(content);
-                    infoWindow.open(map, marker);
-                    map.setZoom(18);
-                    map.setCenter(marker.getPosition());
-                }
-            })(marker));
+                google.maps.event.addListener(marker, 'click', (function (marker) {
+                    return function () {
+                        infoWindow.setContent(content);
+                        infoWindow.open(map, marker);
+                        map.setZoom(18);
+                        map.setCenter(marker.getPosition());
+                    }
+                })(marker));
 
 
-            google.maps.event.addListener(marker, 'rightclick', function (event) {
+                google.maps.event.addListener(marker, 'rightclick', function (event) {
 
-                this.setMap(null);
-            });
-
-
-            google.maps.event.addListener(marker, 'drag', function (event) {
-                //console.log('new position is '+event.latLng.lat()+' / '+event.latLng.lng());
-
-            });
-
-            google.maps.event.addListener(marker, 'dragend', function (event) {
-                //console.log(this);
-                closest_markers = [];
-                markercurrentpos = new google.maps.LatLng(event.latLng.lat(), event.latLng.lng());
-                //console.log(markercurrentpos);
-                //console.log('final position is '+marker.latLng.lat()+' / '+marker.latLng.lng());
-
-                $.each(markers, function (index, mm) {
-                    mm.distance = google.maps.geometry.spherical.computeDistanceBetween(mm.getPosition(), markercurrentpos);
-                    if (mm.category == 'pendingorders')
-                        closest_markers.push(mm);
+                    this.setMap(null);
                 });
 
-                closest_markers.sort(function (a, b) {
-                    return parseFloat(a.distance) - parseFloat(b.distance);
+
+                google.maps.event.addListener(marker, 'drag', function (event) {
+                    //console.log('new position is '+event.latLng.lat()+' / '+event.latLng.lng());
+
                 });
 
-                //console.log(closest_markers);
-                infoWindow.setContent("<p style='font-size: 18px;'>Connect agent with order of <b>" + closest_markers[0].title + "</b>?</p><p style='text-align: center; background: #2196F3; color: #fff; display: block;'><a class='infowin-assign-order' data-agent-id='" + this.id + "' data-wash-id='" + closest_markers[0].extradata + "' style='color: #fff; text-decoration: none; font-size: 18px; font-weight: bold; display: block; padding: 10px; width: 100%; box-sizing: border-box;' href='#'>Assign Order</a></p>");
-                infoWindow.open(map, closest_markers[0]);
-            });
-	    <?php endif; ?>
+                google.maps.event.addListener(marker, 'dragend', function (event) {
+                    //console.log(this);
+                    closest_markers = [];
+                    markercurrentpos = new google.maps.LatLng(event.latLng.lat(), event.latLng.lng());
+                    //console.log(markercurrentpos);
+                    //console.log('final position is '+marker.latLng.lat()+' / '+marker.latLng.lng());
+
+                    $.each(markers, function (index, mm) {
+                        mm.distance = google.maps.geometry.spherical.computeDistanceBetween(mm.getPosition(), markercurrentpos);
+                        if (mm.category == 'pendingorders')
+                            closest_markers.push(mm);
+                    });
+
+                    closest_markers.sort(function (a, b) {
+                        return parseFloat(a.distance) - parseFloat(b.distance);
+                    });
+
+                    //console.log(closest_markers);
+                    infoWindow.setContent("<p style='font-size: 18px;'>Connect agent with order of <b>" + closest_markers[0].title + "</b>?</p><p style='text-align: center; background: #2196F3; color: #fff; display: block;'><a class='infowin-assign-order' data-agent-id='" + this.id + "' data-wash-id='" + closest_markers[0].extradata + "' style='color: #fff; text-decoration: none; font-size: 18px; font-weight: bold; display: block; padding: 10px; width: 100%; box-sizing: border-box;' href='#'>Assign Order</a></p>");
+                    infoWindow.open(map, closest_markers[0]);
+                });
+<?php endif; ?>
         }
 
         function updatelocation(markerid, lat, lng) {
@@ -2298,26 +2298,26 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
                     });
 <?php endif; ?>
 <?php if ($jsondata_permission->users_type != 'recruiter'): ?>
-                google.maps.event.addListener(country, 'mouseover', function () {
-                    //console.log(this);
+                    google.maps.event.addListener(country, 'mouseover', function () {
+                        //console.log(this);
 
-                    if ((!shiftPressed) && (!selectedzips))
-                        this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
-                });
-                google.maps.event.addListener(country, 'mouseout', function () {
-                    if ((!shiftPressed) && (!selectedzips)) {
-                        if (this.zipcolor == 'yellow')
-                            this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
-                        else if (this.zipcolor == 'red')
-                            this.setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
-                        else if (this.zipcolor == 'purple')
-                            this.setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
-                        else if (this.zipcolor == 'gray')
-                            this.setOptions({fillColor: "#808080", fillOpacity: 0.6, strokeOpacity: 0.8});
-                        else
-                            this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
-                    }
-                });
+                        if ((!shiftPressed) && (!selectedzips))
+                            this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
+                    });
+                    google.maps.event.addListener(country, 'mouseout', function () {
+                        if ((!shiftPressed) && (!selectedzips)) {
+                            if (this.zipcolor == 'yellow')
+                                this.setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
+                            else if (this.zipcolor == 'red')
+                                this.setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
+                            else if (this.zipcolor == 'purple')
+                                this.setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
+                            else if (this.zipcolor == 'gray')
+                                this.setOptions({fillColor: "#808080", fillOpacity: 0.6, strokeOpacity: 0.8});
+                            else
+                                this.setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
+                        }
+                    });
 <?php endif; ?>
 <?php if ($jsondata_permission->users_type == 'admin'): ?>
                     google.maps.event.addDomListener(country, 'rightclick', function (e) {
@@ -2336,79 +2336,79 @@ user_id_security = "<?php echo $mw_admin_auth_arr[4]; ?>";
 
 <?php if ($jsondata_permission->users_type != 'recruiter'): ?>
 
-                google.maps.event.addListener(country, 'click', function (e)
-                {
-
-                    selectedzips = '';
-
-                    for (var i = 0; i < ziparea_polys.length; i++)
+                    google.maps.event.addListener(country, 'click', function (e)
                     {
-                        if (ziparea_polys[i].zipcolor == 'yellow')
-                            ziparea_polys[i].setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
-                        else if (ziparea_polys[i].zipcolor == 'red')
-                            ziparea_polys[i].setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
-                        else if (ziparea_polys[i].zipcolor == 'purple')
-                            ziparea_polys[i].setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
-                        else if (ziparea_polys[i].zipcolor == 'gray')
-                            ziparea_polys[i].setOptions({fillColor: "#808080", fillOpacity: 0.6, strokeOpacity: 0.8});
-                        else
-                            ziparea_polys[i].setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
-                    }
 
-                    // console.log(country);
-                    //this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
-                    var blue_selected = "selected='selected'";
-                    var yellow_selected = '';
-                    var red_selected = '';
-                    var purple_selected = '';
-                    var gray_selected = '';
+                        selectedzips = '';
 
-                    if (this.zipcolor == 'yellow') {
-                        yellow_selected = "selected='selected'";
-                        blue_selected = '';
-                        red_selected = '';
-                        purple_selected = '';
-                        gray_selected = '';
-                    }
+                        for (var i = 0; i < ziparea_polys.length; i++)
+                        {
+                            if (ziparea_polys[i].zipcolor == 'yellow')
+                                ziparea_polys[i].setOptions({fillColor: "#f4d942", fillOpacity: 0.6, strokeOpacity: 0.8});
+                            else if (ziparea_polys[i].zipcolor == 'red')
+                                ziparea_polys[i].setOptions({fillColor: "#ff5722", fillOpacity: 0.6, strokeOpacity: 0.8});
+                            else if (ziparea_polys[i].zipcolor == 'purple')
+                                ziparea_polys[i].setOptions({fillColor: "#800080", fillOpacity: 0.6, strokeOpacity: 0.8});
+                            else if (ziparea_polys[i].zipcolor == 'gray')
+                                ziparea_polys[i].setOptions({fillColor: "#808080", fillOpacity: 0.6, strokeOpacity: 0.8});
+                            else
+                                ziparea_polys[i].setOptions({fillColor: "#076ee1", fillOpacity: 0.6, strokeOpacity: 0.8});
+                        }
 
-                    if (this.zipcolor == 'red') {
-                        yellow_selected = '';
-                        blue_selected = '';
-                        red_selected = "selected='selected'";
-                        purple_selected = '';
-                        gray_selected = '';
-                    }
+                        // console.log(country);
+                        //this.setOptions({fillColor: '#076ee1', fillOpacity: 0.4});
+                        var blue_selected = "selected='selected'";
+                        var yellow_selected = '';
+                        var red_selected = '';
+                        var purple_selected = '';
+                        var gray_selected = '';
 
-                    if (this.zipcolor == 'purple') {
-                        yellow_selected = '';
-                        blue_selected = '';
-                        red_selected = '';
-                        purple_selected = "selected='selected'";
-                        gray_selected = '';
-                    }
+                        if (this.zipcolor == 'yellow') {
+                            yellow_selected = "selected='selected'";
+                            blue_selected = '';
+                            red_selected = '';
+                            purple_selected = '';
+                            gray_selected = '';
+                        }
 
-                    if (this.zipcolor == 'gray') {
-                        yellow_selected = '';
-                        blue_selected = '';
-                        red_selected = '';
-                        purple_selected = '';
-                        gray_selected = "selected='selected'";
-                    }
+                        if (this.zipcolor == 'red') {
+                            yellow_selected = '';
+                            blue_selected = '';
+                            red_selected = "selected='selected'";
+                            purple_selected = '';
+                            gray_selected = '';
+                        }
 
-<?php if (($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
-                        var content = "<div class='zip-info'><p><b>ZIPCODE: </b>" + this.zipcode + "</p><p>Zip Color: " + this.zipcolor + "</p></div>";
+                        if (this.zipcolor == 'purple') {
+                            yellow_selected = '';
+                            blue_selected = '';
+                            red_selected = '';
+                            purple_selected = "selected='selected'";
+                            gray_selected = '';
+                        }
 
-<?php else: ?>
-                        var content = "<div class='zip-info'><p><b>ZIPCODE: </b>" + this.zipcode + "</p><p>Zip Color <select class='zip-color'><option value='gray' " + gray_selected + ">Disabled</option><option value='' " + blue_selected + ">Blue</option><option value='yellow' " + yellow_selected + ">Yellow</option><option value='red' " + red_selected + ">Red</option><option value='purple' " + purple_selected + ">Purple</option></select></p><p><a href='#' class='save-zip-info' data-zip='" + this.zipcode + "'>Save</a></p></div>";
+                        if (this.zipcolor == 'gray') {
+                            yellow_selected = '';
+                            blue_selected = '';
+                            red_selected = '';
+                            purple_selected = '';
+                            gray_selected = "selected='selected'";
+                        }
 
-<?php endif; ?>
+    <?php if (($jsondata_permission->users_type == 'scheduler') || ($jsondata_permission->users_type == 'recruiter')): ?>
+                            var content = "<div class='zip-info'><p><b>ZIPCODE: </b>" + this.zipcode + "</p><p>Zip Color: " + this.zipcolor + "</p></div>";
 
-                    var infowindow = new google.maps.InfoWindow({
-                        content: content, position: e.latLng
+    <?php else: ?>
+                            var content = "<div class='zip-info'><p><b>ZIPCODE: </b>" + this.zipcode + "</p><p>Zip Color <select class='zip-color'><option value='gray' " + gray_selected + ">Disabled</option><option value='' " + blue_selected + ">Blue</option><option value='yellow' " + yellow_selected + ">Yellow</option><option value='red' " + red_selected + ">Red</option><option value='purple' " + purple_selected + ">Purple</option></select></p><p><a href='#' class='save-zip-info' data-zip='" + this.zipcode + "'>Save</a></p></div>";
 
+    <?php endif; ?>
+
+                        var infowindow = new google.maps.InfoWindow({
+                            content: content, position: e.latLng
+
+                        });
+                        infowindow.open(map, this);
                     });
-                    infowindow.open(map, this);
-                });
 
 <?php endif; ?>
                 country.setMap(map);

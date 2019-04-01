@@ -12,14 +12,6 @@ $voice_print = '';
 <?php include('right-sidebar.php') ?>
 
 <?php
-/* $day = $_event = '';
-  if( isset($_GET['day']) && !empty( $_GET['event'] ) ){
-  $day = $_GET['day'];
-  //$_event = $_GET['event'];
-  } */
-
-
-
 /* SCHEDULE ORDER */
 $day = $_event = $month = '';
 if (isset($_GET['day']) && !empty($_GET['day'])) {
@@ -51,7 +43,6 @@ $jsondata = json_decode($result);
 $s_orders_response = $jsondata->response;
 $s_orders_result_code = $jsondata->result;
 $s_mw_all_orders = $jsondata->wash_requests;
-/* echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; */
 $pending_order_count = '';
 if (!$jsondata->pending_wash_count)
     $pending_order_count = "no orders";
@@ -577,8 +568,6 @@ $ios_count = $jsondata->ios_count;
         <div class="alert-box-wrap">
 
         </div>
-
-
         <!-- END PAGE HEADER-->
         <!-- BEGIN DASHBOARD STATS 1-->
         <div class="row">
@@ -785,7 +774,7 @@ $ios_count = $jsondata->ios_count;
                                             /* if($order->schedule_total) echo "$".$order->schedule_total;
                                               else echo "N/A"; */
                                             ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;                   ?></td-->
+                                           <!--td><?php //echo $order->transaction_id;                       ?></td-->
                                             <?php $sum = $order->agent_total + $order->company_total ?>
                                             <td>$<?php echo number_format($sum, 2); ?>   </td>
                                             <td><?php echo $order->created_date; ?></td>
@@ -868,13 +857,6 @@ $ios_count = $jsondata->ios_count;
             }
         }
 
-        /*         dt_table = $('#example1, #example2').dataTable( {
-         "pageLength": 20,
-         "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
-         
-         "aaSorting": []
-         
-         } );*/
 
     });
 </script>
@@ -974,38 +956,12 @@ $ios_count = $jsondata->ios_count;
                         window.location.href = '<?php echo ROOT_URL; ?>/admin-new/all-orders.php?filter=' + $(this).val();
                 });
 
-                /*
-                 dt_table.fnDeleteRow( $(".portlet-body table tr#order-8767"));
-                 var alldata = dt_table.fnGetData();
-                 dt_table.fnClearTable();
-                 //console.log(alldata);
-                 dt_table.fnAddData( [
-                 "<a href='edit-schedule-order.php?id=8783' class='appt-edit-order' data-id='8783' style='margin-right: 7px;'>Edit</a>",
-                 "8784",
-                 "<span class='label label-sm label-pending'>Pending</span>",
-                 "",
-                 "",
-                 "",
-                 "",
-                 "",
-                 "",
-                 "",
-                 "30"
-                 ]
-                 );
-                 
-                 dt_table.fnAddData(alldata);
-                 
-                 // $(".portlet-body table tbody").prepend('<tr role="row" class="odd"><td><a href="edit-schedule-order.php?id=8783" class="appt-edit-order" data-id="8783" style="margin-right: 7px;">Edit</a></td><td>8784</td><td><span class="label label-sm label-pending">Pending</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="sorting_1">30</td><td></td><td></td></tr>');
-                 dt_table.fnDraw();
-                 */
             });
 
             function pendingflashingorder() {
                 $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=site/adminpendingschedwashesalert", {key: '<?php echo API_KEY; ?>', api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
                     $(".portlet-body table tr").removeClass('flashrow');
                     if (data.result == 'true') {
-//console.log(data.wash_ids);
                         $.each(data.wash_ids, function (index, value) {
                             $(".portlet-body table tr#order-" + value).addClass('flashrow');
                         });
@@ -1043,25 +999,6 @@ $ios_count = $jsondata->ios_count;
 
             });
 
-            /*$( "body" ).on( "click", ".spec-order-list li a", function() {
-             if ($(this).hasClass("addonupgrade-view")) {
-             return false;
-             }
-             
-             var wash_id = $(this).attr('data-id');
-             
-             $(this).parent().remove();
-             if ($(".spec-order-list").children().length < 1){
-             $(".spec-order-list").remove();
-             }
-             
-             if ($(".alert-box-wrap").children().length < 1){
-             $(".alert-box-wrap").hide();
-             }
-             window.open('edit-order.php?id='+wash_id, '_blank');
-             return false;
-             
-             });*/
 
         });
         function ajaxorderlist() {

@@ -103,7 +103,6 @@ $data = $jsondata->data;
                             <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
                                 <thead>
                                     <tr>
-                                        <!-- <th style="display:none"> S.No </th> -->
                                         <th> ID </th>
                                         <th> Customer Name </th>
                                         <th> Email </th>
@@ -118,7 +117,6 @@ $data = $jsondata->data;
                                 <tbody>
                                     <?php foreach ($data as $key => $val) { ?> 
                                         <tr>
-                                            <!-- <td style="display:none">$val->id ?></td> -->
                                             <td><?= $val->id ?></td>
                                             <td><?= $val->first_name . " " . $val->last_name ?></td>
                                             <td><?= $val->email ?></td>

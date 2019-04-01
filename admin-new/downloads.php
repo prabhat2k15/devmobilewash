@@ -31,11 +31,7 @@ $download_data = json_decode($result);
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.12/sorting/datetime-moment.js"></script>
 <!-- END PAGE LEVEL PLUGINS -->
-
-
 <?php include('right-sidebar.php') ?>
-
-
 <style>
     .dt-button.buttons-csv.buttons-html5 { opacity: 0;}
     .border-box{

@@ -42,26 +42,19 @@
         });
     });
 </script>
-
-
-
-
 <?php include('right-sidebar.php') ?>
 <?php
 $url = ROOT_URL . '/api/index.php?r=Customers/customersfeedbacksapp';
-//echo $url;
 $handle = curl_init($url);
 $data = array('feedback_type' => 'customer', 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4], 'type' => $_GET['type']);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle);
-//print_r($result); die;
 curl_close($handle);
 $jsondata = json_decode($result);
 $response = $jsondata->response;
 $result_code = $jsondata->result;
-//print_r($jsondata);
 ?>
 <style>
     table.dataTable thead .sorting_asc {
@@ -82,9 +75,6 @@ $result_code = $jsondata->result;
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">
         <!-- BEGIN PAGE HEADER-->
-
-
-
         <!-- END PAGE HEADER-->
         <!-- BEGIN DASHBOARD STATS 1-->
         <div class="row">

@@ -14,9 +14,7 @@ if (!empty($_POST['hidden'])) {
 
     $data = array('to' => $to, 'phone' => $phone, 'message' => $message, 'media' => $media, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 
-
     // END COLLECT POST VALUE //
-
     $handle = curl_init(ROOT_URL . "/api/index.php?r=twilio/messges");
     curl_setopt($handle, CURLOPT_POST, true);
     curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
@@ -26,15 +24,11 @@ if (!empty($_POST['hidden'])) {
     $jsondata = json_decode($result);
     $response = $jsondata->response;
     $result_code = $jsondata->result;
-
-    //exit;
     if ($response == "Message successfully store" && $result_code == "true") {
-
         $msg = 'Successfully Saved';
         ?>
         <script type="text/javascript">window.location = "<?php echo ROOT_URL; ?>/admin-new/messagess.php"</script>
         <?php
-        //die();
     } else {
         $msg = 'Something Wrong';
     }
@@ -65,8 +59,6 @@ curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle);
 curl_close($handle);
 $jsondata = json_decode($result);
-
-
 $value = $jsondata->value;
 $fromdate = $jsondata->fromdate;
 $enddate = $jsondata->enddate;
@@ -110,7 +102,6 @@ $message = $jsondata->message;
             <i class="icon-settings"></i>
             <?php if (!empty($msg)) { ?> <span class="caption-subject font-dark bold uppercase" style="color: green !important; font-size: 15px !important;"><?php echo $msg; ?></span> <?php } else { ?>
                 <span class="caption-subject font-dark bold uppercase" style="font-size: 15px !important;">Messages</span><?php } ?>
-
         </div>
         <div class="clear">&nbsp;</div>
         <div class="row">
@@ -175,22 +166,22 @@ $message = $jsondata->message;
 <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script type="text/javascript">
-                                            function getval(sel) {
-                                                var val = sel.value;
-                                                if ((val == 'custom')) {
-                                                    $('#phone').show();
-                                                    $('#phone input[name=phone]').attr('required', 'required');
-                                                    $('#message').show();
-                                                    $('#media').show();
-                                                    $('#save').show();
-                                                }
+function getval(sel) {
+    var val = sel.value;
+    if ((val == 'custom')) {
+        $('#phone').show();
+        $('#phone input[name=phone]').attr('required', 'required');
+        $('#message').show();
+        $('#media').show();
+        $('#save').show();
+    }
 
-                                                if ((val == 'all_washers')) {
-                                                    $('#phone').hide();
-                                                    $('#phone input[name=phone]').removeAttr('required');
-                                                    $('#message').show();
-                                                    $('#media').show();
-                                                    $('#save').show();
-                                                }
-                                            }
+    if ((val == 'all_washers')) {
+        $('#phone').hide();
+        $('#phone input[name=phone]').removeAttr('required');
+        $('#message').show();
+        $('#media').show();
+        $('#save').show();
+    }
+}
 </script>

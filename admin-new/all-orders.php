@@ -93,7 +93,7 @@ $ios_count = $jsondata->ios_count;
   echo "</pre>"; */
 ?>
 <style>
-   
+
     .label-complete {
         background-color: #16CE0C !important;
     }
@@ -606,8 +606,6 @@ $ios_count = $jsondata->ios_count;
         <div class="alert-box-wrap">
 
         </div>
-
-
         <!-- END PAGE HEADER-->
         <!-- BEGIN DASHBOARD STATS 1-->
         <div class="row">
@@ -646,207 +644,207 @@ $ios_count = $jsondata->ios_count;
                             <div class="large-table-fake-top-scroll-container-3">
                                 <div>&nbsp;</div>
                             </div>
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
-                                <thead>
-                                    <tr>
-                                        <th> Actions </th>
-                                        <th> ID </th>
-                                        <th> Order Type </th>
-                                        <th> Status </th>
-                                        <th> Payment </th>
-                                        <th> Transaction ID </th>
-                                        <th> Declined Transaction ID </th>
-                                        <!--th> Customer ID </th-->
-                                        <th> Customer Name </th>
+                            <div class="table-scrollable">
+                                <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
+                                    <thead>
+                                        <tr>
+                                            <th> Actions </th>
+                                            <th> ID </th>
+                                            <th> Order Type </th>
+                                            <th> Status </th>
+                                            <th> Payment </th>
+                                            <th> Transaction ID </th>
+                                            <th> Declined Transaction ID </th>
+                                            <!--th> Customer ID </th-->
+                                            <th> Customer Name </th>
 
-                                        <th> Customer Phone </th>
-                                        <?php if ($_GET['customer_id']): ?>
-                                            <th> Avg. Order<br>Frequency </th>
-                                        <?php endif; ?>
-                                        <!--th> Agent ID </th-->
-                                        <th> Badge </th>
-                                        <th> Agent Name </th>
-                                        <!--th> Agent Email </th-->
-                                        <th> Agent Phone </th>
-                                        <th style='min-width: 115px;'> Address </th>
-                                        <?php if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')) { ?>
-                                            <th style="display: none;"> House Number </th>
-                                            <th style="display: none;"> Street </th>
-                                            <th style="display: none;"> City </th>
-                                            <th style="display: none;"> State </th>
-                                            <th style="display: none;"> ZipCode </th>
-                                        <?php } ?>
-                                        <th> Schedule Datetime </th>
-                                        <!--<th class="hide"> Starts </th>-->
-                                        <th> Vehicles </th>
-                                        <th> Total Price </th>
-                                        <!--th>Total Price </th-->
-                                        <!--th>Transaction ID </th-->
-                                        <th> Created Date </th>
-                                        <th> Completed Date </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <?php foreach ($s_mw_all_orders as $ind => $order) {
-                                        ?>
-                                        <tr class="odd gradeX <?php if ($ind == 0) echo "flashro"; ?>" id="order-<?php echo $order->id; ?>">
-                                            <td><a href="edit-order.php?id=<?php echo $order->id; ?>" class="appt-edit-order" data-id="<?php echo $order->id; ?>" style="margin-right: 7px;">Edit</a></td>
-                                            <td><?php echo $order->id; ?></td>
-                                            <td><?php if ($order->is_scheduled): ?><p><span class="label label-sm label-pending" style="background-color: #0046ff !important;">Scheduled</span></p><?php endif; ?><?php if (!$order->is_scheduled): ?><p><span class="label label-sm label-pending" style="background-color: #009688 !important;">On-Demand</span></p><?php endif; ?></td>
-                                            <td>
-
-                                                <?php if ($order->status == 5 || $order->status == 6): ?>
-                                                    <span class="label label-sm label-cancel">Cancelled</span>
-                                                <?php elseif (!$order->status): ?>
-                                                    <span class="label label-sm label-pending">Pending</span>
-                                                <?php elseif ($order->status == 1): ?>
-                                                    <span class="label label-sm label-enroute">En Route</span>
-                                                <?php elseif ($order->status == 2): ?>
-                                                    <span class="label label-sm label-process">Arrived</span>
-                                                <?php elseif ($order->status == 3): ?>
-                                                    <span class="label label-sm label-process">In Process</span>
-                                                <?php elseif ($order->status == 4): ?>
-                                                    <span class="label label-sm label-complete">Completed</span>
-                                                <?php elseif ($order->status == 7): ?>
-                                                    <span class="label label-sm label-cancel">CNR</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><?php
-                                                if (($order->payment_status == 'Declined') || ($order->payment_status == 'Check Fraud'))
-                                                    echo"<span class='label label-sm label-fraud'>" . $order->payment_status . "</span><br><br>";
-                                                else
-                                                    echo $order->payment_status;
-                                                ?>
-                                                <?php if ($order->payment_type == 'free'): ?>
-                                                    <span class="label label-sm label-complete">Free Wash</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-					    <?php if ((($order->status == 5) || ($order->status == 7) || ($order->status == 0)) && ($order->canceled_wash_transaction_id)): ?>
-                                                    <a target="_blank" href="<?php echo BT_TRANSACTION_URL . $order->canceled_wash_transaction_id; ?>"><?php echo $order->canceled_wash_transaction_id; ?></a>
-                                                <?php else: ?>
-					    <?php if ($order->transaction_id): ?>
-                                                    <a target="_blank" href="<?php echo BT_TRANSACTION_URL . $order->transaction_id; ?>"><?php echo $order->transaction_id; ?></a>
-                                                <?php endif; ?>
-						<?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <?php if ($order->failed_transaction_id): ?>
-                                                    <a target="_blank" href="<?php echo BT_TRANSACTION_URL . $order->failed_transaction_id; ?>"><?php echo $order->failed_transaction_id; ?></a>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td><a target="_blank" href="<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
-                                            <td><?php echo $order->customer_phoneno; ?></td>
+                                            <th> Customer Phone </th>
                                             <?php if ($_GET['customer_id']): ?>
-                                                <td><?php echo $cust_avg_order_frequency; ?> days</td>
+                                                <th> Avg. Order<br>Frequency </th>
                                             <?php endif; ?>
-                                            <td><?php
-                                                if (count($order->agent_details))
-                                                    echo $order->agent_details->real_washer_id;
-                                                else
-                                                    echo "N/A";
-                                                ?>
-                                            </td>
-                                            <td><?php
-                                                if (count($order->agent_details))
-                                                    echo "<a target='_blank' href='" . ROOT_URL . "/admin-new/all-orders.php?agent_id=" . $order->agent_details->agent_id . "'>" . $order->agent_details->agent_name . "</a>";
-                                                else
-                                                    echo "N/A";
-                                                ?>
-                                            </td>
-                                            <!--td><?php
-                                            /* if(count($order->agent_details)) echo $order->agent_details->agent_email;
-                                              else echo "N/A"; */
-                                            ?>
-                                            </td-->
-                                            <td><?php
-                                                if (count($order->agent_details))
-                                                    echo $order->agent_details->agent_phoneno;
-                                                else
-                                                    echo "N/A";
-                                                ?>
-                                            </td>
-                                            <td><?php echo $order->address . " (" . $order->address_type . ")"; ?></td>
-                                            <?php
-                                            if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')) {
-                                                $addressArr = explode(',', $order->address);
-                                                //$Arr_field['field_value']['address'] = $order->address; 
-                                                //print_r($addressArr);
-                                                $house_name = preg_replace('/[^0-9]/', '', $addressArr[0]);
-                                                $street = str_replace($house_name, '', $addressArr[0]);
-                                                $zipcode = preg_replace('/[^0-9]/', '', $addressArr[2]);
-                                                $state = str_replace($zipcode, '', $addressArr[2]);
-                                                ?>
-                                                <td style="display: none;"> <?php echo $house_name; ?> </td>
-                                                <td style="display: none;"> <?php echo (!empty($order->street_name)) ? $order->street_name : $street; ?> </td>
-                                                <td style="display: none;"> <?php echo (!empty($order->city)) ? $order->city : $addressArr[1]; ?> </td>
-                                                <td style="display: none;"> <?php echo (!empty($order->state)) ? $order->state : $state; ?> </td>
-                                                <td style="display: none;"> <?php echo (!empty($order->zipcode)) ? $order->zipcode : $zipcode; ?> </td>
+                                            <!--th> Agent ID </th-->
+                                            <th> Badge </th>
+                                            <th> Agent Name </th>
+                                            <!--th> Agent Email </th-->
+                                            <th> Agent Phone </th>
+                                            <th style='min-width: 115px;'> Address </th>
+                                            <?php if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')) { ?>
+                                                <th style="display: none;"> House Number </th>
+                                                <th style="display: none;"> Street </th>
+                                                <th style="display: none;"> City </th>
+                                                <th style="display: none;"> State </th>
+                                                <th style="display: none;"> ZipCode </th>
                                             <?php } ?>
-
-                                            <td>
-                                                <?php if ($order->is_scheduled): ?>
-                                                    <?php if (strtotime($order->reschedule_date) > 0): ?>
-
-                                                        <p style="color: red; font-weight: bold; font-size: 13px; margin: 0;">Rescheduled to <?php echo date('m/d/Y h:i A', strtotime($order->reschedule_date)); ?></p>
-                                                    <?php endif; ?>
-                                                    <?php if (strtotime($order->schedule_date) > 0) echo date('m/d/Y h:i A', strtotime($order->schedule_date)); ?>
-                                                <?php else: ?>
-                                                    N/A
-                                                <?php endif; ?>
-                                            </td>
-                                            <?php /* <td class="hide">
-                                              <?php
-                                              if ($order->min_diff > 0)
-                                              echo $order->min_diff;
-                                              else
-                                              echo "-";
-                                              ?>
-                                              </td> */ ?>
-                                            <td><?php
-                                                if (count($order->vehicles)) {
-                                                    echo "<ol style='padding-left: 15px;'>";
-                                                    foreach ($order->vehicles as $car) {
-                                                        echo "<li style='margin-bottom: 10px;'>" . $car->make . " " . $car->model . " (" . $car->pack . ")";
-                                                        if ($car->addons)
-                                                            echo " - Addons: " . $car->addons;
-                                                        echo "</li>";
-                                                    }
-                                                    echo "</ol>";
-                                                }
-                                                ?></td>
-                                            <!--td><?php
-                                            /* if($order->schedule_total) echo "$".$order->schedule_total;
-                                              else echo "N/A"; */
-                                            ?></td-->
-                                           <!--td><?php //echo $order->transaction_id;                                           ?></td-->
-                                            <?php
-                                            if ($order->coupon_discount) {
-                                                $coupon_discount = $order->coupon_discount;
-                                            } else {
-                                                $coupon_discount = 0.00;
-                                            }
-                                            $sum = ($order->agent_total + $order->company_total);
-                                            ?>
-                                            <td>$<?php echo number_format($sum, 2); ?>   </td>
-                                            <td><?php echo date('m/d/Y h:i A', strtotime($order->created_date)); ?></td>
-                                            <td>
-                                                <?php
-                                                if (strtotime($order->complete_order) > 0) {
-                                                    echo date('m/d/Y h:i A', strtotime($order->complete_order));
-                                                } else {
-                                                    echo " ";
-                                                }
-                                                ?>
-                                            </td>
-
+                                            <th> Schedule Datetime </th>
+                                            <!--<th class="hide"> Starts </th>-->
+                                            <th> Vehicles </th>
+                                            <th> Total Price </th>
+                                            <!--th>Total Price </th-->
+                                            <!--th>Transaction ID </th-->
+                                            <th> Created Date </th>
+                                            <th> Completed Date </th>
                                         </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+
+                                        <?php foreach ($s_mw_all_orders as $ind => $order) {
+                                            ?>
+                                            <tr class="odd gradeX <?php if ($ind == 0) echo "flashro"; ?>" id="order-<?php echo $order->id; ?>">
+                                                <td><a href="edit-order.php?id=<?php echo $order->id; ?>" class="appt-edit-order" data-id="<?php echo $order->id; ?>" style="margin-right: 7px;">Edit</a></td>
+                                                <td><?php echo $order->id; ?></td>
+                                                <td><?php if ($order->is_scheduled): ?><p><span class="label label-sm label-pending" style="background-color: #0046ff !important;">Scheduled</span></p><?php endif; ?><?php if (!$order->is_scheduled): ?><p><span class="label label-sm label-pending" style="background-color: #009688 !important;">On-Demand</span></p><?php endif; ?></td>
+                                                <td>
+
+                                                    <?php if ($order->status == 5 || $order->status == 6): ?>
+                                                        <span class="label label-sm label-cancel">Cancelled</span>
+                                                    <?php elseif (!$order->status): ?>
+                                                        <span class="label label-sm label-pending">Pending</span>
+                                                    <?php elseif ($order->status == 1): ?>
+                                                        <span class="label label-sm label-enroute">En Route</span>
+                                                    <?php elseif ($order->status == 2): ?>
+                                                        <span class="label label-sm label-process">Arrived</span>
+                                                    <?php elseif ($order->status == 3): ?>
+                                                        <span class="label label-sm label-process">In Process</span>
+                                                    <?php elseif ($order->status == 4): ?>
+                                                        <span class="label label-sm label-complete">Completed</span>
+                                                    <?php elseif ($order->status == 7): ?>
+                                                        <span class="label label-sm label-cancel">CNR</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td><?php
+                                                    if (($order->payment_status == 'Declined') || ($order->payment_status == 'Check Fraud'))
+                                                        echo"<span class='label label-sm label-fraud'>" . $order->payment_status . "</span><br><br>";
+                                                    else
+                                                        echo $order->payment_status;
+                                                    ?>
+                                                    <?php if ($order->payment_type == 'free'): ?>
+                                                        <span class="label label-sm label-complete">Free Wash</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <?php if ((($order->status == 5) || ($order->status == 7) || ($order->status == 0)) && ($order->canceled_wash_transaction_id)): ?>
+                                                        <a target="_blank" href="<?php echo BT_TRANSACTION_URL . $order->canceled_wash_transaction_id; ?>"><?php echo $order->canceled_wash_transaction_id; ?></a>
+                                                    <?php else: ?>
+                                                        <?php if ($order->transaction_id): ?>
+                                                            <a target="_blank" href="<?php echo BT_TRANSACTION_URL . $order->transaction_id; ?>"><?php echo $order->transaction_id; ?></a>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <?php if ($order->failed_transaction_id): ?>
+                                                        <a target="_blank" href="<?php echo BT_TRANSACTION_URL . $order->failed_transaction_id; ?>"><?php echo $order->failed_transaction_id; ?></a>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td><a target="_blank" href="<?php echo ROOT_URL; ?>/admin-new/all-orders.php?customer_id=<?php echo $order->customer_id; ?>"><?php echo $order->customer_name; ?></a></td>
+                                                <td><?php echo $order->customer_phoneno; ?></td>
+                                                <?php if ($_GET['customer_id']): ?>
+                                                    <td><?php echo $cust_avg_order_frequency; ?> days</td>
+                                                <?php endif; ?>
+                                                <td><?php
+                                                    if (count($order->agent_details))
+                                                        echo $order->agent_details->real_washer_id;
+                                                    else
+                                                        echo "N/A";
+                                                    ?>
+                                                </td>
+                                                <td><?php
+                                                    if (count($order->agent_details))
+                                                        echo "<a target='_blank' href='" . ROOT_URL . "/admin-new/all-orders.php?agent_id=" . $order->agent_details->agent_id . "'>" . $order->agent_details->agent_name . "</a>";
+                                                    else
+                                                        echo "N/A";
+                                                    ?>
+                                                </td>
+                                                <!--td><?php
+                                                /* if(count($order->agent_details)) echo $order->agent_details->agent_email;
+                                                  else echo "N/A"; */
+                                                ?>
+                                                </td-->
+                                                <td><?php
+                                                    if (count($order->agent_details))
+                                                        echo $order->agent_details->agent_phoneno;
+                                                    else
+                                                        echo "N/A";
+                                                    ?>
+                                                </td>
+                                                <td><?php echo $order->address . " (" . $order->address_type . ")"; ?></td>
+                                                <?php
+                                                if ((isset($_GET['event'])) && ($_GET['event'] == 'total_orders' || $_GET['event'] == 'newcustomer')) {
+                                                    $addressArr = explode(',', $order->address);
+                                                    //$Arr_field['field_value']['address'] = $order->address; 
+                                                    //print_r($addressArr);
+                                                    $house_name = preg_replace('/[^0-9]/', '', $addressArr[0]);
+                                                    $street = str_replace($house_name, '', $addressArr[0]);
+                                                    $zipcode = preg_replace('/[^0-9]/', '', $addressArr[2]);
+                                                    $state = str_replace($zipcode, '', $addressArr[2]);
+                                                    ?>
+                                                    <td style="display: none;"> <?php echo $house_name; ?> </td>
+                                                    <td style="display: none;"> <?php echo (!empty($order->street_name)) ? $order->street_name : $street; ?> </td>
+                                                    <td style="display: none;"> <?php echo (!empty($order->city)) ? $order->city : $addressArr[1]; ?> </td>
+                                                    <td style="display: none;"> <?php echo (!empty($order->state)) ? $order->state : $state; ?> </td>
+                                                    <td style="display: none;"> <?php echo (!empty($order->zipcode)) ? $order->zipcode : $zipcode; ?> </td>
+                                                <?php } ?>
+
+                                                <td>
+                                                    <?php if ($order->is_scheduled): ?>
+                                                        <?php if (strtotime($order->reschedule_date) > 0): ?>
+
+                                                            <p style="color: red; font-weight: bold; font-size: 13px; margin: 0;">Rescheduled to <?php echo date('m/d/Y h:i A', strtotime($order->reschedule_date)); ?></p>
+                                                        <?php endif; ?>
+                                                        <?php if (strtotime($order->schedule_date) > 0) echo date('m/d/Y h:i A', strtotime($order->schedule_date)); ?>
+                                                    <?php else: ?>
+                                                        N/A
+                                                    <?php endif; ?>
+                                                </td>
+                                                <?php /* <td class="hide">
+                                                  <?php
+                                                  if ($order->min_diff > 0)
+                                                  echo $order->min_diff;
+                                                  else
+                                                  echo "-";
+                                                  ?>
+                                                  </td> */ ?>
+                                                <td><?php
+                                                    if (count($order->vehicles)) {
+                                                        echo "<ol style='padding-left: 15px;'>";
+                                                        foreach ($order->vehicles as $car) {
+                                                            echo "<li style='margin-bottom: 10px;'>" . $car->make . " " . $car->model . " (" . $car->pack . ")";
+                                                            if ($car->addons)
+                                                                echo " - Addons: " . $car->addons;
+                                                            echo "</li>";
+                                                        }
+                                                        echo "</ol>";
+                                                    }
+                                                    ?></td>
+                                                <!--td><?php
+                                                /* if($order->schedule_total) echo "$".$order->schedule_total;
+                                                  else echo "N/A"; */
+                                                ?></td-->
+                                               <!--td><?php //echo $order->transaction_id;                                            ?></td-->
+                                                <?php
+                                                if ($order->coupon_discount) {
+                                                    $coupon_discount = $order->coupon_discount;
+                                                } else {
+                                                    $coupon_discount = 0.00;
+                                                }
+                                                $sum = ($order->agent_total + $order->company_total);
+                                                ?>
+                                                <td>$<?php echo number_format($sum, 2); ?>   </td>
+                                                <td><?php echo date('m/d/Y h:i A', strtotime($order->created_date)); ?></td>
+                                                <td>
+                                                    <?php
+                                                    if (strtotime($order->complete_order) > 0) {
+                                                        echo date('m/d/Y h:i A', strtotime($order->complete_order));
+                                                    } else {
+                                                        echo " ";
+                                                    }
+                                                    ?>
+                                                </td>
+
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         <?php } ?>
                     </div>
                 </div>

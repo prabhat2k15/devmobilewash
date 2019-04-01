@@ -9,14 +9,6 @@
 <?php include('right-sidebar.php') ?>
 
 <?php
-/* $day = $_event = '';
-  if( isset($_GET['day']) && !empty( $_GET['event'] ) ){
-  $day = $_GET['day'];
-  //$_event = $_GET['event'];
-  } */
-
-
-
 /* SCHEDULE ORDER */
 
 $day = $_event = '';
@@ -38,7 +30,6 @@ $jsondata = json_decode($result);
 $s_orders_response = $jsondata->response;
 $s_orders_result_code = $jsondata->result;
 $all_bugs = $jsondata->bugreport;
-/* echo"<pre>";print_r($s_mw_all_orders);echo"</pre>";die; */
 ?>
 <style>
     .label-complete {
@@ -134,12 +125,7 @@ $all_bugs = $jsondata->bugreport;
 <div class="page-content-wrapper">
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content">
-        <!-- BEGIN PAGE HEADER-->
 
-
-
-        <!-- END PAGE HEADER-->
-        <!-- BEGIN DASHBOARD STATS 1-->
         <div class="row">
             <div class="col-md-12">
 
