@@ -206,20 +206,20 @@ $date = date('m/d/Y h:i:s a', time());
                                       <p><span class='color-block gray'></span> - Disabled</p>
                                       <p><span class='color-block blue'></span> - Enabled</p>
                                       <?php if($jsondata_permission->users_type == 'scheduler'): ?>
+                                      <p><span class='color-block green'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_purple" id="custom_surgeactive-purple" value = "<?php echo ''; ?>"/></p>
                                       <p><span class='color-block yellow'></span> - Dynamic Wash Now Fee: <?php echo $appsettings->ios_wash_now_fee->yellow; ?></p>
                                       <p><span class='color-block orange'></span> - Dynamic Wash Now Fee: <?php echo $appsettings->ios_wash_now_fee->orange; ?></p>
                                       <p><span class='color-block red'></span> - Dynamic Wash Now Fee: <?php echo $appsettings->ios_wash_now_fee->red; ?></p>
                                       
                                       <p><span class='color-block purple'></span> - Dynamic Wash Now Fee: <?php echo $appsettings->ios_wash_now_fee->purple; ?></p>
-                                      <p><span class='color-block green'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_purple" id="custom_surgeactive-purple" value = "<?php echo ''; ?>"/></p>
 
                                       <?php else: ?>
+                                      <p><span class='color-block green'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_purple" id="custom_surgeactive-purple" value = "<?php echo ''; ?>"/></p>
                                       <p><span class='color-block yellow'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_yellow" id="custom_surgeactive-yellow" value = "<?php echo $appsettings->ios_wash_now_fee->yellow; ?>"/></p>
                                       <p><span class='color-block orange'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_orange" id="custom_surgeactive-orange" value = "<?php echo $appsettings->ios_wash_now_fee->orange; ?>"/></p>
                                       <p><span class='color-block red'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_red" id="custom_surgeactive-red" value = "<?php echo $appsettings->ios_wash_now_fee->red; ?>"/></p>
                                       
                                       <p><span class='color-block purple'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_purple" id="custom_surgeactive-purple" value = "<?php echo $appsettings->ios_wash_now_fee->purple; ?>"/></p>
-                                      <p><span class='color-block green'></span> - Dynamic Wash Now Fee <input type="text" name="custom_surge_purple" id="custom_surgeactive-purple" value = "<?php echo ''; ?>"/></p>
 
                                       <?php endif; ?>
                                       
