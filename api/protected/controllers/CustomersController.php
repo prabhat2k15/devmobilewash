@@ -12959,13 +12959,89 @@ class CustomersController extends Controller {
     }
 
     public function actionCustomerExpansionRequestList() {
-        $result = Yii::app()->db->createCommand('SELECT pre_registered_clients.* FROM pre_registered_clients ORDER BY id DESC')->queryAll();
+        if (Yii::app()->request->getParam('key') != API_KEY) {
+            echo "Invalid api key";
+            die();
+        }
+
+        $api_token = Yii::app()->request->getParam('api_token');
+        $t1 = Yii::app()->request->getParam('t1');
+        $t2 = Yii::app()->request->getParam('t2');
+        $user_type = Yii::app()->request->getParam('user_type');
+        $user_id = Yii::app()->request->getParam('user_id');
+
+        $token_check = $this->verifyapitoken($api_token, $t1, $t2, $user_type, $user_id, AES256CBC_API_PASS);
+
+        if (!$token_check) {
+            $json = array(
+                'result' => 'false',
+                'response' => 'Invalid request'
+            );
+            echo json_encode($json);
+            die();
+        }
+        $from = Yii::app()->request->getParam('from');
+        $to = Yii::app()->request->getParam('to');
+        $from = $from . " 00:00:00";
+        $to = $to . " 23:59:59";
+        $purple = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM pre_registered_clients d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE   z.zip_color='purple'")
+                ->queryRow();
+        $red = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM pre_registered_clients d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE z.zip_color='red'")
+                ->queryRow();
+        $yellow = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM pre_registered_clients d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE z.zip_color='yellow'")
+                ->queryRow();
+        $blue = Yii::app()->db->createCommand("SELECT COUNT(d.id) as total FROM pre_registered_clients d RIGHT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode WHERE  z.zip_color='blue' OR z.zip_color=''")
+                ->queryRow();
+        $all_city = Yii::app()->db->createCommand("SELECT city, COUNT(id) as total FROM pre_registered_clients   GROUP BY city ORDER BY COUNT(id) DESC")
+                ->queryAll();
+        $all_zipcode = Yii::app()->db->createCommand("SELECT zipcode, COUNT(id) as total FROM pre_registered_clients    GROUP BY zipcode ORDER BY COUNT(id) DESC")
+                ->queryAll();
+        // $all_country = Yii::app()->db->createCommand("SELECT country, COUNT(id) as total FROM pre_registered_clients   GROUP BY country ORDER BY COUNT(id) DESC")
+        //->queryAll();
+        $all_state = Yii::app()->db->createCommand("SELECT state, COUNT(id) as total FROM pre_registered_clients    GROUP BY state ORDER BY COUNT(id) DESC")
+                ->queryAll();
+        $all_source = Yii::app()->db->createCommand("SELECT source, COUNT(id) as total FROM pre_registered_clients   GROUP BY source ORDER BY COUNT(id) DESC")
+                ->queryAll();
+        $all_data = Yii::app()->db->createCommand("SELECT d.*,z.zip_color FROM pre_registered_clients d LEFT JOIN coverage_area_zipcodes z ON d.zipcode = z.zipcode   ORDER BY id DESC")
+                ->queryAll();
+
+        $i = 0;
+        foreach ($all_data as $val) {
+            $ZipColour = " ";
+            if ($val['zipcode'] && !empty($val['zipcode'])) {
+                $ZipColour = Yii::app()->db->createCommand("SELECT zip_color FROM  coverage_area_zipcodes  WHERE zipcode='" . $val['zipcode'] . "'")
+                        ->queryRow();
+                $ZipColour = $ZipColour['zip_color'];
+                if (isset($ZipColour) && $ZipColour == "") {
+                    $ZipColour = "Blue";
+                }
+                if (!isset($ZipColour)) {
+                    $ZipColour = " ";
+                }
+            }
+            $all_Data[$i]['created_at'] = $val['register_date'];
+            $all_Data[$i]['zipcode'] = $val['zipcode'];
+            $all_Data[$i]['city'] = $val['city'];
+            $all_Data[$i]['state'] = $val['state'];
+            $all_Data[$i]['ZipColour'] = $ZipColour;
+            $all_Data[$i]['country'] = $val['country'];
+            $all_Data[$i]['source'] = $val['source'];
+            $i++;
+        }
         $json = array(
-            'result' => 'true',
-            'data' => $result
+            //'all_data' => $all_data,
+            'all_data' => $all_Data,
+            'all_city' => $all_city,
+            'all_state' => $all_state,
+            'all_source' => $all_source,
+            'all_country' => $all_country,
+            'all_zipcode' => $all_zipcode,
+            'blue' => $blue['total'],
+            'yellow' => $yellow['total'],
+            'red' => $red['total'],
+            'purple' => $purple['total'],
         );
         echo json_encode($json);
-        die();
     }
 
     public function actionCustomerExpansionRequestSave() {

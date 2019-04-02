@@ -14,21 +14,17 @@
 <!-- END PAGE LEVEL PLUGINS -->
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#example1').dataTable({
+       /* $('#example1').dataTable({
             "pageLength": 20,
             "lengthMenu": [[20, 25, 50, -1], [20, 25, 50, "All"]],
             "order": [[0, 'dsc']],
             "sDom": "<'row'<'col-sm-5'l><'col-sm-3 text-center manik'B><'col-sm-4'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
             buttons: [{
-                    extend: 'csv',
-                    /*exportOptions: {
-                     columns: [1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21] // indexes of the columns that should be printed,
-                     } */
-                }
-            ]
-        });
-
-    });
+                extend: 'csv',
+             }
+             ]
+         });*/
+     });
     $(document).ready(function () {
 
         $('.csv-link').on('click', function () {
@@ -38,29 +34,71 @@
 </script>
 <?php include('right-sidebar.php') ?>
 <?php
-$url = ROOT_URL . '/api/index.php?r=customers/CustomerExpansionRequestList';
+if ($_GET['from']) {
+    $from = $_GET['from'];
+} else {
+    $from = "2017-01-01";
+}
 
+if ($_GET['to']) {
+    $to = $_GET['to'];
+} else {
+    $to = date('Y-m-d');
+}
+$url = ROOT_URL . '/api/index.php?r=customers/CustomerExpansionRequestList';
 $handle = curl_init($url);
-$data = array('key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
+$data = array('from' => $from, 'to' => $to, 'key' => API_KEY, 'api_token' => $finalusertoken, 't1' => $mw_admin_auth_arr[2], 't2' => $mw_admin_auth_arr[3], 'user_type' => 'admin', 'user_id' => $mw_admin_auth_arr[4]);
 curl_setopt($handle, CURLOPT_POST, true);
 curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec($handle);
 curl_close($handle);
-$jsondata = json_decode($result);
-$data = $jsondata->data;
+$expansion_request = json_decode($result);
+// print_r($expansion_request);
+// exit;
 ?>
 <style>
-    .label-online {
-        background-color: #16CE0C !important;
+    .dt-button.buttons-csv.buttons-html5 { opacity: 0;}
+    .border-box{
+        float: left;
+        width: 100%;
+        border: 1px solid #ccc;
+        padding: 0px 20px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+    .border-box h4,
+    .fontBold{
+        font-weight:600;
+    }
+    .border-box table tr th:last-child,
+    .border-box table tr td:last-child{
+        text-align:right;
+        padding-right: 20px;
+    }
+    input[type="date"].form-control, input[type="time"].form-control, input[type="datetime-local"].form-control, input[type="month"].form-control {
+        line-height: inherit;
+    }
+    .input-group-sm > .input-group-btn > select.btn, .input-group-sm > select.form-control, .input-group-sm > select.input-group-addon, select.input-sm{
+        line-height: inherit;
+    }
+    .dataTables_length{
+        text-transform: capitalize;
     }
 
-    .label-offline {
-        background-color: #FF0202 !important;
+    .dataTables_info {
+        float:left;
+        line-height: 30px;
     }
-    .dt-button.buttons-csv.buttons-html5 { opacity: 0; }
-    .scrollable-table tr th{
-        white-space:nowrap;
+    .dataTables_paginate {
+        float: right;
+
+    }
+    .dataTables_paginate ul.pagination{
+        margin-top:0px;
+    }
+    .ltst-download-table tr td:nth-child(4){
+        text-transform:capitalize;
     }
 </style>
 <!-- BEGIN CONTENT -->
@@ -73,107 +111,308 @@ $data = $jsondata->data;
         <!-- BEGIN DASHBOARD STATS 1-->
         <div class="row">
             <div class="col-md-12">
+
                 <!-- BEGIN EXAMPLE TABLE PORTLET-->
                 <div class="portlet light bordered">
-                    <div class="portlet-title">
+                    <div class="portlet-title tabbable-line">
                         <div class="caption font-dark">
                             <i class="icon-settings font-dark"></i>
-                            <span class="caption-subject bold uppercase"> Expansion Requests</span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
+                            <span class="caption-subject bold uppercase">Expansion Requests  </span><a style="margin-left: 20px;" class="csv-link" href="javascript:void(0)">Download CSV</a>
                         </div>
-                        <div class="caption font-dark">
-
-                            <span class="caption-subject bold uppercase"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                        </div>
-                        <div class="caption font-dark" style="display: <?php echo $add_company; ?>">
-
-                        </div>
-                        <div class="actions">
-                            <i class="icon-calendar"></i>&nbsp;
-                            <span id="servertime" style="font-weight: 300 !important;"></span>&nbsp;
-                        </div>
-                        <?php if ($_GET['action'] == 'delete-success'): ?>
-                            <p style="text-align: left; clear: both; background: green; color: #fff; padding: 10px;"><span style="display: block; float: left;">Vehicle #<?php echo $_GET['nid']; ?> deleted successfully</span><a href="/admin-new/modern-vehicles.php" style="color: #fff; text-align: right; display: block; float: right;">X</a><span style="display: block; clear: both;"></span></p>
-                        <?php endif; ?>
-                        <?php if ($_GET['action'] == 'delete-error'): ?>
-                            <p style="text-align: left; clear: both; background: #d40000; color: #fff; padding: 10px;"><span style="display: block; float: left;">Error in deleting vehicle. Please try again.</span><a href="/admin-new/modern-vehicles.php" style="color: #fff; text-align: right; display: block; float: right;">X</a><span style="display: block; clear: both;"></span></p>
-                        <?php endif; ?>
                     </div>
-                    <div class="portlet-body">
-                        <div class="table-responsive scrollable-table">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
-                                <thead>
-                                    <tr>
-                                        <th> ID </th>
-                                        <th> Customer Name </th>
-                                        <th> Email </th>
-                                        <th> Address </th>
-                                        <th> City </th>
-                                        <th> State </th>
-                                        <th> Zipcode </th>
-                                        <th> Create Date </th>
-                                        <th>Source</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($data as $key => $val) { ?> 
-                                        <tr>
-                                            <td><?= $val->id ?></td>
-                                            <td><?= $val->first_name . " " . $val->last_name ?></td>
-                                            <td><?= $val->email ?></td>
-                                            <td><?= $val->address ?></td>
-                                            <td><?= $val->city ?></td>
-                                            <td><?= $val->state ?></td>
-                                            <td><?= $val->zipcode ?></td>
-                                            <td><?= date("Y-m-d h:i A", strtotime($val->register_date)) ?></td>
-                                            <td><?= $val->source ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
+                  <!--   <form action="" method="get">
+                        <p>From: <input class="form-control form-control-inline input-medium date-picker" style="display: inline; width: 180px !important;" name="from" size="16" type="date" value="<?php echo $from; ?>" placeholder="format: YYYY-MM-DD" pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))" required> To: <input class="form-control form-control-inline input-medium date-picker" name="to" size="16" style="display: inline; width: 180px !important;" type="date" placeholder="format: YYYY-MM-DD" pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))" value="<?php echo $to; ?>" required><input style="margin-left: 10px;" type="submit" value="Search" /></p>
 
+                    </form> -->
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top Zone</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example1">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:50px;"> #</th>
+                                                <th> Zone </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="width:50px">1</td>
+                                                <td>Blue</td>
+                                                <td><?php echo $expansion_request->blue; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:50px">2</td>
+                                                <td>Yellow</td>
+                                                <td><?php echo $expansion_request->yellow; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:50px">3</td>
+                                                <td>Red</td>
+                                                <td><?php echo $expansion_request->red; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:50px">4</td>
+                                                <td>Purple</td>
+                                                <td><?php echo $expansion_request->purple; ?></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top City</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example2">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:50px;"> #</th>
+                                                <th> City Name </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($expansion_request->all_city as $city):
+                                                ?>
+                                                <tr>
+                                                    <td style="width:50px;"><?= $i ?></td>
+                                                    <td><?php echo $city->city; ?></td>
+                                                    <td><?php echo $city->total; ?></td>
+                                                </tr>
+                                                <?php
+                                                $i++;
+                                            endforeach;
+                                            ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top State</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example3">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:50px;">#</th>
+                                                <th> State </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($expansion_request->all_state as $state):
+                                                ?>
+                                                <tr>
+                                                    <td style="width:50px;"><?= $i; ?></td>
+                                                    <td><?php echo $state->state; ?></td>
+                                                    <td><?php echo $state->total; ?></td>
+                                                </tr>
+                                                <?php
+                                                $i++;
+                                            endforeach;
+                                            ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top Country</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example4">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th> Country </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            if($expansion_request->all_country > 0){
+                                                foreach ($expansion_request->all_country as $country):
+                                                    ?>
+                                                    <tr>
+                                                        <td style="width:50px"><?= $i; ?></td>
+                                                        <td><?php echo $country->country; ?></td>
+                                                        <td><?php echo $country->total; ?></td>
+                                                    </tr>
+                                                    <?php
+                                                    $i++;
+                                                endforeach;
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top Zipcode</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example5">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th> Zipcode </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($expansion_request->all_zipcode as $zipcode):
+                                                ?>
+                                                <tr>
+                                                    <td style="width:50px;"> <?= $i ?></td>
+                                                    <td><?php echo $zipcode->zipcode; ?></td>
+                                                    <td><?php echo $zipcode->total; ?></td>
+                                                </tr>
+                                                <?php
+                                                $i++;
+                                            endforeach;
+                                            ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6">
+                                <div class="border-box">
+                                    <h4 class="text-center">Top Platform</h4>
+                                    <table class="table table-striped table-bordered table-hover table-checkable order-column" id="example6">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th> Platform </th>
+                                                <th> Total# of Downloads </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 1;
+                                            foreach ($expansion_request->all_source as $source):
+                                                ?>
+                                                <tr>
+                                                    <td style="width:50px"><?= $i ?></td>
+                                                    <td><?php echo $source->source; ?></td>
+                                                    <td><?php echo $source->total; ?></td>
+                                                </tr>
+                                                <?php
+                                                $i++;
+                                            endforeach;
+                                            ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h4 class="fontBold">Latest Downloads</h4>
+                                <table class="table table-striped table-bordered table-hover table-checkable order-column ltst-download-table" id="example7">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Registered Date</th>
+                                            <th>Zipcode</th>
+                                            <th>Zone</th>
+                                            <th>City</th>
+                                            <th>State</th>
+                                            <th>Country</th>
+                                            <th>Source</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $i = 0;
+                                        foreach ($expansion_request->all_data as $val):
+                                            ?>
+
+                                            <tr>
+                                                <td><?= $i + 1; ?></td>
+                                                <td><?= date("Y-m-d h:i A", strtotime($val->created_at)) ?></td>
+                                                <td><?= $val->zipcode ?></td>
+                                                <td><?= $val->ZipColour; ?></td>
+                                                <td><?= $val->city ?></td>
+                                                <td><?= $val->state ?></td>
+                                                <td><?= $val->country ?></td>
+                                                <td><?= $val->source ?></td>
+                                            </tr>
+                                            <?php
+                                            $i++;
+                                        endforeach;
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- END EXAMPLE TABLE PORTLET-->
             </div>
         </div>
         <div class="clearfix"></div>
-
     </div>
     <!-- END CONTENT BODY -->
 </div>
 <!-- END CONTENT -->
+
 <style>
     .fullwidth{
         width: 14% !important;
     }
 </style>
 <?php include('footer.php') ?>
-<script>
-    $(function () {
-        $(document).on('click', '.delete-car', function () {
-            var th = $(this);
-            id = $(this).data('id');
-            carname = $(this).data('carname');
 
-            var r = confirm('Are you sure you want to delete ' + carname + '?');
-            if (r == true) {
-                $(th).html('Deleting...');
-                $.getJSON("<?php echo ROOT_URL; ?>/api/index.php?r=vehicles/deletevehicle", {id: id, build: 'regular', key: "<?php echo API_KEY; ?>", api_token: "<?php echo $finalusertoken; ?>", t1: "<?php echo $mw_admin_auth_arr[2]; ?>", t2: "<?php echo $mw_admin_auth_arr[3]; ?>", user_type: 'admin', user_id: "<?php echo $mw_admin_auth_arr[4]; ?>"}, function (data) {
-                    if (data.result == 'true') {
-                        window.location.href = "<?php echo ROOT_URL; ?>/admin-new/modern-vehicles.php?action=delete-success&nid=" + id;
-                    }
-                    if (data.result == 'false') {
-                        window.location.href = "<?php echo ROOT_URL; ?>/admin-new/modern-vehicles.php?action=delete-error";
-                    }
+<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<script type="text/javascript">
+    $('#example1, #example2, #example3, #example4, #example5, #example6').DataTable({
+        pageLength: 5,
+        "aaSorting": [],
+//        buttons: [
+//            'csvHtml5'
+//        ]
 
-                });
+});
+    $('#example7').DataTable({
+        pageLength: 5,
+        dom: 'Bfrtip',
+        "aaSorting": [],
+//        buttons: [
+//            'csvHtml5'
+//        ]
+buttons: [
+'csv',
+]
+});
 
-            }
-            return false;
+    $(document).ready(function () {
+
+        $('.csv-link').on('click', function () {
+            $('.buttons-csv').trigger('click');
         });
     });
 </script>
-<!-- BEGIN PAGE LEVEL SCRIPTS -->
+<!--<script src='js/jquery.voicerss-tts.min.js'></script>-->
+
 <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="assets/global/plugins/clockface/js/clockface.js" type="text/javascript"></script>
+<script src="assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
