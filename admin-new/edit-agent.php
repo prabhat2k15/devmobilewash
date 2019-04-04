@@ -499,82 +499,9 @@ $profiledetail = json_decode($result);
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label col-md-3">Password</label>
-                            <div class="col-md-9">
-                                <input type="password" id="password" name="password" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Confirm Password</label>
-                            <div class="col-md-9">
-                                <input type="password"  id="cpassword" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-                </div>
-                <!--/row-->
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
                             <label class="control-label col-md-3">Date of Birth</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control date-picker" value="<?php echo $profiledetail->date_of_birth; ?>" name="date_of_birth" placeholder="yyyy-mm-dd" required /> </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Mobile Type</label>
-                            <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->mobile_type; ?>" name="mobile_type" class="form-control"  /> </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Bank Account Number</label>
-                            <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->bank_account_number; ?>" name="bank_account_number" class="form-control" /> </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Routing Number</label>
-                            <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->routing_number; ?>" name="routing_number" class="form-control" /> </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Legally Eligible</label>
-                            <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->legally_eligible; ?>" name="legally_eligible" class="form-control"  /> </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Own Vehicle</label>
-                            <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->own_vehicle; ?>" name="own_vehicle" class="form-control"  /> </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Waterless Wash Product</label>
-                            <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->waterless_wash_product; ?>" name="waterless_wash_product" class="form-control"  /> </div>
                         </div>
                     </div>
 
@@ -593,21 +520,22 @@ $profiledetail = json_decode($result);
                             </div>
                         </div>
                     </div>
+                    
                 </div>
-
                 <div class="row">
+
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label col-md-3">Work Schedule</label>
+                            <label class="control-label col-md-3">Bank Account Number</label>
                             <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->work_schedule; ?>" name="work_schedule" class="form-control"  /> </div>
+                                <input type="text" value="<?php echo $profiledetail->bank_account_number; ?>" name="bank_account_number" class="form-control" /> </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="control-label col-md-3">Operating As</label>
+                            <label class="control-label col-md-3">Routing Number</label>
                             <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->operating_as; ?>" name="operating_as" class="form-control"  /> </div>
+                                <input type="text" value="<?php echo $profiledetail->routing_number; ?>" name="routing_number" class="form-control" /> </div>
                         </div>
                     </div>
                 </div>
@@ -668,30 +596,8 @@ $profiledetail = json_decode($result);
                                 <textarea name="washer_note"  class="form-control washerNotesArea"><?php echo $profiledetail->notes; ?></textarea>
                             </div>
                         </div>
+                    </div>
 
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Hours of Operation Check</label>
-                            <div class="col-md-9">
-                                <select class="form-control" name="hours_opt_check">
-
-                                    <option value="1" <?php if ($profiledetail->hours_opt_check == 1) echo 'selected'; ?>>ON</option>
-                                    <option value="0" <?php if (!$profiledetail->hours_opt_check) echo 'selected'; ?>>OFF</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Rating Control</label>
-                            <div class="col-md-9">
-                                <input type="text" value="<?php echo $profiledetail->rating_control; ?>" name="rating_control" class="form-control"  />
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label col-md-3">Decals Installed</label>
@@ -704,7 +610,9 @@ $profiledetail = json_decode($result);
                             </div>
                         </div>
                     </div>
+                    
                 </div>
+               
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -824,24 +732,6 @@ $profiledetail = json_decode($result);
                 <h3 class="form-section"  style="margin: 30px 0; padding-bottom: 5px; border-bottom: 1px solid #e7ecf1;">Work</h3>
                 <!--/row-->
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Wash Experience</label>
-                            <div class="col-md-9">
-                                <input type="text" name="wash_experience" value="<?php echo $profiledetail->wash_experience; ?>" class="form-control"  /> </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Total Wash</label>
-                            <div class="col-md-9">
-                                <input type="text" name="total_wash" value="<?php echo $profiledetail->total_washes; ?>" class="form-control"  /> </div>
-                        </div>
-                    </div>
-
-
                     <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
@@ -850,40 +740,7 @@ $profiledetail = json_decode($result);
                                 <input type="text" name="rating" value="<?php echo $profiledetail->rating; ?>" class="form-control"  /> </div>
                         </div>
                     </div>
-                    <!--/span-->
-
-                    <!--/span-->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Email Alerts</label>
-                            <div class="col-md-9">
-                                <input type="text" name="email_alerts" value="<?php echo $profiledetail->email_alerts; ?>" class="form-control" /> </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-
-                    <!--/span-->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Push Notifications</label>
-                            <div class="col-md-9">
-                                <input type="text" name="push_notifications" value="<?php echo $profiledetail->push_notifications; ?>" class="form-control"  /> </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-
-                    <!--/span-->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Agent Location</label>
-                            <div class="col-md-9">
-                                <input type="text" name="agent_location" value="" class="form-control"  /> </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-
-
-
+                
                     <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
@@ -892,45 +749,7 @@ $profiledetail = json_decode($result);
                                 <input type="text" name="bt_submerchant_id" value="<?php echo $profiledetail->bt_submerchant_id; ?>" class="form-control"  /> </div>
                         </div>
                     </div>
-                    <!--/span-->
-                    <!--/span-->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Status</label>
-                            <div class="col-md-9">
-                                <select class="form-control" name="status">
-                                    <option value="offline" <?php if ($profiledetail->status == 'offline') echo 'selected'; ?>>Offline</option>
-                                    <option value="online" <?php if ($profiledetail->status == 'online') echo 'selected'; ?>>Online</option>
-
-                                </select> </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-                    <!--/span-->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Account Status</label>
-                            <div class="col-md-9">
-                                <select class="form-control" name="account_status">
-                                    <option value="1" <?php if ($profiledetail->account_status == 1) echo 'selected'; ?>>Active</option>
-                                    <option value="0" <?php if ($profiledetail->account_status == 0) echo 'selected'; ?>>Pending</option>
-                                </select> </div>
-                        </div>
-                    </div>
-                    <!--/span-->
-                    <!--/span-->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Available For New Order</label>
-                            <div class="col-md-9">
-                                <select class="form-control" name="available_for_new_order">
-                                    <option value="0" <?php if ($profiledetail->available_for_new_order == 0) echo 'selected'; ?>>Not Available</option>
-                                    <option value="1" <?php if ($profiledetail->available_for_new_order == 1) echo 'selected'; ?>>Available</option>
-
-                                </select> </div>
-                        </div>
-                    </div>
-                    <!--/span-->
+                    
                     <!--/span-->
                     <div class="col-md-6">
                         <div class="form-group">
@@ -960,17 +779,6 @@ $profiledetail = json_decode($result);
                     <a href="javascript:void(0)" class="crop-result">Crop</a>
                     <div class="form-group">
                         <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
-                            <img id="driver_license_pic" class="driver_license_img" src="images/image_icon.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' />
-                            <a class="driver_license_pic_link image-upload-btn" href="#" onclick="chooseFile('#driver_license'); return false;">Driver License</a>
-                            <input type="file" name="driver_license" id="driver_license" value="" style="padding: 6px 0px 0px; display: none;" onchange="loaddriver_license(event)" />
-                        </div>
-                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
-                            <img id="proof_insurance_pic" class="proof_insurance_img" src="images/image_icon.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' /> <a class="proof_insurance_pic_link image-upload-btn" href="#" onclick="chooseFile('#proof_insurance'); return false;">Proof Insurance</a> <input type="file" name="proof_insurance" id="proof_insurance" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadproof_insurance(event)" />
-                        </div>
-                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
-                            <img id="business_license_pic" class="business_license_img" src="images/image_icon.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' /> <a class="business_license_pic_link image-upload-btn" href="#" onclick="chooseFile('#business_license'); return false;">Business License</a> <input type="file" name="business_license" id="business_license" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadbusiness_license(event)" />
-                        </div>
-                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
                             <img id="image_pic" class="image_img" src="<?php
                             if ($profiledetail->image) {
                                 echo $profiledetail->image;
@@ -981,43 +789,8 @@ $profiledetail = json_decode($result);
                             <input type="file" name="image" id="image" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadimage(event)" />
                             <input type="hidden" class="agentnewpic" name="agentnewpic" />
                         </div>
-
-                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
-                            <img id="washer_vehicle" class="driver_license_img" src="<?php
-                            if ($profiledetail->vehicle_pic) {
-                                echo $profiledetail->vehicle_pic;
-                            } else {
-                                echo "images/image_icon.png";
-                            }
-                            ?>" style='display: block; width: 150px; height: 150px; cursor: pointer;' />
-                            <a class="driver_license_pic_link image-upload-btn" href="#" onclick="chooseFile('#washer_vehicle_pic'); return false;">Washer vehicle</a>
-                            <input type="file" name="agent_vehicle_pic" id="washer_vehicle_pic" value="" style="padding: 6px 0px 0px; display: none;" accept="image/*"/>
-                        </div>
-
-
-
                     </div>
-                    <div class="form-group ">
-                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
-                            <img id="agreement_prof_pic" class="agreement_prof_img" src="images/pdf.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' />
-                            <a class="agreement_prof_pic_link image-upload-btn" href="#" onclick="chooseFile('#agreement_prof'); return false;">Agreement Prof</a>
-                            <input type="file" name="agreement_prof" id="agreement_prof" value="" accept="application/pdf" style="padding: 6px 0px 0px; display: none;" onchange="loadagreement_prof(event)" />
-                        </div>
-                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
-                            <img id="privacy_policy_pic" class="privacy_policy_img" src="images/pdf.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' />
-                            <a class="privacy_policy_pic_link image-upload-btn" href="#" onclick="chooseFile('#privacy_policy'); return false;">Privacy Policy</a>
-                            <input type="file" name="privacy_policy" id="privacy_policy" value="" accept="application/pdf" style="padding: 6px 0px 0px; display: none;" onchange="loadprivacy_policy(event)" />
-                        </div>
-                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
-                            <img id="notice_standard_pic" class="notice_standard_img" src="images/pdf.png" style='display: block; width: 150px; height: 150px; cursor: pointer;' /> <a class="notice_standard_pic_link image-upload-btn" href="#" onclick="chooseFile('#notice_standard'); return false;">Notice Standard</a> <input type="file" name="notice_standard" id="notice_standard" value="" accept="application/pdf" style="padding: 6px 0px 0px; display: none;" onchange="loadnotice_standard(event)" />
-                        </div>
-                        <div class="fileinput fileinput-new col-2" data-provides="fileinput" style="padding: 0px 0px 0px 0px;">
-                            <img id="notice_card_security_pic" class="notice_card_security_img" src="images/pdf.png" style='display: block; width: 15
-                                 0px; height: 150px; cursor: pointer;' /> <a class="notice_card_security_pic_link image-upload-btn" href="#" onclick="chooseFile('#notice_card_security'); return false;">Notice Card Security</a> <input type="file" name="notice_card_security" id="notice_card_security" accept="application/pdf" value="" style="padding: 6px 0px 0px; display: none;" onchange="loadnotice_card_security(event)" />
-                        </div>
-
-
-                    </div>
+                   
                     <!--/row-->
                 </div>
 
