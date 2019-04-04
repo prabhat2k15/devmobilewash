@@ -362,12 +362,6 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                                     <li>
                                                         <a href="#tab_1_2" data-toggle="tab">Change Avatar</a>
                                                     </li>
-                                                    <li>
-                                                        <a href="#tab_1_3" id="tab13" data-toggle="tab">Change Password</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#tab_1_4" data-toggle="tab">Privacy Settings</a>
-                                                    </li>
                                                 </ul>
                                             </div>
                                             <div class="portlet-body">
@@ -399,25 +393,15 @@ $how_hear_mw = $jsondata->how_hear_mw;
                                                                     <option value="0" <?php if($email_alerts == 0) echo "selected"; ?>>OFF</option>
                                                                 </select>
                                                             </div>
+                                                            
                                                             <div class="form-group">
-                                                                <label class="control-label">Push Notifications<span style="color: red;">*</span></label>
-                                                                <input type="text" class="form-control" name="push_notifications" value="<?php echo $push_notifications; ?>" />
-                                                            </div>
-<div class="form-group">
                                                                 <label class="control-label">How did you hear about MobileWash?<span style="color: red;">*</span></label>
                                                                 <input type="text" class="form-control" name="how_hear_mw" value="<?php echo $how_hear_mw; ?>" />
                                                             </div>
                                                             <div class="form-group">
                                                                 <label class="control-label">Time Zone<span style="color: red;">*</span></label>
                                                                 <input type="text" class="form-control" name="time_zone" value="<?php echo $time_zone; ?>" /> </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label">Hours of Operation Check</label>
-                                                                <select name="hours_opt_check" class="form-control">
-                                                                    <option value="1" <?php if($hours_opt_check == 1) echo "selected"; ?>>ON</option>
-                                                                    <option value="0" <?php if($hours_opt_check == 0) echo "selected"; ?>>OFF</option>
-                                                                </select>
-
-                                                            </div>
+                                                        
                                                             <div class="form-group">
                                                                 <label class="control-label">Block Client</label>
                                                                 <select name="block_client" class="form-control">
@@ -455,51 +439,7 @@ $how_hear_mw = $jsondata->how_hear_mw;
 
                                                     </div>
                                                     <!-- END CHANGE AVATAR TAB -->
-                                                    <!-- CHANGE PASSWORD TAB -->
-                                                    <div class="tab-pane" id="tab_1_3">
-                                                    <?php if(!empty($_GET['cnt'])){ ?>
-                                                        <div class="form-group" style="text-align: center; color: red;">Current Password Wrong</div>
-                                                    <?php } ?>
-
-
-                                                            <div class="form-group">
-                                                                <label class="control-label">New Password</label>
-                                                                <input type="password" id="password" name="password" class="form-control" /> </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label">Re-type New Password</label>
-                                                                <input type="password" id="cpassword" name="cpassword" class="form-control" /> </div>
-
-
-                                                    </div>
-                                                    <!-- END CHANGE PASSWORD TAB -->
-                                                    <!-- PRIVACY SETTINGS TAB -->
-                                                    <div class="tab-pane" id="tab_1_4">
-
-                                                            <table class="table table-light table-hover">
-                                                                <tr>
-                                                                    <td> Account Status </td>
-                                                                    <td  style="text-align: right;">
-                                                                        <label class="uniform-inline">
-                                                                            <input type="radio" name="account_status" value="1" <?php if($account_status == 1) { echo 'checked="checked"'; } ?> /> Active </label>
-                                                                        <label class="uniform-inline">
-                                                                            <input type="radio" name="account_status" value="0" <?php if($account_status == 0) { echo 'checked="checked"'; } ?> /> Pending </label>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td> Online Status </td>
-                                                                    <td  style="text-align: right;">
-                                                                        <label class="uniform-inline">
-                                                                            <input type="radio" name="online_status" value="online" <?php if($online_status == 'online') { echo 'checked="checked"'; } ?> /> Online </label>
-                                                                        <label class="uniform-inline">
-                                                                            <input type="radio" name="online_status" value="offline" <?php if($online_status == 'offline') { echo 'checked="checked"'; } ?> /> Offline </label>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                            <!--end profile-settings-->
-
-
-                                                    </div>
-                                                    <!-- END PRIVACY SETTINGS TAB -->
+                                                   
                                                 </div>
                                                 <?php if ($jsondata_permission->users_type == 'admin'): ?>
                                                  <div class="margiv-top-10">
