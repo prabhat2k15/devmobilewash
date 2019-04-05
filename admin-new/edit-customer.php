@@ -3,7 +3,7 @@
 <!-- BEGIN PAGE LEVEL PLUGINS -->
         <link href="assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN PAGE LEVEL STYLES -->
+        <!-- BEGIN PAGE LEVEL STYLES  -->
         <link href="assets/pages/css/profile.min.css" rel="stylesheet" type="text/css" />
         <!-- END PAGE LEVEL STYLES -->
         <link href="assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
